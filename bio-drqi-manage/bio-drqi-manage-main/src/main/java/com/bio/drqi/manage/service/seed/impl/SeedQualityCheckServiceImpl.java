@@ -7,7 +7,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONUtil;
 
-import com.bio.cer.seed.SeedQualityCheckReqDTO;
+import com.bio.drqi.seed.SeedQualityCheckReqDTO;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ExcelData;

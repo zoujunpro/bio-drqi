@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.controller.seed;
 
-import com.bio.cer.seed.*;
+import com.bio.drqi.seed.*;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;

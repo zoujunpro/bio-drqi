@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.controller.project;
 
-import com.bio.cer.board.*;
+import com.bio.drqi.board.*;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.manage.service.project.ProjectBoardService;
 import org.springframework.validation.annotation.Validated;

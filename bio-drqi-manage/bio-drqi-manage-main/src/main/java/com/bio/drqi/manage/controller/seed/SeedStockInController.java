@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.controller.seed;
 
-import com.bio.cer.seed.*;
+import com.bio.drqi.seed.*;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.oss.service.OssService;

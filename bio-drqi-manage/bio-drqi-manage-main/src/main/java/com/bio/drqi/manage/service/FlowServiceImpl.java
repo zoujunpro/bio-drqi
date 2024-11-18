@@ -2,9 +2,9 @@ package com.bio.drqi.manage.service;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
-import com.bio.cer.flow.ApproveDetailRspDTO;
-import com.bio.cer.flow.ProcessDetailReqDTO;
-import com.bio.cer.flow.ProcessDetailRspDTO;
+import com.bio.drqi.flow.ApproveDetailRspDTO;
+import com.bio.drqi.flow.ProcessDetailReqDTO;
+import com.bio.drqi.flow.ProcessDetailRspDTO;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;

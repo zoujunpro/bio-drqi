@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.controller.project;
 
-import com.bio.cer.plasmid.req.QueryPagePlasmidReqDTO;
-import com.bio.cer.plasmid.rsp.QueryPagePlasmidRspDTO;
+import com.bio.drqi.plasmid.req.QueryPagePlasmidReqDTO;
+import com.bio.drqi.plasmid.rsp.QueryPagePlasmidRspDTO;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;

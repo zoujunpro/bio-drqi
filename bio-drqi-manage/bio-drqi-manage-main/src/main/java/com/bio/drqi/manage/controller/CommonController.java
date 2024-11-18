@@ -1,12 +1,16 @@
 package com.bio.drqi.manage.controller;
 
-import com.bio.cer.common.OssUploadReqDTO;
-import com.bio.cer.common.OssUploadRspDTO;
-import com.bio.cer.service.common.CommonService;
+import com.bio.drqi.common.OssUploadReqDTO;
+import com.bio.drqi.common.OssUploadRspDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.manage.service.common.CommonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;

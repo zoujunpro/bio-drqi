@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.service.project;
 
-import com.bio.cer.conf.SpeciesConfRspDTO;
+import com.bio.drqi.conf.SpeciesConfRspDTO;
 
 import java.util.List;
 

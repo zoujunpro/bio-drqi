@@ -1,8 +1,8 @@
 package com.bio.drqi.manage.service.project.impl;
 
 
-import com.bio.cer.timePlan.VectorTaskTimePlanAddReqDTO;
-import com.bio.cer.timePlan.VectorTaskTimePlanListRspDTO;
+import com.bio.drqi.timePlan.VectorTaskTimePlanAddReqDTO;
+import com.bio.drqi.timePlan.VectorTaskTimePlanListRspDTO;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.domain.CerVectorTaskPlanLog;
 import com.bio.drqi.domain.CerVectorTaskTb;

@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.service.seed;
 
-import com.bio.cer.seed.*;
+import com.bio.drqi.seed.*;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;

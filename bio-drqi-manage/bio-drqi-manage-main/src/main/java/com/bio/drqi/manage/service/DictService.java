@@ -1,10 +1,10 @@
 package com.bio.drqi.manage.service;
 
-import com.bio.cer.conf.AcceptorMaterialListRspDTO;
-import com.bio.cer.conf.BreedListRspDTO;
-import com.bio.cer.conf.SeedProduceAddressListRsp;
-import com.bio.cer.conf.SpeciesBreedListRspDTO;
-import com.bio.cer.system.rsp.DictInfoRspDTO;
+import com.bio.drqi.conf.AcceptorMaterialListRspDTO;
+import com.bio.drqi.conf.BreedListRspDTO;
+import com.bio.drqi.conf.SeedProduceAddressListRsp;
+import com.bio.drqi.conf.SpeciesBreedListRspDTO;
+import com.bio.drqi.system.rsp.DictInfoRspDTO;
 
 import java.util.List;
 

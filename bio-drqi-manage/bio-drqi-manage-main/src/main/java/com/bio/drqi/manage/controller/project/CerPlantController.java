@@ -1,10 +1,10 @@
 package com.bio.drqi.manage.controller.project;
 
 
-import com.bio.cer.plant.req.DownloadTemplateReqDTO;
-import com.bio.cer.plant.req.PlantListPageReqDTO;
-import com.bio.cer.plant.rsp.PlantDetailRspDTO;
-import com.bio.cer.plant.rsp.PlantListPageRspDTO;
+import com.bio.drqi.plant.req.DownloadTemplateReqDTO;
+import com.bio.drqi.plant.req.PlantListPageReqDTO;
+import com.bio.drqi.plant.rsp.PlantDetailRspDTO;
+import com.bio.drqi.plant.rsp.PlantListPageRspDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;

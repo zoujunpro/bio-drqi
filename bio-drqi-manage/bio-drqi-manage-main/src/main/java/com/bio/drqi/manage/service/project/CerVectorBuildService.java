@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.service.project;
 
-import com.bio.cer.vector.rsp.VectorBuildDetailRspDTO;
+import com.bio.drqi.vector.rsp.VectorBuildDetailRspDTO;
 
 public interface CerVectorBuildService {
 

@@ -1,10 +1,11 @@
 package com.bio.drqi.manage.controller;
 
-import com.bio.cer.flow.ApproveDetailRspDTO;
-import com.bio.cer.flow.ProcessDetailReqDTO;
-import com.bio.cer.flow.ProcessDetailRspDTO;
-import com.bio.cer.service.FlowService;
+import com.bio.drqi.flow.ApproveDetailRspDTO;
+import com.bio.drqi.flow.ProcessDetailReqDTO;
+import com.bio.drqi.flow.ProcessDetailRspDTO;
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.drqi.manage.service.FlowService;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;

@@ -1,10 +1,10 @@
 package com.bio.drqi.manage.controller.project;
 
 
-import com.bio.cer.base.PrintRspDTO;
-import com.bio.cer.projectPrint.SamplePrintReqDTO;
-import com.bio.cer.projectPrint.TransFormPrintReqDTO;
-import com.bio.cer.projectPrint.VectorBuildPrintReqDTO;
+import com.bio.drqi.base.PrintRspDTO;
+import com.bio.drqi.projectPrint.SamplePrintReqDTO;
+import com.bio.drqi.projectPrint.TransFormPrintReqDTO;
+import com.bio.drqi.projectPrint.VectorBuildPrintReqDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.aspect.RequestLog;

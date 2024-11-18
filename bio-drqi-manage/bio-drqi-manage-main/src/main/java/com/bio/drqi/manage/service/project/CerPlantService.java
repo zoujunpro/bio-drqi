@@ -1,9 +1,9 @@
 package com.bio.drqi.manage.service.project;
 
-import com.bio.cer.plant.req.DownloadTemplateReqDTO;
-import com.bio.cer.plant.req.PlantListPageReqDTO;
-import com.bio.cer.plant.rsp.PlantDetailRspDTO;
-import com.bio.cer.plant.rsp.PlantListPageRspDTO;
+import com.bio.drqi.plant.req.DownloadTemplateReqDTO;
+import com.bio.drqi.plant.req.PlantListPageReqDTO;
+import com.bio.drqi.plant.rsp.PlantDetailRspDTO;
+import com.bio.drqi.plant.rsp.PlantListPageRspDTO;
 import com.github.pagehelper.PageInfo;
 
 import javax.servlet.http.HttpServletResponse;

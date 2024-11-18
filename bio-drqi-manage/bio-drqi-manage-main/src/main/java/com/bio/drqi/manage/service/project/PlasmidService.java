@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.service.project;
 
-import com.bio.cer.plasmid.req.QueryPagePlasmidReqDTO;
-import com.bio.cer.plasmid.rsp.QueryPagePlasmidRspDTO;
+import com.bio.drqi.plasmid.req.QueryPagePlasmidReqDTO;
+import com.bio.drqi.plasmid.rsp.QueryPagePlasmidRspDTO;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;

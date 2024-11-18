@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.service.project;
 
-import com.bio.cer.project.rsp.ProjectStepDetailRspDTO;
+import com.bio.drqi.project.rsp.ProjectStepDetailRspDTO;
 
 import java.util.List;
 

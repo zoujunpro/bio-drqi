@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.controller.project;
 
-import com.bio.cer.timePlan.VectorTaskTimePlanAddReqDTO;
-import com.bio.cer.timePlan.VectorTaskTimePlanListRspDTO;
+import com.bio.drqi.timePlan.VectorTaskTimePlanAddReqDTO;
+import com.bio.drqi.timePlan.VectorTaskTimePlanListRspDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.aspect.RequestLog;

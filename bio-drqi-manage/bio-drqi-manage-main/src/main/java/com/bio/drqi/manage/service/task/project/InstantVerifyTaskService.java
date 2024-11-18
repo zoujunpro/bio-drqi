@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.service.task.project;
 import cn.hutool.json.JSONUtil;
-import com.bio.cer.enums.BioTaskStatusEnum;
-import com.bio.cer.enums.VectorTaskStatusEnum;
+import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.enums.VectorTaskStatusEnum;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.domain.BioTaskDtlTb;

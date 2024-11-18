@@ -2,12 +2,12 @@ package com.bio.drqi.manage.service.task.project;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
-import com.bio.cer.contents.CerProjectContents;
+import com.bio.drqi.contents.CerProjectContents;
 
-import com.bio.cer.enums.BioTaskStatusEnum;
-import com.bio.cer.enums.ImplementationPlanTypeEnum;
-import com.bio.cer.enums.ProjectStatusEnum;
-import com.bio.cer.enums.VectorTaskTypeEnum;
+import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.enums.ImplementationPlanTypeEnum;
+import com.bio.drqi.enums.ProjectStatusEnum;
+import com.bio.drqi.enums.VectorTaskTypeEnum;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
@@ -40,8 +40,6 @@ public class VectorBuildProcService extends AbstractBaseProjectTaskService {
     @Resource
     private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
-    @Resource
-    private PlasmidApi plasmidApi;
 
     @Override
     public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {

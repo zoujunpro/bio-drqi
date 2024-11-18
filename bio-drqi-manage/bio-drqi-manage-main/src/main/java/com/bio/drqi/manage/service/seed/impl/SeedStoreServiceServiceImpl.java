@@ -4,10 +4,10 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.bio.base.api.RemoteUserService;
 import com.bio.base.user.rsp.UserDetailRspDTO;
 
-import com.bio.cer.enums.DataPermissionTypeEnum;
-import com.bio.cer.enums.DataPermissionValueEnum;
+import com.bio.drqi.enums.DataPermissionTypeEnum;
+import com.bio.drqi.enums.DataPermissionValueEnum;
 
-import com.bio.cer.seed.*;
+import com.bio.drqi.seed.*;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;

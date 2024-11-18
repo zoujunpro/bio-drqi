@@ -1,9 +1,10 @@
 package com.bio.drqi.manage.controller.seed;
 
-import com.bio.cer.seed.SeedQualityCheckReqDTO;
-import com.bio.cer.service.seed.SeedQualityCheckService;
+import com.bio.drqi.manage.service.seed.SeedQualityCheckService;
+import com.bio.drqi.seed.SeedQualityCheckReqDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.github.pagehelper.PageInfo;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;

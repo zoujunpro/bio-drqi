@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.service.project;
 
-import com.bio.cer.project.rsp.ProjectSpeciesLispRspDTO;
-import com.bio.cer.project.rsp.SubProjectRspDTO;
+import com.bio.drqi.project.rsp.ProjectSpeciesLispRspDTO;
+import com.bio.drqi.project.rsp.SubProjectRspDTO;
 
 import java.util.List;
 

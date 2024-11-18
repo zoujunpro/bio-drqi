@@ -1,8 +1,8 @@
 package com.bio.drqi.manage.service.seed.impl;
 
 import cn.hutool.json.JSONUtil;
-import com.bio.cer.seed.SeedDestructionPageReqDTO;
-import com.bio.cer.seed.SeedDestructionPageRspDTO;
+import com.bio.drqi.seed.SeedDestructionPageReqDTO;
+import com.bio.drqi.seed.SeedDestructionPageRspDTO;
 import com.bio.drqi.domain.SeedStockDestructionLog;
 import com.bio.drqi.manage.service.seed.SeedDestructionService;
 import com.bio.drqi.mapper.SeedStockDestructionLogMapper;

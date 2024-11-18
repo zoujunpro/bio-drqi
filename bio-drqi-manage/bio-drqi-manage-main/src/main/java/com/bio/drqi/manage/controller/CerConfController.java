@@ -1,8 +1,8 @@
 package com.bio.drqi.manage.controller;
 
-import com.bio.cer.conf.SpeciesConfRspDTO;
-import com.bio.cer.service.project.CerConfService;
+import com.bio.drqi.conf.SpeciesConfRspDTO;
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.drqi.manage.service.project.CerConfService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

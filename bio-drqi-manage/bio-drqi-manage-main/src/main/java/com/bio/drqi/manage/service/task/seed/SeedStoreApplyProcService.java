@@ -2,11 +2,11 @@ package com.bio.drqi.manage.service.task.seed;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
-import com.bio.cer.contents.CerProjectContents;
-import com.bio.cer.domain.*;
-import com.bio.cer.dto.seed.SeedInStoreDTO;
-import com.bio.cer.enums.GenerationEnum;
-import com.bio.cer.mapper.*;
+import com.bio.drqi.contents.CerProjectContents;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.GenerationEnum;
+import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
+import com.bio.drqi.mapper.*;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;

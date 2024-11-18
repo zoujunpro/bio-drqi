@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.service.project;
 
-import com.bio.cer.project.req.ProjectListReqDTO;
-import com.bio.cer.project.rsp.*;
+import com.bio.drqi.project.req.ProjectListReqDTO;
+import com.bio.drqi.project.rsp.*;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;

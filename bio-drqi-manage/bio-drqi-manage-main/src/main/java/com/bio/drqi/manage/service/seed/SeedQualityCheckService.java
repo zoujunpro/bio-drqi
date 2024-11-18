@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.service.seed;
 
-import com.bio.cer.seed.SeedQualityCheckReqDTO;
+import com.bio.drqi.seed.SeedQualityCheckReqDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.multipart.MultipartFile;
 

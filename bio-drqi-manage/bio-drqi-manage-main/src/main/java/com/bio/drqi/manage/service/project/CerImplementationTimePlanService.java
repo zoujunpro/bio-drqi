@@ -1,8 +1,8 @@
 package com.bio.drqi.manage.service.project;
 
 
-import com.bio.cer.timePlan.VectorTaskTimePlanAddReqDTO;
-import com.bio.cer.timePlan.VectorTaskTimePlanListRspDTO;
+import com.bio.drqi.timePlan.VectorTaskTimePlanAddReqDTO;
+import com.bio.drqi.timePlan.VectorTaskTimePlanListRspDTO;
 
 public interface CerImplementationTimePlanService {
 

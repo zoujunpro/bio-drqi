@@ -1,9 +1,9 @@
 package com.bio.drqi.manage.service.project.impl;
 
-import com.bio.cer.conf.SpeciesConfRspDTO;
-import com.bio.cer.domain.CerSpeciesConf;
-import com.bio.cer.mapper.CerSpeciesConfMapper;
-import com.bio.cer.service.project.CerConfService;
+import com.bio.drqi.conf.SpeciesConfRspDTO;
+import com.bio.drqi.domain.CerSpeciesConf;
+import com.bio.drqi.manage.service.project.CerConfService;
+import com.bio.drqi.mapper.CerSpeciesConfMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

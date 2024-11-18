@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.service.seed;
 
-import com.bio.cer.seed.*;
-import com.bio.cer.seedtask.SeedInDataReqDTO;
+import com.bio.drqi.seed.*;
+import com.bio.drqi.seedtask.SeedInDataReqDTO;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;

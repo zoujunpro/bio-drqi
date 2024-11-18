@@ -1,10 +1,7 @@
 package com.bio.drqi.manage.service.project;
 
-import com.bio.cer.sample.req.*;
-import com.bio.cer.sample.rsp.CountNumByApplyNoRspDTO;
-import com.bio.cer.sample.rsp.LayoutPreviewRspDTO;
-import com.bio.cer.sample.rsp.SampleApplyRspDTO;
-import com.bio.cer.sample.rsp.SampleTestListDetailRspDTO;
+import com.bio.drqi.sample.req.*;
+import com.bio.drqi.sample.rsp.*;
 import com.github.pagehelper.PageInfo;
 
 import javax.servlet.http.HttpServletResponse;

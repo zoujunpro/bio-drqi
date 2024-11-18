@@ -1,11 +1,11 @@
 package com.bio.drqi.manage.controller.seed;
 
 
-import com.bio.cer.aspect.RequestLog;
-import com.bio.cer.base.PrintRspDTO;
-import com.bio.cer.print.SeedInPrintReqDTO;
-import com.bio.cer.print.SeedOutPrintReqDTO;
-import com.bio.cer.service.seed.SeedPrintService;
+import com.bio.drqi.base.PrintRspDTO;
+import com.bio.drqi.manage.aspect.RequestLog;
+import com.bio.drqi.manage.service.seed.SeedPrintService;
+import com.bio.drqi.print.SeedInPrintReqDTO;
+import com.bio.drqi.print.SeedOutPrintReqDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import org.springframework.validation.annotation.Validated;

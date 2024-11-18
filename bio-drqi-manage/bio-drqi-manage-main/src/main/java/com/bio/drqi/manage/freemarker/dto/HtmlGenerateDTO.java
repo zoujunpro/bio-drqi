@@ -2,7 +2,7 @@ package com.bio.drqi.manage.freemarker.dto;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
-import com.bio.cer.flow.ApproveDetailRspDTO;
+import com.bio.drqi.flow.ApproveDetailRspDTO;
 import lombok.Data;
 
 import java.util.ArrayList;

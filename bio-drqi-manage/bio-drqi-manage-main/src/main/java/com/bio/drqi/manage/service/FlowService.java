@@ -1,8 +1,8 @@
 package com.bio.drqi.manage.service;
 
-import com.bio.cer.flow.ApproveDetailRspDTO;
-import com.bio.cer.flow.ProcessDetailReqDTO;
-import com.bio.cer.flow.ProcessDetailRspDTO;
+import com.bio.drqi.flow.ApproveDetailRspDTO;
+import com.bio.drqi.flow.ProcessDetailReqDTO;
+import com.bio.drqi.flow.ProcessDetailRspDTO;
 import com.easyflow.engine.entity.FlowHisInstanceTb;
 import com.easyflow.engine.model.SelfFlowActor;
 

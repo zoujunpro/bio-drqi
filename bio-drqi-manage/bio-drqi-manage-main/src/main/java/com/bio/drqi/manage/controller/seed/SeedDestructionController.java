@@ -1,12 +1,16 @@
 package com.bio.drqi.manage.controller.seed;
 
-import com.bio.cer.seed.SeedDestructionPageReqDTO;
-import com.bio.cer.seed.SeedDestructionPageRspDTO;
-import com.bio.cer.service.seed.SeedDestructionService;
+import com.bio.drqi.manage.service.seed.SeedDestructionService;
+import com.bio.drqi.seed.SeedDestructionPageReqDTO;
+import com.bio.drqi.seed.SeedDestructionPageRspDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 

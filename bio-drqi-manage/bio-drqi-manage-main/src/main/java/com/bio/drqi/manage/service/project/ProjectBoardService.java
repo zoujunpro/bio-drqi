@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.service.project;
 
-import com.bio.cer.board.*;
+import com.bio.drqi.board.*;
 
 import java.util.List;
 

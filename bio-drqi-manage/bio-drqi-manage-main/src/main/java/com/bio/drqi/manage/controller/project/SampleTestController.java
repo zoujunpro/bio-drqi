@@ -1,9 +1,8 @@
 package com.bio.drqi.manage.controller.project;
 
 
-import com.bio.cer.sample.req.SampleApplyListPageReqDTO;
-import com.bio.cer.sample.rsp.SampleApplyRspDTO;
-import com.bio.cer.sample.rsp.SampleTestListDetailRspDTO;
+import com.bio.drqi.sample.req.*;
+import com.bio.drqi.sample.rsp.*;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.oss.service.OssService;

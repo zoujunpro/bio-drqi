@@ -1,8 +1,8 @@
 package com.bio.drqi.manage.freemarker.handle;
 
-import com.bio.cer.freemarker.dto.HtmlGenerateDTO;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.freemarker.util.HtmlGeneratorUtil;
+import com.bio.drqi.manage.freemarker.dto.HtmlGenerateDTO;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;

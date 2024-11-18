@@ -1,9 +1,9 @@
 package com.bio.drqi.manage.service.seed;
 
 
-import com.bio.cer.base.PrintRspDTO;
-import com.bio.cer.print.SeedInPrintReqDTO;
-import com.bio.cer.print.SeedOutPrintReqDTO;
+import com.bio.drqi.base.PrintRspDTO;
+import com.bio.drqi.print.SeedInPrintReqDTO;
+import com.bio.drqi.print.SeedOutPrintReqDTO;
 
 import java.util.List;
 

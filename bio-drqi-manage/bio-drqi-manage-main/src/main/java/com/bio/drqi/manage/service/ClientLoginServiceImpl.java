@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.base.api.RemoteLoginService;
 import com.bio.base.user.rsp.UserDetailRspDTO;
-import com.bio.cer.auth.rsp.LoginRspDTO;
+import com.bio.drqi.auth.rsp.LoginRspDTO;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.LoginUser;

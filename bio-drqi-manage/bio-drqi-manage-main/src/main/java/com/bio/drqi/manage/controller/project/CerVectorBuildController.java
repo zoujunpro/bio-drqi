@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.controller.project;
 
-import com.bio.cer.vector.rsp.VectorBuildDetailRspDTO;
+import com.bio.drqi.vector.rsp.VectorBuildDetailRspDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.manage.service.project.CerVectorBuildService;
 import org.springframework.web.bind.annotation.GetMapping;

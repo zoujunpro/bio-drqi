@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerVectorStepLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerVectorStepLog">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="vectorTaskId" column="vector_Task_id" jdbcType="INTEGER"/>
+            <result property="stepCode" column="step_code" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,project_id,vector_Task_id,
+        step_code,create_time,task_num
+    </sql>
+    <select id="selectOneByVectorTaskIdAndStepCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_step_log
+        where
+        vector_Task_id = #{vectorTaskId,jdbcType=NUMERIC}
+        AND step_code = #{stepCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByVectorTaskIdOrderById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_step_log
+        where
+        vector_Task_id = #{vectorTaskId,jdbcType=NUMERIC}
+        order by id
+    </select>
+</mapper>

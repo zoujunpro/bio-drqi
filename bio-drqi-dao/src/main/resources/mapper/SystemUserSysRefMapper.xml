@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.SystemUserSysRefMapper">
+  <resultMap id="BaseResultMap" type="com.bio.drqi.domain.SystemUserSysRef">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="system_id" jdbcType="INTEGER" property="systemId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, system_id
+  </sql>
+
+  <insert id="batchInsert" parameterType="com.bio.drqi.domain.SystemUserSysRef">
+    insert into system_user_sys_ref
+    (
+    system_id,
+    user_id)values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+      #{item.systemId,jdbcType=INTEGER},
+      #{item.userId,jdbcType=INTEGER}
+      )
+    </foreach>
+  </insert>
+
+  <delete id="deleteByUserId" parameterType="java.lang.Integer">
+    delete from system_user_sys_ref
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleteBySystemId" parameterType="java.lang.Integer">
+    delete from system_user_sys_ref
+    where system_id = #{systemId,jdbcType=INTEGER}
+  </delete>
+
+
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerFlowStepConfMapper">
+  <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerFlowStepConf">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="flow_step_code" jdbcType="VARCHAR" property="flowStepCode" />
+    <result column="flow_step_name" jdbcType="VARCHAR" property="flowStepName" />
+    <result column="order_num" jdbcType="INTEGER" property="orderNum" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="flow_step_type" jdbcType="VARCHAR" property="flowStepType" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, flow_step_code, flow_step_name, order_num, create_time, update_time,flow_step_type,parent_id
+  </sql>
+  <select id="selectAllByFlowStepType" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from cer_flow_step_conf
+    where
+    flow_step_type = #{flowStepType,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAllByFlowStepCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from cer_flow_step_conf
+    where
+    flow_step_code = #{flowStepCode,jdbcType=VARCHAR}
+  </select>
+    <select id="selectAllOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_flow_step_conf
+        order by id
+    </select>
+</mapper>

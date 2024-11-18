@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerInstantVerifyTaskTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerInstantVerifyTaskTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="subProjectId" column="sub_project_id" jdbcType="INTEGER"/>
+            <result property="vectorTaskId" column="vector_task_id" jdbcType="INTEGER"/>
+            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+            <result property="instantVerifyCode" column="instant_verify_code" jdbcType="VARCHAR"/>
+            <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+            <result property="subProjectCode" column="sub_project_code" jdbcType="VARCHAR"/>
+            <result property="textJson" column="text_json" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,project_id,sub_project_id,
+        vector_task_id,vector_task_code,instant_verify_code,
+        project_code,sub_project_code,text_json,
+        create_time
+    </sql>
+    <select id="selectOneByInstantVerifyCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_instant_verify_task_tb
+        where
+        instant_verify_code = #{instantVerifyCode,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByInstantVerifyCode">
+        delete
+        from cer_instant_verify_task_tb
+        where instant_verify_code = #{instantVerifyCode,jdbcType=VARCHAR}
+    </delete>
+    <select id="selectAllByVectorTaskCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_instant_verify_task_tb
+        where
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,0 +1,142 @@
+package com.bio.cer.vector.rsp;
+
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+public class VectorBuildDetailRspDTO {
+
+
+    private List<CerVectorGroup> cerVectorGroupList;
+
+
+    private List<CerVector> cerVectorList;
+
+    @Data
+    public static class CerVector {
+
+        private Integer id;
+
+        /**
+         * 载体构建任务
+         */
+        private Integer vectorTaskId;
+
+        /**
+         * 质粒名称
+         */
+        private String plasmidName;
+
+        /**
+         * 靶位点
+         */
+        private String targetSite;
+
+        /**
+         * 细菌抗性
+         */
+        private String bacterialResistance;
+
+        /**
+         * 质粒特异性引物
+         */
+        private String plasmidSpecificPrimers;
+
+        /**
+         * 细菌复制子
+         */
+        private String bacterialReplicon;
+
+        /**
+         * 拷贝数
+         */
+        private String copyNumber;
+
+        /**
+         * 农杆菌信息
+         */
+        private String agrobacteriumInformation;
+
+        /**
+         * 植物筛选标记
+         */
+        private String selectionMarker;
+
+        /**
+         * 外源基因
+         */
+        private String foreignGene;
+
+        /**
+         * 目标特性
+         */
+        private String geneCharacter;
+
+        /**
+         * 靶基因
+         */
+        private String targetGene;
+
+        /**
+         * PAM
+         */
+        private String pam;
+
+        /**
+         * 备注
+         */
+        private String remark;
+
+
+        private String fileUrls;
+
+        /**
+         * 期望阳性苗
+         */
+        private Integer expectedPositiveVaccine;
+
+
+        /**
+         * 目的条带大小
+         */
+        private String destinationStripeSize;
+
+        /**
+         * 载体大小
+         */
+        private String vectorSize;
+
+    }
+
+
+    @Data
+    public static class CerVectorGroup {
+
+        private Integer id;
+
+        /**
+         * 转化名称
+         */
+        private Integer vectorTaskId;
+
+        /**
+         * 质粒组（共转质粒）
+         */
+        private String plasmidNames;
+
+        /**
+         * 分组名称
+         */
+        private String groupName;
+
+        /**
+         * 项目ID
+         */
+        private Integer projectId;
+
+        private Integer repeatNum;
+
+        private String remark;
+    }
+}

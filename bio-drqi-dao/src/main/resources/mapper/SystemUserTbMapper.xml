@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.SystemUserTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.SystemUserTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="sex" column="sex" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="telephone" column="telephone" jdbcType="VARCHAR"/>
+            <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="jobId" column="job_id" jdbcType="INTEGER"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="jobNum" column="job_num" jdbcType="VARCHAR"/>
+            <result property="loginFailNum" column="login_fail_num" jdbcType="INTEGER"/>
+            <result property="portraitUrl" column="portrait_url" jdbcType="VARCHAR"/>
+            <result property="superiorId" column="superior_id" jdbcType="INTEGER"/>
+            <result property="managerFlag" column="manager_flag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,username,nickname,
+        status,del_flag,email,
+        sex,password,telephone,
+        dept_id,create_by,job_id,
+        remark,create_time,update_time,
+        job_num,login_fail_num,portrait_url,
+        superior_id,manager_flag
+    </sql>
+    <select id="selectAllByDeptIdIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from system_user_tb
+        where
+        dept_id in
+        <foreach collection="deptIdList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+    </select>
+    <select id="selectAllByDeptIdAndManagerFlag" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from system_user_tb
+        where
+        dept_id = #{deptId,jdbcType=NUMERIC}
+        AND manager_flag = #{managerFlag,jdbcType=VARCHAR}
+    </select>
+</mapper>

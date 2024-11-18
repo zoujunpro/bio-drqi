@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BioRequestLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioRequestLog">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="requestUserId" column="request_user_id" jdbcType="INTEGER"/>
+        <result property="requestUserName" column="request_user_name" jdbcType="VARCHAR"/>
+        <result property="requestTime" column="request_time" jdbcType="TIMESTAMP"/>
+        <result property="requestParam" column="request_param" jdbcType="VARCHAR"/>
+        <result property="requestMethod" column="request_method" jdbcType="VARCHAR"/>
+        <result property="requestDesc" column="request_desc" jdbcType="VARCHAR"/>
+        <result property="requestId" column="request_id" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,request_user_id,request_user_name,
+        request_time,request_param,request_method,
+        request_id,request_desc
+    </sql>
+</mapper>

@@ -1,0 +1,18 @@
+package com.bio.drqi.manage.service.seed;
+
+import com.bio.cer.seed.*;
+import com.github.pagehelper.PageInfo;
+
+import java.util.List;
+
+public interface SeedStoreService {
+    SeedDetailRspDTO querySeedByNum(String seedNum);
+
+    PageInfo<SeedStockPageRspDTO> listPage(SeedStockPageReqDTO seedStockPageReqDTO);
+
+    PageInfo<SeedStockPageRspDTO> queryList(SeedStockPageReqDTO seedStockPageReqDTO);
+
+    void moveStockLocationNum( List<MoveStockLocationNumReqDTO> moveStockLocationNumReqDTOList);
+
+    void aliasName( AliasNameSeedReqDTO aliasNameSeedReqDTO);
+}

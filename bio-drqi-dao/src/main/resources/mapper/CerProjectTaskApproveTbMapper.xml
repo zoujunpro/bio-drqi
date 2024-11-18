@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerProjectTaskApproveTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerProjectTaskApproveTb">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="taskId" column="task_id" jdbcType="INTEGER"/>
+        <result property="approveUserId" column="approve_user_id" jdbcType="INTEGER"/>
+        <result property="approveUserName" column="approve_user_name" jdbcType="VARCHAR"/>
+        <result property="approveTime" column="approve_time" jdbcType="TIMESTAMP"/>
+        <result property="approveResult" column="approve_result" jdbcType="VARCHAR"/>
+        <result property="rejectReason" column="reject_reason" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,task_id,approve_user_id,
+        approve_user_name,approve_time,approve_result,
+        reject_reason
+    </sql>
+    <select id="selectAllByTaskId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_project_task_approve_tb
+        where
+        task_id = #{taskId,jdbcType=INTEGER}
+    </select>
+    <select id="selectOneByTaskIdAndApproveUserId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_project_task_approve_tb
+        where
+        task_id = #{taskId,jdbcType=NUMERIC}
+        AND approve_user_id = #{approveUserId,jdbcType=NUMERIC}
+    </select>
+    <delete id="deleteByTaskId">
+        delete
+        from cer_project_task_approve_tb
+        where task_id = #{taskId,jdbcType=NUMERIC}
+    </delete>
+    <update id="updateNullById">
+        update cer_project_task_approve_tb
+        set approve_time  = null,
+            approve_result=null,
+            reject_reason=null
+        where id = #{id,jdbcType=NUMERIC}
+    </update>
+</mapper>

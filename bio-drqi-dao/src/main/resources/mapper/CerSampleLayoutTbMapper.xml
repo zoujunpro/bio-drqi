@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerSampleLayoutTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerSampleLayoutTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
+            <result property="singleContent" column="single_content" jdbcType="VARCHAR"/>
+            <result property="plateContent" column="plate_content" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,apply_no,single_content,
+        plate_content
+    </sql>
+    <select id="selectOneByApplyNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_layout_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+        order by id asc
+    </select>
+</mapper>

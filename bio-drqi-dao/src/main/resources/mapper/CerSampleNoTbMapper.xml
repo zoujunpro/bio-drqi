@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerSampleNoTbMapper">
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerSampleNoTb">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="transform_code" jdbcType="VARCHAR" property="transformCode"/>
+        <result column="sample_code_prefix" jdbcType="VARCHAR" property="sampleCodePrefix"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="apply_batch_no" jdbcType="VARCHAR" property="applyBatchNo"/>
+        <result column="plasmid_name" jdbcType="VARCHAR" property="plasmidName"/>
+        <result column="vector_code" jdbcType="VARCHAR" property="vectorCode"/>
+        <result column="project_id" jdbcType="INTEGER" property="projectId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, transform_code, sample_code_prefix, create_time, update_time, apply_batch_no,vector_code,plasmid_name,project_id
+    </sql>
+    <select id="selectByApplyBatchNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_no_tb
+        where
+        apply_batch_no = #{applyBatchNo,jdbcType=VARCHAR}
+    </select>
+</mapper>

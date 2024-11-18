@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerPlasmidQualityTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerPlasmidQualityTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="subProjectId" column="sub_project_id" jdbcType="INTEGER"/>
+            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="vectorTaskId" column="vector_task_id" jdbcType="INTEGER"/>
+            <result property="plasmidName" column="plasmid_name" jdbcType="VARCHAR"/>
+            <result property="qualityInspectionNumber" column="quality_inspection_number" jdbcType="VARCHAR"/>
+            <result property="qualityInspectionResult" column="quality_inspection_result" jdbcType="VARCHAR"/>
+            <result property="agrobacteriumInformation" column="agrobacterium_information" jdbcType="VARCHAR"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="qualityInspectionType" column="quality_inspection_type" jdbcType="VARCHAR"/>
+            <result property="agrobacteriumResistance" column="agrobacterium_resistance" jdbcType="VARCHAR"/>
+            <result property="plasmidConcentration" column="plasmid_concentration" jdbcType="VARCHAR"/>
+            <result property="extractionKit" column="extraction_kit" jdbcType="VARCHAR"/>
+            <result property="fileUrls" column="file_urls" jdbcType="VARCHAR"/>
+            <result property="taskStatus" column="task_status" jdbcType="VARCHAR"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+            <result property="subProjectCode" column="sub_project_code" jdbcType="VARCHAR"/>
+            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,sub_project_id,project_id,
+        vector_task_id,plasmid_name,
+        quality_inspection_number,quality_inspection_result,agrobacterium_information,
+        create_user_name,create_user_id,update_time,
+        create_time,quality_inspection_type,agrobacterium_resistance,
+        plasmid_concentration,extraction_kit,file_urls,
+        task_status,task_num,project_code,
+        sub_project_code,vector_task_code,remark
+    </sql>
+    <select id="selectAllByVectorIdAndQualityInspectionResult" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_plasmid_quality_tb
+        where
+        vector_id = #{vectorId,jdbcType=NUMERIC}
+        AND quality_inspection_result = #{qualityInspectionResult,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByTaskNum">
+        delete
+        from cer_plasmid_quality_tb
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </delete>
+    <update id="updateTaskStatusByTaskNum">
+        update cer_plasmid_quality_tb
+        set task_status = #{taskStatus,jdbcType=VARCHAR}
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </update>
+    <select id="selectAllByProjectId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_plasmid_quality_tb
+        where
+        project_id = #{projectId,jdbcType=NUMERIC}
+        order by id  desc
+    </select>
+    <select id="selectAllByTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_plasmid_quality_tb
+        where
+        task_num = #{taskNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByVectorTaskId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_plasmid_quality_tb
+        where
+        vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+    </select>
+    <update id="updateQualityInspectionResultByVectorTaskId">
+        update cer_plasmid_quality_tb
+        set quality_inspection_result = #{qualityInspectionResult,jdbcType=VARCHAR}
+        where vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+    </update>
+</mapper>
+

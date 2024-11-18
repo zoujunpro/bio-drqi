@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerVectorGroupTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerVectorGroupTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="vectorTaskId" column="vector_task_id" jdbcType="INTEGER"/>
+            <result property="plasmidNames" column="plasmid_names" jdbcType="VARCHAR"/>
+            <result property="qualityInspectionResult" column="quality_inspection_result" jdbcType="VARCHAR"/>
+            <result property="groupName" column="group_name" jdbcType="VARCHAR"/>
+            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="repeatNum" column="repeat_num" jdbcType="INTEGER"/>
+           <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,vector_task_id,plasmid_names,
+        quality_inspection_result,group_name,project_id,remark,repeat_num
+    </sql>
+    <insert id="insertBatch">
+        insert into cer_vector_group_tb(id,vector_task_id,plasmid_names,
+        quality_inspection_result,group_name,project_id,repeat_num,remark)
+        values
+        <foreach collection="cerVectorGroupTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.vectorTaskId,jdbcType=NUMERIC},#{item.plasmidNames,jdbcType=VARCHAR},
+            #{item.qualityInspectionResult,jdbcType=VARCHAR},#{item.groupName,jdbcType=VARCHAR},#{item.projectId,jdbcType=NUMERIC}
+            ,#{item.repeatNum,jdbcType=NUMERIC},#{item.remark,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <select id="selectAllByVectorTaskId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_group_tb
+        where
+        vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+    </select>
+    <select id="selectOneByGroupNameAndVectorTaskId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_group_tb
+        where
+        group_name = #{groupName,jdbcType=VARCHAR}
+        AND vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+    </select>
+    <update id="updateQualityInspectionResultByVectorTaskIdAndQualityInspectionResult">
+        update cer_vector_group_tb
+        set quality_inspection_result = #{qualityInspectionResult,jdbcType=VARCHAR}
+        where vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+          AND quality_inspection_result is null
+    </update>
+    <update id="updateQualityInspectionResultByVectorTaskIdAndQualityInspectionResultIsNull">
+        update cer_vector_group_tb
+        set quality_inspection_result = #{qualityInspectionResult,jdbcType=VARCHAR}
+        where vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+          AND quality_inspection_result is null
+    </update>
+    <delete id="deleteByVectorTaskId">
+        delete
+        from cer_vector_group_tb
+        where vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+    </delete>
+</mapper>

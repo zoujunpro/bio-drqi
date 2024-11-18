@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerTransformTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerTransformTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="vectorTaskId" column="vector_task_id" jdbcType="INTEGER"/>
+            <result property="subProjectId" column="sub_project_id" jdbcType="INTEGER"/>
+            <result property="infectNumber" column="infect_number" jdbcType="INTEGER"/>
+            <result property="infectDate" column="infect_date" jdbcType="VARCHAR"/>
+            <result property="deliveryMethod" column="delivery_method" jdbcType="VARCHAR"/>
+            <result property="transformCode" column="transform_code" jdbcType="VARCHAR"/>
+            <result property="acceptorMaterial" column="acceptor_material" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+            <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+            <result property="subProjectCode" column="sub_project_code" jdbcType="VARCHAR"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="taskStatus" column="task_status" jdbcType="VARCHAR"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="plasmidName" column="plasmid_name" jdbcType="VARCHAR"/>
+            <result property="vectorTaskType" column="vector_task_type" jdbcType="VARCHAR"/>
+             <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,project_id,vector_task_id,
+        sub_project_id,infect_number,
+        infect_date,delivery_method,transform_code,
+        acceptor_material,create_time,update_time,
+        create_user_name,vector_task_code,project_code,
+        sub_project_code,create_user_id,task_status,
+        task_num,plasmid_name,vector_task_type,species_code
+    </sql>
+    <select id="selectOneByTransformCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_transform_tb
+        where
+        transform_code = #{transformCode,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByTaskNum">
+        delete
+        from cer_transform_tb
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </delete>
+    <update id="updateTaskStatusByTaskNum">
+        update cer_transform_tb
+        set task_status = #{taskStatus,jdbcType=VARCHAR}
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </update>
+    <select id="selectAllByProjectId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_transform_tb
+        where
+        project_id = #{projectId,jdbcType=NUMERIC}
+        order by id desc
+    </select>
+    <select id="selectAllByVectorTaskIdAndPlasmidName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_transform_tb
+        where
+        vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+        AND plasmid_name = #{plasmidName,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByProjectIdAndTaskStatus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_transform_tb
+        where
+        project_id = #{projectId,jdbcType=NUMERIC}
+        AND task_status = #{taskStatus,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByVectorTaskId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_transform_tb
+        where
+        vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+    </select>
+    <select id="selectOneByTransformCodeAndVectorTaskCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_transform_tb
+        where
+        transform_code = #{transformCode,jdbcType=VARCHAR}
+        AND vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByVectorTaskIdAndTaskStatus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_transform_tb
+        where
+        vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+        AND task_status = #{taskStatus,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByVectorTaskCodeAndPlasmidNameOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_transform_tb
+        where
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+        AND plasmid_name = #{plasmidName,jdbcType=VARCHAR}
+        order by id desc
+    </select>
+    <select id="selectAllBySpeciesCodeAndVectorTaskTypeAndCreateTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_transform_tb
+        where
+        species_code = #{speciesCode,jdbcType=VARCHAR}
+        AND vector_task_type = #{vectorTaskType,jdbcType=VARCHAR}
+        AND date_format(create_time,'%Y%m%d') = #{createTime,jdbcType=VARCHAR}
+        order by id desc
+    </select>
+    <select id="selectSumInfectNumber" resultType="java.lang.Integer">
+         select sum(infect_number)    from cer_transform_tb
+
+    </select>
+
+</mapper>

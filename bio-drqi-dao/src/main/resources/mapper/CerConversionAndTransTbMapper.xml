@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerConversionAndTransTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerConversionAndTransTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="handoverDate" column="handover_date" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="imageUrl" column="image_url" jdbcType="OTHER"/>
+            <result property="transNumber" column="trans_number" jdbcType="INTEGER"/>
+            <result property="remark" column="remark" jdbcType="INTEGER"/>
+            <result property="transType" column="trans_type" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,handover_date,
+        create_time,create_user_id,
+        create_user_name,task_num,image_url,
+        trans_number,remark,trans_type
+    </sql>
+    <select id="selectAllOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_conversion_and_trans_tb
+        order by id desc
+    </select>
+    <select id="selectOneByTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_conversion_and_trans_tb
+        where
+        task_num = #{taskNum,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByTaskNum">
+        delete
+        from cer_conversion_and_trans_tb
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </delete>
+    <select id="selectCountNum" resultType="java.lang.Integer">
+        select
+         sum(trans_number) as totalNum  from cer_conversion_and_trans_tb
+    </select>
+    <select id="selectCountTransNumByMonth" resultType="com.bio.drqi.domain.CerConversionAndTransTb">
+        select
+        sum(trans_number)  as transNumber, date_format(create_time,'%Y-%m') as  transDate
+            from cer_conversion_and_trans_tb
+            <where>
+                <if  test="year != null and year!=''">and date_format(create_time,'%Y') =#{year,jdbcType=VARCHAR}</if>
+            </where>
+            GROUP BY transDate
+    </select>
+</mapper>

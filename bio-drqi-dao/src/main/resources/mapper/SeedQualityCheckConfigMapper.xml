@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.SeedQualityCheckConfigMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.SeedQualityCheckConfig">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="fieldName" column="field_name" jdbcType="VARCHAR"/>
+            <result property="fieldCode" column="field_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,field_name,field_code
+    </sql>
+    <select id="selectAllOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_quality_check_config
+        order by id desc
+    </select>
+</mapper>

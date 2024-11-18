@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerSampleTestTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerSampleTestTb">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+        <result property="subProjectId" column="sub_project_id" jdbcType="INTEGER"/>
+        <result property="vectorTaskId" column="vector_task_id" jdbcType="INTEGER"/>
+        <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+        <result property="subProjectCode" column="sub_project_code" jdbcType="VARCHAR"/>
+        <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+        <result property="plasmidName" column="plasmid_name" jdbcType="VARCHAR"/>
+        <result property="transformCode" column="transform_code" jdbcType="VARCHAR"/>
+        <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
+        <result property="applyTime" column="apply_time" jdbcType="TIMESTAMP"/>
+        <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
+        <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
+        <result property="sampleTime" column="sample_time" jdbcType="VARCHAR"/>
+        <result property="sampleRemark" column="sample_remark" jdbcType="VARCHAR"/>
+        <result property="sampleGeneration" column="sample_generation" jdbcType="VARCHAR"/>
+        <result property="sampleUserName" column="sample_user_name" jdbcType="VARCHAR"/>
+        <result property="sampleUserId" column="sample_user_id" jdbcType="INTEGER"/>
+        <result property="testIdentifyPrimer" column="test_identify_primer" jdbcType="VARCHAR"/>
+        <result property="testMethod" column="test_method" jdbcType="VARCHAR"/>
+        <result property="testEditType" column="test_edit_type" jdbcType="VARCHAR"/>
+        <result property="testNoTransIdentityPrimer" column="test_no_trans_identity_primer" jdbcType="VARCHAR"/>
+        <result property="testIsGeneModifyPositive" column="test_is_gene_modify_positive" jdbcType="VARCHAR"/>
+        <result property="testIfFixedPoint" column="test_if_fixed_point" jdbcType="VARCHAR"/>
+        <result property="testIfCopyInsert" column="test_if_copy_insert" jdbcType="VARCHAR"/>
+        <result property="testFixedPointType" column="test_fixed_point_type" jdbcType="VARCHAR"/>
+        <result property="testDonorResidueInfo" column="test_donor_residue_info" jdbcType="VARCHAR"/>
+        <result property="testInsertionSite" column="test_insertion_site" jdbcType="VARCHAR"/>
+        <result property="testElisaResult" column="test_elisa_result" jdbcType="VARCHAR"/>
+        <result property="testQbzrSeq" column="test_qbzr_seq" jdbcType="VARCHAR"/>
+        <result property="testEditResidueInfo" column="test_edit_residue_info" jdbcType="VARCHAR"/>
+        <result property="testUserId" column="test_user_id" jdbcType="INTEGER"/>
+        <result property="testUserName" column="test_user_name" jdbcType="VARCHAR"/>
+        <result property="testTime" column="test_time" jdbcType="VARCHAR"/>
+        <result property="checkUserName" column="check_user_name" jdbcType="VARCHAR"/>
+        <result property="checkUserId" column="check_user_id" jdbcType="INTEGER"/>
+        <result property="checkResult" column="check_result" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="acceptorMaterial" column="acceptor_material" jdbcType="VARCHAR"/>
+        <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
+        <result property="identifyPrimer" column="identify_primer" jdbcType="VARCHAR"/>
+        <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,project_id,sub_project_id,
+        vector_task_id,project_code,sub_project_code,
+        vector_task_code,plasmid_name,transform_code,
+        sample_code,apply_time,apply_user_id,
+        apply_user_name,sample_time,
+        sample_remark,sample_generation,
+        sample_user_name,sample_user_id,test_identify_primer,
+        test_method,test_edit_type,test_no_trans_identity_primer,
+        test_is_gene_modify_positive,test_if_fixed_point,test_if_copy_insert,
+        test_fixed_point_type,test_donor_residue_info,test_insertion_site,
+        test_elisa_result,test_qbzr_seq,test_edit_residue_info,test_user_id,test_user_name,
+        test_time,check_user_name,check_user_id,check_result,create_time,
+        update_time,test_org_result,acceptor_material,apply_no,identify_primer,unique_code
+    </sql>
+
+    <select id="selectAllByProjectId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        project_id = #{projectId,jdbcType=NUMERIC}
+    </select>
+
+
+    <update id="updateBatchById" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update cer_sample_test_tb
+            <set>
+                <if test="item.projectId != null">project_id=#{item.projectId,jdbcType=NUMERIC},</if>
+                <if test="item.subProjectId != null">sub_project_id=#{item.subProjectId,jdbcType=NUMERIC},</if>
+                <if test="item.vectorTaskId != null">vector_task_id=#{item.vectorTaskId,jdbcType=NUMERIC},</if>
+                <if test="item.projectCode != null">project_code=#{item.projectCode,jdbcType=VARCHAR},</if>
+                <if test="item.subProjectCode != null">sub_project_code=#{item.subProjectCode,jdbcType=VARCHAR},</if>
+                <if test="item.vectorTaskCode != null">vector_task_code=#{item.vectorTaskCode,jdbcType=VARCHAR},</if>
+                <if test="item.plasmidName != null">plasmid_name=#{item.plasmidName,jdbcType=VARCHAR},</if>
+                <if test="item.transformCode != null">transform_code=#{item.transformCode,jdbcType=VARCHAR},</if>
+                <if test="item.sampleCode != null">sample_code=#{item.sampleCode,jdbcType=VARCHAR},</if>
+                <if test="item.applyTime != null">apply_time=#{item.applyTime,jdbcType=TIMESTAMP},</if>
+                <if test="item.applyUserId != null">apply_user_id=#{item.applyUserId,jdbcType=NUMERIC},</if>
+                <if test="item.applyUserName != null">apply_user_name=#{item.applyUserName,jdbcType=VARCHAR},</if>
+                <if test="item.sampleTime != null">sample_time=#{item.sampleTime,jdbcType=VARCHAR},</if>
+                <if test="item.sampleRemark != null">sample_remark=#{item.sampleRemark,jdbcType=VARCHAR},</if>
+                <if test="item.sampleGeneration != null">sample_generation=#{item.sampleGeneration,jdbcType=VARCHAR},
+                </if>
+                <if test="item.sampleUserName != null">sample_user_name=#{item.sampleUserName,jdbcType=VARCHAR},</if>
+                <if test="item.sampleUserId != null">sample_user_id=#{item.sampleUserId,jdbcType=NUMERIC},</if>
+                <if test="item.testIdentifyPrimer != null">
+                    test_identify_primer=#{item.testIdentifyPrimer,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testMethod != null">test_method=#{item.testMethod,jdbcType=VARCHAR},</if>
+                <if test="item.testEditType != null">test_edit_type=#{item.testEditType,jdbcType=VARCHAR},</if>
+                <if test="item.testNoTransIdentityPrimer != null">
+                    test_no_trans_identity_primer=#{item.testNoTransIdentityPrimer,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testIsGeneModifyPositive != null">
+                    test_is_gene_modify_positive=#{item.testIsGeneModifyPositive,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testIfFixedPoint != null">
+                    test_if_fixed_point=#{item.testIfFixedPoint,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testIfCopyInsert != null">
+                    test_if_copy_insert=#{item.testIfCopyInsert,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testFixedPointType != null">
+                    test_fixed_point_type=#{item.testFixedPointType,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testDonorResidueInfo != null">
+                    test_donor_residue_info=#{item.testDonorResidueInfo,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testInsertionSite != null">
+                    test_insertion_site=#{item.testInsertionSite,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testElisaResult != null">test_elisa_result=#{item.testElisaResult,jdbcType=VARCHAR},</if>
+                <if test="item.testQbzrSeq != null">test_qbzr_seq=#{item.testQbzrSeq,jdbcType=VARCHAR},</if>
+                <if test="item.testEditResidueInfo != null">
+                    test_edit_residue_info=#{item.testEditResidueInfo,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testUserId != null">test_user_id=#{item.testUserId,jdbcType=NUMERIC},</if>
+                <if test="item.testUserName != null">test_user_name=#{item.testUserName,jdbcType=VARCHAR},</if>
+                <if test="item.testTime != null">test_time=#{item.testTime,jdbcType=VARCHAR},</if>
+                <if test="item.checkUserName != null">check_user_name=#{item.checkUserName,jdbcType=VARCHAR},</if>
+                <if test="item.checkUserId != null">check_user_id=#{item.checkUserId,jdbcType=NUMERIC},</if>
+                <if test="item.checkResult != null">check_result=#{item.checkResult,jdbcType=VARCHAR},</if>
+                <if test="item.createTime != null">create_time=#{item.createTime,jdbcType=TIMESTAMP},</if>
+                <if test="item.updateTime != null">update_time=#{item.updateTime,jdbcType=TIMESTAMP},</if>
+                <if test="item.identifyPrimer != null">identify_primer=#{item.identifyPrimer,jdbcType=VARCHAR}</if>
+                <if test="item.uniqueCode != null">unique_code=#{item.uniqueCode,jdbcType=VARCHAR}</if>
+            </set>
+            where id = ${item.id}
+        </foreach>
+    </update>
+
+    <select id="selectSelective" resultMap="BaseResultMap" resultType="com.bio.drqi.domain.CerSampleTestTb">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        <where>
+            <if test="projectId != null  ">and project_id=#{projectId,jdbcType=NUMERIC}</if>
+            <if test="subProjectId != null">and sub_project_id=#{subProjectId,jdbcType=NUMERIC}</if>
+            <if test="vectorTaskId != null">and vector_task_id=#{vectorTaskId,jdbcType=NUMERIC}</if>
+            <if test="projectCode != null">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="subProjectCode != null">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="plasmidName != null">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
+            <if test="transformCode != null">and transform_code=#{transformCode,jdbcType=VARCHAR}</if>
+            <if test="sampleCode != null">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
+            <if test="applyTime != null">and apply_time=#{applyTime,jdbcType=TIMESTAMP}</if>
+            <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
+            <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
+            <if test="sampleTime != null">and sample_time=#{sampleTime,jdbcType=VARCHAR}</if>
+            <if test="sampleRemark != null">and sample_remark=#{sampleRemark,jdbcType=VARCHAR}</if>
+            <if test="sampleGeneration != null">and sample_generation=#{sampleGeneration,jdbcType=VARCHAR}</if>
+            <if test="sampleUserName != null">and sample_user_name=#{sampleUserName,jdbcType=VARCHAR}</if>
+            <if test="sampleUserId != null">and sample_user_id=#{sampleUserId,jdbcType=NUMERIC}</if>
+            <if test="testIdentifyPrimer != null">and test_identify_primer=#{testIdentifyPrimer,jdbcType=VARCHAR}</if>
+            <if test="testMethod != null">and test_method=#{testMethod,jdbcType=VARCHAR}</if>
+            <if test="testEditType != null">and test_edit_type=#{testEditType,jdbcType=VARCHAR}</if>
+            <if test="testNoTransIdentityPrimer != null">
+                and test_no_trans_identity_primer=#{testNoTransIdentityPrimer,jdbcType=VARCHAR}
+            </if>
+            <if test="testIsGeneModifyPositive != null">
+                and test_is_gene_modify_positive=#{testIsGeneModifyPositive,jdbcType=VARCHAR}
+            </if>
+            <if test="testIfFixedPoint != null">and test_if_fixed_point=#{testIfFixedPoint,jdbcType=VARCHAR}</if>
+            <if test="testIfCopyInsert != null">and test_if_copy_insert=#{testIfCopyInsert,jdbcType=VARCHAR}</if>
+            <if test="testFixedPointType != null">and test_fixed_point_type=#{testFixedPointType,jdbcType=VARCHAR}</if>
+            <if test="testDonorResidueInfo != null">and test_donor_residue_info=#{testDonorResidueInfo,jdbcType=VARCHAR}
+            </if>
+            <if test="testInsertionSite != null">and test_insertion_site=#{testInsertionSite,jdbcType=VARCHAR}</if>
+            <if test="testElisaResult != null">and test_elisa_result=#{testElisaResult,jdbcType=VARCHAR}</if>
+            <if test="testQbzrSeq != null">and test_qbzr_seq=#{testQbzrSeq,jdbcType=VARCHAR}</if>
+            <if test="testEditResidueInfo != null">and test_edit_residue_info=#{testEditResidueInfo,jdbcType=VARCHAR}
+            </if>
+            <if test="testUserId != null">and test_user_id=#{testUserId,jdbcType=NUMERIC}</if>
+            <if test="testUserName != null">and test_user_name=#{testUserName,jdbcType=VARCHAR}</if>
+            <if test="testTime != null">and test_time=#{testTime,jdbcType=VARCHAR}</if>
+            <if test="checkUserName != null">and check_user_name=#{checkUserName,jdbcType=VARCHAR}</if>
+            <if test="checkUserId != null">and check_user_id=#{checkUserId,jdbcType=NUMERIC}</if>
+            <if test="checkResult != null">and check_result=#{checkResult,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
+            <if test="applyNo != null">and apply_no=#{applyNo,jdbcType=VARCHAR}</if>
+            <if test="identifyPrimer != null">and identify_primer=#{identifyPrimer,jdbcType=VARCHAR}</if>
+
+        </where>
+        order by id desc
+    </select>
+    <select id="selectAllByProjectIdAndApplyTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        project_id = #{projectId,jdbcType=NUMERIC}
+        AND apply_task_num = #{applyTaskNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByProjectIdAndApplyTaskNumOrderById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        project_id = #{projectId,jdbcType=NUMERIC}
+        AND apply_task_num = #{applyTaskNum,jdbcType=VARCHAR}
+        order by id
+    </select>
+
+
+    <insert id="insertBatch">
+        insert into cer_sample_test_tb(id,project_id,sub_project_id,
+        vector_task_id,project_code,acceptor_material,
+        sub_project_code,vector_task_code,plasmid_name,
+        transform_code,sample_code,apply_time,
+        apply_user_id,apply_user_name,
+        sample_time,sample_remark,sample_generation,
+        sample_user_name,sample_user_id,
+        test_identify_primer,test_method,test_edit_type,
+        test_no_trans_identity_primer,test_is_gene_modify_positive,test_if_fixed_point,
+        test_if_copy_insert,test_fixed_point_type,test_donor_residue_info,
+        test_insertion_site,test_elisa_result,test_qbzr_seq,
+        test_edit_residue_info,test_user_id,
+        test_user_name,test_time,check_user_name,
+        check_user_id,check_result,
+        create_time,update_time,apply_no,identify_primer,unique_code)
+        values
+        <foreach collection="cerSampleTestTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.projectId,jdbcType=NUMERIC},#{item.subProjectId,jdbcType=NUMERIC},
+            #{item.vectorTaskId,jdbcType=NUMERIC},#{item.projectCode,jdbcType=VARCHAR},#{item.acceptorMaterial,jdbcType=VARCHAR},
+            #{item.subProjectCode,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},#{item.plasmidName,jdbcType=VARCHAR},
+            #{item.transformCode,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},#{item.applyTime,jdbcType=TIMESTAMP},
+            #{item.applyUserId,jdbcType=NUMERIC},#{item.applyUserName,jdbcType=VARCHAR},#{item.sampleTime,jdbcType=VARCHAR},
+             #{item.sampleRemark,jdbcType=VARCHAR},#{item.sampleGeneration,jdbcType=VARCHAR},
+            #{item.sampleUserName,jdbcType=VARCHAR},#{item.sampleUserId,jdbcType=NUMERIC},
+            #{item.testIdentifyPrimer,jdbcType=VARCHAR},#{item.testMethod,jdbcType=VARCHAR},#{item.testEditType,jdbcType=VARCHAR},
+            #{item.testNoTransIdentityPrimer,jdbcType=VARCHAR},#{item.testIsGeneModifyPositive,jdbcType=VARCHAR},#{item.testIfFixedPoint,jdbcType=VARCHAR},
+            #{item.testIfCopyInsert,jdbcType=VARCHAR},#{item.testFixedPointType,jdbcType=VARCHAR},#{item.testDonorResidueInfo,jdbcType=VARCHAR},
+            #{item.testInsertionSite,jdbcType=VARCHAR},#{item.testElisaResult,jdbcType=VARCHAR},#{item.testQbzrSeq,jdbcType=VARCHAR},
+            #{item.testEditResidueInfo,jdbcType=VARCHAR},#{item.testUserId,jdbcType=NUMERIC},
+            #{item.testUserName,jdbcType=VARCHAR},#{item.testTime,jdbcType=VARCHAR},#{item.checkUserName,jdbcType=VARCHAR},
+            #{item.checkUserId,jdbcType=NUMERIC},#{item.checkResult,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP},
+            #{item.applyNo,jdbcType=VARCHAR},#{item.identifyPrimer,jdbcType=VARCHAR},#{item.uniqueCode,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+
+    <select id="selectVectorTaskIdByProjectId" resultType="java.lang.Integer">
+        select distinct vector_task_id
+        from cer_sample_test_tb
+        where project_id = #{projectId,jdbcType=NUMERIC}
+    </select>
+
+    <select id="selectAllByVectorTaskId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+    </select>
+    <select id="selectAllByVectorTaskIdAndSampleCodeIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+        AND sample_code in
+        <foreach collection="sampleCodeList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+    <select id="selectAllByApplyNoAndSampleCodeIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+        AND sample_code in
+        <foreach collection="sampleCodeList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+    <select id="selectAllByApplyNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+        order by id asc
+    </select>
+
+    <select id="selectLastSampleCodeByProjectIdOrApplyNo" resultType="java.lang.String">
+        select a.sample_code as sampleCode
+        from (select sample_code
+              from cer_sample_test_tb
+              where project_id = #{projectId,jdbcType=NUMERIC}
+                and LENGTH(sample_code) = 4
+              union
+              select sample_code
+              from cer_sample_test_tb
+              where apply_no = #{applyNo,jdbcType=VARCHAR}) as a
+        order by sampleCode desc LIMIT 1
+    </select>
+    <select id="selectAllByVectorTaskCodeAndSampleCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+        AND sample_code = #{sampleCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneByApplyNoAndSampleCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+        AND sample_code = #{sampleCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneByVectorTaskCodeAndSampleCodeFirst" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+        AND sample_code = #{sampleCode,jdbcType=VARCHAR}
+        order by id desc limit 1
+    </select>
+    <select id="selectOneByProjectCodeAndSampleCodeFirst" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        project_code = #{projectCode,jdbcType=VARCHAR}
+        AND sample_code = #{sampleCode,jdbcType=VARCHAR}
+        order by id desc limit 1
+    </select>
+    <update id="updateCheckResultAndCheckTaskNumAndCheckUserIdAndCheckUserNameByApplyNo">
+        update cer_sample_test_tb
+        set check_result    = #{checkResult,jdbcType=VARCHAR},
+            check_user_id   = #{checkUserId,jdbcType=NUMERIC},
+            check_user_name = #{checkUserName,jdbcType=VARCHAR}
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+    </update>
+    <update id="updateTaskStatusByApplyNo">
+        update cer_sample_test_tb
+        set task_status = #{taskStatus,jdbcType=VARCHAR}
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+    </update>
+    <delete id="deleteByApplyNo">
+        delete
+        from cer_sample_test_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+    </delete>
+    <update id="updateIdentifyPrimerById">
+        update cer_sample_test_tb
+        set identify_primer = #{identifyPrimer,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=NUMERIC}
+    </update>
+    <select id="selectAllBySampleCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        sample_code = #{sampleCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectCountByApplyNo" resultType="java.lang.Integer">
+        select count(*)
+        from cer_sample_test_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+    </select>
+    <select id="selectCountByApplyNoAndCheckResultIsNotNull" resultType="java.lang.Integer">
+        select count(*)
+        from cer_sample_test_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+          and check_result is not null
+    </select>
+    <select id="selectCountNum" resultType="java.lang.Integer">
+        select count(*)
+        from cer_sample_test_tb
+    </select>
+    <select id="selectCountByMonth" resultType="com.bio.drqi.domain.CerSampleTestTb">
+        select count(*)                          as countNum,
+               date_format(create_time, '%Y-%m') as sampleMonth
+        from cer_sample_test_tb
+        where date_format(create_time, '%Y') = #{year,jdbcType=VARCHAR}
+        GROUP BY sampleMonth
+    </select>
+    <select id="selectOneByUniqueCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        unique_code = #{uniqueCode,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerConversionAndTransRefMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerConversionAndTransRef">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="conversionAndTransId" column="conversion_and_trans_id" jdbcType="INTEGER"/>
+        <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
+        <result property="editPureUnion" column="edit_pure_union" jdbcType="VARCHAR"/>
+        <result property="acceptorMaterial" column="acceptor_material" jdbcType="VARCHAR"/>
+        <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+        <result property="subProjectCode" column="sub_project_code" jdbcType="VARCHAR"/>
+        <result property="transformCode" column="transform_code" jdbcType="VARCHAR"/>
+        <result property="transNum" column="trans_num" jdbcType="INTEGER"/>
+        <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+        <result property="transGeneFlag" column="trans_gene_flag" jdbcType="VARCHAR"/>
+        <result property="plasmidName" column="plasmid_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,project_code, trans_gene_flag,conversion_and_trans_id,sample_code,edit_pure_union,acceptor_material,vector_task_code,sub_project_code,transform_code,trans_num,plasmid_name
+    </sql>
+    <select id="selectAllByConversionAndTransId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_conversion_and_trans_ref
+        where
+        conversion_and_trans_id = #{conversionAndTransId,jdbcType=NUMERIC}
+    </select>
+    <select id="selectAllByVectorTaskCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_conversion_and_trans_ref
+        where
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByConversionAndTransId">
+        delete
+        from cer_conversion_and_trans_ref
+        where conversion_and_trans_id = #{conversionAndTransId,jdbcType=NUMERIC}
+    </delete>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.CerConversionAndTransRef">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_conversion_and_trans_ref
+        <where>
+            <if test="conversionAndTransId != null">and conversion_and_trans_id=#{conversionAndTransId,jdbcType=NUMERIC}</if>
+            <if test="sampleCode != null">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
+            <if test="editPureUnion != null">and edit_pure_union=#{editPureUnion,jdbcType=VARCHAR}</if>
+            <if test="acceptorMaterial != null">and acceptor_material=#{acceptorMaterial,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="subProjectCode != null">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
+            <if test="transformCode != null">and transform_code=#{transformCode,jdbcType=VARCHAR}</if>
+            <if test="transNum != null">and trans_num=#{transNum,jdbcType=NUMERIC}</if>
+            <if test="projectCode != null">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="transGeneFlag != null">and trans_gene_flag=#{transGeneFlag,jdbcType=VARCHAR}</if>
+            <if test="plasmidName != null">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
+        </where>
+    </select>
+</mapper>

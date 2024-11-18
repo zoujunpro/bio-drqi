@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerSampleApplyTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerSampleApplyTb">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
+        <result property="applyNumber" column="apply_number" jdbcType="INTEGER"/>
+        <result property="applyTime" column="apply_time" jdbcType="TIMESTAMP"/>
+        <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
+        <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
+        <result property="currentStepCode" column="current_step_code" jdbcType="VARCHAR"/>
+        <result property="applyDesc" column="apply_desc" jdbcType="VARCHAR"/>
+        <result property="applyType" column="apply_type" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,apply_no,apply_number,
+        apply_time,apply_user_id,apply_user_name,
+        current_step_code,apply_desc,apply_type
+    </sql>
+    <select id="selectOneByApplyNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_apply_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSelective" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_apply_tb
+        <where>
+            <if test="applyNo != null and applyNo!=''">and apply_no=#{applyNo,jdbcType=VARCHAR}</if>
+            <if test="applyNumber != null">and apply_number=#{applyNumber,jdbcType=NUMERIC}</if>
+            <if test="applyTime != null">and apply_time=#{applyTime,jdbcType=TIMESTAMP}</if>
+            <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
+            <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
+            <if test="currentStepCode != null">and current_step_code=#{currentStepCode,jdbcType=VARCHAR}</if>
+            <if test="applyType != null">and apply_type=#{applyType,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
+    </select>
+    <select id="selectAllByVectorTaskId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_apply_tb
+        where apply_no in(select distinct  apply_no from cer_sample_test_tb where vector_task_id=#{vectorTaskId,jdbcType=NUMERIC})
+        order by id desc
+    </select>
+    <select id="selectAllByCurrentStepCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_apply_tb
+        where
+        current_step_code = #{currentStepCode,jdbcType=VARCHAR}
+        order by id desc
+    </select>
+    <delete id="deleteByApplyNo">
+        delete
+        from cer_sample_apply_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+    </delete>
+</mapper>

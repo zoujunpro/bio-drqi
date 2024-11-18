@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerVectorTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerVectorTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="vectorTaskId" column="vector_task_id" jdbcType="VARCHAR"/>
+            <result property="plasmidName" column="plasmid_name" jdbcType="VARCHAR"/>
+            <result property="targetSite" column="target_site" jdbcType="VARCHAR"/>
+            <result property="bacterialResistance" column="bacterial_resistance" jdbcType="VARCHAR"/>
+            <result property="plasmidSpecificPrimers" column="plasmid_specific_primers" jdbcType="VARCHAR"/>
+            <result property="bacterialReplicon" column="bacterial_replicon" jdbcType="VARCHAR"/>
+            <result property="copyNumber" column="copy_number" jdbcType="VARCHAR"/>
+            <result property="agrobacteriumInformation" column="agrobacterium_information" jdbcType="VARCHAR"/>
+            <result property="selectionMarker" column="selection_marker" jdbcType="VARCHAR"/>
+            <result property="foreignGene" column="foreign_gene" jdbcType="VARCHAR"/>
+            <result property="geneCharacter" column="gene_character" jdbcType="VARCHAR"/>
+            <result property="targetGene" column="target_gene" jdbcType="VARCHAR"/>
+            <result property="pam" column="pam" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="expectedPositiveVaccine" column="expected_positive_vaccine" jdbcType="INTEGER"/>
+            <result property="fileUrls" column="file_urls" jdbcType="VARCHAR"/>
+            <result property="qualityInspectionResult" column="quality_inspection_result" jdbcType="VARCHAR"/>
+            <result property="destinationStripeSize" column="destination_stripe_size" jdbcType="VARCHAR"/>
+            <result property="vectorSize" column="vector_size" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,vector_task_id,plasmid_name,
+        target_site,bacterial_resistance,plasmid_specific_primers,
+        bacterial_replicon,copy_number,agrobacterium_information,
+        selection_marker,foreign_gene,gene_character,
+        target_gene,pam,remark,
+        expected_positive_vaccine,file_urls,quality_inspection_result,destination_stripe_size,vector_size
+    </sql>
+    <delete id="deleteByVectorTaskId">
+        delete
+        from cer_vector_tb
+        where vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+    </delete>
+    <select id="selectAllByVectorTaskId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_tb
+        where
+        vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+    </select>
+    <update id="updateQualityInspectionResultByIdIn">
+        update cer_vector_tb
+        set quality_inspection_result = #{qualityInspectionResult,jdbcType=VARCHAR}
+        where
+        id in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+    </update>
+    <insert id="insertBatch">
+        insert into cer_vector_tb(id,vector_task_id,plasmid_name,
+        target_site,bacterial_resistance,plasmid_specific_primers,
+        bacterial_replicon,copy_number,agrobacterium_information,
+        selection_marker,foreign_gene,gene_character,
+        target_gene,pam,remark,
+        file_urls,expected_positive_vaccine,quality_inspection_result,destination_stripe_size,vector_size)
+        values
+        <foreach collection="cerVectorTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.vectorTaskId,jdbcType=NUMERIC},#{item.plasmidName,jdbcType=VARCHAR},
+            #{item.targetSite,jdbcType=VARCHAR},#{item.bacterialResistance,jdbcType=VARCHAR},#{item.plasmidSpecificPrimers,jdbcType=VARCHAR},
+            #{item.bacterialReplicon,jdbcType=VARCHAR},#{item.copyNumber,jdbcType=VARCHAR},#{item.agrobacteriumInformation,jdbcType=VARCHAR},
+            #{item.selectionMarker,jdbcType=VARCHAR},#{item.foreignGene,jdbcType=VARCHAR},#{item.geneCharacter,jdbcType=VARCHAR},
+            #{item.targetGene,jdbcType=VARCHAR},#{item.pam,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},
+            #{item.fileUrls,jdbcType=VARCHAR},#{item.expectedPositiveVaccine,jdbcType=NUMERIC},#{item.qualityInspectionResult,jdbcType=VARCHAR},
+            #{item.destinationStripeSize,jdbcType=VARCHAR},#{item.vectorSize,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <select id="selectOneByPlasmidNameAndVectorTaskId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_tb
+        where
+        plasmid_name = #{plasmidName,jdbcType=VARCHAR}
+        AND vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+    </select>
+</mapper>

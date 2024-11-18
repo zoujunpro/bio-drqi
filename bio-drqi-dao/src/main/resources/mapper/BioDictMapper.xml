@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BioDictMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioDict">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="dictName" column="dict_name" jdbcType="VARCHAR"/>
+            <result property="dictType" column="dict_type" jdbcType="VARCHAR"/>
+            <result property="dictValueName" column="dict_value_name" jdbcType="VARCHAR"/>
+            <result property="dictValueCode" column="dict_value_code" jdbcType="VARCHAR"/>
+            <result property="dictStatus" column="dict_status" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,dict_name,dict_type,
+        dict_value_name,dict_value_code,dict_status
+    </sql>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_dict order by dict_type desc
+    </select>
+    <select id="selectOneByDictTypeAndDictValueCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_dict
+        where
+        dict_type = #{dictType,jdbcType=VARCHAR}
+        AND dict_value_code = #{dictValueCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneByDictTypeAndDictValueName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_dict
+        where
+        dict_type = #{dictType,jdbcType=VARCHAR}
+        AND dict_value_name = #{dictValueName,jdbcType=VARCHAR}
+    </select>
+
+
+</mapper>

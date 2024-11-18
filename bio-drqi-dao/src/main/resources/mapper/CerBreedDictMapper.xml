@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerBreedDictMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerBreedDict">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
+        <result property="breedName" column="breed_name" jdbcType="VARCHAR"/>
+        <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,breed_code,breed_name,
+        species_code
+    </sql>
+    <select id="selectAllBySpeciesCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_breed_dict
+        <where>
+            <if test="speciesCode!=null and speciesCode!=''">
+                and species_code = #{speciesCode,jdbcType=VARCHAR}
+            </if>
+        </where>
+
+    </select>
+    <select id="selectOneByBreedCodeAndSpeciesCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_breed_dict
+        where
+        breed_code = #{breedCode,jdbcType=VARCHAR}
+        AND species_code = #{speciesCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneByBreedNameAndSpeciesCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_breed_dict
+        where
+        breed_name = #{breedName,jdbcType=VARCHAR}
+        AND species_code = #{speciesCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_breed_dict
+    </select>
+</mapper>

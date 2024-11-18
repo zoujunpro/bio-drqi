@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BioTaskDtlTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioTaskDtlTb">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="taskTypeCode" column="task_type_code" jdbcType="VARCHAR"/>
+        <result property="taskTypeName" column="task_type_name" jdbcType="VARCHAR"/>
+        <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+        <result property="taskStatus" column="task_status" jdbcType="VARCHAR"/>
+        <result property="taskDesc" column="task_desc" jdbcType="VARCHAR"/>
+        <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
+        <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
+        <result property="applyTime" column="apply_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="taskForm" column="task_form" jdbcType="OTHER"/>
+        <result property="instanceId" column="instance_id" jdbcType="BIGINT"/>
+        <result property="refTaskNum" column="ref_task_num" jdbcType="VARCHAR"/>
+        <result property="taskCategory" column="task_category" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,task_type_code,task_type_name,
+        task_num,task_status,task_desc,
+        apply_user_id,apply_user_name,apply_time,
+        create_time,update_time,task_form,
+        instance_id,ref_task_num,task_category
+    </sql>
+
+
+    <select id="selectOneByTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_task_dtl_tb
+        where
+        task_num = #{taskNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneByInstanceId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_task_dtl_tb
+        where
+        instance_id = #{instanceId,jdbcType=NUMERIC}
+    </select>
+
+    <select id="selectForPendingApproval" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_task_dtl_tb
+        where instance_id in (select DISTINCT instance_id from flow_task_actor_tb where
+        actor_id=#{applyUserId,jdbcType=VARCHAR})
+        <if test="taskTypeCode != null and taskTypeCode!=''">
+            and task_type_code=#{taskTypeCode,jdbcType=VARCHAR}
+        </if>
+        <if test="taskNum != null and taskNum!=''">
+            and task_num=#{taskNum,jdbcType=VARCHAR}
+        </if>
+        <if test="taskCategory != null and taskCategory!=''">
+            and task_category=#{taskCategory,jdbcType=VARCHAR}
+        </if>
+        order by id desc
+    </select>
+
+    <select id="selectForAlreadyApproval" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_task_dtl_tb
+        where instance_id in (select DISTINCT instance_id from flow_his_commit_tb where
+        create_id=#{applyUserId,jdbcType=VARCHAR})
+        <if test="taskTypeCode != null and taskTypeCode!=''">
+            and task_type_code=#{taskTypeCode,jdbcType=VARCHAR}
+        </if>
+        <if test="taskNum != null and taskNum!=''">
+            and task_num=#{taskNum,jdbcType=VARCHAR}
+        </if>
+        <if test="taskCategory != null and taskCategory!=''">
+            and task_category=#{taskCategory,jdbcType=VARCHAR}
+        </if>
+        order by id desc
+    </select>
+
+    <select id="selectSelective" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_task_dtl_tb
+        <where>
+            <if test="taskTypeCode != null and taskTypeCode!=''">and task_type_code=#{taskTypeCode,jdbcType=VARCHAR}
+            </if>
+            <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="taskStatus != null and taskStatus!=''">and task_status=#{taskStatus,jdbcType=VARCHAR}</if>
+            <if test="taskDesc != null">and task_desc=#{taskDesc,jdbcType=VARCHAR}</if>
+            <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
+            <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
+            <if test="applyTime != null">and apply_time=#{applyTime,jdbcType=TIMESTAMP}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
+            <if test="taskForm != null">and task_form=#{taskForm,jdbcType=VARCHAR}</if>
+            <if test="taskTypeName != null">and task_type_name=#{taskTypeName,jdbcType=VARCHAR}</if>
+            <if test="instanceId != null">and instance_id=#{instanceId,jdbcType=NUMERIC}</if>
+            <if test="refTaskNum != null">and ref_task_num=#{refTaskNum,jdbcType=VARCHAR}</if>
+            <if test="taskCategory != null and taskCategory!=''">and task_category=#{taskCategory,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
+    </select>
+    <select id="selectAllByTaskTypeCodeAndApplyUserIdOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_task_dtl_tb
+        where
+        task_type_code = #{taskTypeCode,jdbcType=VARCHAR}
+        AND apply_user_id = #{applyUserId,jdbcType=NUMERIC}
+        order by id desc
+    </select>
+    <select id="selectCountALl" resultType="java.lang.Integer">
+        select count(*)
+        from bio_task_dtl_tb
+    </select>
+    <select id="selectCountMyApprove" resultType="java.lang.Integer">
+        select count(*)
+        from bio_task_dtl_tb
+        where apply_user_id = #{applyUserId,jdbcType=NUMERIC}
+        <if test="taskCategory != null and taskCategory!=''">and task_category=#{taskCategory,jdbcType=VARCHAR}</if>
+    </select>
+    <select id="selectForPendingApprovalCount" resultType="java.lang.Integer">
+        select count(*)
+        from bio_task_dtl_tb
+        where instance_id in (select DISTINCT instance_id
+                              from flow_task_actor_tb
+                              where actor_id = #{applyUserId,jdbcType=VARCHAR})
+        <if test="taskCategory != null and taskCategory!=''">and task_category=#{taskCategory,jdbcType=VARCHAR}</if>
+    </select>
+    <select id="selectForAlreadyApprovalCount" resultType="java.lang.Integer">
+        select count(*)
+        from bio_task_dtl_tb
+        where instance_id in (select DISTINCT instance_id
+                              from flow_his_commit_tb
+                              where create_id = #{applyUserId,jdbcType=VARCHAR})
+        <if test="taskCategory != null and taskCategory!=''">and task_category=#{taskCategory,jdbcType=VARCHAR}</if>
+    </select>
+</mapper>

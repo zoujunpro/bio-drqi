@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.SeedStockTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.SeedStockTb">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="plantNum" column="plant_num" jdbcType="VARCHAR"/>
+        <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
+        <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+        <result property="parentNum" column="parent_num" jdbcType="VARCHAR"/>
+        <result property="fartherInfo" column="farther_info" jdbcType="VARCHAR"/>
+        <result property="matherInfo" column="mather_info" jdbcType="VARCHAR"/>
+        <result property="generation" column="generation" jdbcType="VARCHAR"/>
+        <result property="species" column="species" jdbcType="VARCHAR"/>
+        <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
+        <result property="pollinationMethod" column="pollination_method" jdbcType="VARCHAR"/>
+        <result property="seedType" column="seed_type" jdbcType="VARCHAR"/>
+        <result property="harvestType" column="harvest_type" jdbcType="VARCHAR"/>
+        <result property="harvestTime" column="harvest_time" jdbcType="VARCHAR"/>
+        <result property="seedNumber" column="seed_number" jdbcType="DECIMAL"/>
+        <result property="unit" column="unit" jdbcType="VARCHAR"/>
+        <result property="sourceType" column="source_type" jdbcType="VARCHAR"/>
+        <result property="productionLocationName" column="production_location_name" jdbcType="VARCHAR"/>
+        <result property="stockLocationNum" column="stock_location_num" jdbcType="VARCHAR"/>
+        <result property="submitUserId" column="submit_user_id" jdbcType="INTEGER"/>
+        <result property="submitUserName" column="submit_user_name" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="totalNumber" column="total_number" jdbcType="DECIMAL"/>
+        <result property="geneticCharacter" column="genetic_character" jdbcType="VARCHAR"/>
+        <result property="aliasName" column="alias_name" jdbcType="VARCHAR"/>
+        <result property="geneType" column="gene_type" jdbcType="VARCHAR"/>
+        <result property="checkResult" column="check_result" jdbcType="VARCHAR"/>
+        <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
+        <result property="materialType" column="material_type" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,plant_num,seed_num,
+        project_code,parent_num,farther_info,
+        mather_info,generation,species,
+        breed_code,pollination_method,seed_type,
+        harvest_type,harvest_time,seed_number,
+        unit,source_type,
+        production_location_name,stock_location_num,
+        submit_user_id,submit_user_name,create_time,
+        update_time,remarks,total_number,genetic_character,alias_name,gene_type,check_result,sample_code,material_type
+    </sql>
+    <select id="selectOneBySeedNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_tb
+        where
+        seed_num = #{seedNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByBreedCodeAndGeneration" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_tb
+        where
+        breed_code = #{breedCode,jdbcType=VARCHAR}
+        AND generation = #{generation,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSelective" parameterType="com.bio.drqi.domain.SeedStockTb" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_tb
+        <where>
+            <if test="notEmptySeedNumberFlag ">and seed_number>0</if>
+            <if test="plantNum != null and plantNum != '' ">and plant_num=#{plantNum,jdbcType=VARCHAR}</if>
+            <if test="seedNum != null and seedNum != ''">and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
+            <if test="projectCode != null and projectCode != ''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="parentNum != null and parentNum!='' ">and parent_num=#{parentNum,jdbcType=VARCHAR}</if>
+            <if test="fartherInfo != null">and farther_info=#{fartherInfo,jdbcType=VARCHAR}</if>
+            <if test="matherInfo != null">and mather_info=#{matherInfo,jdbcType=VARCHAR}</if>
+            <if test="generation != null and generation!=''">and generation=#{generation,jdbcType=VARCHAR}</if>
+            <if test="species != null and species!=''">and species=#{species,jdbcType=VARCHAR}</if>
+            <if test="breedCode != null and breedCode!=''">and breed_code=#{breedCode,jdbcType=VARCHAR}</if>
+            <if test="pollinationMethod != null and pollinationMethod!=''">and
+                pollination_method=#{pollinationMethod,jdbcType=VARCHAR}
+            </if>
+            <if test="seedType != null and seedType!=''">and seed_type=#{seedType,jdbcType=VARCHAR}</if>
+            <if test="harvestType != null and harvestType!=''">and harvest_type=#{harvestType,jdbcType=VARCHAR}</if>
+            <if test="harvestTime != null and harvestTime!=''">and harvest_time=#{harvestTime,jdbcType=VARCHAR}</if>
+            <if test="seedNumber != null">and seed_number=#{seedNumber,jdbcType=DECIMAL}</if>
+            <if test="unit != null">and unit=#{unit,jdbcType=VARCHAR}</if>
+            <if test="sourceType != null and sourceType!=''">and source_type=#{sourceType,jdbcType=VARCHAR}</if>
+            <if test="productionLocationName != null and productionLocationName!=''">
+                and production_location_name=#{productionLocationName,jdbcType=VARCHAR}
+            </if>
+            <if test="stockLocationNum != null and stockLocationNum!=''">and
+                stock_location_num LIKE  CONCAT('%',#{stockLocationNum,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="submitUserId != null">and submit_user_id=#{submitUserId,jdbcType=NUMERIC}</if>
+            <if test="submitUserName != null">and submit_user_name=#{submitUserName,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
+            <if test="remarks != null">and remarks=#{remarks,jdbcType=VARCHAR}</if>
+            <if test="totalNumber != null and totalNumber!=''">and total_number=#{totalNumber,jdbcType=DECIMAL}</if>
+            <if test="geneticCharacter != null and geneticCharacter!=''">and genetic_character LIKE  CONCAT('%',#{geneticCharacter,jdbcType=VARCHAR},'%')</if>
+            <if test="aliasName != null and aliasName!=''"> and alias_name LIKE   CONCAT('%',#{aliasName,jdbcType=VARCHAR},'%')  </if>
+            <if test="geneType != null and geneType!=''">and gene_type LIKE CONCAT('%',#{geneType,jdbcType=VARCHAR},'%') </if>
+            <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
+            <if test="materialType != null and materialType!=''">and material_type=#{materialType,jdbcType=VARCHAR}</if>
+            <if test="beginDate != null and beginDate != ''">
+                and date_format(create_time,'%Y%m%d') &gt;= #{beginDate,jdbcType=VARCHAR}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and date_format(create_time,'%Y%m%d') &lt;= #{endDate,jdbcType=VARCHAR}
+            </if>
+            <if test="beninHarvestTime != null and beninHarvestTime != ''">
+                and harvest_time &gt;= #{beninHarvestTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endHarvestTime != null and endHarvestTime != ''">
+                and harvest_time &lt;= #{endHarvestTime,jdbcType=VARCHAR}
+            </if>
+        </where>
+        <choose>
+        <when test="orderField != null and orderField != ''">
+            <if test="orderField=='seedNumber'">
+                order by seed_number ${orderType}
+            </if>
+            <if test="orderField=='id'">
+                order by id ${orderType}
+            </if>
+        </when>
+        <otherwise>
+            order by id desc
+        </otherwise>
+        </choose>
+
+
+    </select>
+
+    <insert id="insertBatch">
+        insert into seed_stock_tb(id,plant_num,seed_num,
+        project_code,parent_num,farther_info,
+        mather_info,generation,species,
+        breed_code,pollination_method,seed_type,
+        harvest_type,harvest_time,seed_number,
+        unit,source_type,
+        production_location_name,stock_location_num,submit_user_id,
+        submit_user_name,create_time,update_time,
+        remarks,total_number,genetic_character,alias_name,gene_type,sample_code,material_type)
+        values
+        <foreach collection="seedStockTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.plantNum,jdbcType=VARCHAR},#{item.seedNum,jdbcType=VARCHAR},
+            #{item.projectCode,jdbcType=VARCHAR},#{item.parentNum,jdbcType=VARCHAR},#{item.fartherInfo,jdbcType=VARCHAR},
+            #{item.matherInfo,jdbcType=VARCHAR},#{item.generation,jdbcType=VARCHAR},#{item.species,jdbcType=VARCHAR},
+            #{item.breedCode,jdbcType=VARCHAR},#{item.pollinationMethod,jdbcType=VARCHAR},#{item.seedType,jdbcType=VARCHAR},
+            #{item.harvestType,jdbcType=VARCHAR},#{item.harvestTime,jdbcType=VARCHAR},#{item.seedNumber,jdbcType=DECIMAL},
+            #{item.unit,jdbcType=VARCHAR},#{item.sourceType,jdbcType=VARCHAR},
+            #{item.productionLocationName,jdbcType=VARCHAR},#{item.stockLocationNum,jdbcType=VARCHAR},#{item.submitUserId,jdbcType=NUMERIC},
+            #{item.submitUserName,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP},
+            #{item.remarks,jdbcType=VARCHAR},#{item.totalNumber,jdbcType=DECIMAL},#{item.sampleCode,jdbcType=VARCHAR},#{item.materialType,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <update id="updateParentNumById">
+        update seed_stock_tb
+        set parent_num = #{parentNum,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=NUMERIC}
+    </update>
+    <select id="selectOneByPlantNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_tb
+        where
+        plant_num = #{plantNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllBySeedNumIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_tb
+        where
+        seed_num in
+        <foreach collection="seedNumList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+    <delete id="deleteBySeedNumIn">
+        delete from seed_stock_tb
+        where
+        seed_num in
+        <foreach collection="seedNumList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </delete>
+
+
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.SeedStockDestructionLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.SeedStockDestructionLog">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="destructionLocation" column="destruction_location" jdbcType="VARCHAR"/>
+            <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
+            <result property="destructionMethod" column="destruction_method" jdbcType="VARCHAR"/>
+            <result property="unit" column="unit" jdbcType="VARCHAR"/>
+            <result property="seedNumber" column="seed_number" jdbcType="DECIMAL"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
+            <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
+            <result property="destructionEvidence" column="destruction_evidence" jdbcType="VARCHAR"/>
+             <result property="destructionTime" column="destruction_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,destruction_location,seed_num,
+        destruction_method,unit,seed_number,
+        remarks,task_num,apply_user_id,
+        apply_user_name,destruction_evidence,destruction_time
+    </sql>
+    <select id="selectOneBySeedNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_destruction_log
+        where
+        seed_num = #{seedNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneBySeedNumAndApplyTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_destruction_log
+        where
+        seed_num = #{seedNum,jdbcType=VARCHAR}
+        AND apply_task_num = #{applyTaskNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.SeedStockDestructionLog">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_destruction_log
+        <where>
+            <if test="destructionLocation != null">and destruction_location=#{destructionLocation,jdbcType=VARCHAR}</if>
+            <if test="seedNum != null">and  seed_num=#{seedNum,jdbcType=VARCHAR}</if>
+            <if test="destructionMethod != null">and  destruction_method=#{destructionMethod,jdbcType=VARCHAR}</if>
+            <if test="unit != null">and  unit=#{unit,jdbcType=VARCHAR}</if>
+            <if test="seedNumber != null">and  seed_number=#{seedNumber,jdbcType=DECIMAL}</if>
+            <if test="remarks != null">and  remarks=#{remarks,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null">and  task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="applyUserId != null">and  apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
+            <if test="applyUserName != null">and  apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
+            <if test="destructionEvidence != null">and  destruction_evidence=#{destructionEvidence,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
+    </select>
+</mapper>

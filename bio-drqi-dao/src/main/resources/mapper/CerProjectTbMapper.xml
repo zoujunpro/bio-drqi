@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerProjectTbMapper">
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerProjectTb">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="project_name" jdbcType="VARCHAR" property="projectName"/>
+        <result column="project_code" jdbcType="VARCHAR" property="projectCode"/>
+        <result column="project_level" jdbcType="VARCHAR" property="projectLevel"/>
+        <result column="acceptor_material" jdbcType="VARCHAR" property="acceptorMaterial"/>
+        <result column="species" jdbcType="VARCHAR" property="species"/>
+        <result column="project_target" jdbcType="VARCHAR" property="projectTarget"/>
+        <result column="project_status" jdbcType="VARCHAR" property="projectStatus"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_user_id" jdbcType="INTEGER" property="createUserId"/>
+        <result column="owner_user_id" jdbcType="INTEGER" property="ownerUserId"/>
+        <result column="create_user_name" jdbcType="VARCHAR" property="createUserName"/>
+        <result column="owner_user_name" jdbcType="VARCHAR" property="ownerUserName"/>
+        <result column="gene_edit_method" jdbcType="VARCHAR" property="geneEditMethod"/>
+        <result column="expect_start_date" jdbcType="VARCHAR" property="expectStartDate"/>
+        <result column="expect_end_date" jdbcType="VARCHAR" property="expectEndDate"/>
+        <result column="task_num" jdbcType="VARCHAR" property="taskNum"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , project_name, project_code, project_level, acceptor_material, species, project_target,
+    project_status, create_time, update_time, create_user_id, owner_user_id, create_user_name, 
+    owner_user_name, gene_edit_method, expect_start_date, expect_end_date,task_num
+    </sql>
+
+    <select id="selectListPage" parameterType="com.bio.drqi.domain.CerProjectTb" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_project_tb
+        <where>
+            <if test="actorId != null">
+                and id in (select DISTINCT project_id from cer_project_task_tb where  instance_id in(select instance_id from flow_his_task_actor_tb where actor_id =#{actorId,jdbcType=INTEGER}
+                UNION ALL
+                select instance_id from flow_task_actor_tb where actor_id =#{actorId,jdbcType=INTEGER})
+                UNION ALL
+                select DISTINCT project_id from cer_project_task_tb where  instance_id is null)
+            </if>
+            <if test="projectName != null and projectName != ''">
+                and project_name = #{projectName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectCode != null and projectCode != ''">
+                and project_code = #{projectCode,jdbcType=VARCHAR}
+            </if>
+            <if test="projectLevel != null">
+                and project_level = #{projectLevel,jdbcType=VARCHAR}
+            </if>
+            <if test="acceptorMaterial != null">
+                and acceptor_material = #{acceptorMaterial,jdbcType=VARCHAR}
+            </if>
+            <if test="species != null and species!=''">
+                and species LIKE  CONCAT('%',#{species},'%')
+            </if>
+            <if test="projectTarget != null">
+                and project_target = #{projectTarget,jdbcType=VARCHAR}
+            </if>
+            <if test="projectStatus != null">
+                and project_status = #{projectStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createUserId != null">
+                and create_user_id = #{createUserId,jdbcType=INTEGER}
+            </if>
+            <if test="ownerUserId != null">
+                and owner_user_id = #{ownerUserId,jdbcType=INTEGER}
+            </if>
+            <if test="createUserName != null">
+                and create_user_name = #{createUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="ownerUserName != null">
+                and owner_user_name = #{ownerUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="geneEditMethod != null and geneEditMethod!=''">
+                and gene_edit_method = #{geneEditMethod,jdbcType=VARCHAR}
+            </if>
+            <if test="expectStartDate != null">
+                and expect_start_date = #{expectStartDate,jdbcType=VARCHAR}
+            </if>
+            <if test="expectEndDate != null">
+                and expect_end_date = #{expectEndDate,jdbcType=VARCHAR}
+            </if>
+            <if test="taskNum != null">
+                and task_num = #{taskNum,jdbcType=VARCHAR}
+            </if>
+        </where>
+        <choose>
+            <when test="orderField != null and orderField != ''">
+                <if test="orderField=='projectCode'">
+                    order by project_code ${orderType}
+                </if>
+                <if test="orderField=='createTime'">
+                    order by id ${orderType}
+                </if>
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+
+
+    </select>
+
+    <select id="selectBySelective" parameterType="com.bio.drqi.domain.CerProjectTb" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_project_tb
+        <where>
+            <if test="projectName != null and projectName != ''">
+                and project_name = #{projectName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectCode != null and projectCode != ''">
+                and project_code = #{projectCode,jdbcType=VARCHAR}
+            </if>
+            <if test="projectLevel != null">
+                and project_level = #{projectLevel,jdbcType=VARCHAR}
+            </if>
+            <if test="acceptorMaterial != null">
+                and acceptor_material = #{acceptorMaterial,jdbcType=VARCHAR}
+            </if>
+            <if test="species != null and species!=''">
+                and species = #{species,jdbcType=VARCHAR}
+            </if>
+            <if test="projectTarget != null">
+                and project_target = #{projectTarget,jdbcType=VARCHAR}
+            </if>
+            <if test="projectStatus != null">
+                and project_status = #{projectStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createUserId != null">
+                and create_user_id = #{createUserId,jdbcType=INTEGER}
+            </if>
+            <if test="ownerUserId != null">
+                and owner_user_id = #{ownerUserId,jdbcType=INTEGER}
+            </if>
+            <if test="createUserName != null">
+                and create_user_name = #{createUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="ownerUserName != null">
+                and owner_user_name = #{ownerUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="geneEditMethod != null and geneEditMethod!=''">
+                and gene_edit_method = #{geneEditMethod,jdbcType=VARCHAR}
+            </if>
+            <if test="expectStartDate != null">
+                and expect_start_date = #{expectStartDate,jdbcType=VARCHAR}
+            </if>
+            <if test="expectEndDate != null">
+                and expect_end_date = #{expectEndDate,jdbcType=VARCHAR}
+            </if>
+            <if test="taskNum != null">
+                and task_num = #{taskNum,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by id desc
+    </select>
+    <select id="selectOneByTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_project_tb
+        where
+        task_num = #{taskNum,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByTaskNum">
+        delete
+        from cer_project_tb
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </delete>
+    <select id="selectAllOrderById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_project_tb
+        order by id desc
+    </select>
+    <select id="selectOneByProjectCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_project_tb
+        where
+        project_code = #{projectCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_project_tb order by project_code desc
+    </select>
+    <select id="selectAllByOwnerUserIdIsNotNull" resultMap="BaseResultMap">
+        select
+         distinct owner_user_id, owner_user_name
+        from cer_project_tb
+        where
+        owner_user_id is not null
+    </select>
+    <select id="selectAllCount" resultType="java.lang.Integer">
+        select  count(*) as num  from cer_project_tb
+    </select>
+</mapper>

@@ -1,0 +1,54 @@
+package com.bio.drqi.manage.service.project;
+
+import com.bio.cer.sample.req.*;
+import com.bio.cer.sample.rsp.CountNumByApplyNoRspDTO;
+import com.bio.cer.sample.rsp.LayoutPreviewRspDTO;
+import com.bio.cer.sample.rsp.SampleApplyRspDTO;
+import com.bio.cer.sample.rsp.SampleTestListDetailRspDTO;
+import com.github.pagehelper.PageInfo;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+
+public interface SampleTestService {
+
+    PageInfo<SampleApplyRspDTO> listPage(SampleApplyListPageReqDTO sampleApplyListPageReqDTO);
+
+    PageInfo<SampleTestListDetailRspDTO> listDetail(SampleTestListDetailReqDTO sampleTestListDetailReqDTO);
+
+    List<SampleApplyRspDTO> listByVectorTask(SampleTestByVectorTaskReqDTO sampleTestByVectorTaskReqDTO);
+
+    /**
+     * 取样数据模板下载
+     */
+    void downSampleTemplate(DownloadSampleTemplateReqDTO downloadSampleTemplateReqDTO, HttpServletResponse response);
+
+    void uploadSampleTemplate( UploadSampleTemplateReqDTO uploadSampleTemplateReqDTO );
+
+    /**
+     * 样品数据模板下载
+     */
+    void downTestTemplate(DownTestTemplateReqDTO downTestTemplateReqDTO, HttpServletResponse response);
+
+    void uploadTestTemplate( UploadTestTemplateReqDTO uploadTestTemplateReqDTO );
+    List<SampleTestListDetailRspDTO> checkList(CheckListReqDTO checkListReqDTO);
+
+    void approveSampleResult(ApproveSampleResultReqDTO approveSampleResultReqDTO);
+
+    List<SampleCodeListRspDTO> findAllSampleCodeList(String vectorTaskCode);
+
+
+    void downIdentifyPrimerTemplate(HttpServletResponse response, String applyNo);
+
+    void uploadIdentifyPrimerTemplate(UploadIdentifyPrimerTemplateReqDTO uploadIdentifyPrimerTemplateReqDTO);
+
+    LayoutPreviewRspDTO layoutPreview(String applyNo);
+
+    void layoutConfirm(LayoutConfirmReqDTO layoutConfirmReqDTO);
+
+   void dowLayoutExcel( String applyNo,HttpServletResponse httpServletResponse);
+
+    List<SampleApplyRspDTO> sampleApplyListAll(String currentStepCode);
+
+    CountNumByApplyNoRspDTO countNumByApplyNo(String applyNo);
+}

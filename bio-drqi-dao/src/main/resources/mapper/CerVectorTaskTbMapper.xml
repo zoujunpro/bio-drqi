@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerVectorTaskTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerVectorTaskTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+            <result property="vectorTaskType" column="vector_task_type" jdbcType="VARCHAR"/>
+            <result property="vectorTaskName" column="vector_task_name" jdbcType="VARCHAR"/>
+            <result property="deliveryMethod" column="delivery_method" jdbcType="VARCHAR"/>
+            <result property="acceptorMaterial" column="acceptor_material" jdbcType="VARCHAR"/>
+            <result property="editTools" column="edit_tools" jdbcType="VARCHAR"/>
+            <result property="editToolsType" column="edit_tools_type" jdbcType="VARCHAR"/>
+            <result property="vectorTaskTarget" column="vector_task_target" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="subProjectId" column="sub_project_id" jdbcType="INTEGER"/>
+            <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+            <result property="subProjectCode" column="sub_project_code" jdbcType="VARCHAR"/>
+            <result property="geneEditMethod" column="gene_edit_method" jdbcType="VARCHAR"/>
+            <result property="editType" column="edit_type" jdbcType="VARCHAR"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="taskStatus" column="task_status" jdbcType="VARCHAR"/>
+            <result property="qualityInspectionResult" column="quality_inspection_result" jdbcType="VARCHAR"/>
+            <result property="wordUrl" column="word_url" jdbcType="VARCHAR"/>
+            <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+            <result property="currentStepCode" column="current_step_code" jdbcType="VARCHAR"/>
+            <result property="vectorBuildFlag" column="vector_build_flag" jdbcType="VARCHAR"/>
+             <result column="expect_start_date" jdbcType="VARCHAR" property="expectStartDate"/>
+            <result column="expect_end_date" jdbcType="VARCHAR" property="expectEndDate"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,vector_task_code,vector_task_type,
+        vector_task_name,delivery_method,acceptor_material,
+        edit_tools,edit_tools_type,vector_task_target,
+        remark,create_time,update_time,
+        create_user_id,create_user_name,project_id,
+        sub_project_id,project_code,sub_project_code,
+        gene_edit_method,edit_type,task_num,
+        task_status,quality_inspection_result,word_url,species_code,current_step_code,vector_build_flag,expect_start_date,expect_end_date
+    </sql>
+    <select id="selectOneByTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb
+        where
+        task_num = #{taskNum,jdbcType=VARCHAR}
+    </select>
+    <update id="updateTaskStatusByTaskNum">
+        update cer_vector_task_tb
+        set task_status = #{taskStatus,jdbcType=VARCHAR}
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </update>
+    <select id="selectAllByProjectIdOrderById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb
+        where
+        project_id = #{projectId,jdbcType=INTEGER}
+        order by id desc
+    </select>
+    <select id="selectAllBySubProjectId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb
+        where
+        sub_project_id = #{subProjectId,jdbcType=NUMERIC}
+        order by id desc;
+    </select>
+    <update id="updateQualityInspectionResultByIdIn">
+        update cer_vector_task_tb
+        set quality_inspection_result = #{qualityInspectionResult,jdbcType=VARCHAR}
+        where
+        id in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+    </update>
+    <select id="selectOneByVectorTaskCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb
+        where
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+    </select>
+    <select id="listAllByQualityInspectionResult" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb
+        where
+        quality_inspection_result = #{qualityInspectionResult,jdbcType=VARCHAR} and project_id in(select id from cer_project_tb where project_status ='execute')
+        order by id desc
+    </select>
+
+    <update id="updateQualityInspectionResultById">
+        update cer_vector_task_tb
+        set quality_inspection_result = #{qualityInspectionResult,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=NUMERIC} and project_id in (select id from cer_project_tb where project_status='execute')
+        order by id desc
+    </update>
+
+    <select id="listForTransForm" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb where id in(select distinct vector_task_id from cer_transform_tb) and project_id in (select id from cer_project_tb where project_status='execute')
+        order by id desc
+    </select>
+    <select id="selectCountNum" resultType="java.lang.Integer">
+        select count(*) from cer_vector_task_tb
+    </select>
+    <select id="selectAllForBoard" resultType="com.bio.drqi.domain.CerVectorTaskTb">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb
+        where vector_task_type !='2' and vector_task_code not in('TM01201-OH01','TM01201-OH02','TS00101-AB01','TS00101-AB02','CM00301-GN01','CM00301-GN02','TM01201-OH03','TS00101-BZ03','TS00101-SQ04','TM01201-OH04')
+            <if test="projectId!=null">and project_id = #{projectId,jdbcType=INTEGER}</if>
+             <if test="taskStatus!=null and taskStatus!=''">and task_status =#{taskStatus,jdbcType=VARCHAR}</if>
+            <if test="speciesCode!=null and speciesCode!=''">and species_code = #{speciesCode,jdbcType=VARCHAR}</if>
+            <if test="userId!=null">and project_id in (select id from cer_project_tb where owner_user_id=#{userId,jdbcType=INTEGER})</if>
+        order by  sub_project_code asc ,id asc
+
+    </select>
+    <select id="selectAllByTaskStatus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb
+        where
+        task_status = #{taskStatus,jdbcType=VARCHAR}
+        order by id desc
+    </select>
+
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.SeedStockInLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.SeedStockInLog">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="unit" column="unit" jdbcType="VARCHAR"/>
+        <result property="seedNumber" column="seed_number" jdbcType="DECIMAL"/>
+        <result property="sourceType" column="source_type" jdbcType="VARCHAR"/>
+        <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+        <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
+        <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,seed_num,remarks,
+        unit,seed_number,source_type,
+        task_num,apply_user_id,apply_user_name,create_time,unique_code
+    </sql>
+    <select id="selectSelective" parameterType="com.bio.drqi.domain.SeedStockInLog" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_in_log
+        <where>
+            <if test="seedNum != null and seedNum!=''">and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
+            <if test="remarks != null and remarks!=''">and remarks=#{remarks,jdbcType=VARCHAR}</if>
+            <if test="unit != null and unit!=''">and unit=#{unit,jdbcType=VARCHAR}</if>
+            <if test="seedNumber != null and seedNumber!=''">and seed_number=#{seedNumber,jdbcType=DECIMAL}</if>
+            <if test="sourceType != null and sourceType!=''">and source_type=#{sourceType,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="applyUserId != null and applyUserId!=''">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
+            <if test="applyUserName != null and applyUserName!=''">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
+            <if test="createTime != null and createTime!=''">and create_time=#{createTime,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
+    </select>
+    <insert id="insertBatch">
+        insert into seed_stock_in_log(id,seed_num,remarks,
+        unit,seed_number,source_type,
+        task_num,apply_user_id,apply_user_name,
+        create_time,unique_code)
+        values
+        <foreach collection="seedStockInLogCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.seedNum,jdbcType=VARCHAR},#{item.remarks,jdbcType=VARCHAR},
+            #{item.unit,jdbcType=VARCHAR},#{item.seedNumber,jdbcType=DECIMAL},#{item.sourceType,jdbcType=VARCHAR},
+            #{item.taskNum,jdbcType=VARCHAR},#{item.applyUserId,jdbcType=NUMERIC},#{item.applyUserName,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP},#{item.uniqueCode,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <select id="selectAllByTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_in_log
+        where
+        task_num = #{taskNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneByUniqueCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_in_log
+        where
+        unique_code = #{uniqueCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneBySeedNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_in_log
+        where
+        seed_num = #{seedNum,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByTaskNum">
+        delete
+        from seed_stock_in_log
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </delete>
+</mapper>

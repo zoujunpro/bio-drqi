@@ -1,0 +1,19 @@
+package com.bio.drqi.manage;
+
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication(scanBasePackages = {"com.bio.drqi","com.bio.common","com.bio.print"})
+@EnableDiscoveryClient
+@MapperScan(basePackages = "com.bio.drqi.mapper")
+@EnableFeignClients(basePackages = {"com.bio.drqi","com.bio.print.api","com.bio.base"})
+@EnableScheduling
+public class BioDrqiManageMain {
+    public static void main(String[] args) {
+        SpringApplication.run(BioDrqiManageMain.class,args);
+    }
+}

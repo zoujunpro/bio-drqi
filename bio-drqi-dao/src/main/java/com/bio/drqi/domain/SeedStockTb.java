@@ -1,0 +1,232 @@
+package com.bio.drqi.domain;
+
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * @TableName seed_stock_tb
+ */
+@TableName(value = "seed_stock_tb")
+@Data
+public class SeedStockTb implements Serializable {
+    /**
+     * 主键ID
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
+
+    /**
+     * 种植编号
+     */
+    private String plantNum;
+
+    /**
+     * 种子编号
+     */
+    private String seedNum;
+
+    /**
+     * 项目号
+     */
+    private String projectCode;
+
+    /**
+     * 上一代种子编号
+     */
+    private String parentNum;
+
+    /**
+     * 父本信息
+     */
+    private String fartherInfo;
+
+    /**
+     * 母本信息
+     */
+    private String matherInfo;
+
+    /**
+     * 代次
+     */
+    private String generation;
+
+    /**
+     * 项目物种
+     */
+    private String species;
+
+    /**
+     * 品种
+     */
+    private String breedCode;
+
+    /**
+     * 授粉方式
+     */
+    private String pollinationMethod;
+
+    /**
+     * 种子类型  自交/杂交
+     */
+    private String seedType;
+
+    /**
+     * 收获方式，单珠和混珠
+     */
+    private String harvestType;
+
+    /**
+     * 收获时间
+     */
+    private String harvestTime;
+
+    /**
+     * 种子数量
+     */
+    private BigDecimal seedNumber;
+
+    /**
+     * 计量单位g/kg/粒
+     */
+    private String unit;
+
+    /**
+     * 种子来源（1 CER/ 2 温室/3 大田/4 外单位）
+     */
+    private String sourceType;
+
+
+    /**
+     * 生产地点（天津/海南/新乡）
+     */
+    private String productionLocationName;
+
+    /**
+     * 库位编号
+     */
+    private String stockLocationNum;
+
+    /**
+     * 提交人ID
+     */
+    private Integer submitUserId;
+
+    /**
+     * 提交人姓名
+     */
+    private String submitUserName;
+
+    /**
+     * 创建日期
+     */
+    private Date createTime;
+
+    /**
+     * 更新日期
+     */
+    private Date updateTime;
+
+
+    /**
+     * 备注
+     */
+    private String remarks;
+
+    private BigDecimal totalNumber;
+
+    private String geneticCharacter;
+
+    private String aliasName;
+
+    private String geneType;
+
+    private String checkResult;
+
+    private String sampleCode;
+
+    private String materialType;
+
+
+
+    /**
+     * yyyyMMdd
+     * 检索开始时间
+     */
+    @TableField(exist = false)
+    private String beginDate;
+    /**
+     * yyyyMMdd
+     * 检索结束时间
+     */
+    @TableField(exist = false)
+    private String endDate;
+
+    @TableField(exist = false)
+    private boolean notEmptySeedNumberFlag;
+
+
+    /**
+     * 开始收获时间
+     */
+    @TableField(exist = false)
+    private String beninHarvestTime;
+
+    /**
+     * 结束收获时间
+     */
+    @TableField(exist = false)
+    private String endHarvestTime;
+
+    @TableField(exist = false)
+    private String orderType;
+
+    @TableField(exist = false)
+    private String orderField;
+
+
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
+
+    @Data
+    public static class CheckResultContent {
+        private String type;
+        private String desc;
+        private Object value;
+        private Integer userId;
+        private String userName;
+        private String time;
+    }
+
+    public SeedStockTb buildCheckResult(List<CheckResultContent> checkResultContentList) {
+        List<CheckResultContent> currentCheckResultContentList = new ArrayList<>();
+        if (this.checkResult!=null&&!"".equals(this.checkResult)) {
+            currentCheckResultContentList = JSONUtil.toList(this.checkResult, CheckResultContent.class);
+        }
+        Map<String, CheckResultContent> checkResultContentMap = currentCheckResultContentList.stream().collect(Collectors.toMap(CheckResultContent::getType, checkResultContent -> checkResultContent));
+        for (CheckResultContent resultContent : checkResultContentList) {
+            if (Objects.isNull(checkResultContentMap.get(resultContent.getType()))) {
+                currentCheckResultContentList.add(resultContent);
+            } else {
+                CheckResultContent checkResultContent=checkResultContentMap.get(resultContent.getType());
+                checkResultContent.setType(resultContent.getType());
+                checkResultContent.setDesc(resultContent.getDesc());
+                checkResultContent.setValue(resultContent.getValue());
+                checkResultContent.setUserId(resultContent.getUserId());
+                checkResultContent.setUserName(resultContent.getUserName());
+                checkResultContent.setTime(resultContent.getTime());
+            }
+        }
+        this.checkResult=JSONUtil.toJsonStr(checkResultContentList);
+        return this;
+    }
+
+}

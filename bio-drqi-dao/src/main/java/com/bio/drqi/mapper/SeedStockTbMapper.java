@@ -1,0 +1,36 @@
+package com.bio.drqi.mapper;
+
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.bio.drqi.domain.SeedStockTb;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+/**
+ * @author zou'jun
+ * @description 针对表【seed_stock_tb】的数据库操作Mapper
+ * @createDate 2023-12-28 09:12:24
+ * @Entity com.bio.cer.domain.SeedStockTb
+ */
+public interface SeedStockTbMapper extends BaseMapper<SeedStockTb> {
+    SeedStockTb selectOneBySeedNum(@Param("seedNum") String seedNum);
+
+    List<SeedStockTb> selectAllByBreedCodeAndGeneration(@Param("breedCode") String breedCode, @Param("generation") String generation);
+
+    List<SeedStockTb> selectSelective(SeedStockTb seedStockTb);
+
+    SeedStockTb selectOneByPlantNum(@Param("plantNum") String plantNum);
+
+    int updateParentNumById(@Param("parentNum") String parentNum, @Param("id") Integer id);
+
+    List<SeedStockTb> selectAllBySeedNumIn(@Param("seedNumList") Collection<String> seedNumList);
+
+    int deleteBySeedNumIn(@Param("seedNumList") Collection<String> seedNumList);
+
+}
+
+
+
+

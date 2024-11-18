@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerSubProjectTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerSubProjectTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="subProjectName" column="sub_project_name" jdbcType="VARCHAR"/>
+            <result property="subProjectCode" column="sub_project_code" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="fileUrls" column="file_urls" jdbcType="OTHER"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="taskStatus" column="task_status" jdbcType="VARCHAR"/>
+            <result property="priorityLevel" column="priority_level" jdbcType="VARCHAR"/>
+             <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,project_id,sub_project_name,
+        sub_project_code,create_time,update_time,
+        file_urls,task_num,create_user_id,
+        create_user_name,task_status,priority_level,species_code
+    </sql>
+    <select id="selectAllByTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sub_project_tb
+        where
+        task_num = #{taskNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByProjectId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sub_project_tb
+        where
+        project_id = #{projectId,jdbcType=NUMERIC}
+    </select>
+    <delete id="deleteByTaskNum">
+        delete
+        from cer_sub_project_tb
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </delete>
+    <update id="updateTaskStatusByTaskNum">
+        update cer_sub_project_tb
+        set task_status = #{taskStatus,jdbcType=VARCHAR}
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </update>
+    <select id="selectOneBySubProjectCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sub_project_tb
+        where
+        sub_project_code = #{subProjectCode,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerSpeciesConfMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerSpeciesConf">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="speciesName" column="species_name" jdbcType="VARCHAR"/>
+            <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+             <result property="numPrefix" column="num_prefix" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,species_name,species_code,num_prefix
+    </sql>
+    <select id="selectOneBySpeciesCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_species_conf
+        where
+        species_code = #{speciesCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneBySpeciesName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_species_conf
+        where
+        species_name = #{speciesName,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.SeedStockOutLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.SeedStockOutLog">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
+            <result property="useToCode" column="use_to_code" jdbcType="VARCHAR"/>
+            <result property="unit" column="unit" jdbcType="VARCHAR"/>
+            <result property="seedNumber" column="seed_number" jdbcType="DECIMAL"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
+            <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="outTaskNum" column="out_task_num" jdbcType="VARCHAR"/>
+            <result property="useToDesc" column="use_to_desc" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,seed_num,use_to_code,
+        unit,seed_number,remarks,
+        create_time,apply_user_id,apply_user_name,
+        task_num,out_task_num,use_to_desc
+    </sql>
+
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.SeedStockOutLog">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_out_log
+        <where>
+            <if test="seedNum != null and seedNum!=''"> and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
+            <if test="useToCode != null and useToCode!=''">and use_to_code=#{useToCode,jdbcType=VARCHAR}</if>
+            <if test="unit != null and unit!=''">and unit=#{unit,jdbcType=VARCHAR}</if>
+            <if test="seedNumber != null and seedNumber!=''">and seed_number=#{seedNumber,jdbcType=DECIMAL}</if>
+            <if test="remarks != null">and remarks=#{remarks,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="applyUserId != null and applyUserId!=''">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
+            <if test="applyUserName != null and applyUserName!=''">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="outTaskNum != null and outTaskNum!=''">and out_task_num=#{outTaskNum,jdbcType=VARCHAR}</if>
+            <if test="useToDesc != null">and use_to_desc=#{useToDesc,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
+    </select>
+    <select id="selectAllByIdIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_out_log
+        where
+        id in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+    </select>
+    <select id="selectAllByTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_out_log
+        where
+        task_num = #{taskNum,jdbcType=VARCHAR}
+    </select>
+</mapper>

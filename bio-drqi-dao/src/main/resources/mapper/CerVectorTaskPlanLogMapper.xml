@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.CerVectorTaskPlanLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerVectorTaskPlanLog">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="vectorTaskId" column="vector_task_id" jdbcType="INTEGER"/>
+            <result property="eventType" column="event_type" jdbcType="VARCHAR"/>
+            <result property="estimatedStartTime" column="estimated_start_time" jdbcType="VARCHAR"/>
+            <result property="estimatedEndTime" column="estimated_end_time" jdbcType="VARCHAR"/>
+            <result property="actualStartTime" column="actual_start_time" jdbcType="VARCHAR"/>
+            <result property="actualEndTime" column="actual_end_time" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,vector_task_id,event_type,
+        estimated_start_time,estimated_end_time,actual_start_time,
+        actual_end_time,user_id,user_name,create_time,update_time
+    </sql>
+    <select id="selectAllByVectorTaskIdOrderByIdAsc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_plan_log
+        where
+        vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+        order by id asc
+    </select>
+    <select id="selectOneByVectorTaskIdAndEventType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_plan_log
+        where
+        vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+        AND event_type = #{eventType,jdbcType=VARCHAR}
+    </select>
+</mapper>

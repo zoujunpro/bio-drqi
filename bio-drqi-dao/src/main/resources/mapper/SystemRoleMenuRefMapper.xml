@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.SystemRoleMenuRefMapper">
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.SystemRoleMenuRef">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="role_id" jdbcType="INTEGER" property="roleId"/>
+        <result column="menu_id" jdbcType="INTEGER" property="menuId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , role_id, menu_id
+    </sql>
+
+    <insert id="batchInsert" parameterType="com.bio.drqi.domain.SystemRoleMenuRef">
+        insert into system_role_menu_ref
+        (
+        role_id,
+        menu_id)values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.roleId,jdbcType=INTEGER},
+            #{item.menuId,jdbcType=INTEGER}
+            )
+        </foreach>
+    </insert>
+
+
+    <delete id="deleteByRoleId" parameterType="java.lang.Integer">
+        delete
+        from system_role_menu_ref
+        where role_id = #{roleId,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByMenuId" parameterType="java.lang.Integer">
+        delete
+        from system_role_menu_ref
+        where menu_id = #{menuId,jdbcType=INTEGER}
+    </delete>
+</mapper>

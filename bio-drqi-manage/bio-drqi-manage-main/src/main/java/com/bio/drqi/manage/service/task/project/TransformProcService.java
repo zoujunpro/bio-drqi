@@ -128,7 +128,7 @@ public class TransformProcService extends AbstractBaseProjectTaskService {
                 cerTransformTb.setInfectNumber(content.getInfectNumber());
                 cerTransformTb.setInfectDate(content.getInfectDate());
                 cerTransformTb.setDeliveryMethod(content.getDeliveryMethod());
-                cerTransformTb.setTransformCode(getTransFormCode(cerVectorTaskTb.getVectorTaskCode()));
+                cerTransformTb.setTransformCode(getTransFormCode(cerVectorTaskTb.getVectorTaskCode(),content.getInfectDate()));
                 cerTransformTb.setAcceptorMaterial(content.getAcceptorMaterial());
                 cerTransformTb.setCreateTime(new Date());
                 cerTransformTb.setUpdateTime(new Date());
@@ -165,7 +165,7 @@ public class TransformProcService extends AbstractBaseProjectTaskService {
     }
 
 
-    private String getTransFormCode(String vectorTaskCode) {
+    private String getTransFormCode(String vectorTaskCode,String infectDate) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
         List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllBySpeciesCodeAndVectorTaskTypeAndCreateTime(cerVectorTaskTb.getSpeciesCode(), cerVectorTaskTb.getVectorTaskType(), DateUtil.format(new Date(), "yyyyMMdd"));
         cerTransformTbList = cerTransformTbList.stream().filter(cerTransformTb -> cerTransformTb.getTransformCode().matches("^[A-Z]{3}[0-9]{6}$")).collect(Collectors.toList());
@@ -176,7 +176,7 @@ public class TransformProcService extends AbstractBaseProjectTaskService {
             nextNumber = StringUtils.padl(String.valueOf(Integer.parseInt(cerTransformTbList.get(0).getTransformCode().substring(7)) + 1), 2, '0');
         }
         CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(cerVectorTaskTb.getSpeciesCode());
-        return cerSpeciesConf.getNumPrefix().substring(2) + VectorTaskTypeEnum.getMethodEnumByType(cerVectorTaskTb.getVectorTaskType()) + DateUtil.format(new Date(), "MMdd") + nextNumber;
+        return cerSpeciesConf.getNumPrefix().substring(2) + VectorTaskTypeEnum.getMethodEnumByType(cerVectorTaskTb.getVectorTaskType()) + infectDate.replace("-","").substring(4) + nextNumber;
     }
 
 }

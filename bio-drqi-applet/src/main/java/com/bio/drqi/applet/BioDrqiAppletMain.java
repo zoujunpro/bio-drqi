@@ -6,4 +6,5 @@ public class BioDrqiAppletMain {
     public static void main(String[] args) {
         SpringApplication.run(BioDrqiAppletMain.class,args);
     }
+
 }

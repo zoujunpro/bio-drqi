@@ -110,6 +110,10 @@ public class VectorTaskAddDTO {
      */
     private String vectorExcelUrl;
 
+    /**
+     * Y代表无质粒构建
+     */
+    private String plasmidFlag;
 
     /**
      * 载体的具体信息，需要区分转基因还是基因编辑
@@ -179,6 +183,8 @@ public class VectorTaskAddDTO {
      * 详情返显用
      */
     private Integer createUserId;
+
+
 
     @Data
     public static class TransportStart {

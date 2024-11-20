@@ -12,9 +12,6 @@ import javax.annotation.Resource;
 
 public abstract class AbstractCodeDealService<T, V> implements BaseCodeParse {
 
-    @Resource
-    private PrintApi printApi;
-
     abstract T parseUniqueCode(String uniqueCode);
 
     abstract V dealCodeContent(T t);

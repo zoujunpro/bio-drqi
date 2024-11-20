@@ -23,55 +23,15 @@ public class ScanCodeController {
     @Resource
     private ScanCodeService scanCodeService;
 
+    /**
+     *  扫码
+     * @param code
+     * @return
+     */
 
     @GetMapping("scanCode")
     public ResponseResult<Object> scanCode(String code){
         return ResponseResult.getSuccess(scanCodeService.scanCode(code));
     }
 
-
-
-    /**
-     * 质粒标签扫码
-     * @param plasmidUniqueCodeDTO
-     * @return
-     */
-    @PostMapping("plasmidDetail")
-    @WebLog(desc = "质粒标签扫码")
-    public ResponseResult<ScanCodePlasmidRspDTO> plasmidDetail(@RequestBody PlasmidUniqueCodeDTO plasmidUniqueCodeDTO) {
-        return ResponseResult.getSuccess(scanCodeService.plasmidDetail(plasmidUniqueCodeDTO));
-    }
-
-
-    /**
-     * 转化标签扫码
-     * @param transformUniqueCodeDTO
-     * @return
-     */
-    @PostMapping("transform")
-    @WebLog(desc = "转化标签扫码")
-    public ResponseResult<ScanCodeTransformRspDTO> transform(@RequestBody TransformUniqueCodeDTO transformUniqueCodeDTO) {
-        return ResponseResult.getSuccess(scanCodeService.transform(transformUniqueCodeDTO));
-    }
-
-    /**
-     * 取样标签扫码
-     * @param sampleTestUniqueReqDTO
-     * @return
-     */
-    @PostMapping("sampleTest")
-    @WebLog(desc = "取样标签扫码")
-    public ResponseResult<ScanCodeSampleTestRspDTO> sampleTest(@RequestBody SampleTestUniqueReqDTO sampleTestUniqueReqDTO) {
-        return ResponseResult.getSuccess(scanCodeService.sampleTest(sampleTestUniqueReqDTO));
-    }
-    /**
-     * 种子扫码
-     * @param sampleTestUniqueReqDTO
-     * @return
-     */
-    @PostMapping("seed")
-    @WebLog(desc = "取样标签扫码")
-    public ResponseResult<ScanCodeSampleTestRspDTO> seed(@RequestBody SampleTestUniqueReqDTO sampleTestUniqueReqDTO) {
-        return ResponseResult.getSuccess(scanCodeService.sampleTest(sampleTestUniqueReqDTO));
-    }
 }

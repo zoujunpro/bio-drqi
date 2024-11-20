@@ -3,15 +3,21 @@ package com.bio.drqi.applet.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 
 import com.bio.common.core.dto.BusinessException;
-import com.bio.drqi.applet.dto.req.ScanCodePlasmidReqDTO;
+import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.core.util.SpringUtils;
+import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.applet.service.parse.dto.ParseCodePlasmidDTO;
 import com.bio.drqi.applet.dto.req.ScanCodeSampleTestReqDTO;
 import com.bio.drqi.applet.dto.req.ScanCodeTransformReqDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodePlasmidRspDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeSampleTestRspDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeTransformRspDTO;
 import com.bio.drqi.applet.service.ScanCodeService;
+import com.bio.drqi.applet.service.parse.BaseCodeParse;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
+import com.bio.print.api.PrintApi;
+import com.bio.print.rsp.PrintDataRspDTO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -40,16 +46,34 @@ public class ScanCodeServiceImpl implements ScanCodeService {
     @Resource
     private CerSampleTestTbMapper cerSampleTestTbMapper;
 
+    @Resource
+    private PrintApi printApi;
+
 
     @Override
-    public ScanCodePlasmidRspDTO plasmidDetail(ScanCodePlasmidReqDTO scanCodePlasmidReqDTO) {
-        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(scanCodePlasmidReqDTO.getVectorTaskCode());
+    public Object scanCode(String code) {
+        ResponseResult<PrintDataRspDTO> responseResult = printApi.queryPrintDataByCode(code);
+        if (responseResult.isError()) {
+            throw new BusinessException(responseResult.getMessage());
+        }
+        PrintDataRspDTO printDataRspDTO = responseResult.getData();
+        if (StringUtils.isEmpty(printDataRspDTO.getUniqueCode())) {
+            throw new BusinessException("二维码异常，请联系管理员：" + code);
+        }
+        BaseCodeParse baseCodeParse = SpringUtils.getBean(printDataRspDTO.getPrintType());
+        return baseCodeParse.doScan(printDataRspDTO.getUniqueCode());
+    }
+
+
+    @Override
+    public ScanCodePlasmidRspDTO plasmidDetail(ParseCodePlasmidDTO parseCodePlasmidDTO) {
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(parseCodePlasmidDTO.getVectorTaskCode());
         if (cerVectorTaskTb == null) {
-            throw new BusinessException("实施方案查询不到:" + scanCodePlasmidReqDTO.getVectorTaskCode());
+            throw new BusinessException("实施方案查询不到:" + parseCodePlasmidDTO.getVectorTaskCode());
         }
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
         CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerVectorTaskTb.getSubProjectCode());
-        CerVectorTb cerVectorTb = cerVectorTbMapper.selectOneByPlasmidNameAndVectorTaskId(scanCodePlasmidReqDTO.getPlasmidName(), cerVectorTaskTb.getId());
+        CerVectorTb cerVectorTb = cerVectorTbMapper.selectOneByPlasmidNameAndVectorTaskId(parseCodePlasmidDTO.getPlasmidName(), cerVectorTaskTb.getId());
         ScanCodePlasmidRspDTO scanCodePlasmidRspDTO = new ScanCodePlasmidRspDTO();
         scanCodePlasmidRspDTO.setProjectCode(cerVectorTaskTb.getProjectCode());
         scanCodePlasmidRspDTO.setProjectName(cerProjectTb.getProjectName());

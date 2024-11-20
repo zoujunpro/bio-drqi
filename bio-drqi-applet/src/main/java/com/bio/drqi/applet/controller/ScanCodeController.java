@@ -1,17 +1,15 @@
 package com.bio.drqi.applet.controller;
 
 import com.bio.common.core.dto.ResponseResult;
-import com.bio.drqi.applet.dto.req.ScanCodePlasmidReqDTO;
+import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.applet.service.parse.dto.ParseCodePlasmidDTO;
 import com.bio.drqi.applet.dto.req.ScanCodeSampleTestReqDTO;
 import com.bio.drqi.applet.dto.req.ScanCodeTransformReqDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodePlasmidRspDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeSampleTestRspDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeTransformRspDTO;
 import com.bio.drqi.applet.service.ScanCodeService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -26,14 +24,22 @@ public class ScanCodeController {
     private ScanCodeService scanCodeService;
 
 
+    @GetMapping("scanCode")
+    public ResponseResult<Object> scanCode(String code){
+        return ResponseResult.getSuccess(scanCodeService.scanCode(code));
+    }
+
+
+
     /**
      * 质粒标签扫码
-     * @param scanCodePlasmidReqDTO
+     * @param parseCodePlasmidDTO
      * @return
      */
     @PostMapping("plasmidDetail")
-    public ResponseResult<ScanCodePlasmidRspDTO> plasmidDetail(@RequestBody ScanCodePlasmidReqDTO scanCodePlasmidReqDTO) {
-        return ResponseResult.getSuccess(scanCodeService.plasmidDetail(scanCodePlasmidReqDTO));
+    @WebLog(desc = "质粒标签扫码")
+    public ResponseResult<ScanCodePlasmidRspDTO> plasmidDetail(@RequestBody ParseCodePlasmidDTO parseCodePlasmidDTO) {
+        return ResponseResult.getSuccess(scanCodeService.plasmidDetail(parseCodePlasmidDTO));
     }
 
 
@@ -43,6 +49,7 @@ public class ScanCodeController {
      * @return
      */
     @PostMapping("transform")
+    @WebLog(desc = "转化标签扫码")
     public ResponseResult<ScanCodeTransformRspDTO> transform(@RequestBody  ScanCodeTransformReqDTO scanCodeTransformReqDTO) {
         return ResponseResult.getSuccess(scanCodeService.transform(scanCodeTransformReqDTO));
     }
@@ -53,7 +60,18 @@ public class ScanCodeController {
      * @return
      */
     @PostMapping("sampleTest")
+    @WebLog(desc = "取样标签扫码")
     public ResponseResult<ScanCodeSampleTestRspDTO> sampleTest(@RequestBody  ScanCodeSampleTestReqDTO scanCodeSampleTestReqDTO) {
+        return ResponseResult.getSuccess(scanCodeService.sampleTest(scanCodeSampleTestReqDTO));
+    }
+    /**
+     * 种子扫码
+     * @param scanCodeSampleTestReqDTO
+     * @return
+     */
+    @PostMapping("seed")
+    @WebLog(desc = "取样标签扫码")
+    public ResponseResult<ScanCodeSampleTestRspDTO> seed(@RequestBody  ScanCodeSampleTestReqDTO scanCodeSampleTestReqDTO) {
         return ResponseResult.getSuccess(scanCodeService.sampleTest(scanCodeSampleTestReqDTO));
     }
 }

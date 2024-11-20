@@ -1,9 +1,10 @@
-package com.bio.drqi.applet.service.parse;
+package com.bio.drqi.applet.service.codescan.template;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.applet.dto.rsp.ScanCodeSampleTestRspDTO;
-import com.bio.drqi.applet.service.parse.dto.SampleTestUniqueReqDTO;
+import com.bio.drqi.applet.service.AbstractBaseCodeScanService;
+import com.bio.drqi.applet.service.codescan.dto.SampleTestUniqueReqDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class SampleTestCodeScanService extends AbstractBaseCodeScanService<Sampl
     private CerSampleTestTbMapper cerSampleTestTbMapper;
 
     @Override
-    SampleTestUniqueReqDTO parseUniqueCode(String uniqueCode) {
+    public SampleTestUniqueReqDTO parseUniqueCode(String uniqueCode) {
         String[] uniqueCodeArr = uniqueCode.split("\\|");
         SampleTestUniqueReqDTO sampleTestUniqueReqDTO = new SampleTestUniqueReqDTO();
         sampleTestUniqueReqDTO.setSampleCode(uniqueCodeArr[1]);
@@ -45,7 +46,7 @@ public class SampleTestCodeScanService extends AbstractBaseCodeScanService<Sampl
 
 
     @Override
-    ScanCodeSampleTestRspDTO dealCodeContent(SampleTestUniqueReqDTO sampleTestUniqueReqDTO) {
+    public ScanCodeSampleTestRspDTO dealCodeContent(SampleTestUniqueReqDTO sampleTestUniqueReqDTO) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(sampleTestUniqueReqDTO.getVectorTaskCode());
         if (cerVectorTaskTb == null) {
             throw new BusinessException("实施方案查询不到:" + sampleTestUniqueReqDTO.getVectorTaskCode());

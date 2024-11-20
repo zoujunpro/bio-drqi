@@ -6,7 +6,7 @@ import com.bio.common.core.util.SpringUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.applet.contant.ScanCodeConstant;
 import com.bio.drqi.applet.service.ScanCodeService;
-import com.bio.drqi.applet.service.parse.BaseCodeScanService;
+import com.bio.drqi.applet.service.codescan.BaseCodeScanService;
 import com.bio.print.api.PrintApi;
 import com.bio.print.rsp.PrintDataRspDTO;
 import org.springframework.stereotype.Service;

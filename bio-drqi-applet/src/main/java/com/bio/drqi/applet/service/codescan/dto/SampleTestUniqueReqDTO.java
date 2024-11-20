@@ -1,4 +1,4 @@
-package com.bio.drqi.applet.service.parse.dto;
+package com.bio.drqi.applet.service.codescan.dto;
 
 import lombok.Data;
 

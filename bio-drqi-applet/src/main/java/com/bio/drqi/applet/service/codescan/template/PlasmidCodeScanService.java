@@ -1,9 +1,10 @@
-package com.bio.drqi.applet.service.parse;
+package com.bio.drqi.applet.service.codescan.template;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.bio.common.core.dto.BusinessException;
-import com.bio.drqi.applet.service.parse.dto.PlasmidUniqueCodeDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodePlasmidRspDTO;
+import com.bio.drqi.applet.service.AbstractBaseCodeScanService;
+import com.bio.drqi.applet.service.codescan.dto.PlasmidUniqueCodeDTO;
 import com.bio.drqi.domain.CerProjectTb;
 import com.bio.drqi.domain.CerSubProjectTb;
 import com.bio.drqi.domain.CerVectorTaskTb;
@@ -35,7 +36,7 @@ public class PlasmidCodeScanService extends AbstractBaseCodeScanService<PlasmidU
     private CerVectorTbMapper cerVectorTbMapper;
 
     @Override
-    PlasmidUniqueCodeDTO parseUniqueCode(String uniqueCode) {
+    public PlasmidUniqueCodeDTO parseUniqueCode(String uniqueCode) {
         String[] uniqueCodeArr = uniqueCode.split("\\|");
         PlasmidUniqueCodeDTO plasmidUniqueCodeDTO = new PlasmidUniqueCodeDTO();
         plasmidUniqueCodeDTO.setPlasmidName(uniqueCodeArr[1]);
@@ -45,7 +46,7 @@ public class PlasmidCodeScanService extends AbstractBaseCodeScanService<PlasmidU
 
 
     @Override
-    ScanCodePlasmidRspDTO dealCodeContent(PlasmidUniqueCodeDTO plasmidUniqueCodeDTO) {
+    public ScanCodePlasmidRspDTO dealCodeContent(PlasmidUniqueCodeDTO plasmidUniqueCodeDTO) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(plasmidUniqueCodeDTO.getVectorTaskCode());
         if (cerVectorTaskTb == null) {
             throw new BusinessException("实施方案查询不到:" + plasmidUniqueCodeDTO.getVectorTaskCode());

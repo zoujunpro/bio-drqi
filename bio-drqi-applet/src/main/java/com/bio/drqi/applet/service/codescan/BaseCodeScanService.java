@@ -1,4 +1,4 @@
-package com.bio.drqi.applet.service.parse;
+package com.bio.drqi.applet.service.codescan;
 
 public interface BaseCodeScanService<T, V> {
 

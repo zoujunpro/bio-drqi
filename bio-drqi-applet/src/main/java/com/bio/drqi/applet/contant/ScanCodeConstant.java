@@ -1,8 +1,8 @@
 package com.bio.drqi.applet.contant;
 
-import com.bio.drqi.applet.service.parse.PlasmidCodeScanService;
-import com.bio.drqi.applet.service.parse.SampleTestCodeScanService;
-import com.bio.drqi.applet.service.parse.TransformCodeScanService;
+import com.bio.drqi.applet.service.codescan.template.PlasmidCodeScanService;
+import com.bio.drqi.applet.service.codescan.template.SampleTestCodeScanService;
+import com.bio.drqi.applet.service.codescan.template.TransformCodeScanService;
 
 import java.util.HashMap;
 import java.util.Map;

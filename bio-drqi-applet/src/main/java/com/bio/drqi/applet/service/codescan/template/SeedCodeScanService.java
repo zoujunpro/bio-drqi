@@ -1,9 +1,10 @@
-package com.bio.drqi.applet.service.parse;
+package com.bio.drqi.applet.service.codescan.template;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.applet.dto.rsp.ScanCodeTransformRspDTO;
-import com.bio.drqi.applet.service.parse.dto.TransformUniqueCodeDTO;
+import com.bio.drqi.applet.service.AbstractBaseCodeScanService;
+import com.bio.drqi.applet.service.codescan.dto.TransformUniqueCodeDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<TransformUn
     private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
     @Override
-    TransformUniqueCodeDTO parseUniqueCode(String uniqueCode) {
+    public TransformUniqueCodeDTO parseUniqueCode(String uniqueCode) {
         String[] uniqueCodeArr = uniqueCode.split("\\|");
         TransformUniqueCodeDTO transformUniqueCodeDTO = new TransformUniqueCodeDTO();
         transformUniqueCodeDTO.setTransformCode(uniqueCodeArr[1]);
@@ -42,7 +43,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<TransformUn
 
 
     @Override
-    ScanCodeTransformRspDTO dealCodeContent(TransformUniqueCodeDTO transformUniqueCodeDTO) {
+    public ScanCodeTransformRspDTO dealCodeContent(TransformUniqueCodeDTO transformUniqueCodeDTO) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(transformUniqueCodeDTO.getVectorTaskCode());
         if (cerVectorTaskTb == null) {
             throw new BusinessException("实施方案查询不到:" + transformUniqueCodeDTO.getVectorTaskCode());

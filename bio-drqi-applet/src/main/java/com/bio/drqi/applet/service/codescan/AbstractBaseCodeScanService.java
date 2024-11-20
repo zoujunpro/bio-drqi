@@ -1,4 +1,4 @@
-package com.bio.drqi.applet.service;
+package com.bio.drqi.applet.service.codescan;
 
 
 import com.bio.drqi.applet.service.codescan.BaseCodeScanService;

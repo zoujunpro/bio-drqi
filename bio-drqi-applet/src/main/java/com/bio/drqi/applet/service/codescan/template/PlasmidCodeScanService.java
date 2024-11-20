@@ -3,7 +3,7 @@ package com.bio.drqi.applet.service.codescan.template;
 import cn.hutool.core.bean.BeanUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.applet.dto.rsp.ScanCodePlasmidRspDTO;
-import com.bio.drqi.applet.service.AbstractBaseCodeScanService;
+import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.PlasmidUniqueCodeDTO;
 import com.bio.drqi.domain.CerProjectTb;
 import com.bio.drqi.domain.CerSubProjectTb;

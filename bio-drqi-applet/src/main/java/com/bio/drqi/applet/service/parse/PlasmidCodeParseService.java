@@ -1,9 +1,8 @@
 package com.bio.drqi.applet.service.parse;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
-import com.bio.drqi.applet.service.parse.dto.ParseCodePlasmidDTO;
+import com.bio.drqi.applet.service.parse.dto.PlasmidUniqueCodeDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodePlasmidRspDTO;
 import com.bio.drqi.domain.CerProjectTb;
 import com.bio.drqi.domain.CerSubProjectTb;
@@ -17,8 +16,11 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-@Service("vector_label_print")
-public class PlasmidCodeParseService extends AbstractCodeDealService<ParseCodePlasmidDTO, ScanCodePlasmidRspDTO> {
+/**
+ * 质粒扫码（载体构建）
+ */
+@Service
+public class PlasmidCodeParseService extends AbstractCodeDealService<PlasmidUniqueCodeDTO, ScanCodePlasmidRspDTO> {
 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
@@ -33,24 +35,24 @@ public class PlasmidCodeParseService extends AbstractCodeDealService<ParseCodePl
     private CerVectorTbMapper cerVectorTbMapper;
 
     @Override
-    ParseCodePlasmidDTO parseUniqueCode(String uniqueCode) {
+    PlasmidUniqueCodeDTO parseUniqueCode(String uniqueCode) {
         String[] uniqueCodeArr = uniqueCode.split("\\|");
-        ParseCodePlasmidDTO parseCodePlasmidDTO = new ParseCodePlasmidDTO();
-        parseCodePlasmidDTO.setPlasmidName(uniqueCodeArr[1]);
-        parseCodePlasmidDTO.setVectorTaskCode(uniqueCodeArr[0]);
-        return parseCodePlasmidDTO;
+        PlasmidUniqueCodeDTO plasmidUniqueCodeDTO = new PlasmidUniqueCodeDTO();
+        plasmidUniqueCodeDTO.setPlasmidName(uniqueCodeArr[1]);
+        plasmidUniqueCodeDTO.setVectorTaskCode(uniqueCodeArr[0]);
+        return plasmidUniqueCodeDTO;
     }
 
 
     @Override
-    ScanCodePlasmidRspDTO dealCodeContent(ParseCodePlasmidDTO parseCodePlasmidDTO) {
-        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(parseCodePlasmidDTO.getVectorTaskCode());
+    ScanCodePlasmidRspDTO dealCodeContent(PlasmidUniqueCodeDTO plasmidUniqueCodeDTO) {
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(plasmidUniqueCodeDTO.getVectorTaskCode());
         if (cerVectorTaskTb == null) {
-            throw new BusinessException("实施方案查询不到:" + parseCodePlasmidDTO.getVectorTaskCode());
+            throw new BusinessException("实施方案查询不到:" + plasmidUniqueCodeDTO.getVectorTaskCode());
         }
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
         CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerVectorTaskTb.getSubProjectCode());
-        CerVectorTb cerVectorTb = cerVectorTbMapper.selectOneByPlasmidNameAndVectorTaskId(parseCodePlasmidDTO.getPlasmidName(), cerVectorTaskTb.getId());
+        CerVectorTb cerVectorTb = cerVectorTbMapper.selectOneByPlasmidNameAndVectorTaskId(plasmidUniqueCodeDTO.getPlasmidName(), cerVectorTaskTb.getId());
         ScanCodePlasmidRspDTO scanCodePlasmidRspDTO = new ScanCodePlasmidRspDTO();
         scanCodePlasmidRspDTO.setProjectCode(cerVectorTaskTb.getProjectCode());
         scanCodePlasmidRspDTO.setProjectName(cerProjectTb.getProjectName());

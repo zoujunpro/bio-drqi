@@ -2,9 +2,9 @@ package com.bio.drqi.applet.controller;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.applet.service.parse.dto.ParseCodePlasmidDTO;
-import com.bio.drqi.applet.dto.req.ScanCodeSampleTestReqDTO;
-import com.bio.drqi.applet.dto.req.ScanCodeTransformReqDTO;
+import com.bio.drqi.applet.service.parse.dto.PlasmidUniqueCodeDTO;
+import com.bio.drqi.applet.service.parse.dto.SampleTestUniqueReqDTO;
+import com.bio.drqi.applet.service.parse.dto.TransformUniqueCodeDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodePlasmidRspDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeSampleTestRspDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeTransformRspDTO;
@@ -33,45 +33,45 @@ public class ScanCodeController {
 
     /**
      * 质粒标签扫码
-     * @param parseCodePlasmidDTO
+     * @param plasmidUniqueCodeDTO
      * @return
      */
     @PostMapping("plasmidDetail")
     @WebLog(desc = "质粒标签扫码")
-    public ResponseResult<ScanCodePlasmidRspDTO> plasmidDetail(@RequestBody ParseCodePlasmidDTO parseCodePlasmidDTO) {
-        return ResponseResult.getSuccess(scanCodeService.plasmidDetail(parseCodePlasmidDTO));
+    public ResponseResult<ScanCodePlasmidRspDTO> plasmidDetail(@RequestBody PlasmidUniqueCodeDTO plasmidUniqueCodeDTO) {
+        return ResponseResult.getSuccess(scanCodeService.plasmidDetail(plasmidUniqueCodeDTO));
     }
 
 
     /**
      * 转化标签扫码
-     * @param scanCodeTransformReqDTO
+     * @param transformUniqueCodeDTO
      * @return
      */
     @PostMapping("transform")
     @WebLog(desc = "转化标签扫码")
-    public ResponseResult<ScanCodeTransformRspDTO> transform(@RequestBody  ScanCodeTransformReqDTO scanCodeTransformReqDTO) {
-        return ResponseResult.getSuccess(scanCodeService.transform(scanCodeTransformReqDTO));
+    public ResponseResult<ScanCodeTransformRspDTO> transform(@RequestBody TransformUniqueCodeDTO transformUniqueCodeDTO) {
+        return ResponseResult.getSuccess(scanCodeService.transform(transformUniqueCodeDTO));
     }
 
     /**
      * 取样标签扫码
-     * @param scanCodeSampleTestReqDTO
+     * @param sampleTestUniqueReqDTO
      * @return
      */
     @PostMapping("sampleTest")
     @WebLog(desc = "取样标签扫码")
-    public ResponseResult<ScanCodeSampleTestRspDTO> sampleTest(@RequestBody  ScanCodeSampleTestReqDTO scanCodeSampleTestReqDTO) {
-        return ResponseResult.getSuccess(scanCodeService.sampleTest(scanCodeSampleTestReqDTO));
+    public ResponseResult<ScanCodeSampleTestRspDTO> sampleTest(@RequestBody SampleTestUniqueReqDTO sampleTestUniqueReqDTO) {
+        return ResponseResult.getSuccess(scanCodeService.sampleTest(sampleTestUniqueReqDTO));
     }
     /**
      * 种子扫码
-     * @param scanCodeSampleTestReqDTO
+     * @param sampleTestUniqueReqDTO
      * @return
      */
     @PostMapping("seed")
     @WebLog(desc = "取样标签扫码")
-    public ResponseResult<ScanCodeSampleTestRspDTO> seed(@RequestBody  ScanCodeSampleTestReqDTO scanCodeSampleTestReqDTO) {
-        return ResponseResult.getSuccess(scanCodeService.sampleTest(scanCodeSampleTestReqDTO));
+    public ResponseResult<ScanCodeSampleTestRspDTO> seed(@RequestBody SampleTestUniqueReqDTO sampleTestUniqueReqDTO) {
+        return ResponseResult.getSuccess(scanCodeService.sampleTest(sampleTestUniqueReqDTO));
     }
 }

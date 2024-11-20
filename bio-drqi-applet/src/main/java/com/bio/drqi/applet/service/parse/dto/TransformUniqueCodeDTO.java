@@ -1,9 +1,9 @@
-package com.bio.drqi.applet.dto.req;
+package com.bio.drqi.applet.service.parse.dto;
 
 import lombok.Data;
 
 @Data
-public class ScanCodeTransformReqDTO {
+public class TransformUniqueCodeDTO {
 
     private String vectorTaskCode;
 

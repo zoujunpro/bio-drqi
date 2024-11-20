@@ -3,9 +3,7 @@ package com.bio.drqi.applet.service.parse;
 import cn.hutool.core.bean.BeanUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.applet.dto.rsp.ScanCodeSampleTestRspDTO;
-import com.bio.drqi.applet.dto.rsp.ScanCodeTransformRspDTO;
 import com.bio.drqi.applet.service.parse.dto.SampleTestUniqueReqDTO;
-import com.bio.drqi.applet.service.parse.dto.TransformUniqueCodeDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,7 @@ import javax.annotation.Resource;
  * 取样扫码
  */
 @Service
-public class SampleTestCodeParseService extends AbstractCodeDealService<SampleTestUniqueReqDTO, ScanCodeSampleTestRspDTO> {
+public class SampleTestCodeScanService extends AbstractBaseCodeScanService<SampleTestUniqueReqDTO, ScanCodeSampleTestRspDTO> {
 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;

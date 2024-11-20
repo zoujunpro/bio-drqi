@@ -20,7 +20,7 @@ import javax.annotation.Resource;
  * 质粒扫码（载体构建）
  */
 @Service
-public class PlasmidCodeParseService extends AbstractCodeDealService<PlasmidUniqueCodeDTO, ScanCodePlasmidRspDTO> {
+public class PlasmidCodeScanService extends AbstractBaseCodeScanService<PlasmidUniqueCodeDTO, ScanCodePlasmidRspDTO> {
 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;

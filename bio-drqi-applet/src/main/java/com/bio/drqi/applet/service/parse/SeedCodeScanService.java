@@ -2,9 +2,7 @@ package com.bio.drqi.applet.service.parse;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.bio.common.core.dto.BusinessException;
-import com.bio.drqi.applet.dto.rsp.ScanCodePlasmidRspDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeTransformRspDTO;
-import com.bio.drqi.applet.service.parse.dto.PlasmidUniqueCodeDTO;
 import com.bio.drqi.applet.service.parse.dto.TransformUniqueCodeDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
@@ -16,7 +14,7 @@ import javax.annotation.Resource;
  * 转化扫码
  */
 @Service
-public class TransformCodeParseService extends AbstractCodeDealService<TransformUniqueCodeDTO, ScanCodeTransformRspDTO> {
+public class SeedCodeScanService extends AbstractBaseCodeScanService<TransformUniqueCodeDTO, ScanCodeTransformRspDTO> {
 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;

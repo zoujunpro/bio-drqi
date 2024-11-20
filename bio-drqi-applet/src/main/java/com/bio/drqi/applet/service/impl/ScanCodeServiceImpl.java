@@ -1,22 +1,12 @@
 package com.bio.drqi.applet.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.SpringUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.applet.contant.ScanCodeConstant;
-import com.bio.drqi.applet.service.parse.dto.PlasmidUniqueCodeDTO;
-import com.bio.drqi.applet.service.parse.dto.SampleTestUniqueReqDTO;
-import com.bio.drqi.applet.service.parse.dto.TransformUniqueCodeDTO;
-import com.bio.drqi.applet.dto.rsp.ScanCodePlasmidRspDTO;
-import com.bio.drqi.applet.dto.rsp.ScanCodeSampleTestRspDTO;
-import com.bio.drqi.applet.dto.rsp.ScanCodeTransformRspDTO;
 import com.bio.drqi.applet.service.ScanCodeService;
-import com.bio.drqi.applet.service.parse.BaseCodeParse;
-import com.bio.drqi.domain.*;
-import com.bio.drqi.mapper.*;
+import com.bio.drqi.applet.service.parse.BaseCodeScanService;
 import com.bio.print.api.PrintApi;
 import com.bio.print.rsp.PrintDataRspDTO;
 import org.springframework.stereotype.Service;
@@ -39,8 +29,8 @@ public class ScanCodeServiceImpl implements ScanCodeService {
         if (StringUtils.isEmpty(printDataRspDTO.getUniqueCode())) {
             throw new BusinessException("二维码异常，请联系管理员：" + code);
         }
-        BaseCodeParse baseCodeParse = (BaseCodeParse) SpringUtils.getBean(ScanCodeConstant.scanCodeClassMap.get(printDataRspDTO.getPrintType()));
-        return baseCodeParse.doScan(printDataRspDTO.getUniqueCode());
+        BaseCodeScanService baseCodeScanService = (BaseCodeScanService) SpringUtils.getBean(ScanCodeConstant.scanCodeClassMap.get(printDataRspDTO.getPrintType()));
+        return baseCodeScanService.doScan(printDataRspDTO.getUniqueCode());
     }
 
 }

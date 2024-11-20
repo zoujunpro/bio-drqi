@@ -1,6 +1,6 @@
 package com.bio.drqi.applet.service.parse;
 
-public interface BaseCodeParse<T, V> {
+public interface BaseCodeScanService<T, V> {
 
 
      V doScan(String uniqueCode) ;

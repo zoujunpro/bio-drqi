@@ -23,7 +23,7 @@ public class ScanCodeSeedRspDTO {
 
     private String vectorTaskName;
 
-    private String transformName;
+    private String plasmidNames;
 
     private String transformCode;
 

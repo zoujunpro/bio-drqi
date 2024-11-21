@@ -2,6 +2,7 @@ package com.bio.drqi.applet.contant;
 
 import com.bio.drqi.applet.service.codescan.template.PlasmidCodeScanService;
 import com.bio.drqi.applet.service.codescan.template.SampleTestCodeScanService;
+import com.bio.drqi.applet.service.codescan.template.SeedCodeScanService;
 import com.bio.drqi.applet.service.codescan.template.TransformCodeScanService;
 
 import java.util.HashMap;
@@ -16,6 +17,8 @@ public class ScanCodeConstant {
         scanCodeClassMap.put("vector_label_print", PlasmidCodeScanService.class);
         scanCodeClassMap.put("sample_small_label_print", SampleTestCodeScanService.class);
         scanCodeClassMap.put("sample_large_label_print", SampleTestCodeScanService.class);
+        scanCodeClassMap.put("seed_in_label_print", SeedCodeScanService.class);
+        scanCodeClassMap.put("seed_out_label_print", SeedCodeScanService.class);
     }
 
 }

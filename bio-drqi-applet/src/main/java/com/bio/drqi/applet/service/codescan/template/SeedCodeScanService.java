@@ -1,7 +1,10 @@
 package com.bio.drqi.applet.service.codescan.template;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.applet.dto.rsp.ScanCodeSeedRspDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeTransformRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
@@ -39,6 +42,9 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
     @Resource
     private SeedStockTbMapper seedStockTbMapper;
 
+    @Resource
+    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+
 
     @Override
     public SeedUniqueCodeDTO parseUniqueCode(String uniqueCode) {
@@ -53,7 +59,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
     public ScanCodeSeedRspDTO dealCodeContent(SeedUniqueCodeDTO seedUniqueCodeDTO) {
         ScanCodeSeedRspDTO scanCodeSeedRspDTO = new ScanCodeSeedRspDTO();
         List<SeedStockTb> seedStockTbList = findSeed(seedUniqueCodeDTO.getSeedNum(), new ArrayList<SeedStockTb>());
-        for (SeedStockTb seedStockTb:seedStockTbList){
+        for (SeedStockTb seedStockTb : seedStockTbList) {
             ScanCodeSeedRspDTO.Seed seed = new ScanCodeSeedRspDTO.Seed();
             seed.setPlantNum(seedStockTb.getPlantNum());
             seed.setSeedNum(seedStockTb.getSeedNum());
@@ -86,6 +92,28 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setMaterialType(seedStockTb.getMaterialType());
             scanCodeSeedRspDTO.getSeedList().add(seed);
         }
+        if (CollectionUtil.isNotEmpty(seedStockTbList)) {
+            SeedStockTb firstSeed = seedStockTbList.get(0);
+            if (StringUtils.isNotEmpty(firstSeed.getProjectCode()) && StringUtils.isNotEmpty(firstSeed.getSampleCode())) {
+                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByUniqueCode(firstSeed.getProjectCode() + firstSeed.getSeedNum());
+                if (cerPlantDtlTb != null) {
+                    CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerPlantDtlTb.getProjectCode());
+                    CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerPlantDtlTb.getSubProjectCode());
+                    CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
+                    CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerPlantDtlTb.getTransformCode(), cerVectorTaskTb.getVectorTaskCode());
+                    scanCodeSeedRspDTO.setProjectCode(cerProjectTb.getProjectCode());
+                    scanCodeSeedRspDTO.setProjectName(cerProjectTb.getProjectName());
+                    scanCodeSeedRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
+                    scanCodeSeedRspDTO.setSubProjectName(cerSubProjectTb.getSubProjectName());
+                    scanCodeSeedRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+                    scanCodeSeedRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
+                    scanCodeSeedRspDTO.setPlasmidNames(cerTransformTb.getPlasmidName());
+                    scanCodeSeedRspDTO.setTransformCode(cerTransformTb.getTransformCode());
+                }
+            }
+
+        }
+
 
         return scanCodeSeedRspDTO;
     }
@@ -97,7 +125,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
         SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum);
         if (seedStockTb != null) {
             seedStockTbList.add(seedStockTb);
-            findSeed(seedNum, seedStockTbList);
+            findSeed(seedStockTb.getParentNum(), seedStockTbList);
         } else {
             return seedStockTbList;
         }

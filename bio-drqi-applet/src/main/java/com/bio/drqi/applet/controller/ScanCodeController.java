@@ -23,7 +23,7 @@ public class ScanCodeController {
      */
 
     @GetMapping("scanCode")
-    public ResponseResult<Object> scanCode(String code){
+    public ResponseResult<Object> scanCode(@RequestParam String code){
         return ResponseResult.getSuccess(scanCodeService.scanCode(code));
     }
 

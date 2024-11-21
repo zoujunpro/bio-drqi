@@ -1,5 +1,6 @@
 package com.bio.drqi.applet.service.impl;
 
+import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.base.api.RemoteUserService;
@@ -11,11 +12,12 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.service.TokenService;
 import com.bio.drqi.applet.dto.req.WxLoginReqDTO;
 import com.bio.drqi.applet.service.LoginService;
-import com.bio.drqi.applet.wx.WeChatProperties;
-import com.bio.drqi.applet.wx.WeChatService;
-import com.bio.drqi.applet.wx.dto.JsCode2sessionRspDTO;
+import com.bio.drqi.applet.wx.WxMaConfiguration;
+import com.bio.drqi.applet.wx.WxMiniAppProperties;
 import com.bio.drqi.domain.BioAppletLoginTb;
 import com.bio.drqi.mapper.BioAppletLoginTbMapper;
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,6 +25,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class LoginServiceImpl implements LoginService {
 
     @Resource
@@ -31,31 +34,32 @@ public class LoginServiceImpl implements LoginService {
     @Resource
     private RemoteUserService remoteUserService;
 
-    @Resource
-    private WeChatService weChatService;
 
     @Resource
-    private WeChatProperties weChatProperties;
+    private WxMiniAppProperties wxMiniAppProperties;
 
     @Resource
     private TokenService tokenService;
 
 
-
-
     @Override
     public LoginRspDTO login(WxLoginReqDTO wxLoginReqDTO) {
         BioAppletLoginTb bioAppletLoginTb = bioAppletLoginTbMapper.selectOneByTelephone(wxLoginReqDTO.getTelephone());
-
-        JsCode2sessionRspDTO jsCode2sessionRspDTO = weChatService.jsCode2session(wxLoginReqDTO.getCode());
+        WxMaJscode2SessionResult wxMaJscode2SessionResult=null;
+        try {
+             wxMaJscode2SessionResult = WxMaConfiguration.getMaService(wxLoginReqDTO.getAppId()).getUserService().getSessionInfo(wxLoginReqDTO.getCode());
+        } catch (WxErrorException e) {
+            log.error("微信接口调用失败 ", e);
+            throw new BusinessException("微信接口调用失败，请联系系统开发人员");
+        }
         ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserByTelephone(bioAppletLoginTb.getTelephone());
         if (responseResult.isError()) {
             throw new BusinessException("用户服务调用异常");
         }
         if (bioAppletLoginTb == null) {
             bioAppletLoginTb = new BioAppletLoginTb();
-            bioAppletLoginTb.setAppId(weChatProperties.getAppId());
-            bioAppletLoginTb.setOpenId(jsCode2sessionRspDTO.getOpenid());
+            bioAppletLoginTb.setAppId(wxLoginReqDTO.getAppId());
+            bioAppletLoginTb.setOpenId(wxMaJscode2SessionResult.getOpenid());
             bioAppletLoginTb.setTelephone(wxLoginReqDTO.getTelephone());
             bioAppletLoginTb.setJobNum(responseResult.getData().getJobNum());
             bioAppletLoginTb.setCreateTime(new Date());

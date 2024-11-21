@@ -6,4 +6,5 @@ import lombok.Data;
 public class WxLoginReqDTO {
     private String code;
     private String telephone;
+    private String appId;
 }

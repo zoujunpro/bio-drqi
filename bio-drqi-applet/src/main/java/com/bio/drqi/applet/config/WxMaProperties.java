@@ -1,22 +1,29 @@
-package com.bio.drqi.applet.wx;
+package com.bio.drqi.applet.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@ConfigurationProperties(prefix = "wx.miniapp")
+/**
+ * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ */
 @Data
-public class WxMiniAppProperties {
+@ConfigurationProperties(prefix = "wx.miniapp")
+public class WxMaProperties {
 
     private List<Config> configs;
 
     @Data
     public static class Config {
+        /**
+         * 设置微信小程序的appid
+         */
+        private String appid;
 
-        private String appId;
-
+        /**
+         * 设置微信小程序的Secret
+         */
         private String secret;
 
         /**
@@ -34,6 +41,5 @@ public class WxMiniAppProperties {
          */
         private String msgDataFormat;
     }
-
 
 }

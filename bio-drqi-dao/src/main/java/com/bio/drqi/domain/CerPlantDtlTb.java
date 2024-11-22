@@ -161,10 +161,6 @@ public class CerPlantDtlTb implements Serializable {
      */
     private Date updateTime;
 
-    /**
-     * 备注
-     */
-    private String remark;
 
 
 
@@ -200,7 +196,6 @@ public class CerPlantDtlTb implements Serializable {
         cerPlantDtlTb.setAcceptorMaterial(cerSampleTestTb.getAcceptorMaterial());
         cerPlantDtlTb.setCreateDate(new Date());
         cerPlantDtlTb.setUpdateTime(null);
-        cerPlantDtlTb.setRemark(null);
         return cerPlantDtlTb;
     }
 

@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.drqi.domain.CerPlantDtlTb
 */
 public interface CerPlantDtlTbMapper extends BaseMapper<CerPlantDtlTb> {
-
+    CerPlantDtlTb selectOneByPlantCode(@Param("plantCode") String plantCode);
 }
 
 

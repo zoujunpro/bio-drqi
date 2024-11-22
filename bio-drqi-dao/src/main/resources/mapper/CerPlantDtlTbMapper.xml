@@ -35,7 +35,6 @@
             <result property="acceptorMaterial" column="acceptor_material" jdbcType="VARCHAR"/>
             <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -48,7 +47,13 @@
         pollination_method,plant_status,father_info,
         mother_info,pollination_date,harvest_date,
         other_field,edit_type,species_code,
-        acceptor_material,create_date,update_time,
-        remark
+        acceptor_material,create_date,update_time
     </sql>
+    <select id="selectOneByPlantCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_plant_dtl_tb
+        where
+        plant_code = #{plantCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

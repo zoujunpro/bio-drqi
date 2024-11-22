@@ -57,9 +57,6 @@ public interface CerSampleTestTbMapper extends BaseMapper<CerSampleTestTb> {
 
     int updateIdentifyPrimerById(@Param("identifyPrimer") String identifyPrimer, @Param("id") Integer id);
 
-    List<CerSampleTestTb> selectAllBySampleCode(@Param("sampleCode") String sampleCode);
-
-
     Integer selectCountByApplyNo(@Param("applyNo") String applyNo);
 
     Integer selectCountByApplyNoAndCheckResultIsNotNull(@Param("applyNo") String applyNo);

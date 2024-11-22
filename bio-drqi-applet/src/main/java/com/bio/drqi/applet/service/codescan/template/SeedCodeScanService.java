@@ -1,15 +1,10 @@
 package com.bio.drqi.applet.service.codescan.template;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.json.JSONUtil;
-import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.applet.dto.rsp.ScanCodeSeedRspDTO;
-import com.bio.drqi.applet.dto.rsp.ScanCodeTransformRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.SeedUniqueCodeDTO;
-import com.bio.drqi.applet.service.codescan.dto.TransformUniqueCodeDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;
@@ -37,13 +32,10 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
     private CerTransformTbMapper cerTransformTbMapper;
 
     @Resource
-    private CerVectorGroupTbMapper cerVectorGroupTbMapper;
-
-    @Resource
     private SeedStockTbMapper seedStockTbMapper;
 
     @Resource
-    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+    private CerSampleTestTbMapper cerSampleTestTbMapper;
 
 
     @Override
@@ -95,12 +87,12 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
         if (CollectionUtil.isNotEmpty(seedStockTbList)) {
             SeedStockTb firstSeed = seedStockTbList.get(0);
             if (StringUtils.isNotEmpty(firstSeed.getProjectCode()) && StringUtils.isNotEmpty(firstSeed.getSampleCode())) {
-                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByUniqueCode(firstSeed.getProjectCode() + firstSeed.getSeedNum());
-                if (cerPlantDtlTb != null) {
-                    CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerPlantDtlTb.getProjectCode());
-                    CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerPlantDtlTb.getSubProjectCode());
-                    CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
-                    CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerPlantDtlTb.getTransformCode(), cerVectorTaskTb.getVectorTaskCode());
+                CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByUniqueCode(firstSeed.getProjectCode() + firstSeed.getSeedNum());
+                if (cerSampleTestTb != null) {
+                    CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerSampleTestTb.getProjectCode());
+                    CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerSampleTestTb.getSubProjectCode());
+                    CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
+                    CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerVectorTaskTb.getVectorTaskCode());
                     scanCodeSeedRspDTO.setProjectCode(cerProjectTb.getProjectCode());
                     scanCodeSeedRspDTO.setProjectName(cerProjectTb.getProjectName());
                     scanCodeSeedRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());

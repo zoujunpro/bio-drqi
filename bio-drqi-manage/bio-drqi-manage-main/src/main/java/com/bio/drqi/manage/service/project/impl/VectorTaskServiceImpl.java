@@ -264,25 +264,5 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     }
 
 
-    public static void main(String[] args) {
-        List<CerInstantVerifyTaskTb> cerInstantVerifyTaskTbList = new ArrayList<>();
-        CerInstantVerifyTaskTb cerInstantVerifyTaskTb1 = new CerInstantVerifyTaskTb();
-        cerInstantVerifyTaskTb1.setInstantVerifyCode("FE04302-06-A");
 
-        CerInstantVerifyTaskTb cerInstantVerifyTaskTb2 = new CerInstantVerifyTaskTb();
-        cerInstantVerifyTaskTb2.setInstantVerifyCode("FE04302-06-B");
-
-        CerInstantVerifyTaskTb cerInstantVerifyTaskTb3 = new CerInstantVerifyTaskTb();
-        cerInstantVerifyTaskTb3.setInstantVerifyCode("FE04302-06-BA");
-
-        CerInstantVerifyTaskTb cerInstantVerifyTaskTb4 = new CerInstantVerifyTaskTb();
-        cerInstantVerifyTaskTb4.setInstantVerifyCode("FE04302-06-FF");
-
-        cerInstantVerifyTaskTbList.add(cerInstantVerifyTaskTb1);
-        cerInstantVerifyTaskTbList.add(cerInstantVerifyTaskTb2);
-        cerInstantVerifyTaskTbList.add(cerInstantVerifyTaskTb3);
-        cerInstantVerifyTaskTbList.add(cerInstantVerifyTaskTb4);
-        List<String> ss = cerInstantVerifyTaskTbList.stream().map(cerInstantVerifyTaskTb -> cerInstantVerifyTaskTb.getInstantVerifyCode().split("-")[cerInstantVerifyTaskTb.getInstantVerifyCode().split("-").length - 1]).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
-        ss.forEach(s -> System.out.println(s));
-    }
 }

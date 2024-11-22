@@ -36,7 +36,6 @@
             <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
-            <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -50,13 +49,6 @@
         mother_info,pollination_date,harvest_date,
         other_field,edit_type,species_code,
         acceptor_material,create_date,update_time,
-        remark,unique_code
+        remark
     </sql>
-    <select id="selectOneByUniqueCode" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from cer_plant_dtl_tb
-        where
-        unique_code = #{uniqueCode,jdbcType=VARCHAR}
-    </select>
 </mapper>

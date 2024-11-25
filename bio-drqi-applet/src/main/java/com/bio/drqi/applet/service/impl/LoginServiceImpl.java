@@ -55,9 +55,13 @@ public class LoginServiceImpl implements LoginService {
             log.error("微信接口调用失败 ", e);
             throw new BusinessException("微信接口调用失败，请联系系统开发人员");
         }
+
         ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserByTelephone(bioAppletLoginTb.getTelephone());
         if (responseResult.isError()) {
             throw new BusinessException("用户服务调用异常");
+        }
+        if(responseResult.getData()==null){
+            throw new BusinessException("手机号非法");
         }
         if (bioAppletLoginTb == null) {
             bioAppletLoginTb = new BioAppletLoginTb();

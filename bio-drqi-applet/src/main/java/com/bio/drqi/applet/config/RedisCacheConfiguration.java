@@ -21,6 +21,8 @@ public class RedisCacheConfiguration{
     private String host;//
     @Value("${spring.redis.port}")
     private int port;//
+    @Value("${spring.redis.password}")
+    private String password;//
     @Value("${spring.redis.database}")
     private int database;//
     @Value("${spring.redis.timeout}")
@@ -39,7 +41,7 @@ public class RedisCacheConfiguration{
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxIdle(maxIdle);
         jedisPoolConfig.setMaxWaitMillis(maxWait);
-        JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout);
+        JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout,password);
         return jedisPool;
     }
 

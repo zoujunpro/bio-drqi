@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
+/***
+ * 苗操作相关接口
+ */
 @RestController
 @RequestMapping("/seedling")
 public class SeedlingController {

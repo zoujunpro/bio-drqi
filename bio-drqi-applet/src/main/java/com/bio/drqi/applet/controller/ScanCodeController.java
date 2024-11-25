@@ -1,6 +1,7 @@
 package com.bio.drqi.applet.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.drqi.applet.dto.rsp.ScanCodeRspDTO;
 import com.bio.drqi.applet.service.ScanCodeService;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class ScanCodeController {
      */
 
     @GetMapping("scanCode")
-    public ResponseResult<Object> scanCode(@RequestParam String code){
+    public ResponseResult<ScanCodeRspDTO> scanCode(@RequestParam String code){
         return ResponseResult.getSuccess(scanCodeService.scanCode(code));
     }
 

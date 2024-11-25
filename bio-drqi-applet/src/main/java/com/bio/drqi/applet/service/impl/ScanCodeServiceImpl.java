@@ -5,6 +5,7 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.SpringUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.applet.contant.ScanCodeConstant;
+import com.bio.drqi.applet.dto.rsp.ScanCodeRspDTO;
 import com.bio.drqi.applet.service.ScanCodeService;
 import com.bio.drqi.applet.service.codescan.BaseCodeScanService;
 import com.bio.print.api.PrintApi;
@@ -20,7 +21,7 @@ public class ScanCodeServiceImpl implements ScanCodeService {
     private PrintApi printApi;
 
     @Override
-    public Object scanCode(String code) {
+    public ScanCodeRspDTO scanCode(String code) {
         ResponseResult<PrintDataRspDTO> responseResult = printApi.queryPrintDataByCode(code);
         if (responseResult.isError()) {
             throw new BusinessException(responseResult.getMessage());
@@ -30,7 +31,10 @@ public class ScanCodeServiceImpl implements ScanCodeService {
             throw new BusinessException("二维码异常，请联系管理员：" + code);
         }
         BaseCodeScanService baseCodeScanService = (BaseCodeScanService) SpringUtils.getBean(ScanCodeConstant.scanCodeClassMap.get(printDataRspDTO.getPrintType()));
-        return baseCodeScanService.doScan(printDataRspDTO.getUniqueCode());
+        ScanCodeRspDTO scanCodeRspDTO = new ScanCodeRspDTO();
+        scanCodeRspDTO.setType(printDataRspDTO.getPrintType());
+        scanCodeRspDTO.setData(baseCodeScanService.doScan(printDataRspDTO.getUniqueCode()));
+        return scanCodeRspDTO;
     }
 
 }

@@ -1,8 +1,10 @@
 package com.bio.drqi.applet.service;
 
 
+import com.bio.drqi.applet.dto.rsp.ScanCodeRspDTO;
+
 public interface ScanCodeService {
 
-    Object scanCode(String code);
+    ScanCodeRspDTO scanCode(String code);
 
 }

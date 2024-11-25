@@ -40,6 +40,20 @@ public class WxMaProperties {
          * 消息格式，XML或者JSON
          */
         private String msgDataFormat;
+
+        /**
+         * 小程序名字（自定义）
+         */
+        private String appName;
+    }
+
+    public String getAppName(String appId){
+        for (Config config:this.configs){
+            if(config.appid.equals(appId)){
+                return config.appName;
+            }
+        }
+        return null;
     }
 
 }

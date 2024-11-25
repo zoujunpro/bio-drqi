@@ -13,7 +13,7 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.LoginUser;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.service.TokenService;
-import com.bio.drqi.applet.contant.DeviceEnum;
+import com.bio.drqi.applet.config.WxMaProperties;
 import com.bio.drqi.applet.dto.req.WxLoginReqDTO;
 import com.bio.drqi.applet.service.LoginService;
 import com.bio.drqi.domain.BioAppletLoginTb;
@@ -45,6 +45,9 @@ public class LoginServiceImpl implements LoginService {
 
     @Resource
     private RemoteLoginService remoteLoginService;
+
+    @Resource
+    private WxMaProperties wxMaProperties;
 
     @Override
     public LoginRspDTO login(WxLoginReqDTO wxLoginReqDTO) {
@@ -91,7 +94,7 @@ public class LoginServiceImpl implements LoginService {
         loginUser.setSystemList(JSONUtil.toList(JSONUtil.toJsonStr(userDetailRspDTO.getSystemList()), LoginUser.System.class));
         loginUser.setPermissionsList(JSONUtil.toList(JSONUtil.toJsonStr(userDetailRspDTO.getPermissionsList()), LoginUser.Permissions.class));
         loginUser.setManager(JSONUtil.toBean(JSONUtil.toJsonStr(userDetailRspDTO.getManager()), LoginUser.Manager.class));
-        loginUser.setClientId(DeviceEnum.getDevice(wxLoginReqDTO.getAppId()));
+        loginUser.setClientId(wxMaProperties.getAppName(wxLoginReqDTO.getAppId()));
         Map<String, Object> map = tokenService.createToken(loginUser);
         LoginRspDTO loginRspDTO = new LoginRspDTO();
         BeanUtil.copyProperties(map, loginRspDTO);
@@ -115,7 +118,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public void logout(String appId) {
-        remoteLoginService.logout(SecurityContextHolder.getUserName(), DeviceEnum.getDevice(appId));
+        remoteLoginService.logout(SecurityContextHolder.getUserName(), wxMaProperties.getAppName(appId));
     }
 
     @Override

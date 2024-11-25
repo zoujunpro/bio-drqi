@@ -4,13 +4,16 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
+import com.bio.base.api.RemoteLoginService;
 import com.bio.base.api.RemoteUserService;
 import com.bio.base.base.LoginRspDTO;
 import com.bio.base.user.rsp.UserDetailRspDTO;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.LoginUser;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.service.TokenService;
+import com.bio.drqi.applet.contant.DeviceEnum;
 import com.bio.drqi.applet.dto.req.WxLoginReqDTO;
 import com.bio.drqi.applet.service.LoginService;
 import com.bio.drqi.domain.BioAppletLoginTb;
@@ -39,6 +42,9 @@ public class LoginServiceImpl implements LoginService {
 
     @Resource
     private WxMaService wxMaService;
+
+    @Resource
+    private RemoteLoginService remoteLoginService;
 
     @Override
     public LoginRspDTO login(WxLoginReqDTO wxLoginReqDTO) {
@@ -85,10 +91,35 @@ public class LoginServiceImpl implements LoginService {
         loginUser.setSystemList(JSONUtil.toList(JSONUtil.toJsonStr(userDetailRspDTO.getSystemList()), LoginUser.System.class));
         loginUser.setPermissionsList(JSONUtil.toList(JSONUtil.toJsonStr(userDetailRspDTO.getPermissionsList()), LoginUser.Permissions.class));
         loginUser.setManager(JSONUtil.toBean(JSONUtil.toJsonStr(userDetailRspDTO.getManager()), LoginUser.Manager.class));
-        loginUser.setClientId(wxLoginReqDTO.getAppId());
+        loginUser.setClientId(DeviceEnum.getDevice(wxLoginReqDTO.getAppId()));
         Map<String, Object> map = tokenService.createToken(loginUser);
         LoginRspDTO loginRspDTO = new LoginRspDTO();
         BeanUtil.copyProperties(map, loginRspDTO);
         return loginRspDTO;
+    }
+
+    @Override
+    public UserDetailRspDTO data() {
+        LoginUser loginUser = tokenService.getLoginUser();
+        UserDetailRspDTO userDetailRspDTO = new UserDetailRspDTO();
+        userDetailRspDTO.setId(loginUser.getUserId());
+        userDetailRspDTO.setUsername(loginUser.getUsername());
+        userDetailRspDTO.setNickname(loginUser.getNickname());
+        userDetailRspDTO.setJobNum(loginUser.getJobNum());
+        userDetailRspDTO.setSystemList(JSONUtil.toList(JSONUtil.toJsonStr(loginUser.getRoleList()), UserDetailRspDTO.System.class));
+        userDetailRspDTO.setRoleList(JSONUtil.toList(JSONUtil.toJsonStr(loginUser.getRoleList()), UserDetailRspDTO.Role.class));
+        userDetailRspDTO.setPermissionsList(JSONUtil.toList(JSONUtil.toJsonStr(loginUser.getRoleList()), UserDetailRspDTO.Permissions.class));
+        userDetailRspDTO.setManager(JSONUtil.toBean(JSONUtil.toJsonStr(loginUser.getManager()), UserDetailRspDTO.Manager.class));
+        return userDetailRspDTO;
+    }
+
+    @Override
+    public void logout(String appId) {
+        remoteLoginService.logout(SecurityContextHolder.getUserName(), DeviceEnum.getDevice(appId));
+    }
+
+    @Override
+    public void logoutCall(String appId) {
+        tokenService.delSessionToken(appId);
     }
 }

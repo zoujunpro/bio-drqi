@@ -24,4 +24,12 @@
         where
         telephone = #{telephone,jdbcType=VARCHAR}
     </select>
+    <select id="selectOneByAppIdAndOpenId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_applet_login_tb
+        where
+        app_id = #{appId,jdbcType=VARCHAR}
+        AND open_id = #{openId,jdbcType=VARCHAR}
+    </select>
 </mapper>

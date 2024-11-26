@@ -14,6 +14,8 @@ public interface BioAppletLoginTbMapper extends BaseMapper<BioAppletLoginTb> {
 
     BioAppletLoginTb selectOneByTelephone(@Param("telephone") String telephone);
 
+    BioAppletLoginTb selectOneByAppIdAndOpenId(@Param("appId") String appId, @Param("openId") String openId);
+
 }
 
 

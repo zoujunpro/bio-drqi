@@ -52,11 +52,16 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public LoginRspDTO login(WxLoginReqDTO wxLoginReqDTO) {
 
+        ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserByTelephone(wxLoginReqDTO.getTelephone());
+        if (responseResult.isError()) {
+            throw new BusinessException("用户服务调用异常");
+        }
+        if (responseResult.getData() == null) {
+            throw new BusinessException("手机号非法");
+        }
         if (!wxMaService.switchover(wxLoginReqDTO.getAppId())) {
             throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", wxLoginReqDTO.getAppId()));
         }
-
-        BioAppletLoginTb bioAppletLoginTb = bioAppletLoginTbMapper.selectOneByTelephone(wxLoginReqDTO.getTelephone());
         WxMaJscode2SessionResult wxMaJscode2SessionResult = null;
         try {
             wxMaJscode2SessionResult = wxMaService.getUserService().getSessionInfo(wxLoginReqDTO.getCode());
@@ -64,13 +69,7 @@ public class LoginServiceImpl implements LoginService {
             log.error("微信接口调用失败 ", e);
             throw new BusinessException("微信接口调用失败，请联系系统开发人员");
         }
-        ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserByTelephone(wxLoginReqDTO.getTelephone());
-        if (responseResult.isError()) {
-            throw new BusinessException("用户服务调用异常");
-        }
-        if(responseResult.getData()==null){
-            throw new BusinessException("手机号非法");
-        }
+        BioAppletLoginTb bioAppletLoginTb = bioAppletLoginTbMapper.selectOneByAppIdAndOpenId(wxLoginReqDTO.getAppId(), wxMaJscode2SessionResult.getOpenid());
         if (bioAppletLoginTb == null) {
             bioAppletLoginTb = new BioAppletLoginTb();
             bioAppletLoginTb.setAppId(wxLoginReqDTO.getAppId());
@@ -79,6 +78,10 @@ public class LoginServiceImpl implements LoginService {
             bioAppletLoginTb.setJobNum(responseResult.getData().getJobNum());
             bioAppletLoginTb.setCreateTime(new Date());
             bioAppletLoginTbMapper.insert(bioAppletLoginTb);
+        } else {
+            bioAppletLoginTb.setTelephone(wxLoginReqDTO.getTelephone());
+            bioAppletLoginTb.setJobNum(responseResult.getData().getJobNum());
+            bioAppletLoginTbMapper.updateById(bioAppletLoginTb);
         }
         UserDetailRspDTO userDetailRspDTO = responseResult.getData();
         LoginUser loginUser = new LoginUser();

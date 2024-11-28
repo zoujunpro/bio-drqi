@@ -25,6 +25,7 @@ public class LoginController {
      * @return
      */
     @PostMapping("/login")
+    @WebLog(desc = "微信登录")
     public ResponseResult<LoginRspDTO> login(@RequestBody WxLoginReqDTO wxLoginReqDTO){
         return ResponseResult.getSuccess(loginService.login(wxLoginReqDTO));
 

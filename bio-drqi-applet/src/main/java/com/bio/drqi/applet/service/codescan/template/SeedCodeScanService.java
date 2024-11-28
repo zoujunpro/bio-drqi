@@ -90,7 +90,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
         if (CollectionUtil.isNotEmpty(seedStockTbList)) {
             SeedStockTb firstSeed = seedStockTbList.get(0);
             if (StringUtils.isNotEmpty(firstSeed.getProjectCode()) && StringUtils.isNotEmpty(firstSeed.getSampleCode())) {
-                CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByUniqueCode(firstSeed.getProjectCode() + firstSeed.getSeedNum());
+                CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByUniqueCode(firstSeed.getProjectCode() + firstSeed.getSampleCode());
                 if (cerSampleTestTb != null) {
                     CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerSampleTestTb.getProjectCode());
                     CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerSampleTestTb.getSubProjectCode());

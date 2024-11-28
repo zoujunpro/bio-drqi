@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -51,6 +53,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
     public ScanCodeSeedRspDTO dealCodeContent(SeedUniqueCodeDTO seedUniqueCodeDTO) {
         ScanCodeSeedRspDTO scanCodeSeedRspDTO = new ScanCodeSeedRspDTO();
         List<SeedStockTb> seedStockTbList = findSeed(seedUniqueCodeDTO.getSeedNum(), new ArrayList<SeedStockTb>());
+        Collections.reverse(seedStockTbList);
         for (SeedStockTb seedStockTb : seedStockTbList) {
             ScanCodeSeedRspDTO.Seed seed = new ScanCodeSeedRspDTO.Seed();
             seed.setPlantNum(seedStockTb.getPlantNum());

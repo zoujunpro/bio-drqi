@@ -79,7 +79,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setSpeciesCode(seedStockTb.getSpecies());
             seed.setSpeciesName(cerSpeciesConfMap.get(seedStockTb.getSpecies()).getSpeciesName());
             seed.setBreedCode(seedStockTb.getBreedCode());
-            seed.setBreedName(cerBreedDictMap.get(seedStockTb.getBreedCode()).getBreedName());
+            seed.setBreedName(cerBreedDictMap.get(seed.getSpeciesCode()+":"+seedStockTb.getBreedCode()).getBreedName());
             seed.setPollinationMethod(seedStockTb.getPollinationMethod());
             seed.setSeedType(seedStockTb.getSeedType());
             if (StringUtils.isNotEmpty(seed.getSeedType())) {

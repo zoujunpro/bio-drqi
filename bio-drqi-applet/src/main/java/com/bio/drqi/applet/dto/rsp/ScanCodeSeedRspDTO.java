@@ -98,6 +98,11 @@ public class ScanCodeSeedRspDTO {
         private String harvestType;
 
         /**
+         * 收获方式，单珠和混珠
+         */
+        private String harvestName;
+
+        /**
          * 收获时间
          */
         private String harvestTime;

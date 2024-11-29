@@ -6,14 +6,13 @@ import com.bio.drqi.applet.dto.rsp.ScanCodeSeedRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.SeedUniqueCodeDTO;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.BioDictTypeEnum;
 import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 转化扫码
@@ -39,6 +38,15 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
     @Resource
     private CerSampleTestTbMapper cerSampleTestTbMapper;
 
+    @Resource
+    private BioDictMapper bioDictMapper;
+
+    @Resource
+    private CerSpeciesConfMapper cerSpeciesConfMapper;
+
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
+
 
     @Override
     public SeedUniqueCodeDTO parseUniqueCode(String uniqueCode) {
@@ -52,6 +60,12 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
     @Override
     public ScanCodeSeedRspDTO dealCodeContent(SeedUniqueCodeDTO seedUniqueCodeDTO) {
         ScanCodeSeedRspDTO scanCodeSeedRspDTO = new ScanCodeSeedRspDTO();
+        List<BioDict> bioDictList = bioDictMapper.selectAll();
+        List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectList(null);
+        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
+        Map<String, CerBreedDict> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode() + ":" + cerBreedDict.getBreedName(), cerBreedDict -> cerBreedDict));
+        Map<String, CerSpeciesConf> cerSpeciesConfMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, cerSpeciesConf -> cerSpeciesConf));
+        Map<String, BioDict> bioDictMap = bioDictList.stream().collect(Collectors.toMap(bioDict -> bioDict.getDictType() + ":" + bioDict.getDictValueName(), bioDict -> bioDict));
         List<SeedStockTb> seedStockTbList = findSeed(seedUniqueCodeDTO.getSeedNum(), new ArrayList<SeedStockTb>());
         Collections.reverse(seedStockTbList);
         for (SeedStockTb seedStockTb : seedStockTbList) {
@@ -63,16 +77,25 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setMatherInfo(seedStockTb.getMatherInfo());
             seed.setGeneration(seedStockTb.getGeneration());
             seed.setSpeciesCode(seedStockTb.getSpecies());
-            seed.setSpeciesName(null);
+            seed.setSpeciesName(cerSpeciesConfMap.get(seedStockTb.getSpecies()).getSpeciesName());
             seed.setBreedCode(seedStockTb.getBreedCode());
-            seed.setBreedName(null);
+            seed.setBreedName(cerBreedDictMap.get(seedStockTb.getBreedCode()).getBreedName());
             seed.setPollinationMethod(seedStockTb.getPollinationMethod());
             seed.setSeedType(seedStockTb.getSeedType());
+            if (StringUtils.isNotEmpty(seed.getSeedType())) {
+                seed.setHarvestName(bioDictMap.get(BioDictTypeEnum.SEED_TYPE + ":" + seedStockTb.getSeedType()).getDictValueName());
+            }
             seed.setHarvestType(seedStockTb.getHarvestType());
+            if (StringUtils.isNotEmpty(seed.getHarvestType())) {
+                seed.setHarvestName(bioDictMap.get(BioDictTypeEnum.HARVEST_TYPE + ":" + seedStockTb.getHarvestType()).getDictValueName());
+            }
             seed.setHarvestTime(seedStockTb.getHarvestTime());
             seed.setSeedNumber(seedStockTb.getSeedNumber());
             seed.setUnit(seedStockTb.getUnit());
             seed.setSourceType(seedStockTb.getSourceType());
+            if (StringUtils.isNotEmpty(seed.getSourceType())) {
+                seed.setHarvestName(bioDictMap.get(BioDictTypeEnum.SOURCE_CHANNEL + ":" + seedStockTb.getSourceType()).getDictValueName());
+            }
             seed.setProductionLocationName(seedStockTb.getProductionLocationName());
             seed.setStockLocationNum(seedStockTb.getStockLocationNum());
             seed.setSubmitUserId(seedStockTb.getSubmitUserId());

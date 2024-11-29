@@ -135,5 +135,15 @@
         task_status = #{taskStatus,jdbcType=VARCHAR}
         order by id desc
     </select>
+    <select id="selectAllByVectorTaskCodeIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb
+        where
+        vector_task_code in
+        <foreach collection="vectorTaskCodeList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 
 </mapper>

@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.controller.project;
 
 import com.bio.drqi.timePlan.VectorTaskTimePlanAddReqDTO;
+import com.bio.drqi.timePlan.VectorTaskTimePlanExportReqDTO;
 import com.bio.drqi.timePlan.VectorTaskTimePlanListRspDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
@@ -9,6 +10,7 @@ import com.bio.drqi.manage.service.project.CerImplementationTimePlanService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 实施方案预估时间
@@ -22,6 +24,7 @@ public class CerImplementationTimePlanController {
 
     /**
      * 列表查询
+     *
      * @param vectorTaskCode
      * @return
      */
@@ -32,6 +35,7 @@ public class CerImplementationTimePlanController {
 
     /**
      * 添加实施方案预估时间
+     *
      * @param vectorTaskTimePlanAddReqDTO
      * @return
      */
@@ -41,5 +45,17 @@ public class CerImplementationTimePlanController {
     public ResponseResult<String> add(@RequestBody VectorTaskTimePlanAddReqDTO vectorTaskTimePlanAddReqDTO) {
         cerImplementationTimePlanService.add(vectorTaskTimePlanAddReqDTO);
         return ResponseResult.getSuccess("成功");
+    }
+
+    /**
+     * 实时方案预估时间导出
+     *
+     * @param vectorTaskTimePlanExportReqDTO
+     */
+    @PostMapping("/exportExcel")
+    @WebLog(desc = "实时方案预估时间导出")
+    @RequestLog("实时方案预估时间导出")
+    public void exportExcel(@RequestBody VectorTaskTimePlanExportReqDTO vectorTaskTimePlanExportReqDTO, HttpServletResponse httpServletResponse) {
+        cerImplementationTimePlanService.exportExcel(vectorTaskTimePlanExportReqDTO, httpServletResponse);
     }
 }

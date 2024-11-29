@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.Collection;
 import java.util.List;
 
 import com.bio.drqi.domain.CerVectorTaskPlanLog;
@@ -17,6 +18,10 @@ public interface CerVectorTaskPlanLogMapper extends BaseMapper<CerVectorTaskPlan
     List<CerVectorTaskPlanLog> selectAllByVectorTaskIdOrderByIdAsc(@Param("vectorTaskId") Integer vectorTaskId);
 
     CerVectorTaskPlanLog selectOneByVectorTaskIdAndEventType(@Param("vectorTaskId") Integer vectorTaskId, @Param("eventType") String eventType);
+
+    List<CerVectorTaskPlanLog> selectAllByVectorTaskIdIn(@Param("vectorTaskIdList") Collection<Integer> vectorTaskIdList);
+
+    List<CerVectorTaskPlanLog> selectAll();
 
 }
 

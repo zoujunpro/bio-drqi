@@ -39,4 +39,21 @@
         vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
         AND event_type = #{eventType,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByVectorTaskIdIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_plan_log
+        where
+        vector_task_id in
+        <foreach collection="vectorTaskIdList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+        order by vector_task_id desc, id asc
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_plan_log
+        order by vector_task_id desc, id asc
+    </select>
 </mapper>

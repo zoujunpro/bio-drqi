@@ -2,8 +2,10 @@ package com.bio.drqi.manage.service.project.impl;
 
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.ExcelUtil;
+import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.CerProjectTb;
 import com.bio.drqi.domain.CerSubProjectTb;
@@ -106,7 +108,7 @@ public class CerImplementationTimePlanServiceImpl implements CerImplementationTi
         for (CerVectorTaskPlanLog vectorTaskPlanLog : cerVectorTaskPlanLogList) {
             VectorTaskTimePlanExportDTO vectorTaskTimePlanExportDTO = new VectorTaskTimePlanExportDTO();
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMap.get(vectorTaskPlanLog.getVectorTaskId());
-            if(cerVectorTaskTb==null){
+            if (cerVectorTaskTb == null) {
                 continue;
             }
             vectorTaskTimePlanExportDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
@@ -121,6 +123,13 @@ public class CerImplementationTimePlanServiceImpl implements CerImplementationTi
             vectorTaskTimePlanExportDTO.setEstimatedEndTime(vectorTaskPlanLog.getEstimatedEndTime());
             vectorTaskTimePlanExportDTO.setActualStartTime(vectorTaskPlanLog.getActualStartTime());
             vectorTaskTimePlanExportDTO.setActualEndTime(vectorTaskPlanLog.getActualEndTime());
+
+            if (StringUtils.isNotEmpty(vectorTaskTimePlanExportDTO.getEstimatedStartTime()) && StringUtils.isNotEmpty(vectorTaskTimePlanExportDTO.getEstimatedEndTime())) {
+                vectorTaskTimePlanExportDTO.setEstimatedDate(DateUtil.betweenDay(DateUtil.parse(vectorTaskTimePlanExportDTO.getEstimatedStartTime(), "yyyy-MM-dd"), DateUtil.parse(vectorTaskTimePlanExportDTO.getEstimatedEndTime(), "yyyy-MM-dd"), true) + 1L);
+            }
+            if (StringUtils.isNotEmpty(vectorTaskTimePlanExportDTO.getActualStartTime()) && StringUtils.isNotEmpty(vectorTaskTimePlanExportDTO.getActualEndTime())) {
+                vectorTaskTimePlanExportDTO.setActualDate(DateUtil.betweenDay(DateUtil.parse(vectorTaskTimePlanExportDTO.getActualStartTime(), "yyyy-MM-dd"), DateUtil.parse(vectorTaskTimePlanExportDTO.getActualEndTime(), "yyyy-MM-dd"), true) + 1L);
+            }
             vectorTaskTimePlanExportDTOList.add(vectorTaskTimePlanExportDTO);
         }
         //导出excel

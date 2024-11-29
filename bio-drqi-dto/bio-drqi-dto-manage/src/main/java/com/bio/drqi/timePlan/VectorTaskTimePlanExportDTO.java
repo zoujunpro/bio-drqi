@@ -1,6 +1,8 @@
 package com.bio.drqi.timePlan;
 
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.bio.common.core.util.StringUtils;
 import lombok.Data;
 
 @Data
@@ -55,6 +57,12 @@ public class VectorTaskTimePlanExportDTO {
      */
     @ExcelProperty("实际结束时间")
     private String actualEndTime;
+
+    @ExcelProperty("预计天数")
+    private Long estimatedDate;
+
+    @ExcelProperty("实际天数")
+    private Long actualDate;
 
 
 }

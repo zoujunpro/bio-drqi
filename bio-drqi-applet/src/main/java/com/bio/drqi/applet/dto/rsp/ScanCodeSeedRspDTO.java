@@ -91,6 +91,10 @@ public class ScanCodeSeedRspDTO {
          * 种子类型  自交/杂交
          */
         private String seedType;
+        /**
+         * 种子类型  自交/杂交
+         */
+        private String seedTypeName;
 
         /**
          * 收获方式，单珠和混珠
@@ -121,6 +125,10 @@ public class ScanCodeSeedRspDTO {
          * 种子来源（1 CER/ 2 温室/3 大田/4 外单位）
          */
         private String sourceType;
+        /**
+         * 种子来源（1 CER/ 2 温室/3 大田/4 外单位）
+         */
+        private String sourceTypeName;
 
 
         /**

@@ -65,7 +65,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
         Map<String, CerBreedDict> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode() + ":" + cerBreedDict.getBreedCode(), cerBreedDict -> cerBreedDict));
         Map<String, CerSpeciesConf> cerSpeciesConfMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, cerSpeciesConf -> cerSpeciesConf));
-        Map<String, BioDict> bioDictMap = bioDictList.stream().collect(Collectors.toMap(bioDict -> bioDict.getDictType() + ":" + bioDict.getDictValueName(), bioDict -> bioDict));
+        Map<String, BioDict> bioDictMap = bioDictList.stream().collect(Collectors.toMap(bioDict -> bioDict.getDictType() + ":" + bioDict.getDictValueCode(), bioDict -> bioDict));
         List<SeedStockTb> seedStockTbList = findSeed(seedUniqueCodeDTO.getSeedNum(), new ArrayList<SeedStockTb>());
         Collections.reverse(seedStockTbList);
         for (SeedStockTb seedStockTb : seedStockTbList) {
@@ -83,18 +83,18 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setPollinationMethod(seedStockTb.getPollinationMethod());
             seed.setSeedType(seedStockTb.getSeedType());
             if (StringUtils.isNotEmpty(seed.getSeedType())) {
-                seed.setHarvestName(bioDictMap.get(BioDictTypeEnum.SEED_TYPE + ":" + seedStockTb.getSeedType()).getDictValueName());
+                seed.setSeedTypeName(bioDictMap.get(BioDictTypeEnum.SEED_TYPE.name() + ":" + seedStockTb.getSeedType()).getDictValueName());
             }
             seed.setHarvestType(seedStockTb.getHarvestType());
             if (StringUtils.isNotEmpty(seed.getHarvestType())) {
-                seed.setHarvestName(bioDictMap.get(BioDictTypeEnum.HARVEST_TYPE + ":" + seedStockTb.getHarvestType()).getDictValueName());
+                seed.setHarvestName(bioDictMap.get(BioDictTypeEnum.HARVEST_TYPE.name() + ":" + seedStockTb.getHarvestType()).getDictValueName());
             }
             seed.setHarvestTime(seedStockTb.getHarvestTime());
             seed.setSeedNumber(seedStockTb.getSeedNumber());
             seed.setUnit(seedStockTb.getUnit());
             seed.setSourceType(seedStockTb.getSourceType());
             if (StringUtils.isNotEmpty(seed.getSourceType())) {
-                seed.setHarvestName(bioDictMap.get(BioDictTypeEnum.SOURCE_CHANNEL + ":" + seedStockTb.getSourceType()).getDictValueName());
+                seed.setSourceTypeName(bioDictMap.get(BioDictTypeEnum.SOURCE_CHANNEL.name() + ":" + seedStockTb.getSourceType()).getDictValueName());
             }
             seed.setProductionLocationName(seedStockTb.getProductionLocationName());
             seed.setStockLocationNum(seedStockTb.getStockLocationNum());

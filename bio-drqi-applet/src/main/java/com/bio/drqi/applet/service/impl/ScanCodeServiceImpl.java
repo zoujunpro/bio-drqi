@@ -33,6 +33,7 @@ public class ScanCodeServiceImpl implements ScanCodeService {
         BaseCodeScanService baseCodeScanService = (BaseCodeScanService) SpringUtils.getBean(ScanCodeConstant.scanCodeClassMap.get(printDataRspDTO.getPrintType()));
         ScanCodeRspDTO scanCodeRspDTO = new ScanCodeRspDTO();
         scanCodeRspDTO.setType(printDataRspDTO.getPrintType());
+        scanCodeRspDTO.setPrintData(printDataRspDTO.getPrintData());
         scanCodeRspDTO.setData(baseCodeScanService.doScan(printDataRspDTO.getUniqueCode()));
         return scanCodeRspDTO;
     }

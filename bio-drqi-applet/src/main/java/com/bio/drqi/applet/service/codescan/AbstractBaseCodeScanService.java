@@ -1,16 +1,15 @@
 package com.bio.drqi.applet.service.codescan;
 
 
-import com.bio.drqi.applet.service.codescan.BaseCodeScanService;
-
 public abstract class AbstractBaseCodeScanService<T, V> implements BaseCodeScanService {
 
     public abstract T parseUniqueCode(String uniqueCode);
 
-    public  abstract V dealCodeContent(T t);
-    public  V doScan(String uniqueCode) {
+    public abstract V dealCodeContent(T t);
 
-        T t =parseUniqueCode(uniqueCode);
+    public V doScan(String uniqueCode) {
+
+        T t = parseUniqueCode(uniqueCode);
 
         return dealCodeContent(t);
     }

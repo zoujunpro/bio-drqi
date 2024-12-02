@@ -7,6 +7,8 @@ import lombok.Data;
 public class ScanCodeRspDTO {
     private String type;
 
+    private Object printData;
+
     private Object data;
 
 }

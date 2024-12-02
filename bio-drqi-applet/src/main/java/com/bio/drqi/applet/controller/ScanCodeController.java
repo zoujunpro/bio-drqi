@@ -6,6 +6,7 @@ import com.bio.drqi.applet.service.ScanCodeService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.UUID;
 
 /**
  * 扫码
@@ -26,6 +27,10 @@ public class ScanCodeController {
     @GetMapping("scanCode")
     public ResponseResult<ScanCodeRspDTO> scanCode(@RequestParam String code){
         return ResponseResult.getSuccess(scanCodeService.scanCode(code));
+    }
+
+    public static void main(String[] args) {
+        System.out.println(UUID.randomUUID().toString());
     }
 
 }

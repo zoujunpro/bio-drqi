@@ -82,10 +82,12 @@ public class SeedPrintServiceImpl implements SeedPrintService {
                 BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(content.getTaskNum());
                 seedOutLabelPrintDTO.setOutTime(DateUtil.format(new Date(), DatePattern.NORM_DATE_FORMAT));
                 seedOutLabelPrintDTO.setApplyUserName(bioTaskDtlTb.getApplyUserName());
+                seedOutLabelPrintDTO.setTaskNum(bioTaskDtlTb.getTaskNum());
             } else {
                 SeedStockOutLog seedStockOutLog = seedStockOutLogMapper.selectById(content.getId());
                 seedOutLabelPrintDTO.setOutTime(DateUtil.format(seedStockOutLog.getCreateTime(), DatePattern.NORM_DATE_FORMAT));
                 seedOutLabelPrintDTO.setApplyUserName(seedStockOutLog.getApplyUserName());
+                seedOutLabelPrintDTO.setTaskNum(seedStockOutLog.getTaskNum());
             }
             if (SeedMaterialTypeEnum.getSeedMaterialTypeEnumByType(seedStockTb.getMaterialType()).equals(SeedMaterialTypeEnum.TYPE_1)) {
                 yellowSeedOutLabelPrintDTOList.add(seedOutLabelPrintDTO);
@@ -145,6 +147,7 @@ public class SeedPrintServiceImpl implements SeedPrintService {
             seedInLabelPrintDTO.setBreedName(cerBreedDict.getBreedName());
             seedInLabelPrintDTO.setPlantNum(StringUtils.isEmpty(seedStockTb.getPlantNum()) ? "N/A" : seedStockTb.getPlantNum());
             seedInLabelPrintDTO.setGeneration(GenerationEnum.getGenerationDesc(seedStockTb.getGeneration()));
+            seedInLabelPrintDTO.setTaskNum(seedStockInLog.getTaskNum());
             if (StringUtils.isNotEmpty(seedStockTb.getHarvestType())) {
                 seedInLabelPrintDTO.setHarvestTypeName(dictInnerService.findByDictTypeAndDictValueCode(BioDictTypeEnum.HARVEST_TYPE, seedStockTb.getHarvestType()).getDictValueName());
             }

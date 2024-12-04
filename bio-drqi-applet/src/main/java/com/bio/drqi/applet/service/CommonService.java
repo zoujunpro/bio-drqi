@@ -13,8 +13,9 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
-import com.bio.drqi.common.OssUploadReqDTO;
-import com.bio.drqi.common.OssUploadRspDTO;
+import com.bio.drqi.applet.dto.common.OssUploadBase64ReqDTO;
+import com.bio.drqi.applet.dto.common.OssUploadReqDTO;
+import com.bio.drqi.applet.dto.common.OssUploadRspDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,7 @@ public class CommonService {
     @Resource
     public RemoteUserService remoteUserService;
 
+
     public OssUploadRspDTO upload(OssUploadReqDTO ossUploadReqDTO) {
         OssUploadRspDTO ossUploadRspDTO = new OssUploadRspDTO();
         String orgFileName = ossUploadReqDTO.getFile().getOriginalFilename();
@@ -47,6 +49,11 @@ public class CommonService {
         ossUploadRspDTO.setOrgFileName(orgFileName);
         ossUploadRspDTO.setOssFileObject(tempPath + "/" + orgFileName);
         return ossUploadRspDTO;
+    }
+
+    public String uploadBase64(OssUploadBase64ReqDTO ossUploadBase64ReqDTO) {
+        ossService.uploadBase64(ossUploadBase64ReqDTO.getBase64(),ossUploadBase64ReqDTO.getFilePath(),ossUploadBase64ReqDTO.getFileName());
+        return ossUploadBase64ReqDTO.getFilePath()+File.separator+ossUploadBase64ReqDTO.getFileName();
     }
 
 
@@ -71,12 +78,12 @@ public class CommonService {
 
     public Object getPlasmidDetail(String plasmidId) {
         String url = "http://172.16.14.2:10091/Search_plasmid_detail?name=%s&username=%s&serect_lab=%s&TJlab=False";
-        ResponseResult<UserDetailRspDTO> responseResult= remoteUserService.queryUserById(SecurityContextHolder.getUserId());
-        if(responseResult.isError()){
+        ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserById(SecurityContextHolder.getUserId());
+        if (responseResult.isError()) {
             throw new BusinessException(responseResult.getMessage());
         }
-        UserDetailRspDTO userDetailRspDTO=responseResult.getData();
-        List<UserDetailRspDTO.DataPermissionConfig>  dataPermissionConfigList= userDetailRspDTO.getDataPermissionConfigList();
+        UserDetailRspDTO userDetailRspDTO = responseResult.getData();
+        List<UserDetailRspDTO.DataPermissionConfig> dataPermissionConfigList = userDetailRspDTO.getDataPermissionConfigList();
         dataPermissionConfigList = dataPermissionConfigList.stream().filter(dataPermissionConfig -> "PLASMID_VIEW".equals(dataPermissionConfig.getPermissionType())).collect(Collectors.toList());
         String nickName = userDetailRspDTO.getNickname();
         String serect_lab = "T";

@@ -2,15 +2,13 @@ package com.bio.drqi.applet.controller;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.applet.dto.common.OssUploadBase64ReqDTO;
+import com.bio.drqi.applet.dto.common.OssUploadReqDTO;
+import com.bio.drqi.applet.dto.common.OssUploadRspDTO;
 import com.bio.drqi.applet.service.CommonService;
-import com.bio.drqi.common.OssUploadReqDTO;
-import com.bio.drqi.common.OssUploadRspDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
@@ -37,6 +35,16 @@ public class CommonController {
         return ResponseResult.getSuccess(commonService.upload(ossUploadReqDTO));
     }
 
+    /**
+     * 文件临时上传Base64
+     *
+     * @return
+     */
+    @RequestMapping("/uploadBase64")
+    @WebLog(desc = "文件临时上传Base64")
+    public ResponseResult<String> uploadBase64(@RequestBody OssUploadBase64ReqDTO ossUploadBase64ReqDTO) {
+        return ResponseResult.getSuccess(commonService.uploadBase64(ossUploadBase64ReqDTO));
+    }
 
     /**
      * 获取文件oss临时下载地址

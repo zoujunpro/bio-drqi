@@ -47,7 +47,7 @@ public class SeedlingServiceImpl implements SeedlingService {
     @Transactional(rollbackFor = Exception.class)
     public void remain(SeedlingRemainReqDTO seedlingRemainReqDTO) {
         CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(seedlingRemainReqDTO.getVectorTaskCode(), seedlingRemainReqDTO.getSampleCode());
-        if (cerSampleTestTb != null) {
+        if (cerSampleTestTb == null) {
             throw new BusinessException("找不到此取样信息");
         }
         CerSampleTestOperateLog cerSampleTestOperateLog = cerSampleTestOperateLogMapper.selectOneByUniqueCode(cerSampleTestTb.getProjectCode() + cerSampleTestTb.getSampleCode());

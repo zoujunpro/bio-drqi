@@ -63,8 +63,9 @@ public class LoginServiceImpl implements LoginService {
             throw new BusinessException("微信接口调用失败，请联系系统开发人员");
         }
         String decryptedPhoneNumber = WeChatPhoneNumberUtil.decryptPhoneNumber(wxLoginReqDTO.getEncryptedData(), wxMaJscode2SessionResult.getSessionKey(), wxLoginReqDTO.getIv());
-        System.out.println(decryptedPhoneNumber);
-        ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserByTelephone(decryptedPhoneNumber);
+        Map<String, Object> decryptedPhoneNumberMap = JSONUtil.toBean(decryptedPhoneNumber, Map.class);
+        String telephone = decryptedPhoneNumberMap.get("phoneNumber").toString();
+        ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserByTelephone(telephone);
         if (responseResult.isError()) {
             throw new BusinessException("用户服务调用异常");
         }
@@ -76,12 +77,12 @@ public class LoginServiceImpl implements LoginService {
             bioAppletLoginTb = new BioAppletLoginTb();
             bioAppletLoginTb.setAppId(wxLoginReqDTO.getAppId());
             bioAppletLoginTb.setOpenId(wxMaJscode2SessionResult.getOpenid());
-            bioAppletLoginTb.setTelephone(decryptedPhoneNumber);
+            bioAppletLoginTb.setTelephone(telephone);
             bioAppletLoginTb.setJobNum(responseResult.getData().getJobNum());
             bioAppletLoginTb.setCreateTime(new Date());
             bioAppletLoginTbMapper.insert(bioAppletLoginTb);
         } else {
-            bioAppletLoginTb.setTelephone(decryptedPhoneNumber);
+            bioAppletLoginTb.setTelephone(telephone);
             bioAppletLoginTb.setJobNum(responseResult.getData().getJobNum());
             bioAppletLoginTbMapper.updateById(bioAppletLoginTb);
         }

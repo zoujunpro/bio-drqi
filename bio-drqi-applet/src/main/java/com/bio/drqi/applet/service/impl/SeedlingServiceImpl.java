@@ -83,7 +83,7 @@ public class SeedlingServiceImpl implements SeedlingService {
     @Override
     public void remove(SeedlingRemoveReqDTO seedlingRemoveReqDTO) {
         CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(seedlingRemoveReqDTO.getVectorTaskCode(), seedlingRemoveReqDTO.getSampleCode());
-        if (cerSampleTestTb != null) {
+        if (cerSampleTestTb == null) {
             throw new BusinessException("找不到此取样信息");
         }
         CerSampleTestOperateLog cerSampleTestOperateLog = cerSampleTestOperateLogMapper.selectOneByUniqueCode(cerSampleTestTb.getProjectCode() + cerSampleTestTb.getSampleCode());
@@ -113,10 +113,10 @@ public class SeedlingServiceImpl implements SeedlingService {
     @Override
     public void report(SeedlingReportReqDTO seedlingReportReqDTO) {
         CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(seedlingReportReqDTO.getPlantCode());
-        if(PlantStatusEnum.STATUS_3.code.equals(cerPlantDtlTb.getPlantStatus())){
+        if (PlantStatusEnum.STATUS_3.code.equals(cerPlantDtlTb.getPlantStatus())) {
             throw new BusinessException("苗已剔除");
         }
-        CerPlantReportLog cerPlantReportLog=new CerPlantReportLog();
+        CerPlantReportLog cerPlantReportLog = new CerPlantReportLog();
         cerPlantReportLog.setPlantCode(seedlingReportReqDTO.getPlantCode());
         cerPlantReportLog.setRemark(seedlingReportReqDTO.getRemark());
         cerPlantReportLog.setCreateTime(new Date());

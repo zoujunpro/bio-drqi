@@ -5,40 +5,41 @@
 <mapper namespace="com.bio.drqi.mapper.CerPlantDtlTbMapper">
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerPlantDtlTb">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
-            <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
-            <result property="plantCode" column="plant_code" jdbcType="VARCHAR"/>
-            <result property="subProjectCode" column="sub_project_code" jdbcType="VARCHAR"/>
-            <result property="subProjectId" column="sub_project_id" jdbcType="INTEGER"/>
-            <result property="transformGroupName" column="transform_group_name" jdbcType="VARCHAR"/>
-            <result property="vectorTaskId" column="vector_task_id" jdbcType="INTEGER"/>
-            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
-            <result property="plasmidName" column="plasmid_name" jdbcType="VARCHAR"/>
-            <result property="transformCode" column="transform_code" jdbcType="VARCHAR"/>
-            <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
-            <result property="generation" column="generation" jdbcType="VARCHAR"/>
-            <result property="plantNumber" column="plant_number" jdbcType="INTEGER"/>
-            <result property="plantDate" column="plant_date" jdbcType="VARCHAR"/>
-            <result property="transplantDate" column="transplant_date" jdbcType="VARCHAR"/>
-            <result property="vernalizationBeginDate" column="vernalization_begin_date" jdbcType="VARCHAR"/>
-            <result property="vernalizationEndDate" column="vernalization_end_date" jdbcType="VARCHAR"/>
-            <result property="pollinationMethod" column="pollination_method" jdbcType="VARCHAR"/>
-            <result property="plantStatus" column="plant_status" jdbcType="VARCHAR"/>
-            <result property="fatherInfo" column="father_info" jdbcType="VARCHAR"/>
-            <result property="motherInfo" column="mother_info" jdbcType="VARCHAR"/>
-            <result property="pollinationDate" column="pollination_date" jdbcType="VARCHAR"/>
-            <result property="harvestDate" column="harvest_date" jdbcType="VARCHAR"/>
-            <result property="otherField" column="other_field" jdbcType="OTHER"/>
-            <result property="editType" column="edit_type" jdbcType="VARCHAR"/>
-            <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
-            <result property="acceptorMaterial" column="acceptor_material" jdbcType="VARCHAR"/>
-            <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+        <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+        <result property="plantCode" column="plant_code" jdbcType="VARCHAR"/>
+        <result property="subProjectCode" column="sub_project_code" jdbcType="VARCHAR"/>
+        <result property="subProjectId" column="sub_project_id" jdbcType="INTEGER"/>
+        <result property="transformGroupName" column="transform_group_name" jdbcType="VARCHAR"/>
+        <result property="vectorTaskId" column="vector_task_id" jdbcType="INTEGER"/>
+        <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+        <result property="plasmidName" column="plasmid_name" jdbcType="VARCHAR"/>
+        <result property="transformCode" column="transform_code" jdbcType="VARCHAR"/>
+        <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
+        <result property="generation" column="generation" jdbcType="VARCHAR"/>
+        <result property="plantNumber" column="plant_number" jdbcType="INTEGER"/>
+        <result property="plantDate" column="plant_date" jdbcType="VARCHAR"/>
+        <result property="transplantDate" column="transplant_date" jdbcType="VARCHAR"/>
+        <result property="vernalizationBeginDate" column="vernalization_begin_date" jdbcType="VARCHAR"/>
+        <result property="vernalizationEndDate" column="vernalization_end_date" jdbcType="VARCHAR"/>
+        <result property="pollinationMethod" column="pollination_method" jdbcType="VARCHAR"/>
+        <result property="plantStatus" column="plant_status" jdbcType="VARCHAR"/>
+        <result property="fatherInfo" column="father_info" jdbcType="VARCHAR"/>
+        <result property="motherInfo" column="mother_info" jdbcType="VARCHAR"/>
+        <result property="pollinationDate" column="pollination_date" jdbcType="VARCHAR"/>
+        <result property="harvestDate" column="harvest_date" jdbcType="VARCHAR"/>
+        <result property="otherField" column="other_field" jdbcType="OTHER"/>
+        <result property="editType" column="edit_type" jdbcType="VARCHAR"/>
+        <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+        <result property="acceptorMaterial" column="acceptor_material" jdbcType="VARCHAR"/>
+        <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,project_id,project_code,
+        id
+        ,project_id,project_code,
         plant_code,sub_project_code,sub_project_id,
         transform_group_name,vector_task_id,vector_task_code,
         plasmid_name,transform_code,sample_code,
@@ -49,11 +50,43 @@
         other_field,edit_type,species_code,
         acceptor_material,create_date,update_time
     </sql>
-    <select id="selectOneByPlantCode" resultMap="BaseResultMap">
+    <select id="selectSelective" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from cer_plant_dtl_tb
-        where
-        plant_code = #{plantCode,jdbcType=VARCHAR}
+        from  cer_plant_dtl_tb
+        <where>
+            <if test="projectId != null"> and  project_id=#{projectId,jdbcType=NUMERIC}</if>
+            <if test="projectCode != null">and  project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="plantCode != null">and  plant_code=#{plantCode,jdbcType=VARCHAR}</if>
+            <if test="subProjectCode != null">and  sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
+            <if test="subProjectId != null">and  sub_project_id=#{subProjectId,jdbcType=NUMERIC}</if>
+            <if test="transformGroupName != null">and  transform_group_name=#{transformGroupName,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskId != null">and  vector_task_id=#{vectorTaskId,jdbcType=NUMERIC}</if>
+            <if test="vectorTaskCode != null">and  vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="plasmidName != null">and  plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
+            <if test="transformCode != null">and  transform_code=#{transformCode,jdbcType=VARCHAR}</if>
+            <if test="sampleCode != null">and  sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
+            <if test="generation != null">and  generation=#{generation,jdbcType=VARCHAR}</if>
+            <if test="plantNumber != null">and  plant_number=#{plantNumber,jdbcType=NUMERIC}</if>
+            <if test="plantDate != null">and  plant_date=#{plantDate,jdbcType=VARCHAR}</if>
+            <if test="transplantDate != null">and  transplant_date=#{transplantDate,jdbcType=VARCHAR}</if>
+            <if test="vernalizationBeginDate != null">
+                and   vernalization_begin_date=#{vernalizationBeginDate,jdbcType=VARCHAR}
+            </if>
+            <if test="vernalizationEndDate != null">and  vernalization_end_date=#{vernalizationEndDate,jdbcType=VARCHAR}
+            </if>
+            <if test="pollinationMethod != null">and  pollination_method=#{pollinationMethod,jdbcType=VARCHAR}</if>
+            <if test="plantStatus != null">and  plant_status=#{plantStatus,jdbcType=VARCHAR}</if>
+            <if test="fatherInfo != null">and  father_info=#{fatherInfo,jdbcType=VARCHAR}</if>
+            <if test="motherInfo != null">and  mother_info=#{motherInfo,jdbcType=VARCHAR}</if>
+            <if test="pollinationDate != null">and  pollination_date=#{pollinationDate,jdbcType=VARCHAR}</if>
+            <if test="harvestDate != null">and  harvest_date=#{harvestDate,jdbcType=VARCHAR}</if>
+            <if test="otherField != null">and  other_field=#{otherField}</if>
+            <if test="editType != null">and  edit_type=#{editType,jdbcType=VARCHAR}</if>
+            <if test="speciesCode != null">and  species_code=#{speciesCode,jdbcType=VARCHAR}</if>
+            <if test="acceptorMaterial != null">and  acceptor_material=#{acceptorMaterial,jdbcType=VARCHAR}</if>
+            <if test="createDate != null">and  create_date=#{createDate,jdbcType=TIMESTAMP}</if>
+            <if test="updateTime != null">and  update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
+        </where>
     </select>
 </mapper>

@@ -1,16 +1,11 @@
-package com.bio.drqi.domain;
+package com.bio.drqi.plant.rsp;
 
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.Date;
 
-/**
- * cer种植表
- * @TableName cer_plant_dtl_tb
- */
 @Data
-public class CerPlantDtlTb implements Serializable {
+public class PlantDtlListRspDTO {
     /**
      * 主键ID
      */
@@ -160,7 +155,5 @@ public class CerPlantDtlTb implements Serializable {
      * 更新日期
      */
     private Date updateTime;
-
-    private static final long serialVersionUID = 1L;
 
 }

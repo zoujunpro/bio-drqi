@@ -16,6 +16,7 @@ import com.bio.common.core.service.TokenService;
 import com.bio.drqi.applet.config.WxMaProperties;
 import com.bio.drqi.applet.dto.req.WxLoginReqDTO;
 import com.bio.drqi.applet.service.LoginService;
+import com.bio.drqi.applet.util.WeChatPhoneNumberUtil;
 import com.bio.drqi.domain.BioAppletLoginTb;
 import com.bio.drqi.mapper.BioAppletLoginTbMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -51,14 +52,6 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public LoginRspDTO login(WxLoginReqDTO wxLoginReqDTO) {
-
-        ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserByTelephone(wxLoginReqDTO.getTelephone());
-        if (responseResult.isError()) {
-            throw new BusinessException("用户服务调用异常");
-        }
-        if (responseResult.getData() == null) {
-            throw new BusinessException("手机号非法");
-        }
         if (!wxMaService.switchover(wxLoginReqDTO.getAppId())) {
             throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", wxLoginReqDTO.getAppId()));
         }
@@ -69,17 +62,26 @@ public class LoginServiceImpl implements LoginService {
             log.error("微信接口调用失败 ", e);
             throw new BusinessException("微信接口调用失败，请联系系统开发人员");
         }
+        String decryptedPhoneNumber = WeChatPhoneNumberUtil.decryptPhoneNumber(wxLoginReqDTO.getEncryptedData(), wxMaJscode2SessionResult.getSessionKey(), wxLoginReqDTO.getIv());
+
+        ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserByTelephone(decryptedPhoneNumber);
+        if (responseResult.isError()) {
+            throw new BusinessException("用户服务调用异常");
+        }
+        if (responseResult.getData() == null) {
+            throw new BusinessException("手机号非法");
+        }
         BioAppletLoginTb bioAppletLoginTb = bioAppletLoginTbMapper.selectOneByAppIdAndOpenId(wxLoginReqDTO.getAppId(), wxMaJscode2SessionResult.getOpenid());
         if (bioAppletLoginTb == null) {
             bioAppletLoginTb = new BioAppletLoginTb();
             bioAppletLoginTb.setAppId(wxLoginReqDTO.getAppId());
             bioAppletLoginTb.setOpenId(wxMaJscode2SessionResult.getOpenid());
-            bioAppletLoginTb.setTelephone(wxLoginReqDTO.getTelephone());
+            bioAppletLoginTb.setTelephone(decryptedPhoneNumber);
             bioAppletLoginTb.setJobNum(responseResult.getData().getJobNum());
             bioAppletLoginTb.setCreateTime(new Date());
             bioAppletLoginTbMapper.insert(bioAppletLoginTb);
         } else {
-            bioAppletLoginTb.setTelephone(wxLoginReqDTO.getTelephone());
+            bioAppletLoginTb.setTelephone(decryptedPhoneNumber);
             bioAppletLoginTb.setJobNum(responseResult.getData().getJobNum());
             bioAppletLoginTbMapper.updateById(bioAppletLoginTb);
         }

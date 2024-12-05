@@ -89,4 +89,11 @@
             <if test="updateTime != null">and  update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
         </where>
     </select>
+    <select id="selectOneByPlantCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_plant_dtl_tb
+        where
+        plant_code = #{plantCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

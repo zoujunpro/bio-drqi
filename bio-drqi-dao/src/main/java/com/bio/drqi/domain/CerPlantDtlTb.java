@@ -107,7 +107,7 @@ public class CerPlantDtlTb implements Serializable {
     private String pollinationMethod;
 
     /**
-     * 植株状态 1正常，2异常, 3已剔除
+     * 植株状态 1正常，异常
      */
     private String plantStatus;
 
@@ -161,6 +161,42 @@ public class CerPlantDtlTb implements Serializable {
      */
     private Date updateTime;
 
+
+
+
     private static final long serialVersionUID = 1L;
+
+
+    public static CerPlantDtlTb of(CerSampleTestTb cerSampleTestTb){
+        CerPlantDtlTb cerPlantDtlTb=new CerPlantDtlTb();
+        cerPlantDtlTb.setProjectId(cerSampleTestTb.getProjectId());
+        cerPlantDtlTb.setProjectCode(cerSampleTestTb.getProjectCode());
+        cerPlantDtlTb.setSubProjectCode(cerSampleTestTb.getSubProjectCode());
+        cerPlantDtlTb.setSubProjectId(cerSampleTestTb.getSubProjectId());
+        cerPlantDtlTb.setVectorTaskId(cerSampleTestTb.getVectorTaskId());
+        cerPlantDtlTb.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
+        cerPlantDtlTb.setPlasmidName(cerSampleTestTb.getPlasmidName());
+        cerPlantDtlTb.setTransformCode(cerSampleTestTb.getTransformCode());
+        cerPlantDtlTb.setSampleCode(cerSampleTestTb.getSampleCode());
+        cerPlantDtlTb.setGeneration(cerSampleTestTb.getSampleGeneration());
+        cerPlantDtlTb.setPlantNumber(null);
+        cerPlantDtlTb.setPlantDate(null);
+        cerPlantDtlTb.setTransplantDate(null);
+        cerPlantDtlTb.setVernalizationBeginDate(null);
+        cerPlantDtlTb.setVernalizationEndDate(null);
+        cerPlantDtlTb.setPollinationMethod(null);
+        cerPlantDtlTb.setPlantStatus(null);
+        cerPlantDtlTb.setFatherInfo(null);
+        cerPlantDtlTb.setMotherInfo(null);
+        cerPlantDtlTb.setPollinationDate(null);
+        cerPlantDtlTb.setHarvestDate(null);
+        cerPlantDtlTb.setOtherField(null);
+        cerPlantDtlTb.setEditType(cerSampleTestTb.getTestEditType());
+        cerPlantDtlTb.setSpeciesCode(cerSampleTestTb.getSampleCode());
+        cerPlantDtlTb.setAcceptorMaterial(cerSampleTestTb.getAcceptorMaterial());
+        cerPlantDtlTb.setCreateDate(new Date());
+        cerPlantDtlTb.setUpdateTime(null);
+        return cerPlantDtlTb;
+    }
 
 }

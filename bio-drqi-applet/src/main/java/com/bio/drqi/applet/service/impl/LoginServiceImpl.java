@@ -63,7 +63,7 @@ public class LoginServiceImpl implements LoginService {
             throw new BusinessException("微信接口调用失败，请联系系统开发人员");
         }
         String decryptedPhoneNumber = WeChatPhoneNumberUtil.decryptPhoneNumber(wxLoginReqDTO.getEncryptedData(), wxMaJscode2SessionResult.getSessionKey(), wxLoginReqDTO.getIv());
-
+        System.out.println(decryptedPhoneNumber);
         ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserByTelephone(decryptedPhoneNumber);
         if (responseResult.isError()) {
             throw new BusinessException("用户服务调用异常");

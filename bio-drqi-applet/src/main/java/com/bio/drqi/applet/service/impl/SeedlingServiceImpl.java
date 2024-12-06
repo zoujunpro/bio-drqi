@@ -57,7 +57,7 @@ public class SeedlingServiceImpl implements SeedlingService {
 
         if ("传代".equals(cerSampleTestTb.getCheckResult()) || "留种".equals(cerSampleTestTb.getCheckResult())) {
             for (int i = 0; i < seedlingRemainReqDTO.getNumber(); i++) {
-                CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb);
+                CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb,SecurityContextHolder.getUserId(),SecurityContextHolder.getNickName());
                 cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode() + "-" + StringUtils.padl(String.valueOf(i + 1), 2, '0'));
                 cerPlantDtlTbMapper.insert(cerPlantDtlTb);
             }

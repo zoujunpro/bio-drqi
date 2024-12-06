@@ -162,12 +162,17 @@ public class CerPlantDtlTb implements Serializable {
     private Date updateTime;
 
 
+    private Integer createUserId;
+
+    private String createUserName;
+
+
 
 
     private static final long serialVersionUID = 1L;
 
 
-    public static CerPlantDtlTb of(CerSampleTestTb cerSampleTestTb){
+    public static CerPlantDtlTb of(CerSampleTestTb cerSampleTestTb,Integer createUserId,String createUserName){
         CerPlantDtlTb cerPlantDtlTb=new CerPlantDtlTb();
         cerPlantDtlTb.setProjectId(cerSampleTestTb.getProjectId());
         cerPlantDtlTb.setProjectCode(cerSampleTestTb.getProjectCode());
@@ -196,6 +201,8 @@ public class CerPlantDtlTb implements Serializable {
         cerPlantDtlTb.setAcceptorMaterial(cerSampleTestTb.getAcceptorMaterial());
         cerPlantDtlTb.setCreateDate(new Date());
         cerPlantDtlTb.setUpdateTime(null);
+        cerPlantDtlTb.setCreateUserId(createUserId);
+        cerPlantDtlTb.setCreateUserName(createUserName);
         return cerPlantDtlTb;
     }
 

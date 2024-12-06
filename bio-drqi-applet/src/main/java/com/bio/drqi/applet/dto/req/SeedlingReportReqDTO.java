@@ -7,6 +7,8 @@ import java.util.List;
 @Data
 public class SeedlingReportReqDTO {
 
+    private String vectorTaskCode;
+
     private String plantCode;
 
     /**

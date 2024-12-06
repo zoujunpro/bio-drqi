@@ -112,7 +112,7 @@ public class SeedlingServiceImpl implements SeedlingService {
 
     @Override
     public void report(SeedlingReportReqDTO seedlingReportReqDTO) {
-        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(seedlingReportReqDTO.getPlantCode());
+        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(seedlingReportReqDTO.getPlantCode(),seedlingReportReqDTO.getVectorTaskCode());
         if (PlantStatusEnum.STATUS_3.code.equals(cerPlantDtlTb.getPlantStatus())) {
             throw new BusinessException("苗已剔除");
         }

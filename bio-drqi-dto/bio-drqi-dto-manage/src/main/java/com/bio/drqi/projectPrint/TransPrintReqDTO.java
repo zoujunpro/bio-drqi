@@ -17,6 +17,8 @@ public class TransPrintReqDTO {
         private String vectorTaskCode;
 
         private String plantCode;
+
+        private Integer printNum;
     }
 
     public static void main(String[] args) {

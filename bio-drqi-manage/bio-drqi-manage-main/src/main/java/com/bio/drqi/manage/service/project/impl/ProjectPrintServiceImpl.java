@@ -149,6 +149,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 plantPrintData.setVectorTaskCode(content.getVectorTaskCode());
                 plantPrintData.setTransformCode(cerPlantDtlTb.getTransformCode());
                 plantPrintData.setPlantCode(content.getPlantCode());
+                plantPrintData.setPrintNum(content.getPrintNum()==null?1:content.getPrintNum());
                 plantPrintDataList.add(plantPrintData);
             }
         }

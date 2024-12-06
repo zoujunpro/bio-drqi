@@ -78,7 +78,7 @@ public class ProjectPrintController {
      *
      * @return
      */
-    @GetMapping("plantPrint")
+    @PostMapping("plantPrint")
     @WebLog(desc = "种植编号打印")
     @RequestLog("种植编号打印")
     public ResponseResult<PrintRspDTO> plantPrint(@RequestBody @Validated TransPrintReqDTO transPrintReqDTO) {

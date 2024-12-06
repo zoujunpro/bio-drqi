@@ -194,6 +194,11 @@ public class ScanCodeSeedRspDTO {
          */
         private String materialType;
 
+        /**
+         * 材料类型
+         */
+        private String materialTypeName;
+
     }
 
 }

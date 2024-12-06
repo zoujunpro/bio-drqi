@@ -107,7 +107,12 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setGeneticCharacter(seedStockTb.getGeneticCharacter());
             seed.setAliasName(seedStockTb.getAliasName());
             seed.setGeneType(seedStockTb.getGeneType());
-            seed.setMaterialType(seedStockTb.getMaterialType());
+             if(seedStockTb.getMaterialType()!=null){
+                 seed.setMaterialType(seedStockTb.getMaterialType());
+                 seed.setMaterialTypeName(bioDictMap.get(BioDictTypeEnum.MATERIAL_TYPE.name() + ":" + seedStockTb.getMaterialType()).getDictValueName());
+             }
+
+
             scanCodeSeedRspDTO.getSeedList().add(seed);
         }
         if (CollectionUtil.isNotEmpty(seedStockTbList)) {

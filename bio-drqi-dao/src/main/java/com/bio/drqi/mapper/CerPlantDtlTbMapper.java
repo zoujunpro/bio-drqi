@@ -16,7 +16,7 @@ public interface CerPlantDtlTbMapper extends BaseMapper<CerPlantDtlTb> {
 
     List<CerPlantDtlTb> selectSelective(CerPlantDtlTb cerPlantDtlTb);
 
-    CerPlantDtlTb selectOneByPlantCode(@Param("plantCode") String plantCode);
+    CerPlantDtlTb selectOneByPlantCodeAndVectorTaskCode(@Param("plantCode") String plantCode, @Param("vectorTaskCode") String vectorTaskCode);
 
 }
 

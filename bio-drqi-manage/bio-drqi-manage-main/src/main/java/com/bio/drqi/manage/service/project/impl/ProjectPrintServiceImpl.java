@@ -3,23 +3,23 @@ package com.bio.drqi.manage.service.project.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.drqi.base.PrintRspDTO;
+import com.bio.drqi.domain.CerPlantDtlTb;
 import com.bio.drqi.domain.CerSampleTestTb;
 import com.bio.drqi.domain.CerTransformTb;
 import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.enums.SeedMaterialTypeEnum;
 import com.bio.drqi.manage.service.project.ProjectPrintService;
+import com.bio.drqi.mapper.CerPlantDtlTbMapper;
 import com.bio.drqi.mapper.CerSampleTestTbMapper;
 import com.bio.drqi.mapper.CerTransformTbMapper;
 import com.bio.drqi.mapper.CerVectorTaskTbMapper;
 import com.bio.drqi.projectPrint.SamplePrintReqDTO;
 import com.bio.drqi.projectPrint.TransFormPrintReqDTO;
+import com.bio.drqi.projectPrint.TransPrintReqDTO;
 import com.bio.drqi.projectPrint.VectorBuildPrintReqDTO;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
-import com.bio.print.LayoutNumberPrintDTO;
-import com.bio.print.SamplePrintData;
-import com.bio.print.TransFormPrintData;
-import com.bio.print.VectorPrintData;
+import com.bio.print.*;
 import com.bio.print.api.PrintApi;
 import com.bio.print.req.PrintDataReqDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -45,8 +45,10 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
     private CerSampleTestTbMapper cerSampleTestTbMapper;
 
     @Resource
-    private PrintApi printApi;
+    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
 
+    @Resource
+    private PrintApi printApi;
 
 
     @Override
@@ -85,7 +87,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             transFormPrintData.setVectorTaskCode(cerTransformTb.getVectorTaskCode());
             transFormPrintData.setTransFormCode(cerTransformTb.getTransformCode());
             transFormPrintData.setPlasmidName(cerTransformTb.getPlasmidName());
-            transFormPrintData.setPrintNum(content.getPrintNum()==null?1:content.getPrintNum());
+            transFormPrintData.setPrintNum(content.getPrintNum() == null ? 1 : content.getPrintNum());
             transFormPrintDataList.add(transFormPrintData);
         }
         if (CollectionUtil.isNotEmpty(transFormPrintDataList)) {
@@ -116,9 +118,9 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         if (CollectionUtil.isNotEmpty(samplePrintDataList)) {
             PrintRspDTO printRspDTO = new PrintRspDTO();
             printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
-            if("large".equals(samplePrintReqDTO.getLabelType())){
+            if ("large".equals(samplePrintReqDTO.getLabelType())) {
                 printRspDTO.setPrintDataList(printDataSave("sample_large_label_print", samplePrintDataList));
-            }else {
+            } else {
                 printRspDTO.setPrintDataList(printDataSave("sample_small_label_print", samplePrintDataList));
             }
             return printRspDTO;
@@ -129,12 +131,34 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
 
     @Override
     public PrintRspDTO layoutPrint(String layoutNumber) {
-        LayoutNumberPrintDTO layoutNumberPrintDTO=new LayoutNumberPrintDTO();
+        LayoutNumberPrintDTO layoutNumberPrintDTO = new LayoutNumberPrintDTO();
         layoutNumberPrintDTO.setLayoutNumber(layoutNumber);
         PrintRspDTO printRspDTO = new PrintRspDTO();
         printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
         printRspDTO.setPrintDataList(printDataSave("layout_number_label_print", Arrays.asList(layoutNumberPrintDTO)));
         return printRspDTO;
+    }
+
+    @Override
+    public PrintRspDTO plantPrint(TransPrintReqDTO transPrintReqDTO) {
+        List<PlantPrintData> plantPrintDataList = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(transPrintReqDTO.getContentList())) {
+            for (TransPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
+                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(content.getPlantCode(), content.getVectorTaskCode());
+                PlantPrintData plantPrintData = new PlantPrintData();
+                plantPrintData.setVectorTaskCode(content.getVectorTaskCode());
+                plantPrintData.setTransformCode(cerPlantDtlTb.getTransformCode());
+                plantPrintData.setPlantCode(content.getPlantCode());
+                plantPrintDataList.add(plantPrintData);
+            }
+        }
+        if (CollectionUtil.isNotEmpty(plantPrintDataList)) {
+            PrintRspDTO printRspDTO = new PrintRspDTO();
+            printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
+            printRspDTO.setPrintDataList(printDataSave("plant_label_print", plantPrintDataList));
+            return printRspDTO;
+        }
+        return null;
     }
 
     private List<String> printDataSave(String printType, Object printData) {

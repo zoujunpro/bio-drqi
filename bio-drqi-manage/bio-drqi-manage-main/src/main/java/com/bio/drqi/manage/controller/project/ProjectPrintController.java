@@ -4,6 +4,7 @@ package com.bio.drqi.manage.controller.project;
 import com.bio.drqi.base.PrintRspDTO;
 import com.bio.drqi.projectPrint.SamplePrintReqDTO;
 import com.bio.drqi.projectPrint.TransFormPrintReqDTO;
+import com.bio.drqi.projectPrint.TransPrintReqDTO;
 import com.bio.drqi.projectPrint.VectorBuildPrintReqDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
@@ -71,5 +72,18 @@ public class ProjectPrintController {
     public ResponseResult<PrintRspDTO> layoutPrint(@RequestParam @Validated String layoutNumber) {
         return ResponseResult.getSuccess(projectPrintService.layoutPrint(layoutNumber));
     }
+
+    /**
+     * 种植编号打印
+     *
+     * @return
+     */
+    @GetMapping("plantPrint")
+    @WebLog(desc = "种植编号打印")
+    @RequestLog("种植编号打印")
+    public ResponseResult<PrintRspDTO> plantPrint(@RequestBody @Validated TransPrintReqDTO transPrintReqDTO) {
+        return ResponseResult.getSuccess(projectPrintService.plantPrint(transPrintReqDTO));
+    }
+
 
 }

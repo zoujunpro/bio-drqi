@@ -144,7 +144,7 @@ public class SeedlingServiceImpl implements SeedlingService {
         if(CollectionUtil.isNotEmpty(cerSpeciesPlantFeaturesConfList)){
             for (CerSpeciesPlantFeaturesConf cerSpeciesPlantFeaturesConf:cerSpeciesPlantFeaturesConfList){
                 mapList.add(new HashMap<String, String>() {{
-                    put(cerSpeciesPlantFeaturesConf.getSpeciesCode(), cerSpeciesPlantFeaturesConf.getPlantFeaturesName());
+                    put(cerSpeciesPlantFeaturesConf.getPlantFeaturesName(), cerSpeciesPlantFeaturesConf.getPlantFeaturesDesc());
                 }});
             }
         }

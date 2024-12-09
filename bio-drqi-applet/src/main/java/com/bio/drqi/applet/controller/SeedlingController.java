@@ -56,6 +56,11 @@ public class SeedlingController {
         return ResponseResult.getSuccess(null);
     }
 
+    /**
+     * 查询字段
+     * @param findPlantFieldReqDTO
+     * @return
+     */
     @PostMapping("/findPlantField")
     public ResponseResult<List<Map<String, String>>> findPlantField(@RequestBody FindPlantFieldReqDTO findPlantFieldReqDTO) {
         return ResponseResult.getSuccess(seedlingService.findPlantField(findPlantFieldReqDTO));

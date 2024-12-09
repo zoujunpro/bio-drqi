@@ -17,6 +17,7 @@ public class ScanCodeConstant {
         scanCodeClassMap.put("seed_in_label_print", SeedCodeScanService.class);
         scanCodeClassMap.put("seed_out_label_print", SeedCodeScanService.class);
         scanCodeClassMap.put("layout_number_label_print", NineSixLayoutCodeScanService.class);
+        scanCodeClassMap.put("plant_label_print",T0PlantCodeScanService.class);
     }
 
 }

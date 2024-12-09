@@ -1,29 +1,30 @@
 package com.bio.drqi.applet.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.applet.dto.req.FindPlantFieldReqDTO;
 import com.bio.drqi.applet.dto.req.SeedlingRemainReqDTO;
 import com.bio.drqi.applet.dto.req.SeedlingRemoveReqDTO;
 import com.bio.drqi.applet.dto.req.SeedlingReportReqDTO;
 import com.bio.drqi.applet.enums.CheckResultOperateEnum;
 import com.bio.drqi.applet.service.SeedlingService;
-import com.bio.drqi.domain.CerPlantDtlTb;
-import com.bio.drqi.domain.CerPlantReportLog;
-import com.bio.drqi.domain.CerSampleTestOperateLog;
-import com.bio.drqi.domain.CerSampleTestTb;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.CerPlantFixedFieldEnum;
 import com.bio.drqi.enums.PlantStatusEnum;
-import com.bio.drqi.mapper.CerPlantDtlTbMapper;
-import com.bio.drqi.mapper.CerPlantReportLogMapper;
-import com.bio.drqi.mapper.CerSampleTestOperateLogMapper;
-import com.bio.drqi.mapper.CerSampleTestTbMapper;
+import com.bio.drqi.mapper.*;
+import jdk.internal.org.objectweb.asm.Handle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -43,6 +44,12 @@ public class SeedlingServiceImpl implements SeedlingService {
     @Resource
     private CerPlantReportLogMapper cerPlantReportLogMapper;
 
+    @Resource
+    private CerVectorTaskTbMapper cerVectorTaskTbMapper;
+
+    @Resource
+    private CerSpeciesPlantFeaturesConfMapper cerSpeciesPlantFeaturesConfMapper;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void remain(SeedlingRemainReqDTO seedlingRemainReqDTO) {
@@ -57,7 +64,7 @@ public class SeedlingServiceImpl implements SeedlingService {
 
         if ("传代".equals(cerSampleTestTb.getCheckResult()) || "留种".equals(cerSampleTestTb.getCheckResult())) {
             for (int i = 0; i < seedlingRemainReqDTO.getNumber(); i++) {
-                CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb,SecurityContextHolder.getUserId(),SecurityContextHolder.getNickName());
+                CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName());
                 cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode() + "-" + StringUtils.padl(String.valueOf(i + 1), 2, '0'));
                 cerPlantDtlTbMapper.insert(cerPlantDtlTb);
             }
@@ -112,7 +119,7 @@ public class SeedlingServiceImpl implements SeedlingService {
 
     @Override
     public void report(SeedlingReportReqDTO seedlingReportReqDTO) {
-        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(seedlingReportReqDTO.getPlantCode(),seedlingReportReqDTO.getVectorTaskCode());
+        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(seedlingReportReqDTO.getPlantCode(), seedlingReportReqDTO.getVectorTaskCode());
         if (PlantStatusEnum.STATUS_3.code.equals(cerPlantDtlTb.getPlantStatus())) {
             throw new BusinessException("苗已剔除");
         }
@@ -126,5 +133,21 @@ public class SeedlingServiceImpl implements SeedlingService {
         cerPlantReportLog.setPlantAttribute(JSONUtil.toJsonStr(seedlingReportReqDTO.getAttributes()));
         cerPlantReportLogMapper.insert(cerPlantReportLog);
 
+    }
+
+    @Override
+    public List<Map<String, String>> findPlantField(FindPlantFieldReqDTO findPlantFieldReqDTO) {
+        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(findPlantFieldReqDTO.getPlantCode(), findPlantFieldReqDTO.getVectorTaskCode());
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
+        List<Map<String, String>> mapList = CerPlantFixedFieldEnum.getFixedField();
+        List<CerSpeciesPlantFeaturesConf> cerSpeciesPlantFeaturesConfList = cerSpeciesPlantFeaturesConfMapper.selectAllBySpeciesCodeOrderByOrderNum(cerVectorTaskTb.getSpeciesCode());
+        if(CollectionUtil.isNotEmpty(cerSpeciesPlantFeaturesConfList)){
+            for (CerSpeciesPlantFeaturesConf cerSpeciesPlantFeaturesConf:cerSpeciesPlantFeaturesConfList){
+                mapList.add(new HashMap<String, String>() {{
+                    put(cerSpeciesPlantFeaturesConf.getSpeciesCode(), cerSpeciesPlantFeaturesConf.getPlantFeaturesName());
+                }});
+            }
+        }
+        return mapList;
     }
 }

@@ -15,7 +15,6 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.CerPlantFixedFieldEnum;
 import com.bio.drqi.enums.PlantStatusEnum;
 import com.bio.drqi.mapper.*;
-import jdk.internal.org.objectweb.asm.Handle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

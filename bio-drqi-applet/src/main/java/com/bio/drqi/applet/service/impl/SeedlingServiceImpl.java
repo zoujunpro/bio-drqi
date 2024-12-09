@@ -123,6 +123,7 @@ public class SeedlingServiceImpl implements SeedlingService {
         if (PlantStatusEnum.STATUS_3.code.equals(cerPlantDtlTb.getPlantStatus())) {
             throw new BusinessException("苗已剔除");
         }
+
         CerPlantReportLog cerPlantReportLog = new CerPlantReportLog();
         cerPlantReportLog.setPlantCode(seedlingReportReqDTO.getPlantCode());
         cerPlantReportLog.setRemark(seedlingReportReqDTO.getRemark());

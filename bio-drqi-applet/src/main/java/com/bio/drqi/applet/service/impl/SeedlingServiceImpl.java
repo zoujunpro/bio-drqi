@@ -158,9 +158,8 @@ public class SeedlingServiceImpl implements SeedlingService {
                 cerPlantDtlTb.setOtherField(JSONUtil.toJsonStr(result));
             }
         }
-
+        cerPlantDtlTb.setPlantStatus(seedlingReportReqDTO.getPlantStatus());
         cerPlantDtlTbMapper.updateById(cerPlantDtlTb);
-
 
         CerPlantReportLog cerPlantReportLog = new CerPlantReportLog();
         cerPlantReportLog.setPlantCode(seedlingReportReqDTO.getPlantCode());

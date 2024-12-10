@@ -1,6 +1,7 @@
 package com.bio.drqi.applet.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
@@ -130,19 +131,17 @@ public class SeedlingServiceImpl implements SeedlingService {
         if (CollectionUtil.isNotEmpty(attributeList)) {
             for (SeedlingReportReqDTO.Attribute attribute : attributeList) {
                 if (CerPlantFixedFieldEnum.harvestDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setHarvestDate(attribute.getValue());
+                    cerPlantDtlTb.setHarvestDate(DateUtil.format(new Date(),"yyyy-MM-hh"));
                 } else if (CerPlantFixedFieldEnum.pollinationDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setPollinationDate(attribute.getValue());
-                } else if (CerPlantFixedFieldEnum.pollinationMethod.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setPollinationMethod(attribute.getValue());
+                    cerPlantDtlTb.setPollinationDate(DateUtil.format(new Date(),"yyyy-MM-hh"));
                 } else if (CerPlantFixedFieldEnum.vernalizationEndDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setVernalizationEndDate(attribute.getValue());
+                    cerPlantDtlTb.setVernalizationEndDate(DateUtil.format(new Date(),"yyyy-MM-hh"));
                 } else if (CerPlantFixedFieldEnum.vernalizationBeginDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setVernalizationBeginDate(attribute.getValue());
+                    cerPlantDtlTb.setVernalizationBeginDate(DateUtil.format(new Date(),"yyyy-MM-hh"));
                 } else if (CerPlantFixedFieldEnum.transplantDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setTransplantDate(attribute.getValue());
+                    cerPlantDtlTb.setTransplantDate(DateUtil.format(new Date(),"yyyy-MM-hh"));
                 } else if (CerPlantFixedFieldEnum.plantDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setPlantDate(attribute.getValue());
+                    cerPlantDtlTb.setPlantDate(DateUtil.format(new Date(),"yyyy-MM-hh"));
                 }
             }
 
@@ -151,7 +150,7 @@ public class SeedlingServiceImpl implements SeedlingService {
             Map<String, String> attributeMap = attributeList.stream().collect(Collectors.toMap(SeedlingReportReqDTO.Attribute::getName, SeedlingReportReqDTO.Attribute::getValue));
             for (CerSpeciesPlantFeaturesConf cerSpeciesPlantFeaturesConf : cerSpeciesPlantFeaturesConfList) {
                 if (attributeMap.get(cerSpeciesPlantFeaturesConf.getPlantFeaturesName()) != null) {
-                    map.put(cerSpeciesPlantFeaturesConf.getPlantFeaturesName(), cerSpeciesPlantFeaturesConf.getPlantFeaturesDesc());
+                    map.put(cerSpeciesPlantFeaturesConf.getPlantFeaturesName(), DateUtil.format(new Date(),"yyyy-MM-hh"));
                 }
             }
             if(CollectionUtil.isNotEmpty(map)){

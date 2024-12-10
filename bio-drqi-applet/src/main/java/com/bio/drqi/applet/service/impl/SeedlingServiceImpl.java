@@ -128,17 +128,17 @@ public class SeedlingServiceImpl implements SeedlingService {
         if (CollectionUtil.isNotEmpty(attributeList)) {
             for (SeedlingReportReqDTO.Attribute attribute : attributeList) {
                 if (CerPlantFixedFieldEnum.harvestDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setHarvestDate(DateUtil.format(new Date(), "yyyy-MM-hh"));
+                    cerPlantDtlTb.setHarvestDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
                 } else if (CerPlantFixedFieldEnum.pollinationDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setPollinationDate(DateUtil.format(new Date(), "yyyy-MM-hh"));
+                    cerPlantDtlTb.setPollinationDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
                 } else if (CerPlantFixedFieldEnum.vernalizationEndDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setVernalizationEndDate(DateUtil.format(new Date(), "yyyy-MM-hh"));
+                    cerPlantDtlTb.setVernalizationEndDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
                 } else if (CerPlantFixedFieldEnum.vernalizationBeginDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setVernalizationBeginDate(DateUtil.format(new Date(), "yyyy-MM-hh"));
+                    cerPlantDtlTb.setVernalizationBeginDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
                 } else if (CerPlantFixedFieldEnum.transplantDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setTransplantDate(DateUtil.format(new Date(), "yyyy-MM-hh"));
+                    cerPlantDtlTb.setTransplantDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
                 } else if (CerPlantFixedFieldEnum.plantDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setPlantDate(DateUtil.format(new Date(), "yyyy-MM-hh"));
+                    cerPlantDtlTb.setPlantDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
                 }
             }
 
@@ -150,7 +150,7 @@ public class SeedlingServiceImpl implements SeedlingService {
                     SeedlingReportReqDTO.Attribute attribute = new SeedlingReportReqDTO.Attribute();
                     attribute.setName(cerSpeciesPlantFeaturesConf.getPlantFeaturesName());
                     attribute.setDesc(cerSpeciesPlantFeaturesConf.getPlantFeaturesDesc());
-                    attribute.setValue(DateUtil.format(new Date(), "yyyy-MM-hh"));
+                    attribute.setValue(DateUtil.format(new Date(), "yyyy-MM-dd"));
                     result.add(attribute);
                 }
             }

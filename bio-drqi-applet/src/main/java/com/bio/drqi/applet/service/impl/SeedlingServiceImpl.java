@@ -64,6 +64,7 @@ public class SeedlingServiceImpl implements SeedlingService {
             for (int i = 0; i < seedlingRemainReqDTO.getNumber(); i++) {
                 CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName());
                 cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode() + "-" + StringUtils.padl(String.valueOf(i + 1), 2, '0'));
+                cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
                 cerPlantDtlTbMapper.insert(cerPlantDtlTb);
             }
             cerSampleTestOperateLog = new CerSampleTestOperateLog();

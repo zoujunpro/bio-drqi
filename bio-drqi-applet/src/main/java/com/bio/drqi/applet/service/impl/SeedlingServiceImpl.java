@@ -176,17 +176,52 @@ public class SeedlingServiceImpl implements SeedlingService {
 
     @Override
     public List<Map<String, String>> findPlantField(FindPlantFieldReqDTO findPlantFieldReqDTO) {
+        List<Map<String, String>> mapListResult = new ArrayList<>();
         CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(findPlantFieldReqDTO.getPlantCode(), findPlantFieldReqDTO.getVectorTaskCode());
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
-        List<Map<String, String>> mapList = CerPlantFixedFieldEnum.getFixedField();
         List<CerSpeciesPlantFeaturesConf> cerSpeciesPlantFeaturesConfList = cerSpeciesPlantFeaturesConfMapper.selectAllBySpeciesCodeOrderByOrderNum(cerVectorTaskTb.getSpeciesCode());
-        if (CollectionUtil.isNotEmpty(cerSpeciesPlantFeaturesConfList)) {
-            for (CerSpeciesPlantFeaturesConf cerSpeciesPlantFeaturesConf : cerSpeciesPlantFeaturesConfList) {
-                mapList.add(new HashMap<String, String>() {{
-                    put(cerSpeciesPlantFeaturesConf.getPlantFeaturesName(), cerSpeciesPlantFeaturesConf.getPlantFeaturesDesc());
-                }});
-            }
+        //去除已经有属性的数据
+        if (cerPlantDtlTb.getOtherField() != null) {
+            List<SeedlingReportReqDTO.Attribute> attributeList = JSONUtil.toList(JSONUtil.toJsonStr(cerPlantDtlTb.getOtherField()), SeedlingReportReqDTO.Attribute.class);
+            List<String> filedCodeList = attributeList.stream().map(SeedlingReportReqDTO.Attribute::getName).collect(Collectors.toList());
+            cerSpeciesPlantFeaturesConfList = cerSpeciesPlantFeaturesConfList.stream().filter(cerSpeciesPlantFeaturesConf -> !filedCodeList.contains(cerSpeciesPlantFeaturesConf.getPlantFeaturesName())).collect(Collectors.toList());
         }
-        return mapList;
+
+        for (CerSpeciesPlantFeaturesConf cerSpeciesPlantFeaturesConf : cerSpeciesPlantFeaturesConfList) {
+            Map<String, String> map = new HashMap<>();
+            map.put(cerSpeciesPlantFeaturesConf.getPlantFeaturesName(),cerSpeciesPlantFeaturesConf.getPlantFeaturesDesc());
+        }
+
+        if (StringUtils.isEmpty(cerPlantDtlTb.getHarvestDate())) {
+            Map<String, String> map = new HashMap<>();
+            map.put(CerPlantFixedFieldEnum.harvestDate.fieldEName, CerPlantFixedFieldEnum.harvestDate.fieldCName);
+            mapListResult.add(map);
+        }
+        if (StringUtils.isEmpty(cerPlantDtlTb.getPollinationDate())) {
+            Map<String, String> map = new HashMap<>();
+            map.put(CerPlantFixedFieldEnum.pollinationDate.fieldEName, CerPlantFixedFieldEnum.pollinationDate.fieldCName);
+            mapListResult.add(map);
+        }
+        if (StringUtils.isEmpty(cerPlantDtlTb.getVernalizationEndDate())) {
+            Map<String, String> map = new HashMap<>();
+            map.put(CerPlantFixedFieldEnum.vernalizationEndDate.fieldEName, CerPlantFixedFieldEnum.vernalizationEndDate.fieldCName);
+            mapListResult.add(map);
+        }
+        if (StringUtils.isEmpty(cerPlantDtlTb.getVernalizationBeginDate())) {
+            Map<String, String> map = new HashMap<>();
+            map.put(CerPlantFixedFieldEnum.vernalizationBeginDate.fieldEName, CerPlantFixedFieldEnum.vernalizationBeginDate.fieldCName);
+            mapListResult.add(map);
+        }
+        if (StringUtils.isEmpty(cerPlantDtlTb.getTransplantDate())) {
+            Map<String, String> map = new HashMap<>();
+            map.put(CerPlantFixedFieldEnum.transplantDate.fieldEName, CerPlantFixedFieldEnum.transplantDate.fieldCName);
+            mapListResult.add(map);
+        }
+        if (StringUtils.isEmpty(cerPlantDtlTb.getPlantDate())) {
+            Map<String, String> map = new HashMap<>();
+            map.put(CerPlantFixedFieldEnum.plantDate.fieldEName, CerPlantFixedFieldEnum.plantDate.fieldCName);
+            mapListResult.add(map);
+        }
+        return mapListResult;
     }
 }

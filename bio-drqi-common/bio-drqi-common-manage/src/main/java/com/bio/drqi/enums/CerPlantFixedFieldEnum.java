@@ -44,13 +44,6 @@ public enum CerPlantFixedFieldEnum {
             put(CerPlantFixedFieldEnum.pollinationDate.fieldEName, CerPlantFixedFieldEnum.pollinationDate.fieldCName);
         }});
 
-        CER_FIXED_FIELD.add(new HashMap<String, String>() {{
-            put(CerPlantFixedFieldEnum.motherInfo.fieldEName, CerPlantFixedFieldEnum.motherInfo.fieldCName);
-        }});
-
-        CER_FIXED_FIELD.add(new HashMap<String, String>() {{
-            put(CerPlantFixedFieldEnum.fatherInfo.fieldEName, CerPlantFixedFieldEnum.fatherInfo.fieldCName);
-        }});
 
         CER_FIXED_FIELD.add(new HashMap<String, String>() {{
             put(CerPlantFixedFieldEnum.pollinationMethod.fieldEName, CerPlantFixedFieldEnum.pollinationMethod.fieldCName);
@@ -70,10 +63,6 @@ public enum CerPlantFixedFieldEnum {
 
         CER_FIXED_FIELD.add(new HashMap<String, String>() {{
             put(CerPlantFixedFieldEnum.plantDate.fieldEName, CerPlantFixedFieldEnum.plantDate.fieldCName);
-        }});
-
-        CER_FIXED_FIELD.add(new HashMap<String, String>() {{
-            put(CerPlantFixedFieldEnum.plantNumber.fieldEName, CerPlantFixedFieldEnum.plantNumber.fieldCName);
         }});
 
         return CER_FIXED_FIELD;

@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -119,9 +120,47 @@ public class SeedlingServiceImpl implements SeedlingService {
     @Override
     public void report(SeedlingReportReqDTO seedlingReportReqDTO) {
         CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(seedlingReportReqDTO.getPlantCode(), seedlingReportReqDTO.getVectorTaskCode());
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
+        List<CerSpeciesPlantFeaturesConf> cerSpeciesPlantFeaturesConfList = cerSpeciesPlantFeaturesConfMapper.selectAllBySpeciesCodeOrderByOrderNum(cerVectorTaskTb.getSpeciesCode());
+
         if (PlantStatusEnum.STATUS_3.code.equals(cerPlantDtlTb.getPlantStatus())) {
             throw new BusinessException("苗已剔除");
         }
+        List<SeedlingReportReqDTO.Attribute> attributeList = seedlingReportReqDTO.getAttributes();
+        if (CollectionUtil.isNotEmpty(attributeList)) {
+            for (SeedlingReportReqDTO.Attribute attribute : attributeList) {
+                if (CerPlantFixedFieldEnum.harvestDate.fieldEName.equals(attribute.getName())) {
+                    cerPlantDtlTb.setHarvestDate(attribute.getValue());
+                } else if (CerPlantFixedFieldEnum.pollinationDate.fieldEName.equals(attribute.getName())) {
+                    cerPlantDtlTb.setPollinationDate(attribute.getValue());
+                } else if (CerPlantFixedFieldEnum.pollinationMethod.fieldEName.equals(attribute.getName())) {
+                    cerPlantDtlTb.setPollinationMethod(attribute.getValue());
+                } else if (CerPlantFixedFieldEnum.vernalizationEndDate.fieldEName.equals(attribute.getName())) {
+                    cerPlantDtlTb.setVernalizationEndDate(attribute.getValue());
+                } else if (CerPlantFixedFieldEnum.vernalizationBeginDate.fieldEName.equals(attribute.getName())) {
+                    cerPlantDtlTb.setVernalizationBeginDate(attribute.getValue());
+                } else if (CerPlantFixedFieldEnum.transplantDate.fieldEName.equals(attribute.getName())) {
+                    cerPlantDtlTb.setTransplantDate(attribute.getValue());
+                } else if (CerPlantFixedFieldEnum.plantDate.fieldEName.equals(attribute.getName())) {
+                    cerPlantDtlTb.setPlantDate(attribute.getValue());
+                }
+            }
+
+            // json
+            Map<String, String> map = new HashMap<>();
+            Map<String, String> attributeMap = attributeList.stream().collect(Collectors.toMap(SeedlingReportReqDTO.Attribute::getName, SeedlingReportReqDTO.Attribute::getValue));
+            for (CerSpeciesPlantFeaturesConf cerSpeciesPlantFeaturesConf : cerSpeciesPlantFeaturesConfList) {
+                if (attributeMap.get(cerSpeciesPlantFeaturesConf.getPlantFeaturesName()) != null) {
+                    map.put(cerSpeciesPlantFeaturesConf.getPlantFeaturesName(), cerSpeciesPlantFeaturesConf.getPlantFeaturesDesc());
+                }
+            }
+            if(CollectionUtil.isNotEmpty(map)){
+                cerPlantDtlTb.setOtherField(JSONUtil.toJsonStr(map));
+            }
+        }
+
+        cerPlantDtlTbMapper.updateById(cerPlantDtlTb);
+
 
         CerPlantReportLog cerPlantReportLog = new CerPlantReportLog();
         cerPlantReportLog.setPlantCode(seedlingReportReqDTO.getPlantCode());
@@ -141,8 +180,8 @@ public class SeedlingServiceImpl implements SeedlingService {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
         List<Map<String, String>> mapList = CerPlantFixedFieldEnum.getFixedField();
         List<CerSpeciesPlantFeaturesConf> cerSpeciesPlantFeaturesConfList = cerSpeciesPlantFeaturesConfMapper.selectAllBySpeciesCodeOrderByOrderNum(cerVectorTaskTb.getSpeciesCode());
-        if(CollectionUtil.isNotEmpty(cerSpeciesPlantFeaturesConfList)){
-            for (CerSpeciesPlantFeaturesConf cerSpeciesPlantFeaturesConf:cerSpeciesPlantFeaturesConfList){
+        if (CollectionUtil.isNotEmpty(cerSpeciesPlantFeaturesConfList)) {
+            for (CerSpeciesPlantFeaturesConf cerSpeciesPlantFeaturesConf : cerSpeciesPlantFeaturesConfList) {
                 mapList.add(new HashMap<String, String>() {{
                     put(cerSpeciesPlantFeaturesConf.getPlantFeaturesName(), cerSpeciesPlantFeaturesConf.getPlantFeaturesDesc());
                 }});

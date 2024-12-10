@@ -14,13 +14,15 @@ public enum CerPlantFixedFieldEnum {
     generation("generation", "代次"),
     plantStatus("plantStatus", "植株状态"),
     plantNumber("plantNumber", "株数"),
+    fatherInfo("fatherInfo", "父本信息"),
+    motherInfo("motherInfo", "母本信息"),
+
+
     plantDate("plantDate", "播种/移苗日期"),
     transplantDate("transplantDate", "移栽日期"),
     vernalizationBeginDate("vernalizationBeginDate", "春化开始日期"),
     vernalizationEndDate("vernalizationEndDate", "春化结束日期"),
     pollinationMethod("pollinationMethod", "授粉方式"),
-    fatherInfo("fatherInfo", "父本信息"),
-    motherInfo("motherInfo", "母本信息"),
     pollinationDate("pollinationDate", "授粉时间"),
     harvestDate("harvestDate", "收获时间"),
     ;

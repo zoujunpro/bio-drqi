@@ -50,7 +50,6 @@ public class T0PlantCodeScanService extends AbstractBaseCodeScanService<PlantUni
         }
 
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
-
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerPlantDtlTb.getProjectCode());
 
         CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerPlantDtlTb.getSubProjectCode());

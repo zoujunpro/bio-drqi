@@ -3,6 +3,7 @@ package com.bio.drqi.enums;
 import org.springframework.util.StringUtils;
 
 public enum GenerationEnum {
+    T0("T0", "00", "T0"),
     T1("T1", "01", "T1"),
     T2("T2", "02", "T2"),
     T3("T3", "03", "T3"),

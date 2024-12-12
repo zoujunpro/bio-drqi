@@ -9,6 +9,7 @@ import com.bio.drqi.domain.CerPlantDtlTb;
 import com.bio.drqi.domain.CerProjectTb;
 import com.bio.drqi.domain.CerSubProjectTb;
 import com.bio.drqi.domain.CerVectorTaskTb;
+import com.bio.drqi.enums.GenerationEnum;
 import com.bio.drqi.mapper.CerPlantDtlTbMapper;
 import com.bio.drqi.mapper.CerProjectTbMapper;
 import com.bio.drqi.mapper.CerSubProjectTbMapper;
@@ -62,6 +63,7 @@ public class T0PlantCodeScanService extends AbstractBaseCodeScanService<PlantUni
         scanCodeT0PlantTestRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         scanCodeT0PlantTestRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
         scanCodeT0PlantTestRspDTO.setPlantDtlInfo(BeanUtils.copyProperties(cerPlantDtlTb, ScanCodeT0PlantTestRspDTO.PlantDtlInfo.class));
+        scanCodeT0PlantTestRspDTO.getPlantDtlInfo().setGeneration(GenerationEnum.getGenerationDesc(scanCodeT0PlantTestRspDTO.getPlantDtlInfo().getGeneration()));
         return scanCodeT0PlantTestRspDTO;
     }
 }

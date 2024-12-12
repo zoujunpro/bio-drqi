@@ -7,6 +7,7 @@ import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.SeedUniqueCodeDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioDictTypeEnum;
+import com.bio.drqi.enums.GenerationEnum;
 import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;
 
@@ -75,7 +76,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setParentNum(seedStockTb.getParentNum());
             seed.setFartherInfo(seedStockTb.getFartherInfo());
             seed.setMatherInfo(seedStockTb.getMatherInfo());
-            seed.setGeneration(seedStockTb.getGeneration());
+            seed.setGeneration(GenerationEnum.getGenerationDesc(seedStockTb.getGeneration()));
             seed.setSpeciesCode(seedStockTb.getSpecies());
             seed.setSpeciesName(cerSpeciesConfMap.get(seedStockTb.getSpecies()).getSpeciesName());
             seed.setBreedCode(seedStockTb.getBreedCode());

@@ -63,7 +63,7 @@ public class T0PlantCodeScanService extends AbstractBaseCodeScanService<PlantUni
         scanCodeT0PlantTestRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         scanCodeT0PlantTestRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
         scanCodeT0PlantTestRspDTO.setPlantDtlInfo(BeanUtils.copyProperties(cerPlantDtlTb, ScanCodeT0PlantTestRspDTO.PlantDtlInfo.class));
-        scanCodeT0PlantTestRspDTO.getPlantDtlInfo().setGeneration(GenerationEnum.getGenerationDesc(scanCodeT0PlantTestRspDTO.getPlantDtlInfo().getGeneration()));
+        scanCodeT0PlantTestRspDTO.getPlantDtlInfo().setGeneration(GenerationEnum.getGenerationDesc(scanCodeT0PlantTestRspDTO.getPlantDtlInfo().getGeneration())) ;
         return scanCodeT0PlantTestRspDTO;
     }
 }

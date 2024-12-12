@@ -178,6 +178,9 @@ public class SeedlingServiceImpl implements SeedlingService {
     public List<Map<String, String>> findPlantField(FindPlantFieldReqDTO findPlantFieldReqDTO) {
         List<Map<String, String>> mapListResult = new ArrayList<>();
         CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(findPlantFieldReqDTO.getPlantCode(), findPlantFieldReqDTO.getVectorTaskCode());
+        if(cerPlantDtlTb==null){
+            throw new BusinessException("种植明细不存在");
+        }
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
         List<CerSpeciesPlantFeaturesConf> cerSpeciesPlantFeaturesConfList = cerSpeciesPlantFeaturesConfMapper.selectAllBySpeciesCodeOrderByOrderNum(cerVectorTaskTb.getSpeciesCode());
         //去除已经有属性的数据

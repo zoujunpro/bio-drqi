@@ -46,6 +46,10 @@ public enum GenerationEnum {
     }
 
     public static String getGenerationDesc(String code) {
+        if (code == null) {
+            return "未知";
+        }
+        code = code.toUpperCase();
         for (GenerationEnum generationEnum : GenerationEnum.values()) {
             if (generationEnum.code.equals(code)) {
                 return generationEnum.desc;

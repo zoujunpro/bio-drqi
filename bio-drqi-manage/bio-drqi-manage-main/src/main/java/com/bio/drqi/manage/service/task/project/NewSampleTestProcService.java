@@ -91,7 +91,8 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
 
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
-
+        CerSampleApplyTb cerSampleApplyTb = cerSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
+       cerSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull("舍弃",cerSampleApplyTb.getApplyNo());
     }
 
     @Override

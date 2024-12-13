@@ -398,4 +398,11 @@
         where
         unique_code = #{uniqueCode,jdbcType=VARCHAR}
     </select>
+    <update id="updateCheckResultByApplyNoAndCheckResultIsNull">
+        update cer_sample_test_tb
+        set check_result = #{checkResult,jdbcType=VARCHAR}
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+          AND check_result is null
+    </update>
+
 </mapper>

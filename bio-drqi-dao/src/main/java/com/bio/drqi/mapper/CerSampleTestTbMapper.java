@@ -68,6 +68,7 @@ public interface CerSampleTestTbMapper extends BaseMapper<CerSampleTestTb> {
 
     CerSampleTestTb selectOneByUniqueCode(@Param("uniqueCode") String uniqueCode);
 
+    int updateCheckResultByApplyNoAndCheckResultIsNull(@Param("checkResult") String checkResult, @Param("applyNo") String applyNo);
 
 }
 

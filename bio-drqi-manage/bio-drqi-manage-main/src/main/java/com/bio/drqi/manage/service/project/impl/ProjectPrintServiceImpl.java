@@ -63,6 +63,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             vectorPrintData.setVectorTaskCode(content.getVectorTaskCode());
             vectorPrintData.setPlasmidName(content.getPlasmidName());
             vectorPrintData.setCapacity(content.getCapacity());
+            vectorPrintData.setTaskNum(cerVectorTaskTb.getTaskNum());
             vectorPrintData.setConcentration(content.getConcentration());
             vectorPrintDataList.add(vectorPrintData);
         }
@@ -87,6 +88,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             transFormPrintData.setVectorTaskCode(cerTransformTb.getVectorTaskCode());
             transFormPrintData.setTransFormCode(cerTransformTb.getTransformCode());
             transFormPrintData.setPlasmidName(cerTransformTb.getPlasmidName());
+            transFormPrintData.setTaskNum(cerTransformTb.getTaskNum());
             transFormPrintData.setPrintNum(content.getPrintNum() == null ? 1 : content.getPrintNum());
             transFormPrintDataList.add(transFormPrintData);
         }
@@ -112,6 +114,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 samplePrintData.setPlasmidName(cerSampleTestTb.getPlasmidName());
                 samplePrintData.setTransformCode(cerSampleTestTb.getTransformCode());
                 samplePrintData.setSampleCode(cerSampleTestTb.getSampleCode());
+                samplePrintData.setTaskNum(cerSampleTestTb.getApplyNo());
                 samplePrintDataList.add(samplePrintData);
             }
         }

@@ -62,4 +62,11 @@
         where
         task_num = #{taskNum,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllBySeedNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_out_log
+        where
+        seed_num = #{seedNum,jdbcType=VARCHAR}
+    </select>
 </mapper>

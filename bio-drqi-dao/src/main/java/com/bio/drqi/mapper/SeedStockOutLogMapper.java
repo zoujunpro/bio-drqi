@@ -22,6 +22,9 @@ public interface SeedStockOutLogMapper extends BaseMapper<SeedStockOutLog> {
 
     List<SeedStockOutLog> selectAllByTaskNum(@Param("taskNum") String taskNum);
 
+    List<SeedStockOutLog> selectAllBySeedNum(@Param("seedNum") String seedNum);
+
+
 }
 
 

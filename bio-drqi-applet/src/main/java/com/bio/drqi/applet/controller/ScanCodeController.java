@@ -1,6 +1,7 @@
 package com.bio.drqi.applet.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.applet.dto.req.QueryByPlantCodeReqDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeRspDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeT0PlantTestRspDTO;
@@ -27,6 +28,7 @@ public class ScanCodeController {
      */
 
     @GetMapping("scanCode")
+    @WebLog(desc = "扫码")
     public ResponseResult<ScanCodeRspDTO> scanCode(@RequestParam String code){
         return ResponseResult.getSuccess(scanCodeService.scanCode(code));
     }
@@ -37,6 +39,7 @@ public class ScanCodeController {
      * @return
      */
     @PostMapping("/queryByPlantCode")
+    @WebLog(desc = "根据种植编号查询信息")
     public ResponseResult<ScanCodeT0PlantTestRspDTO> queryByPlantCode(@RequestBody QueryByPlantCodeReqDTO queryByPlantCodeReqDTO) {
         return ResponseResult.getSuccess(scanCodeService.queryByPlantCode(queryByPlantCodeReqDTO));
     }

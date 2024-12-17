@@ -1,6 +1,7 @@
 package com.bio.drqi.applet.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.applet.dto.req.FindPlantFieldReqDTO;
 import com.bio.drqi.applet.dto.req.SeedlingRemainReqDTO;
 import com.bio.drqi.applet.dto.req.SeedlingRemoveReqDTO;
@@ -28,6 +29,7 @@ public class SeedlingController {
      * @return
      */
     @PostMapping("remain")
+    @WebLog(desc = "保苗")
     public ResponseResult<String> remain(@RequestBody SeedlingRemainReqDTO seedlingRemainReqDTO) {
         seedlingService.remain(seedlingRemainReqDTO);
         return ResponseResult.getSuccess(null);
@@ -40,6 +42,7 @@ public class SeedlingController {
      * @return
      */
     @PostMapping("remove")
+    @WebLog(desc = "剔苗")
     public ResponseResult<String> remove(@RequestBody SeedlingRemoveReqDTO seedlingRemoveReqDTO) {
         seedlingService.remove(seedlingRemoveReqDTO);
         return ResponseResult.getSuccess(null);
@@ -51,6 +54,7 @@ public class SeedlingController {
      * @return
      */
     @PostMapping("report")
+    @WebLog(desc = "苗报备")
     public ResponseResult<String> report(@RequestBody SeedlingReportReqDTO seedlingReportReqDTO) {
         seedlingService.report(seedlingReportReqDTO);
         return ResponseResult.getSuccess(null);
@@ -62,6 +66,7 @@ public class SeedlingController {
      * @return
      */
     @PostMapping("/findPlantField")
+    @WebLog(desc = "查询字段")
     public ResponseResult<List<Map<String, String>>> findPlantField(@RequestBody FindPlantFieldReqDTO findPlantFieldReqDTO) {
         return ResponseResult.getSuccess(seedlingService.findPlantField(findPlantFieldReqDTO));
     }

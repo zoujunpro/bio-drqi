@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BioPrintTransformTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioPrintTransformTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="transformCode" column="transform_code" jdbcType="VARCHAR"/>
+            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+            <result property="printId" column="print_id" jdbcType="BIGINT"/>
+            <result property="plasmidName" column="plasmid_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,transform_code,vector_task_code,
+        print_id,plasmid_name
+    </sql>
+</mapper>

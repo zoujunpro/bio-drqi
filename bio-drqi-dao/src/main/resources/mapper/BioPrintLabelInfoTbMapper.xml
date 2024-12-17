@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BioPrintLabelInfoTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioPrintLabelInfoTb">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="labelType" column="label_type" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
+            <result property="printCode" column="print_code" jdbcType="VARCHAR"/>
+            <result property="labelText" column="label_text" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,label_type,create_time,
+        update_time,unique_code,print_code,
+        label_text
+    </sql>
+    <select id="selectOneByUniqueCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_print_label_info_tb
+        where
+        unique_code = #{uniqueCode,jdbcType=VARCHAR}
+    </select>
+    <select id="searchAllByLabelType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_print_label_info_tb
+        where
+        label_type = #{labelType,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BioPrintConfMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioPrintConf">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="printType" column="print_type" jdbcType="VARCHAR"/>
+            <result property="printDesc" column="print_desc" jdbcType="VARCHAR"/>
+            <result property="printExampleUrl" column="print_example_url" jdbcType="VARCHAR"/>
+            <result property="printTemplate" column="print_template" jdbcType="VARCHAR"/>
+            <result property="extendField1" column="extend_field1" jdbcType="VARCHAR"/>
+            <result property="extendField2" column="extend_field2" jdbcType="VARCHAR"/>
+            <result property="showFlag" column="show_flag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,print_type,print_desc,
+        print_example_url,print_template,extend_field1,
+        extend_field2,show_flag
+    </sql>
+</mapper>

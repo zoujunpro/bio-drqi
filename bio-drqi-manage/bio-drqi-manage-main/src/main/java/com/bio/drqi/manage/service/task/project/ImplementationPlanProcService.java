@@ -157,6 +157,7 @@ public class ImplementationPlanProcService extends AbstractBaseProjectTaskServic
         cerVectorTaskTbMapper.deleteById(cerVectorTaskTb.getId());
         cerVectorTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());
         cerVectorGroupTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());
+        cerSampleCodePrefixTbMapper.deleteByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
     }
 
     private String createSampleCode(String vectorTaskCode) {

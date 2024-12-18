@@ -14,6 +14,8 @@ public interface CerSampleCodePrefixTbMapper extends BaseMapper<CerSampleCodePre
 
     CerSampleCodePrefixTb selectOneByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
 
+    int deleteByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
+
 }
 
 

@@ -21,4 +21,9 @@
         where
         vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
     </select>
+    <delete id="deleteByVectorTaskCode">
+        delete
+        from cer_sample_code_prefix_tb
+        where vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+    </delete>
 </mapper>

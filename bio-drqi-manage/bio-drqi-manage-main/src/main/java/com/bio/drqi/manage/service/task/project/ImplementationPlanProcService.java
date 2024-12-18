@@ -155,6 +155,10 @@ public class ImplementationPlanProcService extends AbstractBaseProjectTaskServic
         if (cerVectorTaskTb == null) {
             throw new BusinessException("数据异常，载体任务不存在");
         }
+        VectorTaskAddDTO vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
+        vectorTaskAddDTO.setSampleCodePrefix("");
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(vectorTaskAddDTO));
+
         cerVectorTaskTbMapper.deleteById(cerVectorTaskTb.getId());
         cerVectorTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());
         cerVectorGroupTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());

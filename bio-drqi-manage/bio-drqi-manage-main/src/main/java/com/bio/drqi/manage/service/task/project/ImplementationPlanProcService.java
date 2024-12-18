@@ -3,24 +3,25 @@ package com.bio.drqi.manage.service.task.project;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.drqi.contents.CerProjectContents;
+import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.drqi.enums.QualityInspectionResultEnum;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.ValidatorUtil;
-import com.bio.drqi.domain.BioTaskDtlTb;
-import com.bio.drqi.domain.CerProjectTb;
-import com.bio.drqi.domain.CerSubProjectTb;
-import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
+import com.bio.drqi.manage.util.LetterUtil;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 实验方案创建
@@ -43,6 +44,9 @@ public class ImplementationPlanProcService extends AbstractBaseProjectTaskServic
 
     @Resource
     private CerVectorGroupTbMapper cerVectorGroupTbMapper;
+
+    @Resource
+    private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
 
     @Override
     public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
@@ -109,6 +113,21 @@ public class ImplementationPlanProcService extends AbstractBaseProjectTaskServic
                     } catch (DuplicateKeyException e) {
                         throw new BusinessException("任务编号重复：" + cerVectorTaskTb.getVectorTaskCode());
                     }
+
+                    //生成sampleCodePrefix
+                    String sampleCodePrefix = createSampleCode(vectorTaskAddDTO.getVectorTaskCode());
+                    CerSampleCodePrefixTb cerSampleCodePrefixTb = new CerSampleCodePrefixTb();
+                    cerSampleCodePrefixTb.setSampleCodePrefix(sampleCodePrefix);
+                    cerSampleCodePrefixTb.setVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
+                    cerSampleCodePrefixTb.setCreateTime(new Date());
+                    cerSampleCodePrefixTbMapper.insert(cerSampleCodePrefixTb);
+                    try {
+                        cerSampleCodePrefixTbMapper.insert(cerSampleCodePrefixTb);
+                    } catch (DuplicateKeyException e) {
+                        throw new BusinessException("取样编号前缀重复：" + cerSampleCodePrefixTb.getSampleCodePrefix());
+                    }
+                    vectorTaskAddDTO.setSampleCodePrefix(sampleCodePrefix);
+
                 }
             }
         }
@@ -139,4 +158,23 @@ public class ImplementationPlanProcService extends AbstractBaseProjectTaskServic
         cerVectorTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());
         cerVectorGroupTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());
     }
+
+    private String createSampleCode(String vectorTaskCode) {
+        CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+        if (cerSampleCodePrefixTb == null) {
+            return cerSampleCodePrefixTb.getSampleCodePrefix();
+        } else {
+            String sampleCodePrefix = LetterUtil.randomLetter(2);
+            List<CerSampleCodePrefixTb> cerSampleCodePrefixTbList = cerSampleCodePrefixTbMapper.selectList(null);
+            List<String> sampleCodePrefixList = cerSampleCodePrefixTbList.stream().map(CerSampleCodePrefixTb::getSampleCodePrefix).collect(Collectors.toList());
+            if (CollectionUtil.isEmpty(sampleCodePrefixList)) {
+                return sampleCodePrefix;
+            }
+            while (sampleCodePrefixList.contains(sampleCodePrefix)) {
+                sampleCodePrefix = LetterUtil.randomLetter(2);
+            }
+            return sampleCodePrefix;
+        }
+    }
+
 }

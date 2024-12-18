@@ -1,5 +1,7 @@
 package com.bio.drqi.manage.util;
 
+import java.util.Random;
+
 public class LetterUtil {
     public static String nextLetter(String str) {
         char next = (char) (str.toCharArray()[0] + 1);
@@ -32,8 +34,20 @@ public class LetterUtil {
         return null;
     }
 
+    public static String randomLetter(Integer length){
+
+        StringBuilder stringBuilder=new StringBuilder("");
+        for (int i=0;i<length;i++){
+            Random random = new Random();
+            char randomLetter1 = (char) (random.nextInt(26) + 'A');
+            stringBuilder.append(randomLetter1);
+        }
+        return  stringBuilder.toString();
+
+    }
+
     public static void main(String[] args) {
-        System.out.println(nextLetterForInstantVerify("AF"));
+        System.out.println(nextLetterForInstantVerify(randomLetter(2)));
     }
 
 }

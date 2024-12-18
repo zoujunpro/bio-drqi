@@ -115,6 +115,10 @@ public class VectorTaskAddDTO {
      */
     private String plasmidFlag;
 
+
+    private String  sampleCodePrefix;
+
+
     /**
      * 载体的具体信息，需要区分转基因还是基因编辑
      */

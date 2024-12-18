@@ -63,6 +63,9 @@ public class ProjectProcService extends AbstractBaseProjectTaskService {
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByTaskNum(bioTaskDtlTb.getTaskNum());
-        cerProjectTbMapper.deleteByTaskNum(cerProjectTb.getTaskNum());
+        if(cerProjectTb!=null){
+            cerProjectTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
+
+        }
     }
 }

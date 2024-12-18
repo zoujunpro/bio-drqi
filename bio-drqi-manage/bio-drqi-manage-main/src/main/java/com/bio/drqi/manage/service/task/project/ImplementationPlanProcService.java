@@ -163,7 +163,7 @@ public class ImplementationPlanProcService extends AbstractBaseProjectTaskServic
     private String createSampleCode(String vectorTaskCode) {
         CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
         if (cerSampleCodePrefixTb == null) {
-            return cerSampleCodePrefixTb.getSampleCodePrefix();
+            return LetterUtil.randomLetter(2);
         } else {
             String sampleCodePrefix = LetterUtil.randomLetter(2);
             List<CerSampleCodePrefixTb> cerSampleCodePrefixTbList = cerSampleCodePrefixTbMapper.selectList(null);

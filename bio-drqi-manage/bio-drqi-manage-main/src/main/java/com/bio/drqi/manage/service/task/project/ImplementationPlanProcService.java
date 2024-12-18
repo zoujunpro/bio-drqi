@@ -120,7 +120,6 @@ public class ImplementationPlanProcService extends AbstractBaseProjectTaskServic
                     cerSampleCodePrefixTb.setSampleCodePrefix(sampleCodePrefix);
                     cerSampleCodePrefixTb.setVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
                     cerSampleCodePrefixTb.setCreateTime(new Date());
-                    cerSampleCodePrefixTbMapper.insert(cerSampleCodePrefixTb);
                     try {
                         cerSampleCodePrefixTbMapper.insert(cerSampleCodePrefixTb);
                     } catch (DuplicateKeyException e) {

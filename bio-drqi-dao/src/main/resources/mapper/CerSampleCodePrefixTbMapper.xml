@@ -8,11 +8,12 @@
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="sampleCodePrefix" column="sample_code_prefix" jdbcType="VARCHAR"/>
             <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+           <result property="currentIndex" column="current_index" jdbcType="INTEGER"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,sample_code_prefix,vector_task_code,create_time
+        id,sample_code_prefix,vector_task_code,current_index,create_time
     </sql>
     <select id="selectOneByVectorTaskCode" resultMap="BaseResultMap">
         select

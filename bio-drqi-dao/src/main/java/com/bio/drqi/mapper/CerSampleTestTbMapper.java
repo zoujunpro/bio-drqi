@@ -41,8 +41,6 @@ public interface CerSampleTestTbMapper extends BaseMapper<CerSampleTestTb> {
     List<CerSampleTestTb> selectAllByVectorTaskCodeAndSampleCode(@Param("vectorTaskCode") String vectorTaskCode, @Param("sampleCode") String sampleCode);
 
 
-    String selectLastSampleCodeByProjectIdOrApplyNo(@Param("projectId") Integer projectId,@Param("applyNo") String applyNo);
-
     CerSampleTestTb selectOneByVectorTaskCodeAndSampleCodeFirst(@Param("vectorTaskCode") String vectorTaskCode, @Param("sampleCode") String sampleCode);
 
     CerSampleTestTb selectOneByProjectCodeAndSampleCodeFirst(@Param("projectCode") String projectCode, @Param("sampleCode") String sampleCode);

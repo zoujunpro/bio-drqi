@@ -28,6 +28,8 @@ public class CerSampleCodePrefixTb implements Serializable {
      */
     private Date createTime;
 
+    private Integer currentIndex;
+
     private static final long serialVersionUID = 1L;
 
 

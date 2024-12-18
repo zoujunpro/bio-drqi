@@ -35,6 +35,9 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
+    @Resource
+    private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
+
     @Override
     public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
         NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
@@ -127,7 +130,7 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
                 CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(repeatSampleApply.getVectorTaskCode());
                 CerSampleTestTb orgCerSampleTestTb = cerSampleTestTbMapper.selectOneByUniqueCode(cerVectorTaskTb.getProjectCode() + repeatSampleApply.getSampleCode());
                 if (orgCerSampleTestTb == null) {
-                    throw new BusinessException("项目:" + cerVectorTaskTb.getProjectCode() + "中无此取样编号" + repeatSampleApply.getSampleCode());
+                    throw new BusinessException("实施方案中:" + cerVectorTaskTb.getVectorTaskCode() + "中无此取样编号" + repeatSampleApply.getSampleCode());
                 }
                 CerSampleTestTb repeatCerSampleTestTb = new CerSampleTestTb();
                 repeatCerSampleTestTb.setProjectId(orgCerSampleTestTb.getProjectId());
@@ -168,8 +171,7 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
                 List<CerSampleTestTb> targetCerSampleTestTbList = new ArrayList<>();
                 CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(), firstSampleApply.getVectorTaskCode());
                 CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerTransformTb.getVectorTaskCode());
-                String maxSampleCode = cerSampleTestTbMapper.selectLastSampleCodeByProjectIdOrApplyNo(cerVectorTaskTb.getProjectId(), cerSampleApplyTb.getApplyNo());
-                String currentSampleCode = maxSampleCode == null ? null : maxSampleCode;
+                CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
                 for (int i = 1; i <= firstSampleApply.getSampleNum(); i++) {
                     CerSampleTestTb cerSampleTestTb = new CerSampleTestTb();
                     cerSampleTestTb.setProjectId(cerTransformTb.getProjectId());
@@ -180,7 +182,7 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
                     cerSampleTestTb.setVectorTaskCode(cerTransformTb.getVectorTaskCode());
                     cerSampleTestTb.setPlasmidName(cerTransformTb.getPlasmidName());
                     cerSampleTestTb.setTransformCode(cerTransformTb.getTransformCode());
-                    cerSampleTestTb.setSampleCode(i == 1 ? SampleCodeUtil.nextSampleCode(currentSampleCode, true) : SampleCodeUtil.nextSampleCode(currentSampleCode));
+                    cerSampleTestTb.setSampleCode(cerSampleCodePrefixTb.getSampleCodePrefix()+(cerSampleCodePrefixTb.getCurrentIndex()+i));
                     cerSampleTestTb.setApplyTime(new Date());
                     cerSampleTestTb.setApplyUserId(SecurityContextHolder.getUserId());
                     cerSampleTestTb.setApplyUserName(SecurityContextHolder.getNickName());
@@ -189,8 +191,10 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
                     cerSampleTestTb.setApplyNo(cerSampleApplyTb.getApplyNo());
                     cerSampleTestTb.setUniqueCode(cerTransformTb.getProjectCode() + cerSampleTestTb.getSampleCode());
                     targetCerSampleTestTbList.add(cerSampleTestTb);
-                    currentSampleCode = cerSampleTestTb.getSampleCode();
                 }
+                cerSampleCodePrefixTb.setCurrentIndex(cerSampleCodePrefixTb.getCurrentIndex()+firstSampleApply.getSampleNum());
+                cerSampleCodePrefixTbMapper.updateById(cerSampleCodePrefixTb);
+
                 /**
                  * 更新当前执行步骤
                  */
@@ -207,5 +211,7 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
             }
         }
     }
+
+
 }
 

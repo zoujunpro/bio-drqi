@@ -3,21 +3,29 @@ package com.bio.drqi.manage.controller;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
+import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioDictTypeEnum;
+import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.enums.GenerationEnum;
+import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.service.DictInnerService;
+import com.bio.drqi.manage.util.LetterUtil;
 import com.bio.drqi.mapper.*;
 import com.bio.print.*;
+import com.lark.oapi.service.approval.v4.enums.TaskTaskStatusEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("test")
@@ -68,6 +76,12 @@ public class TestCleanController {
 
     @Resource
     private DictInnerService dictInnerService;
+
+    @Resource
+    private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
+
+    @Resource
+    private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
 
     @GetMapping("cleanPrint")
@@ -245,7 +259,7 @@ public class TestCleanController {
         log.info("开始");
         for (BioPrintLabelInfoTb bioPrintLabelInfoTb : bioPrintLabelInfoTbList) {
             if (StringUtils.isEmpty(bioPrintLabelInfoTb.getLabelText())) {
-                log.info("bioPrintLabelInfoTb={}",bioPrintLabelInfoTb.getId());
+                log.info("bioPrintLabelInfoTb={}", bioPrintLabelInfoTb.getId());
                 if ("sample_small_label_print".equals(bioPrintLabelInfoTb.getLabelType())) {
                     String[] uniqueArr = bioPrintLabelInfoTb.getUniqueCode().split("\\|");
                     CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(uniqueArr[0], uniqueArr[1]);
@@ -266,7 +280,7 @@ public class TestCleanController {
                 } else if ("seed_out_label_print".equals(bioPrintLabelInfoTb.getLabelType())) {
                     String[] uniques = bioPrintLabelInfoTb.getUniqueCode().split("\\|");
                     List<SeedStockOutLog> seedStockOutLogList = seedStockOutLogMapper.selectAllBySeedNum(uniques[1]);
-                    if (CollectionUtil.isEmpty(seedStockOutLogList)||seedStockOutLogList.size()==1) {
+                    if (CollectionUtil.isEmpty(seedStockOutLogList) || seedStockOutLogList.size() == 1) {
                         continue;
                     }
                     SeedStockOutLog seedStockOutLog = seedStockOutLogList.get(1);
@@ -296,7 +310,7 @@ public class TestCleanController {
                     BioPrintLabelInfoTb bioPrintLabelInfoTb1 = bioPrintLabelInfoTbMapper.selectOneByUniqueCode(bioPrintLabelInfoTb.getUniqueCode());
                     if (bioPrintLabelInfoTb1 == null) {
                         bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
-                    }else {
+                    } else {
 
                     }
 
@@ -336,7 +350,7 @@ public class TestCleanController {
                     BioPrintLabelInfoTb bioPrintLabelInfoTb1 = bioPrintLabelInfoTbMapper.selectOneByUniqueCode(bioPrintLabelInfoTb.getUniqueCode());
                     if (bioPrintLabelInfoTb1 == null) {
                         bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
-                    }else {
+                    } else {
 
                     }
                 }
@@ -345,5 +359,53 @@ public class TestCleanController {
         }
         log.info("结束");
         return "ok";
+    }
+
+    @GetMapping("cleanSampleCodePrefix")
+    @Transactional(rollbackFor = Exception.class)
+    public String cleanSampleCodePrefix() {
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectList(null);
+        for (CerVectorTaskTb cerVectorTaskTb : cerVectorTaskTbList) {
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerVectorTaskTb.getTaskNum());
+            log.info("bioTaskDtlTb={}",JSONUtil.toJsonStr(bioTaskDtlTb));
+            VectorTaskAddDTO vectorTaskAddDTO = null;
+            try {
+                vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
+            } catch (Exception e) {
+               continue;
+            }
+            CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+            if (cerSampleCodePrefixTb == null) {
+                //生成sampleCodePrefix
+                String sampleCodePrefix = createSampleCode();
+                cerSampleCodePrefixTb = new CerSampleCodePrefixTb();
+                cerSampleCodePrefixTb.setSampleCodePrefix(sampleCodePrefix);
+                cerSampleCodePrefixTb.setVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
+                cerSampleCodePrefixTb.setCreateTime(new Date());
+                cerSampleCodePrefixTb.setCurrentIndex(100);
+                try {
+                    cerSampleCodePrefixTbMapper.insert(cerSampleCodePrefixTb);
+                } catch (DuplicateKeyException e) {
+                    throw new BusinessException("取样编号前缀重复：" + cerSampleCodePrefixTb.getSampleCodePrefix());
+                }
+            }
+            vectorTaskAddDTO.setSampleCodePrefix(cerSampleCodePrefixTb.getSampleCodePrefix());
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(vectorTaskAddDTO));
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        }
+        return "OK";
+    }
+
+    private String createSampleCode() {
+        String sampleCodePrefix = LetterUtil.randomLetter(2);
+        List<CerSampleCodePrefixTb> cerSampleCodePrefixTbList = cerSampleCodePrefixTbMapper.selectList(null);
+        List<String> sampleCodePrefixList = cerSampleCodePrefixTbList.stream().map(CerSampleCodePrefixTb::getSampleCodePrefix).collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(sampleCodePrefixList)) {
+            return sampleCodePrefix;
+        }
+        while (sampleCodePrefixList.contains(sampleCodePrefix)) {
+            sampleCodePrefix = LetterUtil.randomLetter(2);
+        }
+        return sampleCodePrefix;
     }
 }

@@ -31,6 +31,8 @@ public interface BioTaskDtlTbMapper extends BaseMapper<BioTaskDtlTb> {
 
     List<BioTaskDtlTb> selectSelective(BioTaskDtlTb bioTaskDtlTb);
 
+    List<BioTaskDtlTb> selectAllByTaskTypeCode(@Param("taskTypeCode") String taskTypeCode);
+
 
     List<BioTaskDtlTb> selectAllByTaskTypeCodeAndApplyUserIdOrderByIdDesc(@Param("taskTypeCode") String taskTypeCode, @Param("applyUserId") Integer applyUserId);
 

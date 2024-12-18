@@ -1,5 +1,8 @@
 package com.bio.drqi.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,10 +13,12 @@ import java.util.Date;
  * @TableName cer_sample_code_prefix_tb
  */
 @Data
+@TableName(value ="cer_sample_code_prefix_tb")
 public class CerSampleCodePrefixTb implements Serializable {
     /**
      * 主键ID
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**

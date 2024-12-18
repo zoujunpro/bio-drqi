@@ -141,4 +141,11 @@
                               where create_id = #{applyUserId,jdbcType=VARCHAR})
         <if test="taskCategory != null and taskCategory!=''">and task_category=#{taskCategory,jdbcType=VARCHAR}</if>
     </select>
+    <select id="selectAllByTaskTypeCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_task_dtl_tb
+        where
+        task_type_code = #{taskTypeCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

@@ -113,20 +113,21 @@ public class ImplementationPlanProcService extends AbstractBaseProjectTaskServic
                     } catch (DuplicateKeyException e) {
                         throw new BusinessException("任务编号重复：" + cerVectorTaskTb.getVectorTaskCode());
                     }
-
-                    //生成sampleCodePrefix
-                    String sampleCodePrefix = createSampleCode(vectorTaskAddDTO.getVectorTaskCode());
-                    CerSampleCodePrefixTb cerSampleCodePrefixTb = new CerSampleCodePrefixTb();
-                    cerSampleCodePrefixTb.setSampleCodePrefix(sampleCodePrefix);
-                    cerSampleCodePrefixTb.setVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
-                    cerSampleCodePrefixTb.setCreateTime(new Date());
-                    cerSampleCodePrefixTb.setCurrentIndex(1);
-                    try {
-                        cerSampleCodePrefixTbMapper.insert(cerSampleCodePrefixTb);
-                    } catch (DuplicateKeyException e) {
-                        throw new BusinessException("取样编号前缀重复：" + cerSampleCodePrefixTb.getSampleCodePrefix());
+                    CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+                    if (cerSampleCodePrefixTb == null) {
+                        //生成sampleCodePrefix
+                         cerSampleCodePrefixTb = new CerSampleCodePrefixTb();
+                        cerSampleCodePrefixTb.setSampleCodePrefix(createSampleCode());
+                        cerSampleCodePrefixTb.setVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
+                        cerSampleCodePrefixTb.setCreateTime(new Date());
+                        cerSampleCodePrefixTb.setCurrentIndex(1);
+                        try {
+                            cerSampleCodePrefixTbMapper.insert(cerSampleCodePrefixTb);
+                        } catch (DuplicateKeyException e) {
+                            throw new BusinessException("取样编号前缀重复：" + cerSampleCodePrefixTb.getSampleCodePrefix());
+                        }
                     }
-                    vectorTaskAddDTO.setSampleCodePrefix(sampleCodePrefix);
+                    vectorTaskAddDTO.setSampleCodePrefix(cerSampleCodePrefixTb.getSampleCodePrefix());
 
                 }
             }
@@ -160,22 +161,17 @@ public class ImplementationPlanProcService extends AbstractBaseProjectTaskServic
         cerSampleCodePrefixTbMapper.deleteByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
     }
 
-    private String createSampleCode(String vectorTaskCode) {
-        CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-        if (cerSampleCodePrefixTb == null) {
-            return LetterUtil.randomLetter(2);
-        } else {
-            String sampleCodePrefix = LetterUtil.randomLetter(2);
-            List<CerSampleCodePrefixTb> cerSampleCodePrefixTbList = cerSampleCodePrefixTbMapper.selectList(null);
-            List<String> sampleCodePrefixList = cerSampleCodePrefixTbList.stream().map(CerSampleCodePrefixTb::getSampleCodePrefix).collect(Collectors.toList());
-            if (CollectionUtil.isEmpty(sampleCodePrefixList)) {
-                return sampleCodePrefix;
-            }
-            while (sampleCodePrefixList.contains(sampleCodePrefix)) {
-                sampleCodePrefix = LetterUtil.randomLetter(2);
-            }
+    private String createSampleCode() {
+        String sampleCodePrefix = LetterUtil.randomLetter(2);
+        List<CerSampleCodePrefixTb> cerSampleCodePrefixTbList = cerSampleCodePrefixTbMapper.selectList(null);
+        List<String> sampleCodePrefixList = cerSampleCodePrefixTbList.stream().map(CerSampleCodePrefixTb::getSampleCodePrefix).collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(sampleCodePrefixList)) {
             return sampleCodePrefix;
         }
+        while (sampleCodePrefixList.contains(sampleCodePrefix)) {
+            sampleCodePrefix = LetterUtil.randomLetter(2);
+        }
+        return sampleCodePrefix;
     }
 
 }

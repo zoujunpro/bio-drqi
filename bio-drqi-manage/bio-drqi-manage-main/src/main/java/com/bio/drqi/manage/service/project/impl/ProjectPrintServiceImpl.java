@@ -90,6 +90,8 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             transFormPrintData.setPlasmidName(cerTransformTb.getPlasmidName());
             transFormPrintData.setTaskNum(cerTransformTb.getTaskNum());
             transFormPrintData.setPrintNum(content.getPrintNum() == null ? 1 : content.getPrintNum());
+            transFormPrintData.setRemark1(content.getRemark1());
+            transFormPrintData.setRemark2(content.getRemark2());
             transFormPrintDataList.add(transFormPrintData);
         }
         if (CollectionUtil.isNotEmpty(transFormPrintDataList)) {

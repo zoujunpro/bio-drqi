@@ -14,5 +14,7 @@ public class TransFormPrintReqDTO {
         private String vectorTaskCode;
         private String transformCode;
         private Integer printNum;
+        private String remark1;
+        private String remark2;
     }
 }

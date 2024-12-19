@@ -98,6 +98,7 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
                     if (oneTestType.equals(newSampleTestDTO.getTestType())) {
                         List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
                         LayoutConfirmReqDTO layoutConfirmReqDTO = new LayoutConfirmReqDTO();
+                        layoutConfirmReqDTO.setApplyNo(cerSampleApplyTb.getApplyNo());
                         cerSampleTestTbList.forEach(cerSampleTestTb -> layoutConfirmReqDTO.fillSampleToSingleList(cerSampleTestTb.getVectorTaskCode(),cerSampleTestTb.getTransformCode(),cerSampleTestTb.getSampleCode(),cerSampleTestTb.getIdentifyPrimer()));
                         sampleTestService.layoutConfirm(layoutConfirmReqDTO);
                     }

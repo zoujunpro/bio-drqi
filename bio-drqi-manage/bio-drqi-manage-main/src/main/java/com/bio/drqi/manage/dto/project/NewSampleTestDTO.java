@@ -10,6 +10,11 @@ import java.util.List;
 public class NewSampleTestDTO {
 
     /**
+     * one 单管检测   more 96孔板检测
+     */
+    private String testType;
+
+    /**
      * 首次取样申请
      */
 

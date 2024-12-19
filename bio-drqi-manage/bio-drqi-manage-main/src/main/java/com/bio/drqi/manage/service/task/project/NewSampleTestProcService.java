@@ -2,13 +2,16 @@ package com.bio.drqi.manage.service.task.project;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
+import com.bio.drqi.base.SampleUnitDTO;
 import com.bio.drqi.enums.*;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
+import com.bio.drqi.manage.service.project.SampleTestService;
 import com.bio.drqi.manage.util.SampleCodeUtil;
 import com.bio.drqi.mapper.*;
+import com.bio.drqi.sample.req.LayoutConfirmReqDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,8 @@ import java.util.List;
 @Slf4j
 @Service("sample_and_test")
 public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
+
+    private static final String oneTestType = "one";
     @Resource
     private CerSampleTestTbMapper cerSampleTestTbMapper;
 
@@ -37,6 +42,9 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
 
     @Resource
     private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
+
+    @Resource
+    private SampleTestService sampleTestService;
 
     @Override
     public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
@@ -86,6 +94,14 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
             if (cerSampleApplyTb == null) {
                 synchronized (this) {
                     doInitProjectData(bioTaskDtlTb);
+                    //如果是单管，则直接默认生成模板
+                    if (oneTestType.equals(newSampleTestDTO.getTestType())) {
+                        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
+                        LayoutConfirmReqDTO layoutConfirmReqDTO = new LayoutConfirmReqDTO();
+                        cerSampleTestTbList.forEach(cerSampleTestTb -> layoutConfirmReqDTO.fillSampleToNinetySixList(cerSampleTestTb.getVectorTaskCode(),cerSampleTestTb.getTransformCode(),cerSampleTestTb.getSampleCode(),cerSampleTestTb.getIdentifyPrimer()));
+                        sampleTestService.layoutConfirm(layoutConfirmReqDTO);
+                    }
+
                 }
             }
         }
@@ -95,7 +111,7 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         CerSampleApplyTb cerSampleApplyTb = cerSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
-       cerSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull("舍弃",cerSampleApplyTb.getApplyNo());
+        cerSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull("舍弃", cerSampleApplyTb.getApplyNo());
     }
 
     @Override
@@ -182,7 +198,7 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
                     cerSampleTestTb.setVectorTaskCode(cerTransformTb.getVectorTaskCode());
                     cerSampleTestTb.setPlasmidName(cerTransformTb.getPlasmidName());
                     cerSampleTestTb.setTransformCode(cerTransformTb.getTransformCode());
-                    cerSampleTestTb.setSampleCode(cerSampleCodePrefixTb.getSampleCodePrefix()+(cerSampleCodePrefixTb.getCurrentIndex()+i-1));
+                    cerSampleTestTb.setSampleCode(cerSampleCodePrefixTb.getSampleCodePrefix() + (cerSampleCodePrefixTb.getCurrentIndex() + i - 1));
                     cerSampleTestTb.setApplyTime(new Date());
                     cerSampleTestTb.setApplyUserId(SecurityContextHolder.getUserId());
                     cerSampleTestTb.setApplyUserName(SecurityContextHolder.getNickName());
@@ -192,7 +208,7 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
                     cerSampleTestTb.setUniqueCode(cerTransformTb.getProjectCode() + cerSampleTestTb.getSampleCode());
                     targetCerSampleTestTbList.add(cerSampleTestTb);
                 }
-                cerSampleCodePrefixTb.setCurrentIndex(cerSampleCodePrefixTb.getCurrentIndex()+firstSampleApply.getSampleNum());
+                cerSampleCodePrefixTb.setCurrentIndex(cerSampleCodePrefixTb.getCurrentIndex() + firstSampleApply.getSampleNum());
                 cerSampleCodePrefixTbMapper.updateById(cerSampleCodePrefixTb);
 
                 /**

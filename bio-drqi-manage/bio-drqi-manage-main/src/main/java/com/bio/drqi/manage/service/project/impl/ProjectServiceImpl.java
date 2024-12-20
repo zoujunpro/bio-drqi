@@ -97,6 +97,7 @@ public class ProjectServiceImpl implements ProjectService {
             listBaseInfoRspDTO.setProjectName(cerProjectTb.getProjectName());
             listBaseInfoRspDTO.setProjectCode(cerProjectTb.getProjectCode());
             listBaseInfoRspDTO.setProjectStatus(cerProjectTb.getProjectStatus());
+            listBaseInfoRspDTO.setProjectType(cerProjectTb.getProjectType());
             listBaseInfoRspDTO.setGeneEditMethod(cerProjectTb.getGeneEditMethod());
             listBaseInfoRspDTO.setExpectEndDate(cerProjectTb.getExpectEndDate());
             listBaseInfoRspDTO.setExpectStartDate(cerProjectTb.getExpectStartDate());

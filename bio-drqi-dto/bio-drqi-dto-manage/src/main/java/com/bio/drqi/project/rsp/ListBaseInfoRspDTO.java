@@ -18,6 +18,7 @@ public class ListBaseInfoRspDTO {
 
     private String projectStatus;
 
+    private String projectType;
     /**
      * 项目预计开始日期
      */

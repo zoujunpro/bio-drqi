@@ -23,4 +23,9 @@
         apply_no = #{applyNo,jdbcType=VARCHAR}
         order by id asc
     </select>
+    <delete id="deleteByApplyNo">
+        delete
+        from cer_sample_layout_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+    </delete>
 </mapper>

@@ -14,6 +14,8 @@ public interface CerSampleLayoutTbMapper extends BaseMapper<CerSampleLayoutTb> {
 
     CerSampleLayoutTb selectOneByApplyNo(@Param("applyNo") String applyNo);
 
+    int deleteByApplyNo(@Param("applyNo") String applyNo);
+
 }
 
 

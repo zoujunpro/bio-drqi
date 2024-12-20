@@ -35,6 +35,12 @@ public class ProjectAddDTO {
     private String projectLevel;
 
     /**
+     * 项目类型 1常规项目 2自研项目
+     */
+    @EnumValue(strValues = {"1", "2"}, message = "项目优先级参数非法")
+    private String projectType;
+
+    /**
      * 受体材料
      */
     @Size(max = 64,message = "受体材料最大长度64")
@@ -71,4 +77,5 @@ public class ProjectAddDTO {
      */
     @NotBlank(message = "项目预计结束日期缺失")
     private String expectEndDate;
+
 }

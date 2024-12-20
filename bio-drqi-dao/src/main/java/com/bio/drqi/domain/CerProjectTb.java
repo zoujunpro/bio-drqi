@@ -63,6 +63,8 @@ public class CerProjectTb  implements Serializable {
      */
     private String projectStatus;
 
+
+    private String projectType;
     /**
      * 项目创建时间
      */
@@ -112,6 +114,8 @@ public class CerProjectTb  implements Serializable {
      * 任务编号
      */
     private String taskNum;
+
+
 
 
     @TableField(exist = false)

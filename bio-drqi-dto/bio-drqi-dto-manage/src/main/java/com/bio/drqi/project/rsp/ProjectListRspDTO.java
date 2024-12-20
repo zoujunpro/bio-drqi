@@ -22,6 +22,10 @@ public class ProjectListRspDTO {
      */
     private String projectCode;
     /**
+     * 项目类型
+     */
+    private String projectType;
+    /**
      * 立项时间
      */
     private Date projectTime;

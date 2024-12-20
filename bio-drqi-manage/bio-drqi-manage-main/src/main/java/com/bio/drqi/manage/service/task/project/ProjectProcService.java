@@ -48,6 +48,7 @@ public class ProjectProcService extends AbstractBaseProjectTaskService {
             cerProjectTb.setOwnerUserName(bioTaskDtlTb.getApplyUserName());
             cerProjectTb.setCreateUserId(bioTaskDtlTb.getApplyUserId());
             cerProjectTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
+            cerProjectTb.setProjectType(projectAddDTO.getProjectType());
             cerProjectTb.setProjectStatus(ProjectStatusEnum.execute.name());
             cerProjectTb.setSpecies(JSONUtil.toJsonStr(projectAddDTO.getSpeciesList()));
             cerProjectTb.setTaskNum(bioTaskDtlTb.getTaskNum());

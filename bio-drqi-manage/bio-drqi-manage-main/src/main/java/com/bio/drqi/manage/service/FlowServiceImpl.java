@@ -140,7 +140,6 @@ public class FlowServiceImpl implements FlowService {
                 if (Objects.nonNull(args.get("applyFrom"))) {
                     return (Map<String, Object>) args.get("applyFrom");
                 }
-
                 return args;
             }
         }

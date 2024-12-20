@@ -37,7 +37,7 @@ public class ProjectAddDTO {
     /**
      * 项目类型 1常规项目 2自研项目
      */
-    @EnumValue(strValues = {"1", "2"}, message = "项目优先级参数非法")
+    @EnumValue(strValues = {"1", "2"}, message = "项目类型参数非法")
     private String projectType;
 
     /**

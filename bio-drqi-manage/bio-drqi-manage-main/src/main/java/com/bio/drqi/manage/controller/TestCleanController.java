@@ -415,7 +415,7 @@ public class TestCleanController {
 
     @GetMapping("testBioInfo")
     public String testBioInfo() {
-        sampleTestBioInfoResultService.synBioInfoResult("TJ022", "B-DQ18");
+        sampleTestBioInfoResultService.synBioInfoResult("TJ0212", "B-DQ18","ok","ok");
         return "ok";
     }
 }

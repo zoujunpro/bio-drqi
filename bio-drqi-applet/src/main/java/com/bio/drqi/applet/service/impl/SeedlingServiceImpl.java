@@ -59,31 +59,25 @@ public class SeedlingServiceImpl implements SeedlingService {
         if (cerSampleTestOperateLog != null) {
             throw new BusinessException("已经做过保苗/剔苗操作");
         }
+        CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName());
+        cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
+        cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
+        cerPlantDtlTbMapper.insert(cerPlantDtlTb);
+        cerSampleTestOperateLog = new CerSampleTestOperateLog();
+        cerSampleTestOperateLog.setProjectCode(cerSampleTestTb.getProjectCode());
+        cerSampleTestOperateLog.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
+        cerSampleTestOperateLog.setProjectId(cerSampleTestTb.getProjectId());
+        cerSampleTestOperateLog.setVectorTaskId(cerSampleTestTb.getVectorTaskId());
+        cerSampleTestOperateLog.setSampleCode(cerSampleTestTb.getSampleCode());
+        cerSampleTestOperateLog.setOperateCode(CheckResultOperateEnum.remain.name());
+        cerSampleTestOperateLog.setRemark(null);
+        cerSampleTestOperateLog.setPictureUrls(JSONUtil.toJsonStr(seedlingRemainReqDTO.getPictureUrls()));
+        cerSampleTestOperateLog.setCreateTime(new Date());
+        cerSampleTestOperateLog.setUniqueCode(cerSampleTestTb.getProjectCode() + cerSampleTestTb.getSampleCode());
+        cerSampleTestOperateLog.setCreateUserId(SecurityContextHolder.getUserId());
+        cerSampleTestOperateLog.setCreateUserName(SecurityContextHolder.getNickName());
+        cerSampleTestOperateLogMapper.insert(cerSampleTestOperateLog);
 
-        if ("传代".equals(cerSampleTestTb.getCheckResult()) || "留种".equals(cerSampleTestTb.getCheckResult())) {
-            for (int i = 0; i < seedlingRemainReqDTO.getNumber(); i++) {
-                CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName());
-                cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode() + "-" + StringUtils.padl(String.valueOf(i + 1), 2, '0'));
-                cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
-                cerPlantDtlTbMapper.insert(cerPlantDtlTb);
-            }
-            cerSampleTestOperateLog = new CerSampleTestOperateLog();
-            cerSampleTestOperateLog.setProjectCode(cerSampleTestTb.getProjectCode());
-            cerSampleTestOperateLog.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
-            cerSampleTestOperateLog.setProjectId(cerSampleTestTb.getProjectId());
-            cerSampleTestOperateLog.setVectorTaskId(cerSampleTestTb.getVectorTaskId());
-            cerSampleTestOperateLog.setSampleCode(cerSampleTestTb.getSampleCode());
-            cerSampleTestOperateLog.setOperateCode(CheckResultOperateEnum.remain.name());
-            cerSampleTestOperateLog.setRemark(null);
-            cerSampleTestOperateLog.setPictureUrls(JSONUtil.toJsonStr(seedlingRemainReqDTO.getPictureUrls()));
-            cerSampleTestOperateLog.setCreateTime(new Date());
-            cerSampleTestOperateLog.setUniqueCode(cerSampleTestTb.getProjectCode() + cerSampleTestTb.getSampleCode());
-            cerSampleTestOperateLog.setCreateUserId(SecurityContextHolder.getUserId());
-            cerSampleTestOperateLog.setCreateUserName(SecurityContextHolder.getNickName());
-            cerSampleTestOperateLogMapper.insert(cerSampleTestOperateLog);
-        } else {
-            throw new BusinessException("只有取样检测最新结果是传代或者留种时可以进行保苗操作");
-        }
     }
 
     @Override
@@ -96,24 +90,21 @@ public class SeedlingServiceImpl implements SeedlingService {
         if (cerSampleTestOperateLog != null) {
             throw new BusinessException("已经做过保苗/剔苗操作");
         }
-        if ("舍弃".equals(cerSampleTestTb.getCheckResult())) {
-            cerSampleTestOperateLog = new CerSampleTestOperateLog();
-            cerSampleTestOperateLog.setProjectCode(cerSampleTestTb.getProjectCode());
-            cerSampleTestOperateLog.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
-            cerSampleTestOperateLog.setProjectId(cerSampleTestTb.getProjectId());
-            cerSampleTestOperateLog.setVectorTaskId(cerSampleTestTb.getVectorTaskId());
-            cerSampleTestOperateLog.setSampleCode(cerSampleTestTb.getSampleCode());
-            cerSampleTestOperateLog.setOperateCode(CheckResultOperateEnum.remove.name());
-            cerSampleTestOperateLog.setRemark(seedlingRemoveReqDTO.getRemark());
-            cerSampleTestOperateLog.setPictureUrls(JSONUtil.toJsonStr(seedlingRemoveReqDTO.getPictureUrls()));
-            cerSampleTestOperateLog.setCreateTime(new Date());
-            cerSampleTestOperateLog.setUniqueCode(cerSampleTestTb.getProjectCode() + cerSampleTestTb.getSampleCode());
-            cerSampleTestOperateLog.setCreateUserId(SecurityContextHolder.getUserId());
-            cerSampleTestOperateLog.setCreateUserName(SecurityContextHolder.getNickName());
-            cerSampleTestOperateLogMapper.insert(cerSampleTestOperateLog);
-        } else {
-            throw new BusinessException("只有取样检测最新结果是舍弃时可以进行剔苗操作");
-        }
+        cerSampleTestOperateLog = new CerSampleTestOperateLog();
+        cerSampleTestOperateLog.setProjectCode(cerSampleTestTb.getProjectCode());
+        cerSampleTestOperateLog.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
+        cerSampleTestOperateLog.setProjectId(cerSampleTestTb.getProjectId());
+        cerSampleTestOperateLog.setVectorTaskId(cerSampleTestTb.getVectorTaskId());
+        cerSampleTestOperateLog.setSampleCode(cerSampleTestTb.getSampleCode());
+        cerSampleTestOperateLog.setOperateCode(CheckResultOperateEnum.remove.name());
+        cerSampleTestOperateLog.setRemark(seedlingRemoveReqDTO.getRemark());
+        cerSampleTestOperateLog.setPictureUrls(JSONUtil.toJsonStr(seedlingRemoveReqDTO.getPictureUrls()));
+        cerSampleTestOperateLog.setCreateTime(new Date());
+        cerSampleTestOperateLog.setUniqueCode(cerSampleTestTb.getProjectCode() + cerSampleTestTb.getSampleCode());
+        cerSampleTestOperateLog.setCreateUserId(SecurityContextHolder.getUserId());
+        cerSampleTestOperateLog.setCreateUserName(SecurityContextHolder.getNickName());
+        cerSampleTestOperateLogMapper.insert(cerSampleTestOperateLog);
+
     }
 
     @Override
@@ -178,7 +169,7 @@ public class SeedlingServiceImpl implements SeedlingService {
     public List<Map<String, String>> findPlantField(FindPlantFieldReqDTO findPlantFieldReqDTO) {
         List<Map<String, String>> mapListResult = new ArrayList<>();
         CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(findPlantFieldReqDTO.getPlantCode(), findPlantFieldReqDTO.getVectorTaskCode());
-        if(cerPlantDtlTb==null){
+        if (cerPlantDtlTb == null) {
             throw new BusinessException("种植明细不存在");
         }
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
@@ -192,7 +183,7 @@ public class SeedlingServiceImpl implements SeedlingService {
 
         for (CerSpeciesPlantFeaturesConf cerSpeciesPlantFeaturesConf : cerSpeciesPlantFeaturesConfList) {
             Map<String, String> map = new HashMap<>();
-            map.put(cerSpeciesPlantFeaturesConf.getPlantFeaturesName(),cerSpeciesPlantFeaturesConf.getPlantFeaturesDesc());
+            map.put(cerSpeciesPlantFeaturesConf.getPlantFeaturesName(), cerSpeciesPlantFeaturesConf.getPlantFeaturesDesc());
         }
 
         if (StringUtils.isEmpty(cerPlantDtlTb.getHarvestDate())) {

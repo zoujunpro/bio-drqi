@@ -20,11 +20,6 @@ public class SeedlingRemainReqDTO {
     @NotBlank(message = "参数缺失：取样编号")
     private String sampleCode;
 
-    /**
-     * 保苗数量
-     */
-    @NotNull(message = "参数缺失：保苗数量")
-    private Integer number;
 
     private List<String> pictureUrls;
 }

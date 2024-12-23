@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication(scanBasePackages = {"com.bio.drqi","com.bio.common","com.bio.print","com.bio.base"})
 @EnableDiscoveryClient
 @MapperScan(basePackages = "com.bio.drqi.mapper")
-@EnableFeignClients(basePackages = {"com.bio.print.api","com.bio.base.api"})
+@EnableFeignClients(basePackages = {"com.bio.print.api","com.bio.base.api","com.bio.drqi.external.client"})
 @EnableScheduling
 public class BioDrqiManageMain {
     public static void main(String[] args) {

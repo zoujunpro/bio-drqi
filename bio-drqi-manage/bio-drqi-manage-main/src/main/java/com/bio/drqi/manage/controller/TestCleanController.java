@@ -11,6 +11,7 @@ import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.enums.GenerationEnum;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.service.DictInnerService;
+import com.bio.drqi.manage.service.SampleTestBioInfoResultService;
 import com.bio.drqi.manage.util.LetterUtil;
 import com.bio.drqi.mapper.*;
 import com.bio.print.*;
@@ -82,6 +83,9 @@ public class TestCleanController {
 
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
+    @Resource
+    private SampleTestBioInfoResultService sampleTestBioInfoResultService;
 
 
     @GetMapping("cleanPrint")
@@ -367,12 +371,12 @@ public class TestCleanController {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectList(null);
         for (CerVectorTaskTb cerVectorTaskTb : cerVectorTaskTbList) {
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerVectorTaskTb.getTaskNum());
-            log.info("bioTaskDtlTb={}",JSONUtil.toJsonStr(bioTaskDtlTb));
+            log.info("bioTaskDtlTb={}", JSONUtil.toJsonStr(bioTaskDtlTb));
             VectorTaskAddDTO vectorTaskAddDTO = null;
             try {
                 vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
             } catch (Exception e) {
-               continue;
+                continue;
             }
             CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
             if (cerSampleCodePrefixTb == null) {
@@ -407,5 +411,11 @@ public class TestCleanController {
             sampleCodePrefix = LetterUtil.randomLetter(2);
         }
         return sampleCodePrefix;
+    }
+
+    @GetMapping("testBioInfo")
+    public String testBioInfo() {
+        sampleTestBioInfoResultService.synBioInfoResult("TJ022", "B-DQ18");
+        return "ok";
     }
 }

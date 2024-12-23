@@ -21,6 +21,7 @@
         <module>bio-drqi-applet</module>
         <module>bio-drqi-manage</module>
         <module>bio-drqi-common</module>
+        <module>bio-drqi-external</module>
     </modules>
 
     <properties>

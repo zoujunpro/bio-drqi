@@ -3,7 +3,7 @@ package com.bio.drqi.sample.req;
 import lombok.Data;
 
 @Data
-public class SynBioInfoSampleTestResultReqDTO {
+public class UploadBioInfoSampleTestResultReqDTO {
 
     private String excelUrl;
 

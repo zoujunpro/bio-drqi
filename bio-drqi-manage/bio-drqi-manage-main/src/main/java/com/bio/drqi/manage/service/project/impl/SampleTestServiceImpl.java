@@ -85,6 +85,9 @@ public class SampleTestServiceImpl implements SampleTestService {
     @Resource
     private OssService ossService;
 
+    @Resource
+    private CerSampleTestBioResultRefMapper cerSampleTestBioResultRefMapper;
+
 
     @Override
     public PageInfo<SampleApplyRspDTO> listPage(SampleApplyListPageReqDTO sampleApplyListPageReqDTO) {
@@ -516,86 +519,100 @@ public class SampleTestServiceImpl implements SampleTestService {
     }
 
     @Override
-    public void synBioInfoSampleTestResult(SynBioInfoSampleTestResultReqDTO synBioInfoSampleTestResultReqDTO) {
-        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + synBioInfoSampleTestResultReqDTO.getExcelUrl();
+    public void uploadBioInfoSampleTestResult(UploadBioInfoSampleTestResultReqDTO uploadBioInfoSampleTestResultReqDTO) {
+        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + uploadBioInfoSampleTestResultReqDTO.getExcelUrl();
         try {
-            ossService.downloadPath(tempFilePath, synBioInfoSampleTestResultReqDTO.getExcelUrl());
+            ossService.downloadPath(tempFilePath, uploadBioInfoSampleTestResultReqDTO.getExcelUrl());
         } catch (Exception e) {
             log.error("【生信检测结果】文件从oss下载失败", e);
             throw new BusinessException("文件处理异常");
         }
         List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList = ExcelUtil.readExcel(tempFilePath, SampleTestBioInfoExcelDTO.class);
-        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(synBioInfoSampleTestResultReqDTO.getApplyNo());
-        List<String> sampleCodeAndVectorTaskCodeStrList = cerSampleTestTbList.stream().map(cerSampleTestTb -> cerSampleTestTb.getVectorTaskCode() + cerSampleTestTb.getSampleCode()).collect(Collectors.toList());
+
+        cerSampleTestBioResultRefMapper.deleteByApplyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
+
+        Date createDate = new Date();
         for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
-            if(!sampleCodeAndVectorTaskCodeStrList.contains(sampleTestBioInfoExcelDTO.getVectorTaskCode()+sampleTestBioInfoExcelDTO.getSampleCode())){
-                    throw new BusinessException("当前申请记录中无此条数据记录 实施方案："+sampleTestBioInfoExcelDTO.getVectorTaskCode()+" 取样编号："+sampleTestBioInfoExcelDTO.getSampleCode());
-            }
-        }
-
-        readSampleTestBioInfoExcel(sampleTestBioInfoExcelDTOList);
-    }
-
-
-    private void readSampleTestBioInfoExcel(List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList) {
-        for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
-            log.info("开始拉去取样检测结果 sampleCode={},vectorTaskCode", sampleTestBioInfoExcelDTO.getSampleCode(), sampleTestBioInfoExcelDTO.getVectorTaskCode());
-            int size = threadPool.getPoolSize();
-            while (size > 1000) {
-                try {
-                    log.info("开始拉去取样检测结果 当前线程池中线程数越为：", size);
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                }
-            }
-            threadPool.execute(() -> {
-                synBioInfoResult(sampleTestBioInfoExcelDTO);
-            });
+            CerSampleTestBioResultRef cerSampleTestBioResultRef = new CerSampleTestBioResultRef();
+            cerSampleTestBioResultRef.setApplyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
+            cerSampleTestBioResultRef.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
+            cerSampleTestBioResultRef.setVectorTaskCode(sampleTestBioInfoExcelDTO.getVectorTaskCode());
+            cerSampleTestBioResultRef.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
+            cerSampleTestBioResultRef.setRunId(sampleTestBioInfoExcelDTO.getRunId());
+            cerSampleTestBioResultRef.setCreateTime(createDate);
+            cerSampleTestBioResultRefMapper.insert(cerSampleTestBioResultRef);
         }
     }
 
+    @Override
+    public List<QueryBioInfoSampleTestResultRspDTO> queryBioInfoSampleTestResult(Integer id) {
+        CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectById(id);
+        if (cerSampleTestTb == null) {
+            throw new BusinessException("参数错误，找不到此取样信息：" + id);
+        }
+        CerSampleTestBioResultRef cerSampleTestBioResultRef = cerSampleTestBioResultRefMapper.selectOneBySampleCodeAndApplyNo(cerSampleTestTb.getSampleCode(), cerSampleTestTb.getApplyNo());
+        return synBioInfoResult(cerSampleTestBioResultRef.getSampleId(), cerSampleTestBioResultRef.getRunId());
+    }
 
-    private void synBioInfoResult(SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO) {
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void bioInfoSampleTestResultConfirm(BioInfoSampleTestResultConfirmReqDTO bioInfoSampleTestResultConfirmReqDTO) {
+        CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectById(bioInfoSampleTestResultConfirmReqDTO.getId());
+
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerSampleTestTb.getApplyNo());
+        if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            throw new BusinessException("非执行中任务，无法进行操作");
+        }
+
+        //删除旧的匹配
+        cerSampleTestBioInfoResultTbMapper.deleteByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
+        Date currentDate = new Date();
+
+        //更新新的匹配
+        for (BioInfoSampleTestResultConfirmReqDTO.Content content : bioInfoSampleTestResultConfirmReqDTO.getContentList()) {
+            CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb = new CerSampleTestBioInfoResultTb();
+            cerSampleTestBioInfoResultTb.setApplyNo(cerSampleTestTb.getApplyNo());
+            cerSampleTestBioInfoResultTb.setSampleCode(cerSampleTestTb.getSampleCode());
+            cerSampleTestBioInfoResultTb.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
+            cerSampleTestBioInfoResultTb.setSampleId(content.getSampleId());
+            cerSampleTestBioInfoResultTb.setUniqueDbCode(content.getUniqueDbCode());
+            cerSampleTestBioInfoResultTb.setRunId(content.getRunId());
+            cerSampleTestBioInfoResultTb.setHapId(content.getHapId());
+            cerSampleTestBioInfoResultTb.setVarType(content.getVarType());
+            cerSampleTestBioInfoResultTb.setMutate(content.getMutate());
+            cerSampleTestBioInfoResultTb.setRatio(content.getRatio());
+            cerSampleTestBioInfoResultTb.setCreateTime(currentDate);
+            cerSampleTestBioInfoResultTb.setConfirmStatus(content.getConfirmStatus());
+            cerSampleTestBioInfoResultTb.setResultKey(content.getResultKey());
+            cerSampleTestBioInfoResultTbMapper.insert(cerSampleTestBioInfoResultTb);
+        }
+
+        cerSampleTestTb.setMatchFlag(CerProjectContents.Y);
+        cerSampleTestTbMapper.updateById(cerSampleTestTb);
+
+    }
+
+
+    private List<QueryBioInfoSampleTestResultRspDTO> synBioInfoResult(String sampleId, String runId) {
         Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("RunID", sampleTestBioInfoExcelDTO.getRunId());
-        paramMap.put("sampleID", sampleTestBioInfoExcelDTO.getSampleId());
+        paramMap.put("RunID", runId);
+        paramMap.put("sampleID", sampleId);
         BioResult<List<Map<String, String>>> bioInfoResultRspDTOBioResult = bioInfoClientApi.sampleTestBioInfoResult(paramMap);
+
+        List<QueryBioInfoSampleTestResultRspDTO> resultList = new ArrayList<>();
         for (Map<String, String> map : bioInfoResultRspDTOBioResult.getData()) {
-            CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb = cerSampleTestBioInfoResultTbMapper.selectOneBySampleIdAndUniqueDbCode(map.get("sampleID"), map.get("Unique_DB_code"));
-            if (ObjectUtil.isNull(cerSampleTestBioInfoResultTb)) {
-                cerSampleTestBioInfoResultTb = new CerSampleTestBioInfoResultTb();
-                cerSampleTestBioInfoResultTb.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
-                cerSampleTestBioInfoResultTb.setVectorTaskCode(sampleTestBioInfoExcelDTO.getVectorTaskCode());
-                cerSampleTestBioInfoResultTb.setSampleId(map.get("sampleID"));
-                cerSampleTestBioInfoResultTb.setUniqueDbCode(map.get("Unique_DB_code"));
-                cerSampleTestBioInfoResultTb.setRunId(map.get("RunID"));
-                cerSampleTestBioInfoResultTb.setHapId(map.get("HapID"));
-                cerSampleTestBioInfoResultTb.setVarType(map.get("vartype"));
-                cerSampleTestBioInfoResultTb.setMutate(map.get("mutate"));
-                cerSampleTestBioInfoResultTb.setRatio(map.get("ratio"));
-                cerSampleTestBioInfoResultTb.setConfirmStatus(map.get("ConfirmStatus"));
-                cerSampleTestBioInfoResultTb.setResultKey(map.get("ResultKey"));
-                cerSampleTestBioInfoResultTb.setCreateTime(new Date());
-                cerSampleTestBioInfoResultTb.setMatchFlag(CerProjectContents.N);
-                cerSampleTestBioInfoResultTbMapper.insert(cerSampleTestBioInfoResultTb);
-            }else {
-                if(!"checked".equals(cerSampleTestBioInfoResultTb.getConfirmStatus())){
-                    cerSampleTestBioInfoResultTb.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
-                    cerSampleTestBioInfoResultTb.setVectorTaskCode(sampleTestBioInfoExcelDTO.getVectorTaskCode());
-                    cerSampleTestBioInfoResultTb.setSampleId(map.get("sampleID"));
-                    cerSampleTestBioInfoResultTb.setUniqueDbCode(map.get("Unique_DB_code"));
-                    cerSampleTestBioInfoResultTb.setRunId(map.get("RunID"));
-                    cerSampleTestBioInfoResultTb.setHapId(map.get("HapID"));
-                    cerSampleTestBioInfoResultTb.setVarType(map.get("vartype"));
-                    cerSampleTestBioInfoResultTb.setMutate(map.get("mutate"));
-                    cerSampleTestBioInfoResultTb.setRatio(map.get("ratio"));
-                    cerSampleTestBioInfoResultTb.setConfirmStatus(map.get("ConfirmStatus"));
-                    cerSampleTestBioInfoResultTb.setResultKey(map.get("ResultKey"));
-                    cerSampleTestBioInfoResultTb.setCreateTime(new Date());
-                    cerSampleTestBioInfoResultTb.setMatchFlag(CerProjectContents.N);
-                    cerSampleTestBioInfoResultTbMapper.updateById(cerSampleTestBioInfoResultTb);
-                }
-            }
+            QueryBioInfoSampleTestResultRspDTO queryBioInfoSampleTestResultRspDTO = new QueryBioInfoSampleTestResultRspDTO();
+            queryBioInfoSampleTestResultRspDTO.setSampleId(map.get("sampleID"));
+            queryBioInfoSampleTestResultRspDTO.setUniqueDbCode(map.get("Unique_DB_code"));
+            queryBioInfoSampleTestResultRspDTO.setRunId(map.get("RunID"));
+            queryBioInfoSampleTestResultRspDTO.setHapId(map.get("HapID"));
+            queryBioInfoSampleTestResultRspDTO.setVarType(map.get("vartype"));
+            queryBioInfoSampleTestResultRspDTO.setMutate(map.get("mutate"));
+            queryBioInfoSampleTestResultRspDTO.setRatio(map.get("ratio"));
+            queryBioInfoSampleTestResultRspDTO.setConfirmStatus(map.get("ConfirmStatus"));
+            queryBioInfoSampleTestResultRspDTO.setResultKey(map.get("ResultKey"));
+            resultList.add(queryBioInfoSampleTestResultRspDTO);
         }
+        return resultList;
     }
 }

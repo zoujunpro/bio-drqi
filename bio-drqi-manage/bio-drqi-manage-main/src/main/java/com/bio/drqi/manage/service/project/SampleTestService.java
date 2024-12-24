@@ -4,6 +4,7 @@ import com.bio.drqi.sample.req.*;
 import com.bio.drqi.sample.rsp.*;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -52,5 +53,9 @@ public interface SampleTestService {
 
     CountNumByApplyNoRspDTO countNumByApplyNo(String applyNo);
 
-    void synBioInfoSampleTestResult(SynBioInfoSampleTestResultReqDTO synBioInfoSampleTestResultReqDTO);
+    void uploadBioInfoSampleTestResult(UploadBioInfoSampleTestResultReqDTO uploadBioInfoSampleTestResultReqDTO);
+
+    List<QueryBioInfoSampleTestResultRspDTO> queryBioInfoSampleTestResult( Integer id);
+
+    void bioInfoSampleTestResultConfirm( BioInfoSampleTestResultConfirmReqDTO bioInfoSampleTestResultConfirmReqDTO);
 }

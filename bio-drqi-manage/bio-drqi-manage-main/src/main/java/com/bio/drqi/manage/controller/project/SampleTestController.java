@@ -112,19 +112,6 @@ public class SampleTestController {
         sampleTestService.downTestTemplate(downTestTemplateReqDTO, response);
     }
 
-    /**
-     * 生信结果核对模板下载
-     */
-    @PostMapping("downSampleTestBioInfoResultTemplate")
-    @WebLog(desc = "生信结果核对模板下载")
-    public void downSampleTestBioInfoResultTemplate( HttpServletResponse response) {
-        try {
-            ossService.downloadFile(response, "template", "生信结果核对模板V1.0.xlsx");
-        } catch (Exception e) {
-            throw new BusinessException("生信结果核对模板下载失败，请联系管理员检测模板配置");
-        }
-    }
-
 
     /**
      * 上传检测数据
@@ -256,15 +243,54 @@ public class SampleTestController {
     }
 
     /**
-     * 同步生信检测结果数据(手动)
-     * @param synBioInfoSampleTestResultReqDTO
+     * 生信结果核对模板下载
+     */
+    @PostMapping("downSampleTestBioInfoResultTemplate")
+    @WebLog(desc = "生信结果核对模板下载")
+    public void downSampleTestBioInfoResultTemplate(HttpServletResponse response) {
+        try {
+            ossService.downloadFile(response, "template", "生信结果核对模板V1.0.xlsx");
+        } catch (Exception e) {
+            throw new BusinessException("生信结果核对模板下载失败，请联系管理员检测模板配置");
+        }
+    }
+
+    /**
+     * 上传生信检测结果数据核对模板
+     *
+     * @param uploadBioInfoSampleTestResultReqDTO
      * @return
      */
-    @PostMapping("synBioInfoSampleTestResult")
-    @WebLog(desc = "同步生信检测结果数据(手动)")
-    public ResponseResult<String> synBioInfoSampleTestResult(@RequestBody SynBioInfoSampleTestResultReqDTO synBioInfoSampleTestResultReqDTO) {
-        sampleTestService.synBioInfoSampleTestResult(synBioInfoSampleTestResultReqDTO);
+    @PostMapping("uploadBioInfoSampleTestResult")
+    @WebLog(desc = "上传生信检测结果数据核对模板")
+    public ResponseResult<String> uploadBioInfoSampleTestResult(@RequestBody UploadBioInfoSampleTestResultReqDTO uploadBioInfoSampleTestResultReqDTO) {
+        sampleTestService.uploadBioInfoSampleTestResult(uploadBioInfoSampleTestResultReqDTO);
         return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 生信检测结果查看
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("queryBioInfoSampleTestResult")
+    @WebLog(desc = "生信检测结果查看")
+    public ResponseResult<List<QueryBioInfoSampleTestResultRspDTO>> queryBioInfoSampleTestResult(@RequestParam Integer id) {
+        return ResponseResult.getSuccess(sampleTestService.queryBioInfoSampleTestResult(id));
+    }
+
+    /**
+     * 生信检测结果确认
+     *
+     * @param bioInfoSampleTestResultConfirmReqDTO
+     * @return
+     */
+    @PostMapping("bioInfoSampleTestResultConfirm")
+    @WebLog(desc = "生信检测结果确认")
+    public ResponseResult<String> bioInfoSampleTestResultConfirm(@RequestBody BioInfoSampleTestResultConfirmReqDTO bioInfoSampleTestResultConfirmReqDTO) {
+        sampleTestService.bioInfoSampleTestResultConfirm(bioInfoSampleTestResultConfirmReqDTO);
+        return ResponseResult.getSuccess(null);
     }
 
 }

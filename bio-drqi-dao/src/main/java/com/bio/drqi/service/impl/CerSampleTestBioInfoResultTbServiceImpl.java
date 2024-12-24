@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
 * @author zou'jun
 * @description 针对表【cer_sample_test_bio_info_result_tb】的数据库操作Service实现
-* @createDate 2024-12-23 17:11:30
+* @createDate 2024-12-24 15:46:16
 */
 @Service
 public class CerSampleTestBioInfoResultTbServiceImpl extends ServiceImpl<CerSampleTestBioInfoResultTbMapper, CerSampleTestBioInfoResultTb>

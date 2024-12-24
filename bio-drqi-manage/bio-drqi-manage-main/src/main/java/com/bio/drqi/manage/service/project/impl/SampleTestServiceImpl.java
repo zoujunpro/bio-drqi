@@ -2,10 +2,15 @@ package com.bio.drqi.manage.service.project.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.bio.drqi.base.SampleUnitDTO;
+import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.external.client.BioInfoClientApi;
+import com.bio.drqi.external.dto.BioResult;
+import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
 import com.bio.drqi.sample.req.*;
 import com.bio.drqi.sample.rsp.*;
 import com.bio.common.core.context.SecurityContextHolder;
@@ -33,11 +38,23 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class SampleTestServiceImpl implements SampleTestService {
+
+    @Value("${cer.properties.excelTemplatePath}")
+    private String excelTemplatePath;
+
+
+    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(10, 10, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(10000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+
+
     @Resource
     private CerSampleTestTbMapper cerSampleTestTbMapper;
 
@@ -58,11 +75,17 @@ public class SampleTestServiceImpl implements SampleTestService {
     @Resource
     private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
+
+
+    @Resource
+    private BioInfoClientApi bioInfoClientApi;
+
+    @Resource
+    private CerSampleTestBioInfoResultTbMapper cerSampleTestBioInfoResultTbMapper;
+
     @Resource
     private OssService ossService;
 
-    @Value("${cer.properties.excelTemplatePath}")
-    private String excelTemplatePath;
 
 
     @Override
@@ -477,6 +500,9 @@ public class SampleTestServiceImpl implements SampleTestService {
 
     }
 
+
+
+
     @Override
     public List<SampleApplyRspDTO> sampleApplyListAll(String currentStepCode) {
         List<CerSampleApplyTb> cerSampleApplyTbList = cerSampleApplyTbMapper.selectAllByCurrentStepCode(currentStepCode);
@@ -493,5 +519,62 @@ public class SampleTestServiceImpl implements SampleTestService {
         return countNumByApplyNoRspDTO;
     }
 
+    @Override
+    public void synBioInfoSampleTestResult(SynBioInfoSampleTestResultReqDTO synBioInfoSampleTestResultReqDTO) {
+        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + synBioInfoSampleTestResultReqDTO.getExcelUrl();
+        try {
+            ossService.downloadPath(tempFilePath, synBioInfoSampleTestResultReqDTO.getExcelUrl());
+        } catch (Exception e) {
+            log.error("【生信检测结果】文件从oss下载失败", e);
+            throw new BusinessException("文件处理异常");
+        }
+        List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList=  ExcelUtil.readExcel(tempFilePath,SampleTestBioInfoExcelDTO.class);
+        readSampleTestBioInfoExcel(sampleTestBioInfoExcelDTOList);
+    }
 
+
+
+    private void readSampleTestBioInfoExcel(List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList) {
+        for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
+            log.info("开始拉去取样检测结果 sampleCode={},vectorTaskCode",sampleTestBioInfoExcelDTO.getSampleCode(),sampleTestBioInfoExcelDTO.getVectorTaskCode());
+            int size = threadPool.getPoolSize();
+            while (size > 1000) {
+                try {
+                    log.info("开始拉去取样检测结果 当前线程池中线程数越为：",size);
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                }
+            }
+            threadPool.execute(() -> {
+                synBioInfoResult(sampleTestBioInfoExcelDTO);
+            });
+        }
+    }
+
+
+
+    private void synBioInfoResult(SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("RunID", sampleTestBioInfoExcelDTO.getRunId());
+        paramMap.put("sampleID", sampleTestBioInfoExcelDTO.getSampleId());
+        BioResult<List<Map<String,String>>> bioInfoResultRspDTOBioResult = bioInfoClientApi.sampleTestBioInfoResult(paramMap);
+        for (Map<String,String> map : bioInfoResultRspDTOBioResult.getData()) {
+            CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb = cerSampleTestBioInfoResultTbMapper.selectOneBySampleIdAndUniqueDbCode(map.get("sampleID"), map.get("Unique_DB_code"));
+            if (ObjectUtil.isNull(cerSampleTestBioInfoResultTb)) {
+                cerSampleTestBioInfoResultTb = new CerSampleTestBioInfoResultTb();
+                cerSampleTestBioInfoResultTb.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
+                cerSampleTestBioInfoResultTb.setVectorTaskCode(sampleTestBioInfoExcelDTO.getVectorTaskCode());
+                cerSampleTestBioInfoResultTb.setSampleId(map.get("sampleID"));
+                cerSampleTestBioInfoResultTb.setUniqueDbCode(map.get("Unique_DB_code"));
+                cerSampleTestBioInfoResultTb.setRunId(map.get("RunID"));
+                cerSampleTestBioInfoResultTb.setHapId(map.get("HapID"));
+                cerSampleTestBioInfoResultTb.setVarType(map.get("vartype"));
+                cerSampleTestBioInfoResultTb.setMutate(map.get("mutate"));
+                cerSampleTestBioInfoResultTb.setRatio(map.get("ratio"));
+                cerSampleTestBioInfoResultTb.setCreateTime(new Date());
+                cerSampleTestBioInfoResultTb.setMatchFlag(CerProjectContents.N);
+                cerSampleTestBioInfoResultTbMapper.insert(cerSampleTestBioInfoResultTb);
+            }
+        }
+    }
 }

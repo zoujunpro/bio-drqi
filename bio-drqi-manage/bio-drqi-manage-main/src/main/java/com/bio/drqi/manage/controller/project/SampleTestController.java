@@ -113,6 +113,20 @@ public class SampleTestController {
     }
 
     /**
+     * 生信结果核对模板下载
+     */
+    @PostMapping("downSampleTestBioInfoResultTemplate")
+    @WebLog(desc = "生信结果核对模板下载")
+    public void downSampleTestBioInfoResultTemplate( HttpServletResponse response) {
+        try {
+            ossService.downloadFile(response, "template", "生信结果核对模板V1.0.xlsx");
+        } catch (Exception e) {
+            throw new BusinessException("生信结果核对模板下载失败，请联系管理员检测模板配置");
+        }
+    }
+
+
+    /**
      * 上传检测数据
      */
     @PostMapping("uploadTestTemplate")
@@ -240,4 +254,17 @@ public class SampleTestController {
     public ResponseResult<CountNumByApplyNoRspDTO> countNumByApplyNo(@RequestParam @Validated String applyNo) {
         return ResponseResult.getSuccess(sampleTestService.countNumByApplyNo(applyNo));
     }
+
+    /**
+     * 同步生信检测结果数据(手动)
+     * @param synBioInfoSampleTestResultReqDTO
+     * @return
+     */
+    @PostMapping("synBioInfoSampleTestResult")
+    @WebLog(desc = "同步生信检测结果数据(手动)")
+    public ResponseResult<String> synBioInfoSampleTestResult(@RequestBody SynBioInfoSampleTestResultReqDTO synBioInfoSampleTestResultReqDTO) {
+        sampleTestService.synBioInfoSampleTestResult(synBioInfoSampleTestResultReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
 }

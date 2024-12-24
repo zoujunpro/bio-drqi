@@ -3,6 +3,7 @@ package com.bio.drqi.manage.service.project;
 import com.bio.drqi.sample.req.*;
 import com.bio.drqi.sample.rsp.*;
 import com.github.pagehelper.PageInfo;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -20,14 +21,16 @@ public interface SampleTestService {
      */
     void downSampleTemplate(DownloadSampleTemplateReqDTO downloadSampleTemplateReqDTO, HttpServletResponse response);
 
-    void uploadSampleTemplate( UploadSampleTemplateReqDTO uploadSampleTemplateReqDTO );
+    void uploadSampleTemplate(UploadSampleTemplateReqDTO uploadSampleTemplateReqDTO);
 
     /**
      * 样品数据模板下载
      */
     void downTestTemplate(DownTestTemplateReqDTO downTestTemplateReqDTO, HttpServletResponse response);
 
-    void uploadTestTemplate( UploadTestTemplateReqDTO uploadTestTemplateReqDTO );
+
+    void uploadTestTemplate(UploadTestTemplateReqDTO uploadTestTemplateReqDTO);
+
     List<SampleTestListDetailRspDTO> checkList(CheckListReqDTO checkListReqDTO);
 
     void approveSampleResult(ApproveSampleResultReqDTO approveSampleResultReqDTO);
@@ -43,9 +46,11 @@ public interface SampleTestService {
 
     void layoutConfirm(LayoutConfirmReqDTO layoutConfirmReqDTO);
 
-   void dowLayoutExcel( String applyNo,HttpServletResponse httpServletResponse);
+    void dowLayoutExcel(String applyNo, HttpServletResponse httpServletResponse);
 
     List<SampleApplyRspDTO> sampleApplyListAll(String currentStepCode);
 
     CountNumByApplyNoRspDTO countNumByApplyNo(String applyNo);
+
+    void synBioInfoSampleTestResult(SynBioInfoSampleTestResultReqDTO synBioInfoSampleTestResultReqDTO);
 }

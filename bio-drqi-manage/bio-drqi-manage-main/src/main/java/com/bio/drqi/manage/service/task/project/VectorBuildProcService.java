@@ -79,6 +79,10 @@ public class VectorBuildProcService extends AbstractBaseProjectTaskService {
         if (vectorGroupList.size() != vectorTaskAddDTO.getVectorGroupList().size()) {
             throw new BusinessException("载体构建中转化方案名称重复");
         }
+
+        cerVectorTaskTb.setVectorBuildFlag(CerProjectContents.Y);
+        cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
+
     }
 
     @Override
@@ -122,8 +126,6 @@ public class VectorBuildProcService extends AbstractBaseProjectTaskService {
                 throw new BusinessException("同一个项目中不能存在相同共转名称");
             }
 
-            cerVectorTaskTb.setVectorBuildFlag(CerProjectContents.Y);
-            cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
             /**
              * 更新当前执行步骤
              */
@@ -137,7 +139,10 @@ public class VectorBuildProcService extends AbstractBaseProjectTaskService {
 
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
-
+        VectorTaskAddDTO vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
+        cerVectorTaskTb.setVectorBuildFlag(CerProjectContents.N);
+        cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
     }
 
     private void doOtherVectorTask(VectorTaskAddDTO vectorTaskAddDTO, CerVectorTaskTb cerVectorTaskTb) {

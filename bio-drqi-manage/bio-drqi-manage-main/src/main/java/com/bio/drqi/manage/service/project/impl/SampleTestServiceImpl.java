@@ -5,14 +5,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
-import com.bio.drqi.base.SampleUnitDTO;
-import com.bio.drqi.contents.CerProjectContents;
-import com.bio.drqi.enums.BioTaskStatusEnum;
-import com.bio.drqi.external.client.BioInfoClientApi;
-import com.bio.drqi.external.dto.BioResult;
-import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
-import com.bio.drqi.sample.req.*;
-import com.bio.drqi.sample.rsp.*;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
@@ -20,13 +12,21 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.base.SampleUnitDTO;
+import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.external.client.BioInfoClientApi;
+import com.bio.drqi.external.dto.BioResult;
 import com.bio.drqi.manage.dto.project.IdentifyPrimerTemplateExcelDTO;
 import com.bio.drqi.manage.dto.project.SampleExcelDTO;
+import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
 import com.bio.drqi.manage.dto.project.TestExcelDTO;
 import com.bio.drqi.manage.service.project.SampleTestService;
 import com.bio.drqi.manage.util.SampleExcelUtil;
 import com.bio.drqi.mapper.*;
+import com.bio.drqi.sample.req.*;
+import com.bio.drqi.sample.rsp.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +76,6 @@ public class SampleTestServiceImpl implements SampleTestService {
     private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
 
-
     @Resource
     private BioInfoClientApi bioInfoClientApi;
 
@@ -85,7 +84,6 @@ public class SampleTestServiceImpl implements SampleTestService {
 
     @Resource
     private OssService ossService;
-
 
 
     @Override
@@ -501,8 +499,6 @@ public class SampleTestServiceImpl implements SampleTestService {
     }
 
 
-
-
     @Override
     public List<SampleApplyRspDTO> sampleApplyListAll(String currentStepCode) {
         List<CerSampleApplyTb> cerSampleApplyTbList = cerSampleApplyTbMapper.selectAllByCurrentStepCode(currentStepCode);
@@ -528,19 +524,26 @@ public class SampleTestServiceImpl implements SampleTestService {
             log.error("【生信检测结果】文件从oss下载失败", e);
             throw new BusinessException("文件处理异常");
         }
-        List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList=  ExcelUtil.readExcel(tempFilePath,SampleTestBioInfoExcelDTO.class);
+        List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList = ExcelUtil.readExcel(tempFilePath, SampleTestBioInfoExcelDTO.class);
+        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(synBioInfoSampleTestResultReqDTO.getApplyNo());
+        List<String> sampleCodeAndVectorTaskCodeStrList = cerSampleTestTbList.stream().map(cerSampleTestTb -> cerSampleTestTb.getVectorTaskCode() + cerSampleTestTb.getSampleCode()).collect(Collectors.toList());
+        for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
+            if(!sampleCodeAndVectorTaskCodeStrList.contains(sampleTestBioInfoExcelDTO.getVectorTaskCode()+sampleTestBioInfoExcelDTO.getSampleCode())){
+                    throw new BusinessException("当前申请记录中无此条数据记录 实施方案："+sampleTestBioInfoExcelDTO.getVectorTaskCode()+" 取样编号："+sampleTestBioInfoExcelDTO.getSampleCode());
+            }
+        }
+
         readSampleTestBioInfoExcel(sampleTestBioInfoExcelDTOList);
     }
 
 
-
     private void readSampleTestBioInfoExcel(List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList) {
         for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
-            log.info("开始拉去取样检测结果 sampleCode={},vectorTaskCode",sampleTestBioInfoExcelDTO.getSampleCode(),sampleTestBioInfoExcelDTO.getVectorTaskCode());
+            log.info("开始拉去取样检测结果 sampleCode={},vectorTaskCode", sampleTestBioInfoExcelDTO.getSampleCode(), sampleTestBioInfoExcelDTO.getVectorTaskCode());
             int size = threadPool.getPoolSize();
             while (size > 1000) {
                 try {
-                    log.info("开始拉去取样检测结果 当前线程池中线程数越为：",size);
+                    log.info("开始拉去取样检测结果 当前线程池中线程数越为：", size);
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                 }
@@ -552,13 +555,12 @@ public class SampleTestServiceImpl implements SampleTestService {
     }
 
 
-
     private void synBioInfoResult(SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO) {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("RunID", sampleTestBioInfoExcelDTO.getRunId());
         paramMap.put("sampleID", sampleTestBioInfoExcelDTO.getSampleId());
-        BioResult<List<Map<String,String>>> bioInfoResultRspDTOBioResult = bioInfoClientApi.sampleTestBioInfoResult(paramMap);
-        for (Map<String,String> map : bioInfoResultRspDTOBioResult.getData()) {
+        BioResult<List<Map<String, String>>> bioInfoResultRspDTOBioResult = bioInfoClientApi.sampleTestBioInfoResult(paramMap);
+        for (Map<String, String> map : bioInfoResultRspDTOBioResult.getData()) {
             CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb = cerSampleTestBioInfoResultTbMapper.selectOneBySampleIdAndUniqueDbCode(map.get("sampleID"), map.get("Unique_DB_code"));
             if (ObjectUtil.isNull(cerSampleTestBioInfoResultTb)) {
                 cerSampleTestBioInfoResultTb = new CerSampleTestBioInfoResultTb();
@@ -571,9 +573,28 @@ public class SampleTestServiceImpl implements SampleTestService {
                 cerSampleTestBioInfoResultTb.setVarType(map.get("vartype"));
                 cerSampleTestBioInfoResultTb.setMutate(map.get("mutate"));
                 cerSampleTestBioInfoResultTb.setRatio(map.get("ratio"));
+                cerSampleTestBioInfoResultTb.setConfirmStatus(map.get("ConfirmStatus"));
+                cerSampleTestBioInfoResultTb.setResultKey(map.get("ResultKey"));
                 cerSampleTestBioInfoResultTb.setCreateTime(new Date());
                 cerSampleTestBioInfoResultTb.setMatchFlag(CerProjectContents.N);
                 cerSampleTestBioInfoResultTbMapper.insert(cerSampleTestBioInfoResultTb);
+            }else {
+                if(!"checked".equals(cerSampleTestBioInfoResultTb.getConfirmStatus())){
+                    cerSampleTestBioInfoResultTb.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
+                    cerSampleTestBioInfoResultTb.setVectorTaskCode(sampleTestBioInfoExcelDTO.getVectorTaskCode());
+                    cerSampleTestBioInfoResultTb.setSampleId(map.get("sampleID"));
+                    cerSampleTestBioInfoResultTb.setUniqueDbCode(map.get("Unique_DB_code"));
+                    cerSampleTestBioInfoResultTb.setRunId(map.get("RunID"));
+                    cerSampleTestBioInfoResultTb.setHapId(map.get("HapID"));
+                    cerSampleTestBioInfoResultTb.setVarType(map.get("vartype"));
+                    cerSampleTestBioInfoResultTb.setMutate(map.get("mutate"));
+                    cerSampleTestBioInfoResultTb.setRatio(map.get("ratio"));
+                    cerSampleTestBioInfoResultTb.setConfirmStatus(map.get("ConfirmStatus"));
+                    cerSampleTestBioInfoResultTb.setResultKey(map.get("ResultKey"));
+                    cerSampleTestBioInfoResultTb.setCreateTime(new Date());
+                    cerSampleTestBioInfoResultTb.setMatchFlag(CerProjectContents.N);
+                    cerSampleTestBioInfoResultTbMapper.updateById(cerSampleTestBioInfoResultTb);
+                }
             }
         }
     }

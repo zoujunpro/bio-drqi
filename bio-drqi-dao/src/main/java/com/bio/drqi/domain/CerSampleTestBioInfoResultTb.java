@@ -74,6 +74,10 @@ public class CerSampleTestBioInfoResultTb implements Serializable {
 
     private String matchFlag;
 
+    private String resultKey;
+
+    private String confirmStatus;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

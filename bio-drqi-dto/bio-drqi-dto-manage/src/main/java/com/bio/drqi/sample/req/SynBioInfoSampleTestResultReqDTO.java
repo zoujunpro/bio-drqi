@@ -6,4 +6,6 @@ import lombok.Data;
 public class SynBioInfoSampleTestResultReqDTO {
 
     private String excelUrl;
+
+    private String applyNo;
 }

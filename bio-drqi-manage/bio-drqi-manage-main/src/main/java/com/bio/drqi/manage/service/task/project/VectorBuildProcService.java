@@ -46,6 +46,9 @@ public class VectorBuildProcService extends AbstractBaseProjectTaskService {
         log.info("【任务工单】载体构建开始");
         VectorTaskAddDTO vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
+        if (CerProjectContents.Y.equals(cerVectorTaskTb.getVectorBuildFlag())) {
+            throw new BusinessException("已经发起过载体构建");
+        }
         //判断任务类型，正常任务
         if (VectorTaskTypeEnum.type_1.code.equals(cerVectorTaskTb.getVectorTaskType())) {
             if (CollectionUtil.isEmpty(vectorTaskAddDTO.getVectorList())) {

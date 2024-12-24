@@ -4,11 +4,14 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioDictTypeEnum;
 import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.enums.GenerationEnum;
+import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.service.DictInnerService;
 import com.bio.drqi.manage.service.SampleTestBioInfoResultService;
@@ -24,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -86,6 +91,9 @@ public class TestCleanController {
 
     @Resource
     private SampleTestBioInfoResultService sampleTestBioInfoResultService;
+
+    @Resource
+    private OssService ossService;
 
 
     @GetMapping("cleanPrint")
@@ -415,7 +423,8 @@ public class TestCleanController {
 
     @GetMapping("testBioInfo")
     public String testBioInfo() {
-        sampleTestBioInfoResultService.synBioInfoResult("TJ0212", "B-DQ18","ok","ok");
+      List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList=  ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\EK00701-核对编号20241220.xlsx",SampleTestBioInfoExcelDTO.class);
+        sampleTestBioInfoResultService.readSampleTestBioInfoExcel(sampleTestBioInfoExcelDTOList);
         return "ok";
     }
 }

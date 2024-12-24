@@ -12,17 +12,18 @@
             <result property="uniqueDbCode" column="unique_db_code" jdbcType="VARCHAR"/>
             <result property="runId" column="run_id" jdbcType="VARCHAR"/>
             <result property="hapId" column="hap_id" jdbcType="VARCHAR"/>
-            <result property="vartype" column="vartype" jdbcType="VARCHAR"/>
+            <result property="varType" column="var_type" jdbcType="VARCHAR"/>
             <result property="mutate" column="mutate" jdbcType="VARCHAR"/>
             <result property="ratio" column="ratio" jdbcType="VARCHAR"/>
+             <result property="matchFlag" column="match_flag" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,sample_code,vector_task_code,
         sample_id,unique_db_code,run_id,
-        hap_id,vartype,mutate,
-        ratio,create_time
+        hap_id,var_type,mutate,
+        ratio,match_flag,create_time
     </sql>
     <select id="selectOneBySampleIdAndUniqueDbCode" resultMap="BaseResultMap">
         select

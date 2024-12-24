@@ -15,6 +15,6 @@ public interface BioInfoClientApi {
 
 
     @PostMapping("/Drqi_search_sureRes")
-    BioResult<List<SampleTestBioInfoResultRspDTO>> sampleTestBioInfoResult(@RequestBody Map<String,Object> paramMap);
+    BioResult<List<Map<String,String>>> sampleTestBioInfoResult(@RequestBody Map<String,Object> paramMap);
 
 }

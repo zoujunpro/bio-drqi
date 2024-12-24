@@ -84,8 +84,6 @@ public class TestCleanController {
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
-    @Resource
-    private SampleTestBioInfoResultService sampleTestBioInfoResultService;
 
     @Resource
     private OssService ossService;
@@ -416,10 +414,4 @@ public class TestCleanController {
         return sampleCodePrefix;
     }
 
-    @GetMapping("testBioInfo")
-    public String testBioInfo() {
-      List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList=  ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\EK00701-核对编号20241220.xlsx",SampleTestBioInfoExcelDTO.class);
-        sampleTestBioInfoResultService.readSampleTestBioInfoExcel(sampleTestBioInfoExcelDTOList);
-        return "ok";
-    }
 }

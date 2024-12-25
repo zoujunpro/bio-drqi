@@ -45,4 +45,9 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </select>
+    <delete id="deleteByApplyNo">
+        delete
+        from cer_sample_test_bio_info_result_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+    </delete>
 </mapper>

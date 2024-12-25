@@ -49,6 +49,17 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
     @Resource
     private CerSampleLayoutTbMapper cerSampleLayoutTbMapper;
 
+    @Resource
+    private CerSampleTestBioInfoResultTbMapper cerSampleTestBioInfoResultTbMapper;
+
+
+    @Resource
+    private CerSampleTestBioResultRefMapper cerSampleTestBioResultRefMapper;
+
+
+
+
+
     @Override
     public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
         NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
@@ -125,6 +136,9 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
         cerSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        cerSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        cerSampleTestBioInfoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+
     }
 
 

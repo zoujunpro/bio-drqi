@@ -16,6 +16,8 @@ public interface CerSampleTestBioInfoResultTbMapper extends BaseMapper<CerSample
 
     int deleteByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
 
+    int deleteByApplyNo(@Param("applyNo") String applyNo);
+
 
     List<CerSampleTestBioInfoResultTb> selectAllByApplyNoAndSampleCodeIn(@Param("applyNo") String applyNo, @Param("sampleCodeList") Collection<String> sampleCodeList);
 

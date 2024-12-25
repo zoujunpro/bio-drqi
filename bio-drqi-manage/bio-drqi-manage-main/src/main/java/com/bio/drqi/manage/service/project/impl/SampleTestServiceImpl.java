@@ -574,6 +574,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             throw new BusinessException("excel无数据");
         }
         //保存excel数据
+        cerSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         List<CerSampleTestBioResultRef> cerSampleTestBioResultRefList = new ArrayList<>();
         for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
             CerSampleTestBioResultRef cerSampleTestBioResultRef = new CerSampleTestBioResultRef();
@@ -589,6 +590,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             cerSampleTestBioResultRefMapper.insertBatch(cerSampleTestBioResultRefList);
         }
 
+        cerSampleTestBioInfoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = new ArrayList<>();
         for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
             List<CerSampleTestBioInfoResultTb> currentCerSampleTestBioInfoResultTbList = synBioInfoResult(sampleTestBioInfoExcelDTO.getSampleId(), sampleTestBioInfoExcelDTO.getRunId(), uploadBioInfoSampleTestResultReqDTO.getApplyNo(), sampleTestBioInfoExcelDTO.getSampleCode(), sampleTestBioInfoExcelDTO.getVectorTaskCode());
@@ -643,6 +645,17 @@ public class SampleTestServiceImpl implements SampleTestService {
         for (CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb : cerSampleTestBioInfoResultTbList) {
             cerSampleTestBioInfoResultTbMapper.insert(cerSampleTestBioInfoResultTb);
         }
+    }
+
+    @Override
+    public Object bioInfoSampleTestResultDetail(Integer bioInfoId) {
+        CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb = cerSampleTestBioInfoResultTbMapper.selectById(bioInfoId);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("sampleID",cerSampleTestBioInfoResultTb.getSampleId());
+        paramMap.put("QBuniqCode",cerSampleTestBioInfoResultTb.getUniqueDbCode());
+        paramMap.put("HapID",cerSampleTestBioInfoResultTb.getHapId());
+        Object o = bioInfoClientApi.sampleTestBioInfoResultDetail(paramMap);
+        return o;
     }
 
 

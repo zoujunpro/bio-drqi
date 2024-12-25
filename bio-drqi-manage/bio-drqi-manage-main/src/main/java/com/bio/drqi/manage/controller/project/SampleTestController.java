@@ -307,4 +307,16 @@ public class SampleTestController {
         return ResponseResult.getSuccess("ok");
     }
 
+    /**
+     * 生信检测结果数据详情
+     *
+     * @param bioInfoId
+     * @return
+     */
+    @GetMapping("bioInfoSampleTestResultDetail")
+    @WebLog(desc = "生信检测结果数据详情")
+    public ResponseResult<Object> bioInfoSampleTestResultDetail(@RequestParam Integer bioInfoId) {
+        return ResponseResult.getSuccess(sampleTestService.bioInfoSampleTestResultDetail(bioInfoId));
+    }
+
 }

@@ -60,4 +60,6 @@ public interface SampleTestService {
     void bioInfoSampleTestResultConfirm(BioInfoSampleTestResultConfirmReqDTO bioInfoSampleTestResultConfirmReqDTO);
 
     void synBioInfoSampleTestResult(Integer id);
+
+    Object bioInfoSampleTestResultDetail( Integer bioInfoId);
 }

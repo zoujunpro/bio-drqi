@@ -617,6 +617,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         if (cerSampleTestBioResultRef == null) {
             throw new BusinessException("excel没匹配到该生信检测数据");
         }
+        cerSampleTestBioInfoResultTbMapper.deleteByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
         List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = synBioInfoResult(cerSampleTestBioResultRef.getSampleId(), cerSampleTestBioResultRef.getRunId(), cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getVectorTaskCode());
         for (CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb : cerSampleTestBioInfoResultTbList) {
             cerSampleTestBioInfoResultTbMapper.insert(cerSampleTestBioInfoResultTb);

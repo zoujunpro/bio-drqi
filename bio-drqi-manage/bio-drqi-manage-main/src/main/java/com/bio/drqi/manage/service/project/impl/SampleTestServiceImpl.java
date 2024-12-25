@@ -157,6 +157,7 @@ public class SampleTestServiceImpl implements SampleTestService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void uploadSampleTemplate(UploadSampleTemplateReqDTO uploadSampleTemplateReqDTO) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(uploadSampleTemplateReqDTO.getApplyNo());
         if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
@@ -196,6 +197,10 @@ public class SampleTestServiceImpl implements SampleTestService {
             updateCerSampleTestTb.setUpdateTime(new Date());
             updateList.add(updateCerSampleTestTb);
         }
+        NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
+        newSampleTestDTO.setSampleDataExcelUrl(uploadSampleTemplateReqDTO.getExcelUrl());
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
+        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
         cerSampleTestTbMapper.updateBatchById(updateList);
 
     }
@@ -225,6 +230,7 @@ public class SampleTestServiceImpl implements SampleTestService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void uploadTestTemplate(UploadTestTemplateReqDTO uploadTestTemplateReqDTO) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(uploadTestTemplateReqDTO.getApplyNo());
         if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
@@ -274,6 +280,12 @@ public class SampleTestServiceImpl implements SampleTestService {
             updateCerSampleTestTb.setUpdateTime(new Date());
             updateList.add(updateCerSampleTestTb);
         }
+
+
+        NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
+        newSampleTestDTO.setTestDataExcelUrl(uploadTestTemplateReqDTO.getExcelUrl());
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
+        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
         cerSampleTestTbMapper.updateBatchById(updateList);
 
     }
@@ -349,7 +361,11 @@ public class SampleTestServiceImpl implements SampleTestService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void uploadIdentifyPrimerTemplate(UploadIdentifyPrimerTemplateReqDTO uploadIdentifyPrimerTemplateReqDTO) {
+
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(uploadIdentifyPrimerTemplateReqDTO.getApplyNo());
+
         String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + uploadIdentifyPrimerTemplateReqDTO.getExcelUrl();
         try {
             ossService.downloadPath(tempFilePath, uploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
@@ -368,6 +384,11 @@ public class SampleTestServiceImpl implements SampleTestService {
                 }
             }
         }
+
+        NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
+        newSampleTestDTO.setTestDataExcelUrl(uploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
+        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
 
     }
 

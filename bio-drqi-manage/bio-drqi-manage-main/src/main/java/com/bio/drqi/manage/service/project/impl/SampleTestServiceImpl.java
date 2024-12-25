@@ -119,6 +119,10 @@ public class SampleTestServiceImpl implements SampleTestService {
                 List<CerSampleTestBioInfoResultTb> list=listMap.get(sampleTestListDetailRspDTO.getSampleCode());
                 sampleTestListDetailRspDTO.setMatchNum(list==null?0:list.size());
             });
+        }else {
+            targetPageInfo.getList().forEach(sampleTestListDetailRspDTO->{
+                sampleTestListDetailRspDTO.setMatchNum(0);
+            });
         }
         return targetPageInfo;
     }

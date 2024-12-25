@@ -573,6 +573,9 @@ public class SampleTestServiceImpl implements SampleTestService {
             throw new BusinessException("参数错误，找不到此取样信息：" + id);
         }
         CerSampleTestBioResultRef cerSampleTestBioResultRef = cerSampleTestBioResultRefMapper.selectOneBySampleCodeAndApplyNo(cerSampleTestTb.getSampleCode(), cerSampleTestTb.getApplyNo());
+        if(cerSampleTestBioResultRef==null){
+            throw new BusinessException("未提供此取样信息的生信匹配数据");
+        }
         return synBioInfoResult(cerSampleTestBioResultRef.getSampleId(), cerSampleTestBioResultRef.getRunId());
     }
 
@@ -620,7 +623,9 @@ public class SampleTestServiceImpl implements SampleTestService {
         paramMap.put("RunID", runId);
         paramMap.put("sampleID", sampleId);
         BioResult<List<Map<String, String>>> bioInfoResultRspDTOBioResult = bioInfoClientApi.sampleTestBioInfoResult(paramMap);
-
+        if(bioInfoResultRspDTOBioResult==null){
+            throw new BusinessException("无生信检测结果");
+        }
         List<QueryBioInfoSampleTestResultRspDTO> resultList = new ArrayList<>();
         for (Map<String, String> map : bioInfoResultRspDTOBioResult.getData()) {
             QueryBioInfoSampleTestResultRspDTO queryBioInfoSampleTestResultRspDTO = new QueryBioInfoSampleTestResultRspDTO();

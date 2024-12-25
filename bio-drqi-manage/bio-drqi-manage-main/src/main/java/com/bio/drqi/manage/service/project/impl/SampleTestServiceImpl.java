@@ -2,7 +2,6 @@ package com.bio.drqi.manage.service.project.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
@@ -108,7 +107,19 @@ public class SampleTestServiceImpl implements SampleTestService {
         cerSampleTestTb.setVectorTaskId(sampleTestListDetailReqDTO.getVectorTaskId());
         List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectSelective(cerSampleTestTb);
         PageInfo<CerSampleTestTb> srcPageInfo = new PageInfo<>(cerSampleTestTbList);
+        if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
+            return new PageInfo<SampleTestListDetailRspDTO>();
+        }
+        List<String> sameCodeList = cerSampleTestTbList.stream().map(CerSampleTestTb::getSampleCode).collect(Collectors.toList());
+        List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = cerSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCodeIn(sampleTestListDetailReqDTO.getApplyNo(), sameCodeList);
         PageInfo<SampleTestListDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, SampleTestListDetailRspDTO.class);
+        if(CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)){
+            Map<String, List<CerSampleTestBioInfoResultTb>> listMap = cerSampleTestBioInfoResultTbList.stream().collect(Collectors.groupingBy(CerSampleTestBioInfoResultTb::getSampleCode));
+            targetPageInfo.getList().forEach(sampleTestListDetailRspDTO->{
+                List<CerSampleTestBioInfoResultTb> list=listMap.get(sampleTestListDetailRspDTO.getSampleCode());
+                sampleTestListDetailRspDTO.setMatchNum(list==null?0:list.size());
+            });
+        }
         return targetPageInfo;
     }
 

@@ -1,4 +1,6 @@
 package com.bio.drqi.mapper;
+import java.util.List;
+import java.util.Collection;
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.CerSampleTestBioInfoResultTb;
@@ -13,6 +15,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface CerSampleTestBioInfoResultTbMapper extends BaseMapper<CerSampleTestBioInfoResultTb> {
 
     int deleteByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
+
+
+    List<CerSampleTestBioInfoResultTb> selectAllByApplyNoAndSampleCodeIn(@Param("applyNo") String applyNo, @Param("sampleCodeList") Collection<String> sampleCodeList);
 
 }
 

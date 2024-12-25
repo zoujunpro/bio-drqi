@@ -34,4 +34,15 @@
         where apply_no = #{applyNo,jdbcType=VARCHAR}
           AND sample_code = #{sampleCode,jdbcType=VARCHAR}
     </delete>
+    <select id="selectAllByApplyNoAndSampleCodeIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_bio_info_result_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+        AND sample_code in
+        <foreach collection="sampleCodeList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 </mapper>

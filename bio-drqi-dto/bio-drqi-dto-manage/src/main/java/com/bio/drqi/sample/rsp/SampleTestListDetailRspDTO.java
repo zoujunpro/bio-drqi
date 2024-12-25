@@ -228,8 +228,6 @@ public class SampleTestListDetailRspDTO {
 
     public String applyNo;
 
-    private String matchFlag;
-
     private Integer matchNum;
 
 }

@@ -6,6 +6,7 @@ import java.util.Date;
 
 @Data
 public class QueryBioInfoSampleTestResultRspDTO {
+    private Integer id;
     /**
      * 材料名称
      */
@@ -44,4 +45,6 @@ public class QueryBioInfoSampleTestResultRspDTO {
     private String resultKey;
 
     private String confirmStatus;
+
+    private String matchFlag;
 }

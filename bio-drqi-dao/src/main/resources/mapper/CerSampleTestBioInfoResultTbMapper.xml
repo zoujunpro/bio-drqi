@@ -68,4 +68,19 @@
             #{item,jdbcType=NUMERIC}
         </foreach>
     </select>
+    <insert id="insertBatch">
+        insert into cer_sample_test_bio_info_result_tb(id,apply_no,sample_code,
+        vector_task_code,sample_id,unique_db_code,
+        run_id,hap_id,var_type,
+        mutate,ratio,create_time,
+        confirm_status,result_key)
+        values
+        <foreach collection="cerSampleTestBioInfoResultTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.applyNo,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},
+            #{item.vectorTaskCode,jdbcType=VARCHAR},#{item.sampleId,jdbcType=VARCHAR},#{item.uniqueDbCode,jdbcType=VARCHAR},
+            #{item.runId,jdbcType=VARCHAR},#{item.hapId,jdbcType=VARCHAR},#{item.varType,jdbcType=VARCHAR},
+            #{item.mutate,jdbcType=VARCHAR},#{item.ratio,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},
+            #{item.confirmStatus,jdbcType=VARCHAR},#{item.resultKey,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
 </mapper>

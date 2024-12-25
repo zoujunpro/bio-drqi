@@ -293,4 +293,18 @@ public class SampleTestController {
         return ResponseResult.getSuccess(null);
     }
 
+
+    /**
+     * 同步生信检测结果数据
+     *
+     * @param uploadBioInfoSampleTestResultReqDTO
+     * @return
+     */
+    @PostMapping("synBioInfoSampleTestResult")
+    @WebLog(desc = "同步生信检测结果数据")
+    public ResponseResult<String> synBioInfoSampleTestResult(@RequestBody UploadBioInfoSampleTestResultReqDTO uploadBioInfoSampleTestResultReqDTO) {
+        sampleTestService.uploadBioInfoSampleTestResult(uploadBioInfoSampleTestResultReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
 }

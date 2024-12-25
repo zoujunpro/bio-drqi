@@ -23,6 +23,8 @@ public interface CerSampleTestBioInfoResultTbMapper extends BaseMapper<CerSample
     List<CerSampleTestBioInfoResultTb> selectAllByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
 
 
+    int insertBatch(@Param("cerSampleTestBioInfoResultTbCollection") Collection<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbCollection);
+
     List<CerSampleTestBioInfoResultTb> selectAllByApplyNoAndSampleCodeIn(@Param("applyNo") String applyNo, @Param("sampleCodeList") Collection<String> sampleCodeList);
 
 }

@@ -17,10 +17,7 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.external.client.BioInfoClientApi;
 import com.bio.drqi.external.dto.BioResult;
-import com.bio.drqi.manage.dto.project.IdentifyPrimerTemplateExcelDTO;
-import com.bio.drqi.manage.dto.project.SampleExcelDTO;
-import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
-import com.bio.drqi.manage.dto.project.TestExcelDTO;
+import com.bio.drqi.manage.dto.project.*;
 import com.bio.drqi.manage.service.project.SampleTestService;
 import com.bio.drqi.manage.util.SampleExcelUtil;
 import com.bio.drqi.mapper.*;
@@ -113,14 +110,14 @@ public class SampleTestServiceImpl implements SampleTestService {
         List<String> sameCodeList = cerSampleTestTbList.stream().map(CerSampleTestTb::getSampleCode).collect(Collectors.toList());
         List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = cerSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCodeIn(sampleTestListDetailReqDTO.getApplyNo(), sameCodeList);
         PageInfo<SampleTestListDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, SampleTestListDetailRspDTO.class);
-        if(CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)){
+        if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
             Map<String, List<CerSampleTestBioInfoResultTb>> listMap = cerSampleTestBioInfoResultTbList.stream().collect(Collectors.groupingBy(CerSampleTestBioInfoResultTb::getSampleCode));
-            targetPageInfo.getList().forEach(sampleTestListDetailRspDTO->{
-                List<CerSampleTestBioInfoResultTb> list=listMap.get(sampleTestListDetailRspDTO.getSampleCode());
-                sampleTestListDetailRspDTO.setMatchNum(list==null?0:list.size());
+            targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
+                List<CerSampleTestBioInfoResultTb> list = listMap.get(sampleTestListDetailRspDTO.getSampleCode());
+                sampleTestListDetailRspDTO.setMatchNum(list == null ? 0 : list.size());
             });
-        }else {
-            targetPageInfo.getList().forEach(sampleTestListDetailRspDTO->{
+        } else {
+            targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
                 sampleTestListDetailRspDTO.setMatchNum(0);
             });
         }
@@ -534,7 +531,15 @@ public class SampleTestServiceImpl implements SampleTestService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void uploadBioInfoSampleTestResult(UploadBioInfoSampleTestResultReqDTO uploadBioInfoSampleTestResultReqDTO) {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
+        if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            throw new BusinessException("非执行中任务，无法进行操作");
+        }
+        NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
+        newSampleTestDTO.setBioInfoResultExcelUrl(uploadBioInfoSampleTestResultReqDTO.getExcelUrl());
+
         String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + uploadBioInfoSampleTestResultReqDTO.getExcelUrl();
         try {
             ossService.downloadPath(tempFilePath, uploadBioInfoSampleTestResultReqDTO.getExcelUrl());
@@ -557,6 +562,8 @@ public class SampleTestServiceImpl implements SampleTestService {
             cerSampleTestBioResultRef.setCreateTime(createDate);
             cerSampleTestBioResultRefMapper.insert(cerSampleTestBioResultRef);
         }
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
+        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
     }
 
     @Override

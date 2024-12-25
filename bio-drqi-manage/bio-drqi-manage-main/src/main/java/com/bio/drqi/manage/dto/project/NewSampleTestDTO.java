@@ -41,6 +41,8 @@ public class NewSampleTestDTO {
      */
     private String testDataExcelUrl;
 
+    private String bioInfoResultExcelUrl;
+
     /**
      * 1发起取样申请提交
      * 2取样结果上送提交

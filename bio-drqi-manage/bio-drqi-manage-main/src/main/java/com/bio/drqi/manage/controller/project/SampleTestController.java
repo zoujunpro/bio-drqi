@@ -297,13 +297,13 @@ public class SampleTestController {
     /**
      * 同步生信检测结果数据
      *
-     * @param uploadBioInfoSampleTestResultReqDTO
+     * @param id
      * @return
      */
-    @PostMapping("synBioInfoSampleTestResult")
+    @GetMapping("synBioInfoSampleTestResult")
     @WebLog(desc = "同步生信检测结果数据")
-    public ResponseResult<String> synBioInfoSampleTestResult(@RequestBody UploadBioInfoSampleTestResultReqDTO uploadBioInfoSampleTestResultReqDTO) {
-        sampleTestService.uploadBioInfoSampleTestResult(uploadBioInfoSampleTestResultReqDTO);
+    public ResponseResult<String> synBioInfoSampleTestResult(@RequestParam Integer id) {
+        sampleTestService.synBioInfoSampleTestResult(id);
         return ResponseResult.getSuccess("ok");
     }
 

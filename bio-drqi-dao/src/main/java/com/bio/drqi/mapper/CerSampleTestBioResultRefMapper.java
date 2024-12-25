@@ -15,6 +15,8 @@ public interface CerSampleTestBioResultRefMapper extends BaseMapper<CerSampleTes
     int deleteByApplyNo(@Param("applyNo") String applyNo);
 
     int insertBatch(@Param("cerSampleTestBioResultRefCollection") Collection<CerSampleTestBioResultRef> cerSampleTestBioResultRefCollection);
+
+    CerSampleTestBioResultRef selectOneByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
 }
 
 

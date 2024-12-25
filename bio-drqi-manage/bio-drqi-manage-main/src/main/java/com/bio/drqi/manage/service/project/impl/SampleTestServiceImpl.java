@@ -609,15 +609,26 @@ public class SampleTestServiceImpl implements SampleTestService {
 
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void synBioInfoSampleTestResult(Integer id) {
+        CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectById(id);
+        CerSampleTestBioResultRef cerSampleTestBioResultRef = cerSampleTestBioResultRefMapper.selectOneByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
+        if (cerSampleTestBioResultRef == null) {
+            throw new BusinessException("excel没匹配到该生信检测数据");
+        }
+        List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = synBioInfoResult(cerSampleTestBioResultRef.getSampleId(), cerSampleTestBioResultRef.getRunId(), cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getVectorTaskCode());
+        for (CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb : cerSampleTestBioInfoResultTbList) {
+            cerSampleTestBioInfoResultTbMapper.insert(cerSampleTestBioInfoResultTb);
+        }
+    }
+
 
     private List<CerSampleTestBioInfoResultTb> synBioInfoResult(String sampleId, String runId, String applyNo, String sampleCode, String vectorTaskCode) {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("RunID", runId);
         paramMap.put("sampleID", sampleId);
         BioResult<List<Map<String, String>>> bioInfoResultRspDTOBioResult = bioInfoClientApi.sampleTestBioInfoResult(paramMap);
-        if (bioInfoResultRspDTOBioResult == null) {
-            throw new BusinessException("无生信检测结果");
-        }
         List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = new ArrayList<>();
         for (Map<String, String> map : bioInfoResultRspDTOBioResult.getData()) {
             CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb = new CerSampleTestBioInfoResultTb();

@@ -55,7 +55,9 @@ public interface SampleTestService {
 
     void uploadBioInfoSampleTestResult(UploadBioInfoSampleTestResultReqDTO uploadBioInfoSampleTestResultReqDTO);
 
-    List<QueryBioInfoSampleTestResultRspDTO> queryBioInfoSampleTestResult( Integer id);
+    List<QueryBioInfoSampleTestResultRspDTO> queryBioInfoSampleTestResult(Integer id);
 
-    void bioInfoSampleTestResultConfirm( BioInfoSampleTestResultConfirmReqDTO bioInfoSampleTestResultConfirmReqDTO);
+    void bioInfoSampleTestResultConfirm(BioInfoSampleTestResultConfirmReqDTO bioInfoSampleTestResultConfirmReqDTO);
+
+    void synBioInfoSampleTestResult(Integer id);
 }

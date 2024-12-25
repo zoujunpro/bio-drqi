@@ -52,6 +52,11 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
     @Resource
     private CerSampleTestBioInfoResultTbMapper cerSampleTestBioInfoResultTbMapper;
 
+    @Resource
+    private CerSampleTestBioResultRefMapper cerSampleTestBioResultRefMapper;
+
+
+
 
     @Override
     public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
@@ -130,6 +135,7 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
         cerSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestBioInfoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        cerSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
 
     }
 

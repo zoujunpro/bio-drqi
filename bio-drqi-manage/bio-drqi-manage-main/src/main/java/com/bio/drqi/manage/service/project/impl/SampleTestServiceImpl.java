@@ -636,9 +636,12 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
         cerSampleTestBioInfoResultTbMapper.deleteByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
         List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = synBioInfoResult(cerSampleTestBioResultRef.getSampleId(), cerSampleTestBioResultRef.getRunId(), cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getVectorTaskCode());
-        for (CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb : cerSampleTestBioInfoResultTbList) {
-            cerSampleTestBioInfoResultTbMapper.insert(cerSampleTestBioInfoResultTb);
+        if(CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)){
+            for (CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb : cerSampleTestBioInfoResultTbList) {
+                cerSampleTestBioInfoResultTbMapper.insert(cerSampleTestBioInfoResultTb);
+            }
         }
+
     }
 
     @Override
@@ -654,6 +657,9 @@ public class SampleTestServiceImpl implements SampleTestService {
 
 
     private List<CerSampleTestBioInfoResultTb> synBioInfoResult(String sampleId, String runId, String applyNo, String sampleCode, String vectorTaskCode) {
+        if(StringUtils.isEmpty(sampleId)||StringUtils.isEmpty(runId)){
+           return null;
+        }
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("RunID", runId);
         paramMap.put("sampleID", sampleId);

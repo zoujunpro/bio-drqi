@@ -19,6 +19,7 @@ import com.bio.drqi.external.client.BioInfoClientApi;
 import com.bio.drqi.external.dto.BioResult;
 import com.bio.drqi.manage.dto.project.*;
 import com.bio.drqi.manage.service.project.SampleTestService;
+import com.bio.drqi.manage.util.LayoutUtil;
 import com.bio.drqi.manage.util.SampleExcelUtil;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.sample.req.*;
@@ -410,13 +411,15 @@ public class SampleTestServiceImpl implements SampleTestService {
             LayoutPreviewRspDTO layoutPreviewRspDTO = new LayoutPreviewRspDTO();
             layoutPreviewRspDTO.setSingleList(JSONUtil.toList(cerSampleLayoutTb.getSingleContent(), SampleUnitDTO.class));
             JSONArray layoutListJsonArray = JSONUtil.parseArray(cerSampleLayoutTb.getPlateContent());
-            List<List<SampleUnitDTO>> ninetySixList = new ArrayList<>();
+            List<List<List<SampleUnitDTO>>> ninetySixList = new ArrayList<>();
+            //版list
             for (int i = 0; i < layoutListJsonArray.size(); i++) {
-                List<SampleUnitDTO> layoutList = new ArrayList<>();
+                List<List<SampleUnitDTO> > layoutList = new ArrayList<>();
                 JSONArray layoutJsonArray = JSONUtil.parseArray(layoutListJsonArray.get(i).toString());
+                //遍历版的每一行
                 for (int j = 0; j < layoutJsonArray.size(); j++) {
                     List<SampleUnitDTO> rowList = JSONUtil.toList(layoutJsonArray.getJSONArray(j).toString(), SampleUnitDTO.class);
-                    layoutList.addAll(rowList);
+                    layoutList.add(rowList);
                 }
                 ninetySixList.add(layoutList);
             }
@@ -439,16 +442,12 @@ public class SampleTestServiceImpl implements SampleTestService {
             });
         }
         //96孔板
-        Map<String, List<CerSampleTestTb>> identifyPrimerListMap = cerSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isNotEmpty(cerSampleTestTb.getIdentifyPrimer())).collect(Collectors.groupingBy(CerSampleTestTb::getIdentifyPrimer));
-        if (CollectionUtil.isNotEmpty(identifyPrimerListMap)) {
-            identifyPrimerListMap.forEach((identifyPrimer, identifyPrimerList) -> {
-                layoutPreviewRspDTO.getNinetySixList().add(new ArrayList<SampleUnitDTO>());
-                identifyPrimerList.stream().sorted(Comparator.comparing(CerSampleTestTb::getSampleCode)).forEach(cerSampleTestTb -> {
-                    layoutPreviewRspDTO.fillSampleToNinetySixList(cerSampleTestTb.getVectorTaskCode(), cerSampleTestTb.getTransformCode(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getIdentifyPrimer());
-                });
-            });
+        List<CerSampleTestTb> identifyPrimerList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isNotEmpty(cerSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
+        if (CollectionUtil.isNotEmpty(identifyPrimerList)) {
+            layoutPreviewRspDTO.setNinetySixList(LayoutUtil.fillSampleToNinetySixList(identifyPrimerList));
         }
-        return layoutPreviewRspDTO.restockSampleData();
+
+        return layoutPreviewRspDTO;
     }
 
     private LayoutConfirmReqDTO getLayoutConfirmReqDTO(String applyNo) {
@@ -464,17 +463,12 @@ public class SampleTestServiceImpl implements SampleTestService {
             });
         }
         //96孔板
-        Map<String, List<CerSampleTestTb>> identifyPrimerListMap = cerSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isNotEmpty(cerSampleTestTb.getIdentifyPrimer())).collect(Collectors.groupingBy(CerSampleTestTb::getIdentifyPrimer));
-        if (CollectionUtil.isNotEmpty(identifyPrimerListMap)) {
-            identifyPrimerListMap.forEach((identifyPrimer, identifyPrimerList) -> {
-                layoutConfirmReqDTO.getNinetySixList().add(new ArrayList<List<SampleUnitDTO>>());
-                identifyPrimerList.stream().sorted(Comparator.comparing(CerSampleTestTb::getSampleCode)).forEach(cerSampleTestTb -> {
-                    layoutConfirmReqDTO.fillSampleToNinetySixList(cerSampleTestTb.getVectorTaskCode(), cerSampleTestTb.getTransformCode(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getIdentifyPrimer());
-                });
-            });
+        List<CerSampleTestTb> identifyPrimerList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isNotEmpty(cerSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
+        if (CollectionUtil.isNotEmpty(identifyPrimerList)) {
+            layoutConfirmReqDTO.setNinetySixList(LayoutUtil.fillSampleToNinetySixList(identifyPrimerList));
         }
         layoutConfirmReqDTO.setApplyNo(applyNo);
-        return layoutConfirmReqDTO.restockSampleData();
+        return layoutConfirmReqDTO;
     }
 
     @Override
@@ -651,9 +645,9 @@ public class SampleTestServiceImpl implements SampleTestService {
     public Object bioInfoSampleTestResultDetail(Integer bioInfoId) {
         CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb = cerSampleTestBioInfoResultTbMapper.selectById(bioInfoId);
         Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("sampleID",cerSampleTestBioInfoResultTb.getSampleId());
-        paramMap.put("QBuniqCode",cerSampleTestBioInfoResultTb.getUniqueDbCode());
-        paramMap.put("HapID",cerSampleTestBioInfoResultTb.getHapId());
+        paramMap.put("sampleID", cerSampleTestBioInfoResultTb.getSampleId());
+        paramMap.put("QBuniqCode", cerSampleTestBioInfoResultTb.getUniqueDbCode());
+        paramMap.put("HapID", cerSampleTestBioInfoResultTb.getHapId());
         Object o = bioInfoClientApi.sampleTestBioInfoResultDetail(paramMap);
         return o;
     }

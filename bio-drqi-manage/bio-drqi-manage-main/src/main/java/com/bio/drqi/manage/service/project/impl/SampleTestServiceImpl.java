@@ -565,6 +565,10 @@ public class SampleTestServiceImpl implements SampleTestService {
         if (sampleTestBioInfoExcelDTOList == null) {
             throw new BusinessException("excel无数据");
         }
+        sampleTestBioInfoExcelDTOList = sampleTestBioInfoExcelDTOList.stream().filter(sampleTestBioInfoExcelDTO -> StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getSampleId()) && StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getRunId())).collect(Collectors.toList());
+        if(CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)){
+            throw new BusinessException("excel数据异常或者格式不对");
+        }
         //保存excel数据
         cerSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         List<CerSampleTestBioResultRef> cerSampleTestBioResultRefList = new ArrayList<>();

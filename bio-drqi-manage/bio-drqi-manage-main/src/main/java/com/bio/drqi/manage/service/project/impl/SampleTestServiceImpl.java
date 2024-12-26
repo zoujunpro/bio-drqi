@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,7 +47,7 @@ public class SampleTestServiceImpl implements SampleTestService {
     private String excelTemplatePath;
 
 
-    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(10, 10, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(10000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(50, 50, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(10000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
 
 
     @Resource
@@ -583,9 +584,17 @@ public class SampleTestServiceImpl implements SampleTestService {
 
         cerSampleTestBioInfoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = new ArrayList<>();
+        AtomicInteger executeNum = new AtomicInteger(0);
         for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
+            while (threadPool.getPoolSize() > 1000) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                }
+            }
+
             Future<List<CerSampleTestBioInfoResultTb>> future = threadPool.submit(() -> {
-                return synBioInfoResult(sampleTestBioInfoExcelDTO.getSampleId(), sampleTestBioInfoExcelDTO.getRunId(), uploadBioInfoSampleTestResultReqDTO.getApplyNo(), sampleTestBioInfoExcelDTO.getSampleCode(), sampleTestBioInfoExcelDTO.getVectorTaskCode());
+                return synBioInfoResult(executeNum, sampleTestBioInfoExcelDTO.getSampleId(), sampleTestBioInfoExcelDTO.getRunId(), uploadBioInfoSampleTestResultReqDTO.getApplyNo(), sampleTestBioInfoExcelDTO.getSampleCode(), sampleTestBioInfoExcelDTO.getVectorTaskCode());
             });
             List<CerSampleTestBioInfoResultTb> currentCerSampleTestBioInfoResultTbList = null;
             try {
@@ -643,7 +652,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             throw new BusinessException("excel没匹配到该生信检测数据");
         }
         cerSampleTestBioInfoResultTbMapper.deleteByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
-        List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = synBioInfoResult(cerSampleTestBioResultRef.getSampleId(), cerSampleTestBioResultRef.getRunId(), cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getVectorTaskCode());
+        List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = synBioInfoResult(new AtomicInteger(1), cerSampleTestBioResultRef.getSampleId(), cerSampleTestBioResultRef.getRunId(), cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getVectorTaskCode());
         if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
             for (CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb : cerSampleTestBioInfoResultTbList) {
                 cerSampleTestBioInfoResultTbMapper.insert(cerSampleTestBioInfoResultTb);
@@ -664,7 +673,8 @@ public class SampleTestServiceImpl implements SampleTestService {
     }
 
 
-    private List<CerSampleTestBioInfoResultTb> synBioInfoResult(String sampleId, String runId, String applyNo, String sampleCode, String vectorTaskCode) {
+    private List<CerSampleTestBioInfoResultTb> synBioInfoResult(AtomicInteger executeNum, String sampleId, String runId, String applyNo, String sampleCode, String vectorTaskCode) {
+        log.info("获取生信检测结果 当前处理第{}数据 sampleCode={}", executeNum.get(), sampleCode);
         if (StringUtils.isEmpty(sampleId) || StringUtils.isEmpty(runId)) {
             return null;
         }
@@ -689,6 +699,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             cerSampleTestBioInfoResultTb.setResultKey(map.get("ResultKey"));
             cerSampleTestBioInfoResultTbList.add(cerSampleTestBioInfoResultTb);
         }
+        executeNum.addAndGet(1);
         return cerSampleTestBioInfoResultTbList;
     }
 }

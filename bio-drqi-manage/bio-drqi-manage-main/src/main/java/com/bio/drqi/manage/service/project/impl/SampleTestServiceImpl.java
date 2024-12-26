@@ -35,10 +35,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -414,7 +411,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             List<List<List<SampleUnitDTO>>> ninetySixList = new ArrayList<>();
             //版list
             for (int i = 0; i < layoutListJsonArray.size(); i++) {
-                List<List<SampleUnitDTO> > layoutList = new ArrayList<>();
+                List<List<SampleUnitDTO>> layoutList = new ArrayList<>();
                 JSONArray layoutJsonArray = JSONUtil.parseArray(layoutListJsonArray.get(i).toString());
                 //遍历版的每一行
                 for (int j = 0; j < layoutJsonArray.size(); j++) {
@@ -587,8 +584,19 @@ public class SampleTestServiceImpl implements SampleTestService {
         cerSampleTestBioInfoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = new ArrayList<>();
         for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
-            List<CerSampleTestBioInfoResultTb> currentCerSampleTestBioInfoResultTbList = synBioInfoResult(sampleTestBioInfoExcelDTO.getSampleId(), sampleTestBioInfoExcelDTO.getRunId(), uploadBioInfoSampleTestResultReqDTO.getApplyNo(), sampleTestBioInfoExcelDTO.getSampleCode(), sampleTestBioInfoExcelDTO.getVectorTaskCode());
-            cerSampleTestBioInfoResultTbList.addAll(currentCerSampleTestBioInfoResultTbList);
+            Future<List<CerSampleTestBioInfoResultTb>> future = threadPool.submit(() -> {
+                return synBioInfoResult(sampleTestBioInfoExcelDTO.getSampleId(), sampleTestBioInfoExcelDTO.getRunId(), uploadBioInfoSampleTestResultReqDTO.getApplyNo(), sampleTestBioInfoExcelDTO.getSampleCode(), sampleTestBioInfoExcelDTO.getVectorTaskCode());
+            });
+            List<CerSampleTestBioInfoResultTb> currentCerSampleTestBioInfoResultTbList = null;
+            try {
+                currentCerSampleTestBioInfoResultTbList = future.get();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            if (CollectionUtil.isNotEmpty(currentCerSampleTestBioInfoResultTbList)) {
+                cerSampleTestBioInfoResultTbList.addAll(currentCerSampleTestBioInfoResultTbList);
+            }
+
         }
 
         if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
@@ -636,7 +644,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
         cerSampleTestBioInfoResultTbMapper.deleteByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
         List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = synBioInfoResult(cerSampleTestBioResultRef.getSampleId(), cerSampleTestBioResultRef.getRunId(), cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getVectorTaskCode());
-        if(CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)){
+        if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
             for (CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb : cerSampleTestBioInfoResultTbList) {
                 cerSampleTestBioInfoResultTbMapper.insert(cerSampleTestBioInfoResultTb);
             }
@@ -657,8 +665,8 @@ public class SampleTestServiceImpl implements SampleTestService {
 
 
     private List<CerSampleTestBioInfoResultTb> synBioInfoResult(String sampleId, String runId, String applyNo, String sampleCode, String vectorTaskCode) {
-        if(StringUtils.isEmpty(sampleId)||StringUtils.isEmpty(runId)){
-           return null;
+        if (StringUtils.isEmpty(sampleId) || StringUtils.isEmpty(runId)) {
+            return null;
         }
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("RunID", runId);

@@ -42,11 +42,13 @@ public class LayoutUtil {
         List<List<SampleUnitDTO>> lastNinetySixList = ninetySixList.get(ninetySixList.size() - 1);
         //找到最新的一行
         List<SampleUnitDTO> lastRow = lastNinetySixList.get(lastNinetySixList.size() - 1);
-        if (lastRow.size() < 12) {
+        if (lastRow.size() < 12&&lastNinetySixList.size()<8) {
             lastRow.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
-        } else {
+        } else if(lastRow.size() < 8&&lastNinetySixList.size()==8){
+            lastRow.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
+        }else {
             //如果已经满行，则判断是否满孔板
-            if (lastNinetySixList.size() < 8) {
+             if (lastNinetySixList.size() < 8) {
                 List<SampleUnitDTO> sampleUnitDTOList = new ArrayList<>();
                 sampleUnitDTOList.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
                 lastNinetySixList.add(sampleUnitDTOList);

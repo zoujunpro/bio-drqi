@@ -384,7 +384,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
 
         NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
-        newSampleTestDTO.setTestDataExcelUrl(uploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
+        newSampleTestDTO.setIdentifyPrimerTemplateExcelUrl(uploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
 

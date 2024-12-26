@@ -41,6 +41,10 @@ public class NewSampleTestDTO {
      */
     private String testDataExcelUrl;
 
+
+    private String identifyPrimerTemplateExcelUrl;
+
+
     private String bioInfoResultExcelUrl;
 
     /**

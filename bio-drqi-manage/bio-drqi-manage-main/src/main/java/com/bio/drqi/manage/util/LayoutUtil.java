@@ -22,8 +22,11 @@ public class LayoutUtil {
         //
         identifyPrimerListMap.forEach((identifyPrimer, identifyPrimerList) -> {
             Map<String, List<CerSampleTestTb>> listMap = identifyPrimerList.stream().collect(Collectors.groupingBy(CerSampleTestTb::getVectorTaskCode));
+            ninetySixList.add(new ArrayList<List<SampleUnitDTO>>());
             listMap.forEach((vectorTaskCode, vectorTaskCerSampleTestTbList) -> {
-                ninetySixList.add(new ArrayList<List<SampleUnitDTO>>());
+                //找到最新的一个孔板,并插入新行
+                List<List<SampleUnitDTO>> lastNinetySixList = ninetySixList.get(ninetySixList.size() - 1);
+                lastNinetySixList.add(new ArrayList<SampleUnitDTO>());
                 vectorTaskCerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getSampleCode)).forEach(cerSampleTestTb -> {
                     fillSampleToNinetySixList(ninetySixList, cerSampleTestTb.getVectorTaskCode(), cerSampleTestTb.getTransformCode(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getIdentifyPrimer());
                 });
@@ -37,28 +40,23 @@ public class LayoutUtil {
     private static void fillSampleToNinetySixList(List<List<List<SampleUnitDTO>>> ninetySixList, String vectorTaskCode, String transFormCode, String sampleCode, String identifyPrimer) {
         //找到最新的一个孔板
         List<List<SampleUnitDTO>> lastNinetySixList = ninetySixList.get(ninetySixList.size() - 1);
-        //判断该孔板中是否有数据据，如果没有则直接插入
-        if (lastNinetySixList.size() == 0) {
-            List<SampleUnitDTO> sampleUnitDTOList = new ArrayList<>();
-            sampleUnitDTOList.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
-            lastNinetySixList.add(sampleUnitDTOList);
+        //找到最新的一行
+        List<SampleUnitDTO> lastRow = lastNinetySixList.get(lastNinetySixList.size() - 1);
+        if (lastRow.size() < 12) {
+            lastRow.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
         } else {
-            //找到最新的一行
-            List<SampleUnitDTO> lastRow = lastNinetySixList.get(lastNinetySixList.size() - 1);
-            if (lastRow.size() < 12) {
-                lastRow.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
+            //如果已经满行，则判断是否满孔板
+            if (lastNinetySixList.size() < 8) {
+                List<SampleUnitDTO> sampleUnitDTOList = new ArrayList<>();
+                sampleUnitDTOList.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
+                lastNinetySixList.add(sampleUnitDTOList);
             } else {
-                //如果已经满行，则判断是否满孔板
-                if (lastNinetySixList.size() < 8) {
-                    List<SampleUnitDTO> sampleUnitDTOList = new ArrayList<>();
-                    sampleUnitDTOList.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
-                    lastNinetySixList.add(sampleUnitDTOList);
-                } else {
-                    //如果满盘则新增一个孔板
-                    ninetySixList.add(new ArrayList<List<SampleUnitDTO>>());
-                    //再次进行数据插入
-                    fillSampleToNinetySixList(ninetySixList, vectorTaskCode, transFormCode, sampleCode, identifyPrimer);
-                }
+                //如果满盘则新增一个孔板
+                List layout = new ArrayList<List<SampleUnitDTO>>();
+                layout.add(new ArrayList<SampleUnitDTO>());
+                ninetySixList.add(layout);
+                //再次进行数据插入
+                fillSampleToNinetySixList(ninetySixList, vectorTaskCode, transFormCode, sampleCode, identifyPrimer);
             }
         }
     }

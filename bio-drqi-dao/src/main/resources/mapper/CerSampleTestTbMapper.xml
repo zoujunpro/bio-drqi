@@ -48,7 +48,6 @@
         <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
         <result property="identifyPrimer" column="identify_primer" jdbcType="VARCHAR"/>
         <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
-        <result property="matchFlag" column="match_flag" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -65,7 +64,7 @@
         test_fixed_point_type,test_donor_residue_info,test_insertion_site,
         test_elisa_result,test_qbzr_seq,test_edit_residue_info,test_user_id,test_user_name,
         test_time,check_user_name,check_user_id,check_result,create_time,
-        update_time,test_org_result,acceptor_material,apply_no,identify_primer,unique_code,match_flag
+        update_time,test_org_result,acceptor_material,apply_no,identify_primer,unique_code
     </sql>
 
     <select id="selectAllByProjectId" resultMap="BaseResultMap">
@@ -234,7 +233,7 @@
         test_edit_residue_info,test_user_id,
         test_user_name,test_time,check_user_name,
         check_user_id,check_result,
-        create_time,update_time,apply_no,identify_primer,unique_code,match_flag)
+        create_time,update_time,apply_no,identify_primer,unique_code)
         values
         <foreach collection="cerSampleTestTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.projectId,jdbcType=NUMERIC},#{item.subProjectId,jdbcType=NUMERIC},
@@ -252,7 +251,7 @@
             #{item.testUserName,jdbcType=VARCHAR},#{item.testTime,jdbcType=VARCHAR},#{item.checkUserName,jdbcType=VARCHAR},
             #{item.checkUserId,jdbcType=NUMERIC},#{item.checkResult,jdbcType=VARCHAR},
             #{item.createTime,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP},
-            #{item.applyNo,jdbcType=VARCHAR},#{item.identifyPrimer,jdbcType=VARCHAR},#{item.uniqueCode,jdbcType=VARCHAR},#{item.matchFlag,jdbcType=VARCHAR})
+            #{item.applyNo,jdbcType=VARCHAR},#{item.identifyPrimer,jdbcType=VARCHAR},#{item.uniqueCode,jdbcType=VARCHAR})
         </foreach>
     </insert>
 

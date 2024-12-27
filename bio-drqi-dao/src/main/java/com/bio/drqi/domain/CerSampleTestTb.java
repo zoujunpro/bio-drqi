@@ -220,8 +220,6 @@ public class CerSampleTestTb implements Serializable {
 
     private String applyNo;
 
-    private String matchFlag;
-
     private String identifyPrimer;
 
     @TableField(exist = false)

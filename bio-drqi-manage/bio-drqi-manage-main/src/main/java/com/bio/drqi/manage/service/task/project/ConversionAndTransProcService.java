@@ -64,7 +64,7 @@ public class ConversionAndTransProcService extends AbstractBaseProjectTaskServic
         }
         if (CollectionUtil.isNotEmpty(conversionAndTransDTO.getSampleCodeList())) {
             for (ConversionAndTransDTO.SampleCode sample : conversionAndTransDTO.getSampleCodeList()) {
-                if (EditPureUnionEnum.valueOf(sample.getEditPureUnion()) == null) {
+                if (StringUtils.isEmpty(sample.getEditPureUnion())) {
                     throw new BusinessException("是否编辑纯合不能为空");
                 }
                 CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(sample.getVectorTaskCode());

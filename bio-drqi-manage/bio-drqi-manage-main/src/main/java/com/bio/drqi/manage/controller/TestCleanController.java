@@ -428,6 +428,7 @@ public class TestCleanController {
             String planTypeDesc = excelResultList.get(i).get(2).toString();
             String startTime = excelResultList.get(i).get(3).toString();
             String endTime = excelResultList.get(i).get(4).toString();
+            String flag = excelResultList.get(i).get(5).toString();
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
             if (cerVectorTaskTb == null) {
                 System.out.println("********************************************=" + vectorTaskCode);
@@ -441,11 +442,32 @@ public class TestCleanController {
 
 
             CerVectorTaskPlanLog cerVectorTaskPlanLog = cerVectorTaskPlanLogMapper.selectOneByVectorTaskIdAndEventTypeAndUserName(cerVectorTaskTb.getId(), plantType, username);
-            if (cerVectorTaskPlanLog != null) {
-                cerVectorTaskPlanLog.setEstimatedStartTime(startTime);
-                cerVectorTaskPlanLog.setEstimatedEndTime(endTime);
-                cerVectorTaskPlanLogMapper.updateById(cerVectorTaskPlanLog);
+            if ("N".equals(flag)) {
+                cerVectorTaskPlanLogMapper.deleteById(cerVectorTaskPlanLog);
+                System.out.println("**********************删除****"+cerVectorTaskPlanLog.getVectorTaskId()+":"+cerVectorTaskPlanLog.getEventType());
+            } else {
+                if (cerVectorTaskPlanLog == null) {
+                    cerVectorTaskPlanLog=new CerVectorTaskPlanLog();
+                    cerVectorTaskPlanLog.setVectorTaskId(cerVectorTaskTb.getId());
+                    cerVectorTaskPlanLog.setEventType(plantType);
+                    cerVectorTaskPlanLog.setEstimatedStartTime(startTime);
+                    cerVectorTaskPlanLog.setEstimatedEndTime(endTime);
+                    cerVectorTaskPlanLog.setActualStartTime(null);
+                    cerVectorTaskPlanLog.setActualEndTime(null);
+                    cerVectorTaskPlanLog.setUserId(null);
+                    cerVectorTaskPlanLog.setUserName(username);
+                    cerVectorTaskPlanLog.setCreateTime(new Date());
+                    cerVectorTaskPlanLog.setUpdateTime(new Date());
+                    cerVectorTaskPlanLogMapper.insert(cerVectorTaskPlanLog);
+                    System.out.println("**********************添加****"+cerVectorTaskPlanLog.getId()+":"+cerVectorTaskPlanLog.getVectorTaskId()+":"+cerVectorTaskPlanLog.getEventType());
+
+                } else {
+                    cerVectorTaskPlanLog.setEstimatedStartTime(startTime);
+                    cerVectorTaskPlanLog.setEstimatedEndTime(endTime);
+                    cerVectorTaskPlanLogMapper.updateById(cerVectorTaskPlanLog);
+                }
             }
+
 
         }
         return "ok";

@@ -24,4 +24,13 @@ public enum VectorTaskPlanEventTypeEnum {
         }
         return null;
     }
+
+    public static String getCodeByDesc(String desc) {
+        for (VectorTaskPlanEventTypeEnum vectorTaskPlanEventTypeEnum : VectorTaskPlanEventTypeEnum.values()) {
+            if (vectorTaskPlanEventTypeEnum.desc.equals(desc)) {
+                return vectorTaskPlanEventTypeEnum.code;
+            }
+        }
+        return null;
+    }
 }

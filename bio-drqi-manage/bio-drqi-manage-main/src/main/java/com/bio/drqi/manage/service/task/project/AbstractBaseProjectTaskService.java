@@ -1,5 +1,6 @@
 package com.bio.drqi.manage.service.task.project;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import com.bio.drqi.enums.ImplementationPlanTypeEnum;
 import com.bio.drqi.domain.BioTaskDtlTb;
@@ -47,13 +48,15 @@ public abstract class AbstractBaseProjectTaskService extends AbstractBaseTaskSer
 
 
     public void updateVectorTaskTimePlan(Integer vectorTaskId, ImplementationPlanTypeEnum implementationPlanTypeEnum) {
-        CerVectorTaskPlanLog cerVectorTaskPlanLog = cerVectorTaskPlanLogMapper.selectOneByVectorTaskIdAndEventType(vectorTaskId, implementationPlanTypeEnum.name());
-        if (cerVectorTaskPlanLog != null) {
-            cerVectorTaskPlanLog.setActualEndTime(DateUtil.format(new Date(), "yyyy-MM-dd"));
-            cerVectorTaskPlanLog.setUpdateTime(new Date());
-            cerVectorTaskPlanLog.setCreateTime(new Date());
-            cerVectorTaskPlanLog.setActualStartTime(findStartTime(vectorTaskId, implementationPlanTypeEnum));
-            cerVectorTaskPlanLogMapper.updateById(cerVectorTaskPlanLog);
+        List<CerVectorTaskPlanLog> cerVectorTaskPlanLogList = cerVectorTaskPlanLogMapper.selectAllByVectorTaskIdAndEventType(vectorTaskId, implementationPlanTypeEnum.name());
+        if (CollectionUtil.isNotEmpty(cerVectorTaskPlanLogList)) {
+            cerVectorTaskPlanLogList.forEach(cerVectorTaskPlanLog -> {
+                cerVectorTaskPlanLog.setActualEndTime(DateUtil.format(new Date(), "yyyy-MM-dd"));
+                cerVectorTaskPlanLog.setUpdateTime(new Date());
+                cerVectorTaskPlanLog.setCreateTime(new Date());
+                cerVectorTaskPlanLog.setActualStartTime(findStartTime(vectorTaskId, implementationPlanTypeEnum));
+                cerVectorTaskPlanLogMapper.updateById(cerVectorTaskPlanLog);
+            });
         }
 
     }

@@ -10,6 +10,7 @@ import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioDictTypeEnum;
 import com.bio.drqi.enums.GenerationEnum;
+import com.bio.drqi.enums.VectorTaskPlanEventTypeEnum;
 import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.service.DictInnerService;
@@ -87,6 +88,9 @@ public class TestCleanController {
 
     @Resource
     private OssService ossService;
+
+    @Resource
+    private CerVectorTaskPlanLogMapper cerVectorTaskPlanLogMapper;
 
 
     @GetMapping("cleanPrint")
@@ -414,6 +418,39 @@ public class TestCleanController {
         return sampleCodePrefix;
     }
 
+
+    @GetMapping("/cleanVectorTaskPlanTime")
+    public String cleanVectorTaskPlanTime() {
+        List<List<Object>> excelResultList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\实施方案时间进度20241220.xlsx");
+        for (int i = 1; i < excelResultList.size(); i++) {
+            String vectorTaskCode = excelResultList.get(i).get(0).toString();
+            String username = excelResultList.get(i).get(1).toString();
+            String planTypeDesc = excelResultList.get(i).get(2).toString();
+            String startTime = excelResultList.get(i).get(3).toString();
+            String endTime = excelResultList.get(i).get(4).toString();
+            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+            if (cerVectorTaskTb == null) {
+                System.out.println("********************************************=" + vectorTaskCode);
+                continue;
+            }
+            String plantType = VectorTaskPlanEventTypeEnum.getCodeByDesc(planTypeDesc);
+            if (plantType == null) {
+                System.out.println("********************************************=" + planTypeDesc);
+                continue;
+            }
+
+
+            CerVectorTaskPlanLog cerVectorTaskPlanLog = cerVectorTaskPlanLogMapper.selectOneByVectorTaskIdAndEventTypeAndUserName(cerVectorTaskTb.getId(), plantType, username);
+            if (cerVectorTaskPlanLog != null) {
+                cerVectorTaskPlanLog.setEstimatedStartTime(startTime);
+                cerVectorTaskPlanLog.setEstimatedEndTime(endTime);
+                cerVectorTaskPlanLogMapper.updateById(cerVectorTaskPlanLog);
+            }
+
+        }
+        return "ok";
+
+    }
 
 
 }

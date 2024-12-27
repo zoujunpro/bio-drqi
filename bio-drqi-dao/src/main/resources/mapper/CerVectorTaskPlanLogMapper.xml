@@ -31,14 +31,6 @@
         vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
         order by id asc
     </select>
-    <select id="selectOneByVectorTaskIdAndEventType" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from cer_vector_task_plan_log
-        where
-        vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
-        AND event_type = #{eventType,jdbcType=VARCHAR}
-    </select>
     <select id="selectAllByVectorTaskIdIn" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -55,5 +47,22 @@
         <include refid="Base_Column_List"/>
         from cer_vector_task_plan_log
         order by vector_task_id desc, id asc
+    </select>
+    <select id="selectAllByVectorTaskIdAndEventType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_plan_log
+        where
+        vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+        AND event_type = #{eventType,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneByVectorTaskIdAndEventTypeAndUserName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_plan_log
+        where
+        vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+        AND event_type = #{eventType,jdbcType=VARCHAR}
+        AND user_name = #{userName,jdbcType=VARCHAR}
     </select>
 </mapper>

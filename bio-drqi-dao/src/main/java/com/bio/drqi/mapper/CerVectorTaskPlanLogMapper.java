@@ -16,10 +16,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface CerVectorTaskPlanLogMapper extends BaseMapper<CerVectorTaskPlanLog> {
 
     List<CerVectorTaskPlanLog> selectAllByVectorTaskIdOrderByIdAsc(@Param("vectorTaskId") Integer vectorTaskId);
-
-    CerVectorTaskPlanLog selectOneByVectorTaskIdAndEventType(@Param("vectorTaskId") Integer vectorTaskId, @Param("eventType") String eventType);
-
+    List<CerVectorTaskPlanLog> selectAllByVectorTaskIdAndEventType(@Param("vectorTaskId") Integer vectorTaskId, @Param("eventType") String eventType);
     List<CerVectorTaskPlanLog> selectAllByVectorTaskIdIn(@Param("vectorTaskIdList") Collection<Integer> vectorTaskIdList);
+
+    CerVectorTaskPlanLog selectOneByVectorTaskIdAndEventTypeAndUserName(@Param("vectorTaskId") Integer vectorTaskId, @Param("eventType") String eventType, @Param("userName") String userName);
 
     List<CerVectorTaskPlanLog> selectAll();
 

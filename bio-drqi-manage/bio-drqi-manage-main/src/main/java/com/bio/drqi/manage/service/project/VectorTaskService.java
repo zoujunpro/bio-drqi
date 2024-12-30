@@ -6,6 +6,7 @@ import com.bio.drqi.vector.rsp.CerImplementationPlanBaseInfoRspDTO;
 import com.bio.drqi.vector.rsp.StepListRspDTO;
 import com.bio.drqi.vector.rsp.VectorListPageRspDTO;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
+import com.bio.drqi.vector.rsp.VectorTaskSpeciesRspDTO;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface VectorTaskService {
     List<CerImplementationPlanBaseInfoRspDTO> listBySubProject(Integer subProjectId);
 
     List<CerImplementationPlanBaseInfoRspDTO> listAll();
-    List<CerImplementationPlanBaseInfoRspDTO> listApproveAll();
+    List<CerImplementationPlanBaseInfoRspDTO> listApproveAll(String speciesCode);
     List<CerImplementationPlanBaseInfoRspDTO> listForTransForm();
 
     String getTaskNum(GetVectorTaskNumReqDTO getVectorTaskNumReqDTO);
@@ -35,4 +36,6 @@ public interface VectorTaskService {
     void complete(Integer id);
 
     String getInstantVerifyTaskCode(String vectorTaskCode);
+
+    List<VectorTaskSpeciesRspDTO> findAllSpecies();
 }

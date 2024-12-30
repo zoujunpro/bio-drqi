@@ -28,5 +28,15 @@
         where
         species_name = #{speciesName,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllBySpeciesCodeIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_species_conf
+        where
+        species_code in
+        <foreach collection="speciesCodeList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 
 </mapper>

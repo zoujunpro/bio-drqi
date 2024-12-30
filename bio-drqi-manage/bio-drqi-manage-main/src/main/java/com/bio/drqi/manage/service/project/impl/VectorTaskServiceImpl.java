@@ -19,6 +19,7 @@ import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.service.project.VectorTaskService;
 import com.bio.drqi.manage.util.LetterUtil;
 import com.bio.drqi.mapper.*;
+import com.bio.drqi.vector.rsp.VectorTaskSpeciesRspDTO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,9 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     private OssService ossService;
 
     @Resource
+    private CerSpeciesConfMapper cerSpeciesConfMapper;
+
+    @Resource
     private CerInstantVerifyTaskTbMapper cerInstantVerifyTaskTbMapper;
 
 
@@ -91,8 +95,8 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     }
 
     @Override
-    public List<CerImplementationPlanBaseInfoRspDTO> listApproveAll() {
-        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByTaskStatus(VectorTaskStatusEnum.TASK_STATUS_2.status);
+    public List<CerImplementationPlanBaseInfoRspDTO> listApproveAll(String speciesCode) {
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByTaskStatusAndSpeciesCode(VectorTaskStatusEnum.TASK_STATUS_2.status,speciesCode);
         return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
     }
 
@@ -233,11 +237,27 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         } else if (cerInstantVerifyTaskTbList.size() == 1) {
             String[] strArr = cerInstantVerifyTaskTbList.get(0).getInstantVerifyCode().split("-");
             String lastCode = strArr[strArr.length - 1];
-            return vectorTaskCode+"-"+LetterUtil.nextLetterForInstantVerify(lastCode);
+            return vectorTaskCode + "-" + LetterUtil.nextLetterForInstantVerify(lastCode);
         } else {
             List<String> lastCodeList = cerInstantVerifyTaskTbList.stream().sorted(Comparator.comparing(CerInstantVerifyTaskTb::getId).reversed()).map(cerInstantVerifyTaskTb -> cerInstantVerifyTaskTb.getInstantVerifyCode().split("-")[cerInstantVerifyTaskTb.getInstantVerifyCode().split("-").length - 1]).collect(Collectors.toList());
-            return  vectorTaskCode+"-"+LetterUtil.nextLetterForInstantVerify(lastCodeList.get(0));
+            return vectorTaskCode + "-" + LetterUtil.nextLetterForInstantVerify(lastCodeList.get(0));
         }
+    }
+
+    @Override
+    public List<VectorTaskSpeciesRspDTO> findAllSpecies() {
+        List<VectorTaskSpeciesRspDTO> result = new ArrayList<>();
+        List<String> allSpeciesCodeList = cerVectorTaskTbMapper.selectAllSpeciesCode();
+        if (CollectionUtil.isNotEmpty(allSpeciesCodeList)) {
+            List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectAllBySpeciesCodeIn(allSpeciesCodeList);
+            cerSpeciesConfList.forEach(cerSpeciesConf -> {
+                VectorTaskSpeciesRspDTO vectorTaskSpeciesRspDTO = new VectorTaskSpeciesRspDTO();
+                vectorTaskSpeciesRspDTO.setSpeciesCode(cerSpeciesConf.getSpeciesCode());
+                vectorTaskSpeciesRspDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
+                result.add(vectorTaskSpeciesRspDTO);
+            });
+        }
+        return result;
     }
 
     private List<VectorTaskAddDTO.ExcelVector> parseExcelVector(String excelUrl) {
@@ -262,7 +282,6 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     private String getVectorTaskCode(String subProjectNum, Integer currentNum) {
         return subProjectNum + "-" + StringUtils.padl(String.valueOf(currentNum + 1), 2, '0');
     }
-
 
 
 }

@@ -14,6 +14,8 @@ public class NewSampleTestDTO {
      */
     private String testType;
 
+    private String speciesCode;
+
     /**
      * 首次取样申请
      */

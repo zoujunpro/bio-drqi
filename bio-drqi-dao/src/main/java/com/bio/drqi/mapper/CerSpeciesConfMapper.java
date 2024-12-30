@@ -1,4 +1,6 @@
 package com.bio.drqi.mapper;
+import java.util.List;
+import java.util.Collection;
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.CerSpeciesConf;
@@ -14,6 +16,8 @@ public interface CerSpeciesConfMapper extends BaseMapper<CerSpeciesConf> {
     CerSpeciesConf selectOneBySpeciesCode(@Param("speciesCode") String speciesCode);
 
     CerSpeciesConf selectOneBySpeciesName(@Param("speciesName") String speciesName);
+
+    List<CerSpeciesConf> selectAllBySpeciesCodeIn(@Param("speciesCodeList") Collection<String> speciesCodeList);
 
 
 }

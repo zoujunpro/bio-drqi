@@ -14,6 +14,7 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.aspect.RequestLog;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.service.project.VectorTaskService;
+import com.bio.drqi.vector.rsp.VectorTaskSpeciesRspDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -67,13 +68,14 @@ public class CerImplementationPlanController {
         List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listAll();
         return ResponseResult.getSuccess(list);
     }
+
     /**
      * 查询所有审批通过的实施方案
      */
     @GetMapping("/listApproveAll")
     @WebLog(desc = "查询所有审批通过的实施方案")
-    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listApproveAll() {
-        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listApproveAll();
+    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listApproveAll(@RequestParam String speciesCode) {
+        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listApproveAll(speciesCode);
         return ResponseResult.getSuccess(list);
     }
 
@@ -106,6 +108,7 @@ public class CerImplementationPlanController {
 
     /**
      * 查询实施方案步骤
+     *
      * @param id
      * @return
      */
@@ -117,6 +120,7 @@ public class CerImplementationPlanController {
 
     /**
      * 查询实施方案步骤(根据code)
+     *
      * @param vectorTaskCode
      * @return
      */
@@ -128,6 +132,7 @@ public class CerImplementationPlanController {
 
     /**
      * 查询实施方案详情
+     *
      * @param id
      * @return
      */
@@ -154,7 +159,7 @@ public class CerImplementationPlanController {
     @GetMapping("/stop")
     @WebLog(desc = "暂停实施方案")
     @RequestLog("暂停实施方案")
-    public ResponseResult<String> stop(@RequestParam  Integer id) {
+    public ResponseResult<String> stop(@RequestParam Integer id) {
         vectorTaskService.stop(id);
         return ResponseResult.getSuccess("成功");
     }
@@ -165,17 +170,18 @@ public class CerImplementationPlanController {
     @GetMapping("/start")
     @WebLog(desc = "启动实施方案")
     @RequestLog("启动实施方案")
-    public ResponseResult<String> start(@RequestParam  Integer id) {
+    public ResponseResult<String> start(@RequestParam Integer id) {
         vectorTaskService.start(id);
         return ResponseResult.getSuccess("成功");
     }
+
     /**
      * 完成实施方案
      */
     @GetMapping("/complete")
     @WebLog(desc = "完成实施方案")
     @RequestLog("完成实施方案")
-    public ResponseResult<String> complete(@RequestParam  Integer id) {
+    public ResponseResult<String> complete(@RequestParam Integer id) {
         vectorTaskService.complete(id);
         return ResponseResult.getSuccess("成功");
     }
@@ -183,12 +189,25 @@ public class CerImplementationPlanController {
 
     /**
      * 查询瞬时验证编号
+     *
      * @param vectorTaskCode
      * @return
      */
     @GetMapping("/getInstantVerifyTaskCode")
     @WebLog(desc = "查询瞬时验证编号")
-    public ResponseResult<String> getInstantVerifyTaskCode(@RequestParam String vectorTaskCode){
+    public ResponseResult<String> getInstantVerifyTaskCode(@RequestParam String vectorTaskCode) {
         return ResponseResult.getSuccess(vectorTaskService.getInstantVerifyTaskCode(vectorTaskCode));
     }
+
+
+    /**
+     * 查询实施方案所有物种
+     *
+     * @return
+     */
+    @GetMapping("/findAllSpecies")
+    public ResponseResult<List<VectorTaskSpeciesRspDTO>> findAllSpecies() {
+        return ResponseResult.getSuccess(vectorTaskService.findAllSpecies());
+    }
+
 }

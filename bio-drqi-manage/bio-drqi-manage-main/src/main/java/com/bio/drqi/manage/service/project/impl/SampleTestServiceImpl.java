@@ -389,6 +389,13 @@ public class SampleTestServiceImpl implements SampleTestService {
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
 
+        //默认排版
+        LayoutConfirmReqDTO layoutConfirmReqDTO = getLayoutConfirmReqDTO(bioTaskDtlTb.getTaskNum());
+        if (CollectionUtil.isNotEmpty(layoutConfirmReqDTO.getNinetySixList()) || CollectionUtil.isNotEmpty(layoutConfirmReqDTO.getSingleList())) {
+            //入库
+            layoutConfirm(layoutConfirmReqDTO);
+        }
+
     }
 
     /**

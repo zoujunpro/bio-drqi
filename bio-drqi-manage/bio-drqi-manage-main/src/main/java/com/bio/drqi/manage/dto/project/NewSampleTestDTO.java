@@ -12,8 +12,10 @@ public class NewSampleTestDTO {
     /**
      * one 单管检测   more 96孔板检测
      */
+    @NotBlank(message = "参数缺失：testType")
     private String testType;
 
+    @NotBlank(message = "参数缺失：speciesCode")
     private String speciesCode;
 
     /**

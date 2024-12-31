@@ -2,6 +2,8 @@ package com.bio.drqi.manage.service.task.project;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
+import com.bio.common.core.util.StringUtils;
+import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.base.SampleUnitDTO;
 import com.bio.drqi.enums.*;
 import com.bio.common.core.context.SecurityContextHolder;
@@ -15,6 +17,7 @@ import com.bio.drqi.sample.req.LayoutConfirmReqDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -64,6 +67,8 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
         if (newSampleTestDTO == null) {
             throw new BusinessException("工单无表单信息");
         }
+        ValidatorUtil.validator(newSampleTestDTO);
+
         //重复取样数据校验
         if (CollectionUtil.isNotEmpty(newSampleTestDTO.getRepeatSampleApplyList())) {
             for (NewSampleTestDTO.RepeatSampleApply repeatSampleApply : newSampleTestDTO.getRepeatSampleApplyList()) {
@@ -72,6 +77,9 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
                 if (cerProjectTb == null) {
                     throw new BusinessException("未找到项目信息 projectCode=" + cerVectorTaskTb.getProjectCode());
                 }
+                if(!StringUtils.equals(cerVectorTaskTb.getSpeciesCode(),newSampleTestDTO.getSpeciesCode())){
+                    throw new BusinessException("取样物种不是所规定物种,取样编号："+repeatSampleApply.getSampleCode());
+                }
                 if (!ProjectStatusEnum.execute.name().equals(cerProjectTb.getProjectStatus())) {
                     throw new BusinessException(cerVectorTaskTb.getProjectCode() + "项目不是进行中");
                 }
@@ -79,7 +87,6 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                     throw new BusinessException(cerVectorTaskTb.getVectorTaskCode() + "实施方案中取样编号找不到：" + repeatSampleApply.getSampleCode());
                 }
-
             }
         }
         //如果首次取样，进行转化信息校验

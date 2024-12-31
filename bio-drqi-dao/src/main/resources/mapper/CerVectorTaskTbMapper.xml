@@ -152,15 +152,12 @@
           and quality_inspection_result = 'pass'
     </select>
 
-
     <select id="selectAllByTaskStatusAndSpeciesCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from cer_vector_task_tb
-        <where>
-            <if test="taskStatus!=null and taskStatus!=''">and task_status =#{taskStatus,jdbcType=VARCHAR}</if>
-            <if test="speciesCode!=null and speciesCode!=''">and species_code = #{speciesCode,jdbcType=VARCHAR}</if>
-        </where>
+        from cer_vector_task_tb where quality_inspection_result = 'pass'
+        <if test="taskStatus!=null and taskStatus!=''">and task_status =#{taskStatus,jdbcType=VARCHAR}</if>
+        <if test="speciesCode!=null and speciesCode!=''">and species_code = #{speciesCode,jdbcType=VARCHAR}</if>
         order by id desc
     </select>
 

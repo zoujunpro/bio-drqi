@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class TransPrintReqDTO {
+public class PlantPrintReqDTO {
 
     private List<Content> contentList=new ArrayList<>();
 
@@ -22,12 +22,12 @@ public class TransPrintReqDTO {
     }
 
     public static void main(String[] args) {
-        TransPrintReqDTO transPrintReqDTO=new TransPrintReqDTO();
+        PlantPrintReqDTO plantPrintReqDTO =new PlantPrintReqDTO();
         Content content=new Content();
         content.setVectorTaskCode("xx01101-05");
         content.setPlantCode("AG10-01");
-        transPrintReqDTO.getContentList().add(content);
-        System.out.println(JSONUtil.toJsonStr(transPrintReqDTO));
+        plantPrintReqDTO.getContentList().add(content);
+        System.out.println(JSONUtil.toJsonStr(plantPrintReqDTO));
 
 
     }

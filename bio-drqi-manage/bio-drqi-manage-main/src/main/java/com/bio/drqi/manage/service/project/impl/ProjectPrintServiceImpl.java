@@ -15,7 +15,7 @@ import com.bio.drqi.mapper.CerTransformTbMapper;
 import com.bio.drqi.mapper.CerVectorTaskTbMapper;
 import com.bio.drqi.projectPrint.SamplePrintReqDTO;
 import com.bio.drqi.projectPrint.TransFormPrintReqDTO;
-import com.bio.drqi.projectPrint.TransPrintReqDTO;
+import com.bio.drqi.projectPrint.PlantPrintReqDTO;
 import com.bio.drqi.projectPrint.VectorBuildPrintReqDTO;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
@@ -145,10 +145,10 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
     }
 
     @Override
-    public PrintRspDTO plantPrint(TransPrintReqDTO transPrintReqDTO) {
+    public PrintRspDTO plantPrint(PlantPrintReqDTO plantPrintReqDTO) {
         List<PlantPrintData> plantPrintDataList = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(transPrintReqDTO.getContentList())) {
-            for (TransPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
+        if (CollectionUtil.isNotEmpty(plantPrintReqDTO.getContentList())) {
+            for (PlantPrintReqDTO.Content content : plantPrintReqDTO.getContentList()) {
                 CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(content.getPlantCode(), content.getVectorTaskCode());
                 PlantPrintData plantPrintData = new PlantPrintData();
                 plantPrintData.setVectorTaskCode(content.getVectorTaskCode());

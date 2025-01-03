@@ -171,7 +171,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         List<TransformTransPrintData> transformTransPrintDataList = new ArrayList<>();
         for (TransPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(content.getVectorTaskCode());
-            if (StringUtils.isEmpty(content.getSampleCode())) {
+            if (StringUtils.isNotEmpty(content.getSampleCode())) {
                 SampleTestTransPrintData sampleTestTransPrintData = new SampleTestTransPrintData();
                 sampleTestTransPrintData.setVectorTaskCode(content.getVectorTaskCode());
                 sampleTestTransPrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
@@ -179,7 +179,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 sampleTestTransPrintData.setTaskNum(transPrintReqDTO.getTaskNum());
                 sampleTestTransPrintData.setPrintNum(content.getPrintNum()==null?1:content.getPrintNum());
                 sampleTestTransPrintDataList.add(sampleTestTransPrintData);
-            } else if (StringUtils.isEmpty(content.getTransFormCode())) {
+            } else if (StringUtils.isNotEmpty(content.getTransFormCode())) {
                 TransformTransPrintData transformTransPrintData = new TransformTransPrintData();
                 transformTransPrintData.setVectorTaskCode(content.getVectorTaskCode());
                 transformTransPrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());

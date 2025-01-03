@@ -20,7 +20,7 @@ public class TransPrintReqDTO {
 
         private String sampleCode;
 
-        private String transFormCode;
+        private String transformCode;
 
         private Integer printNum;
     }

@@ -179,11 +179,11 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 sampleTestTransPrintData.setTaskNum(transPrintReqDTO.getTaskNum());
                 sampleTestTransPrintData.setPrintNum(content.getPrintNum()==null?1:content.getPrintNum());
                 sampleTestTransPrintDataList.add(sampleTestTransPrintData);
-            } else if (StringUtils.isNotEmpty(content.getTransFormCode())) {
+            } else if (StringUtils.isNotEmpty(content.getTransformCode())) {
                 TransformTransPrintData transformTransPrintData = new TransformTransPrintData();
                 transformTransPrintData.setVectorTaskCode(content.getVectorTaskCode());
                 transformTransPrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
-                transformTransPrintData.setTransformCode(content.getTransFormCode());
+                transformTransPrintData.setTransformCode(content.getTransformCode());
                 transformTransPrintData.setTaskNum(transPrintReqDTO.getTaskNum());
                 transformTransPrintData.setPrintNum(content.getPrintNum()==null?1:content.getPrintNum());
                 transformTransPrintDataList.add(transformTransPrintData);

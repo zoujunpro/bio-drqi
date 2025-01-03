@@ -25,14 +25,4 @@ public class VectorTaskTimePlanAddReqDTO {
      */
     private String estimatedEndTime;
 
-
-    /**
-     * 用户ID
-     */
-    private Integer userId;
-
-    /**
-     * 用户名
-     */
-    private String userName;
 }

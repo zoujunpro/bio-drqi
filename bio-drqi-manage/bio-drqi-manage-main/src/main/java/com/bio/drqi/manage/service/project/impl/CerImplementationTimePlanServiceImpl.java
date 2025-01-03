@@ -3,6 +3,7 @@ package com.bio.drqi.manage.service.project.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
@@ -80,8 +81,8 @@ public class CerImplementationTimePlanServiceImpl implements CerImplementationTi
         cerVectorTaskPlanLog.setEventType(vectorTaskTimePlanAddReqDTO.getEventType());
         cerVectorTaskPlanLog.setEstimatedStartTime(vectorTaskTimePlanAddReqDTO.getEstimatedStartTime());
         cerVectorTaskPlanLog.setEstimatedEndTime(vectorTaskTimePlanAddReqDTO.getEstimatedEndTime());
-        cerVectorTaskPlanLog.setUserId(vectorTaskTimePlanAddReqDTO.getUserId());
-        cerVectorTaskPlanLog.setUserName(vectorTaskTimePlanAddReqDTO.getUserName());
+        cerVectorTaskPlanLog.setUserId(SecurityContextHolder.getUserId());
+        cerVectorTaskPlanLog.setUserName(SecurityContextHolder.getNickName());
         cerVectorTaskPlanLog.setCreateTime(new Date());
         cerVectorTaskPlanLogMapper.insert(cerVectorTaskPlanLog);
     }

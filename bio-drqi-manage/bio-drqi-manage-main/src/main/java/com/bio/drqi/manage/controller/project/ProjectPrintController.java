@@ -2,10 +2,7 @@ package com.bio.drqi.manage.controller.project;
 
 
 import com.bio.drqi.base.PrintRspDTO;
-import com.bio.drqi.projectPrint.SamplePrintReqDTO;
-import com.bio.drqi.projectPrint.TransFormPrintReqDTO;
-import com.bio.drqi.projectPrint.PlantPrintReqDTO;
-import com.bio.drqi.projectPrint.VectorBuildPrintReqDTO;
+import com.bio.drqi.projectPrint.*;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.aspect.RequestLog;
@@ -86,9 +83,16 @@ public class ProjectPrintController {
         return ResponseResult.getSuccess(projectPrintService.plantPrint(plantPrintReqDTO));
     }
 
-
-    public ResponseResult<PrintRspDTO> transPrint() {
-        return ResponseResult.getSuccess(null);
+    /**
+     * 移苗标签打印
+     *
+     * @return
+     */
+    @PostMapping("transPrint")
+    @WebLog(desc = "移苗标签打印")
+    @RequestLog("移苗标签打印")
+    public ResponseResult<PrintRspDTO> transPrint(@RequestBody @Validated TransPrintReqDTO transPrintReqDTO) {
+        return ResponseResult.getSuccess(projectPrintService.transPrint(transPrintReqDTO));
     }
 
 }

@@ -1,10 +1,9 @@
 package com.bio.drqi.manage.service.project;
 
 import com.bio.drqi.base.PrintRspDTO;
-import com.bio.drqi.projectPrint.SamplePrintReqDTO;
-import com.bio.drqi.projectPrint.TransFormPrintReqDTO;
-import com.bio.drqi.projectPrint.PlantPrintReqDTO;
-import com.bio.drqi.projectPrint.VectorBuildPrintReqDTO;
+import com.bio.drqi.projectPrint.*;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 
 public interface ProjectPrintService {
 
@@ -18,4 +17,6 @@ public interface ProjectPrintService {
     PrintRspDTO layoutPrint( String layoutNumber);
 
     PrintRspDTO plantPrint(PlantPrintReqDTO plantPrintReqDTO);
+
+    PrintRspDTO transPrint( TransPrintReqDTO transPrintReqDTO);
 }

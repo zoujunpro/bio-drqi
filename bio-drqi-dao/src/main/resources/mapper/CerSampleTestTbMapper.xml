@@ -48,6 +48,7 @@
         <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
         <result property="identifyPrimer" column="identify_primer" jdbcType="VARCHAR"/>
         <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -64,7 +65,7 @@
         test_fixed_point_type,test_donor_residue_info,test_insertion_site,
         test_elisa_result,test_qbzr_seq,test_edit_residue_info,test_user_id,test_user_name,
         test_time,check_user_name,check_user_id,check_result,create_time,
-        update_time,test_org_result,acceptor_material,apply_no,identify_primer,unique_code
+        update_time,test_org_result,acceptor_material,apply_no,identify_primer,unique_code,remark
     </sql>
 
     <select id="selectAllByProjectId" resultMap="BaseResultMap">

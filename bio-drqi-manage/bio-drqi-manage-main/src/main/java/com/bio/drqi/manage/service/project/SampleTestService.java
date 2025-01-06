@@ -62,9 +62,11 @@ public interface SampleTestService {
 
     void synBioInfoSampleTestResult(Integer id);
 
-    Object bioInfoSampleTestResultDetail( Integer bioInfoId);
+    Object bioInfoSampleTestResultDetail(Integer bioInfoId);
 
     Integer bioInfoHead(String applyNo);
 
-    PageInfo<BioInfoPageRspDTO> bioInfoPage( BioInfoPageReqDTO bioInfoPageReqDTO);
+    PageInfo<BioInfoPageRspDTO> bioInfoPage(BioInfoPageReqDTO bioInfoPageReqDTO);
+
+    void remark(SampleRemarkReqDTO sampleRemarkReqDTO);
 }

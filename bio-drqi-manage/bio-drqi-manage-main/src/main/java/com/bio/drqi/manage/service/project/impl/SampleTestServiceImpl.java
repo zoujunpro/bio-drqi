@@ -702,15 +702,26 @@ public class SampleTestServiceImpl implements SampleTestService {
         PageInfo<BioInfoPageRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, BioInfoPageRspDTO.class);
         targetPageInfo.getList().forEach(bioInfoPageRspDTO -> {
             List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = cerSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(bioInfoPageReqDTO.getApplyNo(), bioInfoPageRspDTO.getSampleCode());
-            if(CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)){
+            if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
                 cerSampleTestBioInfoResultTbList.forEach(cerSampleTestBioInfoResultTb -> {
-                    bioInfoPageRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(),cerSampleTestBioInfoResultTb.getVarType(),cerSampleTestBioInfoResultTb.getMutate(),cerSampleTestBioInfoResultTb.getRatio());
+                    bioInfoPageRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
                 });
 
             }
         });
 
         return targetPageInfo;
+    }
+
+    @Override
+    public void remark(SampleRemarkReqDTO sampleRemarkReqDTO) {
+        CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectById(sampleRemarkReqDTO.getId());
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerSampleTestTb.getApplyNo());
+        if(!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())){
+            throw new BusinessException("执行中工单可以进行该操作");
+        }
+        cerSampleTestTb.setRemark(sampleRemarkReqDTO.getRemark());
+        cerSampleTestTbMapper.updateById(cerSampleTestTb);
     }
 
 

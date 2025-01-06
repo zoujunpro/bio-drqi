@@ -686,7 +686,7 @@ public class SampleTestServiceImpl implements SampleTestService {
     @Override
     public Integer bioInfoHead(String applyNo) {
         Integer maxHead = cerSampleTestBioInfoResultTbMapper.selectMaxHead(applyNo);
-        return maxHead==null?0:maxHead;
+        return maxHead == null ? 0 : maxHead;
     }
 
     @Override
@@ -700,6 +700,15 @@ public class SampleTestServiceImpl implements SampleTestService {
             return new PageInfo<BioInfoPageRspDTO>();
         }
         PageInfo<BioInfoPageRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, BioInfoPageRspDTO.class);
+        targetPageInfo.getList().forEach(bioInfoPageRspDTO -> {
+            List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = cerSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(bioInfoPageReqDTO.getApplyNo(), bioInfoPageRspDTO.getSampleCode());
+            if(CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)){
+                cerSampleTestBioInfoResultTbList.forEach(cerSampleTestBioInfoResultTb -> {
+                    bioInfoPageRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(),cerSampleTestBioInfoResultTb.getVarType(),cerSampleTestBioInfoResultTb.getMutate(),cerSampleTestBioInfoResultTb.getRatio());
+                });
+
+            }
+        });
 
         return targetPageInfo;
     }

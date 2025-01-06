@@ -3,6 +3,7 @@ package com.bio.drqi.sample.rsp;
 import com.bio.drqi.base.PageDTO;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -38,16 +39,25 @@ public class BioInfoPageRspDTO {
     private String sampleCode;
 
 
-    private List<BioInfoResult> bioInfoResultList;
-
+    private List<BioInfoResult> bioInfoResultList = new ArrayList<>();
 
 
     @Data
-    public static class BioInfoResult{
+    public static class BioInfoResult {
         private String sampleId;
         private String varType;
         private String mutate;
         private String ratio;
+    }
+
+    public void addBioInfoResultToList(String sampleId, String varType, String mutate, String ratio) {
+        BioInfoResult bioInfoResult = new BioInfoResult();
+        bioInfoResult.setSampleId(sampleId);
+        bioInfoResult.setVarType(varType);
+        bioInfoResult.setMutate(mutate);
+        bioInfoResult.setRatio(ratio);
+        this.bioInfoResultList.add(bioInfoResult);
+
     }
 
 }

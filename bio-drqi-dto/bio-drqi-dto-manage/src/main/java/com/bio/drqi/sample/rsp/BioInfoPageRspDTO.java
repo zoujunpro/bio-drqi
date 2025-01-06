@@ -38,6 +38,8 @@ public class BioInfoPageRspDTO {
      */
     private String sampleCode;
 
+    private String remark;
+
 
     private List<BioInfoResult> bioInfoResultList = new ArrayList<>();
 

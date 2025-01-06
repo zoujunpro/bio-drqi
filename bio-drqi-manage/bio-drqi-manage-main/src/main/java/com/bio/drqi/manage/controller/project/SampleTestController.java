@@ -343,12 +343,12 @@ public class SampleTestController {
     }
 
     /**
-     * 生信检测结果分页详情
+     * 备注
      *
      * @return
      */
     @PostMapping("remark")
-    @WebLog(desc = "生信检测结果分页详情")
+    @WebLog(desc = "备注")
     public ResponseResult<String> remark(@RequestBody @Validated SampleRemarkReqDTO sampleRemarkReqDTO) {
         sampleTestService.remark(sampleRemarkReqDTO);
         return ResponseResult.getSuccess("成功");

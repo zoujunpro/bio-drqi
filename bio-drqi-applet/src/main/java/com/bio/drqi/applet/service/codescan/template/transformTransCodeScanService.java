@@ -1,0 +1,73 @@
+package com.bio.drqi.applet.service.codescan.template;
+
+import cn.hutool.core.bean.BeanUtil;
+import com.bio.common.core.dto.BusinessException;
+import com.bio.drqi.applet.dto.rsp.ScanCodeTransformRspDTO;
+import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
+import com.bio.drqi.applet.service.codescan.dto.TransUniqueCodeDTO;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.*;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+
+/**
+ * 取样移苗
+ */
+@Service
+public class transformTransCodeScanService extends AbstractBaseCodeScanService<TransUniqueCodeDTO, ScanCodeTransformRspDTO> {
+
+    @Resource
+    private CerVectorTaskTbMapper cerVectorTaskTbMapper;
+
+    @Resource
+    private CerProjectTbMapper cerProjectTbMapper;
+
+    @Resource
+    private CerSubProjectTbMapper cerSubProjectTbMapper;
+
+    @Resource
+    private CerTransformTbMapper cerTransformTbMapper;
+
+    @Resource
+    private  CerVectorGroupTbMapper cerVectorGroupTbMapper;
+
+
+
+    @Override
+    public TransUniqueCodeDTO parseUniqueCode(String uniqueCode) {
+        String[] uniqueCodeArr = uniqueCode.split("\\|");
+        TransUniqueCodeDTO transUniqueCodeDTO = new TransUniqueCodeDTO();
+        transUniqueCodeDTO.setTransformCode(uniqueCodeArr[2]);
+        transUniqueCodeDTO.setVectorTaskCode(uniqueCodeArr[1]);
+        return transUniqueCodeDTO;
+    }
+
+    @Override
+    public ScanCodeTransformRspDTO dealCodeContent(TransUniqueCodeDTO transUniqueCodeDTO) {
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(transUniqueCodeDTO.getVectorTaskCode());
+        if (cerVectorTaskTb == null) {
+            throw new BusinessException("实施方案查询不到:" + transUniqueCodeDTO.getVectorTaskCode());
+        }
+        CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(transUniqueCodeDTO.getTransformCode(), transUniqueCodeDTO.getVectorTaskCode());
+        if (cerTransformTb == null) {
+            throw new BusinessException("转化编号非法：" + cerTransformTb.getTransformCode());
+        }
+        CerVectorGroupTb cerVectorGroupTb = cerVectorGroupTbMapper.selectOneByGroupNameAndVectorTaskId(cerTransformTb.getPlasmidName(), cerVectorTaskTb.getId());
+        CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
+        CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerVectorTaskTb.getSubProjectCode());
+
+        ScanCodeTransformRspDTO scanCodeTransformRspDTO = new ScanCodeTransformRspDTO();
+        scanCodeTransformRspDTO.setProjectCode(cerVectorTaskTb.getProjectCode());
+        scanCodeTransformRspDTO.setProjectName(cerProjectTb.getProjectName());
+        scanCodeTransformRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
+        scanCodeTransformRspDTO.setSubProjectName(cerSubProjectTb.getSubProjectName());
+        scanCodeTransformRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+        scanCodeTransformRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
+        ScanCodeTransformRspDTO.Transform transform = BeanUtil.copyProperties(cerTransformTb, ScanCodeTransformRspDTO.Transform.class);
+        transform.setTransformName(cerVectorGroupTb.getGroupName());
+        transform.setPlasmidName(cerVectorGroupTb.getPlasmidNames());
+        scanCodeTransformRspDTO.setTransform(transform);
+        return scanCodeTransformRspDTO;
+    }
+}

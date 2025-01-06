@@ -5,24 +5,25 @@
 <mapper namespace="com.bio.drqi.mapper.CerSampleTestBioInfoResultTbMapper">
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerSampleTestBioInfoResultTb">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
-            <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
-            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
-            <result property="sampleId" column="sample_id" jdbcType="VARCHAR"/>
-            <result property="uniqueDbCode" column="unique_db_code" jdbcType="VARCHAR"/>
-            <result property="runId" column="run_id" jdbcType="VARCHAR"/>
-            <result property="hapId" column="hap_id" jdbcType="VARCHAR"/>
-            <result property="varType" column="var_type" jdbcType="VARCHAR"/>
-            <result property="mutate" column="mutate" jdbcType="VARCHAR"/>
-            <result property="ratio" column="ratio" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="confirmStatus" column="confirm_status" jdbcType="VARCHAR"/>
-            <result property="resultKey" column="result_key" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
+        <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
+        <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+        <result property="sampleId" column="sample_id" jdbcType="VARCHAR"/>
+        <result property="uniqueDbCode" column="unique_db_code" jdbcType="VARCHAR"/>
+        <result property="runId" column="run_id" jdbcType="VARCHAR"/>
+        <result property="hapId" column="hap_id" jdbcType="VARCHAR"/>
+        <result property="varType" column="var_type" jdbcType="VARCHAR"/>
+        <result property="mutate" column="mutate" jdbcType="VARCHAR"/>
+        <result property="ratio" column="ratio" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="confirmStatus" column="confirm_status" jdbcType="VARCHAR"/>
+        <result property="resultKey" column="result_key" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,apply_no,sample_code,
+        id
+        ,apply_no,sample_code,
         vector_task_code,sample_id,unique_db_code,
         run_id,hap_id,var_type,
         mutate,ratio,create_time,
@@ -67,6 +68,13 @@
         <foreach collection="idList" item="item" open="(" close=")" separator=",">
             #{item,jdbcType=NUMERIC}
         </foreach>
+    </select>
+    <select id="selectMaxHead" resultType="java.lang.Integer">
+        select max(a.num) as maxHead
+        from (select count(*) as num
+              from cer_sample_test_bio_info_result_tb
+              where apply_no = #{applyNo,jdbcType=VARCHAR}
+              GROUP BY sample_code) a
     </select>
     <insert id="insertBatch">
         insert into cer_sample_test_bio_info_result_tb(id,apply_no,sample_code,

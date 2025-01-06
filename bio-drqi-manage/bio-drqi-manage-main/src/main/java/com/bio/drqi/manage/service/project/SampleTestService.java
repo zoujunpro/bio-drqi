@@ -3,6 +3,7 @@ package com.bio.drqi.manage.service.project;
 import com.bio.drqi.sample.req.*;
 import com.bio.drqi.sample.rsp.*;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -62,4 +63,8 @@ public interface SampleTestService {
     void synBioInfoSampleTestResult(Integer id);
 
     Object bioInfoSampleTestResultDetail( Integer bioInfoId);
+
+    Integer bioInfoHead(String applyNo);
+
+    PageInfo<BioInfoPageRspDTO> bioInfoPage( BioInfoPageReqDTO bioInfoPageReqDTO);
 }

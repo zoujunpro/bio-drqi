@@ -573,7 +573,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             throw new BusinessException("excel无数据");
         }
         sampleTestBioInfoExcelDTOList = sampleTestBioInfoExcelDTOList.stream().filter(sampleTestBioInfoExcelDTO -> StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getSampleId()) && StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getRunId())).collect(Collectors.toList());
-        if(CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)){
+        if (CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)) {
             throw new BusinessException("excel数据异常或者格式不对");
         }
         //保存excel数据
@@ -681,6 +681,27 @@ public class SampleTestServiceImpl implements SampleTestService {
         paramMap.put("HapID", cerSampleTestBioInfoResultTb.getHapId());
         Object o = bioInfoClientApi.sampleTestBioInfoResultDetail(paramMap);
         return o;
+    }
+
+    @Override
+    public Integer bioInfoHead(String applyNo) {
+        Integer maxHead = cerSampleTestBioInfoResultTbMapper.selectMaxHead(applyNo);
+        return maxHead==null?0:maxHead;
+    }
+
+    @Override
+    public PageInfo<BioInfoPageRspDTO> bioInfoPage(BioInfoPageReqDTO bioInfoPageReqDTO) {
+        PageHelper.startPage(bioInfoPageReqDTO.getPageNum(), bioInfoPageReqDTO.getPageSize());
+        CerSampleTestTb cerSampleTestTb = new CerSampleTestTb();
+        cerSampleTestTb.setApplyNo(bioInfoPageReqDTO.getApplyNo());
+        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectSelective(cerSampleTestTb);
+        PageInfo<CerSampleTestTb> srcPageInfo = new PageInfo<>(cerSampleTestTbList);
+        if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
+            return new PageInfo<BioInfoPageRspDTO>();
+        }
+        PageInfo<BioInfoPageRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, BioInfoPageRspDTO.class);
+
+        return targetPageInfo;
     }
 
 

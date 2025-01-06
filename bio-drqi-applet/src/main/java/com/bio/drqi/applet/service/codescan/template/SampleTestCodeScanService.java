@@ -1,6 +1,7 @@
 package com.bio.drqi.applet.service.codescan.template;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.applet.dto.rsp.ScanCodeSampleTestRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
@@ -10,6 +11,7 @@ import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 取样扫码
@@ -35,6 +37,9 @@ public class SampleTestCodeScanService extends AbstractBaseCodeScanService<Sampl
     @Resource
     private CerSampleTestTbMapper cerSampleTestTbMapper;
 
+    @Resource
+    private CerSampleTestBioInfoResultTbMapper cerSampleTestBioInfoResultTbMapper;
+
     @Override
     public SampleTestUniqueReqDTO parseUniqueCode(String uniqueCode) {
         String[] uniqueCodeArr = uniqueCode.split("\\|");
@@ -56,8 +61,12 @@ public class SampleTestCodeScanService extends AbstractBaseCodeScanService<Sampl
         CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByUniqueCode(cerVectorTaskTb.getProjectCode() + sampleTestUniqueReqDTO.getSampleCode());
         CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
         CerVectorGroupTb cerVectorGroupTb = cerVectorGroupTbMapper.selectOneByGroupNameAndVectorTaskId(cerTransformTb.getPlasmidName(), cerVectorTaskTb.getId());
-
+        List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = cerSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
         ScanCodeSampleTestRspDTO scanCodeSampleTestRspDTO = new ScanCodeSampleTestRspDTO();
+        if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
+            List<ScanCodeSampleTestRspDTO.BioInfo> bioInfoList = BeanUtil.copyToList(cerSampleTestBioInfoResultTbList, ScanCodeSampleTestRspDTO.BioInfo.class);
+            scanCodeSampleTestRspDTO.setBioInfoList(bioInfoList);
+        }
         scanCodeSampleTestRspDTO.setProjectCode(cerProjectTb.getProjectCode());
         scanCodeSampleTestRspDTO.setProjectName(cerProjectTb.getProjectName());
         scanCodeSampleTestRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());

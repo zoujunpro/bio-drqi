@@ -1,8 +1,10 @@
 package com.bio.drqi.applet.service.codescan.template;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.applet.dto.rsp.ScanCodeTransformRspDTO;
+import com.bio.drqi.applet.dto.rsp.ScanCodeTransformTransRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.TransUniqueCodeDTO;
 import com.bio.drqi.domain.*;
@@ -15,7 +17,7 @@ import javax.annotation.Resource;
  * 取样移苗
  */
 @Service
-public class transformTransCodeScanService extends AbstractBaseCodeScanService<TransUniqueCodeDTO, ScanCodeTransformRspDTO> {
+public class transformTransCodeScanService extends AbstractBaseCodeScanService<TransUniqueCodeDTO, ScanCodeTransformTransRspDTO> {
 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
@@ -30,8 +32,10 @@ public class transformTransCodeScanService extends AbstractBaseCodeScanService<T
     private CerTransformTbMapper cerTransformTbMapper;
 
     @Resource
-    private  CerVectorGroupTbMapper cerVectorGroupTbMapper;
+    private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
+    @Resource
+    private CerConversionAndTransTbMapper cerConversionAndTransTbMapper;
 
 
     @Override
@@ -40,14 +44,20 @@ public class transformTransCodeScanService extends AbstractBaseCodeScanService<T
         TransUniqueCodeDTO transUniqueCodeDTO = new TransUniqueCodeDTO();
         transUniqueCodeDTO.setTransformCode(uniqueCodeArr[2]);
         transUniqueCodeDTO.setVectorTaskCode(uniqueCodeArr[1]);
+        transUniqueCodeDTO.setApplyNo(uniqueCodeArr[0]);
         return transUniqueCodeDTO;
     }
 
     @Override
-    public ScanCodeTransformRspDTO dealCodeContent(TransUniqueCodeDTO transUniqueCodeDTO) {
+    public ScanCodeTransformTransRspDTO dealCodeContent(TransUniqueCodeDTO transUniqueCodeDTO) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(transUniqueCodeDTO.getVectorTaskCode());
         if (cerVectorTaskTb == null) {
             throw new BusinessException("实施方案查询不到:" + transUniqueCodeDTO.getVectorTaskCode());
+        }
+
+        CerConversionAndTransTb cerConversionAndTransTb = cerConversionAndTransTbMapper.selectOneByTaskNum(transUniqueCodeDTO.getApplyNo());
+        if (cerConversionAndTransTb == null) {
+            throw new BusinessException("无此移苗数据");
         }
         CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(transUniqueCodeDTO.getTransformCode(), transUniqueCodeDTO.getVectorTaskCode());
         if (cerTransformTb == null) {
@@ -56,15 +66,15 @@ public class transformTransCodeScanService extends AbstractBaseCodeScanService<T
         CerVectorGroupTb cerVectorGroupTb = cerVectorGroupTbMapper.selectOneByGroupNameAndVectorTaskId(cerTransformTb.getPlasmidName(), cerVectorTaskTb.getId());
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
         CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerVectorTaskTb.getSubProjectCode());
-
-        ScanCodeTransformRspDTO scanCodeTransformRspDTO = new ScanCodeTransformRspDTO();
+        ScanCodeTransformTransRspDTO scanCodeTransformRspDTO = new ScanCodeTransformTransRspDTO();
         scanCodeTransformRspDTO.setProjectCode(cerVectorTaskTb.getProjectCode());
         scanCodeTransformRspDTO.setProjectName(cerProjectTb.getProjectName());
         scanCodeTransformRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
         scanCodeTransformRspDTO.setSubProjectName(cerSubProjectTb.getSubProjectName());
         scanCodeTransformRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         scanCodeTransformRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
-        ScanCodeTransformRspDTO.Transform transform = BeanUtil.copyProperties(cerTransformTb, ScanCodeTransformRspDTO.Transform.class);
+        scanCodeTransformRspDTO.setUrls(JSONUtil.toList(cerConversionAndTransTb.getImageUrl(), String.class));
+        ScanCodeTransformTransRspDTO.Transform transform = BeanUtil.copyProperties(cerTransformTb, ScanCodeTransformTransRspDTO.Transform.class);
         transform.setTransformName(cerVectorGroupTb.getGroupName());
         transform.setPlasmidName(cerVectorGroupTb.getPlasmidNames());
         scanCodeTransformRspDTO.setTransform(transform);

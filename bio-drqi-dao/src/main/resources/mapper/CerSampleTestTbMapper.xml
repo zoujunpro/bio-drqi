@@ -405,7 +405,7 @@
         where apply_no = #{applyNo,jdbcType=VARCHAR}
           AND check_result is null
     </update>
-    <select id="selectCountNumByApplyNo" resultMap="BaseResultMap">
+    <select id="selectCountNumByApplyNo" resultType="com.bio.drqi.domain.CerSampleTestTb">
         select
         check_result as checkResult,
         count(*) as countNum

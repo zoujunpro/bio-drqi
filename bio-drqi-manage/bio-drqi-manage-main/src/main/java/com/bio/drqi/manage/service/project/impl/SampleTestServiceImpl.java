@@ -717,11 +717,28 @@ public class SampleTestServiceImpl implements SampleTestService {
     public void remark(SampleRemarkReqDTO sampleRemarkReqDTO) {
         CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectById(sampleRemarkReqDTO.getId());
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerSampleTestTb.getApplyNo());
-        if(!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())){
+        if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
             throw new BusinessException("执行中工单可以进行该操作");
         }
         cerSampleTestTb.setRemark(sampleRemarkReqDTO.getRemark());
         cerSampleTestTbMapper.updateById(cerSampleTestTb);
+    }
+
+    @Override
+    public List<CountCheckResultRspDTO> countCheckResult(String applyNo) {
+        List<CountCheckResultRspDTO> list = new ArrayList<>();
+        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectCountNumByApplyNo(applyNo);
+        if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
+            cerSampleTestTbList.forEach(cerSampleTestTb -> {
+                CountCheckResultRspDTO countCheckResultRspDTO = new CountCheckResultRspDTO();
+                countCheckResultRspDTO.setCheckResult(StringUtils.isEmpty(cerSampleTestTb.getCheckResult()) ? "未处理" : cerSampleTestTb.getCheckResult());
+                countCheckResultRspDTO.setCountNum(cerSampleTestTb.getCountNum() == null ? 0 : cerSampleTestTb.getCountNum());
+                list.add(countCheckResultRspDTO);
+            });
+            return list;
+        }
+
+        return new ArrayList<>();
     }
 
 

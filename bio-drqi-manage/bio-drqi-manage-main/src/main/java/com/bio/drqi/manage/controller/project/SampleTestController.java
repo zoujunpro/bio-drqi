@@ -353,4 +353,16 @@ public class SampleTestController {
         sampleTestService.remark(sampleRemarkReqDTO);
         return ResponseResult.getSuccess("成功");
     }
+
+
+    /**
+     * 统计检测结果
+     * @param applyNo
+     * @return
+     */
+    @GetMapping("countCheckResult")
+    @WebLog(desc = "统计检测结果")
+    public ResponseResult<List<CountCheckResultRspDTO>> countCheckResult(@RequestParam @Validated String applyNo){
+        return ResponseResult.getSuccess(sampleTestService.countCheckResult(applyNo));
+    }
 }

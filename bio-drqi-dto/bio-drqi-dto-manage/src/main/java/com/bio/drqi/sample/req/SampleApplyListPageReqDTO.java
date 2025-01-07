@@ -8,5 +8,7 @@ public class SampleApplyListPageReqDTO extends PageDTO {
 
     private String applyNo;
 
+    private String sampleCode;
+
 
 }

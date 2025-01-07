@@ -405,5 +405,13 @@
         where apply_no = #{applyNo,jdbcType=VARCHAR}
           AND check_result is null
     </update>
+    <select id="selectCountNumByApplyNo" resultMap="BaseResultMap">
+        select
+        check_result as checkResult,
+        count(*) as countNum
+        from cer_sample_test_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+        group by check_result
+    </select>
 
 </mapper>

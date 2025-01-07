@@ -7,4 +7,6 @@ import lombok.Data;
 public class BioInfoPageReqDTO extends PageDTO {
 
     private String applyNo;
+
+    private Integer vectorTaskId;
 }

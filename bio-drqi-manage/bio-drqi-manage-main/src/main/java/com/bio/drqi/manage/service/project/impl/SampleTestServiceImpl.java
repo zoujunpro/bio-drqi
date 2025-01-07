@@ -695,6 +695,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         PageHelper.startPage(bioInfoPageReqDTO.getPageNum(), bioInfoPageReqDTO.getPageSize());
         CerSampleTestTb cerSampleTestTb = new CerSampleTestTb();
         cerSampleTestTb.setApplyNo(bioInfoPageReqDTO.getApplyNo());
+        cerSampleTestTb.setVectorTaskId(bioInfoPageReqDTO.getVectorTaskId());
         List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectSelective(cerSampleTestTb);
         PageInfo<CerSampleTestTb> srcPageInfo = new PageInfo<>(cerSampleTestTbList);
         if (CollectionUtil.isEmpty(cerSampleTestTbList)) {

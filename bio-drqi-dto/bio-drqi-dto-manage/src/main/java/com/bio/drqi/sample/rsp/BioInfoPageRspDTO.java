@@ -40,6 +40,12 @@ public class BioInfoPageRspDTO {
 
     private String remark;
 
+    /**
+     * 审查结果
+     */
+    private String checkResult;
+
+
 
     private List<BioInfoResult> bioInfoResultList = new ArrayList<>();
 

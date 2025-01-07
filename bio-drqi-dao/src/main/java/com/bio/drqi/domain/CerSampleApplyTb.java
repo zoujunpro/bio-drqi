@@ -56,6 +56,9 @@ public class CerSampleApplyTb implements Serializable {
 
     private String applyType;
 
+    @TableField(exist = false)
+    private String sampleCode;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

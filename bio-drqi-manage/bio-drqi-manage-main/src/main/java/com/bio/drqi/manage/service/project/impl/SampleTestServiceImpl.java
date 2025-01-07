@@ -88,6 +88,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         PageHelper.startPage(sampleApplyListPageReqDTO.getPageNum(), sampleApplyListPageReqDTO.getPageSize());
         CerSampleApplyTb cerSampleApplyTb = new CerSampleApplyTb();
         cerSampleApplyTb.setApplyNo(sampleApplyListPageReqDTO.getApplyNo());
+        cerSampleApplyTb.setSampleCode(sampleApplyListPageReqDTO.getSampleCode());
         List<CerSampleApplyTb> cerSampleApplyTbList = cerSampleApplyTbMapper.selectSelective(cerSampleApplyTb);
         PageInfo<CerSampleApplyTb> srcPage = new PageInfo<>(cerSampleApplyTbList);
         PageInfo<SampleApplyRspDTO> targetPage = BeanUtils.copyPageInfoProperties(srcPage, SampleApplyRspDTO.class);

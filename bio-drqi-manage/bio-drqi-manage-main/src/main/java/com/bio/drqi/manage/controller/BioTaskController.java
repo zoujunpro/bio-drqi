@@ -116,6 +116,18 @@ public class BioTaskController {
     }
 
     /**
+     * 详情接口-根据编号查询
+     *
+     * @param taskNum
+     * @return
+     */
+    @GetMapping("/detailByTaskNum")
+    @WebLog(desc = "详情接口-根据编号查询")
+    public ResponseResult<BioTaskDetailRspDTO> detailByTaskNum(@RequestParam @Validated String taskNum) {
+        return ResponseResult.getSuccess(bioTaskService.detailByTaskNum(taskNum));
+    }
+
+    /**
      * 分页查询-全部数据
      *
      * @param bioTaskListPageReqDTO

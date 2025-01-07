@@ -201,6 +201,12 @@ public class BioTaskServiceImpl implements BioTaskService {
         return bioTaskDetailRspDTO;
     }
 
+    @Override
+    public BioTaskDetailRspDTO detailByTaskNum(String taskNum) {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(taskNum);
+        return detail(bioTaskDtlTb.getId());
+    }
+
 
     @Override
     public PageInfo<BioTaskListPageRspDTO> listPage(BioTaskListPageReqDTO bioTaskListPageReqDTO, QueryTypeEnum queryTypeEnum) {
@@ -375,7 +381,6 @@ public class BioTaskServiceImpl implements BioTaskService {
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
 
             cerProjectTaskListener.notice(EventType.complete, () -> bioTaskDtlTb);
-
 
 
         } else if (InstanceState.reject.getValue().intValue() == flowHisInstanceTb.getInstanceState().intValue()

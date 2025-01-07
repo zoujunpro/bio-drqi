@@ -48,6 +48,8 @@ public interface BioTaskService {
 
     BioTaskDetailRspDTO detail(Integer id);
 
+    BioTaskDetailRspDTO detailByTaskNum( String taskNum);
+
     PageInfo<BioTaskListPageRspDTO> listPage(BioTaskListPageReqDTO bioTaskListPageReqDTO, QueryTypeEnum queryTypeEnum);
 
 

@@ -65,6 +65,9 @@ public class CerSeedTaskListener implements CerTaskListener<BioTaskDtlTb> {
     @Override
     public void notice(EventType eventType, Supplier<BioTaskDtlTb> supplier) {
         BioTaskDtlTb bioTaskDtlTb = supplier.get();
+        if (vieMap.get(bioTaskDtlTb.getTaskTypeCode()) == null) {
+            return;
+        }
         if (EventType.complete == eventType) {
             String title = "你的" + bioTaskDtlTb.getTaskTypeName() + "已通过";
             sendMessage(bioTaskDtlTb, title, Arrays.asList(bioTaskDtlTb.getApplyUserId()));

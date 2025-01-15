@@ -3,21 +3,24 @@ package com.bio.drqi.manage.service.seed.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.base.api.RemoteUserService;
 import com.bio.base.user.rsp.UserDetailRspDTO;
-
-import com.bio.drqi.enums.DataPermissionTypeEnum;
-import com.bio.drqi.enums.DataPermissionValueEnum;
-
-import com.bio.drqi.seed.*;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.domain.CerBreedDict;
+import com.bio.drqi.domain.SeedStockInLog;
+import com.bio.drqi.domain.SeedStockOutLog;
 import com.bio.drqi.domain.SeedStockTb;
+import com.bio.drqi.enums.DataPermissionTypeEnum;
+import com.bio.drqi.enums.DataPermissionValueEnum;
+import com.bio.drqi.enums.SeedOperateEnum;
 import com.bio.drqi.manage.service.seed.SeedStoreService;
 import com.bio.drqi.mapper.CerBreedDictMapper;
+import com.bio.drqi.mapper.SeedStockInLogMapper;
+import com.bio.drqi.mapper.SeedStockOutLogMapper;
 import com.bio.drqi.mapper.SeedStockTbMapper;
+import com.bio.drqi.seed.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
@@ -43,6 +46,12 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
     @Resource
     private RemoteUserService remoteUserService;
 
+    @Resource
+    private SeedStockInLogMapper seedStockInLogMapper;
+
+    @Resource
+    private SeedStockOutLogMapper seedStockOutLogMapper;
+
     @Override
     public SeedDetailRspDTO querySeedByNum(String seedNum) {
         SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum);
@@ -56,13 +65,13 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
     @Override
     public PageInfo<SeedStockPageRspDTO> listPage(SeedStockPageReqDTO seedStockPageReqDTO) {
-        return getSeedStockPageRspDTOPageInfo(seedStockPageReqDTO,false);
+        return getSeedStockPageRspDTOPageInfo(seedStockPageReqDTO, false);
     }
 
 
     @Override
     public PageInfo<SeedStockPageRspDTO> queryList(SeedStockPageReqDTO seedStockPageReqDTO) {
-        return getSeedStockPageRspDTOPageInfo(seedStockPageReqDTO,true);
+        return getSeedStockPageRspDTOPageInfo(seedStockPageReqDTO, true);
     }
 
     @Override
@@ -80,7 +89,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
     @Transactional(rollbackFor = Exception.class)
     public void aliasName(AliasNameSeedReqDTO aliasNameSeedReqDTO) {
         List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectAllBySeedNumIn(aliasNameSeedReqDTO.getSeedNumList());
-        if(CollectionUtil.isNotEmpty(seedStockTbList)){
+        if (CollectionUtil.isNotEmpty(seedStockTbList)) {
             seedStockTbList.forEach(seedStockTb -> {
                 seedStockTb.setAliasName(aliasNameSeedReqDTO.getAliasName());
                 seedStockTbMapper.updateById(seedStockTb);
@@ -88,8 +97,38 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         }
     }
 
+    @Override
+    public List<SeedOperateDetailRspDTO> seedOperateDetail(String seedNum) {
+        List<SeedOperateDetailRspDTO> result = new ArrayList<>();
+        SeedStockInLog seedStockInLog = seedStockInLogMapper.selectOneBySeedNum(seedNum);
+        if (seedStockInLog != null) {
+            SeedOperateDetailRspDTO seedOperateDetailRspDTO = new SeedOperateDetailRspDTO();
+            seedOperateDetailRspDTO.setOperateDesc(SeedOperateEnum.in.desc);
+            seedOperateDetailRspDTO.setOperateCode(SeedOperateEnum.in.code);
+            seedOperateDetailRspDTO.setOperateUserName(seedStockInLog.getApplyUserName());
+            seedOperateDetailRspDTO.setOperateTime(seedStockInLog.getCreateTime());
+            seedOperateDetailRspDTO.setUnit(seedStockInLog.getUnit());
+            seedOperateDetailRspDTO.setNumber(seedStockInLog.getSeedNumber());
+            result.add(seedOperateDetailRspDTO);
+        }
+        List<SeedStockOutLog> seedStockOutLogList = seedStockOutLogMapper.selectAllBySeedNum(seedNum);
+        if (CollectionUtil.isNotEmpty(seedStockOutLogList)) {
+            for (SeedStockOutLog seedStockOutLog : seedStockOutLogList) {
+                SeedOperateDetailRspDTO seedOperateDetailRspDTO = new SeedOperateDetailRspDTO();
+                seedOperateDetailRspDTO.setOperateDesc(SeedOperateEnum.out.desc);
+                seedOperateDetailRspDTO.setOperateCode(SeedOperateEnum.out.code);
+                seedOperateDetailRspDTO.setOperateUserName(seedStockOutLog.getApplyUserName());
+                seedOperateDetailRspDTO.setOperateTime(seedStockOutLog.getCreateTime());
+                seedOperateDetailRspDTO.setUnit(seedStockOutLog.getUnit());
+                seedOperateDetailRspDTO.setNumber(seedStockOutLog.getSeedNumber());
+                result.add(seedOperateDetailRspDTO);
+            }
+        }
+        return result;
+    }
 
-    private PageInfo<SeedStockPageRspDTO> getSeedStockPageRspDTOPageInfo(SeedStockPageReqDTO seedStockPageReqDTO,Boolean notEmptySeedNumberFlag) {
+
+    private PageInfo<SeedStockPageRspDTO> getSeedStockPageRspDTOPageInfo(SeedStockPageReqDTO seedStockPageReqDTO, Boolean notEmptySeedNumberFlag) {
         PageInfo<SeedStockPageRspDTO> resultPage = new PageInfo<>(new ArrayList<SeedStockPageRspDTO>());
         ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserById(SecurityContextHolder.getUserId());
         if (responseResult.isError()) {
@@ -118,16 +157,16 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         seedStockTb.setGeneType(seedStockPageReqDTO.getGeneType());
         seedStockTb.setGeneticCharacter(seedStockPageReqDTO.getGeneticCharacter());
         seedStockTb.setAliasName(seedStockPageReqDTO.getAliasName());
-        if(seedStockPageReqDTO.getOrder()!=null){
+        if (seedStockPageReqDTO.getOrder() != null) {
             seedStockTb.setOrderField(seedStockPageReqDTO.getOrder().getFieldName());
             seedStockTb.setOrderType(seedStockPageReqDTO.getOrder().getOrderType());
         }
 
-        if(StringUtils.isNotEmpty(seedStockPageReqDTO.getEndDate())){
-            seedStockTb.setEndDate(seedStockPageReqDTO.getEndDate().replace("-",""));
+        if (StringUtils.isNotEmpty(seedStockPageReqDTO.getEndDate())) {
+            seedStockTb.setEndDate(seedStockPageReqDTO.getEndDate().replace("-", ""));
         }
-        if(StringUtils.isNotEmpty(seedStockPageReqDTO.getBeginDate())){
-            seedStockTb.setBeginDate(seedStockPageReqDTO.getBeginDate().replace("-",""));
+        if (StringUtils.isNotEmpty(seedStockPageReqDTO.getBeginDate())) {
+            seedStockTb.setBeginDate(seedStockPageReqDTO.getBeginDate().replace("-", ""));
         }
         if (CollectionUtil.isNotEmpty(dataPermissionList) && DataPermissionValueEnum.OWNER.value.equals(dataPermissionList.get(0).getPermissionValue())) {
             seedStockTb.setSubmitUserId(SecurityContextHolder.getUserId());

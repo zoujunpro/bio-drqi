@@ -49,7 +49,6 @@ public class SeedStockController {
     }
 
 
-
     /**
      * 查询所有种子（库存种数量还充足）
      *
@@ -57,7 +56,7 @@ public class SeedStockController {
      */
     @PostMapping("/queryList")
     @WebLog(desc = "查询所有种子")
-    public ResponseResult<PageInfo<SeedStockPageRspDTO>> queryList(@RequestBody SeedStockPageReqDTO seedStockPageReqDTO ) {
+    public ResponseResult<PageInfo<SeedStockPageRspDTO>> queryList(@RequestBody SeedStockPageReqDTO seedStockPageReqDTO) {
         return ResponseResult.getSuccess(seedStoreService.queryList(seedStockPageReqDTO));
     }
 
@@ -79,8 +78,18 @@ public class SeedStockController {
     @WebLog(desc = "命名别名")
     @RequirePermissions("seed:stock:aliasName")
     @RequestLog("命名别名")
-    public ResponseResult<String> aliasName(@RequestBody AliasNameSeedReqDTO aliasNameSeedReqDTO){
+    public ResponseResult<String> aliasName(@RequestBody AliasNameSeedReqDTO aliasNameSeedReqDTO) {
         seedStoreService.aliasName(aliasNameSeedReqDTO);
         return ResponseResult.getSuccess("成功");
+    }
+
+    /**
+     * 根据种子编号查询操作记录
+     *
+     * @param seedNum
+     * @return
+     */
+    public ResponseResult<List<SeedOperateDetailRspDTO>> seedOperateDetail(@RequestParam @Validated String seedNum) {
+        return ResponseResult.getSuccess(seedStoreService.seedOperateDetail(seedNum));
     }
 }

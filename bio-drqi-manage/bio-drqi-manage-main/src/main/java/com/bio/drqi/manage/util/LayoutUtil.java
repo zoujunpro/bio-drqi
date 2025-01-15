@@ -27,7 +27,7 @@ public class LayoutUtil {
                 //找到最新的一个孔板,并插入新行
                 List<List<SampleUnitDTO>> lastNinetySixList = ninetySixList.get(ninetySixList.size() - 1);
                 lastNinetySixList.add(new ArrayList<SampleUnitDTO>());
-                vectorTaskCerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getSampleCode)).forEach(cerSampleTestTb -> {
+                vectorTaskCerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId)).forEach(cerSampleTestTb -> {
                     fillSampleToNinetySixList(ninetySixList, cerSampleTestTb.getVectorTaskCode(), cerSampleTestTb.getTransformCode(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getIdentifyPrimer());
                 });
             });

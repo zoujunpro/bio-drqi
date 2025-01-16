@@ -103,10 +103,10 @@ public class VectorBuildProcService extends AbstractBaseProjectTaskService {
             }
             //判断任务类型，正常任务
             if (VectorTaskTypeEnum.type_1.code.equals(cerVectorTaskTb.getVectorTaskType())) {
-                doNormalVectorTask(cerVectorTaskTb, vectorTaskAddDTO);
+                doNormalVectorTask(cerVectorTaskTb, vectorTaskAddDTO,bioTaskDtlTb.getTaskNum());
             } else {
                 //其他任务需要解析excel
-                doOtherVectorTask(vectorTaskAddDTO, cerVectorTaskTb);
+                doOtherVectorTask(vectorTaskAddDTO, cerVectorTaskTb,bioTaskDtlTb.getTaskNum());
             }
             //更新共转组信息
             List<CerVectorGroupTb> cerVectorGroupTbList = new ArrayList<>();
@@ -145,7 +145,7 @@ public class VectorBuildProcService extends AbstractBaseProjectTaskService {
         cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
     }
 
-    private void doOtherVectorTask(VectorTaskAddDTO vectorTaskAddDTO, CerVectorTaskTb cerVectorTaskTb) {
+    private void doOtherVectorTask(VectorTaskAddDTO vectorTaskAddDTO, CerVectorTaskTb cerVectorTaskTb,String taskNum) {
         List<VectorTaskAddDTO.ExcelVector> excelVectorList = vectorTaskAddDTO.getExcelVectorList();
         List<CerVectorTb> cerVectorTbList = new ArrayList<>();
         for (VectorTaskAddDTO.ExcelVector excelVector : excelVectorList) {
@@ -159,6 +159,7 @@ public class VectorBuildProcService extends AbstractBaseProjectTaskService {
             cerVectorTb.setRemark(excelVector.getRemark());
             cerVectorTb.setDestinationStripeSize(excelVector.getDestinationStripeSize());
             cerVectorTb.setVectorSize(excelVector.getVectorSize());
+            cerVectorTb.setTaskNum(taskNum);
             cerVectorTbList.add(cerVectorTb);
         }
         try {
@@ -168,7 +169,7 @@ public class VectorBuildProcService extends AbstractBaseProjectTaskService {
         }
     }
 
-    private void doNormalVectorTask(CerVectorTaskTb cerVectorTaskTb, VectorTaskAddDTO vectorTaskAddDTO) {
+    private void doNormalVectorTask(CerVectorTaskTb cerVectorTaskTb, VectorTaskAddDTO vectorTaskAddDTO,String taskNum) {
         //更新载体信息
         List<VectorTaskAddDTO.Vector> vectorList = vectorTaskAddDTO.getVectorList();
         List<CerVectorTb> cerVectorTbList = new ArrayList<>();
@@ -190,6 +191,7 @@ public class VectorBuildProcService extends AbstractBaseProjectTaskService {
             cerVectorTb.setRemark(vector.getRemark());
             cerVectorTb.setExpectedPositiveVaccine(vector.getExpectedPositiveVaccine());
             cerVectorTb.setFileUrls(JSONUtil.toJsonStr(vector.getFileUrls()));
+            cerVectorTb.setTaskNum(taskNum);
             cerVectorTbList.add(cerVectorTb);
         }
         try {

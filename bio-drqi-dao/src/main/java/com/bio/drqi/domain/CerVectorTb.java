@@ -114,6 +114,9 @@ public class CerVectorTb implements Serializable {
     private String vectorSize;
 
 
+    private String taskNum;
+
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

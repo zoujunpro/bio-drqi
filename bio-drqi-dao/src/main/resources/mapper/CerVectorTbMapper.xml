@@ -25,6 +25,7 @@
             <result property="qualityInspectionResult" column="quality_inspection_result" jdbcType="VARCHAR"/>
             <result property="destinationStripeSize" column="destination_stripe_size" jdbcType="VARCHAR"/>
             <result property="vectorSize" column="vector_size" jdbcType="VARCHAR"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -33,7 +34,7 @@
         bacterial_replicon,copy_number,agrobacterium_information,
         selection_marker,foreign_gene,gene_character,
         target_gene,pam,remark,
-        expected_positive_vaccine,file_urls,quality_inspection_result,destination_stripe_size,vector_size
+        expected_positive_vaccine,file_urls,quality_inspection_result,destination_stripe_size,vector_size,task_num
     </sql>
     <delete id="deleteByVectorTaskId">
         delete
@@ -62,7 +63,7 @@
         bacterial_replicon,copy_number,agrobacterium_information,
         selection_marker,foreign_gene,gene_character,
         target_gene,pam,remark,
-        file_urls,expected_positive_vaccine,quality_inspection_result,destination_stripe_size,vector_size)
+        file_urls,expected_positive_vaccine,quality_inspection_result,destination_stripe_size,vector_size,task_num)
         values
         <foreach collection="cerVectorTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.vectorTaskId,jdbcType=NUMERIC},#{item.plasmidName,jdbcType=VARCHAR},
@@ -71,7 +72,7 @@
             #{item.selectionMarker,jdbcType=VARCHAR},#{item.foreignGene,jdbcType=VARCHAR},#{item.geneCharacter,jdbcType=VARCHAR},
             #{item.targetGene,jdbcType=VARCHAR},#{item.pam,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},
             #{item.fileUrls,jdbcType=VARCHAR},#{item.expectedPositiveVaccine,jdbcType=NUMERIC},#{item.qualityInspectionResult,jdbcType=VARCHAR},
-            #{item.destinationStripeSize,jdbcType=VARCHAR},#{item.vectorSize,jdbcType=VARCHAR})
+            #{item.destinationStripeSize,jdbcType=VARCHAR},#{item.vectorSize,jdbcType=VARCHAR},#{item.taskNum,jdbcType=VARCHAR})
         </foreach>
     </insert>
     <select id="selectOneByPlasmidNameAndVectorTaskId" resultMap="BaseResultMap">

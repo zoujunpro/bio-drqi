@@ -2,6 +2,7 @@ package com.bio.drqi.manage.dto.project;
 
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -72,6 +73,10 @@ public class NewSampleTestDTO {
         private String vectorTaskCode;
         private String sampleCode;
         private String identifyPrimer;
+        /**
+         * 取样时间
+         */
+        private String sampleTime;
     }
 
     @Data
@@ -99,7 +104,16 @@ public class NewSampleTestDTO {
         @NotNull(message = "取样数量必填")
         private Integer sampleNum;
 
+
         private String identifyPrimer;
+        /**
+         * 取样时间
+         */
+        private String sampleTime;
+        /**
+         * 代次
+         */
+        private String sampleGeneration;
 
     }
 

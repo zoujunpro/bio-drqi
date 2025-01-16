@@ -190,6 +190,8 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
                 repeatCerSampleTestTb.setAcceptorMaterial(orgCerSampleTestTb.getAcceptorMaterial());
                 repeatCerSampleTestTb.setCreateTime(new Date());
                 repeatCerSampleTestTb.setApplyNo(cerSampleApplyTb.getApplyNo());
+                repeatCerSampleTestTb.setSampleTime(repeatSampleApply.getSampleTime());
+                repeatCerSampleTestTb.setSampleGeneration(orgCerSampleTestTb.getSampleGeneration());
                 targetCerSampleTestTbList.add(repeatCerSampleTestTb);
             }
             try {
@@ -232,6 +234,8 @@ public class NewSampleTestProcService extends AbstractBaseProjectTaskService {
                     cerSampleTestTb.setCreateTime(new Date());
                     cerSampleTestTb.setApplyNo(cerSampleApplyTb.getApplyNo());
                     cerSampleTestTb.setUniqueCode(cerTransformTb.getProjectCode() + cerSampleTestTb.getSampleCode());
+                    cerSampleTestTb.setSampleGeneration(firstSampleApply.getSampleGeneration());
+                    cerSampleTestTb.setSampleTime(firstSampleApply.getSampleTime());
                     targetCerSampleTestTbList.add(cerSampleTestTb);
                 }
                 cerSampleCodePrefixTb.setCurrentIndex(cerSampleCodePrefixTb.getCurrentIndex() + firstSampleApply.getSampleNum());

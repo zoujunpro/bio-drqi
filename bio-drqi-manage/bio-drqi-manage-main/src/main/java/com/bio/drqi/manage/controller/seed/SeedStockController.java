@@ -89,6 +89,9 @@ public class SeedStockController {
      * @param seedNum
      * @return
      */
+    @GetMapping("/seedOperateDetail")
+    @RequestLog("根据种子编号查询操作记录")
+    @WebLog(desc = "根据种子编号查询操作记录")
     public ResponseResult<List<SeedOperateDetailRspDTO>> seedOperateDetail(@RequestParam @Validated String seedNum) {
         return ResponseResult.getSuccess(seedStoreService.seedOperateDetail(seedNum));
     }

@@ -65,4 +65,6 @@ public interface BioTaskService {
 
     void temporarySave(BioTaskTemporarySaveReqDTO bioTaskTemporarySaveReqDTO);
 
+    List<BioQueryAllTaskUserRspDTO> queryAllTaskUser( String taskCategory);
+
 }

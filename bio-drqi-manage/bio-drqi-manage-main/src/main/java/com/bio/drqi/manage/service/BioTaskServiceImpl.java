@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.base.api.RemoteUserService;
@@ -365,6 +366,23 @@ public class BioTaskServiceImpl implements BioTaskService {
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
     }
 
+    @Override
+    public List<BioQueryAllTaskUserRspDTO> queryAllTaskUser(String taskCategory) {
+        List<BioQueryAllTaskUserRspDTO> result = new ArrayList<>();
+        List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskCategory(taskCategory);
+        if (CollectionUtil.isNotEmpty(bioTaskDtlTbList)) {
+            bioTaskDtlTbList.forEach(bioTaskDtlTb -> {
+                BioQueryAllTaskUserRspDTO bioQueryAllTaskUserRspDTO = new BioQueryAllTaskUserRspDTO();
+                bioQueryAllTaskUserRspDTO.setApplyUserName(bioTaskDtlTb.getApplyUserName());
+                bioQueryAllTaskUserRspDTO.setApplyUserId(bioTaskDtlTb.getApplyUserId());
+                result.add(bioQueryAllTaskUserRspDTO);
+            });
+
+
+        }
+        return result;
+    }
+
 
     private void afterFLow(BioTaskDtlTb bioTaskDtlTb, FlowHisInstanceTb flowHisInstanceTb) {
         bioTaskDtlTb.setUpdateTime(new Date());
@@ -380,7 +398,7 @@ public class BioTaskServiceImpl implements BioTaskService {
 
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
 
-            bioTaskNotice(bioTaskDtlTb,EventType.complete);
+            bioTaskNotice(bioTaskDtlTb, EventType.complete);
 
 
         } else if (InstanceState.reject.getValue().intValue() == flowHisInstanceTb.getInstanceState().intValue()
@@ -394,7 +412,7 @@ public class BioTaskServiceImpl implements BioTaskService {
 
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
 
-            bioTaskNotice(bioTaskDtlTb,EventType.reject);
+            bioTaskNotice(bioTaskDtlTb, EventType.reject);
 
 
         } else if (InstanceState.revoke.getValue().intValue() == flowHisInstanceTb.getInstanceState().intValue()) {
@@ -407,7 +425,7 @@ public class BioTaskServiceImpl implements BioTaskService {
 
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
 
-            bioTaskNotice(bioTaskDtlTb,EventType.revoke);
+            bioTaskNotice(bioTaskDtlTb, EventType.revoke);
 
         } else {
             /**
@@ -415,12 +433,12 @@ public class BioTaskServiceImpl implements BioTaskService {
              */
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
 
-            bioTaskNotice(bioTaskDtlTb,EventType.active);
+            bioTaskNotice(bioTaskDtlTb, EventType.active);
 
         }
     }
 
-    private void  bioTaskNotice(BioTaskDtlTb bioTaskDtlTb,EventType eventType){
+    private void bioTaskNotice(BioTaskDtlTb bioTaskDtlTb, EventType eventType) {
         Map<String, CerTaskListener> cerTaskListenerMap = SpringUtil.getBeansOfType(CerTaskListener.class);
         for (CerTaskListener cerTaskListener : cerTaskListenerMap.values()) {
             cerTaskListener.notice(eventType, () -> bioTaskDtlTb);

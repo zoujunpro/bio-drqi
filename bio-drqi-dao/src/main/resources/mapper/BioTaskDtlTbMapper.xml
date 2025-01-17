@@ -129,16 +129,16 @@
         select count(*)
         from bio_task_dtl_tb
         where instance_id in (select DISTINCT instance_id
-                              from flow_task_actor_tb
-                              where actor_id = #{applyUserId,jdbcType=VARCHAR})
+        from flow_task_actor_tb
+        where actor_id = #{applyUserId,jdbcType=VARCHAR})
         <if test="taskCategory != null and taskCategory!=''">and task_category=#{taskCategory,jdbcType=VARCHAR}</if>
     </select>
     <select id="selectForAlreadyApprovalCount" resultType="java.lang.Integer">
         select count(*)
         from bio_task_dtl_tb
         where instance_id in (select DISTINCT instance_id
-                              from flow_his_commit_tb
-                              where create_id = #{applyUserId,jdbcType=VARCHAR})
+        from flow_his_commit_tb
+        where create_id = #{applyUserId,jdbcType=VARCHAR})
         <if test="taskCategory != null and taskCategory!=''">and task_category=#{taskCategory,jdbcType=VARCHAR}</if>
     </select>
     <select id="selectAllByTaskTypeCode" resultMap="BaseResultMap">
@@ -147,5 +147,16 @@
         from bio_task_dtl_tb
         where
         task_type_code = #{taskTypeCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByTaskCategory" resultMap="BaseResultMap">
+        select
+        distinct apply_user_id ,apply_user_name
+        from bio_task_dtl_tb
+        <where>
+            <if test="taskCategory != null and taskCategory!=''">
+                and task_category=#{taskCategory,jdbcType=VARCHAR}
+            </if>
+        </where>
+
     </select>
 </mapper>

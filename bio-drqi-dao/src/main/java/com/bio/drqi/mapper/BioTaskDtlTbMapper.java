@@ -45,7 +45,7 @@ public interface BioTaskDtlTbMapper extends BaseMapper<BioTaskDtlTb> {
 
     Integer selectForAlreadyApprovalCount(@Param("applyUserId") String applyUserId,@Param("taskCategory") String taskCategory);
 
-
+    List<BioTaskDtlTb> selectAllByTaskCategory(@Param("taskCategory") String taskCategory);
 }
 
 

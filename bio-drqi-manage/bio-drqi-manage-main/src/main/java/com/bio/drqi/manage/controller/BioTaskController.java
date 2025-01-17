@@ -239,4 +239,16 @@ public class BioTaskController {
         bioTaskService.temporarySave(bioTaskTemporarySaveReqDTO);
         return ResponseResult.getSuccess(null);
     }
+
+    /**
+     *
+     * @param taskCategory
+     * @return
+     */
+    @GetMapping("/queryAllTaskUser")
+    @WebLog(desc = "查询工单发起人员")
+    @RequestLog("查询工单发起人员")
+    public ResponseResult<List<BioQueryAllTaskUserRspDTO>>  queryAllTaskUser(@RequestParam String taskCategory){
+        return ResponseResult.getSuccess(bioTaskService.queryAllTaskUser(taskCategory));
+    }
 }

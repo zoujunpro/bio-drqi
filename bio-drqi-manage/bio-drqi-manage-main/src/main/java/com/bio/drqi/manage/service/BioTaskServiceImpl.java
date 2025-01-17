@@ -214,7 +214,7 @@ public class BioTaskServiceImpl implements BioTaskService {
         PageHelper.startPage(bioTaskListPageReqDTO.getPageNum(), bioTaskListPageReqDTO.getPageSize());
         List<BioTaskDtlTb> bioTaskDtlTbList = new ArrayList<>();
         if (QueryTypeEnum.TYPE_1 == queryTypeEnum) {
-            bioTaskDtlTbList = bioTaskDtlTbMapper.selectSelective(BioTaskDtlTb.builder().taskNum(bioTaskListPageReqDTO.getTaskNum()).taskTypeCode(bioTaskListPageReqDTO.getTaskTypeCode()).taskCategory(bioTaskListPageReqDTO.getTaskCategory()).build());
+            bioTaskDtlTbList = bioTaskDtlTbMapper.selectSelective(BioTaskDtlTb.builder().taskNum(bioTaskListPageReqDTO.getTaskNum()).taskTypeCode(bioTaskListPageReqDTO.getTaskTypeCode()).taskStatus(bioTaskListPageReqDTO.getTaskStatus()).applyUserId(bioTaskListPageReqDTO.getApplyUserId()).taskCategory(bioTaskListPageReqDTO.getTaskCategory()).build());
         } else if (QueryTypeEnum.TYPE_2 == queryTypeEnum) {
             bioTaskDtlTbList = bioTaskDtlTbMapper.selectForPendingApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory());
         } else if (QueryTypeEnum.TYPE_3 == queryTypeEnum) {

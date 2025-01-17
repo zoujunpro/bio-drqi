@@ -15,6 +15,7 @@ import com.bio.drqi.base.SampleUnitDTO;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.enums.GenerationEnum;
 import com.bio.drqi.external.client.BioInfoClientApi;
 import com.bio.drqi.external.dto.BioResult;
 import com.bio.drqi.manage.dto.project.*;
@@ -114,6 +115,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
                 List<CerSampleTestBioInfoResultTb> list = listMap.get(sampleTestListDetailRspDTO.getSampleCode());
                 sampleTestListDetailRspDTO.setMatchNum(list == null ? 0 : list.size());
+                sampleTestListDetailRspDTO.setSampleGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getSampleGeneration()));
             });
         } else {
             targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {

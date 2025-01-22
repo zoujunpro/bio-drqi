@@ -207,11 +207,11 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
     public PrintRspDTO tissueEmbryoPrint(TissueEmbryoPrintReqDTO transPrintReqDTO) {
         List<TissueEmbryoPrintDTO> tissueEmbryoPrintDTOList = new ArrayList<>();
         for (TissueEmbryoPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
-            CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(content.getVectorTaskCode(), content.getSampleCode());
+            List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode( content.getSampleCode());
             TissueEmbryoPrintDTO tissueEmbryoPrintDTO = new TissueEmbryoPrintDTO();
             tissueEmbryoPrintDTO.setPrintNum(content.getPrintNum());
-            tissueEmbryoPrintDTO.setVectorTaskCode(content.getVectorTaskCode());
-            tissueEmbryoPrintDTO.setTransformCode(cerSampleTestTb.getTransformCode());
+            tissueEmbryoPrintDTO.setVectorTaskCode(cerSampleTestTbList.get(0).getVectorTaskCode());
+            tissueEmbryoPrintDTO.setTransformCode(cerSampleTestTbList.get(0).getTransformCode());
             tissueEmbryoPrintDTO.setSampleCode(content.getSampleCode());
             tissueEmbryoPrintDTO.setRemark(content.getRemark());
             tissueEmbryoPrintDTOList.add(tissueEmbryoPrintDTO);

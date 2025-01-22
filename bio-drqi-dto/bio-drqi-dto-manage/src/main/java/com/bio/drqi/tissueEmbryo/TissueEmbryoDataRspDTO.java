@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class TissueEmbryoDataRspDTO {
-    private String vectorTaskCode;
     private String sampleCode;
     private String remark;
+    private Integer printNum;
 }

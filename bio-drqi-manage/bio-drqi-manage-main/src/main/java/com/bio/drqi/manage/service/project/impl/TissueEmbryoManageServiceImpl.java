@@ -36,8 +36,10 @@ public class TissueEmbryoManageServiceImpl implements TissueEmbryoManageService 
             throw new BusinessException("excel文件上传异常");
         }
         List<TissueEmbryoDataExcelDTO> tissueEmbryoDataExcelDTOList = ExcelUtil.readExcel(templateDir, TissueEmbryoDataExcelDTO.class);
+
+
         for (TissueEmbryoDataExcelDTO tissueEmbryoDataExcelDTO : tissueEmbryoDataExcelDTOList) {
-            List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByVectorTaskCodeAndSampleCode(tissueEmbryoDataExcelDTO.getVectorTaskCode(), tissueEmbryoDataExcelDTO.getSampleCode());
+            List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(tissueEmbryoDataExcelDTO.getSampleCode());
             if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                 throw new BusinessException("取样编号不存在:" + tissueEmbryoDataExcelDTO.getSampleCode());
             }

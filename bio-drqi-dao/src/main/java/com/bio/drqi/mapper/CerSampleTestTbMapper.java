@@ -70,6 +70,9 @@ public interface CerSampleTestTbMapper extends BaseMapper<CerSampleTestTb> {
 
     List<CerSampleTestTb> selectCountNumByApplyNo(@Param("applyNo") String applyNo);
 
+
+    List<CerSampleTestTb> selectAllBySampleCode(@Param("sampleCode") String sampleCode);
+
 }
 
 

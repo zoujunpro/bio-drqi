@@ -11,7 +11,6 @@ public class TissueEmbryoPrintReqDTO {
 
     @Data
     public static class Content{
-        private String vectorTaskCode;
         private String sampleCode;
         private String remark;
         private Integer printNum;

@@ -20,6 +20,7 @@ public class ScanCodeConstant {
         scanCodeClassMap.put("plant_label_print",T0PlantCodeScanService.class);
         scanCodeClassMap.put("sample_trans_print",SampleTransCodeScanService.class);
         scanCodeClassMap.put("transform_trans_print",transformTransCodeScanService.class);
+        scanCodeClassMap.put("tissue_embryo_label_print",TissueEmbryoCodeScanService.class);
     }
 
 }

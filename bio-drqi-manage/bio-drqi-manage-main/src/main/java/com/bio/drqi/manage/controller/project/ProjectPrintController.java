@@ -95,4 +95,18 @@ public class ProjectPrintController {
         return ResponseResult.getSuccess(projectPrintService.transPrint(transPrintReqDTO));
     }
 
+    /**
+     * 组胚标签打印
+     *
+     * @return
+     */
+    @PostMapping("tissueEmbryoPrint")
+    @WebLog(desc = "组胚标签打印")
+    @RequestLog("组胚标签打印")
+    public ResponseResult<PrintRspDTO> tissueEmbryoPrint(@RequestBody @Validated TissueEmbryoPrintReqDTO transPrintReqDTO) {
+        return ResponseResult.getSuccess(projectPrintService.tissueEmbryoPrint(transPrintReqDTO));
+    }
+
+
+
 }

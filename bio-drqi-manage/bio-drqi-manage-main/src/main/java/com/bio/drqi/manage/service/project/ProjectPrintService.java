@@ -19,4 +19,6 @@ public interface ProjectPrintService {
     PrintRspDTO plantPrint(PlantPrintReqDTO plantPrintReqDTO);
 
     PrintRspDTO transPrint( TransPrintReqDTO transPrintReqDTO);
+
+    PrintRspDTO tissueEmbryoPrint(TissueEmbryoPrintReqDTO transPrintReqDTO);
 }

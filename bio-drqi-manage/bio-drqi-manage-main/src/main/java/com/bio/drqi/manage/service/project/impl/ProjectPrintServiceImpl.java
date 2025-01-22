@@ -177,7 +177,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 sampleTestTransPrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
                 sampleTestTransPrintData.setSampleCode(content.getSampleCode());
                 sampleTestTransPrintData.setTaskNum(transPrintReqDTO.getTaskNum());
-                sampleTestTransPrintData.setPrintNum(content.getPrintNum()==null?1:content.getPrintNum());
+                sampleTestTransPrintData.setPrintNum(content.getPrintNum() == null ? 1 : content.getPrintNum());
                 sampleTestTransPrintDataList.add(sampleTestTransPrintData);
             } else if (StringUtils.isNotEmpty(content.getTransformCode())) {
                 TransformTransPrintData transformTransPrintData = new TransformTransPrintData();
@@ -185,7 +185,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 transformTransPrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
                 transformTransPrintData.setTransformCode(content.getTransformCode());
                 transformTransPrintData.setTaskNum(transPrintReqDTO.getTaskNum());
-                transformTransPrintData.setPrintNum(content.getPrintNum()==null?1:content.getPrintNum());
+                transformTransPrintData.setPrintNum(content.getPrintNum() == null ? 1 : content.getPrintNum());
                 transformTransPrintDataList.add(transformTransPrintData);
             }
         }
@@ -194,12 +194,35 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
             printRspDTO.setPrintDataList(printDataSave("sample_trans_print", sampleTestTransPrintDataList));
             return printRspDTO;
-        }else if(CollectionUtil.isNotEmpty(transformTransPrintDataList)){
+        } else if (CollectionUtil.isNotEmpty(transformTransPrintDataList)) {
             PrintRspDTO printRspDTO = new PrintRspDTO();
             printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
             printRspDTO.setPrintDataList(printDataSave("transform_trans_print", transformTransPrintDataList));
             return printRspDTO;
         }
+        return null;
+    }
+
+    @Override
+    public PrintRspDTO tissueEmbryoPrint(TissueEmbryoPrintReqDTO transPrintReqDTO) {
+        List<TissueEmbryoPrintDTO> tissueEmbryoPrintDTOList = new ArrayList<>();
+        for (TissueEmbryoPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
+            CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(content.getVectorTaskCode(), content.getSampleCode());
+            TissueEmbryoPrintDTO tissueEmbryoPrintDTO = new TissueEmbryoPrintDTO();
+            tissueEmbryoPrintDTO.setPrintNum(content.getPrintNum());
+            tissueEmbryoPrintDTO.setVectorTaskCode(content.getVectorTaskCode());
+            tissueEmbryoPrintDTO.setTransformCode(cerSampleTestTb.getTransformCode());
+            tissueEmbryoPrintDTO.setSampleCode(content.getSampleCode());
+            tissueEmbryoPrintDTO.setRemark(content.getRemark());
+            tissueEmbryoPrintDTOList.add(tissueEmbryoPrintDTO);
+        }
+        if (CollectionUtil.isNotEmpty(tissueEmbryoPrintDTOList)) {
+            PrintRspDTO printRspDTO = new PrintRspDTO();
+            printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
+            printRspDTO.setPrintDataList(printDataSave("tissue_embryo_label_print", tissueEmbryoPrintDTOList));
+            return printRspDTO;
+        }
+
         return null;
     }
 

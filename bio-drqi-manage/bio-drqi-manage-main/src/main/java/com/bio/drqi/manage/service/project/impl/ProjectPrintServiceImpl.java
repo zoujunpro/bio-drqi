@@ -208,6 +208,9 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         List<TissueEmbryoPrintDTO> tissueEmbryoPrintDTOList = new ArrayList<>();
         for (TissueEmbryoPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
             List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode( content.getSampleCode());
+            if(CollectionUtil.isEmpty(cerSampleTestTbList)){
+                throw new BusinessException("取样编号不存在："+content.getSampleCode());
+            }
             TissueEmbryoPrintDTO tissueEmbryoPrintDTO = new TissueEmbryoPrintDTO();
             tissueEmbryoPrintDTO.setPrintNum(content.getPrintNum());
             tissueEmbryoPrintDTO.setVectorTaskCode(cerSampleTestTbList.get(0).getVectorTaskCode());

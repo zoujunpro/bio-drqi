@@ -120,6 +120,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         } else {
             targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
                 sampleTestListDetailRspDTO.setMatchNum(0);
+                sampleTestListDetailRspDTO.setSampleGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getSampleGeneration()));
             });
         }
         return targetPageInfo;

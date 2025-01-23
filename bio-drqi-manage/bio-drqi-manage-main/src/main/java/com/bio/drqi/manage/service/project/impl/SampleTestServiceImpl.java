@@ -590,7 +590,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             cerSampleTestBioResultRef.setApplyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
             cerSampleTestBioResultRef.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
             CerSampleTestTb cerSampleTestTb = stringCerSampleTestTbMap.get(sampleTestBioInfoExcelDTO.getSampleCode());;
-            if(cerSampleTestTb==null){
+            if(cerSampleTestTb!=null){
                 cerSampleTestBioResultRef.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
             }
             cerSampleTestBioResultRef.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
@@ -631,7 +631,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
             cerSampleTestBioInfoResultTbList.forEach(cerSampleTestBioInfoResultTb -> {
                 CerSampleTestTb cerSampleTestTb = stringCerSampleTestTbMap.get(cerSampleTestBioInfoResultTb.getSampleCode());;
-                if(cerSampleTestTb==null){
+                if(cerSampleTestTb!=null){
                     cerSampleTestBioInfoResultTb.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
                 }
             });

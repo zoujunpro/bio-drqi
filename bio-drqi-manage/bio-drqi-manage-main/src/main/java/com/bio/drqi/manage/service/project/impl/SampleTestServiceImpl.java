@@ -582,12 +582,17 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
         //保存excel数据
         cerSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
+        Map<String, CerSampleTestTb> stringCerSampleTestTbMap = cerSampleTestTbList.stream().collect(Collectors.toMap(CerSampleTestTb::getSampleCode, cerSampleTestTb -> cerSampleTestTb));
         List<CerSampleTestBioResultRef> cerSampleTestBioResultRefList = new ArrayList<>();
         for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
             CerSampleTestBioResultRef cerSampleTestBioResultRef = new CerSampleTestBioResultRef();
             cerSampleTestBioResultRef.setApplyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
             cerSampleTestBioResultRef.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
-            cerSampleTestBioResultRef.setVectorTaskCode(sampleTestBioInfoExcelDTO.getVectorTaskCode());
+            CerSampleTestTb cerSampleTestTb = stringCerSampleTestTbMap.get(sampleTestBioInfoExcelDTO.getSampleCode());;
+            if(cerSampleTestTb==null){
+                cerSampleTestBioResultRef.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
+            }
             cerSampleTestBioResultRef.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
             cerSampleTestBioResultRef.setRunId(sampleTestBioInfoExcelDTO.getRunId());
             cerSampleTestBioResultRef.setCreateTime(currentDate);
@@ -609,7 +614,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             }
 
             Future<List<CerSampleTestBioInfoResultTb>> future = threadPool.submit(() -> {
-                return synBioInfoResult(executeNum, sampleTestBioInfoExcelDTO.getSampleId(), sampleTestBioInfoExcelDTO.getRunId(), uploadBioInfoSampleTestResultReqDTO.getApplyNo(), sampleTestBioInfoExcelDTO.getSampleCode(), sampleTestBioInfoExcelDTO.getVectorTaskCode());
+                return synBioInfoResult(executeNum, sampleTestBioInfoExcelDTO.getSampleId(), sampleTestBioInfoExcelDTO.getRunId(), uploadBioInfoSampleTestResultReqDTO.getApplyNo(), sampleTestBioInfoExcelDTO.getSampleCode());
             });
             List<CerSampleTestBioInfoResultTb> currentCerSampleTestBioInfoResultTbList = null;
             try {
@@ -624,6 +629,12 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
 
         if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
+            cerSampleTestBioInfoResultTbList.forEach(cerSampleTestBioInfoResultTb -> {
+                CerSampleTestTb cerSampleTestTb = stringCerSampleTestTbMap.get(cerSampleTestBioInfoResultTb.getSampleCode());;
+                if(cerSampleTestTb==null){
+                    cerSampleTestBioInfoResultTb.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
+                }
+            });
             cerSampleTestBioInfoResultTbMapper.insertBatch(cerSampleTestBioInfoResultTbList);
         }
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
@@ -667,7 +678,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             throw new BusinessException("excel没匹配到该生信检测数据");
         }
         cerSampleTestBioInfoResultTbMapper.deleteByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
-        List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = synBioInfoResult(new AtomicInteger(1), cerSampleTestBioResultRef.getSampleId(), cerSampleTestBioResultRef.getRunId(), cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getVectorTaskCode());
+        List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = synBioInfoResult(new AtomicInteger(1), cerSampleTestBioResultRef.getSampleId(), cerSampleTestBioResultRef.getRunId(), cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
         if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
             for (CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb : cerSampleTestBioInfoResultTbList) {
                 cerSampleTestBioInfoResultTbMapper.insert(cerSampleTestBioInfoResultTb);
@@ -747,7 +758,7 @@ public class SampleTestServiceImpl implements SampleTestService {
     }
 
 
-    private List<CerSampleTestBioInfoResultTb> synBioInfoResult(AtomicInteger executeNum, String sampleId, String runId, String applyNo, String sampleCode, String vectorTaskCode) {
+    private List<CerSampleTestBioInfoResultTb> synBioInfoResult(AtomicInteger executeNum, String sampleId, String runId, String applyNo, String sampleCode) {
         log.info("获取生信检测结果 当前处理第{}数据 sampleCode={}", executeNum.get(), sampleCode);
         if (StringUtils.isEmpty(sampleId) || StringUtils.isEmpty(runId)) {
             return null;
@@ -761,7 +772,6 @@ public class SampleTestServiceImpl implements SampleTestService {
             CerSampleTestBioInfoResultTb cerSampleTestBioInfoResultTb = new CerSampleTestBioInfoResultTb();
             cerSampleTestBioInfoResultTb.setApplyNo(applyNo);
             cerSampleTestBioInfoResultTb.setSampleCode(sampleCode);
-            cerSampleTestBioInfoResultTb.setVectorTaskCode(vectorTaskCode);
             cerSampleTestBioInfoResultTb.setSampleId(map.get("sampleID"));
             cerSampleTestBioInfoResultTb.setUniqueDbCode(map.get("Unique_DB_code"));
             cerSampleTestBioInfoResultTb.setRunId(map.get("RunID"));

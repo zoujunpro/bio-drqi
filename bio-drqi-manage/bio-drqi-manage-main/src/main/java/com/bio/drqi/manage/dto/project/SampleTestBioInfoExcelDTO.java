@@ -6,9 +6,6 @@ import lombok.Data;
 @Data
 public class SampleTestBioInfoExcelDTO {
 
-    @ExcelProperty("实施方案编号")
-    private String vectorTaskCode;
-
     @ExcelProperty("取样编号")
     private String sampleCode;
 

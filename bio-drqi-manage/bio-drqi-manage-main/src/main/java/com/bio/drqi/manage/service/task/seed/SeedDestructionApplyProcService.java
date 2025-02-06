@@ -6,6 +6,7 @@ import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.domain.SeedStockDestructionLog;
 import com.bio.drqi.domain.SeedStockTb;
 import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.enums.SeedDestructionEnum;
 import com.bio.drqi.manage.dto.seed.SeedDestructionDTO;
 import com.bio.drqi.mapper.SeedStockDestructionLogMapper;
 import com.bio.drqi.mapper.SeedStockTbMapper;
@@ -26,6 +27,8 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
 
     private static final String USE_TO_DESC = "种子销毁";
 
+
+
     @Resource
     private SeedStockDestructionLogMapper seedStockDestructionLogMapper;
 
@@ -35,34 +38,39 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
 
     @Override
     public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
-        List<SeedDestructionDTO> seedDestructionDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskForm(), SeedDestructionDTO.class);
-        for (int i = 0; i < seedDestructionDTOList.size(); i++) {
-            SeedDestructionDTO seedDestructionDTO = seedDestructionDTOList.get(i);
-            ValidatorUtil.validator(seedDestructionDTO);
-            checkSeedStock(seedDestructionDTO.getSeedNum(), seedDestructionDTO.getSeedNumber());
+        SeedDestructionDTO seedDestructionDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedDestructionDTO.class);
+        if(SeedDestructionEnum.IN.name().equals(seedDestructionDTO.getDestructionType())){
+            for (int i = 0; i < seedDestructionDTO.getSeedList().size(); i++) {
+                SeedDestructionDTO.SeedDTO seedDTO = seedDestructionDTO.getSeedList().get(i);
+                ValidatorUtil.validator(seedDestructionDTO);
+                checkSeedStock(seedDTO.getSeedNum(), seedDTO.getSeedNumber());
+            }
         }
+
     }
 
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-            List<SeedDestructionDTO> seedDestructionDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskForm(), SeedDestructionDTO.class);
-            for (int i = 0; i < seedDestructionDTOList.size(); i++) {
-                SeedDestructionDTO seedDestructionDTO = seedDestructionDTOList.get(i);
+            SeedDestructionDTO seedDestructionDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedDestructionDTO.class);
+            for (int i = 0; i < seedDestructionDTO.getSeedList().size(); i++) {
+                SeedDestructionDTO.SeedDTO seedDTO = seedDestructionDTO.getSeedList().get(i);
 
-                if (CollectionUtil.isEmpty(seedDestructionDTO.getDestructionEvidenceList())) {
+                if (CollectionUtil.isEmpty(seedDTO.getDestructionEvidenceList())) {
                     throw new BusinessException("销毁证据缺失");
                 }
-                if (StringUtils.isEmpty(seedDestructionDTO.getDestructionMethod())) {
+                if (StringUtils.isEmpty(seedDTO.getDestructionMethod())) {
                     throw new BusinessException("销毁方式缺失");
                 }
-                if (StringUtils.isEmpty(seedDestructionDTO.getDestructionLocation())) {
+                if (StringUtils.isEmpty(seedDTO.getDestructionLocation())) {
                     throw new BusinessException("销毁地点缺失");
                 }
-                //扣减冻结库存，记录出库日志
-                reduceSeedStock(seedDestructionDTO.getSeedNum(), bioTaskDtlTb, seedDestructionDTO.getSeedNumber(), seedDestructionDTO.getRemarks(), i + 1, USE_TO_DESC);
+                if(SeedDestructionEnum.IN.name().equals(seedDestructionDTO.getDestructionType())){
+                    //扣减冻结库存，记录出库日志
+                    reduceSeedStock(seedDTO.getSeedNum(), bioTaskDtlTb, seedDTO.getSeedNumber(), seedDTO.getRemarks(), i + 1, USE_TO_DESC);
+                }
                 //记录销毁信息
-                writeSeedDestructionLog(bioTaskDtlTb, seedDestructionDTO);
+                writeSeedDestructionLog(bioTaskDtlTb, seedDTO);
             }
         }
     }
@@ -75,19 +83,19 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
 
 
 
-    private void writeSeedDestructionLog(BioTaskDtlTb bioTaskDtlTb, SeedDestructionDTO seedDestructionDTO) {
-        SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedDestructionDTO.getSeedNum());
+    private void writeSeedDestructionLog(BioTaskDtlTb bioTaskDtlTb,  SeedDestructionDTO.SeedDTO seedDTO) {
+        SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedDTO.getSeedNum());
         SeedStockDestructionLog seedStockDestructionLog = new SeedStockDestructionLog();
-        seedStockDestructionLog.setSeedNum(seedDestructionDTO.getSeedNum());
+        seedStockDestructionLog.setSeedNum(seedDTO.getSeedNum());
         seedStockDestructionLog.setUnit(seedStockTb.getUnit());
-        seedStockDestructionLog.setSeedNumber(seedDestructionDTO.getSeedNumber());
-        seedStockDestructionLog.setRemarks(seedDestructionDTO.getRemarks());
+        seedStockDestructionLog.setSeedNumber(seedDTO.getSeedNumber());
+        seedStockDestructionLog.setRemarks(seedDTO.getRemarks());
         seedStockDestructionLog.setTaskNum(bioTaskDtlTb.getTaskNum());
         seedStockDestructionLog.setApplyUserId(bioTaskDtlTb.getApplyUserId());
         seedStockDestructionLog.setApplyUserName(bioTaskDtlTb.getApplyUserName());
-        seedStockDestructionLog.setDestructionLocation(seedDestructionDTO.getDestructionLocation());
-        seedStockDestructionLog.setDestructionMethod(seedDestructionDTO.getDestructionMethod());
-        seedStockDestructionLog.setDestructionEvidence(JSONUtil.toJsonStr(seedDestructionDTO.getDestructionEvidenceList()));
+        seedStockDestructionLog.setDestructionLocation(seedDTO.getDestructionLocation());
+        seedStockDestructionLog.setDestructionMethod(seedDTO.getDestructionMethod());
+        seedStockDestructionLog.setDestructionEvidence(JSONUtil.toJsonStr(seedDTO.getDestructionEvidenceList()));
         seedStockDestructionLog.setDestructionTime(new Date());
         seedStockDestructionLogMapper.insert(seedStockDestructionLog);
     }

@@ -9,22 +9,34 @@ import java.util.List;
 
 @Data
 public class SeedDestructionDTO extends SeedProcDTO{
-    @NotBlank(message = "参数缺失：seedNum")
-    private String seedNum;
+
     /**
-     * 种子数量
+     * OUT IN
      */
-    @NotNull(message = "缺少种子销毁数量")
-    private BigDecimal seedNumber;
+    private String destructionType;
 
 
-    private String remarks;
+    private List<SeedDTO> seedList;
 
-    private String unit;
 
-    private String destructionLocation;
+    @Data
+    public static class SeedDTO{
+        private String seedNum;
+        /**
+         * 种子数量
+         */
+        @NotNull(message = "缺少种子销毁数量")
+        private BigDecimal seedNumber;
 
-    private String destructionMethod;
 
-    private List<String> destructionEvidenceList;
+        private String remarks;
+
+        private String unit;
+
+        private String destructionLocation;
+
+        private String destructionMethod;
+
+        private List<String> destructionEvidenceList;
+    }
 }

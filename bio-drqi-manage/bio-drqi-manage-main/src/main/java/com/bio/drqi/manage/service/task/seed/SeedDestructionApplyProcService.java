@@ -84,10 +84,9 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
 
 
     private void writeSeedDestructionLog(BioTaskDtlTb bioTaskDtlTb,  SeedDestructionDTO.SeedDTO seedDTO) {
-        SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedDTO.getSeedNum());
         SeedStockDestructionLog seedStockDestructionLog = new SeedStockDestructionLog();
         seedStockDestructionLog.setSeedNum(seedDTO.getSeedNum());
-        seedStockDestructionLog.setUnit(seedStockTb.getUnit());
+        seedStockDestructionLog.setUnit(seedDTO.getUnit());
         seedStockDestructionLog.setSeedNumber(seedDTO.getSeedNumber());
         seedStockDestructionLog.setRemarks(seedDTO.getRemarks());
         seedStockDestructionLog.setTaskNum(bioTaskDtlTb.getTaskNum());

@@ -80,19 +80,13 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public FlowHisInstanceTb revoke(String userName, Integer userId, Long instanceId, String remarks) {
-      FlowHisInstanceTb flowHisInstanceTb=  flowEngineService.getQueryService().getHistInstance(instanceId);
-        if(flowHisInstanceTb==null){
-          throw new BusinessException("流程不存在");
-        }
         List<FlowHisCommitTb> flowHisCommitTbList = flowEngineService.getQueryService().getFlowCommitTbByInstanceId(instanceId);
-        if(InstanceState.active.getValue()!=flowHisInstanceTb.getInstanceState()){
-            throw new BusinessException("不是执行中流程，无法撤销");
-        }
         if (CollectionUtil.isNotEmpty(flowHisCommitTbList) && flowHisCommitTbList.stream().map(FlowEntity::getCreateId).distinct().count() > 1) {
             throw new BusinessException("已经执行且被其他人员审批，无法撤销");
         }
         FlowActor flowActor = FlowActor.of(tenantId, String.valueOf(userId), userName);
         flowEngineService.getRuntimeService().revoke(instanceId, flowActor, remarks);
+        FlowHisInstanceTb flowHisInstanceTb=  flowEngineService.getQueryService().getHistInstance(instanceId);
         return flowHisInstanceTb;
     }
 

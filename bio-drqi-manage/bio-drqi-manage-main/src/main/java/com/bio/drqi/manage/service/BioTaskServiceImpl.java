@@ -180,6 +180,9 @@ public class BioTaskServiceImpl implements BioTaskService {
     public void revokeTask(BioRevokeTaskReqDTO bioRevokeTaskReqDTO) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioRevokeTaskReqDTO.getId());
         Assert.notNull(bioTaskDtlTb, "不存在此任务");
+        if(!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())){
+            throw new BusinessException("非执行中项目无法撤销");
+        }
 
         FlowHisInstanceTb flowHisInstanceTb = flowService.revoke(SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), bioTaskDtlTb.getInstanceId(), bioRevokeTaskReqDTO.getReason());
         /**

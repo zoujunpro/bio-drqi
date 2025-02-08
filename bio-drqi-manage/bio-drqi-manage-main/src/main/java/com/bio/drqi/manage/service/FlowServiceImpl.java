@@ -214,11 +214,11 @@ public class FlowServiceImpl implements FlowService {
 
             }
         }
-        if (flowHisInstanceTb.getInstanceState() == InstanceState.revoke.getValue()) {
-            ApproveDetailRspDTO.Model model = result.getModelList().get(result.getModelList().size() - 1);
-            result.getModelList().remove(model);
-            result.getModelList().get(0).getNodeUserList().addAll(model.getNodeUserList());
-        }
+//        if (flowHisInstanceTb.getInstanceState() == InstanceState.revoke.getValue()) {
+//            ApproveDetailRspDTO.Model model = result.getModelList().get(result.getModelList().size() - 1);
+//            result.getModelList().remove(model);
+//            result.getModelList().get(0).getNodeUserList().addAll(model.getNodeUserList());
+//        }
         return result;
     }
 

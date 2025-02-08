@@ -2,15 +2,15 @@ package com.bio.drqi.manage.service;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
-import com.bio.drqi.flow.ApproveDetailRspDTO;
-import com.bio.drqi.flow.ProcessDetailReqDTO;
-import com.bio.drqi.flow.ProcessDetailRspDTO;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.domain.BioTaskConf;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.domain.CerProjectTb;
+import com.bio.drqi.flow.ApproveDetailRspDTO;
+import com.bio.drqi.flow.ProcessDetailReqDTO;
+import com.bio.drqi.flow.ProcessDetailRspDTO;
 import com.bio.drqi.mapper.BioTaskConfMapper;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.drqi.mapper.CerProjectTbMapper;
@@ -80,13 +80,19 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public FlowHisInstanceTb revoke(String userName, Integer userId, Long instanceId, String remarks) {
+      FlowHisInstanceTb flowHisInstanceTb=  flowEngineService.getQueryService().getHistInstance(instanceId);
+        if(flowHisInstanceTb==null){
+          throw new BusinessException("流程不存在");
+        }
         List<FlowHisCommitTb> flowHisCommitTbList = flowEngineService.getQueryService().getFlowCommitTbByInstanceId(instanceId);
-        if (CollectionUtil.isNotEmpty(flowHisCommitTbList) && flowHisCommitTbList.size() > 1) {
-            throw new BusinessException("已经执行的流程不能撤销");
+        if(InstanceState.active.getValue()!=flowHisInstanceTb.getInstanceState()){
+            throw new BusinessException("不是执行中流程，无法撤销");
+        }
+        if (CollectionUtil.isNotEmpty(flowHisCommitTbList) && flowHisCommitTbList.stream().map(FlowEntity::getCreateId).distinct().count() > 1) {
+            throw new BusinessException("已经执行且被其他人员审批，无法撤销");
         }
         FlowActor flowActor = FlowActor.of(tenantId, String.valueOf(userId), userName);
         flowEngineService.getRuntimeService().revoke(instanceId, flowActor, remarks);
-        FlowHisInstanceTb flowHisInstanceTb = flowEngineService.getQueryService().getHistInstance(instanceId);
         return flowHisInstanceTb;
     }
 

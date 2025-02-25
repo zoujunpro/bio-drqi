@@ -1,9 +1,0 @@
-package com.bio.drqi.manage.service;
-
-import org.springframework.stereotype.Service;
-
-@Service
-public interface BioRequestService {
-
-    void  logRequest(String requestParam,String requestMethod,String requestId,String requestDesc);
-}

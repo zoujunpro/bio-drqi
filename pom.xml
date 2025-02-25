@@ -22,6 +22,7 @@
         <module>bio-drqi-manage</module>
         <module>bio-drqi-common</module>
         <module>bio-drqi-external</module>
+        <module>bio-drqi-flow</module>
     </modules>
 
     <properties>

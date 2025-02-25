@@ -5,5 +5,5 @@ import lombok.Data;
 
 @Data
 public class SeedInDataReqDTO extends PageDTO {
-    private Integer id;
+    private String taskNum;
 }

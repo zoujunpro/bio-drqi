@@ -1,6 +1,9 @@
 package com.bio.drqi.manage.service.seed;
 
+import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
 import com.bio.drqi.seed.*;
+import com.bio.drqi.seedtask.SeedInDataReqDTO;
+import com.bio.drqi.seedtask.SeedTaskSeedNumRspDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,4 +22,10 @@ public interface SeedStoreService {
     void aliasName(AliasNameSeedReqDTO aliasNameSeedReqDTO);
 
     List<SeedOperateDetailRspDTO> seedOperateDetail(String seedNum);
+
+
+
+    PageInfo<SeedInStoreDTO.ExecuteFormContent> seedInData(@RequestParam @Validated SeedInDataReqDTO seedInDataReqDTO);
+
+    List<SeedTaskSeedNumRspDTO> findAllSeedNum(String taskNum);
 }

@@ -1,11 +1,11 @@
 package com.bio.drqi.manage.controller.project;
 
 
+import com.bio.core.common.aspect.RequestLog;
 import com.bio.drqi.base.PrintRspDTO;
 import com.bio.drqi.projectPrint.*;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.manage.aspect.RequestLog;
 import com.bio.drqi.manage.service.project.ProjectPrintService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

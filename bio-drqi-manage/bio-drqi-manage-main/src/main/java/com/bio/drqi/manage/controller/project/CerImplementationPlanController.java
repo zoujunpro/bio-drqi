@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.controller.project;
 
 
+import com.bio.core.common.aspect.RequestLog;
 import com.bio.drqi.vector.req.GetVectorTaskNumReqDTO;
 import com.bio.drqi.vector.req.QueryPageVectorReqDTO;
 import com.bio.drqi.vector.rsp.CerImplementationPlanBaseInfoRspDTO;
@@ -11,7 +12,6 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.oss.service.OssService;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.manage.aspect.RequestLog;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.service.project.VectorTaskService;
 import com.bio.drqi.vector.rsp.VectorTaskSpeciesRspDTO;

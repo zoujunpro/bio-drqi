@@ -1,11 +1,14 @@
 package com.bio.drqi.manage.controller.seed;
 
+import com.bio.core.common.aspect.RequestLog;
+import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
 import com.bio.drqi.seed.*;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.manage.aspect.RequestLog;
 import com.bio.drqi.manage.service.seed.SeedStoreService;
+import com.bio.drqi.seedtask.SeedInDataReqDTO;
+import com.bio.drqi.seedtask.SeedTaskSeedNumRspDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -94,5 +97,29 @@ public class SeedStockController {
     @WebLog(desc = "根据种子编号查询操作记录")
     public ResponseResult<List<SeedOperateDetailRspDTO>> seedOperateDetail(@RequestParam @Validated String seedNum) {
         return ResponseResult.getSuccess(seedStoreService.seedOperateDetail(seedNum));
+    }
+
+
+    /**
+     * 分页查询所在工单的入库记录明细
+     * @param seedInDataReqDTO
+     * @return
+     */
+    @PostMapping("/seedInData")
+    @WebLog(desc = "分页查询入库记录明细")
+    public ResponseResult<PageInfo<SeedInStoreDTO.ExecuteFormContent>> seedInData(@RequestBody @Validated SeedInDataReqDTO seedInDataReqDTO) {
+        return ResponseResult.getSuccess(seedStoreService.seedInData(seedInDataReqDTO));
+    }
+
+    /**
+     * 查询所在工单所有种子编号
+     *
+     * @return
+     */
+    @GetMapping("/findAllSeedNum")
+    @WebLog(desc = "种子库查询当前工单所有种子编号")
+    public ResponseResult<List<SeedTaskSeedNumRspDTO>> findAllSeedNum(@RequestParam @Validated String taskNum) {
+        List<SeedTaskSeedNumRspDTO> res = seedStoreService.findAllSeedNum(taskNum);
+        return ResponseResult.getSuccess(res);
     }
 }

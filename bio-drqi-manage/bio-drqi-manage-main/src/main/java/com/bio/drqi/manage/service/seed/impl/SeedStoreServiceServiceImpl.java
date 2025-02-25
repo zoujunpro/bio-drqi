@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.service.seed.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.json.JSONUtil;
 import com.bio.base.api.RemoteUserService;
 import com.bio.base.user.rsp.UserDetailRspDTO;
 import com.bio.common.core.context.SecurityContextHolder;
@@ -8,19 +9,19 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
-import com.bio.drqi.domain.CerBreedDict;
-import com.bio.drqi.domain.SeedStockInLog;
-import com.bio.drqi.domain.SeedStockOutLog;
-import com.bio.drqi.domain.SeedStockTb;
+import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.DataPermissionTypeEnum;
 import com.bio.drqi.enums.DataPermissionValueEnum;
 import com.bio.drqi.enums.SeedOperateEnum;
+import com.bio.drqi.enums.SeedTaskTypeEnum;
+import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
+import com.bio.drqi.manage.dto.seed.SeedOutDTO;
 import com.bio.drqi.manage.service.seed.SeedStoreService;
-import com.bio.drqi.mapper.CerBreedDictMapper;
-import com.bio.drqi.mapper.SeedStockInLogMapper;
-import com.bio.drqi.mapper.SeedStockOutLogMapper;
-import com.bio.drqi.mapper.SeedStockTbMapper;
+import com.bio.drqi.mapper.*;
 import com.bio.drqi.seed.*;
+import com.bio.drqi.seedtask.SeedInDataReqDTO;
+import com.bio.drqi.seedtask.SeedTaskSeedNumRspDTO;
+import com.bio.drqi.util.PaginationHelper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,8 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
     @Resource
     private SeedStockOutLogMapper seedStockOutLogMapper;
+
+    private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
     @Override
     public SeedDetailRspDTO querySeedByNum(String seedNum) {
@@ -126,6 +129,43 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         }
         return result;
     }
+
+
+
+    @Override
+    public PageInfo<SeedInStoreDTO.ExecuteFormContent> seedInData(SeedInDataReqDTO seedInDataReqDTO) {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(seedInDataReqDTO.getTaskNum());
+        SeedInStoreDTO seedInStoreDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedInStoreDTO.class);
+        List<SeedInStoreDTO.ExecuteFormContent> executeFormContentList = seedInStoreDTO.getExecuteForm().getExecuteFormContentList();
+        PaginationHelper paginationHelper = new PaginationHelper(executeFormContentList, seedInDataReqDTO.getPageNum(), seedInDataReqDTO.getPageSize());
+        executeFormContentList = paginationHelper.getCurrentPageData();
+        PageInfo<SeedInStoreDTO.ExecuteFormContent> pageInfo = new PageInfo<>();
+        pageInfo.setList(BeanUtils.copyToList(executeFormContentList, SeedInStoreDTO.ExecuteFormContent.class));
+        pageInfo.setTotal(paginationHelper.getTotalNum());
+        return pageInfo;
+    }
+
+
+    @Override
+    public List<SeedTaskSeedNumRspDTO> findAllSeedNum(String taskNum) {
+        List<SeedTaskSeedNumRspDTO> result = new ArrayList<>();
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(taskNum);
+        if (SeedTaskTypeEnum.seed_out_apply.name().equals(bioTaskDtlTb.getTaskTypeCode())) {
+            SeedOutDTO seedOutDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedOutDTO.class);
+            for (SeedOutDTO.ExecuteFormContent executeFormContent : seedOutDTO.getExecuteForm().getExecuteFormContentList()) {
+                SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(executeFormContent.getSeedNum());
+                result.add(new SeedTaskSeedNumRspDTO(seedStockTb.getSeedNum(), seedStockTb.getUnit(), null, executeFormContent.getNum()));
+            }
+        } else if (SeedTaskTypeEnum.seed_store_apply.name().equals(bioTaskDtlTb.getTaskTypeCode())) {
+            List<SeedStockInLog> seedStockInLogList = seedStockInLogMapper.selectAllByTaskNum(bioTaskDtlTb.getTaskNum());
+            for (SeedStockInLog seedStockInLog : seedStockInLogList) {
+                result.add(new SeedTaskSeedNumRspDTO(seedStockInLog.getSeedNum(), seedStockInLog.getUnit(), seedStockInLog.getId(), seedStockInLog.getSeedNumber().toString()));
+            }
+        }
+        return result;
+    }
+
+
 
 
     private PageInfo<SeedStockPageRspDTO> getSeedStockPageRspDTOPageInfo(SeedStockPageReqDTO seedStockPageReqDTO, Boolean notEmptySeedNumberFlag) {

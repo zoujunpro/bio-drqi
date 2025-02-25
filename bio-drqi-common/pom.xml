@@ -13,7 +13,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>bio-drqi-common-manage</module>
+        <module>bio-drqi-manage-common</module>
+        <module>bio-drqi-core-common</module>
     </modules>
 
 </project>

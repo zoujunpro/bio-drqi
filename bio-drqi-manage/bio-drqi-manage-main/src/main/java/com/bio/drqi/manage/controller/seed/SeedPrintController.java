@@ -1,8 +1,8 @@
 package com.bio.drqi.manage.controller.seed;
 
 
+import com.bio.core.common.aspect.RequestLog;
 import com.bio.drqi.base.PrintRspDTO;
-import com.bio.drqi.manage.aspect.RequestLog;
 import com.bio.drqi.manage.service.seed.SeedPrintService;
 import com.bio.drqi.print.SeedInPrintReqDTO;
 import com.bio.drqi.print.SeedOutPrintReqDTO;

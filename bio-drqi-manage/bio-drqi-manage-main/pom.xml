@@ -109,13 +109,19 @@
         </dependency>
         <dependency>
             <groupId>bio.drqi</groupId>
-            <artifactId>bio-drqi-common-manage</artifactId>
+            <artifactId>bio-drqi-manage-common</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>bio.drqi</groupId>
             <artifactId>bio-drqi-external</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-flow</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

@@ -17,6 +17,8 @@ import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.StringUtils;
+import com.bio.flow.enums.EventType;
+import com.bio.flow.service.FlowTaskListener;
 import com.easyflow.engine.FlowEngineService;
 import com.easyflow.engine.core.FlowActor;
 import com.easyflow.engine.entity.FlowTaskActorTb;
@@ -35,7 +37,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class CerSeedTaskListener implements CerTaskListener<BioTaskDtlTb> {
+public class CerSeedTaskListener implements FlowTaskListener<BioTaskDtlTb> {
 
     private final static Map<String, String> vieMap = new ConcurrentHashMap<>();
 

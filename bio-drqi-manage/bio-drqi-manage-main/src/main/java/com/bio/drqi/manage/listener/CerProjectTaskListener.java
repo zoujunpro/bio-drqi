@@ -12,6 +12,8 @@ import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.manage.dto.Message;
 import com.bio.drqi.manage.feishu.FeiShuService;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
+import com.bio.flow.enums.EventType;
+import com.bio.flow.service.FlowTaskListener;
 import com.easyflow.engine.FlowEngineService;
 import com.easyflow.engine.core.FlowActor;
 import com.easyflow.engine.entity.FlowTaskActorTb;
@@ -28,7 +30,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
-public class CerProjectTaskListener implements CerTaskListener<BioTaskDtlTb>{
+public class CerProjectTaskListener implements FlowTaskListener<BioTaskDtlTb> {
 
     private final static Map<String, String> vieMap = new ConcurrentHashMap<>();
 

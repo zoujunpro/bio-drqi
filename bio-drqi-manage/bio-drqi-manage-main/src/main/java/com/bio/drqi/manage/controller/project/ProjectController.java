@@ -2,12 +2,12 @@ package com.bio.drqi.manage.controller.project;
 
 
 
+import com.bio.core.common.aspect.RequestLog;
 import com.bio.drqi.project.req.ProjectListReqDTO;
 import com.bio.drqi.project.rsp.*;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.manage.aspect.RequestLog;
 import com.bio.drqi.manage.service.project.ProjectService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;

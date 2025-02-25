@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>bio.drqi</groupId>
-        <artifactId>bio-drqi</artifactId>
+        <artifactId>bio-drqi-main</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bio-drqi-applet</artifactId>
+    <artifactId>bio-drqi-applet-main</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>

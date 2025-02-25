@@ -9,12 +9,12 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bio-drqi-manage</artifactId>
+    <artifactId>bio-drqi-main</artifactId>
     <packaging>pom</packaging>
 
     <modules>
         <module>bio-drqi-manage-main</module>
-        <module>bio-drqi-manage-service</module>
+        <module>bio-drqi-applet-main</module>
     </modules>
     <dependencies>
         <dependency>

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>bio.drqi</groupId>
-        <artifactId>bio-drqi-manage</artifactId>
+        <artifactId>bio-drqi-main</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 

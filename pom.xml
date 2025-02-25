@@ -18,8 +18,7 @@
     <modules>
         <module>bio-drqi-dao</module>
         <module>bio-drqi-dto</module>
-        <module>bio-drqi-applet</module>
-        <module>bio-drqi-manage</module>
+        <module>bio-drqi-main</module>
         <module>bio-drqi-common</module>
         <module>bio-drqi-external</module>
         <module>bio-drqi-flow</module>

@@ -53,6 +53,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
     @Resource
     private SeedStockOutLogMapper seedStockOutLogMapper;
 
+    @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
     @Override

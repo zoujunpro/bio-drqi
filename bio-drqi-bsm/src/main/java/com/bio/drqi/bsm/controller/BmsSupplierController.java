@@ -3,6 +3,7 @@ package com.bio.drqi.bsm.controller;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.dto.req.BmsSupplierAddReqDTO;
+import com.bio.drqi.bsm.dto.req.BmsSupplierExportExcelReqDTO;
 import com.bio.drqi.bsm.dto.req.BmsSupplierListPageReqDTO;
 import com.bio.drqi.bsm.dto.rsp.BmsSupplierListAllRspDTO;
 import com.bio.drqi.bsm.dto.rsp.BmsSupplierListPageRspDTO;
@@ -70,9 +71,9 @@ public class BmsSupplierController {
      *
      * @return
      */
-    @GetMapping("/exportExcel")
+    @PostMapping("/exportExcel")
     @WebLog(desc = "供应商管理-导出")
-    public void exportExcel() {
+    public void exportExcel(@RequestBody BmsSupplierExportExcelReqDTO bmsSupplierExportExcelReqDTO) {
     }
 
     /**

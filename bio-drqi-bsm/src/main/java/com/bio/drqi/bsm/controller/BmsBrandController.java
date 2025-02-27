@@ -8,10 +8,7 @@ import com.bio.drqi.bsm.dto.req.BmsBrandListPageReqDTO;
 import com.bio.drqi.bsm.dto.rsp.BmsBrandListAllRspDTO;
 import com.bio.drqi.bsm.dto.rsp.BmsBrandListPageRspDTO;
 import com.github.pagehelper.PageInfo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,7 +26,7 @@ public class BmsBrandController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "品牌管理-分页查询")
-    public ResponseResult<PageInfo<BmsBrandListPageRspDTO>> listPage(BmsBrandListPageReqDTO bmsBrandListPageReqDTO){
+    public ResponseResult<PageInfo<BmsBrandListPageRspDTO>> listPage(@RequestBody BmsBrandListPageReqDTO bmsBrandListPageReqDTO){
         return null;
     }
 
@@ -50,7 +47,7 @@ public class BmsBrandController {
      */
     @PostMapping("/add")
     @WebLog(desc = "品牌管理-新增")
-    public ResponseResult<String> add(BmsBrandAddReqDTO bmsBrandAddReqDTO){
+    public ResponseResult<String> add(@RequestBody BmsBrandAddReqDTO bmsBrandAddReqDTO){
         return null;
     }
 
@@ -60,7 +57,7 @@ public class BmsBrandController {
      */
     @GetMapping("/delete")
     @WebLog(desc = "品牌管理-删除")
-    public ResponseResult<String> delete(){
+    public ResponseResult<String> delete(@RequestParam Integer id){
         return null;
     }
 
@@ -70,7 +67,7 @@ public class BmsBrandController {
      */
     @PostMapping("/edit")
     @WebLog(desc = "品牌管理-修改")
-    public ResponseResult<String> edit(BmsBrandEditReqDTO bmsBrandEditReqDTO){
+    public ResponseResult<String> edit(@RequestBody BmsBrandEditReqDTO bmsBrandEditReqDTO){
         return null;
     }
 }

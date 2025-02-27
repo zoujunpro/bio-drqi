@@ -1,0 +1,40 @@
+{
+  "config": {
+    "wide_screen_mode": true
+  },
+  "header": {
+    "title": {
+      "tag": "plain_text",
+      "content": "你有一个齐博士系统审批任务"
+    },
+    "template": "blue"
+  },
+  "elements": [
+    {
+      "tag": "markdown",
+      "content": "**任务描述：**这是任务描述\n**所属项目：**这是所属项目\n**发  起  人：**:这是所发起人\n**发起时间：**这是发起时间\n\n",
+      "text_align": "left"
+    },
+    {
+      "tag": "action",
+      "actions": [
+        {
+          "tag": "button",
+          "text": {
+            "tag": "plain_text",
+            "content": "跳转到齐博士系统"
+          },
+          "type": "primary",
+          "multi_url": {
+            "url": "http://drqi.qi-biodesign.com/",
+            "pc_url": "",
+            "android_url": "",
+            "ios_url": ""
+          }
+        }
+      ]
+    }
+  ],
+  "mock_data": "{}",
+  "variables": []
+}

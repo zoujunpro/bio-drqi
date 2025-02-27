@@ -1,0 +1,29 @@
+server:
+  port: 8061
+  servlet:
+    context-path: /applet
+spring:
+  application:
+    name: drqi-applet-service
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: ${spring.profiles.active}
+  cloud:
+    nacos:
+      config:
+        bootstrap: true
+        server-addr: ${NACOS-HOST:172.16.14.2}:${NACOS-PORT:8848}
+        group: DEFAULT_GROUP
+        namespace: bio-${spring.profiles.active}
+        file-extension: yml
+        username: nacos
+        password: nacos
+      discovery:
+        group: DEFAULT_GROUP
+        namespace: bio-${spring.profiles.active}
+        server-addr: ${NACOS-HOST:172.16.14.2}:${NACOS-PORT:8848}
+        username: nacos
+        password: nacos
+        ip: ${DISCOVERY-HOST:localhost}
+

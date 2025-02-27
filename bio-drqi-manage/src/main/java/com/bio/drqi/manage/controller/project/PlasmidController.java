@@ -1,0 +1,53 @@
+package com.bio.drqi.manage.controller.project;
+
+import com.bio.drqi.plasmid.req.QueryPagePlasmidReqDTO;
+import com.bio.drqi.plasmid.rsp.QueryPagePlasmidRspDTO;
+import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
+import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.manage.service.project.PlasmidService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * 质粒质检
+ */
+@RestController
+@RequestMapping("/plasmid")
+public class PlasmidController {
+
+    @Resource
+    private PlasmidService plasmidService;
+
+
+
+    /**
+     * 查询该项目下质粒
+     */
+    @PostMapping("listByVectorTask")
+    @WebLog(desc = "查询该项目下质粒")
+    @RequirePermissions("project:data:plasmid")
+    public ResponseResult<QueryPagePlasmidRspDTO> listByVectorTask(@Validated @RequestBody QueryPagePlasmidReqDTO queryPagePlasmidReqDTO) {
+        return ResponseResult.getSuccess(plasmidService.listByVectorTask(queryPagePlasmidReqDTO));
+    }
+
+
+    /**
+     * 质粒质检模板下载
+     *
+     * @param response
+     */
+    @GetMapping("/downPlasmidCheckTemplate")
+    public void downPlasmidCheckTemplate(@RequestParam @Validated String vectorTaskCode, HttpServletResponse response) {
+        try {
+            plasmidService.downPlasmidCheckTemplate(vectorTaskCode, response);
+        } catch (Exception e) {
+            throw new BusinessException("质粒上传模板下载失败，请联系管理员检测模板配置");
+        }
+    }
+
+}

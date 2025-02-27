@@ -59,7 +59,6 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
         </dependency>
-
         <dependency>
             <groupId>bio.common</groupId>
             <artifactId>bio-common-security</artifactId>
@@ -81,6 +80,12 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>bio.base</groupId>
+            <artifactId>bio-base-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>com.easyflow</groupId>
             <artifactId>easy-flow-boot-starter</artifactId>
             <version>1.0-SNAPSHOT</version>
@@ -90,7 +95,6 @@
             <artifactId>oapi-sdk</artifactId>
             <version>2.1.5</version>
         </dependency>
-
         <dependency>
             <groupId>bio.print</groupId>
             <artifactId>bio-print-api</artifactId>
@@ -103,34 +107,19 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>bio.base</groupId>
-            <artifactId>bio-base-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.github.binarywang/weixin-java-miniapp -->
-        <dependency>
-            <groupId>com.github.binarywang</groupId>
-            <artifactId>weixin-java-miniapp</artifactId>
-            <version>4.6.7.B</version>
-        </dependency>
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-        </dependency>
-        <dependency>
             <groupId>bio.drqi</groupId>
-            <artifactId>bio-drqi-common-manage</artifactId>
+            <artifactId>bio-drqi-manage-common</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>bio.drqi</groupId>
-            <artifactId>bio-drqi-dto-manage</artifactId>
+            <artifactId>bio-drqi-flow</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
 
     <build>
         <plugins>

@@ -15,6 +15,7 @@
     <modules>
         <module>bio-drqi-manage-main</module>
         <module>bio-drqi-applet-main</module>
+        <module>bio-drqi-bsm-main</module>
     </modules>
     <dependencies>
         <dependency>

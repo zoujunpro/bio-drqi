@@ -1,0 +1,18 @@
+package com.bio.drqi.mapper;
+
+import com.bio.drqi.domain.BmsOrderDetailTb;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+/**
+* @author zou'jun
+* @description 针对表【bms_order_detail_tb(订单明细表)】的数据库操作Mapper
+* @createDate 2025-02-27 10:16:09
+* @Entity com.bio.drqi.domain.BmsOrderDetailTb
+*/
+public interface BmsOrderDetailTbMapper extends BaseMapper<BmsOrderDetailTb> {
+
+}
+
+
+
+

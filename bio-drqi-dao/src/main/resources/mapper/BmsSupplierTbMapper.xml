@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BmsSupplierTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BmsSupplierTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
+            <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
+            <result property="openingBank" column="opening_bank" jdbcType="VARCHAR"/>
+            <result property="bankAccount" column="bank_account" jdbcType="VARCHAR"/>
+            <result property="taxId" column="tax_id" jdbcType="VARCHAR"/>
+            <result property="qualificationLocation" column="qualification_location" jdbcType="VARCHAR"/>
+            <result property="businessScope" column="business_scope" jdbcType="VARCHAR"/>
+            <result property="cooperateForm" column="cooperate_form" jdbcType="VARCHAR"/>
+            <result property="frameworkAgreementNumber" column="framework_agreement_number" jdbcType="INTEGER"/>
+            <result property="frameworkAgreementAnnex" column="framework_agreement_annex" jdbcType="VARCHAR"/>
+            <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
+            <result property="contactUserName" column="contact_user_name" jdbcType="VARCHAR"/>
+            <result property="contactUserTelephone" column="contact_user_telephone" jdbcType="VARCHAR"/>
+            <result property="kahunaUserName" column="kahuna_user_name" jdbcType="VARCHAR"/>
+            <result property="kahunaUserId" column="kahuna_user_id" jdbcType="INTEGER"/>
+            <result property="remak" column="remak" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="deleteFlag" column="delete_flag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,supplier_code,supplier_name,
+        opening_bank,bank_account,tax_id,
+        qualification_location,business_scope,cooperate_form,
+        framework_agreement_number,framework_agreement_annex,expiration_date,
+        contact_user_name,contact_user_telephone,kahuna_user_name,
+        kahuna_user_id,remak,create_time,
+        create_user_name,create_user_id,delete_flag
+    </sql>
+</mapper>

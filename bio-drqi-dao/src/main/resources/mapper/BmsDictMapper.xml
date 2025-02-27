@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BmsDictMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BmsDict">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="dictTypeCode" column="dict_type_code" jdbcType="VARCHAR"/>
+            <result property="dictTypeName" column="dict_type_name" jdbcType="VARCHAR"/>
+            <result property="dictValueName" column="dict_value_name" jdbcType="VARCHAR"/>
+            <result property="dictValueCode" column="dict_value_code" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,dict_type_code,dict_type_name,
+        dict_value_name,dict_value_code,create_time,
+        create_user_id,create_user_name
+    </sql>
+</mapper>

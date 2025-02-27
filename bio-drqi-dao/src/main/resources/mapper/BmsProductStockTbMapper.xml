@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BmsProductStockTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BmsProductStockTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+            <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
+            <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
+            <result property="productCategoryName" column="product_category_name" jdbcType="VARCHAR"/>
+            <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
+            <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
+            <result property="productSku" column="product_sku" jdbcType="VARCHAR"/>
+            <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
+            <result property="totalStoreNumber" column="total_store_number" jdbcType="INTEGER"/>
+            <result property="currentStockNumber" column="current_stock_number" jdbcType="INTEGER"/>
+            <result property="totalOutNumber" column="total_out_number" jdbcType="INTEGER"/>
+            <result property="productPrice" column="product_price" jdbcType="DECIMAL"/>
+            <result property="stockName" column="stock_name" jdbcType="VARCHAR"/>
+            <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
+            <result property="stockLocationNumber" column="stock_location_number" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,product_name,product_out_code,
+        product_category_code,product_category_name,brand_code,
+        brand_name,product_sku,batch_no,
+        total_store_number,current_stock_number,total_out_number,
+        product_price,stock_name,stock_code,
+        stock_location_number
+    </sql>
+</mapper>

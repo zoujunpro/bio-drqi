@@ -25,7 +25,7 @@
         <module>bio-drqi-applet</module>
         <module>bio-drqi-manage</module>
         <module>bio-drqi-admin</module>
-
+        <module>bio-drqi-bsm</module>
     </modules>
 
     <properties>

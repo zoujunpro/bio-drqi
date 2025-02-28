@@ -2,8 +2,8 @@ package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.bsm.dto.req.*;
-import com.bio.drqi.bsm.dto.rsp.BmsProductListPageRspDTO;
+import com.bio.drqi.bsm.req.*;
+import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

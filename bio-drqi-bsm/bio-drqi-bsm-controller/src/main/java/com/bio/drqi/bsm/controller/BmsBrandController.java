@@ -2,11 +2,11 @@ package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.bsm.dto.req.BmsBrandAddReqDTO;
-import com.bio.drqi.bsm.dto.req.BmsBrandEditReqDTO;
-import com.bio.drqi.bsm.dto.req.BmsBrandListPageReqDTO;
-import com.bio.drqi.bsm.dto.rsp.BmsBrandListAllRspDTO;
-import com.bio.drqi.bsm.dto.rsp.BmsBrandListPageRspDTO;
+import com.bio.drqi.bsm.req.BmsBrandAddReqDTO;
+import com.bio.drqi.bsm.req.BmsBrandEditReqDTO;
+import com.bio.drqi.bsm.req.BmsBrandListPageReqDTO;
+import com.bio.drqi.bsm.rsp.BmsBrandListAllRspDTO;
+import com.bio.drqi.bsm.rsp.BmsBrandListPageRspDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 

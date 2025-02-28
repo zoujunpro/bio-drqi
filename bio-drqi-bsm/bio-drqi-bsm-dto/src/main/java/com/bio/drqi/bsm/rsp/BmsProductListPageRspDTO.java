@@ -1,4 +1,4 @@
-package com.bio.drqi.bsm.dto.rsp;
+package com.bio.drqi.bsm.rsp;
 
 public class BmsProductListPageRspDTO {
 }

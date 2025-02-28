@@ -1,4 +1,4 @@
-package com.bio.drqi.bsm.dto.req;
+package com.bio.drqi.bsm.req;
 
 import com.bio.drqi.base.PageDTO;
 import lombok.Data;

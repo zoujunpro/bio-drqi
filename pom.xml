@@ -17,7 +17,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>bio-drqi-dao</module>
-        <module>bio-drqi-dto</module>
         <module>bio-drqi-bsm</module>
         <module>bio-drqi-common</module>
         <module>bio-drqi-external</module>
@@ -25,6 +24,7 @@
         <module>bio-drqi-applet</module>
         <module>bio-drqi-manage</module>
         <module>bio-drqi-admin</module>
+        <module>bio-drqi-feishu</module>
     </modules>
 
     <properties>

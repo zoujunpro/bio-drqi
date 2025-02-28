@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>bio.drqi</groupId>
-            <artifactId>bio-drqi-manage</artifactId>
+            <artifactId>bio-drqi-manage-admin</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

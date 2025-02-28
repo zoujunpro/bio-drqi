@@ -4,7 +4,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.bio.drqi.applet.dto.rsp.NineSixLayoutRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
-import com.bio.drqi.base.SampleUnitDTO;
+import com.bio.drqi.manage.base.SampleUnitDTO;
 import com.bio.drqi.domain.CerSampleLayoutTb;
 import com.bio.drqi.mapper.CerSampleLayoutTbMapper;
 import org.springframework.stereotype.Service;

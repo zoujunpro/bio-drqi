@@ -14,7 +14,7 @@
 
     <modules>
         <module>bio-drqi-bsm-service</module>
-        <module>bio-drqi-bsm-controller</module>
+        <module>bio-drqi-bsm-admin</module>
         <module>bio-drqi-bsm-dto</module>
     </modules>
 

@@ -71,5 +71,25 @@
             <if test="deleteFlag != null">and delete_flag=#{deleteFlag,jdbcType=VARCHAR}</if>
         </where>
     </select>
+    <select id="selectSupplierCodeAndSupplierCodeByDeleteFlagOrderByIdDesc" resultMap="BaseResultMap">
+        select supplier_code, supplier_code
+        from bms_supplier_tb
+        where delete_flag = #{deleteFlag,jdbcType=VARCHAR}
+        order by id desc
+    </select>
+    <select id="selectOneBySupplierCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_supplier_tb
+        where
+        supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneBySupplierName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_supplier_tb
+        where
+        supplier_name = #{supplierName,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

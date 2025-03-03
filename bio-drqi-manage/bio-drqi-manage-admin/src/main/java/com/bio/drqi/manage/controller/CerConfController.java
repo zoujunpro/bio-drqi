@@ -1,5 +1,6 @@
 package com.bio.drqi.manage.controller;
 
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.drqi.manage.conf.SpeciesConfRspDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.manage.service.project.CerConfService;
@@ -27,6 +28,7 @@ public class CerConfController {
      */
     @GetMapping("/speciesList")
     public ResponseResult<List<SpeciesConfRspDTO>> speciesList() {
+
         return ResponseResult.getSuccess(cerConfService.speciesList());
     }
 

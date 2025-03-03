@@ -16,6 +16,12 @@ public interface BmsSupplierTbMapper extends BaseMapper<BmsSupplierTb> {
 
     List<BmsSupplierTb> selectSelective(BmsSupplierTb bmsSupplierTb);
 
+    List<BmsSupplierTb> selectSupplierCodeAndSupplierCodeByDeleteFlagOrderByIdDesc(@Param("deleteFlag") String deleteFlag);
+
+    BmsSupplierTb selectOneBySupplierCode(@Param("supplierCode") String supplierCode);
+
+    BmsSupplierTb selectOneBySupplierName(@Param("supplierName") String supplierName);
+
 }
 
 

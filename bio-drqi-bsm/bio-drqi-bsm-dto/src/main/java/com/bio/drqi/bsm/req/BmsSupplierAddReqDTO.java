@@ -2,6 +2,90 @@ package com.bio.drqi.bsm.req;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class BmsSupplierAddReqDTO {
+
+    /**
+     * 供应商编号
+     */
+    private String supplierCode;
+
+    /**
+     * 供应商名称
+     */
+    private String supplierName;
+
+    /**
+     * 开户行
+     */
+    private String openingBank;
+
+    /**
+     * 银行账户
+     */
+    private String bankAccount;
+
+    /**
+     * 税号
+     */
+    private String taxId;
+
+    /**
+     * 资质证明
+     */
+    private String qualificationLocation;
+
+    /**
+     * 经营范围
+     */
+    private String businessScope;
+
+    /**
+     * 合作形式
+     */
+    private String cooperateForm;
+
+    /**
+     * 框架协议编号
+     */
+    private Integer frameworkAgreementNumber;
+
+    /**
+     * 框架协议附件
+     */
+    private String frameworkAgreementAnnex;
+
+    /**
+     * 框架协议到期时间
+     */
+    private String expirationDate;
+
+    /**
+     * 供应商联系人名称
+     */
+    private String contactUserName;
+
+    /**
+     * 供应商联系人电话
+     */
+    private String contactUserTelephone;
+
+    /**
+     * 我方负责人名称
+     */
+    private String kahunaUserName;
+
+    /**
+     * 我方负责人ID
+     */
+    private Integer kahunaUserId;
+
+    /**
+     * 备注
+     */
+    private String remak;
+
+
 }

@@ -50,7 +50,7 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
             throw new BusinessException("供应商名称重复");
         }
 
-        BmsSupplierTb bmsSupplierTb=new BmsSupplierTb();
+        BmsSupplierTb bmsSupplierTb = new BmsSupplierTb();
         bmsSupplierTb.setSupplierCode(bmsSupplierAddReqDTO.getSupplierCode());
         bmsSupplierTb.setSupplierName(bmsSupplierAddReqDTO.getSupplierName());
         bmsSupplierTb.setOpeningBank(bmsSupplierAddReqDTO.getOpeningBank());
@@ -77,6 +77,12 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
 
     @Override
     public void delete(Integer id) {
+        BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectById(id);
+        if (bmsSupplierTb == null) {
+            throw new BusinessException("供应商找不到");
+        }
+        bmsSupplierTb.setDeleteFlag(BioDrQiContents.Y);
+        bmsSupplierTbMapper.updateById(bmsSupplierTb);
 
     }
 

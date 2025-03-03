@@ -12,8 +12,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @MapperScan(basePackages = "com.bio.drqi.mapper")
 @EnableFeignClients(basePackages = {"com.bio.print.api","com.bio.base.api","com.bio.drqi.external.client"})
 @EnableScheduling
-public class BioDrqiAdminMain {
+public class BioDrQiAdminMain {
     public static void main(String[] args) {
-        SpringApplication.run(BioDrqiAdminMain.class,args);
+        SpringApplication.run(BioDrQiAdminMain.class,args);
     }
 }

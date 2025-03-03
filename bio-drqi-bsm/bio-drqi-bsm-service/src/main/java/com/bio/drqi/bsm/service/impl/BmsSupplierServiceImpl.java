@@ -1,6 +1,7 @@
-package com.bio.drqi.bsm.service;
+package com.bio.drqi.bsm.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
@@ -9,12 +10,18 @@ import com.bio.drqi.bsm.req.BmsSupplierExportExcelReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListPageRspDTO;
+import com.bio.drqi.bsm.service.BmsSupplierService;
 import com.bio.drqi.common.contents.BioDrQiContents;
+import com.bio.drqi.domain.BmsBrandTb;
+import com.bio.drqi.domain.BmsProductTb;
 import com.bio.drqi.domain.BmsSupplierTb;
+import com.bio.drqi.mapper.BmsBrandTbMapper;
+import com.bio.drqi.mapper.BmsProductTbMapper;
 import com.bio.drqi.mapper.BmsSupplierTbMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -26,6 +33,12 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
 
     @Resource
     private BmsSupplierTbMapper bmsSupplierTbMapper;
+
+    @Resource
+    private BmsBrandTbMapper bmsBrandTbMapper;
+
+    @Resource
+    private BmsProductTbMapper bmsProductTbMapper;
 
     @Override
     public PageInfo<BmsSupplierListPageRspDTO> listPage(BmsSupplierListPageReqDTO bmsSupplierListPageReqDTO) {
@@ -76,13 +89,23 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Integer id) {
         BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectById(id);
         if (bmsSupplierTb == null) {
             throw new BusinessException("供应商找不到");
         }
+
+        //逻辑删除供应商
         bmsSupplierTb.setDeleteFlag(BioDrQiContents.Y);
         bmsSupplierTbMapper.updateById(bmsSupplierTb);
+
+        //逻辑删除品牌
+        bmsBrandTbMapper.updateDeleteFlagBySupplierCode(BioDrQiContents.Y, bmsSupplierTb.getSupplierCode());
+
+        //逻辑删除商品
+        bmsProductTbMapper.updateDeleteFlagBySupplierCode(BioDrQiContents.Y, bmsSupplierTb.getSupplierCode());
+
 
     }
 

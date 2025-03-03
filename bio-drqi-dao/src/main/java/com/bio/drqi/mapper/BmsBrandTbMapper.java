@@ -1,4 +1,6 @@
 package com.bio.drqi.mapper;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.BmsBrandTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -10,6 +12,15 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.drqi.domain.BmsBrandTb
 */
 public interface BmsBrandTbMapper extends BaseMapper<BmsBrandTb> {
+
+    List<BmsBrandTb> selectAllBySupplierCode(@Param("supplierCode") String supplierCode);
+
+    int updateDeleteFlagBySupplierCode(@Param("deleteFlag") String deleteFlag, @Param("supplierCode") String supplierCode);
+
+
+    List<BmsBrandTb> selectSelective(BmsBrandTb bmsBrandTb);
+
+    BmsBrandTb selectOneBySupplierCodeAndBrandName(@Param("supplierCode") String supplierCode, @Param("brandName") String brandName);
 
 }
 

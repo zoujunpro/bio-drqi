@@ -12,11 +12,46 @@
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
             <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="deleteFlag" column="delete_flag" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,supplier_code,brand_code,
         brand_name,create_time,create_user_id,
-        create_user_name
+        create_user_name,delete_flag
     </sql>
+    <select id="selectAllBySupplierCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_brand_tb
+        where
+        supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    </select>
+    <update id="updateDeleteFlagBySupplierCode">
+        update bms_brand_tb
+        set delete_flag = #{deleteFlag,jdbcType=VARCHAR}
+        where supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    </update>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsBrandTb">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_brand_tb
+        <where>
+            <if test="supplierCode != null">and supplier_code=#{supplierCode,jdbcType=VARCHAR}</if>
+            <if test="brandCode != null">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
+            <if test="brandName != null">and brand_name LIKE  CONCAT('%',#{brandName,jdbcType=VARCHAR},'%')</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="deleteFlag != null">and delete_flag=#{deleteFlag,jdbcType=VARCHAR}</if>
+        </where>
+    </select>
+    <select id="selectOneBySupplierCodeAndBrandName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_brand_tb
+        where
+        supplier_code = #{supplierCode,jdbcType=VARCHAR}
+        AND brand_name = #{brandName,jdbcType=VARCHAR}
+    </select>
 </mapper>

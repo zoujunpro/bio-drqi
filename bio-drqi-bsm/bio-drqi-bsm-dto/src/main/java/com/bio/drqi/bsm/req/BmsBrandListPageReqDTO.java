@@ -1,4 +1,10 @@
 package com.bio.drqi.bsm.req;
 
-public class BmsBrandListPageReqDTO {
+import com.bio.drqi.manage.base.PageDTO;
+import lombok.Data;
+
+@Data
+public class BmsBrandListPageReqDTO extends PageDTO {
+
+    private String brandName;
 }

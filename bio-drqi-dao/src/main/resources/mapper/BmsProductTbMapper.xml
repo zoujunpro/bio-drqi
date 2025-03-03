@@ -28,4 +28,14 @@
         product_sku,create_time,create_user_id,
         create_user_name,delete_flag
     </sql>
+    <update id="updateDeleteFlagBySupplierCode">
+        update bms_product_tb
+        set delete_flag = #{deleteFlag,jdbcType=VARCHAR}
+        where supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    </update>
+    <update id="updateDeleteFlagByBrandCode">
+        update bms_product_tb
+        set delete_flag = #{deleteFlag,jdbcType=VARCHAR}
+        where brand_code = #{brandCode,jdbcType=VARCHAR}
+    </update>
 </mapper>

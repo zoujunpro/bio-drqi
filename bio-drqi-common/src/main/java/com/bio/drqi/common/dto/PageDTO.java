@@ -1,4 +1,4 @@
-package com.bio.core.common.dto;
+package com.bio.drqi.common.dto;
 
 
 public class PageDTO {

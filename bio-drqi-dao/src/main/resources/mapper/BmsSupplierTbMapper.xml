@@ -5,31 +5,32 @@
 <mapper namespace="com.bio.drqi.mapper.BmsSupplierTbMapper">
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BmsSupplierTb">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
-            <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
-            <result property="openingBank" column="opening_bank" jdbcType="VARCHAR"/>
-            <result property="bankAccount" column="bank_account" jdbcType="VARCHAR"/>
-            <result property="taxId" column="tax_id" jdbcType="VARCHAR"/>
-            <result property="qualificationLocation" column="qualification_location" jdbcType="VARCHAR"/>
-            <result property="businessScope" column="business_scope" jdbcType="VARCHAR"/>
-            <result property="cooperateForm" column="cooperate_form" jdbcType="VARCHAR"/>
-            <result property="frameworkAgreementNumber" column="framework_agreement_number" jdbcType="INTEGER"/>
-            <result property="frameworkAgreementAnnex" column="framework_agreement_annex" jdbcType="VARCHAR"/>
-            <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
-            <result property="contactUserName" column="contact_user_name" jdbcType="VARCHAR"/>
-            <result property="contactUserTelephone" column="contact_user_telephone" jdbcType="VARCHAR"/>
-            <result property="kahunaUserName" column="kahuna_user_name" jdbcType="VARCHAR"/>
-            <result property="kahunaUserId" column="kahuna_user_id" jdbcType="INTEGER"/>
-            <result property="remak" column="remak" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
-            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
-            <result property="deleteFlag" column="delete_flag" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
+        <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
+        <result property="openingBank" column="opening_bank" jdbcType="VARCHAR"/>
+        <result property="bankAccount" column="bank_account" jdbcType="VARCHAR"/>
+        <result property="taxId" column="tax_id" jdbcType="VARCHAR"/>
+        <result property="qualificationLocation" column="qualification_location" jdbcType="VARCHAR"/>
+        <result property="businessScope" column="business_scope" jdbcType="VARCHAR"/>
+        <result property="cooperateForm" column="cooperate_form" jdbcType="VARCHAR"/>
+        <result property="frameworkAgreementNumber" column="framework_agreement_number" jdbcType="INTEGER"/>
+        <result property="frameworkAgreementAnnex" column="framework_agreement_annex" jdbcType="VARCHAR"/>
+        <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
+        <result property="contactUserName" column="contact_user_name" jdbcType="VARCHAR"/>
+        <result property="contactUserTelephone" column="contact_user_telephone" jdbcType="VARCHAR"/>
+        <result property="kahunaUserName" column="kahuna_user_name" jdbcType="VARCHAR"/>
+        <result property="kahunaUserId" column="kahuna_user_id" jdbcType="INTEGER"/>
+        <result property="remak" column="remak" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+        <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+        <result property="deleteFlag" column="delete_flag" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,supplier_code,supplier_name,
+        id
+        ,supplier_code,supplier_name,
         opening_bank,bank_account,tax_id,
         qualification_location,business_scope,cooperate_form,
         framework_agreement_number,framework_agreement_annex,expiration_date,
@@ -37,4 +38,38 @@
         kahuna_user_id,remak,create_time,
         create_user_name,create_user_id,delete_flag
     </sql>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsSupplierTb">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_supplier_tb
+        <where>
+            <if test="supplierCode != null">and supplier_code LIKE  CONCAT('%',#{supplierCode,jdbcType=VARCHAR},'%')</if>
+            <if test="supplierName != null">and supplier_name LIKE  CONCAT('%',#{supplierName,jdbcType=VARCHAR},'%')</if>
+            <if test="openingBank != null">and opening_bank=#{openingBank,jdbcType=VARCHAR}</if>
+            <if test="bankAccount != null">and bank_account=#{bankAccount,jdbcType=VARCHAR}</if>
+            <if test="taxId != null">and tax_id=#{taxId,jdbcType=VARCHAR}</if>
+            <if test="qualificationLocation != null">and qualification_location=#{qualificationLocation,jdbcType=VARCHAR}
+            </if>
+            <if test="businessScope != null">and business_scope=#{businessScope,jdbcType=VARCHAR}</if>
+            <if test="cooperateForm != null">and cooperate_form=#{cooperateForm,jdbcType=VARCHAR}</if>
+            <if test="frameworkAgreementNumber != null">
+                and  framework_agreement_number=#{frameworkAgreementNumber,jdbcType=NUMERIC}
+            </if>
+            <if test="frameworkAgreementAnnex != null">
+                and  framework_agreement_annex=#{frameworkAgreementAnnex,jdbcType=VARCHAR}
+            </if>
+            <if test="expirationDate != null">and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
+            <if test="contactUserName != null">and contact_user_name=#{contactUserName,jdbcType=VARCHAR}</if>
+            <if test="contactUserTelephone != null">and contact_user_telephone=#{contactUserTelephone,jdbcType=VARCHAR}
+            </if>
+            <if test="kahunaUserName != null">and kahuna_user_name=#{kahunaUserName,jdbcType=VARCHAR}</if>
+            <if test="kahunaUserId != null">and kahuna_user_id=#{kahunaUserId,jdbcType=NUMERIC}</if>
+            <if test="remak != null">and remak=#{remak,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="deleteFlag != null">and delete_flag=#{deleteFlag,jdbcType=VARCHAR}</if>
+        </where>
+    </select>
+
 </mapper>

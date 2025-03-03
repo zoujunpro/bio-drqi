@@ -5,18 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>bio.drqi</groupId>
-        <artifactId>bio-drqi</artifactId>
+        <artifactId>bio-drqi-bsm</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bio-drqi-bsm</artifactId>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>bio-drqi-bsm-service</module>
-        <module>bio-drqi-bsm-admin</module>
-        <module>bio-drqi-bsm-dto</module>
-        <module>bio-drqi-bsm-common</module>
-    </modules>
+    <artifactId>bio-drqi-bsm-common</artifactId>
+    <packaging>jar</packaging>
 
 </project>

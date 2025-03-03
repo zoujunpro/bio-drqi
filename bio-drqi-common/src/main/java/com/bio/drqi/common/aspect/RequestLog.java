@@ -1,4 +1,4 @@
-package com.bio.core.common.aspect;
+package com.bio.drqi.common.aspect;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

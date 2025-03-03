@@ -1,4 +1,4 @@
-package com.bio.core.common.aspect;
+package com.bio.drqi.common.aspect;
 
 
 import cn.hutool.json.JSONUtil;
@@ -28,7 +28,7 @@ public class RequestLogAspect {
      * @return 原方法返回值
      * @throws Throwable 异常信息
      */
-    @Around("@annotation(com.bio.core.common.aspect.RequestLog)")
+    @Around("@annotation(com.bio.drqi.common.aspect.RequestLog)")
     public Object aroundLog(ProceedingJoinPoint point) throws Throwable {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         //获取注解

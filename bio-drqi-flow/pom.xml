@@ -61,7 +61,7 @@
         </dependency>
         <dependency>
             <groupId>bio.drqi</groupId>
-            <artifactId>bio-drqi-core-common</artifactId>
+            <artifactId>bio-drqi-common</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

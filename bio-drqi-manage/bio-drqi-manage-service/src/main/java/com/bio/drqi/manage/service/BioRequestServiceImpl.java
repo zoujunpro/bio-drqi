@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.service;
 
 import com.bio.common.core.context.SecurityContextHolder;
-import com.bio.core.common.aspect.BioRequestService;
+import com.bio.drqi.common.aspect.BioRequestService;
 import com.bio.drqi.domain.BioRequestLog;
 import com.bio.drqi.mapper.BioRequestLogMapper;
 import lombok.extern.slf4j.Slf4j;

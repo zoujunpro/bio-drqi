@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.controller.project;
 
 
-import com.bio.core.common.aspect.RequestLog;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.manage.vector.req.GetVectorTaskNumReqDTO;
 import com.bio.drqi.manage.vector.req.QueryPageVectorReqDTO;
 import com.bio.drqi.manage.vector.rsp.CerImplementationPlanBaseInfoRspDTO;

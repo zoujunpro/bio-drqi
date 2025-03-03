@@ -93,6 +93,6 @@ public class BmsSupplierController {
     @GetMapping("/exportExcel")
     @WebLog(desc = "供应商管理-导入")
     public void importExcel() {
-
+        bmsSupplierService.importExcel();
     }
 }

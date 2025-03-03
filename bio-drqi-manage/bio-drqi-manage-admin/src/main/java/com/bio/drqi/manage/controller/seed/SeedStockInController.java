@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.controller.seed;
 
-import com.bio.core.common.aspect.RequestLog;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.manage.seed.*;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;

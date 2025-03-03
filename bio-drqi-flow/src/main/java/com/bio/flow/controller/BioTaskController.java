@@ -4,7 +4,7 @@ package com.bio.flow.controller;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.core.common.aspect.RequestLog;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.enums.QueryTypeEnum;
 import com.bio.flow.dto.*;
 import com.bio.flow.service.BioTaskService;

@@ -1,4 +1,4 @@
-package com.bio.core.common.aspect;
+package com.bio.drqi.common.aspect;
 
 import org.springframework.stereotype.Service;
 

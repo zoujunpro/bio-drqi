@@ -2,7 +2,7 @@ package com.bio.drqi.manage.controller.project;
 
 
 
-import com.bio.core.common.aspect.RequestLog;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.manage.project.req.ProjectListReqDTO;
 import com.bio.drqi.manage.project.rsp.*;
 import com.bio.common.core.dto.ResponseResult;

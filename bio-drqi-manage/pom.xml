@@ -17,6 +17,7 @@
         <module>bio-drqi-manage-admin</module>
         <module>bio-drqi-manage-dto</module>
         <module>bio-drqi-manage-service</module>
+        <module>bio-drqi-manage-common</module>
     </modules>
 
 </project>

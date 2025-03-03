@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.controller.project;
 
 
-import com.bio.core.common.aspect.RequestLog;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.manage.base.PrintRspDTO;
 import com.bio.drqi.manage.projectPrint.*;
 import com.bio.common.core.dto.ResponseResult;

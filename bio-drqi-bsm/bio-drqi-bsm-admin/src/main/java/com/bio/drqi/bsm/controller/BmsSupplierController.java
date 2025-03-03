@@ -8,9 +8,11 @@ import com.bio.drqi.bsm.req.BmsSupplierExportExcelReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListPageRspDTO;
+import com.bio.drqi.bsm.service.BmsSupplierService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -20,6 +22,8 @@ import java.util.List;
 @RequestMapping("/supplier")
 public class BmsSupplierController {
 
+    @Resource
+    private BmsSupplierService bmsSupplierService;
 
     /**
      * 供应商管理-分页查询
@@ -30,8 +34,9 @@ public class BmsSupplierController {
     @PostMapping("/listPage")
     @WebLog(desc = "供应商管理-分页查询")
     public ResponseResult<PageInfo<BmsSupplierListPageRspDTO>> listPage(@RequestBody BmsSupplierListPageReqDTO bmsSupplierListPageReqDTO) {
-        return null;
+        return ResponseResult.getSuccess(bmsSupplierService.listPage(bmsSupplierListPageReqDTO));
     }
+
     /**
      * 供应商管理-查询全部
      *
@@ -40,7 +45,7 @@ public class BmsSupplierController {
     @GetMapping("/listALl")
     @WebLog(desc = "供应商管理-查询全部")
     public ResponseResult<List<BmsSupplierListAllRspDTO>> listALl() {
-        return null;
+        return ResponseResult.getSuccess(bmsSupplierService.listALl());
     }
 
     /**
@@ -52,7 +57,8 @@ public class BmsSupplierController {
     @PostMapping("/add")
     @WebLog(desc = "供应商管理-新增")
     public ResponseResult<String> add(@RequestBody BmsSupplierAddReqDTO bmsSupplierAddReqDTO) {
-        return null;
+        bmsSupplierService.add(bmsSupplierAddReqDTO);
+        return ResponseResult.getSuccess("成功");
     }
 
     /**
@@ -64,7 +70,8 @@ public class BmsSupplierController {
     @GetMapping("/delete")
     @WebLog(desc = "供应商管理-删除")
     public ResponseResult<String> delete(@RequestParam Integer id) {
-        return null;
+        bmsSupplierService.delete(id);
+        return ResponseResult.getSuccess("ok");
     }
 
     /**
@@ -75,6 +82,7 @@ public class BmsSupplierController {
     @PostMapping("/exportExcel")
     @WebLog(desc = "供应商管理-导出")
     public void exportExcel(@RequestBody BmsSupplierExportExcelReqDTO bmsSupplierExportExcelReqDTO) {
+        bmsSupplierService.exportExcel(bmsSupplierExportExcelReqDTO);
     }
 
     /**

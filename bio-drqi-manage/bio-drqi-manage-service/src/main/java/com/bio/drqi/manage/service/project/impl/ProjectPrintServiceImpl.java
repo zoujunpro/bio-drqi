@@ -111,7 +111,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 CerSampleTestTb cerSampleTestTb = cerSampleTestTbList.get(0);
                 CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByTaskNum(cerSampleTestTb.getVectorTaskCode());
                 if(cerVectorTaskTb==null){
-                    throw new BusinessException("数据异常，找不到实施方案信息");
+                    throw new BusinessException("数据异常，找不到实施方案信息："+cerSampleTestTb.getVectorTaskCode());
                 }
                 SamplePrintData samplePrintData = new SamplePrintData();
                 samplePrintData.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());

@@ -71,7 +71,7 @@ public class BmsSupplierTb implements Serializable {
     /**
      * 框架协议编号
      */
-    private Integer frameworkAgreementNumber;
+    private String frameworkAgreementNumber;
 
     /**
      * 框架协议附件

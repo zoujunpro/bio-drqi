@@ -14,7 +14,7 @@
         <result property="qualificationLocation" column="qualification_location" jdbcType="VARCHAR"/>
         <result property="businessScope" column="business_scope" jdbcType="VARCHAR"/>
         <result property="cooperateForm" column="cooperate_form" jdbcType="VARCHAR"/>
-        <result property="frameworkAgreementNumber" column="framework_agreement_number" jdbcType="INTEGER"/>
+        <result property="frameworkAgreementNumber" column="framework_agreement_number" jdbcType="VARCHAR"/>
         <result property="frameworkAgreementAnnex" column="framework_agreement_annex" jdbcType="VARCHAR"/>
         <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
         <result property="contactUserName" column="contact_user_name" jdbcType="VARCHAR"/>
@@ -53,7 +53,7 @@
             <if test="businessScope != null">and business_scope=#{businessScope,jdbcType=VARCHAR}</if>
             <if test="cooperateForm != null">and cooperate_form=#{cooperateForm,jdbcType=VARCHAR}</if>
             <if test="frameworkAgreementNumber != null">
-                and  framework_agreement_number=#{frameworkAgreementNumber,jdbcType=NUMERIC}
+                and  framework_agreement_number=#{frameworkAgreementNumber,jdbcType=VARCHAR}
             </if>
             <if test="frameworkAgreementAnnex != null">
                 and  framework_agreement_annex=#{frameworkAgreementAnnex,jdbcType=VARCHAR}

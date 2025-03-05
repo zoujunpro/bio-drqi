@@ -444,10 +444,10 @@ public class TestCleanController {
             CerVectorTaskPlanLog cerVectorTaskPlanLog = cerVectorTaskPlanLogMapper.selectOneByVectorTaskIdAndEventTypeAndUserName(cerVectorTaskTb.getId(), plantType, username);
             if ("N".equals(flag)) {
                 cerVectorTaskPlanLogMapper.deleteById(cerVectorTaskPlanLog);
-                System.out.println("**********************删除****"+cerVectorTaskPlanLog.getVectorTaskId()+":"+cerVectorTaskPlanLog.getEventType());
+                System.out.println("**********************删除****" + cerVectorTaskPlanLog.getVectorTaskId() + ":" + cerVectorTaskPlanLog.getEventType());
             } else {
                 if (cerVectorTaskPlanLog == null) {
-                    cerVectorTaskPlanLog=new CerVectorTaskPlanLog();
+                    cerVectorTaskPlanLog = new CerVectorTaskPlanLog();
                     cerVectorTaskPlanLog.setVectorTaskId(cerVectorTaskTb.getId());
                     cerVectorTaskPlanLog.setEventType(plantType);
                     cerVectorTaskPlanLog.setEstimatedStartTime(startTime);
@@ -459,7 +459,7 @@ public class TestCleanController {
                     cerVectorTaskPlanLog.setCreateTime(new Date());
                     cerVectorTaskPlanLog.setUpdateTime(new Date());
                     cerVectorTaskPlanLogMapper.insert(cerVectorTaskPlanLog);
-                    System.out.println("**********************添加****"+cerVectorTaskPlanLog.getId()+":"+cerVectorTaskPlanLog.getVectorTaskId()+":"+cerVectorTaskPlanLog.getEventType());
+                    System.out.println("**********************添加****" + cerVectorTaskPlanLog.getId() + ":" + cerVectorTaskPlanLog.getVectorTaskId() + ":" + cerVectorTaskPlanLog.getEventType());
 
                 } else {
                     cerVectorTaskPlanLog.setEstimatedStartTime(startTime);
@@ -471,6 +471,40 @@ public class TestCleanController {
 
         }
         return "ok";
+
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @GetMapping("cleanSampleLabel")
+    public void cleanSampleLabel() {
+        List<BioPrintLabelInfoTb> largeBioPrintLabelInfoTbList = bioPrintLabelInfoTbMapper.searchAllByLabelType("sample_large_label_print");
+        List<BioPrintLabelInfoTb> smallPrintLabelInfoTbList = bioPrintLabelInfoTbMapper.searchAllByLabelType("sample_small_label_print");
+        largeBioPrintLabelInfoTbList.addAll(smallPrintLabelInfoTbList);
+        for (BioPrintLabelInfoTb bioPrintLabelInfoTb : largeBioPrintLabelInfoTbList) {
+            String uniqueCode = bioPrintLabelInfoTb.getUniqueCode();
+            String[] uniqueCodeArr = uniqueCode.split("\\|");
+            String sampleCode = uniqueCodeArr[uniqueCodeArr.length - 1];
+            String vectorTaskCode = uniqueCodeArr[uniqueCodeArr.length - 2];
+            CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(vectorTaskCode, sampleCode);
+            if (uniqueCodeArr.length == 2) {
+                uniqueCode =cerSampleTestTb.getApplyNo()+"|"+uniqueCode;
+                bioPrintLabelInfoTb.setUniqueCode(uniqueCode);
+            }
+            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
+            if(cerVectorTaskTb==null){
+                throw new BusinessException("数据异常，找不到实施方案信息："+cerSampleTestTb.getVectorTaskCode());
+            }
+            SamplePrintData samplePrintData = new SamplePrintData();
+            samplePrintData.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
+            samplePrintData.setPlasmidName(cerSampleTestTb.getPlasmidName());
+            samplePrintData.setTransformCode(cerSampleTestTb.getTransformCode());
+            samplePrintData.setSampleCode(cerSampleTestTb.getSampleCode());
+            samplePrintData.setTaskNum(cerSampleTestTb.getApplyNo());
+            samplePrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
+            bioPrintLabelInfoTb.setLabelText(JSONUtil.toJsonStr(samplePrintData));
+            bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
+        }
+
 
     }
 

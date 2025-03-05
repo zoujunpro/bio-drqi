@@ -109,7 +109,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByVectorTaskCodeAndSampleCode(content.getVectorTaskCode(), content.getSampleCode());
             if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
                 CerSampleTestTb cerSampleTestTb = cerSampleTestTbList.get(0);
-                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByTaskNum(cerSampleTestTb.getVectorTaskCode());
+                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
                 if(cerVectorTaskTb==null){
                     throw new BusinessException("数据异常，找不到实施方案信息："+cerSampleTestTb.getVectorTaskCode());
                 }

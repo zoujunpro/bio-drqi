@@ -172,18 +172,18 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
 
     @Override
     public PrintRspDTO transPrint(TransPrintReqDTO transPrintReqDTO) {
-        List<SampleTestTransPrintData> sampleTestTransPrintDataList = new ArrayList<>();
+        List<SamplePrintData> samplePrintDataList = new ArrayList<>();
         List<TransformTransPrintData> transformTransPrintDataList = new ArrayList<>();
         for (TransPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(content.getVectorTaskCode());
             if (StringUtils.isNotEmpty(content.getSampleCode())) {
-                SampleTestTransPrintData sampleTestTransPrintData = new SampleTestTransPrintData();
-                sampleTestTransPrintData.setVectorTaskCode(content.getVectorTaskCode());
-                sampleTestTransPrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
-                sampleTestTransPrintData.setSampleCode(content.getSampleCode());
-                sampleTestTransPrintData.setTaskNum(transPrintReqDTO.getTaskNum());
-                sampleTestTransPrintData.setPrintNum(content.getPrintNum() == null ? 1 : content.getPrintNum());
-                sampleTestTransPrintDataList.add(sampleTestTransPrintData);
+                SamplePrintData samplePrintData = new SamplePrintData();
+                samplePrintData.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+                samplePrintData.setTransformCode(content.getTransformCode());
+                samplePrintData.setSampleCode(content.getSampleCode());
+                samplePrintData.setTaskNum(transPrintReqDTO.getTaskNum());
+                samplePrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
+                samplePrintDataList.add(samplePrintData);
             } else if (StringUtils.isNotEmpty(content.getTransformCode())) {
                 TransformTransPrintData transformTransPrintData = new TransformTransPrintData();
                 transformTransPrintData.setVectorTaskCode(content.getVectorTaskCode());
@@ -194,11 +194,13 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 transformTransPrintDataList.add(transformTransPrintData);
             }
         }
-        if (CollectionUtil.isNotEmpty(sampleTestTransPrintDataList)) {
+        //取样标签打印(大签)
+        if (CollectionUtil.isNotEmpty(samplePrintDataList)) {
             PrintRspDTO printRspDTO = new PrintRspDTO();
             printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
-            printRspDTO.setPrintDataList(printDataSave("sample_trans_print", sampleTestTransPrintDataList));
+            printRspDTO.setPrintDataList(printDataSave("sample_large_label_print", samplePrintDataList));
             return printRspDTO;
+          //转化大签打印
         } else if (CollectionUtil.isNotEmpty(transformTransPrintDataList)) {
             PrintRspDTO printRspDTO = new PrintRspDTO();
             printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);

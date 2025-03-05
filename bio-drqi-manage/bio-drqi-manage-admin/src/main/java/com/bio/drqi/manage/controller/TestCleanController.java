@@ -481,6 +481,7 @@ public class TestCleanController {
         List<BioPrintLabelInfoTb> smallPrintLabelInfoTbList = bioPrintLabelInfoTbMapper.searchAllByLabelType("sample_small_label_print");
         largeBioPrintLabelInfoTbList.addAll(smallPrintLabelInfoTbList);
         for (BioPrintLabelInfoTb bioPrintLabelInfoTb : largeBioPrintLabelInfoTbList) {
+            log.info("清洗unique="+bioPrintLabelInfoTb.getUniqueCode());
             String uniqueCode = bioPrintLabelInfoTb.getUniqueCode();
             String[] uniqueCodeArr = uniqueCode.split("\\|");
             String sampleCode = uniqueCodeArr[uniqueCodeArr.length - 1];

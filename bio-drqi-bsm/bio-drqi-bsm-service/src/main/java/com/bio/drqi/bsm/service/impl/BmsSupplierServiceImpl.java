@@ -84,6 +84,7 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
         bmsSupplierTb.setCreateUserName(SecurityContextHolder.getNickName());
         bmsSupplierTb.setCreateUserId(SecurityContextHolder.getUserId());
         bmsSupplierTb.setDeleteFlag(BioDrQiContents.N);
+        bmsSupplierTbMapper.insert(bmsSupplierTb);
 
 
     }

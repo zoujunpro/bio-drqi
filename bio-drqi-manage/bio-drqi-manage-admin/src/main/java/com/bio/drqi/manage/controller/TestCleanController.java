@@ -481,19 +481,22 @@ public class TestCleanController {
         List<BioPrintLabelInfoTb> smallPrintLabelInfoTbList = bioPrintLabelInfoTbMapper.searchAllByLabelType("sample_small_label_print");
         largeBioPrintLabelInfoTbList.addAll(smallPrintLabelInfoTbList);
         for (BioPrintLabelInfoTb bioPrintLabelInfoTb : largeBioPrintLabelInfoTbList) {
-            log.info("清洗unique="+bioPrintLabelInfoTb.getUniqueCode());
+            log.info("清洗unique=" + bioPrintLabelInfoTb.getUniqueCode());
             String uniqueCode = bioPrintLabelInfoTb.getUniqueCode();
             String[] uniqueCodeArr = uniqueCode.split("\\|");
             String sampleCode = uniqueCodeArr[uniqueCodeArr.length - 1];
             String vectorTaskCode = uniqueCodeArr[uniqueCodeArr.length - 2];
             CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(vectorTaskCode, sampleCode);
+            if (cerSampleTestTb == null) {
+                continue;
+            }
             if (uniqueCodeArr.length == 2) {
-                uniqueCode =cerSampleTestTb.getApplyNo()+"|"+uniqueCode;
+                uniqueCode = cerSampleTestTb.getApplyNo() + "|" + uniqueCode;
                 bioPrintLabelInfoTb.setUniqueCode(uniqueCode);
             }
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
-            if(cerVectorTaskTb==null){
-                throw new BusinessException("数据异常，找不到实施方案信息："+cerSampleTestTb.getVectorTaskCode());
+            if (cerVectorTaskTb == null) {
+                throw new BusinessException("数据异常，找不到实施方案信息：" + cerSampleTestTb.getVectorTaskCode());
             }
             SamplePrintData samplePrintData = new SamplePrintData();
             samplePrintData.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());

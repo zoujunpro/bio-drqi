@@ -44,8 +44,8 @@ public class SampleTestCodeScanService extends AbstractBaseCodeScanService<Sampl
     public SampleTestUniqueReqDTO parseUniqueCode(String uniqueCode) {
         String[] uniqueCodeArr = uniqueCode.split("\\|");
         SampleTestUniqueReqDTO sampleTestUniqueReqDTO = new SampleTestUniqueReqDTO();
-        sampleTestUniqueReqDTO.setSampleCode(uniqueCodeArr[1]);
-        sampleTestUniqueReqDTO.setVectorTaskCode(uniqueCodeArr[0]);
+        sampleTestUniqueReqDTO.setSampleCode(uniqueCodeArr[2]);
+        sampleTestUniqueReqDTO.setVectorTaskCode(uniqueCodeArr[1]);
         return sampleTestUniqueReqDTO;
     }
 

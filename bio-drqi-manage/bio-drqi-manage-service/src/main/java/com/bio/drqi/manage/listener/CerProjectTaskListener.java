@@ -17,6 +17,7 @@ import com.bio.flow.service.FlowTaskListener;
 import com.easyflow.engine.FlowEngineService;
 import com.easyflow.engine.core.FlowActor;
 import com.easyflow.engine.entity.FlowTaskActorTb;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CerProjectTaskListener implements FlowTaskListener<BioTaskDtlTb> {
 
     private final static Map<String, String> vieMap = new ConcurrentHashMap<>();

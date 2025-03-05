@@ -109,12 +109,17 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByVectorTaskCodeAndSampleCode(content.getVectorTaskCode(), content.getSampleCode());
             if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
                 CerSampleTestTb cerSampleTestTb = cerSampleTestTbList.get(0);
+                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByTaskNum(cerSampleTestTb.getVectorTaskCode());
+                if(cerVectorTaskTb==null){
+                    throw new BusinessException("数据异常，找不到实施方案信息");
+                }
                 SamplePrintData samplePrintData = new SamplePrintData();
                 samplePrintData.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
                 samplePrintData.setPlasmidName(cerSampleTestTb.getPlasmidName());
                 samplePrintData.setTransformCode(cerSampleTestTb.getTransformCode());
                 samplePrintData.setSampleCode(cerSampleTestTb.getSampleCode());
                 samplePrintData.setTaskNum(cerSampleTestTb.getApplyNo());
+                samplePrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
                 samplePrintDataList.add(samplePrintData);
             }
         }
@@ -207,9 +212,9 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
     public PrintRspDTO tissueEmbryoPrint(TissueEmbryoPrintReqDTO transPrintReqDTO) {
         List<TissueEmbryoPrintDTO> tissueEmbryoPrintDTOList = new ArrayList<>();
         for (TissueEmbryoPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
-            List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode( content.getSampleCode());
-            if(CollectionUtil.isEmpty(cerSampleTestTbList)){
-                throw new BusinessException("取样编号不存在："+content.getSampleCode());
+            List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(content.getSampleCode());
+            if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
+                throw new BusinessException("取样编号不存在：" + content.getSampleCode());
             }
             TissueEmbryoPrintDTO tissueEmbryoPrintDTO = new TissueEmbryoPrintDTO();
             tissueEmbryoPrintDTO.setPrintNum(content.getPrintNum());

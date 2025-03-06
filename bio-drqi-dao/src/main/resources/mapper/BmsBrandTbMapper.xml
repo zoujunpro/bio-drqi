@@ -52,7 +52,7 @@
         from bms_brand_tb
         where
         supplier_code = #{supplierCode,jdbcType=VARCHAR}
-        AND brand_name = #{brandName,jdbcType=VARCHAR}
+        AND  BINARY brand_name = #{brandName,jdbcType=VARCHAR}
     </select>
     <select id="selectOneByBrandCode" resultMap="BaseResultMap">
         select

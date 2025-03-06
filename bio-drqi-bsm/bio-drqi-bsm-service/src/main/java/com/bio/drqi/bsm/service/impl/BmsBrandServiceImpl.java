@@ -15,8 +15,10 @@ import com.bio.drqi.bsm.rsp.BmsBrandQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsBrandService;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.domain.BmsBrandTb;
+import com.bio.drqi.domain.BmsSupplierTb;
 import com.bio.drqi.mapper.BmsBrandTbMapper;
 import com.bio.drqi.mapper.BmsProductTbMapper;
+import com.bio.drqi.mapper.BmsSupplierTbMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,9 @@ public class BmsBrandServiceImpl implements BmsBrandService {
 
     @Resource
     private BmsProductTbMapper bmsProductTbMapper;
+
+    @Resource
+    private BmsSupplierTbMapper bmsSupplierTbMapper;
 
     @Override
     public PageInfo<BmsBrandListPageRspDTO> listPage(BmsBrandListPageReqDTO bmsBrandListPageReqDTO) {
@@ -59,17 +64,28 @@ public class BmsBrandServiceImpl implements BmsBrandService {
     @Override
     public void add(BmsBrandAddReqDTO bmsBrandAddReqDTO) {
         BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneBySupplierCodeAndBrandName(bmsBrandAddReqDTO.getSupplierCode(), bmsBrandAddReqDTO.getBrandName());
-        if (Objects.nonNull(bmsBrandTb)) {
+        if (Objects.nonNull(bmsBrandTb)&&BioDrQiContents.N.equals(bmsBrandTb.getDeleteFlag())) {
             throw new BusinessException("该品牌已经存在");
         }
-        bmsBrandTb=new BmsBrandTb();
-        bmsBrandTb.setSupplierCode(bmsBrandAddReqDTO.getSupplierCode());
-        bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
-        bmsBrandTb.setBrandName(bmsBrandAddReqDTO.getBrandName());
-        bmsBrandTb.setCreateTime(new Date());
-        bmsBrandTb.setCreateUserId(SecurityContextHolder.getUserId());
-        bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
-        bmsBrandTb.setDeleteFlag(BioDrQiContents.N);
+        if(bmsBrandTb==null){
+            bmsBrandTb.setSupplierCode(bmsBrandAddReqDTO.getSupplierCode());
+            bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
+            bmsBrandTb.setBrandName(bmsBrandAddReqDTO.getBrandName());
+            bmsBrandTb.setCreateTime(new Date());
+            bmsBrandTb.setCreateUserId(SecurityContextHolder.getUserId());
+            bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
+            bmsBrandTb.setDeleteFlag(BioDrQiContents.N);
+        }else {
+            if(!bmsBrandTb.getSupplierCode().equals(bmsBrandAddReqDTO.getSupplierCode())){
+                BmsSupplierTb bmsSupplierTb=bmsSupplierTbMapper.selectOneBySupplierCode(bmsBrandTb.getSupplierCode());
+                throw new BusinessException("此品牌曾经使用过，且隶属于"+bmsSupplierTb.getSupplierName());
+            }
+            bmsBrandTb.setCreateTime(new Date());
+            bmsBrandTb.setCreateUserId(SecurityContextHolder.getUserId());
+            bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
+            bmsBrandTb.setDeleteFlag(BioDrQiContents.Y);
+        }
+
         bmsBrandTbMapper.insert(bmsBrandTb);
     }
 

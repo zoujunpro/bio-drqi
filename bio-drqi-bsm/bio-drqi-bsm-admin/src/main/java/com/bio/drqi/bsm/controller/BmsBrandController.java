@@ -5,8 +5,10 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsBrandAddReqDTO;
 import com.bio.drqi.bsm.req.BmsBrandEditReqDTO;
 import com.bio.drqi.bsm.req.BmsBrandListPageReqDTO;
+import com.bio.drqi.bsm.req.BmsBrandQueryListReqDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsBrandQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsBrandService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +39,16 @@ public class BmsBrandController {
         return ResponseResult.getSuccess(bmsBrandService.listPage(bmsBrandListPageReqDTO));
     }
 
-
+    /**
+     * 品牌管理-条件查询
+     *
+     * @return
+     */
+    @PostMapping("/queryList")
+    @WebLog(desc = "品牌管理-条件查询")
+    public ResponseResult<List<BmsBrandQueryListRspDTO>> queryList(@RequestBody BmsBrandQueryListReqDTO bmsBrandQueryListReqDTO) {
+        return ResponseResult.getSuccess(bmsBrandService.queryList(bmsBrandQueryListReqDTO));
+    }
     /**
      * 品牌管理-查询所有
      *

@@ -8,8 +8,10 @@ import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.bsm.req.BmsBrandAddReqDTO;
 import com.bio.drqi.bsm.req.BmsBrandEditReqDTO;
 import com.bio.drqi.bsm.req.BmsBrandListPageReqDTO;
+import com.bio.drqi.bsm.req.BmsBrandQueryListReqDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsBrandQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsBrandService;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.domain.BmsBrandTb;
@@ -40,6 +42,12 @@ public class BmsBrandServiceImpl implements BmsBrandService {
         List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(BmsBrandTb.builder().brandName(bmsBrandListPageReqDTO.getBrandName()).deleteFlag(BioDrQiContents.N).build());
         PageInfo<BmsBrandTb> srcPageInfo = new PageInfo<>(bmsBrandTbList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsBrandListPageRspDTO.class);
+    }
+
+    @Override
+    public List<BmsBrandQueryListRspDTO> queryList(BmsBrandQueryListReqDTO bmsBrandQueryListReqDTO) {
+        List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(BmsBrandTb.builder().supplierCode(bmsBrandQueryListReqDTO.getSupplierCode()).deleteFlag(BioDrQiContents.N).build());
+        return BeanUtils.copyListProperties(bmsBrandTbList, BmsBrandQueryListRspDTO.class);
     }
 
     @Override

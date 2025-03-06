@@ -68,6 +68,7 @@ public class BmsBrandServiceImpl implements BmsBrandService {
             throw new BusinessException("该品牌已经存在");
         }
         if(bmsBrandTb==null){
+            bmsBrandTb=new BmsBrandTb();
             bmsBrandTb.setSupplierCode(bmsBrandAddReqDTO.getSupplierCode());
             bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
             bmsBrandTb.setBrandName(bmsBrandAddReqDTO.getBrandName());

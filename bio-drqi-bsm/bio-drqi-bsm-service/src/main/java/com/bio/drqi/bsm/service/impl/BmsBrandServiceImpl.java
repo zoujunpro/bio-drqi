@@ -84,7 +84,7 @@ public class BmsBrandServiceImpl implements BmsBrandService {
             bmsBrandTb.setCreateTime(new Date());
             bmsBrandTb.setCreateUserId(SecurityContextHolder.getUserId());
             bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
-            bmsBrandTb.setDeleteFlag(BioDrQiContents.Y);
+            bmsBrandTb.setDeleteFlag(BioDrQiContents.N);
             bmsBrandTbMapper.updateById(bmsBrandTb);
         }
 

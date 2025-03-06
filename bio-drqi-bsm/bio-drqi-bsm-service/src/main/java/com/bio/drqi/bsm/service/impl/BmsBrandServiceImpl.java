@@ -75,6 +75,7 @@ public class BmsBrandServiceImpl implements BmsBrandService {
             bmsBrandTb.setCreateUserId(SecurityContextHolder.getUserId());
             bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
             bmsBrandTb.setDeleteFlag(BioDrQiContents.N);
+            bmsBrandTbMapper.insert(bmsBrandTb);
         }else {
             if(!bmsBrandTb.getSupplierCode().equals(bmsBrandAddReqDTO.getSupplierCode())){
                 BmsSupplierTb bmsSupplierTb=bmsSupplierTbMapper.selectOneBySupplierCode(bmsBrandTb.getSupplierCode());
@@ -84,9 +85,10 @@ public class BmsBrandServiceImpl implements BmsBrandService {
             bmsBrandTb.setCreateUserId(SecurityContextHolder.getUserId());
             bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
             bmsBrandTb.setDeleteFlag(BioDrQiContents.Y);
+            bmsBrandTbMapper.updateById(bmsBrandTb);
         }
 
-        bmsBrandTbMapper.insert(bmsBrandTb);
+
     }
 
     @Override

@@ -38,4 +38,23 @@
         set delete_flag = #{deleteFlag,jdbcType=VARCHAR}
         where brand_code = #{brandCode,jdbcType=VARCHAR}
     </update>
+    <select id="selectSelective" resultMap="BaseResultMap" resultType="com.bio.drqi.domain.BmsProductTb">
+        update bms_product_tb
+        <set>
+            <if test="productName != null">product_name=#{productName,jdbcType=VARCHAR},</if>
+            <if test="productOutCode != null">product_out_code=#{productOutCode,jdbcType=VARCHAR},</if>
+            <if test="projectInnerCode != null">project_inner_code=#{projectInnerCode,jdbcType=VARCHAR},</if>
+            <if test="productCategoryCode != null">product_category_code=#{productCategoryCode,jdbcType=VARCHAR},</if>
+            <if test="productTypeCode != null">product_type_code=#{productTypeCode,jdbcType=VARCHAR},</if>
+            <if test="supplierCode != null">supplier_code=#{supplierCode,jdbcType=VARCHAR},</if>
+            <if test="brandName != null">brand_name=#{brandName,jdbcType=VARCHAR},</if>
+            <if test="brandCode != null">brand_code=#{brandCode,jdbcType=VARCHAR},</if>
+            <if test="productSku != null">product_sku=#{productSku,jdbcType=VARCHAR},</if>
+            <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="createUserId != null">create_user_id=#{createUserId,jdbcType=NUMERIC},</if>
+            <if test="createUserName != null">create_user_name=#{createUserName,jdbcType=VARCHAR},</if>
+            <if test="deleteFlag != null">delete_flag=#{deleteFlag,jdbcType=VARCHAR},</if>
+        </set>
+        where id = #{id,jdbcType=NUMERIC}
+    </select>
 </mapper>

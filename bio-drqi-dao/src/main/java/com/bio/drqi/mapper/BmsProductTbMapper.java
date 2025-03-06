@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Param;
 import com.bio.drqi.domain.BmsProductTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
  * @author zou'jun
  * @description 针对表【bms_product_tb(商品信息表)】的数据库操作Mapper
@@ -15,6 +17,9 @@ public interface BmsProductTbMapper extends BaseMapper<BmsProductTb> {
     int updateDeleteFlagBySupplierCode(@Param("deleteFlag") String deleteFlag, @Param("supplierCode") String supplierCode);
 
     int updateDeleteFlagByBrandCode(@Param("deleteFlag") String deleteFlag, @Param("brandCode") String brandCode);
+
+
+    List<BmsProductTb> selectSelective(BmsProductTb bmsProductTb);
 }
 
 

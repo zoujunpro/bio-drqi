@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class BmsProductListPageReqDTO extends PageDTO {
     private String brandCode;
-    private String productCode;
+    private String productName;
 }

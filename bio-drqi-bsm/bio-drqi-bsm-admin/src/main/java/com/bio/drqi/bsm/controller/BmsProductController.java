@@ -4,6 +4,7 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * 商品管理
@@ -39,11 +41,10 @@ public class BmsProductController {
      *
      * @return
      */
-    @PostMapping("/list")
+    @PostMapping("/queryList")
     @WebLog(desc = "商品管理-查询")
-    public ResponseResult<String> list(@RequestBody @Validated BmsProductListReqDTO bmsProductListReqDTO) {
-        bmsProductService.list(bmsProductListReqDTO);
-        return ResponseResult.getSuccess("ok");
+    public ResponseResult<List<BmsProductQueryListRspDTO>> queryList(@RequestBody @Validated BmsProductQueryListReqDTO bmsProductQueryListReqDTO) {
+        return ResponseResult.getSuccess(bmsProductService.queryList(bmsProductQueryListReqDTO));
     }
 
     /**

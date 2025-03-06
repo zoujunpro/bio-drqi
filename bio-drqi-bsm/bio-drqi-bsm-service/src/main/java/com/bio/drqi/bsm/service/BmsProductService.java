@@ -1,17 +1,11 @@
 package com.bio.drqi.bsm.service;
 
-import com.bio.common.core.dto.ResponseResult;
-import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
 import com.github.pagehelper.PageInfo;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public interface BmsProductService {
 
@@ -27,7 +21,7 @@ public interface BmsProductService {
      * 商品管理-查询
      * @return
      */
-    void list(BmsProductListReqDTO bmsProductListReqDTO);
+    List<BmsProductQueryListRspDTO> queryList(BmsProductQueryListReqDTO bmsProductQueryListReqDTO);
 
     /**
      * 商品管理-导出全部

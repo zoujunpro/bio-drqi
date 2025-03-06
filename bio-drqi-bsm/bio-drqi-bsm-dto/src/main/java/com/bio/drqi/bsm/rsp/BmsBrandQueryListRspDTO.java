@@ -4,6 +4,8 @@ import lombok.Data;
 
 @Data
 public class BmsBrandQueryListRspDTO {
+
+    private String id;
     /**
      * 品牌编号
      */

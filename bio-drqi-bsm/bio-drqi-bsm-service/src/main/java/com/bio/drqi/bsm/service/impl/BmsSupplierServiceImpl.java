@@ -45,7 +45,7 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
     @Override
     public PageInfo<BmsSupplierListPageRspDTO> listPage(BmsSupplierListPageReqDTO bmsSupplierListPageReqDTO) {
         PageHelper.startPage(bmsSupplierListPageReqDTO.getPageNum(), bmsSupplierListPageReqDTO.getPageSize());
-        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectSelective(BmsSupplierTb.builder().supplierCode(bmsSupplierListPageReqDTO.getSupplierCode()).deleteFlag(BioDrQiContents.N).supplierName(bmsSupplierListPageReqDTO.getSupplierName()).build());
+        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectSelective(BmsSupplierTb.builder().supplierCode(bmsSupplierListPageReqDTO.getSupplierCode()).deleteFlag(bmsSupplierListPageReqDTO.getDeleteFlag()).supplierName(bmsSupplierListPageReqDTO.getSupplierName()).build());
         PageInfo<BmsSupplierTb> srcPageInfo = new PageInfo<>(bmsSupplierTbList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsSupplierListPageRspDTO.class);
     }
@@ -130,6 +130,17 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
         //逻辑删除商品
         bmsProductTbMapper.updateDeleteFlagBySupplierCode(BioDrQiContents.Y, bmsSupplierTb.getSupplierCode());
 
+
+    }
+
+    @Override
+    public void move(Integer id) {
+        BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectById(id);
+        if (bmsSupplierTb == null) {
+            throw new BusinessException("供应商找不到");
+        }
+        bmsSupplierTb.setDeleteFlag(BioDrQiContents.N);
+        bmsSupplierTbMapper.updateById(bmsSupplierTb);
 
     }
 

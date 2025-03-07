@@ -44,14 +44,14 @@ public class BmsBrandServiceImpl implements BmsBrandService {
     @Override
     public PageInfo<BmsBrandListPageRspDTO> listPage(BmsBrandListPageReqDTO bmsBrandListPageReqDTO) {
         PageHelper.startPage(bmsBrandListPageReqDTO.getPageNum(), bmsBrandListPageReqDTO.getPageSize());
-        List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(BmsBrandTb.builder().brandName(bmsBrandListPageReqDTO.getBrandName()).deleteFlag(BioDrQiContents.N).build());
+        List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(BmsBrandTb.builder().brandName(bmsBrandListPageReqDTO.getBrandName()).deleteFlag(bmsBrandListPageReqDTO.getDeleteFlag()).build());
         PageInfo<BmsBrandTb> srcPageInfo = new PageInfo<>(bmsBrandTbList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsBrandListPageRspDTO.class);
     }
 
     @Override
     public List<BmsBrandQueryListRspDTO> queryList(BmsBrandQueryListReqDTO bmsBrandQueryListReqDTO) {
-        List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(BmsBrandTb.builder().supplierCode(bmsBrandQueryListReqDTO.getSupplierCode()).deleteFlag(BioDrQiContents.N).build());
+        List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(BmsBrandTb.builder().supplierCode(bmsBrandQueryListReqDTO.getSupplierCode()).deleteFlag(bmsBrandQueryListReqDTO.getDeleteFlag()).build());
         return BeanUtils.copyListProperties(bmsBrandTbList, BmsBrandQueryListRspDTO.class);
     }
 

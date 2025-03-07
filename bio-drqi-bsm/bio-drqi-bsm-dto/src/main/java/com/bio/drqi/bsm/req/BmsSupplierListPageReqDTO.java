@@ -14,4 +14,9 @@ public class BmsSupplierListPageReqDTO extends PageDTO {
      * 供应商名称
      */
     private String supplierName;
+
+    /**
+     * Y代表已经删除，在回收站
+     */
+    private String deleteFlag;
 }

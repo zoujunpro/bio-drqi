@@ -10,6 +10,7 @@ import com.bio.drqi.bsm.rsp.BmsBrandDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListPageRspDTO;
 import com.github.pagehelper.PageInfo;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -65,6 +66,14 @@ public interface BmsSupplierService {
      * @return
      */
     void delete(Integer id);
+
+    /**
+     * 供应商管理-移出回收站供应商
+     *
+     * @param id
+     * @return
+     */
+    void move(Integer id);
 
     /**
      * 供应商管理-导出

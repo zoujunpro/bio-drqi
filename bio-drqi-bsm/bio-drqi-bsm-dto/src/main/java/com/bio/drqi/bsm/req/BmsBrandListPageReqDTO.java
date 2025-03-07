@@ -7,4 +7,10 @@ import lombok.Data;
 public class BmsBrandListPageReqDTO extends PageDTO {
 
     private String brandName;
+
+
+    /**
+     * Y已删除，回收站   , N正常
+     */
+    private String deleteFlag;
 }

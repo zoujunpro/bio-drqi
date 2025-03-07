@@ -39,6 +39,7 @@ public class BmsSupplierController {
         return ResponseResult.getSuccess(bmsSupplierService.listPage(bmsSupplierListPageReqDTO));
     }
 
+
     /**
      * 供应商管理-查询全部
      *
@@ -100,6 +101,17 @@ public class BmsSupplierController {
         return ResponseResult.getSuccess("ok");
     }
 
+    /**
+     * 供应商管理-移出回收站供应商
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/move")
+    @WebLog(desc = "供应商管理-移出回收站供应商")
+    public ResponseResult<String> move(Integer id){
+        return ResponseResult.getSuccess("ok");
+    }
     /**
      * 供应商管理-导出
      *

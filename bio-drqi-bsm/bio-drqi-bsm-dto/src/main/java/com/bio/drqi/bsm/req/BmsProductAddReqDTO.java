@@ -14,10 +14,6 @@ public class BmsProductAddReqDTO {
      */
     private String productOutCode;
 
-    /**
-     * 商品内部编号
-     */
-    private String projectInnerCode;
 
     /**
      * 商品类别编号
@@ -35,6 +31,6 @@ public class BmsProductAddReqDTO {
     /**
      * 商品规格
      */
-    private String productSku;
+    private String productSpecs;
 
 }

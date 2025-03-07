@@ -14,7 +14,7 @@
             <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
             <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
             <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
-            <result property="productSku" column="product_sku" jdbcType="VARCHAR"/>
+            <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
             <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
@@ -25,7 +25,7 @@
         id,product_name,product_out_code,
         project_inner_code,product_category_code,product_type_code,
         supplier_code,brand_name,brand_code,
-        product_sku,create_time,create_user_id,
+        product_specs,create_time,create_user_id,
         create_user_name,delete_flag
     </sql>
     <update id="updateDeleteFlagBySupplierCode">
@@ -49,7 +49,7 @@
             <if test="supplierCode != null">supplier_code=#{supplierCode,jdbcType=VARCHAR},</if>
             <if test="brandName != null">brand_name=#{brandName,jdbcType=VARCHAR},</if>
             <if test="brandCode != null">brand_code=#{brandCode,jdbcType=VARCHAR},</if>
-            <if test="productSku != null">product_sku=#{productSku,jdbcType=VARCHAR},</if>
+            <if test="productSpecs != null">product_specs=#{productSpecs,jdbcType=VARCHAR},</if>
             <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP},</if>
             <if test="createUserId != null">create_user_id=#{createUserId,jdbcType=NUMERIC},</if>
             <if test="createUserName != null">create_user_name=#{createUserName,jdbcType=VARCHAR},</if>

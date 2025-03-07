@@ -71,7 +71,7 @@ public class BmsProductTb implements Serializable {
     /**
      * 商品规格
      */
-    private String productSku;
+    private String productSpecs;
 
     /**
      * 创建日期

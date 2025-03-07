@@ -82,7 +82,7 @@ public class BmsSupplierController {
      *
      * @return
      */
-    @PostMapping("/detail")
+    @GetMapping("/detail")
     @WebLog(desc = "供应商管理-详情")
     public ResponseResult<BmsBrandDetailRspDTO> detail(@RequestParam Integer id ) {
         return ResponseResult.getSuccess(bmsSupplierService.detail(id));

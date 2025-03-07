@@ -7,4 +7,5 @@ import lombok.Data;
 public class BmsProductListPageReqDTO extends PageDTO {
     private String brandCode;
     private String productName;
+    private String deleteFlag;
 }

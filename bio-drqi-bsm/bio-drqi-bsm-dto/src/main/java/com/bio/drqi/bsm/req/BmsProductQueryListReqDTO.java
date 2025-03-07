@@ -6,4 +6,6 @@ import lombok.Data;
 public class BmsProductQueryListReqDTO {
 
     private String brandCode;
+
+    private String supplierCode;
 }

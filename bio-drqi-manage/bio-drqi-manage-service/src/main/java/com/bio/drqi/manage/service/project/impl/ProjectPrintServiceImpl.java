@@ -153,10 +153,12 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         if (CollectionUtil.isNotEmpty(plantPrintReqDTO.getContentList())) {
             for (PlantPrintReqDTO.Content content : plantPrintReqDTO.getContentList()) {
                 CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(content.getPlantCode(), content.getVectorTaskCode());
+               CerVectorTaskTb cerVectorTaskTb =cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
                 PlantPrintData plantPrintData = new PlantPrintData();
                 plantPrintData.setVectorTaskCode(content.getVectorTaskCode());
                 plantPrintData.setTransformCode(cerPlantDtlTb.getTransformCode());
                 plantPrintData.setPlantCode(content.getPlantCode());
+                plantPrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
                 plantPrintData.setPrintNum(content.getPrintNum() == null ? 1 : content.getPrintNum());
                 plantPrintDataList.add(plantPrintData);
             }

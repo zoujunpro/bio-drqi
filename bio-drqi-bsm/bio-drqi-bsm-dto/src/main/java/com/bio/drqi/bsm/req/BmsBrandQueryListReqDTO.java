@@ -9,8 +9,4 @@ public class BmsBrandQueryListReqDTO {
      */
     private String supplierCode;
 
-    /**
-     * Y已删除，回收站   , N正常
-     */
-    private String deleteFlag;
 }

@@ -1,11 +1,17 @@
 package com.bio.drqi.bsm.service;
 
+import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsSupplierAddReqDTO;
+import com.bio.drqi.bsm.req.BmsSupplierEditReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierExportExcelReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierListPageReqDTO;
+import com.bio.drqi.bsm.rsp.BmsBrandDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListPageRspDTO;
 import com.github.pagehelper.PageInfo;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 import java.util.List;
@@ -35,6 +41,22 @@ public interface BmsSupplierService {
      */
 
     void add(BmsSupplierAddReqDTO bmsSupplierAddReqDTO);
+
+
+    /**
+     * 供应商管理-编辑
+     *
+     * @param bmsSupplierEditReqDTO
+     * @return
+     */
+    void  edit( BmsSupplierEditReqDTO bmsSupplierEditReqDTO);
+
+    /**
+     * 供应商管理-详情
+     *
+     * @return
+     */
+    BmsBrandDetailRspDTO detail( Integer id ) ;
 
     /**
      * 供应商管理-删除

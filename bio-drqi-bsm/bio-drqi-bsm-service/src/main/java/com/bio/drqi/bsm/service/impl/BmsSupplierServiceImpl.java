@@ -6,8 +6,10 @@ import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.bsm.req.BmsSupplierAddReqDTO;
+import com.bio.drqi.bsm.req.BmsSupplierEditReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierExportExcelReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierListPageReqDTO;
+import com.bio.drqi.bsm.rsp.BmsBrandDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsSupplierService;
@@ -87,6 +89,27 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
         bmsSupplierTbMapper.insert(bmsSupplierTb);
 
 
+    }
+
+    @Override
+    public void edit(BmsSupplierEditReqDTO bmsSupplierEditReqDTO) {
+        BmsSupplierTb bmsSupplierTb= bmsSupplierTbMapper.selectById(bmsSupplierEditReqDTO.getId());
+        if(bmsSupplierTb==null){
+            throw new BusinessException("供应商不存在");
+        }
+        if(BioDrQiContents.Y.equals(bmsSupplierTb.getDeleteFlag())){
+            throw new BusinessException("供应商已删除");
+        }
+        BeanUtils.copyProperties(bmsSupplierEditReqDTO,bmsSupplierTb);
+        bmsSupplierTbMapper.updateById(bmsSupplierTb);
+
+
+    }
+
+    @Override
+    public BmsBrandDetailRspDTO detail(Integer id) {
+       BmsSupplierTb bmsSupplierTb= bmsSupplierTbMapper.selectById(id);
+       return BeanUtils.copyProperties(bmsSupplierTb,BmsBrandDetailRspDTO.class);
     }
 
     @Override

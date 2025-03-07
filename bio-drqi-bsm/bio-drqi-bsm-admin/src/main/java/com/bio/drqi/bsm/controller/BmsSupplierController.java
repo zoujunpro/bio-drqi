@@ -4,8 +4,10 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 
 import com.bio.drqi.bsm.req.BmsSupplierAddReqDTO;
+import com.bio.drqi.bsm.req.BmsSupplierEditReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierExportExcelReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierListPageReqDTO;
+import com.bio.drqi.bsm.rsp.BmsBrandDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsSupplierService;
@@ -59,6 +61,30 @@ public class BmsSupplierController {
     public ResponseResult<String> add(@RequestBody BmsSupplierAddReqDTO bmsSupplierAddReqDTO) {
         bmsSupplierService.add(bmsSupplierAddReqDTO);
         return ResponseResult.getSuccess("成功");
+    }
+
+    /**
+     * 供应商管理-编辑
+     *
+     * @param bmsSupplierEditReqDTO
+     * @return
+     */
+    @PostMapping("/edit")
+    @WebLog(desc = "供应商管理-编辑")
+    public ResponseResult<String> edit(@RequestBody BmsSupplierEditReqDTO  bmsSupplierEditReqDTO) {
+        bmsSupplierService.edit(bmsSupplierEditReqDTO);
+        return ResponseResult.getSuccess("成功");
+    }
+
+    /**
+     * 供应商管理-详情
+     *
+     * @return
+     */
+    @PostMapping("/detail")
+    @WebLog(desc = "供应商管理-详情")
+    public ResponseResult<BmsBrandDetailRspDTO> detail(@RequestBody Integer id ) {
+        return ResponseResult.getSuccess(bmsSupplierService.detail(id));
     }
 
     /**

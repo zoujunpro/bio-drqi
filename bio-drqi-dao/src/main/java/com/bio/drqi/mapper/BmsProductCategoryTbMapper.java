@@ -1,7 +1,10 @@
 package com.bio.drqi.mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.BmsProductCategoryTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
 * @author zou'jun
@@ -10,6 +13,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.drqi.domain.BmsProductCategoryTb
 */
 public interface BmsProductCategoryTbMapper extends BaseMapper<BmsProductCategoryTb> {
+
+    BmsProductCategoryTb selectOneByProductCategoryName(@Param("productCategoryName") String productCategoryName);
+
+    List<BmsProductCategoryTb> selectSelective(BmsProductCategoryTb bmsProductCategoryTb);
 
 }
 

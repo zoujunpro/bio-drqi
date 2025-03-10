@@ -78,7 +78,7 @@ public class BmsProductTypeServiceImpl implements BmsProductTypeService {
 
     @Override
     public void edit(BmsProductTypeEditReqDTO bmsProductTypeEditReqDTO) {
-        BmsProductTypeTb bmsProductTypeTb = bmsProductTypeTbMapper.selectById(bmsProductTypeEditReqDTO.getProductTypeName());
+        BmsProductTypeTb bmsProductTypeTb = bmsProductTypeTbMapper.selectById(bmsProductTypeEditReqDTO.getId());
         if(bmsProductTypeTb==null){
             throw new BusinessException("商品类型不存在");
         }
@@ -86,7 +86,7 @@ public class BmsProductTypeServiceImpl implements BmsProductTypeService {
         try {
             bmsProductTypeTbMapper.updateById(bmsProductTypeTb);
         } catch (DuplicateKeyException e) {
-            throw new BusinessException("商品类型不存在");
+            throw new BusinessException("名称已经存在");
         }
     }
 }

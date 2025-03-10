@@ -64,5 +64,12 @@
         where
         product_type_code = #{productTypeCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByProductCategoryCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_tb
+        where
+        product_category_code = #{productCategoryCode,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

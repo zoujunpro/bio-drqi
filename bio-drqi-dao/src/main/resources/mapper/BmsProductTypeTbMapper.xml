@@ -32,4 +32,11 @@
         </where>
         order by id desc
     </select>
+    <select id="selectOneByProductTypeName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_type_tb
+        where
+        product_type_name = #{productTypeName,jdbcType=VARCHAR}
+    </select>
 </mapper>

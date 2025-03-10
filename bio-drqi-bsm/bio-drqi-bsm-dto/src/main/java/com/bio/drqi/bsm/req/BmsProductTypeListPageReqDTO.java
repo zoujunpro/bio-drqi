@@ -4,7 +4,7 @@ import com.bio.drqi.manage.base.PageDTO;
 import lombok.Data;
 
 @Data
-public class BmsProductTyListPageReqDTO extends PageDTO {
+public class BmsProductTypeListPageReqDTO extends PageDTO {
 
     /**
      * 商品类型名称

@@ -57,4 +57,12 @@
         </set>
         where id = #{id,jdbcType=NUMERIC}
     </select>
+    <select id="selectAllByProductTypeCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_tb
+        where
+        product_type_code = #{productTypeCode,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

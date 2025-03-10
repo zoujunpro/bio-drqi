@@ -143,7 +143,6 @@ public class ProjectServiceImpl implements ProjectService {
                 projectUserAllRspDTO.setOwnerUserId(cerProjectTb.getOwnerUserId());
                 projectUserAllRspDTO.setOwnerUserName(cerProjectTb.getOwnerUserName());
                 result.add(projectUserAllRspDTO);
-
             });
         }
         return result;

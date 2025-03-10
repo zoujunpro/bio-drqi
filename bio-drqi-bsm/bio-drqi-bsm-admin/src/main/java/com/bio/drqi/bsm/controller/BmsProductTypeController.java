@@ -2,9 +2,9 @@ package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.bsm.req.BmsProductTyAddReqDTO;
-import com.bio.drqi.bsm.req.BmsProductTyEditReqDTO;
-import com.bio.drqi.bsm.req.BmsProductTyListPageReqDTO;
+import com.bio.drqi.bsm.req.BmsProductTypeAddReqDTO;
+import com.bio.drqi.bsm.req.BmsProductTypeEditReqDTO;
+import com.bio.drqi.bsm.req.BmsProductTypeListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductTyListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductTyListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsProductTypeService;
@@ -26,30 +26,34 @@ public class BmsProductTypeController {
 
     @PostMapping("/listPage")
     @WebLog(desc = "库存类型管理-分页查询")
-    public ResponseResult<PageInfo<BmsProductTyListPageRspDTO>> listPage(@RequestBody BmsProductTyListPageReqDTO bmsProductTyListPageReqDTO){
-        return null;
+    public ResponseResult<PageInfo<BmsProductTyListPageRspDTO>> listPage(@RequestBody BmsProductTypeListPageReqDTO bmsProductTypeListPageReqDTO) {
+        return ResponseResult.getSuccess(bmsProductTypeService.listPage(bmsProductTypeListPageReqDTO));
     }
+
     @GetMapping("/listAll")
     @WebLog(desc = "库存类型管理-查询所有")
-    public ResponseResult<List<BmsProductTyListAllRspDTO>> listAll(){
-        return null;
+    public ResponseResult<List<BmsProductTyListAllRspDTO>> listAll() {
+        return ResponseResult.getSuccess(bmsProductTypeService.listAll());
     }
 
     @PostMapping("/add")
     @WebLog(desc = "库存类型管理-新增")
-    public ResponseResult add(@RequestBody BmsProductTyAddReqDTO bmsProductTyAddReqDTO){
-        return null;
+    public ResponseResult<String> add(@RequestBody BmsProductTypeAddReqDTO bmsProductTypeAddReqDTO) {
+        bmsProductTypeService.add(bmsProductTypeAddReqDTO);
+        return ResponseResult.getSuccess("ok");
     }
 
     @GetMapping("/delete")
     @WebLog(desc = "库存类型管理-删除")
-    public ResponseResult delete(@RequestParam Integer id){
-        return null;
+    public ResponseResult<String> delete(@RequestParam Integer id) {
+        bmsProductTypeService.delete(id);
+        return ResponseResult.getSuccess("ok");
     }
 
     @PostMapping("/edit")
     @WebLog(desc = "库存类型管理-编辑")
-    public ResponseResult edit(@RequestBody BmsProductTyEditReqDTO bmsProductTyEditReqDTO){
-        return null;
+    public ResponseResult<String> edit(@RequestBody BmsProductTypeEditReqDTO bmsProductTypeEditReqDTO) {
+        bmsProductTypeService.edit(bmsProductTypeEditReqDTO);
+        return ResponseResult.getSuccess("ok");
     }
 }

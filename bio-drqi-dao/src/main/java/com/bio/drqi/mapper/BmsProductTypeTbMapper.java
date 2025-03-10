@@ -16,6 +16,8 @@ public interface BmsProductTypeTbMapper extends BaseMapper<BmsProductTypeTb> {
 
     List<BmsProductTypeTb> selectSelective(BmsProductTypeTb bmsProductTypeTb);
 
+    BmsProductTypeTb selectOneByProductTypeName(@Param("productTypeName") String productTypeName);
+
 
 }
 

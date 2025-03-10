@@ -1,18 +1,28 @@
 package com.bio.drqi.bsm.service.impl;
 
-import com.bio.drqi.bsm.req.BmsProductTyAddReqDTO;
-import com.bio.drqi.bsm.req.BmsProductTyEditReqDTO;
-import com.bio.drqi.bsm.req.BmsProductTyListPageReqDTO;
+import cn.hutool.core.collection.CollectionUtil;
+import com.bio.common.core.context.SecurityContextHolder;
+import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.uuid.IdUtils;
+import com.bio.drqi.bsm.req.BmsProductTypeAddReqDTO;
+import com.bio.drqi.bsm.req.BmsProductTypeEditReqDTO;
+import com.bio.drqi.bsm.req.BmsProductTypeListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductTyListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductTyListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsProductTypeService;
+import com.bio.drqi.domain.BmsProductTb;
 import com.bio.drqi.domain.BmsProductTypeTb;
+import com.bio.drqi.mapper.BmsProductTbMapper;
 import com.bio.drqi.mapper.BmsProductTypeTbMapper;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -22,29 +32,61 @@ public class BmsProductTypeServiceImpl implements BmsProductTypeService {
     @Resource
     private BmsProductTypeTbMapper bmsProductTypeTbMapper;
 
+    @Resource
+    private BmsProductTbMapper bmsProductTbMapper;
+
     @Override
-    public PageInfo<BmsProductTyListPageRspDTO> listPage(BmsProductTyListPageReqDTO bmsProductTyListPageReqDTO) {
-        bmsProductTypeTbMapper.selectSelective(BmsProductTypeTb.builder().productTypeName(bmsProductTyListPageReqDTO.getProductTypeName()).build());
-        return null;
+    public PageInfo<BmsProductTyListPageRspDTO> listPage(BmsProductTypeListPageReqDTO bmsProductTypeListPageReqDTO) {
+        PageHelper.startPage(bmsProductTypeListPageReqDTO.getPageNum(), bmsProductTypeListPageReqDTO.getPageSize());
+        List<BmsProductTypeTb> bmsProductTypeTbList = bmsProductTypeTbMapper.selectSelective(BmsProductTypeTb.builder().productTypeName(bmsProductTypeListPageReqDTO.getProductTypeName()).build());
+        PageInfo<BmsProductTypeTb> srcPageInfo = new PageInfo<>(bmsProductTypeTbList);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsProductTyListPageRspDTO.class);
     }
 
     @Override
     public List<BmsProductTyListAllRspDTO> listAll() {
-        return null;
+        List<BmsProductTypeTb> bmsProductTypeTbList = bmsProductTypeTbMapper.selectSelective(null);
+        return BeanUtils.copyListProperties(bmsProductTypeTbList, BmsProductTyListAllRspDTO.class);
     }
 
     @Override
-    public void add(BmsProductTyAddReqDTO bmsProductTyAddReqDTO) {
-
+    public void add(BmsProductTypeAddReqDTO bmsProductTypeAddReqDTO) {
+        BmsProductTypeTb bmsProductTypeTb = new BmsProductTypeTb();
+        bmsProductTypeTb.setProductTypeCode(IdUtils.simpleUUID());
+        bmsProductTypeTb.setProductTypeName(bmsProductTypeAddReqDTO.getProductTypeName());
+        bmsProductTypeTb.setCreateTime(new Date());
+        bmsProductTypeTb.setCreateUserId(SecurityContextHolder.getUserId());
+        bmsProductTypeTb.setCreateUserName(SecurityContextHolder.getNickName());
+        try {
+            bmsProductTypeTbMapper.insert(bmsProductTypeTb);
+        } catch (DuplicateKeyException e) {
+            throw new BusinessException("不能重复添加");
+        }
     }
 
     @Override
     public void delete(Integer id) {
-
+        BmsProductTypeTb bmsProductTypeTb = bmsProductTypeTbMapper.selectById(id);
+        if(bmsProductTypeTb==null){
+            throw new BusinessException("商品类型不存在");
+        }
+       List<BmsProductTb> bmsProductTbList= bmsProductTbMapper.selectAllByProductTypeCode(bmsProductTypeTb.getProductTypeCode());
+        if(CollectionUtil.isNotEmpty(bmsProductTbList)){
+            throw new BusinessException("此商品类型已经使用，无法删除");
+        }
     }
 
     @Override
-    public void edit(BmsProductTyEditReqDTO bmsProductTyEditReqDTO) {
-
+    public void edit(BmsProductTypeEditReqDTO bmsProductTypeEditReqDTO) {
+        BmsProductTypeTb bmsProductTypeTb = bmsProductTypeTbMapper.selectById(bmsProductTypeEditReqDTO.getProductTypeName());
+        if(bmsProductTypeTb==null){
+            throw new BusinessException("商品类型不存在");
+        }
+        bmsProductTypeTb.setProductTypeName(bmsProductTypeEditReqDTO.getProductTypeName());
+        try {
+            bmsProductTypeTbMapper.updateById(bmsProductTypeTb);
+        } catch (DuplicateKeyException e) {
+            throw new BusinessException("商品类型不存在");
+        }
     }
 }

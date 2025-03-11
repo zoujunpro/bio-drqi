@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 商品类别管理
+ * 材料类别管理
  */
 @RestController
 @RequestMapping("/productCategory")
@@ -26,59 +26,59 @@ public class BmsProductCategoryController {
 
 
     /**
-     * 商品类别管理-分页查询
+     * 材料类别管理-分页查询
      * @param bmsProductCategoryListPageReqDTO
      * @return
      */
     @PostMapping("/listPage")
-    @WebLog(desc = "商品类别管理-分页查询")
+    @WebLog(desc = "材料类别管理-分页查询")
     public ResponseResult<PageInfo<BmsProductCategoryListPageRspDTO>> listPage(@RequestBody BmsProductCategoryListPageReqDTO bmsProductCategoryListPageReqDTO) {
         return ResponseResult.getSuccess(bmsProductCategoryService.listPage(bmsProductCategoryListPageReqDTO));
     }
 
 
     /**
-     * 商品类别管理-查询所有
+     * 材料类别管理-查询所有
      * @return
      */
     @GetMapping("/listAll")
-    @WebLog(desc = "商品类别管理-查询所有")
+    @WebLog(desc = "材料类别管理-查询所有")
     public ResponseResult<List<BmsProductCategoryListAllRspDTO>> listAll() {
         return ResponseResult.getSuccess(bmsProductCategoryService.listAll());
     }
 
 
     /**
-     * 商品类别管理-新增
+     * 材料类别管理-新增
      * @param bmsProductCategoryAddReqDTO
      * @return
      */
     @PostMapping("/add")
-    @WebLog(desc = "商品类别管理-新增")
+    @WebLog(desc = "材料类别管理-新增")
     public ResponseResult<String> add(@RequestBody BmsProductCategoryAddReqDTO bmsProductCategoryAddReqDTO) {
         bmsProductCategoryService.add(bmsProductCategoryAddReqDTO);
         return ResponseResult.getSuccess("ok");
     }
 
     /**
-     * 商品类别管理-删除
+     * 材料类别管理-删除
      * @param id
      * @return
      */
     @GetMapping("/delete")
-    @WebLog(desc = "商品类别管理-删除")
+    @WebLog(desc = "材料类别管理-删除")
     public ResponseResult<String> delete(@RequestParam Integer id) {
         bmsProductCategoryService.delete(id);
         return ResponseResult.getSuccess("ok");
     }
 
     /**
-     * 商品类别管理-编辑
+     * 材料类别管理-编辑
      * @param bmsProductCategoryEditReqDTO
      * @return
      */
     @PostMapping("/edit")
-    @WebLog(desc = "商品类别管理-编辑")
+    @WebLog(desc = "材料类别管理-编辑")
     public ResponseResult<String> edit(@RequestBody BmsProductCategoryEditReqDTO bmsProductCategoryEditReqDTO) {
         bmsProductCategoryService.edit(bmsProductCategoryEditReqDTO);
         return ResponseResult.getSuccess("ok");

@@ -27,6 +27,7 @@ import java.util.List;
 @Service
 public class BmsProductCategoryServiceImpl implements BmsProductCategoryService {
 
+    @Resource
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
 
     @Resource

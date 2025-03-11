@@ -68,19 +68,20 @@ public class BmsProductTypeServiceImpl implements BmsProductTypeService {
     public void delete(Integer id) {
         BmsProductTypeTb bmsProductTypeTb = bmsProductTypeTbMapper.selectById(id);
         if(bmsProductTypeTb==null){
-            throw new BusinessException("商品类型不存在");
+            throw new BusinessException("材料类型不存在");
         }
        List<BmsProductTb> bmsProductTbList= bmsProductTbMapper.selectAllByProductTypeCode(bmsProductTypeTb.getProductTypeCode());
         if(CollectionUtil.isNotEmpty(bmsProductTbList)){
-            throw new BusinessException("此商品类型已经使用，无法删除");
+            throw new BusinessException("此材料类型已经使用，无法删除");
         }
+        bmsProductTypeTbMapper.deleteById(id);
     }
 
     @Override
     public void edit(BmsProductTypeEditReqDTO bmsProductTypeEditReqDTO) {
         BmsProductTypeTb bmsProductTypeTb = bmsProductTypeTbMapper.selectById(bmsProductTypeEditReqDTO.getId());
         if(bmsProductTypeTb==null){
-            throw new BusinessException("商品类型不存在");
+            throw new BusinessException("材料类型不存在");
         }
         bmsProductTypeTb.setProductTypeName(bmsProductTypeEditReqDTO.getProductTypeName());
         try {

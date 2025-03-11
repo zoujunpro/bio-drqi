@@ -8,7 +8,6 @@ import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.bsm.req.BmsProductCategoryAddReqDTO;
 import com.bio.drqi.bsm.req.BmsProductCategoryEditReqDTO;
 import com.bio.drqi.bsm.req.BmsProductCategoryListPageReqDTO;
-import com.bio.drqi.bsm.req.BmsProductTypeEditReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductCategoryListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductCategoryListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsProductCategoryService;
@@ -19,12 +18,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.Data;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Service
 public class BmsProductCategoryServiceImpl implements BmsProductCategoryService {
 
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;

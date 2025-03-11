@@ -36,6 +36,5 @@
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
-        where id = #{id,jdbcType=NUMERIC}
     </select>
 </mapper>

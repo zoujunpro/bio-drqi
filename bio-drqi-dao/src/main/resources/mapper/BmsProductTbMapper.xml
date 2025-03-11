@@ -57,7 +57,7 @@
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
             <if test="deleteFlag != null">and delete_flag=#{deleteFlag,jdbcType=VARCHAR}</if>
         </where>
-        order by desc
+        order by id desc
     </select>
     <select id="selectAllByProductTypeCode" resultMap="BaseResultMap">
         select

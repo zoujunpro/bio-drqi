@@ -30,7 +30,6 @@
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
             <result property="reportAccountTime" column="report_account_time" jdbcType="VARCHAR"/>
             <result property="closeAccountFlag" column="close_account_flag" jdbcType="VARCHAR"/>
-            <result property="feishuOrderNum" column="feishu_order_num" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -42,6 +41,6 @@
         purchase_type_name,apply_reason,require_time,
         usage_time,invoice_urls,remittance_urls,
         create_time,task_num,report_account_time,
-        close_account_flag,feishu_order_num
+        close_account_flag
     </sql>
 </mapper>

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService{
+
     @Override
     public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
 

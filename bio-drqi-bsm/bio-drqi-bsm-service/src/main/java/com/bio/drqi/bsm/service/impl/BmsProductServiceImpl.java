@@ -2,6 +2,7 @@ package com.bio.drqi.bsm.service.impl;
 
 import java.util.Date;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
@@ -12,12 +13,8 @@ import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
 import com.bio.drqi.common.contents.BioDrQiContents;
-import com.bio.drqi.domain.BmsBrandTb;
-import com.bio.drqi.domain.BmsProductTb;
-import com.bio.drqi.domain.BmsSupplierTb;
-import com.bio.drqi.mapper.BmsBrandTbMapper;
-import com.bio.drqi.mapper.BmsProductTbMapper;
-import com.bio.drqi.mapper.BmsSupplierTbMapper;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class BmsProductServiceImpl implements BmsProductService {
@@ -40,12 +39,35 @@ public class BmsProductServiceImpl implements BmsProductService {
     @Resource
     private BmsSupplierTbMapper bmsSupplierTbMapper;
 
+    @Resource
+    private BmsProductTypeTbMapper bmsProductTypeTbMapper;
+
+    @Resource
+    private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
+
     @Override
     public PageInfo<BmsProductListPageRspDTO> listPage(BmsProductListPageReqDTO bmsProductListPageReqDTO) {
         PageHelper.startPage(bmsProductListPageReqDTO.getPageNum(), bmsProductListPageReqDTO.getPageSize());
         List<BmsProductTb> bmsProductTbLit = bmsProductTbMapper.selectSelective(BmsProductTb.builder().brandCode(bmsProductListPageReqDTO.getBrandCode()).productName(bmsProductListPageReqDTO.getProductName()).deleteFlag(bmsProductListPageReqDTO.getDeleteFlag()).build());
         PageInfo<BmsProductTb> srcPageInfo = new PageInfo<>(bmsProductTbLit);
-        return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsProductListPageRspDTO.class);
+        PageInfo<BmsProductListPageRspDTO> resultPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, BmsProductListPageRspDTO.class);
+
+        if (CollectionUtil.isNotEmpty(resultPageInfo.getList())) {
+            //类性
+            List<BmsProductTypeTb> bmsProductTypeTbList = bmsProductTypeTbMapper.selectSelective(null);
+            Map<String, String> bmsProductTypeTbMap = bmsProductTypeTbList.stream().collect(Collectors.toMap(BmsProductTypeTb::getProductTypeCode, BmsProductTypeTb::getProductTypeName));
+
+            //类别
+            List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+            Map<String, String> bmsProductCategoryMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+
+            resultPageInfo.getList().forEach(bmsProductListPageRspDTO -> {
+                bmsProductListPageRspDTO.setProductCategoryName(bmsProductCategoryMap.get(bmsProductListPageRspDTO.getProductCategoryCode()));
+                bmsProductListPageRspDTO.setProductTypeName(bmsProductTypeTbMap.get(bmsProductListPageRspDTO.getProductTypeCode()));
+            });
+        }
+
+        return resultPageInfo;
     }
 
     @Override
@@ -67,7 +89,26 @@ public class BmsProductServiceImpl implements BmsProductService {
         }
 
         List<BmsProductTb> bmsProductTbLit = bmsProductTbMapper.selectSelective(BmsProductTb.builder().supplierCode(bmsProductQueryListReqDTO.getSupplierCode()).brandCode(bmsProductQueryListReqDTO.getBrandCode()).deleteFlag(deleteFlag).build());
-        return BeanUtils.copyListProperties(bmsProductTbLit, BmsProductQueryListRspDTO.class);
+
+        List<BmsProductQueryListRspDTO> result = BeanUtils.copyListProperties(bmsProductTbLit, BmsProductQueryListRspDTO.class);
+        if (CollectionUtil.isNotEmpty(result)) {
+
+            //类性
+            List<BmsProductTypeTb> bmsProductTypeTbList = bmsProductTypeTbMapper.selectSelective(null);
+            Map<String, String> bmsProductTypeTbMap = bmsProductTypeTbList.stream().collect(Collectors.toMap(BmsProductTypeTb::getProductTypeCode, BmsProductTypeTb::getProductTypeName));
+
+            //类别
+            List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+            Map<String, String> bmsProductCategoryMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+
+            result.forEach(bmsProductQueryListRspDTO -> {
+                bmsProductQueryListRspDTO.setProductCategoryName(bmsProductCategoryMap.get(bmsProductQueryListRspDTO.getProductCategoryCode()));
+                bmsProductQueryListRspDTO.setProductTypeName(bmsProductTypeTbMap.get(bmsProductQueryListRspDTO.getProductTypeCode()));
+            });
+        }
+        return result;
+
+
     }
 
     @Override
@@ -110,8 +151,8 @@ public class BmsProductServiceImpl implements BmsProductService {
     @Override
     public void delete(Integer id) {
         BmsProductTb bmsProductTb = bmsProductTbMapper.selectById(id);
-        if(bmsProductTb==null){
-            throw  new BusinessException("材料不存在");
+        if (bmsProductTb == null) {
+            throw new BusinessException("材料不存在");
         }
         bmsProductTb.setDeleteFlag(BioDrQiContents.Y);
         bmsProductTbMapper.updateById(bmsProductTb);
@@ -120,10 +161,10 @@ public class BmsProductServiceImpl implements BmsProductService {
     @Override
     public void edit(BmsProductEditReqDTO bmsProductEditReqDTO) {
         BmsProductTb bmsProductTb = bmsProductTbMapper.selectById(bmsProductEditReqDTO.getId());
-        if(bmsProductTb==null){
-            throw  new BusinessException("材料不存在");
+        if (bmsProductTb == null) {
+            throw new BusinessException("材料不存在");
         }
-        if(BioDrQiContents.Y.equals(bmsProductTb.getDeleteFlag())){
+        if (BioDrQiContents.Y.equals(bmsProductTb.getDeleteFlag())) {
             throw new BusinessException("材料已经删除，无法修改");
         }
         bmsProductTb.setProductName(bmsProductEditReqDTO.getProductName());

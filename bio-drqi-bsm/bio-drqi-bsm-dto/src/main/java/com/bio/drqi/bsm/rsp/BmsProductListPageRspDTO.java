@@ -29,9 +29,20 @@ public class BmsProductListPageRspDTO {
     private String productCategoryCode;
 
     /**
+     * 商品类别名称
+     */
+    private String productCategoryName;
+
+
+    /**
      * 商品类型编号
      */
     private String productTypeCode;
+
+    /**
+     * 商品类型名称
+     */
+    private String productTypeName;
 
     /**
      * 供应商编号

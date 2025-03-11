@@ -41,7 +41,7 @@ public class BmsProductTb implements Serializable {
     /**
      * 商品内部编号
      */
-    private String projectInnerCode;
+    private String productInnerCode;
 
     /**
      * 商品类别编号

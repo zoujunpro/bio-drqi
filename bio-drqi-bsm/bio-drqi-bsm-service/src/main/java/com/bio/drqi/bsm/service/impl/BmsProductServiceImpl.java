@@ -21,6 +21,7 @@ import com.bio.drqi.mapper.BmsSupplierTbMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.context.annotation.Bean;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -87,7 +88,7 @@ public class BmsProductServiceImpl implements BmsProductService {
         BmsProductTb bmsProductTb = new BmsProductTb();
         bmsProductTb.setProductName(bmsProductAddReqDTO.getProductName());
         bmsProductTb.setProductOutCode(bmsProductAddReqDTO.getProductOutCode());
-        bmsProductTb.setProjectInnerCode(IdUtils.simpleUUID());
+        bmsProductTb.setProductInnerCode(IdUtils.simpleUUID());
         bmsProductTb.setProductCategoryCode(bmsProductAddReqDTO.getProductCategoryCode());
         bmsProductTb.setProductTypeCode(bmsProductAddReqDTO.getProductTypeCode());
         bmsProductTb.setSupplierCode(bmsBrandTb.getSupplierCode());
@@ -98,7 +99,11 @@ public class BmsProductServiceImpl implements BmsProductService {
         bmsProductTb.setCreateUserId(SecurityContextHolder.getUserId());
         bmsProductTb.setCreateUserName(SecurityContextHolder.getNickName());
         bmsProductTb.setDeleteFlag(BioDrQiContents.N);
-        bmsProductTbMapper.insert(bmsProductTb);
+        try {
+            bmsProductTbMapper.insert(bmsProductTb);
+        } catch (DuplicateKeyException e) {
+            throw new BusinessException("请不要重复添加此商品");
+        }
 
     }
 
@@ -114,6 +119,7 @@ public class BmsProductServiceImpl implements BmsProductService {
 
     @Override
     public void edit(BmsProductEditReqDTO bmsProductEditReqDTO) {
+
 
     }
 }

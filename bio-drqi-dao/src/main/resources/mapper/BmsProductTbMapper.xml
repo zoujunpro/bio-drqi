@@ -8,7 +8,7 @@
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="productName" column="product_name" jdbcType="VARCHAR"/>
             <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
-            <result property="projectInnerCode" column="project_inner_code" jdbcType="VARCHAR"/>
+            <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
             <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
             <result property="productTypeCode" column="product_type_code" jdbcType="VARCHAR"/>
             <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
@@ -23,7 +23,7 @@
 
     <sql id="Base_Column_List">
         id,product_name,product_out_code,
-        project_inner_code,product_category_code,product_type_code,
+        product_inner_code,product_category_code,product_type_code,
         supplier_code,brand_name,brand_code,
         product_specs,create_time,create_user_id,
         create_user_name,delete_flag
@@ -43,7 +43,7 @@
         <set>
             <if test="productName != null">product_name=#{productName,jdbcType=VARCHAR},</if>
             <if test="productOutCode != null">product_out_code=#{productOutCode,jdbcType=VARCHAR},</if>
-            <if test="projectInnerCode != null">project_inner_code=#{projectInnerCode,jdbcType=VARCHAR},</if>
+            <if test="productInnerCode != null">product_inner_code=#{productInnerCode,jdbcType=VARCHAR},</if>
             <if test="productCategoryCode != null">product_category_code=#{productCategoryCode,jdbcType=VARCHAR},</if>
             <if test="productTypeCode != null">product_type_code=#{productTypeCode,jdbcType=VARCHAR},</if>
             <if test="supplierCode != null">supplier_code=#{supplierCode,jdbcType=VARCHAR},</if>

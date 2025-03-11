@@ -66,19 +66,14 @@ public class BmsOrderDetailTb implements Serializable {
     private Integer purchaseNumber;
 
     /**
+     * 实际单价
+     */
+    private BigDecimal realPrice;
+
+    /**
      * 付款金额
      */
     private BigDecimal payAmount;
-
-    /**
-     * 实际付款金额
-     */
-    private BigDecimal actualPayAmount;
-
-    /**
-     * 实际采购数量
-     */
-    private Integer actualPurchaseNumber;
 
     /**
      * 商品类别编号
@@ -264,6 +259,20 @@ public class BmsOrderDetailTb implements Serializable {
     }
 
     /**
+     * 实际单价
+     */
+    public BigDecimal getRealPrice() {
+        return realPrice;
+    }
+
+    /**
+     * 实际单价
+     */
+    public void setRealPrice(BigDecimal realPrice) {
+        this.realPrice = realPrice;
+    }
+
+    /**
      * 付款金额
      */
     public BigDecimal getPayAmount() {
@@ -275,34 +284,6 @@ public class BmsOrderDetailTb implements Serializable {
      */
     public void setPayAmount(BigDecimal payAmount) {
         this.payAmount = payAmount;
-    }
-
-    /**
-     * 实际付款金额
-     */
-    public BigDecimal getActualPayAmount() {
-        return actualPayAmount;
-    }
-
-    /**
-     * 实际付款金额
-     */
-    public void setActualPayAmount(BigDecimal actualPayAmount) {
-        this.actualPayAmount = actualPayAmount;
-    }
-
-    /**
-     * 实际采购数量
-     */
-    public Integer getActualPurchaseNumber() {
-        return actualPurchaseNumber;
-    }
-
-    /**
-     * 实际采购数量
-     */
-    public void setActualPurchaseNumber(Integer actualPurchaseNumber) {
-        this.actualPurchaseNumber = actualPurchaseNumber;
     }
 
     /**
@@ -439,9 +420,8 @@ public class BmsOrderDetailTb implements Serializable {
             && (this.getProductOutCode() == null ? other.getProductOutCode() == null : this.getProductOutCode().equals(other.getProductOutCode()))
             && (this.getPurchasePrice() == null ? other.getPurchasePrice() == null : this.getPurchasePrice().equals(other.getPurchasePrice()))
             && (this.getPurchaseNumber() == null ? other.getPurchaseNumber() == null : this.getPurchaseNumber().equals(other.getPurchaseNumber()))
+            && (this.getRealPrice() == null ? other.getRealPrice() == null : this.getRealPrice().equals(other.getRealPrice()))
             && (this.getPayAmount() == null ? other.getPayAmount() == null : this.getPayAmount().equals(other.getPayAmount()))
-            && (this.getActualPayAmount() == null ? other.getActualPayAmount() == null : this.getActualPayAmount().equals(other.getActualPayAmount()))
-            && (this.getActualPurchaseNumber() == null ? other.getActualPurchaseNumber() == null : this.getActualPurchaseNumber().equals(other.getActualPurchaseNumber()))
             && (this.getProductCategoryCode() == null ? other.getProductCategoryCode() == null : this.getProductCategoryCode().equals(other.getProductCategoryCode()))
             && (this.getProductCategoryName() == null ? other.getProductCategoryName() == null : this.getProductCategoryName().equals(other.getProductCategoryName()))
             && (this.getPictureUrls() == null ? other.getPictureUrls() == null : this.getPictureUrls().equals(other.getPictureUrls()))
@@ -466,9 +446,8 @@ public class BmsOrderDetailTb implements Serializable {
         result = prime * result + ((getProductOutCode() == null) ? 0 : getProductOutCode().hashCode());
         result = prime * result + ((getPurchasePrice() == null) ? 0 : getPurchasePrice().hashCode());
         result = prime * result + ((getPurchaseNumber() == null) ? 0 : getPurchaseNumber().hashCode());
+        result = prime * result + ((getRealPrice() == null) ? 0 : getRealPrice().hashCode());
         result = prime * result + ((getPayAmount() == null) ? 0 : getPayAmount().hashCode());
-        result = prime * result + ((getActualPayAmount() == null) ? 0 : getActualPayAmount().hashCode());
-        result = prime * result + ((getActualPurchaseNumber() == null) ? 0 : getActualPurchaseNumber().hashCode());
         result = prime * result + ((getProductCategoryCode() == null) ? 0 : getProductCategoryCode().hashCode());
         result = prime * result + ((getProductCategoryName() == null) ? 0 : getProductCategoryName().hashCode());
         result = prime * result + ((getPictureUrls() == null) ? 0 : getPictureUrls().hashCode());
@@ -496,9 +475,8 @@ public class BmsOrderDetailTb implements Serializable {
         sb.append(", productOutCode=").append(productOutCode);
         sb.append(", purchasePrice=").append(purchasePrice);
         sb.append(", purchaseNumber=").append(purchaseNumber);
+        sb.append(", realPrice=").append(realPrice);
         sb.append(", payAmount=").append(payAmount);
-        sb.append(", actualPayAmount=").append(actualPayAmount);
-        sb.append(", actualPurchaseNumber=").append(actualPurchaseNumber);
         sb.append(", productCategoryCode=").append(productCategoryCode);
         sb.append(", productCategoryName=").append(productCategoryName);
         sb.append(", pictureUrls=").append(pictureUrls);

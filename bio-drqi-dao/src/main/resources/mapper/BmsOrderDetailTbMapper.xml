@@ -15,9 +15,8 @@
             <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
             <result property="purchasePrice" column="purchase_price" jdbcType="DECIMAL"/>
             <result property="purchaseNumber" column="purchase_number" jdbcType="INTEGER"/>
+            <result property="realPrice" column="real_price" jdbcType="DECIMAL"/>
             <result property="payAmount" column="pay amount" jdbcType="DECIMAL"/>
-            <result property="actualPayAmount" column="actual_pay amount" jdbcType="DECIMAL"/>
-            <result property="actualPurchaseNumber" column="actual_purchase_number" jdbcType="INTEGER"/>
             <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
             <result property="productCategoryName" column="product_category_name" jdbcType="VARCHAR"/>
             <result property="pictureUrls" column="picture_urls" jdbcType="VARCHAR"/>
@@ -32,9 +31,9 @@
         id,order_num,order_detail_num,
         brand_code,brand_name,product_name,
         product_sku,product_out_code,purchase_price,
-        purchase_number,pay amount,actual_pay amount,
-        actual_purchase_number,product_category_code,product_category_name,
-        picture_urls,warranty_desc,create_time,
-        apply_user_id,apply_user_name,task_num
+        purchase_number,real_price,pay amount,
+        product_category_code,product_category_name,picture_urls,
+        warranty_desc,create_time,apply_user_id,
+        apply_user_name,task_num
     </sql>
 </mapper>

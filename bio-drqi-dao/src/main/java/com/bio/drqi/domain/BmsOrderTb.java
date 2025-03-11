@@ -16,7 +16,7 @@ public class BmsOrderTb implements Serializable {
     /**
      * 主键ID
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -110,16 +110,6 @@ public class BmsOrderTb implements Serializable {
     private String usageTime;
 
     /**
-     * 账期类型
-     */
-    private String accountPeriodType;
-
-    /**
-     * 账期描述
-     */
-    private String accountPeriodName;
-
-    /**
      * 发票信息
      */
     private String invoiceUrls;
@@ -138,6 +128,21 @@ public class BmsOrderTb implements Serializable {
      * 任务编号
      */
     private String taskNum;
+
+    /**
+     * 报账日期
+     */
+    private String reportAccountTime;
+
+    /**
+     * 是否结算标识 N Y
+     */
+    private String closeAccountFlag;
+
+    /**
+     * 飞书订单编号
+     */
+    private String feishuOrderNum;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -409,34 +414,6 @@ public class BmsOrderTb implements Serializable {
     }
 
     /**
-     * 账期类型
-     */
-    public String getAccountPeriodType() {
-        return accountPeriodType;
-    }
-
-    /**
-     * 账期类型
-     */
-    public void setAccountPeriodType(String accountPeriodType) {
-        this.accountPeriodType = accountPeriodType;
-    }
-
-    /**
-     * 账期描述
-     */
-    public String getAccountPeriodName() {
-        return accountPeriodName;
-    }
-
-    /**
-     * 账期描述
-     */
-    public void setAccountPeriodName(String accountPeriodName) {
-        this.accountPeriodName = accountPeriodName;
-    }
-
-    /**
      * 发票信息
      */
     public String getInvoiceUrls() {
@@ -492,6 +469,48 @@ public class BmsOrderTb implements Serializable {
         this.taskNum = taskNum;
     }
 
+    /**
+     * 报账日期
+     */
+    public String getReportAccountTime() {
+        return reportAccountTime;
+    }
+
+    /**
+     * 报账日期
+     */
+    public void setReportAccountTime(String reportAccountTime) {
+        this.reportAccountTime = reportAccountTime;
+    }
+
+    /**
+     * 是否结算标识 N Y
+     */
+    public String getCloseAccountFlag() {
+        return closeAccountFlag;
+    }
+
+    /**
+     * 是否结算标识 N Y
+     */
+    public void setCloseAccountFlag(String closeAccountFlag) {
+        this.closeAccountFlag = closeAccountFlag;
+    }
+
+    /**
+     * 飞书订单编号
+     */
+    public String getFeishuOrderNum() {
+        return feishuOrderNum;
+    }
+
+    /**
+     * 飞书订单编号
+     */
+    public void setFeishuOrderNum(String feishuOrderNum) {
+        this.feishuOrderNum = feishuOrderNum;
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -523,12 +542,13 @@ public class BmsOrderTb implements Serializable {
             && (this.getApplyReason() == null ? other.getApplyReason() == null : this.getApplyReason().equals(other.getApplyReason()))
             && (this.getRequireTime() == null ? other.getRequireTime() == null : this.getRequireTime().equals(other.getRequireTime()))
             && (this.getUsageTime() == null ? other.getUsageTime() == null : this.getUsageTime().equals(other.getUsageTime()))
-            && (this.getAccountPeriodType() == null ? other.getAccountPeriodType() == null : this.getAccountPeriodType().equals(other.getAccountPeriodType()))
-            && (this.getAccountPeriodName() == null ? other.getAccountPeriodName() == null : this.getAccountPeriodName().equals(other.getAccountPeriodName()))
             && (this.getInvoiceUrls() == null ? other.getInvoiceUrls() == null : this.getInvoiceUrls().equals(other.getInvoiceUrls()))
             && (this.getRemittanceUrls() == null ? other.getRemittanceUrls() == null : this.getRemittanceUrls().equals(other.getRemittanceUrls()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getTaskNum() == null ? other.getTaskNum() == null : this.getTaskNum().equals(other.getTaskNum()));
+            && (this.getTaskNum() == null ? other.getTaskNum() == null : this.getTaskNum().equals(other.getTaskNum()))
+            && (this.getReportAccountTime() == null ? other.getReportAccountTime() == null : this.getReportAccountTime().equals(other.getReportAccountTime()))
+            && (this.getCloseAccountFlag() == null ? other.getCloseAccountFlag() == null : this.getCloseAccountFlag().equals(other.getCloseAccountFlag()))
+            && (this.getFeishuOrderNum() == null ? other.getFeishuOrderNum() == null : this.getFeishuOrderNum().equals(other.getFeishuOrderNum()));
     }
 
     @Override
@@ -554,12 +574,13 @@ public class BmsOrderTb implements Serializable {
         result = prime * result + ((getApplyReason() == null) ? 0 : getApplyReason().hashCode());
         result = prime * result + ((getRequireTime() == null) ? 0 : getRequireTime().hashCode());
         result = prime * result + ((getUsageTime() == null) ? 0 : getUsageTime().hashCode());
-        result = prime * result + ((getAccountPeriodType() == null) ? 0 : getAccountPeriodType().hashCode());
-        result = prime * result + ((getAccountPeriodName() == null) ? 0 : getAccountPeriodName().hashCode());
         result = prime * result + ((getInvoiceUrls() == null) ? 0 : getInvoiceUrls().hashCode());
         result = prime * result + ((getRemittanceUrls() == null) ? 0 : getRemittanceUrls().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getTaskNum() == null) ? 0 : getTaskNum().hashCode());
+        result = prime * result + ((getReportAccountTime() == null) ? 0 : getReportAccountTime().hashCode());
+        result = prime * result + ((getCloseAccountFlag() == null) ? 0 : getCloseAccountFlag().hashCode());
+        result = prime * result + ((getFeishuOrderNum() == null) ? 0 : getFeishuOrderNum().hashCode());
         return result;
     }
 
@@ -588,12 +609,13 @@ public class BmsOrderTb implements Serializable {
         sb.append(", applyReason=").append(applyReason);
         sb.append(", requireTime=").append(requireTime);
         sb.append(", usageTime=").append(usageTime);
-        sb.append(", accountPeriodType=").append(accountPeriodType);
-        sb.append(", accountPeriodName=").append(accountPeriodName);
         sb.append(", invoiceUrls=").append(invoiceUrls);
         sb.append(", remittanceUrls=").append(remittanceUrls);
         sb.append(", createTime=").append(createTime);
         sb.append(", taskNum=").append(taskNum);
+        sb.append(", reportAccountTime=").append(reportAccountTime);
+        sb.append(", closeAccountFlag=").append(closeAccountFlag);
+        sb.append(", feishuOrderNum=").append(feishuOrderNum);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

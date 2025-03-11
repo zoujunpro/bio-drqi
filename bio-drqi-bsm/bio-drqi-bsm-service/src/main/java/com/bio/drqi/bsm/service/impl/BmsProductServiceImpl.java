@@ -66,7 +66,7 @@ public class BmsProductServiceImpl implements BmsProductService {
             deleteFlag = bmsBrandTb.getDeleteFlag();
         }
 
-        List<BmsProductTb> bmsProductTbLit = bmsProductTbMapper.selectSelective(BmsProductTb.builder().brandCode(bmsProductQueryListReqDTO.getBrandCode()).deleteFlag(deleteFlag).build());
+        List<BmsProductTb> bmsProductTbLit = bmsProductTbMapper.selectSelective(BmsProductTb.builder().supplierCode(bmsProductQueryListReqDTO.getSupplierCode()).brandCode(bmsProductQueryListReqDTO.getBrandCode()).deleteFlag(deleteFlag).build());
         return BeanUtils.copyListProperties(bmsProductTbLit, BmsProductQueryListRspDTO.class);
     }
 

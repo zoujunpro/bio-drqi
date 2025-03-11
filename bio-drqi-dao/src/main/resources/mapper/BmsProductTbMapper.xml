@@ -44,12 +44,12 @@
             <if test="productName != null">product_name=#{productName,jdbcType=VARCHAR},</if>
             <if test="productOutCode != null">product_out_code=#{productOutCode,jdbcType=VARCHAR},</if>
             <if test="productInnerCode != null">product_inner_code=#{productInnerCode,jdbcType=VARCHAR},</if>
-            <if test="productCategoryCode != null">product_category_code=#{productCategoryCode,jdbcType=VARCHAR},</if>
-            <if test="productTypeCode != null">product_type_code=#{productTypeCode,jdbcType=VARCHAR},</if>
-            <if test="supplierCode != null">supplier_code=#{supplierCode,jdbcType=VARCHAR},</if>
+            <if test="productCategoryCode != null and productCategoryCode != ''">product_category_code=#{productCategoryCode,jdbcType=VARCHAR},</if>
+            <if test="productTypeCode != null and productTypeCode != ''">product_type_code=#{productTypeCode,jdbcType=VARCHAR},</if>
+            <if test="supplierCode != null and supplierCode != ''">supplier_code=#{supplierCode,jdbcType=VARCHAR},</if>
             <if test="brandName != null">brand_name=#{brandName,jdbcType=VARCHAR},</if>
-            <if test="brandCode != null">brand_code=#{brandCode,jdbcType=VARCHAR},</if>
-            <if test="productSpecs != null">product_specs=#{productSpecs,jdbcType=VARCHAR},</if>
+            <if test="brandCode != null and brandCode != ''">brand_code=#{brandCode,jdbcType=VARCHAR},</if>
+            <if test="productSpecs != null and productSpecs != ''">product_specs=#{productSpecs,jdbcType=VARCHAR},</if>
             <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP},</if>
             <if test="createUserId != null">create_user_id=#{createUserId,jdbcType=NUMERIC},</if>
             <if test="createUserName != null">create_user_name=#{createUserName,jdbcType=VARCHAR},</if>

@@ -102,7 +102,7 @@ public class BmsProductServiceImpl implements BmsProductService {
         try {
             bmsProductTbMapper.insert(bmsProductTb);
         } catch (DuplicateKeyException e) {
-            throw new BusinessException("请不要重复添加此商品");
+            throw new BusinessException("请不要重复添加此材料");
         }
 
     }
@@ -111,7 +111,7 @@ public class BmsProductServiceImpl implements BmsProductService {
     public void delete(Integer id) {
         BmsProductTb bmsProductTb = bmsProductTbMapper.selectById(id);
         if(bmsProductTb==null){
-            throw  new BusinessException("商品不存在");
+            throw  new BusinessException("材料不存在");
         }
         bmsProductTb.setDeleteFlag(BioDrQiContents.Y);
         bmsProductTbMapper.updateById(bmsProductTb);
@@ -119,7 +119,23 @@ public class BmsProductServiceImpl implements BmsProductService {
 
     @Override
     public void edit(BmsProductEditReqDTO bmsProductEditReqDTO) {
-
+        BmsProductTb bmsProductTb = bmsProductTbMapper.selectById(bmsProductEditReqDTO.getId());
+        if(bmsProductTb==null){
+            throw  new BusinessException("材料不存在");
+        }
+        if(BioDrQiContents.Y.equals(bmsProductTb.getDeleteFlag())){
+            throw new BusinessException("材料已经删除，无法修改");
+        }
+        bmsProductTb.setProductName(bmsProductEditReqDTO.getProductName());
+        bmsProductTb.setProductOutCode(bmsProductEditReqDTO.getProductOutCode());
+        bmsProductTb.setProductCategoryCode(bmsProductEditReqDTO.getProductCategoryCode());
+        bmsProductTb.setProductTypeCode(bmsProductEditReqDTO.getProductTypeCode());
+        bmsProductTb.setProductSpecs(bmsProductEditReqDTO.getProductSpecs());
+        try {
+            bmsProductTbMapper.updateById(bmsProductTb);
+        } catch (DuplicateKeyException e) {
+            throw new BusinessException("系统已存在此材料信息，不能修改");
+        }
 
     }
 }

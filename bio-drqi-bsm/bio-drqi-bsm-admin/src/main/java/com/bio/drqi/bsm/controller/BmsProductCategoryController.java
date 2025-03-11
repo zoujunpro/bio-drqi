@@ -24,18 +24,35 @@ public class BmsProductCategoryController {
     @Resource
     private BmsProductCategoryService bmsProductCategoryService;
 
+
+    /**
+     * 商品类别管理-分页查询
+     * @param bmsProductCategoryListPageReqDTO
+     * @return
+     */
     @PostMapping("/listPage")
     @WebLog(desc = "商品类别管理-分页查询")
     public ResponseResult<PageInfo<BmsProductCategoryListPageRspDTO>> listPage(@RequestBody BmsProductCategoryListPageReqDTO bmsProductCategoryListPageReqDTO) {
         return ResponseResult.getSuccess(bmsProductCategoryService.listPage(bmsProductCategoryListPageReqDTO));
     }
 
+
+    /**
+     * 商品类别管理-查询所有
+     * @return
+     */
     @GetMapping("/listAll")
     @WebLog(desc = "商品类别管理-查询所有")
     public ResponseResult<List<BmsProductCategoryListAllRspDTO>> listAll() {
         return ResponseResult.getSuccess(bmsProductCategoryService.listAll());
     }
 
+
+    /**
+     * 商品类别管理-新增
+     * @param bmsProductCategoryAddReqDTO
+     * @return
+     */
     @PostMapping("/add")
     @WebLog(desc = "商品类别管理-新增")
     public ResponseResult<String> add(@RequestBody BmsProductCategoryAddReqDTO bmsProductCategoryAddReqDTO) {
@@ -43,6 +60,11 @@ public class BmsProductCategoryController {
         return ResponseResult.getSuccess("ok");
     }
 
+    /**
+     * 商品类别管理-删除
+     * @param id
+     * @return
+     */
     @GetMapping("/delete")
     @WebLog(desc = "商品类别管理-删除")
     public ResponseResult<String> delete(@RequestParam Integer id) {
@@ -50,6 +72,11 @@ public class BmsProductCategoryController {
         return ResponseResult.getSuccess("ok");
     }
 
+    /**
+     * 商品类别管理-编辑
+     * @param bmsProductCategoryEditReqDTO
+     * @return
+     */
     @PostMapping("/edit")
     @WebLog(desc = "商品类别管理-编辑")
     public ResponseResult<String> edit(@RequestBody BmsProductCategoryEditReqDTO bmsProductCategoryEditReqDTO) {

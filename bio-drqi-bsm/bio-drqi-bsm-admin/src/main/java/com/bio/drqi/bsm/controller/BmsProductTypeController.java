@@ -24,18 +24,32 @@ public class BmsProductTypeController {
     @Resource
     private BmsProductTypeService bmsProductTypeService;
 
+    /**
+     * 库存类型管理-分页查询
+     * @param bmsProductTypeListPageReqDTO
+     * @return
+     */
     @PostMapping("/listPage")
     @WebLog(desc = "库存类型管理-分页查询")
     public ResponseResult<PageInfo<BmsProductTyListPageRspDTO>> listPage(@RequestBody BmsProductTypeListPageReqDTO bmsProductTypeListPageReqDTO) {
         return ResponseResult.getSuccess(bmsProductTypeService.listPage(bmsProductTypeListPageReqDTO));
     }
 
+    /**
+     * 库存类型管理-查询所有
+     * @return
+     */
     @GetMapping("/listAll")
     @WebLog(desc = "库存类型管理-查询所有")
     public ResponseResult<List<BmsProductTyListAllRspDTO>> listAll() {
         return ResponseResult.getSuccess(bmsProductTypeService.listAll());
     }
 
+    /**
+     * 库存类型管理-新增
+     * @param bmsProductTypeAddReqDTO
+     * @return
+     */
     @PostMapping("/add")
     @WebLog(desc = "库存类型管理-新增")
     public ResponseResult<String> add(@RequestBody BmsProductTypeAddReqDTO bmsProductTypeAddReqDTO) {
@@ -43,6 +57,11 @@ public class BmsProductTypeController {
         return ResponseResult.getSuccess("ok");
     }
 
+    /**
+     * 库存类型管理-删除
+     * @param id
+     * @return
+     */
     @GetMapping("/delete")
     @WebLog(desc = "库存类型管理-删除")
     public ResponseResult<String> delete(@RequestParam Integer id) {
@@ -50,6 +69,11 @@ public class BmsProductTypeController {
         return ResponseResult.getSuccess("ok");
     }
 
+    /**
+     * 库存类型管理-编辑
+     * @param bmsProductTypeEditReqDTO
+     * @return
+     */
     @PostMapping("/edit")
     @WebLog(desc = "库存类型管理-编辑")
     public ResponseResult<String> edit(@RequestBody BmsProductTypeEditReqDTO bmsProductTypeEditReqDTO) {

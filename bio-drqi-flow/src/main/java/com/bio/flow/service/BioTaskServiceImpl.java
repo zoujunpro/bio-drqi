@@ -65,7 +65,7 @@ public class BioTaskServiceImpl implements BioTaskService {
          * 个性化表单处理
          */
         BaseTaskService baseTaskService = SpringUtils.getBean(bioTaskStartReqDTO.getTaskType());
-        baseTaskService.taskCheck(bioTaskDtlTb);
+        baseTaskService.taskApply(bioTaskDtlTb);
         /**
          * 执行工作流
          */
@@ -103,7 +103,7 @@ public class BioTaskServiceImpl implements BioTaskService {
          * 个性化表单处理
          */
         BaseTaskService baseTaskService = SpringUtils.getBean(bioTaskConf.getTaskTypeCode());
-        baseTaskService.taskCheck(bioTaskDtlTb);
+        baseTaskService.taskApply(bioTaskDtlTb);
 
         /**
          * 执行工作流

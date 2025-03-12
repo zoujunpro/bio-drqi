@@ -9,6 +9,7 @@
             <result property="orderNum" column="order_num" jdbcType="VARCHAR"/>
             <result property="orderDetailNum" column="order_detail_num" jdbcType="VARCHAR"/>
             <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+             <result property="projectName" column="project_name" jdbcType="VARCHAR"/>
             <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
             <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
             <result property="contactUserTelephone" column="contact_user_telephone" jdbcType="VARCHAR"/>
@@ -31,7 +32,7 @@
 
     <sql id="Base_Column_List">
         id,order_num,order_detail_num,
-        project_code,supplier_name,supplier_code,
+        project_code,project_name,supplier_name,supplier_code,
         contact_user_telephone,contact_user_name,brand_code,
         brand_name,product_name,product_sku,
         product_out_code,purchase_price,purchase_number,

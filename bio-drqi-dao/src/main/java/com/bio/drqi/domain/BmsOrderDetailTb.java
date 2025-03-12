@@ -43,6 +43,10 @@ public class BmsOrderDetailTb implements Serializable {
      * 项目编号
      */
     private String projectCode;
+    /**
+     * 项目名称
+     */
+    private String projectName;
 
     /**
      * 供应商名称

@@ -92,6 +92,10 @@ public class BmsProductTb implements Serializable {
      * 删除标识
      */
     private String deleteFlag;
+    /**
+     * 图片
+     */
+    private String pictureUrls;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

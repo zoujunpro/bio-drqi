@@ -2,43 +2,67 @@ package com.bio.drqi.bsm.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Data
 public class BmsPurchaseOrderDTO {
 
+    private String applyUserName;
+
+
+    private String applyUserDept;
+
+
+    private String applyTime;
+
     /**
      * 采购单位
      */
+    @NotBlank(message = "请填写采购单位")
     private String unitName;
 
+    @NotBlank(message = "请填写采购单位")
+    private String unitCode;
 
     /**
-     *采购类型编号
+     *采购部门
      */
+    @NotBlank(message = "请填写采购部门")
+    private String purchaseDepartment;
+/*    *//**
+     *采购类型编号
+     *//*
     private String purchaseTypeCode;
 
-    /**
+    *//**
      *采购类型描述
-     */
-    private String purchaseTypeName;
+     *//*
+    private String purchaseTypeName;*/
 
 
     /**
      * 需求提出日期
      */
+    @NotBlank(message = "请填写需求提出日期")
     private String demandRequireTime;
 
     /**
      * 需求使用
      */
+    @NotBlank(message = "请填写需求使用日期")
     private String demandUsageTime;
 
     /**
      * 申购事由描述
      */
     private String purchaseReasonRemark;
+
+    /**
+     * 附件地址
+     */
+    private String attachmentUrls;
 
 
     private List<Product> productList;
@@ -99,6 +123,11 @@ public class BmsPurchaseOrderDTO {
         private String productCategoryName;
 
         /**
+         * 商品图片
+         */
+        private String pictureUrls;
+
+        /**
          * 当前剩余库存
          */
         private Integer currentStockNum;
@@ -106,11 +135,12 @@ public class BmsPurchaseOrderDTO {
         /**
          *采购数量
          */
-        private String purchaseNumber;
+        private Integer purchaseNumber;
         /**
          *采购单价
          */
         private BigDecimal purchasePrice;
+
         /**
          *采购金额
          */

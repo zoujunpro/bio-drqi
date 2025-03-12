@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.dto.project;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.bio.drqi.manage.validator.EnumValue;
+import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 
 import javax.validation.Valid;

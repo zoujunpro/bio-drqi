@@ -18,9 +18,9 @@ import java.util.Date;
  */
 @TableName(value ="bms_order_tb")
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class BmsOrderTb implements Serializable {
     /**
      * 主键ID
@@ -32,31 +32,6 @@ public class BmsOrderTb implements Serializable {
      * 订单编号
      */
     private String orderNum;
-
-    /**
-     * 供应商编号
-     */
-    private String supplierCode;
-
-    /**
-     * 供应商名称
-     */
-    private String supplierName;
-
-    /**
-     * 供应商联系人名称
-     */
-    private String contactUserName;
-
-    /**
-     * 供应商联系人电话
-     */
-    private String contactUserTelephone;
-
-    /**
-     * 项目编号
-     */
-    private String projectCode;
 
     /**
      * 采购申请人
@@ -72,6 +47,16 @@ public class BmsOrderTb implements Serializable {
      * 申请人部门
      */
     private String applyUserDepartment;
+
+    /**
+     * 申请时间
+     */
+    private String applyTime;
+
+    /**
+     * 采购部门
+     */
+    private String purchaseDepartment;
 
     /**
      * 申请单位编号
@@ -104,19 +89,19 @@ public class BmsOrderTb implements Serializable {
     private String purchaseTypeName;
 
     /**
-     * 申购原因
+     * 申购事由描述
      */
-    private String applyReason;
+    private String purchaseReasonRemark;
 
     /**
      * 需求提出时间
      */
-    private String requireTime;
+    private String demandRequireTime;
 
     /**
      * 需求使用时间
      */
-    private String usageTime;
+    private String demandUsageTime;
 
     /**
      * 发票信息
@@ -124,9 +109,9 @@ public class BmsOrderTb implements Serializable {
     private String invoiceUrls;
 
     /**
-     * 汇款回执单
+     * 附件地址
      */
-    private String remittanceUrls;
+    private String attachmentUrls;
 
     /**
      * 创建日期
@@ -143,15 +128,7 @@ public class BmsOrderTb implements Serializable {
      */
     private String reportAccountTime;
 
-    /**
-     * 是否结算标识 N Y
-     */
-    private String closeAccountFlag;
-
-
-
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
-
 
 }

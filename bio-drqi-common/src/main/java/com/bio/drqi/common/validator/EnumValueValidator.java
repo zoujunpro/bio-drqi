@@ -1,4 +1,4 @@
-package com.bio.drqi.manage.validator;
+package com.bio.drqi.common.validator;
 
 
 import javax.validation.ConstraintValidator;

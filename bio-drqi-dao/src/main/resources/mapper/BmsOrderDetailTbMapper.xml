@@ -8,6 +8,11 @@
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="orderNum" column="order_num" jdbcType="VARCHAR"/>
             <result property="orderDetailNum" column="order_detail_num" jdbcType="VARCHAR"/>
+            <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+            <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
+            <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
+            <result property="contactUserTelephone" column="contact_user_telephone" jdbcType="VARCHAR"/>
+            <result property="contactUserName" column="contact_user_name" jdbcType="VARCHAR"/>
             <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
             <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
             <result property="productName" column="product_name" jdbcType="VARCHAR"/>
@@ -15,12 +20,9 @@
             <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
             <result property="purchasePrice" column="purchase_price" jdbcType="DECIMAL"/>
             <result property="purchaseNumber" column="purchase_number" jdbcType="INTEGER"/>
-            <result property="realPrice" column="real_price" jdbcType="DECIMAL"/>
             <result property="payAmount" column="pay amount" jdbcType="DECIMAL"/>
             <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
             <result property="productCategoryName" column="product_category_name" jdbcType="VARCHAR"/>
-            <result property="pictureUrls" column="picture_urls" jdbcType="VARCHAR"/>
-            <result property="warrantyDesc" column="warranty_desc" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
             <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
@@ -29,11 +31,12 @@
 
     <sql id="Base_Column_List">
         id,order_num,order_detail_num,
-        brand_code,brand_name,product_name,
-        product_sku,product_out_code,purchase_price,
-        purchase_number,real_price,pay amount,
-        product_category_code,product_category_name,picture_urls,
-        warranty_desc,create_time,apply_user_id,
+        project_code,supplier_name,supplier_code,
+        contact_user_telephone,contact_user_name,brand_code,
+        brand_name,product_name,product_sku,
+        product_out_code,purchase_price,purchase_number,
+        pay amount,product_category_code,product_category_name,
+        create_time,apply_user_id,
         apply_user_name,task_num
     </sql>
 </mapper>

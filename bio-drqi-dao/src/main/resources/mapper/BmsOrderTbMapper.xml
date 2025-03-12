@@ -7,40 +7,41 @@
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BmsOrderTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="orderNum" column="order_num" jdbcType="VARCHAR"/>
-            <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
-            <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
-            <result property="contactUserName" column="contact_user_name" jdbcType="VARCHAR"/>
-            <result property="contactUserTelephone" column="contact_user_telephone" jdbcType="VARCHAR"/>
-            <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
             <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
             <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
             <result property="applyUserDepartment" column="apply_user_department" jdbcType="VARCHAR"/>
+            <result property="applyUserDepartment" column="apply_user_department" jdbcType="VARCHAR"/>
+            <result property="applyTime" column="apply_time" jdbcType="VARCHAR"/>
             <result property="applyUnitCode" column="apply_unit_code" jdbcType="VARCHAR"/>
             <result property="applyUnitName" column="apply_unit_name" jdbcType="VARCHAR"/>
             <result property="contractUrls" column="contract_urls" jdbcType="VARCHAR"/>
             <result property="purchaseDate" column="purchase_date" jdbcType="VARCHAR"/>
             <result property="purchaseTypeCode" column="purchase_type_code" jdbcType="VARCHAR"/>
             <result property="purchaseTypeName" column="purchase_type_name" jdbcType="VARCHAR"/>
-            <result property="applyReason" column="apply_reason" jdbcType="VARCHAR"/>
-            <result property="requireTime" column="require_time" jdbcType="VARCHAR"/>
-            <result property="usageTime" column="usage_time" jdbcType="VARCHAR"/>
+            <result property="purchaseReasonRemark" column="purchase_reason_remark" jdbcType="VARCHAR"/>
+            <result property="demandRequireTime" column="demand_require_time" jdbcType="VARCHAR"/>
+            <result property="demandUsageTime" column="demand_usage_time" jdbcType="VARCHAR"/>
             <result property="invoiceUrls" column="invoice_urls" jdbcType="VARCHAR"/>
-            <result property="remittanceUrls" column="remittance_urls" jdbcType="VARCHAR"/>
+            <result property="attachmentUrls" column="attachment_urls" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
             <result property="reportAccountTime" column="report_account_time" jdbcType="VARCHAR"/>
-            <result property="closeAccountFlag" column="close_account_flag" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,order_num,supplier_code,
-        supplier_name,contact_user_name,contact_user_telephone,
-        project_code,apply_user_id,apply_user_name,
-        apply_user_department,apply_unit_code,apply_unit_name,
-        contract_urls,purchase_date,purchase_type_code,
-        purchase_type_name,apply_reason,require_time,
-        usage_time,invoice_urls,remittance_urls,
-        create_time,task_num,report_account_time,
-        close_account_flag
+        id,order_num,apply_user_id,apply_time,
+        apply_user_name,apply_user_department,purchase_department,
+        apply_unit_code,apply_unit_name,contract_urls,
+        purchase_date,purchase_type_code,purchase_type_name,
+        purchase_reason_remark,demand_require_time,demand_usage_time,
+        invoice_urls,attachment_urls,create_time,
+        task_num,report_account_time
     </sql>
+    <select id="selectOneByTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_order_tb
+        where
+        task_num = #{taskNum,jdbcType=VARCHAR}
+    </select>
 </mapper>

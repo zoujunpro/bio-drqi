@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.project.req;
 
+import com.bio.common.core.util.EnumValue;
 import com.bio.drqi.manage.base.PageDTO;
-import com.bio.drqi.manage.validator.EnumValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

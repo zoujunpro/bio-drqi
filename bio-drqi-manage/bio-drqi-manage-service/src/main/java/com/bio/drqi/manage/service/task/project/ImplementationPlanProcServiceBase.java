@@ -48,7 +48,7 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
     private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
 
     @Override
-    public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
+    public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         log.info("【任务工单】实施方案构建校验开始");
         VectorTaskAddDTO vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
         ValidatorUtil.validator(vectorTaskAddDTO);

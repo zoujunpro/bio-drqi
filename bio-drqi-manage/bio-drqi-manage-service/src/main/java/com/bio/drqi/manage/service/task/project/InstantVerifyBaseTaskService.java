@@ -31,7 +31,7 @@ public class InstantVerifyBaseTaskService extends AbstractProjectBaseTaskService
     private CerInstantVerifyTaskTbMapper cerInstantVerifyTaskTbMapper;
 
     @Override
-    public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
+    public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         //不需要实现
         InstantVerifyTaskDTO instantVerifyTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), InstantVerifyTaskDTO.class);
         ValidatorUtil.validator(instantVerifyTaskDTO);

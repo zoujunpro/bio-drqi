@@ -28,7 +28,7 @@ public class ProjectBaseProcService extends AbstractProjectBaseTaskService {
 
 
     @Override
-    public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
+    public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         ProjectAddDTO projectAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), ProjectAddDTO.class);
         ValidatorUtil.validator(projectAddDTO);
         BeanUtils.trimFiledSpace(projectAddDTO);

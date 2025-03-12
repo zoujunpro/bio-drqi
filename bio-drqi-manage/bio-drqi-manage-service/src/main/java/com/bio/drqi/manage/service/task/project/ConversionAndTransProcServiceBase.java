@@ -43,7 +43,7 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
      * @param bioTaskDtlTb
      */
     @Override
-    public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
+    public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         ConversionAndTransDTO conversionAndTransDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), ConversionAndTransDTO.class);
         if (CollectionUtil.isNotEmpty(conversionAndTransDTO.getTransFormList())) {
             for (ConversionAndTransDTO.TransForm transForm : conversionAndTransDTO.getTransFormList()) {

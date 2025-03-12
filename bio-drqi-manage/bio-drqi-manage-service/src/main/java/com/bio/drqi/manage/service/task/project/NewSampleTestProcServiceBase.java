@@ -59,7 +59,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
 
 
     @Override
-    public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
+    public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
         if (newSampleTestDTO == null) {
             throw new BusinessException("工单无表单信息");

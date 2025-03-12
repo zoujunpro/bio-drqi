@@ -36,7 +36,7 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
 
 
     @Override
-    public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
+    public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         SeedDestructionDTO seedDestructionDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedDestructionDTO.class);
         if(SeedDestructionEnum.IN.name().equals(seedDestructionDTO.getDestructionType())){
             for (int i = 0; i < seedDestructionDTO.getSeedList().size(); i++) {

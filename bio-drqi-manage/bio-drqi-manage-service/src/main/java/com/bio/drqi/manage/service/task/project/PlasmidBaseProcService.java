@@ -40,7 +40,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
     private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
     @Override
-    public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
+    public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         log.info("【任务工单】质粒质检校验开始");
         PlasmidDTO plasmidDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlasmidDTO.class);
         ValidatorUtil.validator(plasmidDTO);

@@ -31,7 +31,7 @@ public class SubProjectProcServiceBase extends AbstractProjectBaseTaskService {
     @Resource
     private CerProjectTbMapper cerProjectTbMapper;
     @Override
-    public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
+    public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         log.info("【任务工单】子项目开始创建");
         SubProjectCreateDTO subProjectCreateDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SubProjectCreateDTO.class);
         if (subProjectCreateDTO == null) {

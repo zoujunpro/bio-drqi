@@ -24,7 +24,7 @@ public class SeedOutApplyProcService extends AbstractSeedTaskService {
     private static final String USE_TO_DESC = "其他";
 
     @Override
-    public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
+    public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         SeedOutDTO seedOutDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedOutDTO.class);
         List<SeedOutDTO.ExecuteFormContent> executeFormContentList = seedOutDTO.getExecuteForm().getExecuteFormContentList();
         Map<String, List<SeedOutDTO.ExecuteFormContent>> map = executeFormContentList.stream().collect(Collectors.groupingBy(SeedOutDTO.ExecuteFormContent::getSeedNum));

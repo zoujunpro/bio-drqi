@@ -41,7 +41,7 @@ public class SeedQualityCheckProcService extends AbstractSeedTaskService {
     private SeedQualityCheckDtlTbMapper seedQualityCheckDtlTbMapper;
 
     @Override
-    public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
+    public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         SeedQualityCheckDTO seedQualityCheckDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedQualityCheckDTO.class);
         String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + seedQualityCheckDTO.getExcelUrl();
         try {

@@ -43,7 +43,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
 
 
     @Override
-    public void taskCheck(BioTaskDtlTb bioTaskDtlTb) {
+    public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         SeedInStoreDTO seedInStoreDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedInStoreDTO.class);
         List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectList(null);
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();

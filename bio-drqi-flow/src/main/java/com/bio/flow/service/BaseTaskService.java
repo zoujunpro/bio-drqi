@@ -5,7 +5,7 @@ import com.bio.drqi.domain.BioTaskDtlTb;
 
 public interface BaseTaskService {
 
-    void taskCheck(BioTaskDtlTb bioTaskDtlTb);
+    void taskApply(BioTaskDtlTb bioTaskDtlTb);
 
     void executeTask(BioTaskDtlTb bioTaskDtlTb);
 

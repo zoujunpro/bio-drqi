@@ -29,20 +29,9 @@ public class BmsProductQueryListRspDTO {
     private String productCategoryCode;
 
     /**
-     * 商品类别名称
-     */
-    private String productCategoryName;
-
-
-    /**
      * 商品类型编号
      */
     private String productTypeCode;
-
-    /**
-     * 商品类型名称
-     */
-    private String productTypeName;
 
     /**
      * 供应商编号
@@ -83,4 +72,12 @@ public class BmsProductQueryListRspDTO {
      * 删除标识
      */
     private String deleteFlag;
+    /**
+     * 图片
+     */
+    private String pictureUrls;
+
+    private String productCategoryName;
+
+    private String productTypeName;
 }

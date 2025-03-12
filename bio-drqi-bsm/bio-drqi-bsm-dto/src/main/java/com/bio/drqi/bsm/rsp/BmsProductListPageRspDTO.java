@@ -21,7 +21,7 @@ public class BmsProductListPageRspDTO {
     /**
      * 商品内部编号
      */
-    private String projectInnerCode;
+    private String productInnerCode;
 
     /**
      * 商品类别编号
@@ -29,20 +29,9 @@ public class BmsProductListPageRspDTO {
     private String productCategoryCode;
 
     /**
-     * 商品类别名称
-     */
-    private String productCategoryName;
-
-
-    /**
      * 商品类型编号
      */
     private String productTypeCode;
-
-    /**
-     * 商品类型名称
-     */
-    private String productTypeName;
 
     /**
      * 供应商编号
@@ -62,7 +51,7 @@ public class BmsProductListPageRspDTO {
     /**
      * 商品规格
      */
-    private String productSku;
+    private String productSpecs;
 
     /**
      * 创建日期
@@ -78,4 +67,17 @@ public class BmsProductListPageRspDTO {
      * 创建人名称
      */
     private String createUserName;
+
+    /**
+     * 删除标识
+     */
+    private String deleteFlag;
+    /**
+     * 图片
+     */
+    private String pictureUrls;
+
+    private String productCategoryName;
+
+    private String productTypeName;
 }

@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.system.req;
 
-import com.bio.drqi.manage.validator.EnumValue;
+import com.bio.common.core.util.EnumValue;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;

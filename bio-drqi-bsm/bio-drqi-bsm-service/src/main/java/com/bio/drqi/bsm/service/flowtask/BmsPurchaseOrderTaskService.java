@@ -153,16 +153,6 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 if (BioBsmContents.Y.equals(bmsBrandTb.getDeleteFlag())) {
                     throw new BusinessException("品牌已经删除");
                 }
-                List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectAllByProductNameAndBrandCode(product.getProductName(), product.getBrandCode());
-                if (CollectionUtil.isNotEmpty(bmsProductTbList)) {
-                    for (BmsProductTb bmsProductTb : bmsProductTbList) {
-                        if (product.getProductSpecs().toLowerCase().replace(" ", "").equals(bmsProductTb.getProductSpecs().toLowerCase().replace(" ", ""))) {
-                            log.info("已有此规格的耗材: " + JSONUtil.toJsonStr(bmsProductTbList));
-                            throw new BusinessException("已有此规格的耗材：" + bmsProductTb.getProductSpecs());
-                        }
-                    }
-                }
-
             }
         }
     }

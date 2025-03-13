@@ -188,6 +188,18 @@ public class BioTaskController {
         return ResponseResult.getSuccess(bioTaskService.listAllTaskType(category));
     }
 
+
+    /**
+     * 根据任务类型查询某一个工单配置
+     * @param taskTypeCode
+     * @return
+     */
+    @GetMapping("listOneTaskType")
+    @WebLog(desc = "查询所有工单类型")
+    public ResponseResult<BioTaskTypeListRspDTO> listOneTaskType(@RequestParam  String taskTypeCode) {
+        return ResponseResult.getSuccess(bioTaskService.listOneTaskType(taskTypeCode));
+    }
+
     /**
      * 工单条件查询(目前无调用)
      * @param queryListReqDTO

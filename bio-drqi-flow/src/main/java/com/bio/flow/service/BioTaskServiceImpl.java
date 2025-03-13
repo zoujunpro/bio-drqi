@@ -257,6 +257,23 @@ public class BioTaskServiceImpl implements BioTaskService {
     }
 
     @Override
+    public BioTaskTypeListRspDTO listOneTaskType(String taskTypeCode) {
+        BioTaskConf bioTaskConf = bioTaskConfMapper.selectOneByTaskTypeCode(taskTypeCode);
+        if (bioTaskConf == null) {
+            throw new BusinessException("暂未配置此流程，请联系开发人员配置");
+        }
+        if (!flowService.queryCanApplyList(bioTaskConf.getProcessId()).contains(String.valueOf(SecurityContextHolder.getUserId()))) {
+            throw new BusinessException("改流程未未给您配置访问权限，如果需要，请联系部门负责人");
+        }
+        BioTaskTypeListRspDTO bioTaskTypeListRspDTO = new BioTaskTypeListRspDTO();
+        bioTaskTypeListRspDTO.setTaskTypeName(bioTaskConf.getTaskTypeName());
+        bioTaskTypeListRspDTO.setTaskTypeCode(bioTaskConf.getTaskTypeCode());
+        bioTaskTypeListRspDTO.setProcessId(String.valueOf(bioTaskConf.getProcessId()));
+        bioTaskTypeListRspDTO.setTaskCategory(bioTaskConf.getTaskCategory());
+        return bioTaskTypeListRspDTO;
+    }
+
+    @Override
     public List<QueryListRspDTO> queryList(QueryListReqDTO queryListReqDTO) {
         List<QueryListRspDTO> queryListRspDTOList = new ArrayList<>();
         List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskTypeCodeAndApplyUserIdOrderByIdDesc(queryListReqDTO.getTaskTypeCode(), SecurityContextHolder.getUserId());

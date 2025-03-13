@@ -4,6 +4,7 @@ package com.bio.flow.service;
 import com.bio.drqi.enums.QueryTypeEnum;
 import com.bio.flow.dto.*;
 import com.github.pagehelper.PageInfo;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.util.List;
@@ -51,6 +52,8 @@ public interface BioTaskService {
 
 
     List<BioTaskTypeListRspDTO> listAllTaskType(String category);
+
+    BioTaskTypeListRspDTO listOneTaskType( String taskTypeCode);
 
 
     List<QueryListRspDTO> queryList(QueryListReqDTO queryListReqDTO);

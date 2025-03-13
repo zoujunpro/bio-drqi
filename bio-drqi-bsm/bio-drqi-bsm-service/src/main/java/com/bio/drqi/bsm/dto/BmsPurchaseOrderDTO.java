@@ -27,11 +27,11 @@ public class BmsPurchaseOrderDTO {
     private String unitCode;
 
     /**
-     *采购部门
+     * 采购部门
      */
     @NotBlank(message = "请填写采购部门")
     private String purchaseDepartment;
-/*    *//**
+    /*    *//**
      *采购类型编号
      *//*
     private String purchaseTypeCode;
@@ -73,7 +73,7 @@ public class BmsPurchaseOrderDTO {
     private BigDecimal purchaseTotalAmount;
 
     @Data
-    public static class Product{
+    public static class Product {
         /**
          * 归属项目编号
          */
@@ -85,9 +85,20 @@ public class BmsPurchaseOrderDTO {
         private String brandCode;
 
         /**
+         * 供应商名称
+         */
+
+        private String supplierName;
+
+        /**
          * 供应商编号
          */
         private String supplierCode;
+
+        /**
+         * 商品id
+         */
+        private Integer productId;
 
         /**
          * 商品名称
@@ -133,16 +144,16 @@ public class BmsPurchaseOrderDTO {
         private Integer currentStockNum;
 
         /**
-         *采购数量
+         * 采购数量
          */
         private Integer purchaseNumber;
         /**
-         *采购单价
+         * 采购单价
          */
         private BigDecimal purchasePrice;
 
         /**
-         *采购金额
+         * 采购金额
          */
         private BigDecimal purchaseAmount;
 

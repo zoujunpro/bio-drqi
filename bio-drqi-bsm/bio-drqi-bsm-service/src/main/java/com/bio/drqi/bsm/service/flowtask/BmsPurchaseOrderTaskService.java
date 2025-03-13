@@ -54,6 +54,9 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
         //商品校验
         productValid(bmsPurchaseOrderDTO);
 
+        //数据重新塞入到json
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(bmsPurchaseOrderDTO));
+
 
     }
 
@@ -62,6 +65,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         BmsPurchaseOrderDTO bmsPurchaseOrderDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsPurchaseOrderDTO.class);
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            //插入订单
             BmsOrderTb bmsOrderTb = initBmsOrderTb(bioTaskDtlTb, bmsPurchaseOrderDTO);
             //插入订单明细
             createOrderDetail(bioTaskDtlTb, bmsPurchaseOrderDTO, bmsOrderTb);

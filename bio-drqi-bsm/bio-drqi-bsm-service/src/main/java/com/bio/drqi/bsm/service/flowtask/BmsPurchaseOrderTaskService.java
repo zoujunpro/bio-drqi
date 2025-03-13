@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
-@Service
+@Service("bms_purchase_apply")
 @Slf4j
 public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
 

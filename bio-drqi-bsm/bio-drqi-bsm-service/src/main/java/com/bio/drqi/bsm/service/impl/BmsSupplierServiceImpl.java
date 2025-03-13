@@ -12,6 +12,7 @@ import com.bio.drqi.bsm.req.BmsSupplierListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsSupplierQueryByBrandCodeRspDTO;
 import com.bio.drqi.bsm.service.BmsSupplierService;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.domain.BmsBrandTb;
@@ -57,6 +58,23 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
     }
 
     @Override
+    public BmsSupplierQueryByBrandCodeRspDTO queryByBrandCode(String brandCode) {
+        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(brandCode);
+        if (bmsBrandTb == null) {
+            throw new BusinessException("品牌不存在");
+        }
+        BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(bmsBrandTb.getSupplierCode());
+        if(bmsSupplierTb==null){
+            throw new BusinessException("供应商不存在");
+        }
+
+        BmsSupplierQueryByBrandCodeRspDTO bmsSupplierQueryByBrandCodeRspDTO=new BmsSupplierQueryByBrandCodeRspDTO();
+        bmsSupplierQueryByBrandCodeRspDTO.setSupplierName(bmsSupplierTb.getSupplierName());
+        bmsSupplierQueryByBrandCodeRspDTO.setSupplierCode(bmsSupplierTb.getSupplierCode());
+        return bmsSupplierQueryByBrandCodeRspDTO;
+    }
+
+    @Override
     public void add(BmsSupplierAddReqDTO bmsSupplierAddReqDTO) {
         if (Objects.nonNull(bmsSupplierTbMapper.selectOneBySupplierCode(bmsSupplierAddReqDTO.getSupplierCode()))) {
             throw new BusinessException("供应商编码重复");
@@ -93,14 +111,14 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
 
     @Override
     public void edit(BmsSupplierEditReqDTO bmsSupplierEditReqDTO) {
-        BmsSupplierTb bmsSupplierTb= bmsSupplierTbMapper.selectById(bmsSupplierEditReqDTO.getId());
-        if(bmsSupplierTb==null){
+        BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectById(bmsSupplierEditReqDTO.getId());
+        if (bmsSupplierTb == null) {
             throw new BusinessException("供应商不存在");
         }
-        if(BioDrQiContents.Y.equals(bmsSupplierTb.getDeleteFlag())){
+        if (BioDrQiContents.Y.equals(bmsSupplierTb.getDeleteFlag())) {
             throw new BusinessException("供应商已删除");
         }
-        BeanUtils.copyProperties(bmsSupplierEditReqDTO,bmsSupplierTb);
+        BeanUtils.copyProperties(bmsSupplierEditReqDTO, bmsSupplierTb);
         bmsSupplierTbMapper.updateById(bmsSupplierTb);
 
 
@@ -108,8 +126,8 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
 
     @Override
     public BmsBrandDetailRspDTO detail(Integer id) {
-       BmsSupplierTb bmsSupplierTb= bmsSupplierTbMapper.selectById(id);
-       return BeanUtils.copyProperties(bmsSupplierTb,BmsBrandDetailRspDTO.class);
+        BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectById(id);
+        return BeanUtils.copyProperties(bmsSupplierTb, BmsBrandDetailRspDTO.class);
     }
 
     @Override

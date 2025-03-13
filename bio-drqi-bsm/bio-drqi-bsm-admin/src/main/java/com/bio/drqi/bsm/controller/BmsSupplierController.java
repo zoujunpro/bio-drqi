@@ -10,8 +10,10 @@ import com.bio.drqi.bsm.req.BmsSupplierListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsSupplierQueryByBrandCodeRspDTO;
 import com.bio.drqi.bsm.service.BmsSupplierService;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -49,6 +51,18 @@ public class BmsSupplierController {
     @WebLog(desc = "供应商管理-查询全部")
     public ResponseResult<List<BmsSupplierListAllRspDTO>> listALl() {
         return ResponseResult.getSuccess(bmsSupplierService.listALl());
+    }
+
+
+    /**
+     * 供应商管理-根据品牌反查供应商
+     *
+     * @return
+     */
+    @GetMapping("/queryByBrandCode")
+    @WebLog(desc = "供应商管理-根据品牌反查供应商")
+    public ResponseResult<BmsSupplierQueryByBrandCodeRspDTO> queryByBrandCode(@RequestParam @Validated String brandCode){
+        return ResponseResult.getSuccess(bmsSupplierService.queryByBrandCode(brandCode));
     }
 
     /**

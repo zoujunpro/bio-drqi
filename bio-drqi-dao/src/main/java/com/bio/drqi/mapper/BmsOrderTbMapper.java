@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.BmsOrderTb;
@@ -13,6 +14,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface BmsOrderTbMapper extends BaseMapper<BmsOrderTb> {
 
     BmsOrderTb selectOneByTaskNum(@Param("taskNum") String taskNum);
+
+    List<BmsOrderTb> selectAllOrderByIdDesc();
+
+    List<BmsOrderTb> selectSelective(BmsOrderTb bmsOrderTb);
 
 }
 

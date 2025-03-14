@@ -3,15 +3,13 @@ package com.bio.drqi.bsm.controller;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsOrderListPageReqDTO;
+import com.bio.drqi.bsm.rsp.BmsOrderDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsOrderService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -45,6 +43,15 @@ public class BmsOrderController {
     @WebLog(desc = "采购订单管理-查询全部")
     public ResponseResult<List<BmsOrderListAllRspDTO>> listALl() {
         return ResponseResult.getSuccess(bmsOrderService.listALl());
+    }
+    /**
+     * 采购订单管理-详情
+     * @return
+     */
+    @GetMapping("/detail")
+    @WebLog(desc = "采购订单管理-详情")
+    public ResponseResult<BmsOrderDetailRspDTO> detail(@RequestParam Integer id) {
+        return ResponseResult.getSuccess(bmsOrderService.detail(id));
     }
 
 }

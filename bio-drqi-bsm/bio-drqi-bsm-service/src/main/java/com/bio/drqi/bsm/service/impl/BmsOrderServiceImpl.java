@@ -1,7 +1,9 @@
 package com.bio.drqi.bsm.service.impl;
 
+import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.bsm.req.BmsOrderListPageReqDTO;
+import com.bio.drqi.bsm.rsp.BmsOrderDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductCategoryListPageRspDTO;
@@ -38,5 +40,15 @@ public class BmsOrderServiceImpl implements BmsOrderService {
     public List<BmsOrderListAllRspDTO> listALl() {
         List<BmsOrderTb> bmsOrderTbList = bmsOrderTbMapper.selectAllOrderByIdDesc();
         return BeanUtils.copyListProperties(bmsOrderTbList, BmsOrderListAllRspDTO.class);
+    }
+
+    @Override
+    public BmsOrderDetailRspDTO detail(Integer id) {
+        BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectById(id);
+        if(bmsOrderTb==null){
+            throw new BusinessException("找不到订单信息");
+        }
+
+        return BeanUtils.copyProperties(bmsOrderTb,BmsOrderDetailRspDTO.class);
     }
 }

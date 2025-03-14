@@ -55,27 +55,27 @@
         <include refid="Base_Column_List"/>
         from bms_order_tb
         <where>
-            <if test="orderNum != null and orderNum!=''">order_num=#{orderNum,jdbcType=VARCHAR}</if>
-            <if test="applyUserId != null">apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
-            <if test="applyUserName != null">apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
-            <if test="applyUserDepartment != null and applyUserDepartment!=''">apply_user_department=#{applyUserDepartment,jdbcType=VARCHAR}</if>
-            <if test="applyTime != null and applyTime!=''">apply_time=#{applyTime,jdbcType=VARCHAR}</if>
-            <if test="purchaseDepartment != null and purchaseDepartment!=''">purchase_department=#{purchaseDepartment,jdbcType=VARCHAR}</if>
-            <if test="applyUnitCode != null and applyUnitCode!=''">apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
-            <if test="applyUnitName != null and applyUnitName!=''">apply_unit_name=#{applyUnitName,jdbcType=VARCHAR}</if>
-            <if test="contractUrls != null">contract_urls=#{contractUrls,jdbcType=VARCHAR}</if>
-            <if test="purchaseDate != null">purchase_date=#{purchaseDate,jdbcType=VARCHAR}</if>
-            <if test="purchaseTypeCode != null">purchase_type_code=#{purchaseTypeCode,jdbcType=VARCHAR}</if>
-            <if test="purchaseTypeName != null">purchase_type_name=#{purchaseTypeName,jdbcType=VARCHAR}</if>
-            <if test="purchaseReasonRemark != null">purchase_reason_remark=#{purchaseReasonRemark,jdbcType=VARCHAR}
+            <if test="orderNum != null and orderNum!=''">and  order_num=#{orderNum,jdbcType=VARCHAR}</if>
+            <if test="applyUserId != null">and  apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
+            <if test="applyUserName != null">and  apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
+            <if test="applyUserDepartment != null and applyUserDepartment!=''">and  apply_user_department=#{applyUserDepartment,jdbcType=VARCHAR}</if>
+            <if test="applyTime != null and applyTime!=''">and  apply_time=#{applyTime,jdbcType=VARCHAR}</if>
+            <if test="purchaseDepartment != null and purchaseDepartment!=''">and  purchase_department=#{purchaseDepartment,jdbcType=VARCHAR}</if>
+            <if test="applyUnitCode != null and applyUnitCode!=''">and  apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
+            <if test="applyUnitName != null and applyUnitName!=''">and  apply_unit_name=#{applyUnitName,jdbcType=VARCHAR}</if>
+            <if test="contractUrls != null">and  contract_urls=#{contractUrls,jdbcType=VARCHAR}</if>
+            <if test="purchaseDate != null">and  purchase_date=#{purchaseDate,jdbcType=VARCHAR}</if>
+            <if test="purchaseTypeCode != null">and  purchase_type_code=#{purchaseTypeCode,jdbcType=VARCHAR}</if>
+            <if test="purchaseTypeName != null">and  purchase_type_name=#{purchaseTypeName,jdbcType=VARCHAR}</if>
+            <if test="purchaseReasonRemark != null">and  purchase_reason_remark=#{purchaseReasonRemark,jdbcType=VARCHAR}
             </if>
-            <if test="demandRequireTime != null">demand_require_time=#{demandRequireTime,jdbcType=VARCHAR}</if>
-            <if test="demandUsageTime != null">demand_usage_time=#{demandUsageTime,jdbcType=VARCHAR}</if>
-            <if test="invoiceUrls != null">invoice_urls=#{invoiceUrls,jdbcType=VARCHAR}</if>
-            <if test="attachmentUrls != null">attachment_urls=#{attachmentUrls,jdbcType=VARCHAR}</if>
-            <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP}</if>
-            <if test="taskNum != null">task_num=#{taskNum,jdbcType=VARCHAR}</if>
-            <if test="reportAccountTime != null">report_account_time=#{reportAccountTime,jdbcType=VARCHAR}</if>
+            <if test="demandRequireTime != null">and  demand_require_time=#{demandRequireTime,jdbcType=VARCHAR}</if>
+            <if test="demandUsageTime != null">and  demand_usage_time=#{demandUsageTime,jdbcType=VARCHAR}</if>
+            <if test="invoiceUrls != null">and  invoice_urls=#{invoiceUrls,jdbcType=VARCHAR}</if>
+            <if test="attachmentUrls != null">and  attachment_urls=#{attachmentUrls,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and  create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="taskNum != null">and  task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="reportAccountTime != null">and  report_account_time=#{reportAccountTime,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

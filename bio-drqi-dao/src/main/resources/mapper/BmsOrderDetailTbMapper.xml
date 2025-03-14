@@ -40,4 +40,11 @@
         product_category_name,create_time,apply_user_id,
         apply_user_name,task_num
     </sql>
+    <select id="selectAllByOrderNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_order_detail_tb
+        where
+        order_num = #{orderNum,jdbcType=VARCHAR}
+    </select>
 </mapper>

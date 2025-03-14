@@ -150,12 +150,12 @@ public class BmsPurchaseOrderDTO {
         /**
          * 采购单价
          */
-        private BigDecimal purchasePrice;
+        private String purchasePrice;
 
         /**
          * 采购金额
          */
-        private BigDecimal purchaseAmount;
+        private String purchaseAmount;
 
     }
 

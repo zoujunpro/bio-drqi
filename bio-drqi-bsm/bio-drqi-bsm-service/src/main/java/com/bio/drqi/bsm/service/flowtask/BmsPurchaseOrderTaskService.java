@@ -19,6 +19,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -118,9 +119,9 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setProductName(product.getProductName());
                 bmsOrderDetailTb.setProductSku(product.getProductCode());
                 bmsOrderDetailTb.setProductOutCode(product.getProductCode());
-                bmsOrderDetailTb.setPurchasePrice(product.getPurchasePrice());
+                bmsOrderDetailTb.setPurchasePrice(new BigDecimal(product.getPurchasePrice()));
                 bmsOrderDetailTb.setPurchaseNumber(product.getPurchaseNumber());
-                bmsOrderDetailTb.setPayAmount(product.getPurchaseAmount());
+                bmsOrderDetailTb.setPayAmount(new BigDecimal(product.getPurchaseAmount()));
                 bmsOrderDetailTb.setProductCategoryCode(product.getProductCategoryCode());
                 bmsOrderDetailTb.setProductCategoryName(product.getProductCategoryName());
                 bmsOrderDetailTb.setCreateTime(new Date());

@@ -41,7 +41,7 @@ public class BmsOrderController {
      * 采购订单管理-查询全部
      * @return
      */
-    @PostMapping("/listPage")
+    @PostMapping("/listALl")
     @WebLog(desc = "采购订单管理-查询全部")
     public ResponseResult<List<BmsOrderListAllRspDTO>> listALl() {
         return ResponseResult.getSuccess(bmsOrderService.listALl());

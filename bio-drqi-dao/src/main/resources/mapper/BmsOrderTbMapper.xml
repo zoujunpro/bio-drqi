@@ -51,8 +51,10 @@
         order by id desc
     </select>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsOrderTb">
-        update bms_order_tb
-        <set>
+        select
+        <include refid="Base_Column_List"/>
+        from bms_order_tb
+        <where>
             <if test="orderNum != null and orderNum!=''">order_num=#{orderNum,jdbcType=VARCHAR}</if>
             <if test="applyUserId != null">apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
             <if test="applyUserName != null">apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
@@ -74,7 +76,7 @@
             <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="taskNum != null">task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="reportAccountTime != null">report_account_time=#{reportAccountTime,jdbcType=VARCHAR}</if>
-        </set>
-        where id = #{id,jdbcType=NUMERIC}
+        </where>
+        order by id desc
     </select>
 </mapper>

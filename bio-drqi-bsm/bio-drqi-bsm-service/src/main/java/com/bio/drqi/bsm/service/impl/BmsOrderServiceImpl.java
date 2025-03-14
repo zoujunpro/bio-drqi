@@ -4,6 +4,7 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.bsm.req.BmsOrderListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsProductCategoryListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsOrderService;
 import com.bio.drqi.domain.BmsOrderTb;
 import com.bio.drqi.mapper.BmsOrderTbMapper;
@@ -30,7 +31,6 @@ public class BmsOrderServiceImpl implements BmsOrderService {
         List<BmsOrderTb> bmsOrderTbList = bmsOrderTbMapper.selectSelective(BeanUtils.copyProperties(bmsOrderListPageReqDTO, BmsOrderTb.class));
 
         PageInfo<BmsOrderTb> srcPageInfo = new PageInfo<>(bmsOrderTbList);
-
         return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsOrderListPageRspDTO.class);
     }
 

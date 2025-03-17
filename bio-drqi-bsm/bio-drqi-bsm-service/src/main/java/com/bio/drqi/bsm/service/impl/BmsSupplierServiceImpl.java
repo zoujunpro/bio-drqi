@@ -99,7 +99,7 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
         bmsSupplierTb.setContactUserTelephone(bmsSupplierAddReqDTO.getContactUserTelephone());
         bmsSupplierTb.setKahunaUserName(bmsSupplierAddReqDTO.getKahunaUserName());
         bmsSupplierTb.setKahunaUserId(bmsSupplierAddReqDTO.getKahunaUserId());
-        bmsSupplierTb.setRemak(bmsSupplierAddReqDTO.getRemak());
+        bmsSupplierTb.setRemark(bmsSupplierAddReqDTO.getRemark());
         bmsSupplierTb.setCreateTime(new Date());
         bmsSupplierTb.setCreateUserName(SecurityContextHolder.getNickName());
         bmsSupplierTb.setCreateUserId(SecurityContextHolder.getUserId());

@@ -85,7 +85,7 @@ public class BmsSupplierAddReqDTO {
     /**
      * 备注
      */
-    private String remak;
+    private String remark;
 
 
 }

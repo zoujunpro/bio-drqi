@@ -16,7 +16,7 @@ public class BmsProductStockOutLog implements Serializable {
     /**
      * 主键ID
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -52,17 +52,12 @@ public class BmsProductStockOutLog implements Serializable {
     /**
      * 商品规格
      */
-    private String productSku;
+    private String productSpecs;
 
     /**
      * 商品批次
      */
     private String batchNo;
-
-    /**
-     * 库存ID
-     */
-    private Integer stockId;
 
     /**
      * 研发项目
@@ -103,6 +98,16 @@ public class BmsProductStockOutLog implements Serializable {
      * 出库类型 1正常出库 2退货出库
      */
     private String outType;
+
+    /**
+     * 库编号
+     */
+    private String stockCode;
+
+    /**
+     * 库存位置编号
+     */
+    private String stockLocationNumber;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -208,15 +213,15 @@ public class BmsProductStockOutLog implements Serializable {
     /**
      * 商品规格
      */
-    public String getProductSku() {
-        return productSku;
+    public String getProductSpecs() {
+        return productSpecs;
     }
 
     /**
      * 商品规格
      */
-    public void setProductSku(String productSku) {
-        this.productSku = productSku;
+    public void setProductSpecs(String productSpecs) {
+        this.productSpecs = productSpecs;
     }
 
     /**
@@ -231,20 +236,6 @@ public class BmsProductStockOutLog implements Serializable {
      */
     public void setBatchNo(String batchNo) {
         this.batchNo = batchNo;
-    }
-
-    /**
-     * 库存ID
-     */
-    public Integer getStockId() {
-        return stockId;
-    }
-
-    /**
-     * 库存ID
-     */
-    public void setStockId(Integer stockId) {
-        this.stockId = stockId;
     }
 
     /**
@@ -359,6 +350,34 @@ public class BmsProductStockOutLog implements Serializable {
         this.outType = outType;
     }
 
+    /**
+     * 库编号
+     */
+    public String getStockCode() {
+        return stockCode;
+    }
+
+    /**
+     * 库编号
+     */
+    public void setStockCode(String stockCode) {
+        this.stockCode = stockCode;
+    }
+
+    /**
+     * 库存位置编号
+     */
+    public String getStockLocationNumber() {
+        return stockLocationNumber;
+    }
+
+    /**
+     * 库存位置编号
+     */
+    public void setStockLocationNumber(String stockLocationNumber) {
+        this.stockLocationNumber = stockLocationNumber;
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -378,9 +397,8 @@ public class BmsProductStockOutLog implements Serializable {
             && (this.getProductCategoryName() == null ? other.getProductCategoryName() == null : this.getProductCategoryName().equals(other.getProductCategoryName()))
             && (this.getBrandCode() == null ? other.getBrandCode() == null : this.getBrandCode().equals(other.getBrandCode()))
             && (this.getBrandName() == null ? other.getBrandName() == null : this.getBrandName().equals(other.getBrandName()))
-            && (this.getProductSku() == null ? other.getProductSku() == null : this.getProductSku().equals(other.getProductSku()))
+            && (this.getProductSpecs() == null ? other.getProductSpecs() == null : this.getProductSpecs().equals(other.getProductSpecs()))
             && (this.getBatchNo() == null ? other.getBatchNo() == null : this.getBatchNo().equals(other.getBatchNo()))
-            && (this.getStockId() == null ? other.getStockId() == null : this.getStockId().equals(other.getStockId()))
             && (this.getProjectCode() == null ? other.getProjectCode() == null : this.getProjectCode().equals(other.getProjectCode()))
             && (this.getOutNumber() == null ? other.getOutNumber() == null : this.getOutNumber().equals(other.getOutNumber()))
             && (this.getApplyUserId() == null ? other.getApplyUserId() == null : this.getApplyUserId().equals(other.getApplyUserId()))
@@ -388,7 +406,9 @@ public class BmsProductStockOutLog implements Serializable {
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getTaskNum() == null ? other.getTaskNum() == null : this.getTaskNum().equals(other.getTaskNum()))
             && (this.getRemark() == null ? other.getRemark() == null : this.getRemark().equals(other.getRemark()))
-            && (this.getOutType() == null ? other.getOutType() == null : this.getOutType().equals(other.getOutType()));
+            && (this.getOutType() == null ? other.getOutType() == null : this.getOutType().equals(other.getOutType()))
+            && (this.getStockCode() == null ? other.getStockCode() == null : this.getStockCode().equals(other.getStockCode()))
+            && (this.getStockLocationNumber() == null ? other.getStockLocationNumber() == null : this.getStockLocationNumber().equals(other.getStockLocationNumber()));
     }
 
     @Override
@@ -402,9 +422,8 @@ public class BmsProductStockOutLog implements Serializable {
         result = prime * result + ((getProductCategoryName() == null) ? 0 : getProductCategoryName().hashCode());
         result = prime * result + ((getBrandCode() == null) ? 0 : getBrandCode().hashCode());
         result = prime * result + ((getBrandName() == null) ? 0 : getBrandName().hashCode());
-        result = prime * result + ((getProductSku() == null) ? 0 : getProductSku().hashCode());
+        result = prime * result + ((getProductSpecs() == null) ? 0 : getProductSpecs().hashCode());
         result = prime * result + ((getBatchNo() == null) ? 0 : getBatchNo().hashCode());
-        result = prime * result + ((getStockId() == null) ? 0 : getStockId().hashCode());
         result = prime * result + ((getProjectCode() == null) ? 0 : getProjectCode().hashCode());
         result = prime * result + ((getOutNumber() == null) ? 0 : getOutNumber().hashCode());
         result = prime * result + ((getApplyUserId() == null) ? 0 : getApplyUserId().hashCode());
@@ -413,6 +432,8 @@ public class BmsProductStockOutLog implements Serializable {
         result = prime * result + ((getTaskNum() == null) ? 0 : getTaskNum().hashCode());
         result = prime * result + ((getRemark() == null) ? 0 : getRemark().hashCode());
         result = prime * result + ((getOutType() == null) ? 0 : getOutType().hashCode());
+        result = prime * result + ((getStockCode() == null) ? 0 : getStockCode().hashCode());
+        result = prime * result + ((getStockLocationNumber() == null) ? 0 : getStockLocationNumber().hashCode());
         return result;
     }
 
@@ -429,9 +450,8 @@ public class BmsProductStockOutLog implements Serializable {
         sb.append(", productCategoryName=").append(productCategoryName);
         sb.append(", brandCode=").append(brandCode);
         sb.append(", brandName=").append(brandName);
-        sb.append(", productSku=").append(productSku);
+        sb.append(", productSpecs=").append(productSpecs);
         sb.append(", batchNo=").append(batchNo);
-        sb.append(", stockId=").append(stockId);
         sb.append(", projectCode=").append(projectCode);
         sb.append(", outNumber=").append(outNumber);
         sb.append(", applyUserId=").append(applyUserId);
@@ -440,6 +460,8 @@ public class BmsProductStockOutLog implements Serializable {
         sb.append(", taskNum=").append(taskNum);
         sb.append(", remark=").append(remark);
         sb.append(", outType=").append(outType);
+        sb.append(", stockCode=").append(stockCode);
+        sb.append(", stockLocationNumber=").append(stockLocationNumber);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

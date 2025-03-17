@@ -134,6 +134,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setApplyUnitCode(bmsOrderTb.getApplyUnitCode());
                 bmsOrderDetailTb.setApplyUnitName(bmsOrderTb.getApplyUnitName());
                 bmsOrderDetailTb.setPurchaseDepartment(bmsOrderTb.getPurchaseDepartment());
+                bmsOrderDetailTb.setReceiveNumber(0);
                 bmsOrderDetailTbMapper.insert(bmsOrderDetailTb);
             }
         }
@@ -191,6 +192,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
         bmsOrderTb.setCreateTime(new Date());
         bmsOrderTb.setTaskNum(bioTaskDtlTb.getTaskNum());
         bmsOrderTb.setReportAccountTime(bmsPurchaseOrderDTO.getDemandRequireTime());
+        bmsOrderTb.setOverFlag(BioBsmContents.N);
         bmsOrderTbMapper.insert(bmsOrderTb);
         return bmsOrderTb;
     }

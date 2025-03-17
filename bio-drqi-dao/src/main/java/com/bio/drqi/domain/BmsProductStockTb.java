@@ -16,7 +16,7 @@ public class BmsProductStockTb implements Serializable {
     /**
      * 主键ID
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -52,7 +52,7 @@ public class BmsProductStockTb implements Serializable {
     /**
      * 商品规格
      */
-    private String productSku;
+    private String productSpecs;
 
     /**
      * 商品批次
@@ -198,15 +198,15 @@ public class BmsProductStockTb implements Serializable {
     /**
      * 商品规格
      */
-    public String getProductSku() {
-        return productSku;
+    public String getProductSpecs() {
+        return productSpecs;
     }
 
     /**
      * 商品规格
      */
-    public void setProductSku(String productSku) {
-        this.productSku = productSku;
+    public void setProductSpecs(String productSpecs) {
+        this.productSpecs = productSpecs;
     }
 
     /**
@@ -340,7 +340,7 @@ public class BmsProductStockTb implements Serializable {
             && (this.getProductCategoryName() == null ? other.getProductCategoryName() == null : this.getProductCategoryName().equals(other.getProductCategoryName()))
             && (this.getBrandCode() == null ? other.getBrandCode() == null : this.getBrandCode().equals(other.getBrandCode()))
             && (this.getBrandName() == null ? other.getBrandName() == null : this.getBrandName().equals(other.getBrandName()))
-            && (this.getProductSku() == null ? other.getProductSku() == null : this.getProductSku().equals(other.getProductSku()))
+            && (this.getProductSpecs() == null ? other.getProductSpecs() == null : this.getProductSpecs().equals(other.getProductSpecs()))
             && (this.getBatchNo() == null ? other.getBatchNo() == null : this.getBatchNo().equals(other.getBatchNo()))
             && (this.getTotalStoreNumber() == null ? other.getTotalStoreNumber() == null : this.getTotalStoreNumber().equals(other.getTotalStoreNumber()))
             && (this.getCurrentStockNumber() == null ? other.getCurrentStockNumber() == null : this.getCurrentStockNumber().equals(other.getCurrentStockNumber()))
@@ -362,7 +362,7 @@ public class BmsProductStockTb implements Serializable {
         result = prime * result + ((getProductCategoryName() == null) ? 0 : getProductCategoryName().hashCode());
         result = prime * result + ((getBrandCode() == null) ? 0 : getBrandCode().hashCode());
         result = prime * result + ((getBrandName() == null) ? 0 : getBrandName().hashCode());
-        result = prime * result + ((getProductSku() == null) ? 0 : getProductSku().hashCode());
+        result = prime * result + ((getProductSpecs() == null) ? 0 : getProductSpecs().hashCode());
         result = prime * result + ((getBatchNo() == null) ? 0 : getBatchNo().hashCode());
         result = prime * result + ((getTotalStoreNumber() == null) ? 0 : getTotalStoreNumber().hashCode());
         result = prime * result + ((getCurrentStockNumber() == null) ? 0 : getCurrentStockNumber().hashCode());
@@ -387,7 +387,7 @@ public class BmsProductStockTb implements Serializable {
         sb.append(", productCategoryName=").append(productCategoryName);
         sb.append(", brandCode=").append(brandCode);
         sb.append(", brandName=").append(brandName);
-        sb.append(", productSku=").append(productSku);
+        sb.append(", productSpecs=").append(productSpecs);
         sb.append(", batchNo=").append(batchNo);
         sb.append(", totalStoreNumber=").append(totalStoreNumber);
         sb.append(", currentStockNumber=").append(currentStockNumber);

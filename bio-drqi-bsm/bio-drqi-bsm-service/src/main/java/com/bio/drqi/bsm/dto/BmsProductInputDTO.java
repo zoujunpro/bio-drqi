@@ -2,25 +2,26 @@ package com.bio.drqi.bsm.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Data
 public class BmsProductInputDTO {
 
+    @NotBlank(message = "入库参数缺少：订单明细")
     private String orderDetailNum;
 
     /**
      * 批次号
      */
+
     private String batchNo;
 
     /**
      * 入库数量
      */
-    private String number;
-
-    /**
-     * 库存编号
-     */
-    private String stockCode;
+    @NotNull(message = "入库参数缺少：入库数量")
+    private Integer number;
 
     /**
      * 库存位置号

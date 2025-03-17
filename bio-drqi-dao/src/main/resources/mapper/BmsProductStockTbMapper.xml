@@ -12,7 +12,7 @@
             <result property="productCategoryName" column="product_category_name" jdbcType="VARCHAR"/>
             <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
             <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
-            <result property="productSku" column="product_sku" jdbcType="VARCHAR"/>
+            <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
             <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
             <result property="totalStoreNumber" column="total_store_number" jdbcType="INTEGER"/>
             <result property="currentStockNumber" column="current_stock_number" jdbcType="INTEGER"/>
@@ -26,7 +26,7 @@
     <sql id="Base_Column_List">
         id,product_name,product_out_code,
         product_category_code,product_category_name,brand_code,
-        brand_name,product_sku,batch_no,
+        brand_name,product_specs,batch_no,
         total_store_number,current_stock_number,total_out_number,
         product_price,stock_name,stock_code,
         stock_location_number

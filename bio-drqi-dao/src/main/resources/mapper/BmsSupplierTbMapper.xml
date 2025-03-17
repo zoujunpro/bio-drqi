@@ -64,7 +64,7 @@
             </if>
             <if test="kahunaUserName != null">and kahuna_user_name=#{kahunaUserName,jdbcType=VARCHAR}</if>
             <if test="kahunaUserId != null">and kahuna_user_id=#{kahunaUserId,jdbcType=NUMERIC}</if>
-            <if test="remak != null">and remak=#{remak,jdbcType=VARCHAR}</if>
+            <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>

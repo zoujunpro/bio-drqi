@@ -117,7 +117,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setBrandCode(bmsBrandTb.getBrandCode());
                 bmsOrderDetailTb.setBrandName(bmsBrandTb.getBrandName());
                 bmsOrderDetailTb.setProductName(product.getProductName());
-                bmsOrderDetailTb.setProductSku(product.getProductCode());
+                bmsOrderDetailTb.setProductSpecs(product.getProductSpecs());
                 bmsOrderDetailTb.setProductOutCode(product.getProductCode());
                 bmsOrderDetailTb.setPurchasePrice(new BigDecimal(product.getPurchasePrice()));
                 bmsOrderDetailTb.setPurchaseNumber(product.getPurchaseNumber());

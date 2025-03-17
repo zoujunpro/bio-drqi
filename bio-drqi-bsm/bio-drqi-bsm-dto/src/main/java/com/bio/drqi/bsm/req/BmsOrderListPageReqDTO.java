@@ -45,4 +45,11 @@ public class BmsOrderListPageReqDTO extends PageDTO {
     private String reportAccountTime;
 
 
+    /**
+     * 是否已经结束
+     */
+    private String overFlag;
+
+
+
 }

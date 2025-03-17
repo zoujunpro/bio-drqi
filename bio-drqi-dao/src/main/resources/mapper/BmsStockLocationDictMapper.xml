@@ -27,4 +27,12 @@
         where
         unit_code = #{unitCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectOneByUnitCodeAndLocaltionNumber" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_stock_location_dict
+        where
+        unit_code = #{unitCode,jdbcType=VARCHAR}
+        AND localtion_number = #{localtionNumber,jdbcType=VARCHAR}
+    </select>
 </mapper>

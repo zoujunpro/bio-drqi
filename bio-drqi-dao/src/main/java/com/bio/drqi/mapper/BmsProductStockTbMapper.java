@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.BmsProductStockTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -10,6 +11,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.drqi.domain.BmsProductStockTb
 */
 public interface BmsProductStockTbMapper extends BaseMapper<BmsProductStockTb> {
+
+    BmsProductStockTb selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNo(@Param("brandCode") String brandCode, @Param("productSpecs") String productSpecs, @Param("productName") String productName, @Param("batchNo") String batchNo);
 
 }
 

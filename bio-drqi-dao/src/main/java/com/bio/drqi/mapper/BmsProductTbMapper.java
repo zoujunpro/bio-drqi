@@ -19,6 +19,8 @@ public interface BmsProductTbMapper extends BaseMapper<BmsProductTb> {
     int updateDeleteFlagByBrandCode(@Param("deleteFlag") String deleteFlag, @Param("brandCode") String brandCode);
 
 
+    List<BmsProductTb> selectAllOrderByIdDesc();
+
     List<BmsProductTb> selectSelective(BmsProductTb bmsProductTb);
 
     List<BmsProductTb> selectAllByProductTypeCode(@Param("productTypeCode") String productTypeCode);

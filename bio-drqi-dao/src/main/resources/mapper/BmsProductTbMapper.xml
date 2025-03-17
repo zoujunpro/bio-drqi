@@ -92,5 +92,11 @@
         product_name = #{productName,jdbcType=VARCHAR}
         AND brand_code = #{brandCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_tb
+        order by id desc
+    </select>
 
 </mapper>

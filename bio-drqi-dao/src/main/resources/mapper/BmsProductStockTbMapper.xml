@@ -31,4 +31,14 @@
         product_price,stock_name,stock_code,
         stock_location_number
     </sql>
+    <select id="selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_tb
+        where
+        brand_code = #{brandCode,jdbcType=VARCHAR}
+        AND product_specs = #{productSpecs,jdbcType=VARCHAR}
+        AND product_name = #{productName,jdbcType=VARCHAR}
+        AND batch_no = #{batchNo,jdbcType=VARCHAR}
+    </select>
 </mapper>

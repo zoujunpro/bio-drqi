@@ -3,10 +3,10 @@ package com.bio.drqi.bsm.service.impl;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.bsm.req.BmsOrderListPageReqDTO;
+import com.bio.drqi.bsm.req.BmsOrderQueryListReqDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailRspDTO;
-import com.bio.drqi.bsm.rsp.BmsOrderListAllRspDTO;
+import com.bio.drqi.bsm.rsp.BmsOrderQueryListRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderListPageRspDTO;
-import com.bio.drqi.bsm.rsp.BmsProductCategoryListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsOrderService;
 import com.bio.drqi.domain.BmsOrderTb;
 import com.bio.drqi.mapper.BmsOrderTbMapper;
@@ -37,18 +37,19 @@ public class BmsOrderServiceImpl implements BmsOrderService {
     }
 
     @Override
-    public List<BmsOrderListAllRspDTO> listALl() {
-        List<BmsOrderTb> bmsOrderTbList = bmsOrderTbMapper.selectAllOrderByIdDesc();
-        return BeanUtils.copyListProperties(bmsOrderTbList, BmsOrderListAllRspDTO.class);
+    public List<BmsOrderQueryListRspDTO> queryList(BmsOrderQueryListReqDTO bmsOrderQueryListReqDTO) {
+        List<BmsOrderTb> bmsOrderTbList = bmsOrderTbMapper.selectSelective(BeanUtils.copyProperties(bmsOrderQueryListReqDTO, BmsOrderTb.class));
+        return BeanUtils.copyListProperties(bmsOrderTbList, BmsOrderQueryListRspDTO.class);
     }
+
 
     @Override
     public BmsOrderDetailRspDTO detail(Integer id) {
         BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectById(id);
-        if(bmsOrderTb==null){
+        if (bmsOrderTb == null) {
             throw new BusinessException("找不到订单信息");
         }
 
-        return BeanUtils.copyProperties(bmsOrderTb,BmsOrderDetailRspDTO.class);
+        return BeanUtils.copyProperties(bmsOrderTb, BmsOrderDetailRspDTO.class);
     }
 }

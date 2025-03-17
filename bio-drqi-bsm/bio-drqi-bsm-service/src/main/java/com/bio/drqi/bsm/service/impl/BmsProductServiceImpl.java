@@ -9,6 +9,7 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.bsm.req.*;
+import com.bio.drqi.bsm.rsp.BmsProductListALlRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
@@ -71,6 +72,12 @@ public class BmsProductServiceImpl implements BmsProductService {
     }
 
     @Override
+    public List<BmsProductListALlRspDTO> listAll() {
+        List<BmsProductTb> bmsProductTbLit = bmsProductTbMapper.selectAllOrderByIdDesc();
+        return BeanUtils.copyListProperties(bmsProductTbLit,BmsProductListALlRspDTO.class);
+    }
+
+    @Override
     public List<BmsProductQueryListRspDTO> queryList(BmsProductQueryListReqDTO bmsProductQueryListReqDTO) {
         String deleteFlag = null;
         if (StringUtils.isNotEmpty(bmsProductQueryListReqDTO.getSupplierCode())) {
@@ -92,7 +99,6 @@ public class BmsProductServiceImpl implements BmsProductService {
 
         List<BmsProductQueryListRspDTO> result = BeanUtils.copyListProperties(bmsProductTbLit, BmsProductQueryListRspDTO.class);
         if (CollectionUtil.isNotEmpty(result)) {
-
             //类性
             List<BmsProductTypeTb> bmsProductTypeTbList = bmsProductTypeTbMapper.selectSelective(null);
             Map<String, String> bmsProductTypeTbMap = bmsProductTypeTbList.stream().collect(Collectors.toMap(BmsProductTypeTb::getProductTypeCode, BmsProductTypeTb::getProductTypeName));

@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface BmsProductStockTbMapper extends BaseMapper<BmsProductStockTb> {
 
-    BmsProductStockTb selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNo(@Param("brandCode") String brandCode, @Param("productSpecs") String productSpecs, @Param("productName") String productName, @Param("batchNo") String batchNo);
+    BmsProductStockTb selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode(@Param("brandCode") String brandCode, @Param("productSpecs") String productSpecs, @Param("productName") String productName, @Param("batchNo") String batchNo, @Param("unitCode") String unitCode);
 
 }
 

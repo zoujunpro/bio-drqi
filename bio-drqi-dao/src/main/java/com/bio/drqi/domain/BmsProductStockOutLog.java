@@ -100,14 +100,14 @@ public class BmsProductStockOutLog implements Serializable {
     private String outType;
 
     /**
-     * 库编号
-     */
-    private String stockCode;
-
-    /**
      * 库存位置编号
      */
     private String stockLocationNumber;
+
+    /**
+     * 单位编号
+     */
+    private String unitCode;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -351,20 +351,6 @@ public class BmsProductStockOutLog implements Serializable {
     }
 
     /**
-     * 库编号
-     */
-    public String getStockCode() {
-        return stockCode;
-    }
-
-    /**
-     * 库编号
-     */
-    public void setStockCode(String stockCode) {
-        this.stockCode = stockCode;
-    }
-
-    /**
      * 库存位置编号
      */
     public String getStockLocationNumber() {
@@ -376,6 +362,20 @@ public class BmsProductStockOutLog implements Serializable {
      */
     public void setStockLocationNumber(String stockLocationNumber) {
         this.stockLocationNumber = stockLocationNumber;
+    }
+
+    /**
+     * 单位编号
+     */
+    public String getUnitCode() {
+        return unitCode;
+    }
+
+    /**
+     * 单位编号
+     */
+    public void setUnitCode(String unitCode) {
+        this.unitCode = unitCode;
     }
 
     @Override
@@ -407,8 +407,8 @@ public class BmsProductStockOutLog implements Serializable {
             && (this.getTaskNum() == null ? other.getTaskNum() == null : this.getTaskNum().equals(other.getTaskNum()))
             && (this.getRemark() == null ? other.getRemark() == null : this.getRemark().equals(other.getRemark()))
             && (this.getOutType() == null ? other.getOutType() == null : this.getOutType().equals(other.getOutType()))
-            && (this.getStockCode() == null ? other.getStockCode() == null : this.getStockCode().equals(other.getStockCode()))
-            && (this.getStockLocationNumber() == null ? other.getStockLocationNumber() == null : this.getStockLocationNumber().equals(other.getStockLocationNumber()));
+            && (this.getStockLocationNumber() == null ? other.getStockLocationNumber() == null : this.getStockLocationNumber().equals(other.getStockLocationNumber()))
+            && (this.getUnitCode() == null ? other.getUnitCode() == null : this.getUnitCode().equals(other.getUnitCode()));
     }
 
     @Override
@@ -432,8 +432,8 @@ public class BmsProductStockOutLog implements Serializable {
         result = prime * result + ((getTaskNum() == null) ? 0 : getTaskNum().hashCode());
         result = prime * result + ((getRemark() == null) ? 0 : getRemark().hashCode());
         result = prime * result + ((getOutType() == null) ? 0 : getOutType().hashCode());
-        result = prime * result + ((getStockCode() == null) ? 0 : getStockCode().hashCode());
         result = prime * result + ((getStockLocationNumber() == null) ? 0 : getStockLocationNumber().hashCode());
+        result = prime * result + ((getUnitCode() == null) ? 0 : getUnitCode().hashCode());
         return result;
     }
 
@@ -460,8 +460,8 @@ public class BmsProductStockOutLog implements Serializable {
         sb.append(", taskNum=").append(taskNum);
         sb.append(", remark=").append(remark);
         sb.append(", outType=").append(outType);
-        sb.append(", stockCode=").append(stockCode);
         sb.append(", stockLocationNumber=").append(stockLocationNumber);
+        sb.append(", unitCode=").append(unitCode);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

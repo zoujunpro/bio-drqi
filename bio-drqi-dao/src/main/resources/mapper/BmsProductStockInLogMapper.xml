@@ -15,7 +15,6 @@
             <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
             <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
             <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
-            <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
             <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
             <result property="productPrice" column="product_price" jdbcType="DECIMAL"/>
             <result property="storeNumber" column="store_number" jdbcType="INTEGER"/>
@@ -24,17 +23,18 @@
             <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
-            <result property="stockNumber" column="stock_number" jdbcType="INTEGER"/>
             <result property="orderNum" column="order_num" jdbcType="VARCHAR"/>
+            <result property="stockLocationNumber" column="stock_location_number" jdbcType="VARCHAR"/>
+            <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,order_detail_num,product_name,
         product_out_code,product_category_code,product_category_name,
         brand_code,brand_name,product_specs,
-        batch_no,stock_code,project_code,
-        product_price,store_number,store_amount,
-        apply_user_id,apply_user_name,create_time,
-        task_num,stock_number,order_num
+        batch_no,project_code,product_price,
+        store_number,store_amount,apply_user_id,
+        apply_user_name,create_time,task_num,
+        order_num,stock_location_number,unit_code
     </sql>
 </mapper>

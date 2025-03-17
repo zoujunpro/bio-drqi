@@ -17,9 +17,7 @@
             <result property="totalStoreNumber" column="total_store_number" jdbcType="INTEGER"/>
             <result property="currentStockNumber" column="current_stock_number" jdbcType="INTEGER"/>
             <result property="totalOutNumber" column="total_out_number" jdbcType="INTEGER"/>
-            <result property="productPrice" column="product_price" jdbcType="DECIMAL"/>
-            <result property="stockName" column="stock_name" jdbcType="VARCHAR"/>
-            <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
+            <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
             <result property="stockLocationNumber" column="stock_location_number" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -28,10 +26,9 @@
         product_category_code,product_category_name,brand_code,
         brand_name,product_specs,batch_no,
         total_store_number,current_stock_number,total_out_number,
-        product_price,stock_name,stock_code,
-        stock_location_number
+        unit_code,stock_location_number
     </sql>
-    <select id="selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNo" resultMap="BaseResultMap">
+    <select id="selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from bms_product_stock_tb
@@ -40,5 +37,6 @@
         AND product_specs = #{productSpecs,jdbcType=VARCHAR}
         AND product_name = #{productName,jdbcType=VARCHAR}
         AND batch_no = #{batchNo,jdbcType=VARCHAR}
+        AND unit_code = #{unitCode,jdbcType=VARCHAR}
     </select>
 </mapper>

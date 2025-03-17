@@ -22,8 +22,8 @@
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="outType" column="out_type" jdbcType="VARCHAR"/>
-            <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
             <result property="stockLocationNumber" column="stock_location_number" jdbcType="VARCHAR"/>
+            <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -32,7 +32,7 @@
         brand_name,product_specs,batch_no,
         project_code,out_number,apply_user_id,
         apply_user_name,create_time,task_num,
-        remark,out_type,stock_code,
-        stock_location_number
+        remark,out_type,stock_location_number,
+        unit_code
     </sql>
 </mapper>

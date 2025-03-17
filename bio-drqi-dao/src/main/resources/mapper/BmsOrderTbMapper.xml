@@ -82,4 +82,12 @@
         </where>
         order by id desc
     </select>
+    <select id="selectOneByOrderNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_order_tb
+        where
+        order_num = #{orderNum,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

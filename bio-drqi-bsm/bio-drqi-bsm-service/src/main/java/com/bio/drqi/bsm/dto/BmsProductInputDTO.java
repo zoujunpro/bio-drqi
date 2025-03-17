@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 public class BmsProductInputDTO {
@@ -26,7 +27,7 @@ public class BmsProductInputDTO {
     /**
      * 库存位置号
      */
-    private String stockLocationNumber;
+    private List<String> stockLocationNumberList;
 
 
 }

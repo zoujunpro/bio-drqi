@@ -29,6 +29,21 @@ public class BmsOrderListAllRspDTO {
      */
     private String applyTime;
 
+    /**
+     * 采购部门
+     */
+    private String purchaseDepartment;
+
+    /**
+     * 申请单位编号
+     */
+    private String applyUnitCode;
+
+    /**
+     * 申请单位名称
+     */
+    private String applyUnitName;
+
 
 
 }

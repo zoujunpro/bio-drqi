@@ -21,6 +21,7 @@
             <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
             <result property="purchasePrice" column="purchase_price" jdbcType="DECIMAL"/>
             <result property="purchaseNumber" column="purchase_number" jdbcType="INTEGER"/>
+            <result property="receiveNumber" column="receive_number" jdbcType="INTEGER"/>
             <result property="payAmount" column="pay_amount" jdbcType="DECIMAL"/>
             <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
             <result property="productCategoryName" column="product_category_name" jdbcType="VARCHAR"/>
@@ -46,7 +47,7 @@
         purchase_number,pay_amount,product_category_code,
         product_category_name,create_time,apply_user_id,
         apply_user_name,task_num,product_type_code,product_type_name,picture_urls,
-        purchase_date,apply_unit_code,apply_unit_name,purchase_department
+        purchase_date,apply_unit_code,apply_unit_name,purchase_department,receive_number
     </sql>
     <select id="selectAllByOrderNum" resultMap="BaseResultMap">
         select

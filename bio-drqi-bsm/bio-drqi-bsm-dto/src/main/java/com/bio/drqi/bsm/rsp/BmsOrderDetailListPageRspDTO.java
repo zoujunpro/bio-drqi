@@ -133,4 +133,9 @@ public class BmsOrderDetailListPageRspDTO {
     private String applyUnitName;
 
     private String purchaseDepartment;
+
+    /**
+     * 到货数量
+     */
+    private Integer receiveNumber;
 }

@@ -108,4 +108,6 @@ public class BmsOrderListPageRspDTO {
      */
     private String reportAccountTime;
 
+    private String overFlag;
+
 }

@@ -128,6 +128,8 @@ public class BmsOrderTb implements Serializable {
      */
     private String reportAccountTime;
 
+    private String overFlag;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

@@ -26,6 +26,7 @@
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
             <result property="reportAccountTime" column="report_account_time" jdbcType="VARCHAR"/>
+            <result property="overFlag" column="over_flag" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -35,7 +36,7 @@
         purchase_date,purchase_type_code,purchase_type_name,
         purchase_reason_remark,demand_require_time,demand_usage_time,
         invoice_urls,attachment_urls,create_time,
-        task_num,report_account_time
+        task_num,report_account_time,over_flag
     </sql>
     <select id="selectOneByTaskNum" resultMap="BaseResultMap">
         select
@@ -76,6 +77,8 @@
             <if test="createTime != null">and  create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="taskNum != null and taskNum!=''">and  task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="reportAccountTime != null and reportAccountTime!=''">and  report_account_time=#{reportAccountTime,jdbcType=VARCHAR}</if>
+            <if test="overFlag != null and overFlag!=''">and  over_flag=#{overFlag,jdbcType=VARCHAR}</if>
+
         </where>
         order by id desc
     </select>

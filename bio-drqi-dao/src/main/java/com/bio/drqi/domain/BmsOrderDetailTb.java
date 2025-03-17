@@ -153,6 +153,8 @@ public class BmsOrderDetailTb implements Serializable {
 
     private String purchaseDepartment;
 
+    private Integer receiveNumber;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

@@ -17,6 +17,8 @@ public interface BmsOrderDetailTbMapper extends BaseMapper<BmsOrderDetailTb> {
 
     List<BmsOrderDetailTb> selectSelective(BmsOrderDetailTb bmsOrderDetailTb);
 
+    BmsOrderDetailTb selectOneByOrderDetailNum(@Param("orderDetailNum") String orderDetailNum);
+
 }
 
 

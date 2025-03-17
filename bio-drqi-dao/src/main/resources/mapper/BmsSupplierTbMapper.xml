@@ -72,7 +72,7 @@
         </where>
     </select>
     <select id="selectSupplierCodeAndSupplierCodeByDeleteFlagOrderByIdDesc" resultMap="BaseResultMap">
-        select supplier_code, supplier_code
+        select supplier_code, supplier_name
         from bms_supplier_tb
         where delete_flag = #{deleteFlag,jdbcType=VARCHAR}
         order by id desc

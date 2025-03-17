@@ -98,5 +98,10 @@
         from bms_product_tb
         order by id desc
     </select>
+    <select id="selectProductNameOrderByIdDesc" resultType="java.lang.String">
+        select  product_name
+        from bms_product_tb
+        order by id desc
+    </select>
 
 </mapper>

@@ -3,7 +3,6 @@ package com.bio.drqi.bsm.controller;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.*;
-import com.bio.drqi.bsm.rsp.BmsProductListALlRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
@@ -39,14 +38,14 @@ public class BmsProductController {
 
 
     /**
-     * 材料管理-查询所有
+     * 材料管理-查询所有材料名称
      *
      * @return
      */
-    @GetMapping("/listAll")
-    @WebLog(desc = "材料管理-查询所有")
-    public ResponseResult<List<BmsProductListALlRspDTO>> listAll() {
-    return ResponseResult.getSuccess(bmsProductService.listAll());
+    @GetMapping("/listAllProductName")
+    @WebLog(desc = "材料管理-查询所有材料名称")
+    public ResponseResult<List<String>> listAllProductName() {
+    return ResponseResult.getSuccess(bmsProductService.listAllProductName());
     }
 
     /**

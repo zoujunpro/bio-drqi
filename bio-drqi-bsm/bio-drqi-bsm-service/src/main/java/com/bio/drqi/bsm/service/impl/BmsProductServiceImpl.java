@@ -9,7 +9,6 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.bsm.req.*;
-import com.bio.drqi.bsm.rsp.BmsProductListALlRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
@@ -18,7 +17,6 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
@@ -72,9 +70,9 @@ public class BmsProductServiceImpl implements BmsProductService {
     }
 
     @Override
-    public List<BmsProductListALlRspDTO> listAll() {
-        List<BmsProductTb> bmsProductTbLit = bmsProductTbMapper.selectAllOrderByIdDesc();
-        return BeanUtils.copyListProperties(bmsProductTbLit,BmsProductListALlRspDTO.class);
+    public List<String> listAllProductName() {
+        List<String> productNameList = bmsProductTbMapper.selectProductNameOrderByIdDesc();
+        return productNameList.stream().distinct().collect(Collectors.toList());
     }
 
     @Override

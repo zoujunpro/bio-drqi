@@ -110,7 +110,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setOrderDetailNum(IdUtils.simpleUUID());
                 bmsOrderDetailTb.setProjectCode(product.getProjectCode());
                 bmsOrderDetailTb.setProjectName(product.getProductName());
-                bmsOrderDetailTb.setSupplierName(product.getSupplierCode());
+                bmsOrderDetailTb.setSupplierName(product.getSupplierName());
                 bmsOrderDetailTb.setSupplierCode(product.getSupplierCode());
                 bmsOrderDetailTb.setContactUserTelephone(bmsSupplierTb.getContactUserTelephone());
                 bmsOrderDetailTb.setContactUserName(bmsSupplierTb.getContactUserName());

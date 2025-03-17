@@ -139,6 +139,10 @@ public class BmsOrderDetailTb implements Serializable {
      */
     private String taskNum;
 
+    private String productTypeCode;
+
+    private String productTypeName;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

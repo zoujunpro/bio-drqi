@@ -28,6 +28,9 @@
             <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
             <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="productTypeCode" column="product_type_code" jdbcType="VARCHAR"/>
+            <result property="productTypeName" column="product_type_name" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -38,7 +41,7 @@
         product_specs,product_out_code,purchase_price,
         purchase_number,pay_amount,product_category_code,
         product_category_name,create_time,apply_user_id,
-        apply_user_name,task_num
+        apply_user_name,task_num,product_type_code,product_type_name
     </sql>
     <select id="selectAllByOrderNum" resultMap="BaseResultMap">
         select

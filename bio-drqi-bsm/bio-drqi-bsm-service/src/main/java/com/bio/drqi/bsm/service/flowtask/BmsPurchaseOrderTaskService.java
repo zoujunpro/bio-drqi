@@ -128,6 +128,8 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setApplyUserId(SecurityContextHolder.getUserId());
                 bmsOrderDetailTb.setApplyUserName(SecurityContextHolder.getNickName());
                 bmsOrderDetailTb.setTaskNum(bioTaskDtlTb.getTaskNum());
+                bmsOrderDetailTb.setProductTypeCode(product.getProductTypeCode());
+                bmsOrderDetailTb.setProductTypeName(product.getProductTypeName());
                 bmsOrderDetailTbMapper.insert(bmsOrderDetailTb);
             }
         }

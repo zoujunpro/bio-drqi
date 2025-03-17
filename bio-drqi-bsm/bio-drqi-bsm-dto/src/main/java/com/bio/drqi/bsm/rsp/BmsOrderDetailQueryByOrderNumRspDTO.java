@@ -123,4 +123,6 @@ public class BmsOrderDetailQueryByOrderNumRspDTO {
     private String productTypeCode;
 
     private String productTypeName;
+
+    private String pictureUrls;
 }

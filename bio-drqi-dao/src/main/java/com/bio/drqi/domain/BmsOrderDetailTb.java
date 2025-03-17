@@ -143,6 +143,8 @@ public class BmsOrderDetailTb implements Serializable {
 
     private String productTypeName;
 
+    private String pictureUrls;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

@@ -30,7 +30,7 @@
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
             <result property="productTypeCode" column="product_type_code" jdbcType="VARCHAR"/>
             <result property="productTypeName" column="product_type_name" jdbcType="VARCHAR"/>
-
+            <result property="pictureUrls" column="picture_urls" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -41,7 +41,7 @@
         product_specs,product_out_code,purchase_price,
         purchase_number,pay_amount,product_category_code,
         product_category_name,create_time,apply_user_id,
-        apply_user_name,task_num,product_type_code,product_type_name
+        apply_user_name,task_num,product_type_code,product_type_name,picture_urls
     </sql>
     <select id="selectAllByOrderNum" resultMap="BaseResultMap">
         select
@@ -55,31 +55,31 @@
         <include refid="Base_Column_List"/>
         from bms_order_detail_tb
         <where>
-            <if test="orderNum != null">order_num=#{orderNum,jdbcType=VARCHAR},</if>
-            <if test="orderDetailNum != null">order_detail_num=#{orderDetailNum,jdbcType=VARCHAR},</if>
-            <if test="projectCode != null">project_code=#{projectCode,jdbcType=VARCHAR},</if>
-            <if test="projectName != null">project_name=#{projectName,jdbcType=VARCHAR},</if>
-            <if test="supplierName != null">supplier_name=#{supplierName,jdbcType=VARCHAR},</if>
-            <if test="supplierCode != null">supplier_code=#{supplierCode,jdbcType=VARCHAR},</if>
-            <if test="contactUserTelephone != null">contact_user_telephone=#{contactUserTelephone,jdbcType=VARCHAR},
+            <if test="orderNum != null and orderNum!=''">and order_num=#{orderNum,jdbcType=VARCHAR}</if>
+            <if test="orderDetailNum != null">and order_detail_num=#{orderDetailNum,jdbcType=VARCHAR}</if>
+            <if test="projectCode != null and projectCode!='' ">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="projectName != null and projectName!=''">and project_name=#{projectName,jdbcType=VARCHAR}</if>
+            <if test="supplierName != null and supplierName !=''">and supplier_name=#{supplierName,jdbcType=VARCHAR}</if>
+            <if test="supplierCode != null and supplierCode!=''">and supplier_code=#{supplierCode,jdbcType=VARCHAR}</if>
+            <if test="contactUserTelephone != null">and contact_user_telephone=#{contactUserTelephone,jdbcType=VARCHAR}
             </if>
-            <if test="contactUserName != null">contact_user_name=#{contactUserName,jdbcType=VARCHAR},</if>
-            <if test="brandCode != null">brand_code=#{brandCode,jdbcType=VARCHAR},</if>
-            <if test="brandName != null">brand_name=#{brandName,jdbcType=VARCHAR},</if>
-            <if test="productName != null">product_name=#{productName,jdbcType=VARCHAR},</if>
-            <if test="productSpecs != null">product_specs=#{productSpecs,jdbcType=VARCHAR},</if>
-            <if test="productOutCode != null">product_out_code=#{productOutCode,jdbcType=VARCHAR},</if>
-            <if test="purchasePrice != null">purchase_price=#{purchasePrice,jdbcType=DECIMAL},</if>
-            <if test="purchaseNumber != null">purchase_number=#{purchaseNumber,jdbcType=NUMERIC},</if>
-            <if test="payAmount != null">pay_amount=#{payAmount,jdbcType=DECIMAL},</if>
-            <if test="productCategoryCode != null">product_category_code=#{productCategoryCode,jdbcType=VARCHAR},</if>
-            <if test="productCategoryName != null">product_category_name=#{productCategoryName,jdbcType=VARCHAR},</if>
-            <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP},</if>
-            <if test="applyUserId != null">apply_user_id=#{applyUserId,jdbcType=NUMERIC},</if>
-            <if test="applyUserName != null">apply_user_name=#{applyUserName,jdbcType=VARCHAR},</if>
-            <if test="taskNum != null">task_num=#{taskNum,jdbcType=VARCHAR},</if>
-            <if test="productTypeCode != null">product_type_code=#{productTypeCode,jdbcType=VARCHAR},</if>
-            <if test="productTypeName != null">product_type_name=#{productTypeName,jdbcType=VARCHAR},</if>
+            <if test="contactUserName != null">and contact_user_name=#{contactUserName,jdbcType=VARCHAR}</if>
+            <if test="brandCode != null and brandCode!=''">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
+            <if test="brandName != null and brandName!=''">and brand_name=#{brandName,jdbcType=VARCHAR}</if>
+            <if test="productName != null productName !=''">and product_name=#{productName,jdbcType=VARCHAR}</if>
+            <if test="productSpecs != null and productSpecs!=''">and product_specs=#{productSpecs,jdbcType=VARCHAR},</if>
+            <if test="productOutCode != null">and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
+            <if test="purchasePrice != null">and purchase_price=#{purchasePrice,jdbcType=DECIMAL}</if>
+            <if test="purchaseNumber != null">and purchase_number=#{purchaseNumber,jdbcType=NUMERIC}</if>
+            <if test="payAmount != null">and pay_amount=#{payAmount,jdbcType=DECIMAL}</if>
+            <if test="productCategoryCode != null and productCategoryCode!=''">and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
+            <if test="productCategoryName != null and productCategoryName!=''">and product_category_name=#{productCategoryName,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
+            <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="productTypeCode != null and productTypeCode!=''">and product_type_code=#{productTypeCode,jdbcType=VARCHAR}</if>
+            <if test="productTypeName != null and productTypeName!=''">and product_type_name=#{productTypeName,jdbcType=VARCHAR}</if>
         </where>
         oreder by id desc
     </select>

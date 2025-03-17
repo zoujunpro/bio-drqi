@@ -90,7 +90,7 @@
             <if test="applyUnitName != null and applyUnitName!=''">and apply_unit_name=#{applyUnitName,jdbcType=VARCHAR}</if>
             <if test="purchaseDepartment != null and purchaseDepartment!=''">and purchase_department=#{purchaseDepartment,jdbcType=VARCHAR}</if>
         </where>
-        oreder by id desc
+        order by id desc
     </select>
     <select id="selectOneByOrderDetailNum" resultMap="BaseResultMap">
         select

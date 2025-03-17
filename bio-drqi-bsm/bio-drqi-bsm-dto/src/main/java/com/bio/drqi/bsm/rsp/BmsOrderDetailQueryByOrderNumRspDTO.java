@@ -125,4 +125,12 @@ public class BmsOrderDetailQueryByOrderNumRspDTO {
     private String productTypeName;
 
     private String pictureUrls;
+
+    private String purchaseDate;
+
+    private String applyUnitCode;
+
+    private String applyUnitName;
+
+    private String purchaseDepartment;
 }

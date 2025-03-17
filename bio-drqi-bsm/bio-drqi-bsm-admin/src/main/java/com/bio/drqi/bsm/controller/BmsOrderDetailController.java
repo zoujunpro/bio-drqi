@@ -2,6 +2,7 @@ package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.bsm.req.BmsOrderDetailListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailQueryByOrderNumRspDTO;
 import com.bio.drqi.bsm.service.BmsOrderDetailService;
@@ -24,8 +25,8 @@ public class BmsOrderDetailController {
 
     @PostMapping("listPage")
     @WebLog(desc = "采购订单明细管理-分页查询")
-    public ResponseResult<PageInfo<BmsOrderDetailListPageRspDTO>> listPage(@RequestBody BmsOrderDetailListPageRspDTO bmsOrderDetailListPageRspDTO) {
-        return null;
+    public ResponseResult<PageInfo<BmsOrderDetailListPageRspDTO>> listPage(@RequestBody BmsOrderDetailListPageReqDTO bmsOrderDetailListPageReqDTO) {
+        return ResponseResult.getSuccess(bmsOrderDetailService.listPage(bmsOrderDetailListPageReqDTO));
     }
 
 

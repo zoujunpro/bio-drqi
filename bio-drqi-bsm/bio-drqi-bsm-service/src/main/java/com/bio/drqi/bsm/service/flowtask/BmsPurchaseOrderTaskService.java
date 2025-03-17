@@ -130,6 +130,11 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setTaskNum(bioTaskDtlTb.getTaskNum());
                 bmsOrderDetailTb.setProductTypeCode(product.getProductTypeCode());
                 bmsOrderDetailTb.setProductTypeName(product.getProductTypeName());
+                bmsOrderDetailTb.setPictureUrls(product.getPictureUrls());
+                bmsOrderDetailTb.setPurchaseDate(bmsOrderTb.getPurchaseDate());
+                bmsOrderDetailTb.setApplyUnitCode(bmsOrderTb.getApplyUnitCode());
+                bmsOrderDetailTb.setApplyUnitName(bmsOrderTb.getApplyUnitName());
+                bmsOrderDetailTb.setPurchaseDepartment(bmsOrderTb.getPurchaseDepartment());
                 bmsOrderDetailTbMapper.insert(bmsOrderDetailTb);
             }
         }

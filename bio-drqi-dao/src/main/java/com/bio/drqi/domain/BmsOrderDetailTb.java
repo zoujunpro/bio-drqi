@@ -145,6 +145,14 @@ public class BmsOrderDetailTb implements Serializable {
 
     private String pictureUrls;
 
+    private String purchaseDate;
+
+    private String applyUnitCode;
+
+    private String applyUnitName;
+
+    private String purchaseDepartment;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

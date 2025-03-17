@@ -50,4 +50,37 @@
         where
         order_num = #{orderNum,jdbcType=VARCHAR}
     </select>
+    <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsOrderDetailTb" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_order_detail_tb
+        <where>
+            <if test="orderNum != null">order_num=#{orderNum,jdbcType=VARCHAR},</if>
+            <if test="orderDetailNum != null">order_detail_num=#{orderDetailNum,jdbcType=VARCHAR},</if>
+            <if test="projectCode != null">project_code=#{projectCode,jdbcType=VARCHAR},</if>
+            <if test="projectName != null">project_name=#{projectName,jdbcType=VARCHAR},</if>
+            <if test="supplierName != null">supplier_name=#{supplierName,jdbcType=VARCHAR},</if>
+            <if test="supplierCode != null">supplier_code=#{supplierCode,jdbcType=VARCHAR},</if>
+            <if test="contactUserTelephone != null">contact_user_telephone=#{contactUserTelephone,jdbcType=VARCHAR},
+            </if>
+            <if test="contactUserName != null">contact_user_name=#{contactUserName,jdbcType=VARCHAR},</if>
+            <if test="brandCode != null">brand_code=#{brandCode,jdbcType=VARCHAR},</if>
+            <if test="brandName != null">brand_name=#{brandName,jdbcType=VARCHAR},</if>
+            <if test="productName != null">product_name=#{productName,jdbcType=VARCHAR},</if>
+            <if test="productSpecs != null">product_specs=#{productSpecs,jdbcType=VARCHAR},</if>
+            <if test="productOutCode != null">product_out_code=#{productOutCode,jdbcType=VARCHAR},</if>
+            <if test="purchasePrice != null">purchase_price=#{purchasePrice,jdbcType=DECIMAL},</if>
+            <if test="purchaseNumber != null">purchase_number=#{purchaseNumber,jdbcType=NUMERIC},</if>
+            <if test="payAmount != null">pay_amount=#{payAmount,jdbcType=DECIMAL},</if>
+            <if test="productCategoryCode != null">product_category_code=#{productCategoryCode,jdbcType=VARCHAR},</if>
+            <if test="productCategoryName != null">product_category_name=#{productCategoryName,jdbcType=VARCHAR},</if>
+            <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="applyUserId != null">apply_user_id=#{applyUserId,jdbcType=NUMERIC},</if>
+            <if test="applyUserName != null">apply_user_name=#{applyUserName,jdbcType=VARCHAR},</if>
+            <if test="taskNum != null">task_num=#{taskNum,jdbcType=VARCHAR},</if>
+            <if test="productTypeCode != null">product_type_code=#{productTypeCode,jdbcType=VARCHAR},</if>
+            <if test="productTypeName != null">product_type_name=#{productTypeName,jdbcType=VARCHAR},</if>
+        </where>
+        oreder by id desc
+    </select>
 </mapper>

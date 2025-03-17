@@ -118,4 +118,9 @@ public class BmsOrderDetailQueryByOrderNumRspDTO {
      * 任务编号
      */
     private String taskNum;
+
+
+    private String productTypeCode;
+
+    private String productTypeName;
 }

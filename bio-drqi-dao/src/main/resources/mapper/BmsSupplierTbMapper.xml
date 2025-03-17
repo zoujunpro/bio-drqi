@@ -21,7 +21,7 @@
         <result property="contactUserTelephone" column="contact_user_telephone" jdbcType="VARCHAR"/>
         <result property="kahunaUserName" column="kahuna_user_name" jdbcType="VARCHAR"/>
         <result property="kahunaUserId" column="kahuna_user_id" jdbcType="INTEGER"/>
-        <result property="remak" column="remak" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
         <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
@@ -35,7 +35,7 @@
         qualification_location,business_scope,cooperate_form,
         framework_agreement_number,framework_agreement_annex,expiration_date,
         contact_user_name,contact_user_telephone,kahuna_user_name,
-        kahuna_user_id,remak,create_time,
+        kahuna_user_id,remark,create_time,
         create_user_name,create_user_id,delete_flag
     </sql>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsSupplierTb">

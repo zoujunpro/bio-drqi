@@ -67,7 +67,7 @@ public class BmsOrderDetailQueryByOrderNumRspDTO {
     /**
      * 商品规格
      */
-    private String productSku;
+    private String productSpecs;
 
     /**
      * 商品外部编号

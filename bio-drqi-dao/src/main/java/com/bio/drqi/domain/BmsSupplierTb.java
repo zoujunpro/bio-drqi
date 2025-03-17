@@ -106,7 +106,7 @@ public class BmsSupplierTb implements Serializable {
     /**
      * 备注
      */
-    private String remak;
+    private String remark;
 
     /**
      * 创建时间

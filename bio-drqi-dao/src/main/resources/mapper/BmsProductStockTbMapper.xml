@@ -5,24 +5,25 @@
 <mapper namespace="com.bio.drqi.mapper.BmsProductStockTbMapper">
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BmsProductStockTb">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="productName" column="product_name" jdbcType="VARCHAR"/>
-            <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
-            <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
-            <result property="productCategoryName" column="product_category_name" jdbcType="VARCHAR"/>
-            <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
-            <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
-            <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
-            <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
-            <result property="totalStoreNumber" column="total_store_number" jdbcType="INTEGER"/>
-            <result property="currentStockNumber" column="current_stock_number" jdbcType="INTEGER"/>
-            <result property="totalOutNumber" column="total_out_number" jdbcType="INTEGER"/>
-            <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
-            <result property="stockLocationNumber" column="stock_location_number" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+        <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
+        <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
+        <result property="productCategoryName" column="product_category_name" jdbcType="VARCHAR"/>
+        <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
+        <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
+        <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
+        <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
+        <result property="totalStoreNumber" column="total_store_number" jdbcType="INTEGER"/>
+        <result property="currentStockNumber" column="current_stock_number" jdbcType="INTEGER"/>
+        <result property="totalOutNumber" column="total_out_number" jdbcType="INTEGER"/>
+        <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
+        <result property="stockLocationNumber" column="stock_location_number" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,product_name,product_out_code,
+        id
+        ,product_name,product_out_code,
         product_category_code,product_category_name,brand_code,
         brand_name,product_specs,batch_no,
         total_store_number,current_stock_number,total_out_number,
@@ -38,5 +39,25 @@
         AND product_name = #{productName,jdbcType=VARCHAR}
         AND batch_no = #{batchNo,jdbcType=VARCHAR}
         AND unit_code = #{unitCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsProductStockTb" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_tb
+        <where>
+            <if test="productName != null and productName != ''"> and product_name=#{productName,jdbcType=VARCHAR}</if>
+            <if test="productOutCode != null and productOutCode!=''"> and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
+            <if test="productCategoryCode != null and productCategoryCode!=''"> and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
+            <if test="productCategoryName != null and productCategoryName!=''"> and product_category_name=#{productCategoryName,jdbcType=VARCHAR}</if>
+            <if test="brandCode != null and brandCode!=''"> and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
+            <if test="brandName != null and brandName!=''"> and brand_name=#{brandName,jdbcType=VARCHAR}</if>
+            <if test="productSpecs != null and productSpecs!=''"> and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>
+            <if test="batchNo != null and batchNo!=''"> and batch_no=#{batchNo,jdbcType=VARCHAR}</if>
+            <if test="totalStoreNumber != null "> and total_store_number=#{totalStoreNumber,jdbcType=NUMERIC}</if>
+            <if test="currentStockNumber != null"> and current_stock_number=#{currentStockNumber,jdbcType=NUMERIC}</if>
+            <if test="totalOutNumber != null"> and total_out_number=#{totalOutNumber,jdbcType=NUMERIC}</if>
+            <if test="unitCode != null and unitCode!=''"> and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
+            <if test="stockLocationNumber != null"> and stock_location_number=#{stockLocationNumber,jdbcType=VARCHAR}</if>
+        </where>
     </select>
 </mapper>

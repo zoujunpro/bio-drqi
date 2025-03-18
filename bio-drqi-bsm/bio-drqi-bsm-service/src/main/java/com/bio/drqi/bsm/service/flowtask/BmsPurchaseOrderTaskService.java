@@ -64,6 +64,10 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         BmsPurchaseOrderDTO bmsPurchaseOrderDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsPurchaseOrderDTO.class);
+
+        //商品校验
+        productValid(bmsPurchaseOrderDTO);
+
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             //插入订单
             BmsOrderTb bmsOrderTb = initBmsOrderTb(bioTaskDtlTb, bmsPurchaseOrderDTO);

@@ -77,7 +77,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
                 BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectOneByOrderDetailNum(bmsProductInputDTO.getOrderDetailNum());
                 String batchNo = StringUtils.isEmpty(bmsProductInputDTO.getBatchNo()) ? "N/A" : bmsProductInputDTO.getBatchNo();
                 // 入库库存
-                BmsProductStockTb bmsProductStockTb = updateOrInsertBmsProductStock(bmsProductInputDTO, bmsOrderDetailTb, batchNo);
+               updateOrInsertBmsProductStock(bmsProductInputDTO, bmsOrderDetailTb, batchNo);
                 //记录入库记录
                 insertBmsProductStockInLog(bioTaskDtlTb, bmsProductInputDTO, bmsOrderDetailTb);
 

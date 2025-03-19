@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 商品入库
@@ -58,7 +59,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         for (BmsProductInputDTO.OrderDetail orderDetail : bmsProductInputDTO.getOrderDetailList()) {
             ValidatorUtil.validator(bmsProductInputDTO);
             BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectOneByOrderDetailNum(orderDetail.getOrderDetailNum());
-            if (bmsOrderDetailTb.getPurchaseNumber() >= bmsOrderDetailTb.getReceiveNumber()) {
+            if (Objects.equals(bmsOrderDetailTb.getPurchaseNumber(),bmsOrderDetailTb.getReceiveNumber().intValue())) {
                 throw new BusinessException("该耗材已经全部到货");
             }
             if (bmsOrderDetailTb.getPurchaseNumber() - bmsOrderDetailTb.getReceiveNumber() < orderDetail.getNumber()) {

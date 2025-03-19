@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 入库存明细管理
+ * 出库存明细管理
  */
 @RestController
 @RequestMapping("/productStockIn")

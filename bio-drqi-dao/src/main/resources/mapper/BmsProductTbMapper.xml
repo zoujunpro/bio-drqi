@@ -45,7 +45,7 @@
         <include refid="Base_Column_List"/>
         from bms_product_tb
         <where >
-            <if test="productName != null">and product_name=#{productName,jdbcType=VARCHAR}</if>
+            <if test="productName != null and productName!=''">and product_name=#{productName,jdbcType=VARCHAR}</if>
             <if test="productOutCode != null">and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
             <if test="productInnerCode != null">and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}</if>
             <if test="productCategoryCode != null and productCategoryCode != ''">and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
@@ -57,7 +57,7 @@
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
-            <if test="deleteFlag != null">and delete_flag=#{deleteFlag,jdbcType=VARCHAR}</if>
+            <if test="deleteFlag != null and deleteFlag!=''">and delete_flag=#{deleteFlag,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

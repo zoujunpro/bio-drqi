@@ -128,7 +128,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
             bmsProductStockTb.setBatchNo(batchNo);
             bmsProductStockTb.setTotalStoreNumber(inputOrderDetail.getNumber());
             bmsProductStockTb.setCurrentStockNumber(inputOrderDetail.getNumber());
-            bmsProductStockTb.setTotalOutNumber(inputOrderDetail.getNumber());
+            bmsProductStockTb.setTotalOutNumber(0);
             bmsProductStockTb.setUnitCode(bmsOrderDetailTb.getApplyUnitCode());
             bmsProductStockTb.setStockLocationNumber(JSONUtil.toJsonStr(inputOrderDetail.getStockLocationNumberList()));
             bmsProductStockTb.setProductInnerCode(bmsProductStockTb.getProductInnerCode());

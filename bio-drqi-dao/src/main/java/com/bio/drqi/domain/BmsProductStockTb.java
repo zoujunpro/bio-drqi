@@ -95,6 +95,13 @@ public class BmsProductStockTb implements Serializable {
      */
     private String stockLocationNumber;
 
+    private String productInnerCode;
+
+
+    private String supplierCode;
+
+    private String supplierName;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

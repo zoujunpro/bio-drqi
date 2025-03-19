@@ -8,6 +8,7 @@
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="productName" column="product_name" jdbcType="VARCHAR"/>
         <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
+        <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
         <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
         <result property="productCategoryName" column="product_category_name" jdbcType="VARCHAR"/>
         <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
@@ -19,6 +20,8 @@
         <result property="totalOutNumber" column="total_out_number" jdbcType="INTEGER"/>
         <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
         <result property="stockLocationNumber" column="stock_location_number" jdbcType="VARCHAR"/>
+        <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
+        <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -27,7 +30,7 @@
         product_category_code,product_category_name,brand_code,
         brand_name,product_specs,batch_no,
         total_store_number,current_stock_number,total_out_number,
-        unit_code,stock_location_number
+        unit_code,stock_location_number,productInnerCode,supplier_code,supplier_name
     </sql>
     <select id="selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode" resultMap="BaseResultMap">
         select

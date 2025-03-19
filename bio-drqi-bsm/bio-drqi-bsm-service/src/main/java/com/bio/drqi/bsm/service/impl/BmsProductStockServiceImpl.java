@@ -1,5 +1,6 @@
 package com.bio.drqi.bsm.service.impl;
 
+import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.bsm.req.BmsProductStockListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockDetailRspDTO;
@@ -26,13 +27,17 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
     public PageInfo<BmsProductStockListPageRspDTO> listPage(BmsProductStockListPageReqDTO bmsProductStockListPageReqDTO) {
         PageHelper.startPage(bmsProductStockListPageReqDTO.getPageNum(), bmsProductStockListPageReqDTO.getPageSize());
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(BeanUtils.copyProperties(bmsProductStockListPageReqDTO, BmsProductStockTb.class));
-        PageInfo<BmsProductStockTb> srcPageInfo=new PageInfo<>(bmsProductStockTbList);
+        PageInfo<BmsProductStockTb> srcPageInfo = new PageInfo<>(bmsProductStockTbList);
 
-        return BeanUtils.copyPageInfoProperties(srcPageInfo,BmsProductStockListPageRspDTO.class);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsProductStockListPageRspDTO.class);
     }
 
     @Override
     public BmsProductStockDetailRspDTO detail(Integer id) {
-        return null;
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectById(id);
+        if(bmsProductStockTb==null){
+            throw new BusinessException("数据找不到");
+        }
+        return BeanUtils.copyProperties(bmsProductStockTb,BmsProductStockDetailRspDTO.class);
     }
 }

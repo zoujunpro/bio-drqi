@@ -72,4 +72,11 @@ public class BmsProductStockListPageRspDTO {
      * 库存位置编号
      */
     private String stockLocationNumber;
+
+    private String productInnerCode;
+
+
+    private String supplierCode;
+
+    private String supplierName;
 }

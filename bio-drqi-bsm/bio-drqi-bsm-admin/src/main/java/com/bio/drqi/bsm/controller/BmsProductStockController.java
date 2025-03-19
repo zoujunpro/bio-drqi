@@ -7,10 +7,7 @@ import com.bio.drqi.bsm.rsp.BmsProductStockDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockService;
 import com.github.pagehelper.PageInfo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -41,9 +38,9 @@ public class BmsProductStockController {
      * @param id
      * @return
      */
-    @PostMapping("/detail")
+    @GetMapping("/detail")
     @WebLog(desc = "库存明细管理-详情")
-    public ResponseResult<BmsProductStockDetailRspDTO> detail(Integer id) {
+    public ResponseResult<BmsProductStockDetailRspDTO> detail(@RequestParam Integer id) {
         return ResponseResult.getSuccess(bmsProductStockService.detail(id));
     }
 }

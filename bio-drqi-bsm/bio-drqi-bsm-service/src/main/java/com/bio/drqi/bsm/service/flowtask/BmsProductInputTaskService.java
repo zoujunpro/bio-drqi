@@ -43,21 +43,29 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
-        List<BmsProductInputDTO> bmsProductInputDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskNum(), BmsProductInputDTO.class);
-        if (CollectionUtil.isEmpty(bmsProductInputDTOList)) {
-            throw new BusinessException("请选择关联订单信息");
+        BmsProductInputDTO bmsProductInputDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskNum(), BmsProductInputDTO.class);
+        if (bmsProductInputDTO == null) {
+            throw new BusinessException("入库信息缺失");
         }
-        for (BmsProductInputDTO bmsProductInputDTO : bmsProductInputDTOList) {
+        BmsOrderTb bmsOrderTb= bmsOrderTbMapper.selectOneByOrderNum(bmsProductInputDTO.getOrderNum());
+        if(bmsOrderTb==null){
+            throw new BusinessException("订单不存在");
+        }
+        if(BioBsmContents.Y.equals(bmsOrderTb.getOverFlag())){
+            throw new BusinessException("该订单已经完成");
+        }
+
+        for (BmsProductInputDTO.OrderDetail orderDetail : bmsProductInputDTO.getOrderDetailList()) {
             ValidatorUtil.validator(bmsProductInputDTO);
-            BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectOneByOrderDetailNum(bmsProductInputDTO.getOrderDetailNum());
+            BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectOneByOrderDetailNum(orderDetail.getOrderDetailNum());
             if (bmsOrderDetailTb.getPurchaseNumber() >= bmsOrderDetailTb.getReceiveNumber()) {
                 throw new BusinessException("该耗材已经全部到货");
             }
-            if (bmsOrderDetailTb.getPurchaseNumber() - bmsOrderDetailTb.getReceiveNumber() < bmsProductInputDTO.getNumber()) {
+            if (bmsOrderDetailTb.getPurchaseNumber() - bmsOrderDetailTb.getReceiveNumber() < orderDetail.getNumber()) {
                 throw new BusinessException("入库数量已经大于剩余待入库数量");
             }
-            if (CollectionUtil.isNotEmpty(bmsProductInputDTO.getStockLocationNumberList())) {
-                bmsProductInputDTO.getStockLocationNumberList().forEach(stockLocationNumber -> {
+            if (CollectionUtil.isNotEmpty(orderDetail.getStockLocationNumberList())) {
+                orderDetail.getStockLocationNumberList().forEach(stockLocationNumber -> {
                     BmsStockLocationDict bmsStockLocationDict = bmsStockLocationDictMapper.selectOneByUnitCodeAndLocaltionNumber(bmsOrderDetailTb.getApplyUnitCode(), stockLocationNumber);
                     if (bmsStockLocationDict == null) {
                         throw new BusinessException("库存信息不存在");
@@ -72,22 +80,22 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-            List<BmsProductInputDTO> bmsProductInputDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskNum(), BmsProductInputDTO.class);
-            for (BmsProductInputDTO bmsProductInputDTO : bmsProductInputDTOList) {
-                BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectOneByOrderDetailNum(bmsProductInputDTO.getOrderDetailNum());
-                String batchNo = StringUtils.isEmpty(bmsProductInputDTO.getBatchNo()) ? "N/A" : bmsProductInputDTO.getBatchNo();
+            BmsProductInputDTO bmsProductInputDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskNum(), BmsProductInputDTO.class);
+            for (BmsProductInputDTO.OrderDetail inputOrderDetail : bmsProductInputDTO.getOrderDetailList()) {
+                BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectOneByOrderDetailNum(inputOrderDetail.getOrderDetailNum());
+                String batchNo = StringUtils.isEmpty(inputOrderDetail.getBatchNo()) ? "N/A" : inputOrderDetail.getBatchNo();
                 // 入库库存
-               updateOrInsertBmsProductStock(bmsProductInputDTO, bmsOrderDetailTb, batchNo);
+                updateOrInsertBmsProductStock(inputOrderDetail, bmsOrderDetailTb, batchNo);
                 //记录入库记录
-                insertBmsProductStockInLog(bioTaskDtlTb, bmsProductInputDTO, bmsOrderDetailTb);
+                insertBmsProductStockInLog(bioTaskDtlTb, inputOrderDetail, bmsOrderDetailTb);
 
                 //订单明细接收数量增加
-                bmsOrderDetailTb.setReceiveNumber(bmsOrderDetailTb.getReceiveNumber() + bmsProductInputDTO.getNumber());
+                bmsOrderDetailTb.setReceiveNumber(bmsOrderDetailTb.getReceiveNumber() + inputOrderDetail.getNumber());
                 bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
 
                 //判断订单是否已经结束，如果已经结束则更新状态;
                 List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectAllByOrderNum(bmsOrderDetailTb.getOrderNum());
-                if (bmsOrderDetailTbList.stream().filter(orderDetail -> orderDetail.getPurchaseNumber().intValue() != orderDetail.getReceiveNumber().intValue()).count() == 0) {
+                if (bmsOrderDetailTbList.stream().filter(orderDetailTb -> orderDetailTb.getPurchaseNumber().intValue() != orderDetailTb.getReceiveNumber().intValue()).count() == 0) {
                     BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderDetailTb.getOrderNum());
                     bmsOrderTb.setOverFlag(BioBsmContents.Y);
                     bmsOrderTbMapper.updateById(bmsOrderTb);
@@ -105,7 +113,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
     }
 
 
-    private BmsProductStockTb updateOrInsertBmsProductStock(BmsProductInputDTO bmsProductInputDTO, BmsOrderDetailTb bmsOrderDetailTb, String batchNo) {
+    private BmsProductStockTb updateOrInsertBmsProductStock(BmsProductInputDTO.OrderDetail inputOrderDetail, BmsOrderDetailTb bmsOrderDetailTb, String batchNo) {
         BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode(bmsOrderDetailTb.getBrandCode(), bmsOrderDetailTb.getProductSpecs(), bmsOrderDetailTb.getProductName(), batchNo, bmsOrderDetailTb.getApplyUnitCode());
         if (bmsProductStockTb == null) {
             bmsProductStockTb = new BmsProductStockTb();
@@ -117,21 +125,21 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
             bmsProductStockTb.setBrandName(bmsOrderDetailTb.getBrandName());
             bmsProductStockTb.setProductSpecs(bmsOrderDetailTb.getProductSpecs());
             bmsProductStockTb.setBatchNo(batchNo);
-            bmsProductStockTb.setTotalStoreNumber(bmsProductInputDTO.getNumber());
-            bmsProductStockTb.setCurrentStockNumber(bmsProductInputDTO.getNumber());
-            bmsProductStockTb.setTotalOutNumber(bmsProductInputDTO.getNumber());
+            bmsProductStockTb.setTotalStoreNumber(inputOrderDetail.getNumber());
+            bmsProductStockTb.setCurrentStockNumber(inputOrderDetail.getNumber());
+            bmsProductStockTb.setTotalOutNumber(inputOrderDetail.getNumber());
             bmsProductStockTb.setUnitCode(bmsOrderDetailTb.getApplyUnitCode());
-            bmsProductStockTb.setStockLocationNumber(JSONUtil.toJsonStr(bmsProductInputDTO.getStockLocationNumberList()));
+            bmsProductStockTb.setStockLocationNumber(JSONUtil.toJsonStr(inputOrderDetail.getStockLocationNumberList()));
             bmsProductStockTbMapper.insert(bmsProductStockTb);
         } else {
-            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() + bmsProductInputDTO.getNumber());
-            bmsProductStockTb.setTotalStoreNumber(bmsProductStockTb.getTotalStoreNumber() + bmsProductInputDTO.getNumber());
-            if (CollectionUtil.isNotEmpty(bmsProductInputDTO.getStockLocationNumberList())) {
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() + inputOrderDetail.getNumber());
+            bmsProductStockTb.setTotalStoreNumber(bmsProductStockTb.getTotalStoreNumber() + inputOrderDetail.getNumber());
+            if (CollectionUtil.isNotEmpty(inputOrderDetail.getStockLocationNumberList())) {
                 List<String> currentStockLocationNumberList = JSONUtil.toList(bmsProductStockTb.getStockLocationNumber(), String.class);
                 if (CollectionUtil.isEmpty(currentStockLocationNumberList)) {
                     currentStockLocationNumberList = new ArrayList<>();
                 }
-                currentStockLocationNumberList.addAll(bmsProductInputDTO.getStockLocationNumberList());
+                currentStockLocationNumberList.addAll(inputOrderDetail.getStockLocationNumberList());
                 bmsProductStockTb.setStockLocationNumber(JSONUtil.toJsonStr(currentStockLocationNumberList));
             }
             bmsProductStockTbMapper.updateById(bmsProductStockTb);
@@ -140,7 +148,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         return bmsProductStockTb;
     }
 
-    private void insertBmsProductStockInLog(BioTaskDtlTb bioTaskDtlTb, BmsProductInputDTO bmsProductInputDTO, BmsOrderDetailTb bmsOrderDetailTb) {
+    private void insertBmsProductStockInLog(BioTaskDtlTb bioTaskDtlTb, BmsProductInputDTO.OrderDetail inputOrderDetail, BmsOrderDetailTb bmsOrderDetailTb) {
         BmsProductStockInLog bmsProductStockInLog = new BmsProductStockInLog();
         bmsProductStockInLog.setOrderDetailNum(bmsOrderDetailTb.getOrderDetailNum());
         bmsProductStockInLog.setProductName(bmsOrderDetailTb.getProductName());
@@ -150,17 +158,17 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockInLog.setBrandCode(bmsOrderDetailTb.getBrandCode());
         bmsProductStockInLog.setBrandName(bmsOrderDetailTb.getBrandName());
         bmsProductStockInLog.setProductSpecs(bmsOrderDetailTb.getProductSpecs());
-        bmsProductStockInLog.setBatchNo(bmsProductInputDTO.getBatchNo());
+        bmsProductStockInLog.setBatchNo(inputOrderDetail.getBatchNo());
         bmsProductStockInLog.setProjectCode(bmsOrderDetailTb.getProjectCode());
         bmsProductStockInLog.setProductPrice(bmsOrderDetailTb.getPurchasePrice());
-        bmsProductStockInLog.setStoreNumber(bmsProductInputDTO.getNumber());
-        bmsProductStockInLog.setStoreAmount(bmsOrderDetailTb.getPurchasePrice().multiply(new BigDecimal(bmsProductInputDTO.getNumber())));
+        bmsProductStockInLog.setStoreNumber(inputOrderDetail.getNumber());
+        bmsProductStockInLog.setStoreAmount(bmsOrderDetailTb.getPurchasePrice().multiply(new BigDecimal(inputOrderDetail.getNumber())));
         bmsProductStockInLog.setApplyUserId(SecurityContextHolder.getUserId());
         bmsProductStockInLog.setApplyUserName(SecurityContextHolder.getNickName());
         bmsProductStockInLog.setCreateTime(new Date());
         bmsProductStockInLog.setTaskNum(bioTaskDtlTb.getTaskNum());
         bmsProductStockInLog.setOrderNum(bmsOrderDetailTb.getOrderNum());
-        bmsProductStockInLog.setStockLocationNumber(JSONUtil.toJsonStr(bmsProductInputDTO.getStockLocationNumberList()));
+        bmsProductStockInLog.setStockLocationNumber(JSONUtil.toJsonStr(inputOrderDetail.getStockLocationNumberList()));
         bmsProductStockInLog.setUnitCode(bmsOrderDetailTb.getApplyUnitCode());
         bmsProductStockInLogMapper.insert(bmsProductStockInLog);
     }

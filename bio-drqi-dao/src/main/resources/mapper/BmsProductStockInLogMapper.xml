@@ -58,7 +58,7 @@
             <if test="brandName != null and brandName!=''">and brand_name=#{brandName,jdbcType=VARCHAR}</if>
             <if test="productSpecs != null">and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>
             <if test="batchNo != null and batchNo!=''">and batch_no=#{batchNo,jdbcType=VARCHAR}</if>
-            <if test="projectCode != null">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="projectCode != null and projectCode!=''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
             <if test="productPrice != null">and product_price=#{productPrice,jdbcType=DECIMAL}</if>
             <if test="storeNumber != null">and store_number=#{storeNumber,jdbcType=NUMERIC}</if>
             <if test="storeAmount != null">and store_amount=#{storeAmount,jdbcType=DECIMAL}</if>

@@ -8,8 +8,6 @@ import java.util.Date;
 
 @Data
 public class BmsProductStockInLogListPageReqDTO extends PageDTO {
-    private Integer id;
-
     /**
      * 子订单编号
      */

@@ -10,7 +10,7 @@
             <result property="productName" column="product_name" jdbcType="VARCHAR"/>
             <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
             <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
-            <result property="productCategoryName" column="product_category_name" jdbcType="VARCHAR"/>
+            <result property="productTypeCode" column="product_type_code" jdbcType="VARCHAR"/>
             <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
             <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
             <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
@@ -30,7 +30,7 @@
 
     <sql id="Base_Column_List">
         id,order_detail_num,product_name,
-        product_out_code,product_category_code,product_category_name,
+        product_out_code,product_category_code,product_type_code,
         brand_code,brand_name,product_specs,
         batch_no,project_code,product_price,
         store_number,store_amount,apply_user_id,
@@ -53,7 +53,7 @@
             <if test="productName != null and productName!=''">and product_name=#{productName,jdbcType=VARCHAR}</if>
             <if test="productOutCode != null and productOutCode!=''">and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
             <if test="productCategoryCode != null">and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
-            <if test="productCategoryName != null">and product_category_name=#{productCategoryName,jdbcType=VARCHAR}</if>
+            <if test="productTypeCode != null">and product_type_code=#{productTypeCode,jdbcType=VARCHAR}</if>
             <if test="brandCode != null">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
             <if test="brandName != null and brandName!=''">and brand_name=#{brandName,jdbcType=VARCHAR}</if>
             <if test="productSpecs != null">and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>

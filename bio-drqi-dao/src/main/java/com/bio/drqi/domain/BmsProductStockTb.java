@@ -39,14 +39,14 @@ public class BmsProductStockTb implements Serializable {
     private String productOutCode;
 
     /**
-     * 商品类别编号
+     * 所属类别编号
      */
     private String productCategoryCode;
 
     /**
-     * 商品类别名称
+     * 货品类型编号
      */
-    private String productCategoryName;
+    private String productTypeCode;
 
     /**
      * 品牌编号

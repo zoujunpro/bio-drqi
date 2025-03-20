@@ -121,7 +121,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
             bmsProductStockTb.setProductName(bmsOrderDetailTb.getProductName());
             bmsProductStockTb.setProductOutCode(bmsOrderDetailTb.getProductOutCode());
             bmsProductStockTb.setProductCategoryCode(bmsOrderDetailTb.getProductCategoryCode());
-            bmsProductStockTb.setProductCategoryName(bmsOrderDetailTb.getProductCategoryName());
+            bmsProductStockTb.setProductTypeCode(bmsOrderDetailTb.getProductTypeCode());
             bmsProductStockTb.setBrandCode(bmsOrderDetailTb.getBrandCode());
             bmsProductStockTb.setBrandName(bmsOrderDetailTb.getBrandName());
             bmsProductStockTb.setProductSpecs(bmsOrderDetailTb.getProductSpecs());
@@ -158,7 +158,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockInLog.setProductName(bmsOrderDetailTb.getProductName());
         bmsProductStockInLog.setProductOutCode(bmsOrderDetailTb.getProductOutCode());
         bmsProductStockInLog.setProductCategoryCode(bmsOrderDetailTb.getProductCategoryCode());
-        bmsProductStockInLog.setProductCategoryName(bmsOrderDetailTb.getProductCategoryName());
+        bmsProductStockInLog.setProductTypeCode(bmsOrderDetailTb.getProductTypeCode());
         bmsProductStockInLog.setBrandCode(bmsOrderDetailTb.getBrandCode());
         bmsProductStockInLog.setBrandName(bmsOrderDetailTb.getBrandName());
         bmsProductStockInLog.setProductSpecs(bmsOrderDetailTb.getProductSpecs());

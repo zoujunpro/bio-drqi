@@ -37,4 +37,38 @@
         apply_user_name,create_time,task_num,
         order_num,stock_location_number,unit_code
     </sql>
+    <select id="selectAllByOrderNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_in_log
+        where
+        order_num = #{orderNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsProductStockInLog">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_in_log
+        <where>
+            <if test="orderDetailNum != null and orderDetailNum!=''">and order_detail_num=#{orderDetailNum,jdbcType=VARCHAR}</if>
+            <if test="productName != null and productName!=''">and product_name=#{productName,jdbcType=VARCHAR}</if>
+            <if test="productOutCode != null and productOutCode!=''">and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
+            <if test="productCategoryCode != null">and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
+            <if test="productCategoryName != null">and product_category_name=#{productCategoryName,jdbcType=VARCHAR}</if>
+            <if test="brandCode != null">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
+            <if test="brandName != null and brandName!=''">and brand_name=#{brandName,jdbcType=VARCHAR}</if>
+            <if test="productSpecs != null">and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>
+            <if test="batchNo != null and batchNo!=''">and batch_no=#{batchNo,jdbcType=VARCHAR}</if>
+            <if test="projectCode != null">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="productPrice != null">and product_price=#{productPrice,jdbcType=DECIMAL}</if>
+            <if test="storeNumber != null">and store_number=#{storeNumber,jdbcType=NUMERIC}</if>
+            <if test="storeAmount != null">and store_amount=#{storeAmount,jdbcType=DECIMAL}</if>
+            <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
+            <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="orderNum != null and orderNum!=''">and order_num=#{orderNum,jdbcType=VARCHAR}</if>
+            <if test="stockLocationNumber != null and stockLocationNumber!=''">and stock_location_number=#{stockLocationNumber,jdbcType=VARCHAR}</if>
+            <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
+        </where>
+    </select>
 </mapper>

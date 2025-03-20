@@ -6,7 +6,7 @@ import com.bio.drqi.bsm.rsp.BmsProductStockInLogListPageRspDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 
-@Service
+
 public interface BmsProductStockInService {
 
     PageInfo<BmsProductStockInLogListPageRspDTO> listPage(BmsProductStockInLogListPageReqDTO bmsProductStockInLogListPageReqDTO);

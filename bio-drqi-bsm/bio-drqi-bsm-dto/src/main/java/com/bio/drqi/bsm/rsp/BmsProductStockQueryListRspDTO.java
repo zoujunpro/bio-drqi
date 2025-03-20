@@ -29,4 +29,10 @@ public class BmsProductStockQueryListRspDTO {
      * 单位
      */
     private String unitCode;
+
+
+    /**
+     * 库存位置编号
+     */
+    private String stockLocationNumber;
 }

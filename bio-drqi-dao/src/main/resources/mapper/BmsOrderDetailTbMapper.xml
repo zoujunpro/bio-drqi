@@ -19,6 +19,7 @@
             <result property="productName" column="product_name" jdbcType="VARCHAR"/>
             <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
             <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
+            <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
             <result property="purchasePrice" column="purchase_price" jdbcType="DECIMAL"/>
             <result property="purchaseNumber" column="purchase_number" jdbcType="INTEGER"/>
             <result property="receiveNumber" column="receive_number" jdbcType="INTEGER"/>
@@ -43,7 +44,7 @@
         project_code,project_name,supplier_name,
         supplier_code,contact_user_telephone,contact_user_name,
         brand_code,brand_name,product_name,
-        product_specs,product_out_code,purchase_price,
+        product_specs,product_out_code,product_inner_code,purchase_price,
         purchase_number,pay_amount,product_category_code,
         product_category_name,create_time,apply_user_id,
         apply_user_name,task_num,product_type_code,product_type_name,picture_urls,
@@ -75,6 +76,7 @@
             <if test="productName != null and productName !=''">and product_name=#{productName,jdbcType=VARCHAR}</if>
             <if test="productSpecs != null and productSpecs!=''">and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>
             <if test="productOutCode != null">and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
+            <if test="productInnerCode != null">and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}</if>
             <if test="purchasePrice != null">and purchase_price=#{purchasePrice,jdbcType=DECIMAL}</if>
             <if test="purchaseNumber != null">and purchase_number=#{purchaseNumber,jdbcType=NUMERIC}</if>
             <if test="payAmount != null">and pay_amount=#{payAmount,jdbcType=DECIMAL}</if>

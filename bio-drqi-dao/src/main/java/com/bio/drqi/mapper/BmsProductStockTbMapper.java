@@ -18,6 +18,8 @@ public interface BmsProductStockTbMapper extends BaseMapper<BmsProductStockTb> {
 
     List<BmsProductStockTb> selectSelective(BmsProductStockTb bmsProductStockTb);
 
+    BmsProductStockTb selectOneByProductInnerCodeAndUnitCodeAndBatchNo(@Param("productInnerCode") String productInnerCode, @Param("unitCode") String unitCode, @Param("batchNo") String batchNo);
+
 }
 
 

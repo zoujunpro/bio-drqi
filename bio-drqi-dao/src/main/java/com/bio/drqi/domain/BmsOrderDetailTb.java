@@ -94,6 +94,8 @@ public class BmsOrderDetailTb implements Serializable {
      */
     private String productOutCode;
 
+    private String productInnerCode;
+
     /**
      * 采购单价
      */

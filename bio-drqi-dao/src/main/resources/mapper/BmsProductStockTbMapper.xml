@@ -63,4 +63,13 @@
             <if test="stockLocationNumber != null"> and stock_location_number=#{stockLocationNumber,jdbcType=VARCHAR}</if>
         </where>
     </select>
+    <select id="selectOneByProductInnerCodeAndUnitCodeAndBatchNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_tb
+        where
+        product_inner_code = #{productInnerCode,jdbcType=VARCHAR}
+        AND unit_code = #{unitCode,jdbcType=VARCHAR}
+        AND batch_no = #{batchNo,jdbcType=VARCHAR}
+    </select>
 </mapper>

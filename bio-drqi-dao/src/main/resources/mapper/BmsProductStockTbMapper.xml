@@ -73,4 +73,9 @@
         AND unit_code = #{unitCode,jdbcType=VARCHAR}
         AND batch_no = #{batchNo,jdbcType=VARCHAR}
     </select>
+    <select id="selectProductNameByUniqueCode" resultType="java.lang.String">
+        select product_name
+        from bms_product_stock_tb
+        where unique_code = #{uniqueCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

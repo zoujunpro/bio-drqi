@@ -31,19 +31,8 @@ import java.util.Objects;
 public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
 
     @Resource
-    private BmsOrderTbMapper bmsOrderTbMapper;
-
-    @Resource
-    private BmsOrderDetailTbMapper bmsOrderDetailTbMapper;
-
-    @Resource
     private BmsProductStockTbMapper bmsProductStockTbMapper;
 
-    @Resource
-    private BmsProductStockInLogMapper bmsProductStockInLogMapper;
-
-    @Resource
-    private BmsStockLocationDictMapper bmsStockLocationDictMapper;
 
     @Resource
     private BmsProductStockOutLogMapper bmsProductStockOutLogMapper;
@@ -56,11 +45,11 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         }
         for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode(bmsProductOutDTO.getBrandCode(), bmsProductOutDTO.getProductSpecs(), bmsProductOutDTO.getProductName(), bmsProductOutDTO.getBatchNo(), bmsProductOutDTO.getUnitCode());
-            if(bmsProductStockTb==null){
+            if (bmsProductStockTb == null) {
                 throw new BusinessException("数据库中不存在此商品信息");
             }
-            if(bmsProductStockTb.getCurrentStockNumber()<bmsProductOutDTO.getNumber()){
-                throw new BusinessException("批次号为："+bmsProductOutDTO.getBatchNo()+"的"+bmsProductOutDTO.getProductName()+"库存不足");
+            if (bmsProductStockTb.getCurrentStockNumber() < bmsProductOutDTO.getNumber()) {
+                throw new BusinessException("批次号为：" + bmsProductOutDTO.getBatchNo() + "的" + bmsProductOutDTO.getProductName() + "库存不足");
             }
         }
     }
@@ -71,12 +60,12 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
             //扣减库存
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode(bmsProductOutDTO.getBrandCode(), bmsProductOutDTO.getProductSpecs(), bmsProductOutDTO.getProductName(), bmsProductOutDTO.getBatchNo(), bmsProductOutDTO.getUnitCode());
-            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber()-bmsProductOutDTO.getNumber());
-            bmsProductStockTb.setTotalOutNumber(bmsProductStockTb.getTotalStoreNumber()+bmsProductOutDTO.getNumber());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductOutDTO.getNumber());
+            bmsProductStockTb.setTotalOutNumber(bmsProductStockTb.getTotalStoreNumber() + bmsProductOutDTO.getNumber());
             bmsProductStockTbMapper.updateById(bmsProductStockTb);
             //生成出库记录
 
-            BmsProductStockOutLog bmsProductStockOutLog=new BmsProductStockOutLog();
+            BmsProductStockOutLog bmsProductStockOutLog = new BmsProductStockOutLog();
             bmsProductStockOutLog.setProductName(bmsProductStockTb.getProductName());
             bmsProductStockOutLog.setProductOutCode(bmsProductStockTb.getProductOutCode());
             bmsProductStockOutLog.setProductCategoryCode(bmsProductStockTb.getProductCategoryCode());

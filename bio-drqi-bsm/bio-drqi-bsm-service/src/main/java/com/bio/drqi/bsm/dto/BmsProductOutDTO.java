@@ -11,8 +11,26 @@ import java.util.List;
 public class BmsProductOutDTO {
 
 
-    @NotBlank(message = "入库参数缺少：订单明细")
-    private String orderDetailNum;
+    @NotBlank(message = "参数缺失：商品名称")
+    private String productName;
 
+    @NotBlank(message = "参数缺失：批次")
+    private String batchNo;
 
+    @NotBlank(message = "参数缺失：单位")
+    private String unitCode;
+
+    @NotBlank(message = "参数缺失：品牌")
+    private String brandCode;
+
+    @NotBlank(message = "参数缺失：规格")
+    private String productSpecs;
+
+    @NotNull(message = "参数缺失：出库数量")
+    private Integer number;
+
+    /**
+     * 备注
+     */
+    private String remark;
 }

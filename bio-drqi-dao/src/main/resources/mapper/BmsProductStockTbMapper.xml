@@ -22,6 +22,7 @@
         <result property="stockLocationNumber" column="stock_location_number" jdbcType="VARCHAR"/>
         <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
         <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
+        <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -30,7 +31,7 @@
         product_category_code,product_type_code,brand_code,
         brand_name,product_specs,batch_no,
         total_store_number,current_stock_number,total_out_number,
-        unit_code,stock_location_number,product_inner_code,supplier_code,supplier_name
+        unit_code,stock_location_number,product_inner_code,supplier_code,supplier_name,unique_code
     </sql>
     <select id="selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode" resultMap="BaseResultMap">
         select

@@ -4,10 +4,13 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.dto.BmsProductInputDTO;
+import com.bio.drqi.bsm.dto.BmsProductOutDTO;
+import com.bio.drqi.bsm.enums.OutTypeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.mapper.*;
@@ -42,138 +45,61 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
     @Resource
     private BmsStockLocationDictMapper bmsStockLocationDictMapper;
 
+    @Resource
+    private BmsProductStockOutLogMapper bmsProductStockOutLogMapper;
+
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
-        BmsProductInputDTO bmsProductInputDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsProductInputDTO.class);
-        if (bmsProductInputDTO == null) {
-            throw new BusinessException("入库信息缺失");
+        List<BmsProductOutDTO> bmsProductOutDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskNum(), BmsProductOutDTO.class);
+        for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
+            ValidatorUtil.validator(bmsProductOutDTO);
         }
-        BmsOrderTb bmsOrderTb= bmsOrderTbMapper.selectOneByOrderNum(bmsProductInputDTO.getOrderNum());
-        if(bmsOrderTb==null){
-            throw new BusinessException("订单不存在");
-        }
-        if(BioBsmContents.Y.equals(bmsOrderTb.getOverFlag())){
-            throw new BusinessException("该订单已经完成");
-        }
-
-        for (BmsProductInputDTO.OrderDetail orderDetail : bmsProductInputDTO.getOrderDetailList()) {
-            ValidatorUtil.validator(bmsProductInputDTO);
-            BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectOneByOrderDetailNum(orderDetail.getOrderDetailNum());
-            if (Objects.equals(bmsOrderDetailTb.getPurchaseNumber(),bmsOrderDetailTb.getReceiveNumber().intValue())) {
-                throw new BusinessException("该耗材已经全部到货");
+        for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode(bmsProductOutDTO.getBrandCode(), bmsProductOutDTO.getProductSpecs(), bmsProductOutDTO.getProductName(), bmsProductOutDTO.getBatchNo(), bmsProductOutDTO.getUnitCode());
+            if(bmsProductStockTb==null){
+                throw new BusinessException("数据库中不存在此商品信息");
             }
-            if (bmsOrderDetailTb.getPurchaseNumber() - bmsOrderDetailTb.getReceiveNumber() < orderDetail.getNumber()) {
-                throw new BusinessException("入库数量已经大于剩余待入库数量");
-            }
-            if (CollectionUtil.isNotEmpty(orderDetail.getStockLocationNumberList())) {
-                orderDetail.getStockLocationNumberList().forEach(stockLocationNumber -> {
-                    BmsStockLocationDict bmsStockLocationDict = bmsStockLocationDictMapper.selectOneByUnitCodeAndLocaltionNumber(bmsOrderDetailTb.getApplyUnitCode(), stockLocationNumber);
-                    if (bmsStockLocationDict == null) {
-                        throw new BusinessException("库存信息不存在");
-                    }
-                });
-
+            if(bmsProductStockTb.getCurrentStockNumber()<bmsProductOutDTO.getNumber()){
+                throw new BusinessException("批次号为："+bmsProductOutDTO.getBatchNo()+"的"+bmsProductOutDTO.getProductName()+"库存不足");
             }
         }
-        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(bmsProductInputDTO));
     }
 
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
-        if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-            BmsProductInputDTO bmsProductInputDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsProductInputDTO.class);
-            for (BmsProductInputDTO.OrderDetail inputOrderDetail : bmsProductInputDTO.getOrderDetailList()) {
-                BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectOneByOrderDetailNum(inputOrderDetail.getOrderDetailNum());
-                String batchNo = StringUtils.isEmpty(inputOrderDetail.getBatchNo()) ? "N/A" : inputOrderDetail.getBatchNo();
-                // 入库库存
-                updateOrInsertBmsProductStock(inputOrderDetail, bmsOrderDetailTb, batchNo);
-                //记录入库记录
-                insertBmsProductStockInLog(bioTaskDtlTb, inputOrderDetail, bmsOrderDetailTb);
+        List<BmsProductOutDTO> bmsProductOutDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskNum(), BmsProductOutDTO.class);
+        for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
+            //扣减库存
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode(bmsProductOutDTO.getBrandCode(), bmsProductOutDTO.getProductSpecs(), bmsProductOutDTO.getProductName(), bmsProductOutDTO.getBatchNo(), bmsProductOutDTO.getUnitCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber()-bmsProductOutDTO.getNumber());
+            bmsProductStockTb.setTotalOutNumber(bmsProductStockTb.getTotalStoreNumber()+bmsProductOutDTO.getNumber());
+            bmsProductStockTbMapper.updateById(bmsProductStockTb);
+            //生成出库记录
 
-                //订单明细接收数量增加
-                bmsOrderDetailTb.setReceiveNumber(bmsOrderDetailTb.getReceiveNumber() + inputOrderDetail.getNumber());
-                bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
-
-                //判断订单是否已经结束，如果已经结束则更新状态;
-                List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectAllByOrderNum(bmsOrderDetailTb.getOrderNum());
-                if (bmsOrderDetailTbList.stream().filter(orderDetailTb -> orderDetailTb.getPurchaseNumber().intValue() != orderDetailTb.getReceiveNumber().intValue()).count() == 0) {
-                    BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderDetailTb.getOrderNum());
-                    bmsOrderTb.setOverFlag(BioBsmContents.Y);
-                    bmsOrderTbMapper.updateById(bmsOrderTb);
-                }
-            }
+            BmsProductStockOutLog bmsProductStockOutLog=new BmsProductStockOutLog();
+            bmsProductStockOutLog.setProductName(bmsProductStockTb.getProductName());
+            bmsProductStockOutLog.setProductOutCode(bmsProductStockTb.getProductOutCode());
+            bmsProductStockOutLog.setProductCategoryCode(bmsProductStockTb.getProductCategoryCode());
+            bmsProductStockOutLog.setProductTypeCode(bmsProductStockTb.getProductTypeCode());
+            bmsProductStockOutLog.setBrandCode(bmsProductStockTb.getBrandCode());
+            bmsProductStockOutLog.setBrandName(bmsProductStockTb.getBrandName());
+            bmsProductStockOutLog.setProductSpecs(bmsProductStockTb.getProductSpecs());
+            bmsProductStockOutLog.setBatchNo(bmsProductStockTb.getBatchNo());
+            bmsProductStockOutLog.setOutNumber(bmsProductOutDTO.getNumber());
+            bmsProductStockOutLog.setApplyUserId(SecurityContextHolder.getUserId());
+            bmsProductStockOutLog.setApplyUserName(SecurityContextHolder.getNickName());
+            bmsProductStockOutLog.setCreateTime(new Date());
+            bmsProductStockOutLog.setTaskNum(bioTaskDtlTb.getTaskNum());
+            bmsProductStockOutLog.setRemark(bmsProductOutDTO.getRemark());
+            bmsProductStockOutLog.setOutType(OutTypeEnum.TYPE_1.code);
+            bmsProductStockOutLog.setUnitCode(bmsProductOutDTO.getUnitCode());
+            bmsProductStockOutLogMapper.insert(bmsProductStockOutLog);
 
         }
-
     }
-
 
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
 
-    }
-
-
-    private BmsProductStockTb updateOrInsertBmsProductStock(BmsProductInputDTO.OrderDetail inputOrderDetail, BmsOrderDetailTb bmsOrderDetailTb, String batchNo) {
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode(bmsOrderDetailTb.getBrandCode(), bmsOrderDetailTb.getProductSpecs(), bmsOrderDetailTb.getProductName(), batchNo, bmsOrderDetailTb.getApplyUnitCode());
-        if (bmsProductStockTb == null) {
-            bmsProductStockTb = new BmsProductStockTb();
-            bmsProductStockTb.setProductName(bmsOrderDetailTb.getProductName());
-            bmsProductStockTb.setProductOutCode(bmsOrderDetailTb.getProductOutCode());
-            bmsProductStockTb.setProductCategoryCode(bmsOrderDetailTb.getProductCategoryCode());
-            bmsProductStockTb.setProductTypeCode(bmsOrderDetailTb.getProductTypeCode());
-            bmsProductStockTb.setBrandCode(bmsOrderDetailTb.getBrandCode());
-            bmsProductStockTb.setBrandName(bmsOrderDetailTb.getBrandName());
-            bmsProductStockTb.setProductSpecs(bmsOrderDetailTb.getProductSpecs());
-            bmsProductStockTb.setBatchNo(batchNo);
-            bmsProductStockTb.setTotalStoreNumber(inputOrderDetail.getNumber());
-            bmsProductStockTb.setCurrentStockNumber(inputOrderDetail.getNumber());
-            bmsProductStockTb.setTotalOutNumber(0);
-            bmsProductStockTb.setUnitCode(bmsOrderDetailTb.getApplyUnitCode());
-            bmsProductStockTb.setStockLocationNumber(JSONUtil.toJsonStr(inputOrderDetail.getStockLocationNumberList()));
-            bmsProductStockTb.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
-            bmsProductStockTb.setSupplierName(bmsProductStockTb.getSupplierName());
-            bmsProductStockTb.setSupplierCode(bmsProductStockTb.getSupplierCode());
-            bmsProductStockTbMapper.insert(bmsProductStockTb);
-        } else {
-            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() + inputOrderDetail.getNumber());
-            bmsProductStockTb.setTotalStoreNumber(bmsProductStockTb.getTotalStoreNumber() + inputOrderDetail.getNumber());
-            if (CollectionUtil.isNotEmpty(inputOrderDetail.getStockLocationNumberList())) {
-                List<String> currentStockLocationNumberList = JSONUtil.toList(bmsProductStockTb.getStockLocationNumber(), String.class);
-                if (CollectionUtil.isEmpty(currentStockLocationNumberList)) {
-                    currentStockLocationNumberList = new ArrayList<>();
-                }
-                currentStockLocationNumberList.addAll(inputOrderDetail.getStockLocationNumberList());
-                bmsProductStockTb.setStockLocationNumber(JSONUtil.toJsonStr(currentStockLocationNumberList));
-            }
-            bmsProductStockTbMapper.updateById(bmsProductStockTb);
-        }
-
-        return bmsProductStockTb;
-    }
-
-    private void insertBmsProductStockInLog(BioTaskDtlTb bioTaskDtlTb, BmsProductInputDTO.OrderDetail inputOrderDetail, BmsOrderDetailTb bmsOrderDetailTb) {
-        BmsProductStockInLog bmsProductStockInLog = new BmsProductStockInLog();
-        bmsProductStockInLog.setOrderDetailNum(bmsOrderDetailTb.getOrderDetailNum());
-        bmsProductStockInLog.setProductName(bmsOrderDetailTb.getProductName());
-        bmsProductStockInLog.setProductOutCode(bmsOrderDetailTb.getProductOutCode());
-        bmsProductStockInLog.setProductCategoryCode(bmsOrderDetailTb.getProductCategoryCode());
-        bmsProductStockInLog.setProductTypeCode(bmsOrderDetailTb.getProductTypeCode());
-        bmsProductStockInLog.setBrandCode(bmsOrderDetailTb.getBrandCode());
-        bmsProductStockInLog.setBrandName(bmsOrderDetailTb.getBrandName());
-        bmsProductStockInLog.setProductSpecs(bmsOrderDetailTb.getProductSpecs());
-        bmsProductStockInLog.setBatchNo(inputOrderDetail.getBatchNo());
-        bmsProductStockInLog.setProjectCode(bmsOrderDetailTb.getProjectCode());
-        bmsProductStockInLog.setProductPrice(bmsOrderDetailTb.getPurchasePrice());
-        bmsProductStockInLog.setStoreNumber(inputOrderDetail.getNumber());
-        bmsProductStockInLog.setStoreAmount(bmsOrderDetailTb.getPurchasePrice().multiply(new BigDecimal(inputOrderDetail.getNumber())));
-        bmsProductStockInLog.setApplyUserId(SecurityContextHolder.getUserId());
-        bmsProductStockInLog.setApplyUserName(SecurityContextHolder.getNickName());
-        bmsProductStockInLog.setCreateTime(new Date());
-        bmsProductStockInLog.setTaskNum(bioTaskDtlTb.getTaskNum());
-        bmsProductStockInLog.setOrderNum(bmsOrderDetailTb.getOrderNum());
-        bmsProductStockInLog.setStockLocationNumber(JSONUtil.toJsonStr(inputOrderDetail.getStockLocationNumberList()));
-        bmsProductStockInLog.setUnitCode(bmsOrderDetailTb.getApplyUnitCode());
-        bmsProductStockInLogMapper.insert(bmsProductStockInLog);
     }
 }

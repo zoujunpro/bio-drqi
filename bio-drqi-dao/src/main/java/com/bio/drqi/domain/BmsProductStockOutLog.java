@@ -63,11 +63,6 @@ public class BmsProductStockOutLog implements Serializable {
     private String batchNo;
 
     /**
-     * 研发项目
-     */
-    private String projectCode;
-
-    /**
      * 出库数量
      */
     private Integer outNumber;
@@ -103,16 +98,12 @@ public class BmsProductStockOutLog implements Serializable {
     private String outType;
 
     /**
-     * 库存位置编号
-     */
-    private String stockLocationNumber;
-
-    /**
      * 单位编号
      */
     private String unitCode;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
 
 }

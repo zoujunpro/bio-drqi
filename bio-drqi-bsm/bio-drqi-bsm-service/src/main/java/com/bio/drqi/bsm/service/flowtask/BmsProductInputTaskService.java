@@ -6,6 +6,7 @@ import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
+import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.dto.BmsProductInputDTO;
 import com.bio.drqi.domain.*;
@@ -134,6 +135,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
             bmsProductStockTb.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
             bmsProductStockTb.setSupplierName(bmsProductStockTb.getSupplierName());
             bmsProductStockTb.setSupplierCode(bmsProductStockTb.getSupplierCode());
+            bmsProductStockTb.setUniqueCode(IdUtils.simpleUUID());
             bmsProductStockTbMapper.insert(bmsProductStockTb);
         } else {
             bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() + inputOrderDetail.getNumber());
@@ -176,4 +178,5 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockInLog.setUnitCode(bmsOrderDetailTb.getApplyUnitCode());
         bmsProductStockInLogMapper.insert(bmsProductStockInLog);
     }
+
 }

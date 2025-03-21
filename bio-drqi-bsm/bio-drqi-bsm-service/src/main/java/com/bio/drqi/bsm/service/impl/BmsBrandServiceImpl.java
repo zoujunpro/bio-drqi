@@ -1,6 +1,5 @@
 package com.bio.drqi.bsm.service.impl;
 
-import cn.hutool.core.lang.UUID;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
@@ -8,10 +7,8 @@ import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.bsm.req.BmsBrandAddReqDTO;
 import com.bio.drqi.bsm.req.BmsBrandEditReqDTO;
 import com.bio.drqi.bsm.req.BmsBrandListPageReqDTO;
-import com.bio.drqi.bsm.req.BmsBrandQueryListReqDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandListPageRspDTO;
-import com.bio.drqi.bsm.rsp.BmsBrandQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsBrandService;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.domain.BmsBrandTb;
@@ -38,9 +35,6 @@ public class BmsBrandServiceImpl implements BmsBrandService {
     @Resource
     private BmsProductTbMapper bmsProductTbMapper;
 
-    @Resource
-    private BmsSupplierTbMapper bmsSupplierTbMapper;
-
     @Override
     public PageInfo<BmsBrandListPageRspDTO> listPage(BmsBrandListPageReqDTO bmsBrandListPageReqDTO) {
         PageHelper.startPage(bmsBrandListPageReqDTO.getPageNum(), bmsBrandListPageReqDTO.getPageSize());
@@ -49,15 +43,6 @@ public class BmsBrandServiceImpl implements BmsBrandService {
         return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsBrandListPageRspDTO.class);
     }
 
-    @Override
-    public List<BmsBrandQueryListRspDTO> queryList(BmsBrandQueryListReqDTO bmsBrandQueryListReqDTO) {
-        BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(bmsBrandQueryListReqDTO.getSupplierCode());
-        if (bmsSupplierTb == null) {
-            throw new BusinessException("供应商找不到");
-        }
-        List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(BmsBrandTb.builder().supplierCode(bmsBrandQueryListReqDTO.getSupplierCode()).deleteFlag(bmsSupplierTb.getDeleteFlag()).build());
-        return BeanUtils.copyListProperties(bmsBrandTbList, BmsBrandQueryListRspDTO.class);
-    }
 
     @Override
     public List<BmsBrandListAllRspDTO> listAll() {
@@ -67,33 +52,18 @@ public class BmsBrandServiceImpl implements BmsBrandService {
 
     @Override
     public void add(BmsBrandAddReqDTO bmsBrandAddReqDTO) {
-        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneBySupplierCodeAndBrandName(bmsBrandAddReqDTO.getSupplierCode(), bmsBrandAddReqDTO.getBrandName());
+        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode( bmsBrandAddReqDTO.getBrandName());
         if (Objects.nonNull(bmsBrandTb) && BioDrQiContents.N.equals(bmsBrandTb.getDeleteFlag())) {
             throw new BusinessException("该品牌已经存在");
         }
-        if (bmsBrandTb == null) {
-            bmsBrandTb = new BmsBrandTb();
-            bmsBrandTb.setSupplierCode(bmsBrandAddReqDTO.getSupplierCode());
-            bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
-            bmsBrandTb.setBrandName(bmsBrandAddReqDTO.getBrandName());
-            bmsBrandTb.setCreateTime(new Date());
-            bmsBrandTb.setCreateUserId(SecurityContextHolder.getUserId());
-            bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
-            bmsBrandTb.setDeleteFlag(BioDrQiContents.N);
-            bmsBrandTbMapper.insert(bmsBrandTb);
-        } else {
-            if (!bmsBrandTb.getSupplierCode().equals(bmsBrandAddReqDTO.getSupplierCode())) {
-                BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(bmsBrandTb.getSupplierCode());
-                throw new BusinessException("此品牌曾经使用过，且隶属于" + bmsSupplierTb.getSupplierName());
-            }
-            bmsBrandTb.setCreateTime(new Date());
-            bmsBrandTb.setCreateUserId(SecurityContextHolder.getUserId());
-            bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
-            bmsBrandTb.setDeleteFlag(BioDrQiContents.N);
-            bmsBrandTbMapper.updateById(bmsBrandTb);
-        }
-
-
+        bmsBrandTb = new BmsBrandTb();
+        bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
+        bmsBrandTb.setBrandName(bmsBrandAddReqDTO.getBrandName());
+        bmsBrandTb.setCreateTime(new Date());
+        bmsBrandTb.setCreateUserId(SecurityContextHolder.getUserId());
+        bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
+        bmsBrandTb.setDeleteFlag(BioDrQiContents.N);
+        bmsBrandTbMapper.insert(bmsBrandTb);
     }
 
     @Override

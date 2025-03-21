@@ -13,15 +13,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface BmsBrandTbMapper extends BaseMapper<BmsBrandTb> {
 
-    List<BmsBrandTb> selectAllBySupplierCode(@Param("supplierCode") String supplierCode);
-
-    int updateDeleteFlagBySupplierCode(@Param("deleteFlag") String deleteFlag, @Param("supplierCode") String supplierCode);
-
     BmsBrandTb selectOneByBrandCode(@Param("brandCode") String brandCode);
 
     List<BmsBrandTb> selectSelective(BmsBrandTb bmsBrandTb);
 
-    BmsBrandTb selectOneBySupplierCodeAndBrandName(@Param("supplierCode") String supplierCode, @Param("brandName") String brandName);
+
+
 
 }
 

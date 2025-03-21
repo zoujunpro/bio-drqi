@@ -29,11 +29,6 @@ public class BmsBrandTb implements Serializable {
     private Integer id;
 
     /**
-     * 商品编号
-     */
-    private String supplierCode;
-
-    /**
      * 品牌编号
      */
     private String brandCode;

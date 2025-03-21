@@ -129,6 +129,13 @@ public class BmsProductServiceImpl implements BmsProductService {
         if (BioDrQiContents.Y.equals(bmsBrandTb.getDeleteFlag())) {
             throw new BusinessException("此品牌已经删除");
         }
+        BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(bmsProductAddReqDTO.getSupplierCode());
+        if(bmsSupplierTb==null){
+            throw new BusinessException("供应商不存在");
+        }
+        if (BioDrQiContents.Y.equals(bmsSupplierTb.getDeleteFlag())) {
+            throw new BusinessException("此供应商已经删除");
+        }
 
         BmsProductTb bmsProductTb = new BmsProductTb();
         bmsProductTb.setProductName(bmsProductAddReqDTO.getProductName());
@@ -136,7 +143,7 @@ public class BmsProductServiceImpl implements BmsProductService {
         bmsProductTb.setProductInnerCode(IdUtils.simpleUUID());
         bmsProductTb.setProductCategoryCode(bmsProductAddReqDTO.getProductCategoryCode());
         bmsProductTb.setProductTypeCode(bmsProductAddReqDTO.getProductTypeCode());
-        bmsProductTb.setSupplierCode(bmsBrandTb.getSupplierCode());
+        bmsProductTb.setSupplierCode(bmsProductAddReqDTO.getSupplierCode());
         bmsProductTb.setBrandName(bmsBrandTb.getBrandName());
         bmsProductTb.setBrandCode(bmsProductAddReqDTO.getBrandCode());
         bmsProductTb.setProductSpecs(bmsProductAddReqDTO.getProductSpecs());

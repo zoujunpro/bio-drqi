@@ -19,7 +19,6 @@ public class BmsProductEditReqDTO {
      */
     private String productOutCode;
 
-
     /**
      * 商品类别编号
      */
@@ -29,8 +28,6 @@ public class BmsProductEditReqDTO {
      * 商品类型编号
      */
     private String productTypeCode;
-
-
 
     /**
      * 商品规格

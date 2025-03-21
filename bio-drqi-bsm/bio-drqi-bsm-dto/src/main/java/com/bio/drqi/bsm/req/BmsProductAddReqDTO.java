@@ -28,6 +28,8 @@ public class BmsProductAddReqDTO {
      */
     private String brandCode;
 
+    private String supplierCode;
+
     /**
      * 商品规格
      */

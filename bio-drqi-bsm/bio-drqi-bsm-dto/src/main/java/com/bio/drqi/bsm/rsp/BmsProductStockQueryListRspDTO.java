@@ -35,4 +35,6 @@ public class BmsProductStockQueryListRspDTO {
      * 库存位置编号
      */
     private String stockLocationNumber;
+
+    private String uniqueCode;
 }

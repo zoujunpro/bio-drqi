@@ -37,12 +37,6 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
     @Resource
     private BmsSupplierTbMapper bmsSupplierTbMapper;
 
-    @Resource
-    private BmsBrandTbMapper bmsBrandTbMapper;
-
-    @Resource
-    private BmsProductTbMapper bmsProductTbMapper;
-
     @Override
     public PageInfo<BmsSupplierListPageRspDTO> listPage(BmsSupplierListPageReqDTO bmsSupplierListPageReqDTO) {
         PageHelper.startPage(bmsSupplierListPageReqDTO.getPageNum(), bmsSupplierListPageReqDTO.getPageSize());

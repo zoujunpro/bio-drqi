@@ -1,7 +1,10 @@
 package com.bio.drqi.mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.BmsProductStockOutLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
 * @author zou'jun
@@ -11,6 +14,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface BmsProductStockOutLogMapper extends BaseMapper<BmsProductStockOutLog> {
 
+
+
+    List<BmsProductStockOutLog> selectSelective(BmsProductStockOutLog bmsProductStockOutLog);
 }
 
 

@@ -36,4 +36,31 @@
         remark,out_type,unit_code,
         supplier_name,supplier_code,unique_code
     </sql>
+    <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsProductStockOutLog" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_out_log
+        <where>
+            <if test="productName != null and productName!='' ">and product_name=#{productName,jdbcType=VARCHAR}</if>
+            <if test="productOutCode != null and productOutCode!=''">and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
+            <if test="productInnerCode != null and productInnerCode!=''">and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}</if>
+            <if test="productCategoryCode != null and productCategoryCode!=''">and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
+            <if test="productTypeCode != null AND productTypeCode!=''">and product_type_code=#{productTypeCode,jdbcType=VARCHAR}</if>
+            <if test="brandCode != null and brandCode!=''">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
+            <if test="brandName != null and brandName!=''">and brand_name=#{brandName,jdbcType=VARCHAR}</if>
+            <if test="productSpecs != null">and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>
+            <if test="batchNo != null and batchNo!=''">and batch_no=#{batchNo,jdbcType=VARCHAR}</if>
+            <if test="outNumber != null">and out_number=#{outNumber,jdbcType=NUMERIC}</if>
+            <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
+            <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
+            <if test="outType != null and outType!=''">and out_type=#{outType,jdbcType=VARCHAR}</if>
+            <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
+            <if test="supplierName != null and supplierName!=''">and supplier_name=#{supplierName,jdbcType=VARCHAR}</if>
+            <if test="supplierCode != null and supplierCode!=''">and supplier_code=#{supplierCode,jdbcType=VARCHAR}</if>
+            <if test="uniqueCode != null and uniqueCode!=''">and unique_code=#{uniqueCode,jdbcType=VARCHAR}</if>
+        </where>
+    </select>
 </mapper>

@@ -64,7 +64,7 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
         if(StringUtils.isEmpty(maxSupplierCode)){
             supplierCode= BioBsmContents.supplier_prefix+"1";
         }else {
-            supplierCode=BioBsmContents.supplier_prefix+(Integer.valueOf(maxSupplierCode.split("-")[1]+1));
+            supplierCode=BioBsmContents.supplier_prefix+(Integer.valueOf(maxSupplierCode.split("-")[1])+1);
         }
         BmsSupplierTb bmsSupplierTb = new BmsSupplierTb();
         bmsSupplierTb.setSupplierCode(supplierCode);

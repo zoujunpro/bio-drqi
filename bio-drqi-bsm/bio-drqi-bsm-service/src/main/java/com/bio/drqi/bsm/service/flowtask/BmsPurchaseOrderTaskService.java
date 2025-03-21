@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.bsm.contents.BioBsmContents;
@@ -89,11 +90,19 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
                 BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneBySupplierCodeAndBrandCodeAndProductNameAndProductSpecs(product.getSupplierCode(),product.getBrandCode(), product.getProductName(), product.getProductSpecs());
                 if (bmsProductTb == null) {
+                    String productInnerCode = null;
+                    String maxProductInnerCode = bmsProductTbMapper.selectMaxProductInnerCode();
+                    if(StringUtils.isEmpty(maxProductInnerCode)){
+                        productInnerCode= BioBsmContents.product_prefix+StringUtils.padl("1",5,'0');
+                    }else {
+                        String nextProductInnerCode=String.valueOf(Integer.valueOf(maxProductInnerCode.substring(2))+1);
+                        productInnerCode= BioBsmContents.product_prefix+StringUtils.padl(nextProductInnerCode,5,'0');
+                    }
                     // 添加商品
                     bmsProductTb = new BmsProductTb();
                     bmsProductTb.setProductName(product.getProductName());
                     bmsProductTb.setProductOutCode(product.getProductCode());
-                    bmsProductTb.setProductInnerCode(IdUtils.simpleUUID());
+                    bmsProductTb.setProductInnerCode(productInnerCode);
                     bmsProductTb.setProductCategoryCode(product.getProductCategoryCode());
                     bmsProductTb.setProductTypeCode(product.getProductTypeCode());
                     bmsProductTb.setSupplierCode(bmsSupplierTb.getSupplierCode());

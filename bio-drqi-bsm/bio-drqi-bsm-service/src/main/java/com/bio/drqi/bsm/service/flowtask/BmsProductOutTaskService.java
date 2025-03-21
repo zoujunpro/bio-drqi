@@ -82,6 +82,10 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
             bmsProductStockOutLog.setRemark(bmsProductOutDTO.getRemark());
             bmsProductStockOutLog.setOutType(OutTypeEnum.TYPE_1.code);
             bmsProductStockOutLog.setUnitCode(bmsProductOutDTO.getUnitCode());
+            bmsProductStockOutLog.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
+            bmsProductStockOutLog.setUniqueCode(bmsProductStockTb.getUniqueCode());
+            bmsProductStockOutLog.setSupplierName(bmsProductStockTb.getSupplierName());
+            bmsProductStockOutLog.setSupplierCode(bmsProductStockTb.getSupplierCode());
             bmsProductStockOutLogMapper.insert(bmsProductStockOutLog);
 
         }

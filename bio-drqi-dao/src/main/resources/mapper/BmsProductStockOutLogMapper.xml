@@ -3,11 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bio.drqi.mapper.BmsProductStockOutLogMapper">
-
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BmsProductStockOutLog">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="productName" column="product_name" jdbcType="VARCHAR"/>
             <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
+            <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
             <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
             <result property="productTypeCode" column="product_type_code" jdbcType="VARCHAR"/>
             <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
@@ -22,15 +22,18 @@
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="outType" column="out_type" jdbcType="VARCHAR"/>
             <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
+            <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
+            <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
+            <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,product_name,product_out_code,
-        product_category_code,product_type_code,brand_code,
-        brand_name,product_specs,batch_no,
-        out_number,apply_user_id,
+        product_inner_code,product_category_code,product_type_code,
+        brand_code,brand_name,product_specs,
+        batch_no,out_number,apply_user_id,
         apply_user_name,create_time,task_num,
-        remark,out_type,
-        unit_code
+        remark,out_type,unit_code,
+        supplier_name,supplier_code,unique_code
     </sql>
 </mapper>

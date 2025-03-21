@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,6 +18,9 @@ import java.util.Date;
  */
 @TableName(value ="bms_product_stock_out_log")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class BmsProductStockOutLog implements Serializable {
     /**
      * 主键ID
@@ -31,6 +37,11 @@ public class BmsProductStockOutLog implements Serializable {
      * 商品外部编号
      */
     private String productOutCode;
+
+    /**
+     * 商品内部编号
+     */
+    private String productInnerCode;
 
     /**
      * 所属类别编号
@@ -101,6 +112,21 @@ public class BmsProductStockOutLog implements Serializable {
      * 单位编号
      */
     private String unitCode;
+
+    /**
+     * 供应商名称
+     */
+    private String supplierName;
+
+    /**
+     * 供应商编号
+     */
+    private String supplierCode;
+
+    /**
+     * 唯一编号
+     */
+    private String uniqueCode;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

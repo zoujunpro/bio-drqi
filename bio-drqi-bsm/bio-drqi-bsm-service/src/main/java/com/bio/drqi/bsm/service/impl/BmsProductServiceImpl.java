@@ -8,6 +8,7 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.uuid.IdUtils;
+import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
@@ -130,17 +131,24 @@ public class BmsProductServiceImpl implements BmsProductService {
             throw new BusinessException("此品牌已经删除");
         }
         BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(bmsProductAddReqDTO.getSupplierCode());
-        if(bmsSupplierTb==null){
+        if (bmsSupplierTb == null) {
             throw new BusinessException("供应商不存在");
         }
         if (BioDrQiContents.Y.equals(bmsSupplierTb.getDeleteFlag())) {
             throw new BusinessException("此供应商已经删除");
         }
-
+        String productInnerCode = null;
+        String maxProductInnerCode = bmsProductTbMapper.selectMaxProductInnerCode();
+        if(StringUtils.isEmpty(maxProductInnerCode)){
+            productInnerCode= BioBsmContents.product_prefix+StringUtils.padl("1",5,'0');
+        }else {
+            String nextProductInnerCode=String.valueOf(Integer.valueOf(maxProductInnerCode.substring(2))+1);
+            productInnerCode= BioBsmContents.product_prefix+StringUtils.padl(nextProductInnerCode,5,'0');
+        }
         BmsProductTb bmsProductTb = new BmsProductTb();
         bmsProductTb.setProductName(bmsProductAddReqDTO.getProductName());
         bmsProductTb.setProductOutCode(bmsProductAddReqDTO.getProductOutCode());
-        bmsProductTb.setProductInnerCode(IdUtils.simpleUUID());
+        bmsProductTb.setProductInnerCode(productInnerCode);
         bmsProductTb.setProductCategoryCode(bmsProductAddReqDTO.getProductCategoryCode());
         bmsProductTb.setProductTypeCode(bmsProductAddReqDTO.getProductTypeCode());
         bmsProductTb.setSupplierCode(bmsProductAddReqDTO.getSupplierCode());

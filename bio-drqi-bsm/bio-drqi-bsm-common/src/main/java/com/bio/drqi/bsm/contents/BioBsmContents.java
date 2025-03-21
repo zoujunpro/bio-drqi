@@ -5,4 +5,6 @@ public class BioBsmContents {
     public static final String N = "N";
 
     public static final String supplier_prefix = "QB-";
+
+    public static final String product_prefix = "QB";
 }

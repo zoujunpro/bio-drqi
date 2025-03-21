@@ -26,11 +26,6 @@
         where
         supplier_code = #{supplierCode,jdbcType=VARCHAR}
     </select>
-    <update id="updateDeleteFlagBySupplierCode">
-        update bms_brand_tb
-        set delete_flag = #{deleteFlag,jdbcType=VARCHAR}
-        where supplier_code = #{supplierCode,jdbcType=VARCHAR}
-    </update>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsBrandTb">
         select
         <include refid="Base_Column_List"/>

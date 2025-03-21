@@ -92,4 +92,10 @@
         supplier_name = #{supplierName,jdbcType=VARCHAR}
     </select>
 
+    <select id="selectMaxSupplierCode" resultType="java.lang.String">
+        select supplier_code
+        from bms_supplier_tb
+        order by id desc limit 1
+    </select>
+
 </mapper>

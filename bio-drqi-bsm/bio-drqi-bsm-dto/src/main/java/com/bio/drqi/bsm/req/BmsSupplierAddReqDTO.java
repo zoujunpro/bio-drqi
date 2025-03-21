@@ -7,10 +7,6 @@ import java.util.Date;
 @Data
 public class BmsSupplierAddReqDTO {
 
-    /**
-     * 供应商编号
-     */
-    private String supplierCode;
 
     /**
      * 供应商名称

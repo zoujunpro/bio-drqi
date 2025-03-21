@@ -5,6 +5,8 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.req.BmsSupplierAddReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierEditReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierExportExcelReqDTO;
@@ -52,18 +54,20 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
     }
 
 
-
     @Override
     public void add(BmsSupplierAddReqDTO bmsSupplierAddReqDTO) {
-        if (Objects.nonNull(bmsSupplierTbMapper.selectOneBySupplierCode(bmsSupplierAddReqDTO.getSupplierCode()))) {
-            throw new BusinessException("供应商编码重复");
-        }
         if (Objects.nonNull(bmsSupplierTbMapper.selectOneBySupplierName(bmsSupplierAddReqDTO.getSupplierName()))) {
             throw new BusinessException("供应商名称重复");
         }
-
+        String supplierCode=null;
+        String maxSupplierCode = bmsSupplierTbMapper.selectMaxSupplierCode();
+        if(StringUtils.isEmpty(maxSupplierCode)){
+            supplierCode= BioBsmContents.supplier_prefix+"1";
+        }else {
+            supplierCode=BioBsmContents.supplier_prefix+(Integer.valueOf(maxSupplierCode.split("-")[1]+1));
+        }
         BmsSupplierTb bmsSupplierTb = new BmsSupplierTb();
-        bmsSupplierTb.setSupplierCode(bmsSupplierAddReqDTO.getSupplierCode());
+        bmsSupplierTb.setSupplierCode(supplierCode);
         bmsSupplierTb.setSupplierName(bmsSupplierAddReqDTO.getSupplierName());
         bmsSupplierTb.setOpeningBank(bmsSupplierAddReqDTO.getOpeningBank());
         bmsSupplierTb.setBankAccount(bmsSupplierAddReqDTO.getBankAccount());
@@ -84,8 +88,6 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
         bmsSupplierTb.setCreateUserId(SecurityContextHolder.getUserId());
         bmsSupplierTb.setDeleteFlag(BioDrQiContents.N);
         bmsSupplierTbMapper.insert(bmsSupplierTb);
-
-
     }
 
     @Override

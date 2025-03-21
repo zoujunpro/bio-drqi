@@ -22,6 +22,8 @@ public interface BmsSupplierTbMapper extends BaseMapper<BmsSupplierTb> {
 
     BmsSupplierTb selectOneBySupplierName(@Param("supplierName") String supplierName);
 
+    String selectMaxSupplierCode();
+
 }
 
 

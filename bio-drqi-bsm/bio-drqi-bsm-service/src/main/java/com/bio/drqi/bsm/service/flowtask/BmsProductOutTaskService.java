@@ -39,7 +39,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
-        List<BmsProductOutDTO> bmsProductOutDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskNum(), BmsProductOutDTO.class);
+        List<BmsProductOutDTO> bmsProductOutDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskForm(), BmsProductOutDTO.class);
         for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
             ValidatorUtil.validator(bmsProductOutDTO);
         }
@@ -56,7 +56,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
 
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
-        List<BmsProductOutDTO> bmsProductOutDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskNum(), BmsProductOutDTO.class);
+        List<BmsProductOutDTO> bmsProductOutDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskForm(), BmsProductOutDTO.class);
         for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
             //扣减库存
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductOutDTO.getUniqueCode());

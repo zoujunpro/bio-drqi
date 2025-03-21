@@ -44,7 +44,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
             ValidatorUtil.validator(bmsProductOutDTO);
         }
         for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
-            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode(bmsProductOutDTO.getBrandCode(), bmsProductOutDTO.getProductSpecs(), bmsProductOutDTO.getProductName(), bmsProductOutDTO.getBatchNo(), bmsProductOutDTO.getUnitCode());
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductOutDTO.getUniqueCode());
             if (bmsProductStockTb == null) {
                 throw new BusinessException("数据库中不存在此商品信息");
             }
@@ -59,7 +59,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         List<BmsProductOutDTO> bmsProductOutDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskNum(), BmsProductOutDTO.class);
         for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
             //扣减库存
-            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode(bmsProductOutDTO.getBrandCode(), bmsProductOutDTO.getProductSpecs(), bmsProductOutDTO.getProductName(), bmsProductOutDTO.getBatchNo(), bmsProductOutDTO.getUnitCode());
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductOutDTO.getUniqueCode());
             bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductOutDTO.getNumber());
             bmsProductStockTb.setTotalOutNumber(bmsProductStockTb.getTotalStoreNumber() + bmsProductOutDTO.getNumber());
             bmsProductStockTbMapper.updateById(bmsProductStockTb);

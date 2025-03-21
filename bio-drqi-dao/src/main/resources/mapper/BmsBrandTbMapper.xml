@@ -36,12 +36,12 @@
         <include refid="Base_Column_List"/>
         from bms_brand_tb
         <where>
-            <if test="brandCode != null">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
-            <if test="brandName != null">and brand_name LIKE  CONCAT('%',#{brandName,jdbcType=VARCHAR},'%')</if>
+            <if test="brandCode != null and brandCode!=''">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
+            <if test="brandName != null and brandName!=''">and brand_name LIKE  CONCAT('%',#{brandName,jdbcType=VARCHAR},'%')</if>
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
-            <if test="deleteFlag != null">and delete_flag=#{deleteFlag,jdbcType=VARCHAR}</if>
+            <if test="deleteFlag != null and deleteFlag!=''">and delete_flag=#{deleteFlag,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

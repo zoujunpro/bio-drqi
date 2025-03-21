@@ -47,7 +47,7 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
 
     @Override
     public List<String> queryStockByUnitCode(String unitCode) {
-        List<String> productNameList = bmsProductStockTbMapper.selectProductNameByUniqueCode(unitCode);
+        List<String> productNameList = bmsProductStockTbMapper.selectProductNameByUnitCode(unitCode);
         if(CollectionUtil.isNotEmpty(productNameList)){
             return productNameList.stream().distinct().collect(Collectors.toList());
         }

@@ -11,6 +11,9 @@ import java.util.List;
 public class BmsProductOutDTO {
 
 
+    @NotBlank(message = "参数缺失：库存编号")
+    private String uniqueCode;
+
     @NotBlank(message = "参数缺失：商品名称")
     private String productName;
 

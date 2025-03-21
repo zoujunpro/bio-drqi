@@ -14,11 +14,6 @@ import java.util.List;
  * @Entity com.bio.drqi.domain.BmsProductTb
  */
 public interface BmsProductTbMapper extends BaseMapper<BmsProductTb> {
-    int updateDeleteFlagBySupplierCode(@Param("deleteFlag") String deleteFlag, @Param("supplierCode") String supplierCode);
-
-    int updateDeleteFlagByBrandCode(@Param("deleteFlag") String deleteFlag, @Param("brandCode") String brandCode);
-
-
     List<BmsProductTb> selectAllOrderByIdDesc();
 
     List<String> selectProductNameOrderByIdDesc();

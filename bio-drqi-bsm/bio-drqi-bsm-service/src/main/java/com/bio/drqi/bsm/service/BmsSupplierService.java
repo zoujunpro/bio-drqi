@@ -37,9 +37,6 @@ public interface BmsSupplierService {
      */
     List<BmsSupplierListAllRspDTO> listALl();
 
-    BmsSupplierQueryByBrandCodeRspDTO queryByBrandCode(String brandCode);
-
-
     /**
      * 供应商管理-新增
      *

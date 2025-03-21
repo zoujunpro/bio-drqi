@@ -57,22 +57,7 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
         return BeanUtils.copyListProperties(bmsSupplierTbList, BmsSupplierListAllRspDTO.class);
     }
 
-    @Override
-    public BmsSupplierQueryByBrandCodeRspDTO queryByBrandCode(String brandCode) {
-        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(brandCode);
-        if (bmsBrandTb == null) {
-            throw new BusinessException("品牌不存在");
-        }
-        BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(bmsBrandTb.getSupplierCode());
-        if(bmsSupplierTb==null){
-            throw new BusinessException("供应商不存在");
-        }
 
-        BmsSupplierQueryByBrandCodeRspDTO bmsSupplierQueryByBrandCodeRspDTO=new BmsSupplierQueryByBrandCodeRspDTO();
-        bmsSupplierQueryByBrandCodeRspDTO.setSupplierName(bmsSupplierTb.getSupplierName());
-        bmsSupplierQueryByBrandCodeRspDTO.setSupplierCode(bmsSupplierTb.getSupplierCode());
-        return bmsSupplierQueryByBrandCodeRspDTO;
-    }
 
     @Override
     public void add(BmsSupplierAddReqDTO bmsSupplierAddReqDTO) {
@@ -141,13 +126,6 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
         //逻辑删除供应商
         bmsSupplierTb.setDeleteFlag(BioDrQiContents.Y);
         bmsSupplierTbMapper.updateById(bmsSupplierTb);
-
-        //逻辑删除品牌
-        bmsBrandTbMapper.updateDeleteFlagBySupplierCode(BioDrQiContents.Y, bmsSupplierTb.getSupplierCode());
-
-        //逻辑删除商品
-        bmsProductTbMapper.updateDeleteFlagBySupplierCode(BioDrQiContents.Y, bmsSupplierTb.getSupplierCode());
-
 
     }
 

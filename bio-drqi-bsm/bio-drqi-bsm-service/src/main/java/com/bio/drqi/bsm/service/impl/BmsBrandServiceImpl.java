@@ -76,10 +76,6 @@ public class BmsBrandServiceImpl implements BmsBrandService {
         bmsBrandTb.setDeleteFlag(BioDrQiContents.Y);
         bmsBrandTbMapper.updateById(bmsBrandTb);
 
-        //更新该品牌下商品信息为禁用
-        bmsProductTbMapper.updateDeleteFlagBySupplierCode(BioDrQiContents.Y, bmsBrandTb.getBrandCode());
-
-
     }
 
     @Override

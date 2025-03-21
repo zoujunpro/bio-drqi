@@ -53,18 +53,6 @@ public class BmsSupplierController {
         return ResponseResult.getSuccess(bmsSupplierService.listALl());
     }
 
-
-    /**
-     * 供应商管理-根据品牌反查供应商
-     *
-     * @return
-     */
-    @GetMapping("/queryByBrandCode")
-    @WebLog(desc = "供应商管理-根据品牌反查供应商")
-    public ResponseResult<BmsSupplierQueryByBrandCodeRspDTO> queryByBrandCode(@RequestParam @Validated String brandCode){
-        return ResponseResult.getSuccess(bmsSupplierService.queryByBrandCode(brandCode));
-    }
-
     /**
      * 供应商管理-新增
      *

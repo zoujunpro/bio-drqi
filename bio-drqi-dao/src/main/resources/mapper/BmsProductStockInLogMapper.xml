@@ -8,6 +8,7 @@
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="orderDetailNum" column="order_detail_num" jdbcType="VARCHAR"/>
             <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+            <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
             <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
             <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
             <result property="productTypeCode" column="product_type_code" jdbcType="VARCHAR"/>
@@ -26,24 +27,22 @@
             <result property="orderNum" column="order_num" jdbcType="VARCHAR"/>
             <result property="stockLocationNumber" column="stock_location_number" jdbcType="VARCHAR"/>
             <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
+            <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
+            <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
+            <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,order_detail_num,product_name,
-        product_out_code,product_category_code,product_type_code,
-        brand_code,brand_name,product_specs,
-        batch_no,project_code,product_price,
-        store_number,store_amount,apply_user_id,
-        apply_user_name,create_time,task_num,
-        order_num,stock_location_number,unit_code
+        product_inner_code,product_out_code,product_category_code,
+        product_type_code,brand_code,brand_name,
+        product_specs,batch_no,project_code,
+        product_price,store_number,store_amount,
+        apply_user_id,apply_user_name,create_time,
+        task_num,order_num,stock_location_number,
+        unit_code,supplier_name,supplier_code,
+        unique_code
     </sql>
-    <select id="selectAllByOrderNum" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from bms_product_stock_in_log
-        where
-        order_num = #{orderNum,jdbcType=VARCHAR}
-    </select>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsProductStockInLog">
         select
         <include refid="Base_Column_List"/>

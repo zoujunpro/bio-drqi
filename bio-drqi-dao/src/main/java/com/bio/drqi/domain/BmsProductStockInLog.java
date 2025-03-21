@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,6 +19,9 @@ import java.util.Date;
  */
 @TableName(value ="bms_product_stock_in_log")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class BmsProductStockInLog implements Serializable {
     /**
      * 主键ID
@@ -32,6 +38,11 @@ public class BmsProductStockInLog implements Serializable {
      * 商品名称
      */
     private String productName;
+
+    /**
+     * 商品内部编号
+     */
+    private String productInnerCode;
 
     /**
      * 商品外部编号
@@ -123,8 +134,22 @@ public class BmsProductStockInLog implements Serializable {
      */
     private String unitCode;
 
+    /**
+     * 供应商名称
+     */
+    private String supplierName;
+
+    /**
+     * 供应商编号
+     */
+    private String supplierCode;
+
+    /**
+     * 唯一编号
+     */
+    private String uniqueCode;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
-
 
 }

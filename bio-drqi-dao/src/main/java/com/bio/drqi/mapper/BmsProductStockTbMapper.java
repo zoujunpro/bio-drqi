@@ -13,9 +13,6 @@ import java.util.List;
 * @Entity com.bio.drqi.domain.BmsProductStockTb
 */
 public interface BmsProductStockTbMapper extends BaseMapper<BmsProductStockTb> {
-
-    BmsProductStockTb selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode(@Param("brandCode") String brandCode, @Param("productSpecs") String productSpecs, @Param("productName") String productName, @Param("batchNo") String batchNo, @Param("unitCode") String unitCode);
-
     List<BmsProductStockTb> selectSelective(BmsProductStockTb bmsProductStockTb);
 
     BmsProductStockTb selectOneByProductInnerCodeAndUnitCodeAndBatchNo(@Param("productInnerCode") String productInnerCode, @Param("unitCode") String unitCode, @Param("batchNo") String batchNo);

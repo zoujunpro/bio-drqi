@@ -33,17 +33,6 @@
         total_store_number,current_stock_number,total_out_number,
         unit_code,stock_location_number,product_inner_code,supplier_code,supplier_name,unique_code
     </sql>
-    <select id="selectOneByBrandCodeAndProductSpecsAndProductNameAndBatchNoAndUnitCode" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from bms_product_stock_tb
-        where
-        brand_code = #{brandCode,jdbcType=VARCHAR}
-        AND product_specs = #{productSpecs,jdbcType=VARCHAR}
-        AND product_name = #{productName,jdbcType=VARCHAR}
-        AND batch_no = #{batchNo,jdbcType=VARCHAR}
-        AND unit_code = #{unitCode,jdbcType=VARCHAR}
-    </select>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsProductStockTb" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

@@ -87,7 +87,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
             for (BmsPurchaseOrderDTO.Product product : bmsPurchaseOrderDTO.getProductList()) {
                 BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(product.getSupplierCode());
                 BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
-                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByBrandCodeAndProductNameAndProductSpecs(product.getBrandCode(), product.getProductName(), product.getProductSpecs());
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneBySupplierCodeAndBrandCodeAndProductNameAndProductSpecs(product.getSupplierCode(),product.getBrandCode(), product.getProductName(), product.getProductSpecs());
                 if (bmsProductTb == null) {
                     // 添加商品
                     bmsProductTb = new BmsProductTb();

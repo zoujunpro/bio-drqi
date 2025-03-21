@@ -27,7 +27,7 @@ public interface BmsProductTbMapper extends BaseMapper<BmsProductTb> {
 
     List<BmsProductTb> selectAllByProductNameAndBrandCode(@Param("productName") String productName, @Param("brandCode") String brandCode);
 
-    BmsProductTb selectOneByBrandCodeAndProductNameAndProductSpecs(@Param("brandCode") String brandCode, @Param("productName") String productName, @Param("productSpecs") String productSpecs);
+    BmsProductTb selectOneBySupplierCodeAndBrandCodeAndProductNameAndProductSpecs(@Param("supplierCode") String supplierCode, @Param("brandCode") String brandCode, @Param("productName") String productName, @Param("productSpecs") String productSpecs);
 }
 
 

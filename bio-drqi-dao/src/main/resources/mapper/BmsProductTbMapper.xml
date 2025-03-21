@@ -66,15 +66,6 @@
         where
         product_category_code = #{productCategoryCode,jdbcType=VARCHAR}
     </select>
-    <select id="selectOneByBrandCodeAndProductNameAndProductSpecs" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from bms_product_tb
-        where
-        brand_code = #{brandCode,jdbcType=VARCHAR}
-        AND product_name = #{productName,jdbcType=VARCHAR}
-        AND product_specs = #{productSpecs,jdbcType=VARCHAR}
-    </select>
     <select id="selectAllByProductNameAndBrandCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -93,6 +84,16 @@
         select  product_name
         from bms_product_tb
         order by id desc
+    </select>
+    <select id="selectOneBySupplierCodeAndBrandCodeAndProductNameAndProductSpecs" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_tb
+        where
+        supplier_code = #{supplierCode,jdbcType=VARCHAR}
+        AND brand_code = #{brandCode,jdbcType=VARCHAR}
+        AND product_name = #{productName,jdbcType=VARCHAR}
+        AND product_specs = #{productSpecs,jdbcType=VARCHAR}
     </select>
 
 </mapper>

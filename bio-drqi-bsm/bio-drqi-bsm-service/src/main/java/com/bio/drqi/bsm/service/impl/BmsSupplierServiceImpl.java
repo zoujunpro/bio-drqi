@@ -80,8 +80,8 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
         bmsSupplierTb.setExpirationDate(bmsSupplierAddReqDTO.getExpirationDate());
         bmsSupplierTb.setContactUserName(bmsSupplierAddReqDTO.getContactUserName());
         bmsSupplierTb.setContactUserTelephone(bmsSupplierAddReqDTO.getContactUserTelephone());
-        bmsSupplierTb.setKahunaUserName(bmsSupplierAddReqDTO.getKahunaUserName());
-        bmsSupplierTb.setKahunaUserId(bmsSupplierAddReqDTO.getKahunaUserId());
+        bmsSupplierTb.setLeaderUserName(bmsSupplierAddReqDTO.getLeaderUserName());
+        bmsSupplierTb.setLeaderUserId(bmsSupplierAddReqDTO.getLeaderUserId());
         bmsSupplierTb.setRemark(bmsSupplierAddReqDTO.getRemark());
         bmsSupplierTb.setCreateTime(new Date());
         bmsSupplierTb.setCreateUserName(SecurityContextHolder.getNickName());

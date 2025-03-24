@@ -71,12 +71,12 @@ public class BmsSupplierAddReqDTO {
     /**
      * 我方负责人名称
      */
-    private String kahunaUserName;
+    private String leaderUserName;
 
     /**
      * 我方负责人ID
      */
-    private Integer kahunaUserId;
+    private Integer leaderUserId;
 
     /**
      * 备注

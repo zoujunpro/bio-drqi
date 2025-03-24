@@ -19,8 +19,8 @@
         <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
         <result property="contactUserName" column="contact_user_name" jdbcType="VARCHAR"/>
         <result property="contactUserTelephone" column="contact_user_telephone" jdbcType="VARCHAR"/>
-        <result property="kahunaUserName" column="kahuna_user_name" jdbcType="VARCHAR"/>
-        <result property="kahunaUserId" column="kahuna_user_id" jdbcType="INTEGER"/>
+        <result property="leaderUserName" column="leader_user_name" jdbcType="VARCHAR"/>
+        <result property="leaderUserId" column="leader_user_id" jdbcType="INTEGER"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
@@ -34,8 +34,8 @@
         opening_bank,bank_account,tax_id,
         qualification_location,business_scope,cooperate_form,
         framework_agreement_number,framework_agreement_annex,expiration_date,
-        contact_user_name,contact_user_telephone,kahuna_user_name,
-        kahuna_user_id,remark,create_time,
+        contact_user_name,contact_user_telephone,leader_user_name,
+        leader_user_id,remark,create_time,
         create_user_name,create_user_id,delete_flag
     </sql>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsSupplierTb">
@@ -62,8 +62,8 @@
             <if test="contactUserName != null">and contact_user_name=#{contactUserName,jdbcType=VARCHAR}</if>
             <if test="contactUserTelephone != null">and contact_user_telephone=#{contactUserTelephone,jdbcType=VARCHAR}
             </if>
-            <if test="kahunaUserName != null">and kahuna_user_name=#{kahunaUserName,jdbcType=VARCHAR}</if>
-            <if test="kahunaUserId != null">and kahuna_user_id=#{kahunaUserId,jdbcType=NUMERIC}</if>
+            <if test="leaderUserName != null">and leader_user_name=#{leaderUserName,jdbcType=VARCHAR}</if>
+            <if test="leaderUserId != null">and leader_user_id=#{leaderUserId,jdbcType=NUMERIC}</if>
             <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>

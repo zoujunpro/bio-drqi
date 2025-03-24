@@ -70,8 +70,8 @@ public class DataInitCleanController {
             bmsSupplierTb.setFrameworkAgreementNumber(supplierCleanDataExcel.framework_agreement_number);
             bmsSupplierTb.setFrameworkAgreementAnnex(null);
             bmsSupplierTb.setExpirationDate(supplierCleanDataExcel.expiration_date);
-            bmsSupplierTb.setContactUserName(supplierCleanDataExcel.getContact_user_name());
-            bmsSupplierTb.setContactUserTelephone(supplierCleanDataExcel.contact_user_name);
+            bmsSupplierTb.setContactUserName(supplierCleanDataExcel.contact_user_name);
+            bmsSupplierTb.setContactUserTelephone(supplierCleanDataExcel.contact_user_telephone);
             bmsSupplierTb.setLeaderUserName(supplierCleanDataExcel.leaderUserName);
             bmsSupplierTb.setLeaderUserId(null);
             bmsSupplierTb.setRemark(supplierCleanDataExcel.remark);

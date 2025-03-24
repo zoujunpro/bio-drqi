@@ -10,6 +10,7 @@ import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.dto.BmsPurchaseOrderDTO;
+import com.bio.drqi.bsm.enums.PurchaseTypeEnum;
 import com.bio.drqi.bsm.enums.PurchaseUnitEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioTaskStatusEnum;
@@ -195,8 +196,8 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
         bmsOrderTb.setApplyUnitName(bmsPurchaseOrderDTO.getUnitName());
         bmsOrderTb.setContractUrls(null);
         bmsOrderTb.setPurchaseDate(null);
-        //bmsOrderTb.setPurchaseTypeCode(bmsPurchaseOrderDTO.getPurchaseTypeCode());
-        //bmsOrderTb.setPurchaseTypeName(bmsPurchaseOrderDTO.getPurchaseTypeName());
+        bmsOrderTb.setPurchaseTypeCode(bmsPurchaseOrderDTO.getPurchaseTypeCode());
+       bmsOrderTb.setPurchaseTypeName(PurchaseTypeEnum.getNameByCode(bmsPurchaseOrderDTO.getPurchaseTypeCode()));
         bmsOrderTb.setPurchaseReasonRemark(bmsPurchaseOrderDTO.getPurchaseReasonRemark());
         bmsOrderTb.setDemandRequireTime(bmsPurchaseOrderDTO.getDemandRequireTime());
         bmsOrderTb.setDemandUsageTime(bmsPurchaseOrderDTO.getDemandUsageTime());

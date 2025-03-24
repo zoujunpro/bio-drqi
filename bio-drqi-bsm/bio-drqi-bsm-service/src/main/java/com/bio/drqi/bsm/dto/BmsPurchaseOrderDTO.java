@@ -31,15 +31,11 @@ public class BmsPurchaseOrderDTO {
      */
     @NotBlank(message = "请填写采购部门")
     private String purchaseDepartment;
-    /*    *//**
-     *采购类型编号
-     *//*
-    private String purchaseTypeCode;
 
-    *//**
-     *采购类型描述
-     *//*
-    private String purchaseTypeName;*/
+    /**
+     * 采购类型描述
+     */
+    private String purchaseTypeCode;
 
 
     /**

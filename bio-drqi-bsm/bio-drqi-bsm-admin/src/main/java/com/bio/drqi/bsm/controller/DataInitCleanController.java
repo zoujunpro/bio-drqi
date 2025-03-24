@@ -7,7 +7,10 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.enums.CooperateFormEnum;
 import com.bio.drqi.domain.BmsSupplierTb;
+import com.bio.drqi.domain.SystemMenuTb;
+import com.bio.drqi.domain.SystemUserTb;
 import com.bio.drqi.mapper.BmsSupplierTbMapper;
+import com.bio.drqi.mapper.SystemUserTbMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 数据初始化清洗
@@ -30,6 +35,9 @@ public class DataInitCleanController {
     @Resource
     private BmsSupplierTbMapper bmsSupplierTbMapper;
 
+    @Resource
+    private SystemUserTbMapper systemUserTbMapper;
+
 
     /**
      * 供应商数据清洗
@@ -41,6 +49,8 @@ public class DataInitCleanController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> supplierDataClean() {
 
+        List<SystemUserTb> systemUserTbList = systemUserTbMapper.selectList(null);
+        Map<String, Integer> userMap = systemUserTbList.stream().collect(Collectors.toMap(SystemUserTb::getNickname, SystemUserTb::getId));
         List<SupplierCleanDataExcel> supplierCleanDataExcelList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\供应商数据清洗excel.xlsx", SupplierCleanDataExcel.class);
         for (SupplierCleanDataExcel supplierCleanDataExcel : supplierCleanDataExcelList) {
             log.info("清洗" + supplierCleanDataExcel.getSupplierCode());
@@ -73,7 +83,7 @@ public class DataInitCleanController {
             bmsSupplierTb.setContactUserName(supplierCleanDataExcel.contact_user_name);
             bmsSupplierTb.setContactUserTelephone(supplierCleanDataExcel.contact_user_telephone);
             bmsSupplierTb.setLeaderUserName(supplierCleanDataExcel.leaderUserName);
-            bmsSupplierTb.setLeaderUserId(null);
+            bmsSupplierTb.setLeaderUserId(userMap.get(supplierCleanDataExcel.leaderUserName));
             bmsSupplierTb.setRemark(supplierCleanDataExcel.remark);
             bmsSupplierTb.setCreateTime(new Date());
             bmsSupplierTb.setCreateUserName(null);

@@ -73,20 +73,21 @@ public class BmsBrandDetailRspDTO {
      */
     private String contactUserTelephone;
 
+
     /**
      * 我方负责人名称
      */
-    private String kahunaUserName;
+    private String leaderUserName;
 
     /**
      * 我方负责人ID
      */
-    private Integer kahunaUserId;
+    private Integer leaderUserId;
 
     /**
      * 备注
      */
-    private String remak;
+    private String remark;
 
     /**
      * 创建时间

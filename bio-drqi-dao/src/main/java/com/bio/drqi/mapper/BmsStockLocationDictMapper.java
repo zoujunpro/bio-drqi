@@ -14,6 +14,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface BmsStockLocationDictMapper extends BaseMapper<BmsStockLocationDict> {
     List<BmsStockLocationDict> selectAllByUnitCode(@Param("unitCode") String unitCode);
 
+    List<BmsStockLocationDict> selectSelective(BmsStockLocationDict bmsStockLocationDict);
+
+    List<BmsStockLocationDict> selectAllByStockName(@Param("stockName") String stockName);
+
     BmsStockLocationDict selectOneByUnitCodeAndLocaltionNumber(@Param("unitCode") String unitCode, @Param("localtionNumber") String localtionNumber);
 
 }

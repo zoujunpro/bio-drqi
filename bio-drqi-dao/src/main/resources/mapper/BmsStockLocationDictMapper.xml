@@ -9,7 +9,7 @@
             <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
             <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
             <result property="stockName" column="stock_name" jdbcType="VARCHAR"/>
-            <result property="localtionNumber" column="localtion_number" jdbcType="VARCHAR"/>
+            <result property="locationNumber" column="location_number" jdbcType="VARCHAR"/>
             <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
             <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -17,7 +17,7 @@
 
     <sql id="Base_Column_List">
         id,unit_code,stock_code,
-        stock_name,localtion_number,create_user_id,
+        stock_name,location_number,create_user_id,
         create_user_name,create_time
     </sql>
     <select id="selectAllByUnitCode" resultMap="BaseResultMap">
@@ -33,6 +33,28 @@
         from bms_stock_location_dict
         where
         unit_code = #{unitCode,jdbcType=VARCHAR}
-        AND localtion_number = #{localtionNumber,jdbcType=VARCHAR}
+        AND location_number = #{locationNumber,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsStockLocationDict">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_stock_location_dict
+        <where>
+            <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
+            <if test="stockCode != null and stockCode!=null">and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
+            <if test="stockName != null and stockName!=''">and stock_name=#{stockName,jdbcType=VARCHAR}</if>
+            <if test="locationNumber != null and locationNumber!=''">and location_number=#{locationNumber,jdbcType=VARCHAR}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+        </where>
+        order by id desc
+    </select>
+    <select id="selectAllByStockName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_stock_location_dict
+        where
+        stock_name = #{stockName,jdbcType=VARCHAR}
     </select>
 </mapper>

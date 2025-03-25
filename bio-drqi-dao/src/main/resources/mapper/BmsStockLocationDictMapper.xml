@@ -27,7 +27,7 @@
         where
         unit_code = #{unitCode,jdbcType=VARCHAR}
     </select>
-    <select id="selectOneByUnitCodeAndLocaltionNumber" resultMap="BaseResultMap">
+    <select id="selectOneByUnitCodeAndLocationNumber" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from bms_stock_location_dict

@@ -68,7 +68,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
             }
             if (CollectionUtil.isNotEmpty(orderDetail.getStockLocationNumberList())) {
                 orderDetail.getStockLocationNumberList().forEach(stockLocationNumber -> {
-                    BmsStockLocationDict bmsStockLocationDict = bmsStockLocationDictMapper.selectOneByUnitCodeAndLocaltionNumber(bmsOrderDetailTb.getApplyUnitCode(), stockLocationNumber);
+                    BmsStockLocationDict bmsStockLocationDict = bmsStockLocationDictMapper.selectOneByUnitCodeAndLocationNumber(bmsOrderDetailTb.getApplyUnitCode(), stockLocationNumber);
                     if (bmsStockLocationDict == null) {
                         throw new BusinessException("库存信息不存在");
                     }

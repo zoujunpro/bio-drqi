@@ -46,6 +46,8 @@ public class BmsStockLocationController {
      * @param bmsStockLocationListPageReqDTO
      * @return
      */
+    @PostMapping("/listPage")
+    @WebLog(desc = "库房管理-分页查询")
     public ResponseResult<PageInfo<BmsStockLocationListPageRspDTO>> listPage(@RequestBody BmsStockLocationListPageReqDTO bmsStockLocationListPageReqDTO) {
         return ResponseResult.getSuccess(bmsStockLocationService.listPage(bmsStockLocationListPageReqDTO));
     }
@@ -56,6 +58,8 @@ public class BmsStockLocationController {
      * @param bmsStockLocationAddReqDTO
      * @return
      */
+    @PostMapping("/add")
+    @WebLog(desc = "库房管理-新增")
     public ResponseResult<String> add(@RequestBody @Validated BmsStockLocationAddReqDTO bmsStockLocationAddReqDTO) {
         bmsStockLocationService.add(bmsStockLocationAddReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -67,6 +71,8 @@ public class BmsStockLocationController {
      * @param id
      * @return
      */
+    @GetMapping("/add")
+    @WebLog(desc = "库房管理-删除")
     public ResponseResult<String> delete(Integer id) {
         bmsStockLocationService.delete(id);
         return ResponseResult.getSuccess("ok");
@@ -79,6 +85,8 @@ public class BmsStockLocationController {
      * @param bmsStockLocationEditReqDTO
      * @return
      */
+    @PostMapping("/edit")
+    @WebLog(desc = "库房管理-编辑")
     public ResponseResult edit(@RequestBody BmsStockLocationEditReqDTO bmsStockLocationEditReqDTO) {
         return ResponseResult.getSuccess("ok");
     }
@@ -88,6 +96,8 @@ public class BmsStockLocationController {
      *
      * @return
      */
+    @GetMapping("/listAllStock")
+    @WebLog(desc = "库房管理-查询所有库房")
     public ResponseResult<List<BmsStockLocationListAllStockRspDTO>> listAllStock() {
         return ResponseResult.getSuccess(bmsStockLocationService.listAllStock());
     }

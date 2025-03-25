@@ -92,7 +92,7 @@
         from bms_product_tb
         order by id desc
     </select>
-    <select id="selectOneBySupplierCodeAndBrandCodeAndProductNameAndProductSpecs" resultMap="BaseResultMap">
+    <select id="selectOneBySupplierCodeAndBrandCodeAndProductName" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from bms_product_tb
@@ -100,7 +100,6 @@
         supplier_code = #{supplierCode,jdbcType=VARCHAR}
         AND brand_code = #{brandCode,jdbcType=VARCHAR}
         AND product_name = #{productName,jdbcType=VARCHAR}
-        AND product_specs = #{productSpecs,jdbcType=VARCHAR}
     </select>
     <select id="selectMaxProductInnerCode" resultType="java.lang.String">
         select product_inner_code

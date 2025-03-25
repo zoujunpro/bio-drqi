@@ -89,7 +89,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
             for (BmsPurchaseOrderDTO.Product product : bmsPurchaseOrderDTO.getProductList()) {
                 BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(product.getSupplierCode());
                 BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
-                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneBySupplierCodeAndBrandCodeAndProductNameAndProductSpecs(product.getSupplierCode(),product.getBrandCode(), product.getProductName(), product.getProductSpecs());
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneBySupplierCodeAndBrandCodeAndProductName(product.getSupplierCode(),product.getBrandCode(), product.getProductName());
                 if (bmsProductTb == null) {
                     String productInnerCode = null;
                     String maxProductInnerCode = bmsProductTbMapper.selectMaxProductInnerCode();

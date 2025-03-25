@@ -1,16 +1,18 @@
 package com.bio.drqi.bsm.controller;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
+import com.bio.common.core.util.StringUtils;
+import com.bio.common.core.uuid.IdUtils;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.enums.CooperateFormEnum;
-import com.bio.drqi.domain.BmsSupplierTb;
-import com.bio.drqi.domain.SystemMenuTb;
-import com.bio.drqi.domain.SystemUserTb;
-import com.bio.drqi.mapper.BmsSupplierTbMapper;
-import com.bio.drqi.mapper.SystemUserTbMapper;
+import com.bio.drqi.bsm.req.BmsProductAddReqDTO;
+import com.bio.drqi.bsm.service.BmsProductService;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,18 @@ public class DataInitCleanController {
 
     @Resource
     private SystemUserTbMapper systemUserTbMapper;
+
+    @Resource
+    private BmsProductTbMapper bmsProductTbMapper;
+
+    @Resource
+    private BmsBrandTbMapper bmsBrandTbMapper;
+
+    @Resource
+    private BmsProductService bmsProductService;
+
+    @Resource
+    private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
 
 
     /**
@@ -93,6 +107,72 @@ public class DataInitCleanController {
         }
 
         return ResponseResult.getSuccess("OK");
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    @GetMapping("/cleanProductDataExcel")
+    public ResponseResult<String> cleanProductDataExcel() {
+        List<ProductCleanDataExcel> productCleanDataExcelList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\商品.xlsx", ProductCleanDataExcel.class);
+        for (ProductCleanDataExcel productCleanDataExcel : productCleanDataExcelList) {
+            log.info("清洗数据={}", productCleanDataExcel);
+            String brandCode = null;
+            if (StringUtils.isNotEmpty(productCleanDataExcel.brandName)) {
+                BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(productCleanDataExcel.brandName);
+                if (bmsBrandTb == null) {
+                    bmsBrandTb = new BmsBrandTb();
+                    bmsBrandTb.setBrandName(productCleanDataExcel.brandName);
+                    bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
+                    bmsBrandTb.setDeleteFlag(BioBsmContents.N);
+                    bmsBrandTbMapper.insert(bmsBrandTb);
+                }
+                brandCode = bmsBrandTb.getBrandCode();
+            }
+            BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(productCleanDataExcel.supplierCode);
+            if (bmsSupplierTb == null) {
+                throw new BusinessException("供应商不存在" + productCleanDataExcel.supplierCode);
+            }
+
+            BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryName(productCleanDataExcel.productCategory);
+            if(bmsProductCategoryTb==null){
+                throw new BusinessException("类别找不到"+productCleanDataExcel.productCategory);
+            }
+            BmsProductAddReqDTO bmsProductAddReqDTO = new BmsProductAddReqDTO();
+            bmsProductAddReqDTO.setProductName(productCleanDataExcel.productName);
+            bmsProductAddReqDTO.setProductOutCode(productCleanDataExcel.productCode);
+            bmsProductAddReqDTO.setProductCategoryCode(bmsProductCategoryTb.getProductCategoryCode());
+            bmsProductAddReqDTO.setProductTypeCode(null);
+            bmsProductAddReqDTO.setBrandCode(brandCode);
+            bmsProductAddReqDTO.setSupplierCode(productCleanDataExcel.supplierCode);
+            bmsProductAddReqDTO.setProductSpecs(productCleanDataExcel.product_specs);
+            bmsProductService.add(bmsProductAddReqDTO);
+        }
+
+
+        return ResponseResult.getSuccess("OK");
+    }
+
+
+    @Data
+    public static class ProductCleanDataExcel {
+        @ExcelProperty("供应商编号")
+        private String supplierCode;
+
+        @ExcelProperty("品牌")
+        private String brandName;
+
+        @ExcelProperty("商品名称")
+        private String productName;
+
+        @ExcelProperty("商品编码")
+        private String productCode;
+
+        @ExcelProperty("商品分类")
+        private String productCategory;
+
+        @ExcelProperty("规格")
+        private String product_specs;
+
     }
 
 

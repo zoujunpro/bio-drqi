@@ -25,7 +25,7 @@ public class BmsProductTypeTb implements Serializable {
     /**
      * 主键ID
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**

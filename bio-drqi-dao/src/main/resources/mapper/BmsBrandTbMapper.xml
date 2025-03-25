@@ -47,4 +47,11 @@
         where
         brand_code = #{brandCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectOneByBrandName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_brand_tb
+        where
+        brand_name = #{brandName,jdbcType=VARCHAR}
+    </select>
 </mapper>

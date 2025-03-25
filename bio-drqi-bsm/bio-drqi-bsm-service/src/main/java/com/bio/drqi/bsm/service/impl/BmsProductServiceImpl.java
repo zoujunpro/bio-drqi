@@ -18,6 +18,7 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class BmsProductServiceImpl implements BmsProductService {
 
 
@@ -123,12 +125,15 @@ public class BmsProductServiceImpl implements BmsProductService {
 
     @Override
     public void add(BmsProductAddReqDTO bmsProductAddReqDTO) {
-        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsProductAddReqDTO.getBrandCode());
-        if (bmsBrandTb == null) {
-            throw new BusinessException("无此品牌");
-        }
-        if (BioDrQiContents.Y.equals(bmsBrandTb.getDeleteFlag())) {
-            throw new BusinessException("此品牌已经删除");
+        BmsBrandTb bmsBrandTb=null;
+        if(StringUtils.isNotEmpty(bmsProductAddReqDTO.getBrandCode())){
+             bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsProductAddReqDTO.getBrandCode());
+            if (bmsBrandTb == null) {
+                throw new BusinessException("无此品牌");
+            }
+            if (BioDrQiContents.Y.equals(bmsBrandTb.getDeleteFlag())) {
+                throw new BusinessException("此品牌已经删除");
+            }
         }
         BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(bmsProductAddReqDTO.getSupplierCode());
         if (bmsSupplierTb == null) {
@@ -152,14 +157,19 @@ public class BmsProductServiceImpl implements BmsProductService {
         bmsProductTb.setProductCategoryCode(bmsProductAddReqDTO.getProductCategoryCode());
         bmsProductTb.setProductTypeCode(bmsProductAddReqDTO.getProductTypeCode());
         bmsProductTb.setSupplierCode(bmsProductAddReqDTO.getSupplierCode());
-        bmsProductTb.setBrandName(bmsBrandTb.getBrandName());
-        bmsProductTb.setBrandCode(bmsProductAddReqDTO.getBrandCode());
+        if(bmsBrandTb!=null){
+            bmsProductTb.setBrandName(bmsBrandTb.getBrandName());
+            bmsProductTb.setBrandCode(bmsProductAddReqDTO.getBrandCode());
+        }
+
         bmsProductTb.setProductSpecs(bmsProductAddReqDTO.getProductSpecs());
         bmsProductTb.setCreateTime(new Date());
         bmsProductTb.setCreateUserId(SecurityContextHolder.getUserId());
         bmsProductTb.setCreateUserName(SecurityContextHolder.getNickName());
         bmsProductTb.setDeleteFlag(BioDrQiContents.N);
+        log.info("商品入库={}",bmsProductTb);
         try {
+
             bmsProductTbMapper.insert(bmsProductTb);
         } catch (DuplicateKeyException e) {
             throw new BusinessException("请不要重复添加此材料");

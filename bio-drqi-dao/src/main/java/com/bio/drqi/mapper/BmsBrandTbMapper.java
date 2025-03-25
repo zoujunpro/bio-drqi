@@ -18,6 +18,9 @@ public interface BmsBrandTbMapper extends BaseMapper<BmsBrandTb> {
     List<BmsBrandTb> selectSelective(BmsBrandTb bmsBrandTb);
 
 
+    BmsBrandTb selectOneByBrandName(@Param("brandName") String brandName);
+
+
 
 
 }

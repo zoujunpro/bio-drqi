@@ -25,7 +25,7 @@ public class BmsBrandTb implements Serializable {
     /**
      * 主键ID
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**

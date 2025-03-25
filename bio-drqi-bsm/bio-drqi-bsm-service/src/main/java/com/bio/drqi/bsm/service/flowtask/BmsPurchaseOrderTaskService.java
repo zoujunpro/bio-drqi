@@ -89,34 +89,6 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
             for (BmsPurchaseOrderDTO.Product product : bmsPurchaseOrderDTO.getProductList()) {
                 BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(product.getSupplierCode());
                 BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
-                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneBySupplierCodeAndBrandCodeAndProductName(product.getSupplierCode(),product.getBrandCode(), product.getProductName());
-                if (bmsProductTb == null) {
-                    String productInnerCode = null;
-                    String maxProductInnerCode = bmsProductTbMapper.selectMaxProductInnerCode();
-                    if(StringUtils.isEmpty(maxProductInnerCode)){
-                        productInnerCode= BioBsmContents.product_prefix+StringUtils.padl("1",5,'0');
-                    }else {
-                        String nextProductInnerCode=String.valueOf(Integer.valueOf(maxProductInnerCode.substring(2))+1);
-                        productInnerCode= BioBsmContents.product_prefix+StringUtils.padl(nextProductInnerCode,5,'0');
-                    }
-                    // 添加商品
-                    bmsProductTb = new BmsProductTb();
-                    bmsProductTb.setProductName(product.getProductName());
-                    bmsProductTb.setProductOutCode(product.getProductCode());
-                    bmsProductTb.setProductInnerCode(productInnerCode);
-                    bmsProductTb.setProductCategoryCode(product.getProductCategoryCode());
-                    bmsProductTb.setProductTypeCode(product.getProductTypeCode());
-                    bmsProductTb.setSupplierCode(bmsSupplierTb.getSupplierCode());
-                    bmsProductTb.setBrandName(bmsBrandTb.getBrandName());
-                    bmsProductTb.setBrandCode(bmsBrandTb.getBrandCode());
-                    bmsProductTb.setProductSpecs(product.getProductSpecs());
-                    bmsProductTb.setCreateTime(new Date());
-                    bmsProductTb.setCreateUserId(bioTaskDtlTb.getApplyUserId());
-                    bmsProductTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
-                    bmsProductTb.setDeleteFlag(BioBsmContents.N);
-                    bmsProductTb.setPictureUrls(product.getPictureUrls());
-                    bmsProductTbMapper.insert(bmsProductTb);
-                }
                 //创建订单
                 BmsOrderDetailTb bmsOrderDetailTb = new BmsOrderDetailTb();
                 bmsOrderDetailTb.setOrderNum(bmsOrderTb.getOrderNum());

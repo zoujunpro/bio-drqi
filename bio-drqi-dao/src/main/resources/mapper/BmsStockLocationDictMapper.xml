@@ -41,7 +41,7 @@
         from bms_stock_location_dict
         <where>
             <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
-            <if test="stockCode != null and stockCode!=null">and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
+            <if test="stockCode != null and stockCode!=''''">and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
             <if test="stockName != null and stockName!=''">and stock_name=#{stockName,jdbcType=VARCHAR}</if>
             <if test="locationNumber != null and locationNumber!=''">and location_number=#{locationNumber,jdbcType=VARCHAR}</if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>

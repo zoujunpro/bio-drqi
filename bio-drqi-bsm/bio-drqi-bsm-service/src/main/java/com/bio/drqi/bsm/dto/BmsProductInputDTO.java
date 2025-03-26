@@ -54,37 +54,30 @@ public class BmsProductInputDTO {
         /**
          * 项目编号
          */
-        @NotBlank(message = "入库参数缺少：项目编号")
         private String projectCode;
-
         /**
          * 项目名称
          */
-        @NotBlank(message = "入库参数缺少：项目名称")
         private String projectName;
 
         /**
          * 品牌编号
          */
-        @NotBlank(message = "入库参数缺少：品牌编号")
         private String brandCode;
 
         /**
          * 品牌名称
          */
-        @NotBlank(message = "入库参数缺少：品牌名称")
         private String brandName;
 
         /**
          * 商品名称
          */
-        @NotBlank(message = "入库参数缺少：商品名称")
         private String productName;
 
         /**
          * 商品规格
          */
-        @NotBlank(message = "入库参数缺少：商品规格")
         private String productSpecs;
 
         /**
@@ -95,54 +88,36 @@ public class BmsProductInputDTO {
         /**
          * 采购单价
          */
-        @NotBlank(message = "入库参数缺少：采购单价")
         private BigDecimal purchasePrice;
 
         /**
          * 采购数量
          */
-        @NotBlank(message = "入库参数缺少：采购数量")
         private Integer purchaseNumber;
 
         /**
          * 付款金额
          */
-        @NotBlank(message = "入库参数缺少：付款金额")
         private BigDecimal payAmount;
 
         /**
          * 商品类别编号
          */
-        @NotBlank(message = "入库参数缺少：商品类别编号")
         private String productCategoryCode;
 
         /**
          * 商品类别名称
          */
-        @NotBlank(message = "入库参数缺少：商品类别名称")
         private String productCategoryName;
 
-        /**
-         * 商品类型编号
-         */
-        @NotBlank(message = "入库参数缺少：商品类型编号")
-        private String productTypeCode;
-
-        /**
-         * 商品类型名称
-         */
-        @NotBlank(message = "入库参数缺少：商品类型名称")
-        private String productTypeName;
 
         /**
          * 申请单位编号
          */
-        @NotBlank(message = "入库参数缺少：申请单位编号")
         private String applyUnitCode;
         /**
          * 申请单位名称
          */
-        @NotBlank(message = "入库参数缺少：申请单位名称")
         private String applyUnitName;
 
         /**
@@ -158,7 +133,7 @@ public class BmsProductInputDTO {
         /**
          * 批次号
          */
-
+        @NotBlank(message = "入库参数缺少：批次号")
         private String batchNo;
 
         /**
@@ -166,6 +141,10 @@ public class BmsProductInputDTO {
          */
         @NotNull(message = "入库参数缺少：入库数量")
         private Integer number;
+
+        private String productInnerCode;
+
+        private String supplierCode;
 
         /**
          * 库存位置号

@@ -73,9 +73,25 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
                         throw new BusinessException("库存信息不存在");
                     }
                 });
-
             }
+            orderDetail.setProjectCode(bmsOrderDetailTb.getProjectCode());
+            orderDetail.setProjectName(bmsOrderDetailTb.getProjectName());
+            orderDetail.setBrandCode(bmsOrderDetailTb.getBrandCode());
+            orderDetail.setBrandName(bmsOrderDetailTb.getBrandName());
+            orderDetail.setProductName(bmsOrderDetailTb.getProductName());
+            orderDetail.setProductSpecs(bmsOrderDetailTb.getProductSpecs());
+            orderDetail.setProductOutCode(bmsOrderDetailTb.getProductOutCode());
+            orderDetail.setPurchasePrice(bmsOrderDetailTb.getPurchasePrice());
+            orderDetail.setPurchaseNumber(bmsOrderDetailTb.getPurchaseNumber());
+            orderDetail.setPayAmount(bmsOrderDetailTb.getPayAmount());
+            orderDetail.setProductCategoryCode(bmsOrderDetailTb.getProductCategoryCode());
+            orderDetail.setProductCategoryName(bmsOrderDetailTb.getProductCategoryName());
+            orderDetail.setApplyUnitCode(bmsOrderDetailTb.getApplyUnitCode());
+            orderDetail.setApplyUnitName(bmsOrderDetailTb.getApplyUnitName());
+            orderDetail.setProductInnerCode(bmsOrderDetailTb.getProductInnerCode());
+            orderDetail.setSupplierCode(bmsOrderDetailTb.getSupplierCode());
         }
+
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(bmsProductInputDTO));
     }
 

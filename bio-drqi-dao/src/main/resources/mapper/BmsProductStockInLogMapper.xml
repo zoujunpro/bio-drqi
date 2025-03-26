@@ -77,4 +77,14 @@
         where
         task_num = #{taskNum,jdbcType=VARCHAR}
     </select>
+    <select id="selectOneByTaskNumAndProductInnerCodeAndBatchNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_in_log
+        where
+        task_num = #{taskNum,jdbcType=VARCHAR}
+        AND product_inner_code = #{productInnerCode,jdbcType=VARCHAR}
+        AND batch_no = #{batchNo,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

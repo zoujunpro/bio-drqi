@@ -1,5 +1,7 @@
 package com.bio.drqi.bsm.rsp;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -7,6 +9,10 @@ import java.util.Date;
 
 @Data
 public class BmsProductStockInLogListPageRspDTO {
+    /**
+     * 主键ID
+     */
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -20,16 +26,22 @@ public class BmsProductStockInLogListPageRspDTO {
     private String productName;
 
     /**
+     * 商品内部编号
+     */
+    private String productInnerCode;
+
+    /**
      * 商品外部编号
      */
     private String productOutCode;
+
     /**
-     * 商品类别编号
+     * 所属类别编号
      */
     private String productCategoryCode;
 
     /**
-     * 商品类型编号
+     * 货品类型编号
      */
     private String productTypeCode;
 
@@ -107,4 +119,19 @@ public class BmsProductStockInLogListPageRspDTO {
      * 单位编号
      */
     private String unitCode;
+
+    /**
+     * 供应商名称
+     */
+    private String supplierName;
+
+    /**
+     * 供应商编号
+     */
+    private String supplierCode;
+
+    /**
+     * 唯一编号
+     */
+    private String uniqueCode;
 }

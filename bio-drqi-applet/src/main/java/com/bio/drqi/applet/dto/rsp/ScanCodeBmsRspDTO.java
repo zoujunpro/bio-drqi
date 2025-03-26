@@ -2,118 +2,128 @@ package com.bio.drqi.applet.dto.rsp;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 @Data
 public class ScanCodeBmsRspDTO {
 
+    private Integer id;
+
+    /**
+     * 子订单编号
+     */
+    private String orderDetailNum;
+
+    /**
+     * 商品名称
+     */
+    private String productName;
+
+    /**
+     * 商品内部编号
+     */
+    private String productInnerCode;
+
+    /**
+     * 商品外部编号
+     */
+    private String productOutCode;
+
+    /**
+     * 所属类别编号
+     */
+    private String productCategoryCode;
+
+    /**
+     * 货品类型编号
+     */
+    private String productTypeCode;
+
+    /**
+     * 品牌编号
+     */
+    private String brandCode;
+
+    /**
+     * 品牌名称
+     */
+    private String brandName;
+
+    /**
+     * 商品规格
+     */
+    private String productSpecs;
+
+    /**
+     * 商品批次
+     */
+    private String batchNo;
+
+    /**
+     * 研发项目
+     */
     private String projectCode;
 
-    private String projectName;
+    /**
+     * 入库单价
+     */
+    private BigDecimal productPrice;
 
-    private String subProjectCode;
+    /**
+     * 入库数量
+     */
+    private Integer storeNumber;
 
-    private String subProjectName;
+    /**
+     * 入库金额
+     */
+    private BigDecimal storeAmount;
 
+    /**
+     * 申请人ID
+     */
+    private Integer applyUserId;
 
-    private String vectorTaskCode;
+    /**
+     * 申请人名称
+     */
+    private String applyUserName;
 
-    private String vectorTaskName;
+    /**
+     * 创建时间
+     */
+    private Date createTime;
 
-    private CerVector cerVector;
+    /**
+     * 任务编号
+     */
+    private String taskNum;
 
-    @Data
-    public static class CerVector {
+    /**
+     * 订单编号
+     */
+    private String orderNum;
 
-        private Integer id;
+    /**
+     * 库存位置编号
+     */
+    private String stockLocationNumber;
 
-        /**
-         * 载体构建任务
-         */
-        private Integer vectorTaskId;
+    /**
+     * 单位编号
+     */
+    private String unitCode;
 
-        /**
-         * 质粒名称
-         */
-        private String plasmidName;
+    /**
+     * 供应商名称
+     */
+    private String supplierName;
 
-        /**
-         * 靶位点
-         */
-        private String targetSite;
+    /**
+     * 供应商编号
+     */
+    private String supplierCode;
 
-        /**
-         * 细菌抗性
-         */
-        private String bacterialResistance;
-
-        /**
-         * 质粒特异性引物
-         */
-        private String plasmidSpecificPrimers;
-
-        /**
-         * 细菌复制子
-         */
-        private String bacterialReplicon;
-
-        /**
-         * 拷贝数
-         */
-        private String copyNumber;
-
-        /**
-         * 农杆菌信息
-         */
-        private String agrobacteriumInformation;
-
-        /**
-         * 植物筛选标记
-         */
-        private String selectionMarker;
-
-        /**
-         * 外源基因
-         */
-        private String foreignGene;
-
-        /**
-         * 目标特性
-         */
-        private String geneCharacter;
-
-        /**
-         * 靶基因
-         */
-        private String targetGene;
-
-        /**
-         * PAM
-         */
-        private String pam;
-
-        /**
-         * 备注
-         */
-        private String remark;
-
-
-        private String fileUrls;
-
-        /**
-         * 期望阳性苗
-         */
-        private Integer expectedPositiveVaccine;
-
-
-        /**
-         * 目的条带大小
-         */
-        private String destinationStripeSize;
-
-        /**
-         * 载体大小
-         */
-        private String vectorSize;
-
-    }
 
 }

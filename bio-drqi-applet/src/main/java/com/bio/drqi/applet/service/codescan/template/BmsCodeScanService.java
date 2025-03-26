@@ -2,6 +2,7 @@ package com.bio.drqi.applet.service.codescan.template;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.applet.dto.rsp.ScanCodeBmsRspDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodePlasmidRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
@@ -39,7 +40,7 @@ public class BmsCodeScanService extends AbstractBaseCodeScanService<BmsUniqueCod
         if(bmsProductStockInLog==null){
             throw new BusinessException("无此入库记录,任务订单号:"+bmsUniqueCodeDTO.getTaskNum()+" 商品编号:"+bmsUniqueCodeDTO.getProductInnerCode());
         }
-        return null;
+        return BeanUtils.copyProperties(bmsProductStockInLog,ScanCodeBmsRspDTO.class);
     }
 
 

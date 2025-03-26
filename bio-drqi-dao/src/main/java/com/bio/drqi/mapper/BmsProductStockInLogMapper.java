@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.BmsProductStockInLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -13,6 +14,9 @@ import java.util.List;
 */
 public interface BmsProductStockInLogMapper extends BaseMapper<BmsProductStockInLog> {
 List<BmsProductStockInLog> selectSelective(BmsProductStockInLog bmsProductStockInLog);
+
+    List<BmsProductStockInLog> selectAllByTaskNum(@Param("taskNum") String taskNum);
+
 }
 
 

@@ -15,13 +15,8 @@ public class BmsPrintProductLabelReqDTO {
     @Data
     public static class  Content{
 
-        private String productInnerCode;
+        private Integer stockInId;
 
-        private String batchNo;
-
-        private String supplierCode;
-
-        private String unitCode;
 
         private Integer printNum;
     }

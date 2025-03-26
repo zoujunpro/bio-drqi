@@ -6,12 +6,10 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.bsm.req.BmsPrintProductLabelReqDTO;
 import com.bio.drqi.bsm.service.BmsPrintService;
-import com.bio.drqi.domain.BmsProductStockTb;
-import com.bio.drqi.domain.BmsProductTb;
-import com.bio.drqi.domain.CerVectorTaskTb;
+import com.bio.drqi.domain.BmsProductStockInLog;
 import com.bio.drqi.enums.SeedMaterialTypeEnum;
 import com.bio.drqi.manage.base.PrintRspDTO;
-import com.bio.drqi.mapper.BmsProductStockTbMapper;
+import com.bio.drqi.mapper.BmsProductStockInLogMapper;
 import com.bio.print.api.PrintApi;
 import com.bio.print.req.PrintDataReqDTO;
 import com.bio.print.rsp.BmsLabelPrintDTO;
@@ -26,8 +24,9 @@ import java.util.List;
 @Slf4j
 public class BmsPrintServiceImpl implements BmsPrintService {
 
+
     @Resource
-    private BmsProductStockTbMapper bmsProductStockTbMapper;
+    private BmsProductStockInLogMapper bmsProductStockInLogMapper;
 
     @Resource
     private PrintApi printApi;
@@ -36,15 +35,15 @@ public class BmsPrintServiceImpl implements BmsPrintService {
     public PrintRspDTO productLabel(BmsPrintProductLabelReqDTO bmsPrintProductLabelReqDTO) {
         List<BmsLabelPrintDTO> bmsLabelPrintDTOList = new ArrayList<>();
         for (BmsPrintProductLabelReqDTO.Content content : bmsPrintProductLabelReqDTO.getContentList()) {
-            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(content.getProductInnerCode(), content.getUnitCode(), content.getBatchNo());
-            if (bmsProductStockTb == null) {
+            BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectById(content.getStockInId());
+            if (bmsProductStockInLog == null) {
                 log.error("本条要打印组装的数据content={}", JSONUtil.toJsonStr(content));
                 throw new BusinessException("找不到打印数据");
             }
             BmsLabelPrintDTO bmsLabelPrintDTO = new BmsLabelPrintDTO();
-            bmsLabelPrintDTO.setSupplierCode(content.getSupplierCode());
-            bmsLabelPrintDTO.setProductInnerCode(content.getProductInnerCode());
-            bmsLabelPrintDTO.setBatchNo(content.getBatchNo());
+            bmsLabelPrintDTO.setSupplierCode(bmsProductStockInLog.getSupplierCode());
+            bmsLabelPrintDTO.setProductInnerCode(bmsProductStockInLog.getProductInnerCode());
+            bmsLabelPrintDTO.setBatchNo(bmsProductStockInLog.getBatchNo());
             bmsLabelPrintDTO.setPrintNum(content.getPrintNum());
             bmsLabelPrintDTO.setTaskNum(bmsPrintProductLabelReqDTO.getTaskNum());
             bmsLabelPrintDTOList.add(bmsLabelPrintDTO);

@@ -5,11 +5,13 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsProductStockInLogListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsProductStockInLogQueryByTaskNumRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockInService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 入库存明细管理
@@ -45,4 +47,18 @@ public class BmsProductStockInLogController {
         return ResponseResult.getSuccess(bmsProductStockInService.detail(id));
     }
 
+
+    /**
+     * 入库存明细管理-根据任务号查询入库明细
+     *
+     * @param taskNum
+     * @return
+     */
+
+    @GetMapping("queryByTaskNum")
+    @WebLog(desc = "入库存明细管理-根据任务号查询入库明细")
+    public ResponseResult<List<BmsProductStockInLogQueryByTaskNumRspDTO>> queryByTaskNum(@RequestParam String taskNum) {
+        return ResponseResult.getSuccess(bmsProductStockInService.queryByTaskNum(taskNum));
+
+    }
 }

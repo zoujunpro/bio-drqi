@@ -70,4 +70,11 @@
             <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
         </where>
     </select>
+    <select id="selectAllByTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_in_log
+        where
+        task_num = #{taskNum,jdbcType=VARCHAR}
+    </select>
 </mapper>

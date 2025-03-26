@@ -4,6 +4,7 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.bsm.req.BmsProductStockInLogListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsProductStockInLogQueryByTaskNumRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockInService;
 import com.bio.drqi.domain.BmsProductStockInLog;
 import com.bio.drqi.mapper.BmsProductStockInLogMapper;
@@ -35,5 +36,11 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
     public BmsProductStockInLogDetailRspDTO detail(Integer id) {
         BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectById(id);
         return BeanUtils.copyProperties(bmsProductStockInLog,BmsProductStockInLogDetailRspDTO.class);
+    }
+
+    @Override
+    public List<BmsProductStockInLogQueryByTaskNumRspDTO> queryByTaskNum(String taskNum) {
+        List<BmsProductStockInLog> bmsProductStockInLogList =  bmsProductStockInLogMapper.selectAllByTaskNum(taskNum);
+        return BeanUtils.copyListProperties(bmsProductStockInLogList, BmsProductStockInLogQueryByTaskNumRspDTO.class);
     }
 }

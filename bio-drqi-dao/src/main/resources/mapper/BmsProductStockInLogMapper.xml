@@ -69,6 +69,7 @@
             <if test="stockLocationNumber != null and stockLocationNumber!=''">and stock_location_number=#{stockLocationNumber,jdbcType=VARCHAR}</if>
             <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
         </where>
+        order by id desc
     </select>
     <select id="selectAllByTaskNum" resultMap="BaseResultMap">
         select

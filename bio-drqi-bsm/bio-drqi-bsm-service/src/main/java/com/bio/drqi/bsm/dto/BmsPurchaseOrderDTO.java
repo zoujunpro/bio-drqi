@@ -73,33 +73,30 @@ public class BmsPurchaseOrderDTO {
         /**
          * 归属项目编号
          */
+        @NotBlank(message = "参数缺失：归属项目")
         private String projectCode;
 
         /**
          * 品牌编号
          */
+        @NotBlank(message = "参数缺失：品牌")
         private String brandCode;
 
         /**
          * 供应商名称
          */
-
+        @NotBlank(message = "参数缺失：供应商名称")
         private String supplierName;
 
         /**
          * 供应商编号
          */
+        @NotBlank(message = "参数缺失：供应商名称")
         private String supplierCode;
-
-        /**
-         * 商品id
-         */
-        private Integer productId;
 
         /**
          * 商品名称
          */
-
         private String productName;
 
         /**
@@ -142,20 +139,26 @@ public class BmsPurchaseOrderDTO {
         /**
          * 采购数量
          */
+        @NotBlank(message = "参数缺失：采购数量")
         private Integer purchaseNumber;
         /**
          * 采购单价
          */
+        @NotBlank(message = "参数缺失：采购单价")
         private String purchasePrice;
 
         /**
          * 采购金额
          */
+        @NotBlank(message = "参数缺失：采购金额")
         private String purchaseAmount;
         /**
          * 内部编号
          */
+        @NotBlank(message = "参数缺失：商品信息缺失")
         private String productInnerCode;
+
+
 
     }
 

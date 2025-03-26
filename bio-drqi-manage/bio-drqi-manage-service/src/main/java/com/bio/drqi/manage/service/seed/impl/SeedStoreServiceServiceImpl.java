@@ -198,6 +198,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         seedStockTb.setGeneType(seedStockPageReqDTO.getGeneType());
         seedStockTb.setGeneticCharacter(seedStockPageReqDTO.getGeneticCharacter());
         seedStockTb.setAliasName(seedStockPageReqDTO.getAliasName());
+        seedStockTb.setMaterialType(seedStockPageReqDTO.getMaterialType());
         if (seedStockPageReqDTO.getOrder() != null) {
             seedStockTb.setOrderField(seedStockPageReqDTO.getOrder().getFieldName());
             seedStockTb.setOrderType(seedStockPageReqDTO.getOrder().getOrderType());

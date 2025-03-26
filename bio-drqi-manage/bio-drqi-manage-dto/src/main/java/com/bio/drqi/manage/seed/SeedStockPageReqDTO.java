@@ -108,6 +108,8 @@ public class SeedStockPageReqDTO extends PageDTO {
      */
     private String geneType;
 
+    private String materialType;
+
     @Data
     @Valid
     public static  class  Order{

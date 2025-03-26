@@ -112,14 +112,14 @@ public class BmsPurchaseOrderDTO {
          */
         private String productSpecs;
 
-        /**
-         * 商品类型编号
-         */
-        private String productTypeCode;
-        /**
-         * 商品类型名称
-         */
-        private String productTypeName;
+//        /**
+//         * 商品类型编号
+//         */
+//        private String productTypeCode;
+//        /**
+//         * 商品类型名称
+//         */
+//        private String productTypeName;
         /**
          * 商品类别编号
          */
@@ -152,6 +152,10 @@ public class BmsPurchaseOrderDTO {
          * 采购金额
          */
         private String purchaseAmount;
+        /**
+         * 内部编号
+         */
+        private String productInnerCode;
 
     }
 

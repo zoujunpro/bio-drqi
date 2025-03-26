@@ -98,5 +98,12 @@
         from bms_product_tb
         order by id desc limit 1
     </select>
+    <select id="selectOneByProductInnerCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_tb
+        where
+        product_inner_code = #{productInnerCode,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

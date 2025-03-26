@@ -104,6 +104,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setProductName(product.getProductName());
                 bmsOrderDetailTb.setProductSpecs(product.getProductSpecs());
                 bmsOrderDetailTb.setProductOutCode(product.getProductCode());
+                bmsOrderDetailTb.setProductInnerCode(product.getProductInnerCode());
                 bmsOrderDetailTb.setPurchasePrice(new BigDecimal(product.getPurchasePrice()));
                 bmsOrderDetailTb.setPurchaseNumber(product.getPurchaseNumber());
                 bmsOrderDetailTb.setPayAmount(new BigDecimal(product.getPurchaseAmount()));
@@ -113,8 +114,8 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setApplyUserId(SecurityContextHolder.getUserId());
                 bmsOrderDetailTb.setApplyUserName(SecurityContextHolder.getNickName());
                 bmsOrderDetailTb.setTaskNum(bioTaskDtlTb.getTaskNum());
-                bmsOrderDetailTb.setProductTypeCode(product.getProductTypeCode());
-                bmsOrderDetailTb.setProductTypeName(product.getProductTypeName());
+               // bmsOrderDetailTb.setProductTypeCode(product.getProductTypeCode());
+               // bmsOrderDetailTb.setProductTypeName(product.getProductTypeName());
                 bmsOrderDetailTb.setPictureUrls(product.getPictureUrls());
                 bmsOrderDetailTb.setPurchaseDate(bmsOrderTb.getPurchaseDate());
                 bmsOrderDetailTb.setApplyUnitCode(bmsOrderTb.getApplyUnitCode());
@@ -132,19 +133,27 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 //空格处理
                 product.setProductName(product.getProductName().trim());
                 product.setProductSpecs(product.getProductSpecs().trim());
-
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(product.getProductInnerCode());
+                if(bmsProductTb==null){
+                    log.error("不存在的商品信息={}",product);
+                    throw new BusinessException("商品不存在");
+                }
                 BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(product.getSupplierCode());
                 if (bmsSupplierTb == null) {
+                    log.error("不存在供应商信息={}",product);
                     throw new BusinessException("供应商不存在");
                 }
                 if (BioBsmContents.Y.equals(bmsSupplierTb.getDeleteFlag())) {
+                    log.error("供应商已经删除={}",product);
                     throw new BusinessException("供应商已经删除");
                 }
                 BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
                 if (bmsBrandTb == null) {
+                    log.error("品牌不存在={}",product);
                     throw new BusinessException("品牌不存在");
                 }
                 if (BioBsmContents.Y.equals(bmsBrandTb.getDeleteFlag())) {
+                    log.error("品牌已经删除={}",product);
                     throw new BusinessException("品牌已经删除");
                 }
             }
@@ -169,7 +178,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
         bmsOrderTb.setContractUrls(null);
         bmsOrderTb.setPurchaseDate(null);
         bmsOrderTb.setPurchaseTypeCode(bmsPurchaseOrderDTO.getPurchaseTypeCode());
-       bmsOrderTb.setPurchaseTypeName(PurchaseTypeEnum.getNameByCode(bmsPurchaseOrderDTO.getPurchaseTypeCode()));
+        bmsOrderTb.setPurchaseTypeName(PurchaseTypeEnum.getNameByCode(bmsPurchaseOrderDTO.getPurchaseTypeCode()));
         bmsOrderTb.setPurchaseReasonRemark(bmsPurchaseOrderDTO.getPurchaseReasonRemark());
         bmsOrderTb.setDemandRequireTime(bmsPurchaseOrderDTO.getDemandRequireTime());
         bmsOrderTb.setDemandUsageTime(bmsPurchaseOrderDTO.getDemandUsageTime());

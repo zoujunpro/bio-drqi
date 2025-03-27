@@ -44,10 +44,10 @@ public class BmsCodeScanService extends AbstractBaseCodeScanService<BmsUniqueCod
             throw new BusinessException("无此入库记录,任务订单号:" + bmsUniqueCodeDTO.getTaskNum() + " 商品编号:" + bmsUniqueCodeDTO.getProductInnerCode());
         }
         BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo());
-        if(bmsProductStockTb==null){
-        throw new BusinessException("数据异常，库存中找不到数据,商品编号："+bmsProductStockInLog.getProductInnerCode()+" 批次号："+bmsProductStockInLog.getProductInnerCode());
+        if (bmsProductStockTb == null) {
+            throw new BusinessException("数据异常，库存中找不到数据,商品编号：" + bmsProductStockInLog.getProductInnerCode() + " 批次号：" + bmsProductStockInLog.getProductInnerCode());
         }
-        return BeanUtils.copyProperties(bmsProductStockInLog, ScanCodeBmsRspDTO.class);
+        return BeanUtils.copyProperties(bmsProductStockTb, ScanCodeBmsRspDTO.class);
     }
 
 

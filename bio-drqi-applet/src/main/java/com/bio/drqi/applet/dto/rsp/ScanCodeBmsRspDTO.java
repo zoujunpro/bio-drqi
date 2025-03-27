@@ -11,19 +11,9 @@ public class ScanCodeBmsRspDTO {
     private Integer id;
 
     /**
-     * 子订单编号
-     */
-    private String orderDetailNum;
-
-    /**
      * 商品名称
      */
     private String productName;
-
-    /**
-     * 商品内部编号
-     */
-    private String productInnerCode;
 
     /**
      * 商品外部编号
@@ -61,69 +51,40 @@ public class ScanCodeBmsRspDTO {
     private String batchNo;
 
     /**
-     * 研发项目
+     * 累计入库数量
      */
-    private String projectCode;
+    private Integer totalStoreNumber;
 
     /**
-     * 入库单价
+     * 当前库存数量
      */
-    private BigDecimal productPrice;
+    private Integer currentStockNumber;
 
     /**
-     * 入库数量
+     * 累计出库数量
      */
-    private Integer storeNumber;
+    private Integer totalOutNumber;
+
+
 
     /**
-     * 入库金额
+     * 单位
      */
-    private BigDecimal storeAmount;
-
-    /**
-     * 申请人ID
-     */
-    private Integer applyUserId;
-
-    /**
-     * 申请人名称
-     */
-    private String applyUserName;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 任务编号
-     */
-    private String taskNum;
-
-    /**
-     * 订单编号
-     */
-    private String orderNum;
+    private String unitCode;
 
     /**
      * 库存位置编号
      */
     private String stockLocationNumber;
 
-    /**
-     * 单位编号
-     */
-    private String unitCode;
+    private String productInnerCode;
 
-    /**
-     * 供应商名称
-     */
+
+    private String supplierCode;
+
     private String supplierName;
 
-    /**
-     * 供应商编号
-     */
-    private String supplierCode;
+    private String uniqueCode;
 
 
 }

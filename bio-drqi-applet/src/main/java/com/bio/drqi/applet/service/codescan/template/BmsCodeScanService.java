@@ -23,6 +23,9 @@ public class BmsCodeScanService extends AbstractBaseCodeScanService<BmsUniqueCod
     @Resource
     private BmsProductStockInLogMapper bmsProductStockInLogMapper;
 
+    @Resource
+    private BmsProductStockTbMapper bmsProductStockTbMapper;
+
     @Override
     public BmsUniqueCodeDTO parseUniqueCode(String uniqueCode) {
         String[] uniqueCodeArr = uniqueCode.split("\\|");
@@ -37,10 +40,14 @@ public class BmsCodeScanService extends AbstractBaseCodeScanService<BmsUniqueCod
     @Override
     public ScanCodeBmsRspDTO dealCodeContent(BmsUniqueCodeDTO bmsUniqueCodeDTO) {
         BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectOneByTaskNumAndProductInnerCodeAndBatchNo(bmsUniqueCodeDTO.getTaskNum(), bmsUniqueCodeDTO.getProductInnerCode(), bmsUniqueCodeDTO.getBatchNo());
-        if(bmsProductStockInLog==null){
-            throw new BusinessException("无此入库记录,任务订单号:"+bmsUniqueCodeDTO.getTaskNum()+" 商品编号:"+bmsUniqueCodeDTO.getProductInnerCode());
+        if (bmsProductStockInLog == null) {
+            throw new BusinessException("无此入库记录,任务订单号:" + bmsUniqueCodeDTO.getTaskNum() + " 商品编号:" + bmsUniqueCodeDTO.getProductInnerCode());
         }
-        return BeanUtils.copyProperties(bmsProductStockInLog,ScanCodeBmsRspDTO.class);
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo());
+        if(bmsProductStockTb==null){
+        throw new BusinessException("数据异常，库存中找不到数据,商品编号："+bmsProductStockInLog.getProductInnerCode()+" 批次号："+bmsProductStockInLog.getProductInnerCode());
+        }
+        return BeanUtils.copyProperties(bmsProductStockInLog, ScanCodeBmsRspDTO.class);
     }
 
 

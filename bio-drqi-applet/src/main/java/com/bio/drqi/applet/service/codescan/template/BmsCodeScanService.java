@@ -47,7 +47,11 @@ public class BmsCodeScanService extends AbstractBaseCodeScanService<BmsUniqueCod
         if (bmsProductStockTb == null) {
             throw new BusinessException("数据异常，库存中找不到数据,商品编号：" + bmsProductStockInLog.getProductInnerCode() + " 批次号：" + bmsProductStockInLog.getProductInnerCode());
         }
-        return BeanUtils.copyProperties(bmsProductStockTb, ScanCodeBmsRspDTO.class);
+        ScanCodeBmsRspDTO scanCodeBmsRspDTO= BeanUtils.copyProperties(bmsProductStockTb, ScanCodeBmsRspDTO.class);
+        scanCodeBmsRspDTO.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber());
+        scanCodeBmsRspDTO.setTotalOutNumber(bmsProductStockTb.getTotalOutNumber());
+        scanCodeBmsRspDTO.setTotalStoreNumber(bmsProductStockTb.getTotalStoreNumber());
+        return scanCodeBmsRspDTO;
     }
 
 

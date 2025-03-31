@@ -54,17 +54,6 @@ public class DataInitCleanController {
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
 
 
-    @GetMapping("/testSql")
-    public ResponseResult<String> testSql() {
-        String batchNo = "3";
-        String productInnerCode = "QB00174";
-        String unitCode = "beijing";
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(productInnerCode, unitCode, batchNo);
-        System.out.println(JSONUtil.toJsonStr(bmsProductStockTb));
-        return ResponseResult.getSuccess("ok");
-    }
-
-
     /**
      * 供应商数据清洗
      *

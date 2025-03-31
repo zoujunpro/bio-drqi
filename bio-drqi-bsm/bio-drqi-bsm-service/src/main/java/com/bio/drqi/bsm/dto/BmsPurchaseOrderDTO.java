@@ -37,6 +37,7 @@ public class BmsPurchaseOrderDTO {
     /**
      * 采购类型描述
      */
+    @NotBlank(message = "请填写采购类型描述")
     private String purchaseTypeCode;
 
 
@@ -79,12 +80,6 @@ public class BmsPurchaseOrderDTO {
         private String projectCode;
 
         /**
-         * 品牌编号
-         */
-        @NotBlank(message = "参数缺失：品牌")
-        private String brandCode;
-
-        /**
          * 供应商名称
          */
         @NotBlank(message = "参数缺失：供应商名称")
@@ -95,48 +90,6 @@ public class BmsPurchaseOrderDTO {
          */
         @NotBlank(message = "参数缺失：供应商名称")
         private String supplierCode;
-
-        /**
-         * 商品名称
-         */
-        private String productName;
-
-        /**
-         * 商品编号
-         */
-        private String productCode;
-
-        /**
-         * 商品类别
-         */
-        private String productSpecs;
-
-//        /**
-//         * 商品类型编号
-//         */
-//        private String productTypeCode;
-//        /**
-//         * 商品类型名称
-//         */
-//        private String productTypeName;
-        /**
-         * 商品类别编号
-         */
-        private String productCategoryCode;
-        /**
-         * 商品类别名称
-         */
-        private String productCategoryName;
-
-        /**
-         * 商品图片
-         */
-        private String pictureUrls;
-
-        /**
-         * 当前剩余库存
-         */
-        private Integer currentStockNum;
 
         /**
          * 采购数量
@@ -155,11 +108,48 @@ public class BmsPurchaseOrderDTO {
         @NotBlank(message = "参数缺失：采购金额")
         private String purchaseAmount;
         /**
+         * 品牌名称
+         */
+        @NotBlank(message = "参数缺失：品牌名称")
+        private String brandName;
+        /**
+         * 商品名称
+         */
+        @NotBlank(message = "参数缺失：商品名称")
+        private String productName;
+
+        /**
+         * 商品编码
+         */
+        @NotBlank(message = "参数缺失：商品编码")
+        private String productOutCode;
+
+        /**
          * 内部编号
          */
-        @NotBlank(message = "参数缺失：商品信息缺失")
         private String productInnerCode;
 
+        /**
+         * 商品规格
+         */
+        @NotBlank(message = "参数缺失：商品规格")
+        private String productSpecs;
+
+        /**
+         * 商品类别编号
+         */
+        @NotBlank(message = "参数缺失：商品类别编号")
+        private String productCategoryCode;
+        /**
+         * 商品类别名称
+         */
+        @NotBlank(message = "参数缺失：商品类别名称")
+        private String productCategoryName;
+
+        /**
+         * 商品图片
+         */
+        private String pictureUrls;
 
 
     }

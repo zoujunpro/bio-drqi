@@ -4,6 +4,7 @@ import com.bio.drqi.bsm.req.BmsBrandEditReqDTO;
 import com.bio.drqi.bsm.req.BmsBrandListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandListPageRspDTO;
+import com.bio.drqi.domain.BmsBrandTb;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public interface BmsBrandService {
      *
      * @return
      */
-    void add(BmsBrandAddReqDTO bmsBrandAddReqDTO);
+    BmsBrandTb add(BmsBrandAddReqDTO bmsBrandAddReqDTO);
 
     /**
      * 品牌管理-删除

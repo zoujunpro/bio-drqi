@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.core.uuid.IdUtils;
@@ -12,6 +13,10 @@ import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.dto.BmsPurchaseOrderDTO;
 import com.bio.drqi.bsm.enums.PurchaseTypeEnum;
 import com.bio.drqi.bsm.enums.PurchaseUnitEnum;
+import com.bio.drqi.bsm.req.BmsBrandAddReqDTO;
+import com.bio.drqi.bsm.req.BmsProductAddReqDTO;
+import com.bio.drqi.bsm.service.BmsBrandService;
+import com.bio.drqi.bsm.service.BmsProductService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.mapper.*;
@@ -43,6 +48,12 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
     @Resource
     private BmsProductTbMapper bmsProductTbMapper;
 
+    @Resource
+    private BmsBrandService bmsBrandService;
+
+    @Resource
+    private BmsProductService bmsProductService;
+
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         BmsPurchaseOrderDTO bmsPurchaseOrderDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsPurchaseOrderDTO.class);
@@ -54,7 +65,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
             throw new BusinessException("单位填写错误");
         }
         //商品校验
-        productValid(bmsPurchaseOrderDTO);
+        productValid(bmsPurchaseOrderDTO, bmsPurchaseOrderDTO.getPurchaseTypeCode());
 
         //数据重新塞入到json
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(bmsPurchaseOrderDTO));
@@ -72,7 +83,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
             }
         }
         //商品校验
-        productValid(bmsPurchaseOrderDTO);
+        productValid(bmsPurchaseOrderDTO, bmsPurchaseOrderDTO.getPurchaseTypeCode());
 
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
 
@@ -93,7 +104,15 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
         if (CollectionUtil.isNotEmpty(bmsPurchaseOrderDTO.getProductList())) {
             for (BmsPurchaseOrderDTO.Product product : bmsPurchaseOrderDTO.getProductList()) {
                 BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(product.getSupplierCode());
-                BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
+                //品牌没有就创建
+                BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(product.getBrandName());
+                if (bmsBrandTb == null) {
+                    bmsBrandTb = bmsBrandService.add(BmsBrandAddReqDTO.builder().brandName(product.getBrandName()).build());
+                }
+                //非常规采购进行商品创建
+                if (PurchaseTypeEnum.TYPE_2.code.equals(bmsOrderTb.getPurchaseTypeCode())) {
+                    bmsProductService.add(BeanUtils.copyProperties(product,BmsProductAddReqDTO.class));
+                }
                 //创建订单
                 BmsOrderDetailTb bmsOrderDetailTb = new BmsOrderDetailTb();
                 bmsOrderDetailTb.setOrderNum(bmsOrderTb.getOrderNum());
@@ -108,7 +127,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setBrandName(bmsBrandTb.getBrandName());
                 bmsOrderDetailTb.setProductName(product.getProductName());
                 bmsOrderDetailTb.setProductSpecs(product.getProductSpecs());
-                bmsOrderDetailTb.setProductOutCode(product.getProductCode());
+                bmsOrderDetailTb.setProductOutCode(product.getProductOutCode());
                 bmsOrderDetailTb.setProductInnerCode(product.getProductInnerCode());
                 bmsOrderDetailTb.setPurchasePrice(new BigDecimal(product.getPurchasePrice()));
                 bmsOrderDetailTb.setPurchaseNumber(product.getPurchaseNumber());
@@ -119,8 +138,6 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setApplyUserId(SecurityContextHolder.getUserId());
                 bmsOrderDetailTb.setApplyUserName(SecurityContextHolder.getNickName());
                 bmsOrderDetailTb.setTaskNum(bioTaskDtlTb.getTaskNum());
-                // bmsOrderDetailTb.setProductTypeCode(product.getProductTypeCode());
-                // bmsOrderDetailTb.setProductTypeName(product.getProductTypeName());
                 bmsOrderDetailTb.setPictureUrls(product.getPictureUrls());
                 bmsOrderDetailTb.setPurchaseDate(bmsOrderTb.getPurchaseDate());
                 bmsOrderDetailTb.setApplyUnitCode(bmsOrderTb.getApplyUnitCode());
@@ -137,7 +154,6 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
      */
     @NotNull
     private BmsOrderTb initBmsOrderTb(BioTaskDtlTb bioTaskDtlTb, BmsPurchaseOrderDTO bmsPurchaseOrderDTO) {
-
         BmsOrderTb bmsOrderTb = new BmsOrderTb();
         bmsOrderTb.setOrderNum(bioTaskDtlTb.getTaskNum());
         bmsOrderTb.setApplyUserId(SecurityContextHolder.getUserId());
@@ -165,7 +181,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
     }
 
 
-    private void productValid(BmsPurchaseOrderDTO bmsPurchaseOrderDTO) {
+    private void productValid(BmsPurchaseOrderDTO bmsPurchaseOrderDTO, String purchaseTypeCode) {
         if (CollectionUtil.isEmpty(bmsPurchaseOrderDTO.getProductList())) {
             throw new BusinessException("订单商品信息缺失");
         }
@@ -173,11 +189,20 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
             //空格处理
             product.setProductName(product.getProductName().trim());
             product.setProductSpecs(product.getProductSpecs().trim());
-            BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(product.getProductInnerCode());
-            if (bmsProductTb == null) {
-                log.error("不存在的商品信息={}", product);
-                throw new BusinessException("商品不存在");
+
+            //常规采购
+            if (PurchaseTypeEnum.TYPE_1.code.equals(purchaseTypeCode)) {
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(product.getProductInnerCode());
+                if (bmsProductTb == null) {
+                    log.error("不存在的商品信息={}", product);
+                    throw new BusinessException("商品不存在");
+                }
+            } else if (PurchaseTypeEnum.TYPE_2.code.equals(purchaseTypeCode)) {
+                //非常规采购
+            } else {
+                throw new BusinessException("采购类型错误");
             }
+
             BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(product.getSupplierCode());
             if (bmsSupplierTb == null) {
                 log.error("不存在供应商信息={}", product);
@@ -187,21 +212,6 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 log.error("供应商已经删除={}", product);
                 throw new BusinessException("供应商已经删除");
             }
-            BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
-            if (bmsBrandTb == null) {
-                log.error("品牌不存在={}", product);
-                throw new BusinessException("品牌不存在");
-            }
-            if (BioBsmContents.Y.equals(bmsBrandTb.getDeleteFlag())) {
-                log.error("品牌已经删除={}", product);
-                throw new BusinessException("品牌已经删除");
-            }
-            product.setProductName(bmsProductTb.getProductName());
-            product.setProductCode(bmsProductTb.getProductOutCode());
-            product.setProductSpecs(bmsProductTb.getProductSpecs());
-            product.setProductCategoryCode(bmsProductTb.getProductCategoryCode());
-            product.setPictureUrls(bmsProductTb.getPictureUrls());
-            product.setProductInnerCode(bmsProductTb.getProductInnerCode());
         }
     }
 }

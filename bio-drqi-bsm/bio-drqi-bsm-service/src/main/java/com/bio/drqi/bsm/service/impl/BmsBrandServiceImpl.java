@@ -51,7 +51,7 @@ public class BmsBrandServiceImpl implements BmsBrandService {
     }
 
     @Override
-    public void add(BmsBrandAddReqDTO bmsBrandAddReqDTO) {
+    public BmsBrandTb add(BmsBrandAddReqDTO bmsBrandAddReqDTO) {
         BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode( bmsBrandAddReqDTO.getBrandName());
         if (Objects.nonNull(bmsBrandTb) && BioDrQiContents.N.equals(bmsBrandTb.getDeleteFlag())) {
             throw new BusinessException("该品牌已经存在");
@@ -64,6 +64,7 @@ public class BmsBrandServiceImpl implements BmsBrandService {
         bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
         bmsBrandTb.setDeleteFlag(BioDrQiContents.N);
         bmsBrandTbMapper.insert(bmsBrandTb);
+        return bmsBrandTb;
     }
 
     @Override

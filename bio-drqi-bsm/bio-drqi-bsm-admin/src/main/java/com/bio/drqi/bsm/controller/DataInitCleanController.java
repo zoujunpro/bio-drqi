@@ -1,5 +1,6 @@
 package com.bio.drqi.bsm.controller;
 
+import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
@@ -41,7 +42,7 @@ public class DataInitCleanController {
     private SystemUserTbMapper systemUserTbMapper;
 
     @Resource
-    private BmsProductTbMapper bmsProductTbMapper;
+    private BmsProductStockTbMapper bmsProductStockTbMapper;
 
     @Resource
     private BmsBrandTbMapper bmsBrandTbMapper;
@@ -51,6 +52,17 @@ public class DataInitCleanController {
 
     @Resource
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
+
+
+    @GetMapping("/testSql")
+    public ResponseResult<String> testSql() {
+        String batchNo = "3";
+        String productInnerCode = "QB00174";
+        String unitCode = "beijing";
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(productInnerCode, unitCode, batchNo);
+        System.out.println(JSONUtil.toJsonStr(bmsProductStockTb));
+        return ResponseResult.getSuccess("ok");
+    }
 
 
     /**
@@ -134,8 +146,8 @@ public class DataInitCleanController {
             }
 
             BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryName(productCleanDataExcel.productCategory);
-            if(bmsProductCategoryTb==null){
-                throw new BusinessException("类别找不到"+productCleanDataExcel.productCategory);
+            if (bmsProductCategoryTb == null) {
+                throw new BusinessException("类别找不到" + productCleanDataExcel.productCategory);
             }
             BmsProductAddReqDTO bmsProductAddReqDTO = new BmsProductAddReqDTO();
             bmsProductAddReqDTO.setProductName(productCleanDataExcel.productName);

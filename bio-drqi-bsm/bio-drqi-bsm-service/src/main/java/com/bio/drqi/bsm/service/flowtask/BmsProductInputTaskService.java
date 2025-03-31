@@ -132,7 +132,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
 
 
     private BmsProductStockTb updateOrInsertBmsProductStock(BmsProductInputDTO.OrderDetail inputOrderDetail, BmsOrderDetailTb bmsOrderDetailTb, String batchNo) {
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsOrderDetailTb.getProductInnerCode(), batchNo, bmsOrderDetailTb.getApplyUnitCode());
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsOrderDetailTb.getProductInnerCode(), bmsOrderDetailTb.getApplyUnitCode(), batchNo);
         if (bmsProductStockTb == null) {
             bmsProductStockTb = new BmsProductStockTb();
             bmsProductStockTb.setProductName(bmsOrderDetailTb.getProductName());

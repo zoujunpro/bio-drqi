@@ -3,7 +3,6 @@ package com.bio.drqi.bsm.req;
 import lombok.Data;
 @Data
 public class BmsProductAddReqDTO {
-
     /**
      * 商品名称
      */
@@ -13,8 +12,6 @@ public class BmsProductAddReqDTO {
      * 商品外部编号
      */
     private String productOutCode;
-
-
     /**
      * 商品类别编号
      */
@@ -27,9 +24,6 @@ public class BmsProductAddReqDTO {
      * 品牌编号
      */
     private String brandCode;
-
-    private String supplierCode;
-
     /**
      * 商品规格
      */

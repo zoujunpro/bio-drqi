@@ -54,11 +54,6 @@ public class BmsProductTb implements Serializable {
     private String productTypeCode;
 
     /**
-     * 供应商编号
-     */
-    private String supplierCode;
-
-    /**
      * 品牌名称
      */
     private String brandName;

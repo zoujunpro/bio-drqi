@@ -155,7 +155,6 @@ public class DataInitCleanController {
             bmsProductAddReqDTO.setProductCategoryCode(bmsProductCategoryTb.getProductCategoryCode());
             bmsProductAddReqDTO.setProductTypeCode(null);
             bmsProductAddReqDTO.setBrandCode(brandCode);
-            bmsProductAddReqDTO.setSupplierCode(productCleanDataExcel.supplierCode);
             bmsProductAddReqDTO.setProductSpecs(productCleanDataExcel.product_specs);
             bmsProductService.add(bmsProductAddReqDTO);
         }

@@ -11,7 +11,6 @@
         <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
         <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
         <result property="productTypeCode" column="product_type_code" jdbcType="VARCHAR"/>
-        <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
         <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
         <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
         <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
@@ -27,7 +26,7 @@
         id
         ,product_name,product_out_code,
         product_inner_code,product_category_code,product_type_code,
-        supplier_code,brand_name,brand_code,
+        brand_name,brand_code,
         product_specs,create_time,create_user_id,
         create_user_name,delete_flag
     </sql>
@@ -45,8 +44,6 @@
             </if>
             <if test="productTypeCode != null and productTypeCode != ''">and
                 product_type_code=#{productTypeCode,jdbcType=VARCHAR}
-            </if>
-            <if test="supplierCode != null and supplierCode != ''">and supplier_code=#{supplierCode,jdbcType=VARCHAR}
             </if>
             <if test="brandName != null">and brand_name=#{brandName,jdbcType=VARCHAR}</if>
             <if test="brandCode != null and brandCode != ''">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>

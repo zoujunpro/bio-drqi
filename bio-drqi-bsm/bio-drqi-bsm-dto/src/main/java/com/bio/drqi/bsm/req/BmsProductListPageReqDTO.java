@@ -10,8 +10,4 @@ public class BmsProductListPageReqDTO extends PageDTO {
     private String productName;
 
     private String deleteFlag;
-    /**
-     * 供应商编号
-     */
-    private String supplierCode;
 }

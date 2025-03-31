@@ -67,9 +67,9 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         BmsPurchaseOrderDTO bmsPurchaseOrderDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsPurchaseOrderDTO.class);
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-        if(CollectionUtil.isEmpty(bmsPurchaseOrderDTO.getProductList())){
-            throw new BusinessException("未选择采购商品信息");
-        }
+            if (CollectionUtil.isEmpty(bmsPurchaseOrderDTO.getProductList())) {
+                throw new BusinessException("未选择采购商品信息");
+            }
         }
         //商品校验
         productValid(bmsPurchaseOrderDTO);
@@ -119,8 +119,8 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setApplyUserId(SecurityContextHolder.getUserId());
                 bmsOrderDetailTb.setApplyUserName(SecurityContextHolder.getNickName());
                 bmsOrderDetailTb.setTaskNum(bioTaskDtlTb.getTaskNum());
-               // bmsOrderDetailTb.setProductTypeCode(product.getProductTypeCode());
-               // bmsOrderDetailTb.setProductTypeName(product.getProductTypeName());
+                // bmsOrderDetailTb.setProductTypeCode(product.getProductTypeCode());
+                // bmsOrderDetailTb.setProductTypeName(product.getProductTypeName());
                 bmsOrderDetailTb.setPictureUrls(product.getPictureUrls());
                 bmsOrderDetailTb.setPurchaseDate(bmsOrderTb.getPurchaseDate());
                 bmsOrderDetailTb.setApplyUnitCode(bmsOrderTb.getApplyUnitCode());
@@ -166,41 +166,42 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
 
 
     private void productValid(BmsPurchaseOrderDTO bmsPurchaseOrderDTO) {
-        if (CollectionUtil.isNotEmpty(bmsPurchaseOrderDTO.getProductList())) {
-            for (BmsPurchaseOrderDTO.Product product : bmsPurchaseOrderDTO.getProductList()) {
-                //空格处理
-                product.setProductName(product.getProductName().trim());
-                product.setProductSpecs(product.getProductSpecs().trim());
-                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(product.getProductInnerCode());
-                if(bmsProductTb==null){
-                    log.error("不存在的商品信息={}",product);
-                    throw new BusinessException("商品不存在");
-                }
-                BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(product.getSupplierCode());
-                if (bmsSupplierTb == null) {
-                    log.error("不存在供应商信息={}",product);
-                    throw new BusinessException("供应商不存在");
-                }
-                if (BioBsmContents.Y.equals(bmsSupplierTb.getDeleteFlag())) {
-                    log.error("供应商已经删除={}",product);
-                    throw new BusinessException("供应商已经删除");
-                }
-                BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
-                if (bmsBrandTb == null) {
-                    log.error("品牌不存在={}",product);
-                    throw new BusinessException("品牌不存在");
-                }
-                if (BioBsmContents.Y.equals(bmsBrandTb.getDeleteFlag())) {
-                    log.error("品牌已经删除={}",product);
-                    throw new BusinessException("品牌已经删除");
-                }
-                product.setProductName(bmsProductTb.getProductName());
-                product.setProductCode(bmsProductTb.getProductOutCode());
-                product.setProductSpecs(bmsProductTb.getProductSpecs());
-                product.setProductCategoryCode(bmsProductTb.getProductCategoryCode());
-                product.setPictureUrls(bmsProductTb.getPictureUrls());
-                product.setProductInnerCode(bmsProductTb.getProductInnerCode());
+        if (CollectionUtil.isEmpty(bmsPurchaseOrderDTO.getProductList())) {
+            throw new BusinessException("订单商品信息缺失");
+        }
+        for (BmsPurchaseOrderDTO.Product product : bmsPurchaseOrderDTO.getProductList()) {
+            //空格处理
+            product.setProductName(product.getProductName().trim());
+            product.setProductSpecs(product.getProductSpecs().trim());
+            BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(product.getProductInnerCode());
+            if (bmsProductTb == null) {
+                log.error("不存在的商品信息={}", product);
+                throw new BusinessException("商品不存在");
             }
+            BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(product.getSupplierCode());
+            if (bmsSupplierTb == null) {
+                log.error("不存在供应商信息={}", product);
+                throw new BusinessException("供应商不存在");
+            }
+            if (BioBsmContents.Y.equals(bmsSupplierTb.getDeleteFlag())) {
+                log.error("供应商已经删除={}", product);
+                throw new BusinessException("供应商已经删除");
+            }
+            BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
+            if (bmsBrandTb == null) {
+                log.error("品牌不存在={}", product);
+                throw new BusinessException("品牌不存在");
+            }
+            if (BioBsmContents.Y.equals(bmsBrandTb.getDeleteFlag())) {
+                log.error("品牌已经删除={}", product);
+                throw new BusinessException("品牌已经删除");
+            }
+            product.setProductName(bmsProductTb.getProductName());
+            product.setProductCode(bmsProductTb.getProductOutCode());
+            product.setProductSpecs(bmsProductTb.getProductSpecs());
+            product.setProductCategoryCode(bmsProductTb.getProductCategoryCode());
+            product.setPictureUrls(bmsProductTb.getPictureUrls());
+            product.setProductInnerCode(bmsProductTb.getProductInnerCode());
         }
     }
 }

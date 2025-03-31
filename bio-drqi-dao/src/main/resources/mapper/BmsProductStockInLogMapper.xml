@@ -30,6 +30,8 @@
             <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
             <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
             <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
+            <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
+            <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">

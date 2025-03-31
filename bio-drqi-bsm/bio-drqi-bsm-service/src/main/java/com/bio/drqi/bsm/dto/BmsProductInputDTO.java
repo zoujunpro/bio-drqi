@@ -142,6 +142,19 @@ public class BmsProductInputDTO {
         @NotNull(message = "入库参数缺少：入库数量")
         private Integer number;
 
+        /**
+         * 过期时间
+         */
+        @NotBlank(message = "入库参数缺少：过期时间")
+        private String expirationDate;
+
+        /**
+         * 生产时间
+         */
+        @NotBlank(message = "入库参数缺少：生产时间")
+        private String produceDate;
+
+
         private String productInnerCode;
 
         private String supplierCode;

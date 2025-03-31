@@ -23,6 +23,8 @@
         <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
         <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
         <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
+        <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
+        <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -31,7 +33,7 @@
         product_category_code,product_type_code,brand_code,
         brand_name,product_specs,batch_no,
         total_store_number,current_stock_number,total_out_number,
-        unit_code,stock_location_number,product_inner_code,supplier_code,supplier_name,unique_code
+        unit_code,stock_location_number,product_inner_code,supplier_code,supplier_name,unique_code,produce_date,expirationDate
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsProductStockTb" resultMap="BaseResultMap">
         select
@@ -51,6 +53,8 @@
             <if test="totalOutNumber != null"> and total_out_number=#{totalOutNumber,jdbcType=NUMERIC}</if>
             <if test="unitCode != null and unitCode!=''"> and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
             <if test="stockLocationNumber != null"> and stock_location_number=#{stockLocationNumber,jdbcType=VARCHAR}</if>
+            <if test="produceDate != null"> and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
+            <if test="expirationDate != null"> and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
         order by id desc
     </select>
 
@@ -66,7 +70,7 @@
         where
         unique_code = #{uniqueCode,jdbcType=VARCHAR}
     </select>
-    <select id="selectOneByProductInnerCodeAndUnitCodeAndBatchNo" resultMap="BaseResultMap">
+    <select id="selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndProduceDate" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from bms_product_stock_tb
@@ -74,6 +78,7 @@
         product_inner_code = #{productInnerCode,jdbcType=VARCHAR}
         AND unit_code = #{unitCode,jdbcType=VARCHAR}
         AND batch_no = #{batchNo,jdbcType=VARCHAR}
+        AND produce_date = #{produceDate,jdbcType=VARCHAR}
     </select>
 
 </mapper>

@@ -112,6 +112,8 @@ public class BmsPurchaseOrderDTO {
          */
         @NotBlank(message = "参数缺失：品牌名称")
         private String brandName;
+
+        private String brandCode;
         /**
          * 商品名称
          */

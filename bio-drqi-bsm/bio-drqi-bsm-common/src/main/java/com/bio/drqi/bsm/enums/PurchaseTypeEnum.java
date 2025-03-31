@@ -2,8 +2,7 @@ package com.bio.drqi.bsm.enums;
 
 public enum PurchaseTypeEnum {
     TYPE_1("1", "常规物料采购"),
-    TYPE_2("2", "非常规物料采购"),
-    TYPE_3("3", "研发申购流程");
+    TYPE_2("2", "非常规物料采购"),;
     public String code;
     public String name;
 

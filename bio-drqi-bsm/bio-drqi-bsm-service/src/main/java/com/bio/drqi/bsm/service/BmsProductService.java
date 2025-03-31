@@ -3,6 +3,7 @@ package com.bio.drqi.bsm.service;
 import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
+import com.bio.drqi.domain.BmsProductTb;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public interface BmsProductService {
      * 商品管理-添加
      * @return
      */
-    void add(BmsProductAddReqDTO bmsProductAddReqDTO);
+    BmsProductTb add(BmsProductAddReqDTO bmsProductAddReqDTO);
 
 
     /**

@@ -86,5 +86,8 @@ public class ScanCodeBmsRspDTO {
 
     private String uniqueCode;
 
+    private String produceDate;
+
+    private String expirationDate;
 
 }

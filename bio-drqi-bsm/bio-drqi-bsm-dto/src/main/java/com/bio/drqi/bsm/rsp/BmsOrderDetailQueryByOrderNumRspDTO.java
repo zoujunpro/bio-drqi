@@ -74,6 +74,8 @@ public class BmsOrderDetailQueryByOrderNumRspDTO {
      */
     private String productOutCode;
 
+    private String productInnerCode;
+
     /**
      * 采购单价
      */
@@ -119,7 +121,6 @@ public class BmsOrderDetailQueryByOrderNumRspDTO {
      */
     private String taskNum;
 
-
     private String productTypeCode;
 
     private String productTypeName;
@@ -134,8 +135,5 @@ public class BmsOrderDetailQueryByOrderNumRspDTO {
 
     private String purchaseDepartment;
 
-    /**
-     * 到货数量
-     */
     private Integer receiveNumber;
 }

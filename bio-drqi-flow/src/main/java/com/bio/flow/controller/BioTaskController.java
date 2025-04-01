@@ -5,6 +5,7 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.common.aspect.RequestLog;
+import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.enums.QueryTypeEnum;
 import com.bio.flow.dto.*;
 import com.bio.flow.service.BioTaskService;
@@ -38,7 +39,7 @@ public class BioTaskController {
     @PostMapping("start")
     @WebLog(desc = "任务启动")
     @RequestLog("任务启动")
-    public ResponseResult<String> start(@Validated @RequestBody BioTaskStartReqDTO bioTaskStartReqDTO) {
+    public ResponseResult<BioTaskDtlTb> start(@Validated @RequestBody BioTaskStartReqDTO bioTaskStartReqDTO) {
         bioTaskService.start(bioTaskStartReqDTO);
         return ResponseResult.getSuccess(null);
     }
@@ -52,7 +53,7 @@ public class BioTaskController {
     @PostMapping("/reStartTask")
     @WebLog(desc = "重新启动任务")
     @RequestLog("重新启动任务")
-    public ResponseResult<String> reStartTask(@RequestBody @Validated BioReStartTaskReqDTO bioReStartTaskReqDTO) {
+    public ResponseResult<BioTaskDtlTb> reStartTask(@RequestBody @Validated BioReStartTaskReqDTO bioReStartTaskReqDTO) {
         bioTaskService.reStartTask(bioReStartTaskReqDTO);
         return ResponseResult.getSuccess("启动成功");
     }
@@ -66,7 +67,7 @@ public class BioTaskController {
     @PostMapping("/execute")
     @WebLog(desc = "执行任务")
     @RequestLog("执行任务")
-    public ResponseResult<String> executeTask(@RequestBody @Validated BioExecuteTaskReqDTO bioExecuteTaskReqDTO) {
+    public ResponseResult<BioTaskDtlTb> executeTask(@RequestBody @Validated BioExecuteTaskReqDTO bioExecuteTaskReqDTO) {
         bioTaskService.executeTask(bioExecuteTaskReqDTO);
         return ResponseResult.getSuccess("执行任务成功");
     }
@@ -80,7 +81,7 @@ public class BioTaskController {
     @PostMapping("/reject")
     @WebLog(desc = "拒绝任务")
     @RequestLog("拒绝任务")
-    public ResponseResult<String> rejectTask(@RequestBody @Validated BioRejectTaskReqDTO bioRejectTaskReqDTO) {
+    public ResponseResult<BioTaskDtlTb> rejectTask(@RequestBody @Validated BioRejectTaskReqDTO bioRejectTaskReqDTO) {
         bioTaskService.rejectTask(bioRejectTaskReqDTO);
         return ResponseResult.getSuccess("拒绝任务");
     }
@@ -94,7 +95,7 @@ public class BioTaskController {
     @PostMapping("/revoke")
     @WebLog(desc = "撤销任务")
     @RequestLog("撤销任务")
-    public ResponseResult<String> revokeTask(@RequestBody @Validated BioRevokeTaskReqDTO bioRevokeTaskReqDTO) {
+    public ResponseResult<BioTaskDtlTb> revokeTask(@RequestBody @Validated BioRevokeTaskReqDTO bioRevokeTaskReqDTO) {
         bioTaskService.revokeTask(bioRevokeTaskReqDTO);
         return ResponseResult.getSuccess("撤销任务");
     }

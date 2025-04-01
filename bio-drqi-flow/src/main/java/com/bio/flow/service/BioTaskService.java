@@ -1,6 +1,7 @@
 package com.bio.flow.service;
 
 
+import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.enums.QueryTypeEnum;
 import com.bio.flow.dto.*;
 import com.github.pagehelper.PageInfo;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 public interface BioTaskService {
-    void start(BioTaskStartReqDTO bioTaskStartReqDTO);
+    BioTaskDtlTb start(BioTaskStartReqDTO bioTaskStartReqDTO);
 
     /**
      * 重新启动任务
@@ -18,7 +19,7 @@ public interface BioTaskService {
      * @param bioReStartTaskReqDTO
      * @return
      */
-    void reStartTask(BioReStartTaskReqDTO bioReStartTaskReqDTO);
+    BioTaskDtlTb reStartTask(BioReStartTaskReqDTO bioReStartTaskReqDTO);
 
     /**
      * 执行任务
@@ -26,7 +27,7 @@ public interface BioTaskService {
      * @param bioExecuteTaskReqDTO
      * @return
      */
-    void executeTask(BioExecuteTaskReqDTO bioExecuteTaskReqDTO);
+    BioTaskDtlTb executeTask(BioExecuteTaskReqDTO bioExecuteTaskReqDTO);
 
     /**
      * 拒绝任务
@@ -34,7 +35,7 @@ public interface BioTaskService {
      * @param bioRejectTaskReqDTO
      * @return
      */
-    void rejectTask(BioRejectTaskReqDTO bioRejectTaskReqDTO);
+    BioTaskDtlTb rejectTask(BioRejectTaskReqDTO bioRejectTaskReqDTO);
 
     /**
      * 撤销任务
@@ -42,7 +43,7 @@ public interface BioTaskService {
      * @param bioRevokeTaskReqDTO
      * @return
      */
-    void revokeTask(BioRevokeTaskReqDTO bioRevokeTaskReqDTO);
+    BioTaskDtlTb revokeTask(BioRevokeTaskReqDTO bioRevokeTaskReqDTO);
 
     BioTaskDetailRspDTO detail(Integer id);
 

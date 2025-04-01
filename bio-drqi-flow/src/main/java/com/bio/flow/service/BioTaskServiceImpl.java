@@ -51,7 +51,7 @@ public class BioTaskServiceImpl implements BioTaskService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, timeout = 120000)
-    public void start(BioTaskStartReqDTO bioTaskStartReqDTO) {
+    public BioTaskDtlTb start(BioTaskStartReqDTO bioTaskStartReqDTO) {
         BioTaskConf bioTaskConf = bioTaskConfMapper.selectOneByTaskTypeCode(bioTaskStartReqDTO.getTaskType());
         if (bioTaskConf == null) {
             throw new BusinessException("任务类型参数错误");
@@ -81,13 +81,15 @@ public class BioTaskServiceImpl implements BioTaskService {
          */
         afterFLow(bioTaskDtlTb, flowHisInstanceTb);
 
+        bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioTaskDtlTb.getId());
+        return bioTaskDtlTb;
 
     }
 
 
     @Override
     @Transactional(rollbackFor = Exception.class, timeout = 120000)
-    public void reStartTask(BioReStartTaskReqDTO bioReStartTaskReqDTO) {
+    public BioTaskDtlTb reStartTask(BioReStartTaskReqDTO bioReStartTaskReqDTO) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioReStartTaskReqDTO.getId());
         Assert.notNull(bioTaskDtlTb, "不存在此任务");
 
@@ -120,11 +122,14 @@ public class BioTaskServiceImpl implements BioTaskService {
          * 流程执行后判断流程状态
          */
         afterFLow(bioTaskDtlTb, flowHisInstanceTb);
+
+        bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioReStartTaskReqDTO.getId());
+        return bioTaskDtlTb;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class, timeout = 120000)
-    public void executeTask(BioExecuteTaskReqDTO bioExecuteTaskReqDTO) {
+    public BioTaskDtlTb executeTask(BioExecuteTaskReqDTO bioExecuteTaskReqDTO) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioExecuteTaskReqDTO.getId());
         Assert.notNull(bioTaskDtlTb, "不存在此任务");
         if (StringUtils.isNotEmpty(bioExecuteTaskReqDTO.getFormObject())) {
@@ -137,11 +142,14 @@ public class BioTaskServiceImpl implements BioTaskService {
          * 流程执行后判断流程状态
          */
         afterFLow(bioTaskDtlTb, flowHisInstanceTb);
+
+        bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioExecuteTaskReqDTO.getId());
+        return bioTaskDtlTb;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class, timeout = 120000)
-    public void rejectTask(BioRejectTaskReqDTO bioRejectTaskReqDTO) {
+    public BioTaskDtlTb rejectTask(BioRejectTaskReqDTO bioRejectTaskReqDTO) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioRejectTaskReqDTO.getId());
         Assert.notNull(bioTaskDtlTb, "不存在此任务");
 
@@ -150,11 +158,14 @@ public class BioTaskServiceImpl implements BioTaskService {
          * 流程执行后判断流程状态
          */
         afterFLow(bioTaskDtlTb, flowHisInstanceTb);
+
+        bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioRejectTaskReqDTO.getId());
+        return bioTaskDtlTb;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class, timeout = 120000)
-    public void revokeTask(BioRevokeTaskReqDTO bioRevokeTaskReqDTO) {
+    public BioTaskDtlTb revokeTask(BioRevokeTaskReqDTO bioRevokeTaskReqDTO) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioRevokeTaskReqDTO.getId());
         Assert.notNull(bioTaskDtlTb, "不存在此任务");
         if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
@@ -166,6 +177,9 @@ public class BioTaskServiceImpl implements BioTaskService {
          * 流程执行后判断流程状态
          */
         afterFLow(bioTaskDtlTb, flowHisInstanceTb);
+
+         bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioRevokeTaskReqDTO.getId());
+        return bioTaskDtlTb;
     }
 
     @Override

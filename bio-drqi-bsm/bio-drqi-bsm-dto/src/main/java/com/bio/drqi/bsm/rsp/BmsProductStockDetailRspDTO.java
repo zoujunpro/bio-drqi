@@ -81,4 +81,9 @@ public class BmsProductStockDetailRspDTO {
 
     private String supplierName;
 
+
+    private String produceDate;
+
+    private String expirationDate;
+
 }

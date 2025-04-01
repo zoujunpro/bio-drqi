@@ -22,5 +22,8 @@ public class BmsPrintProductLabelReqDTO {
         private String supplierCode;
 
         private Integer printNum;
+
+        private String produceDate;
+
     }
 }

@@ -10,4 +10,6 @@ public class BmsUniqueCodeDTO {
     private String taskNum;
 
     private String batchNo;
+
+    private String produceDate;
 }

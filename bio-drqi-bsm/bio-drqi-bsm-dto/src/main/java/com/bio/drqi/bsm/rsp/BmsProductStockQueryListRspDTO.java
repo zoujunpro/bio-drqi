@@ -37,4 +37,9 @@ public class BmsProductStockQueryListRspDTO {
     private String stockLocationNumber;
 
     private String uniqueCode;
+
+
+    private String produceDate;
+
+    private String expirationDate;
 }

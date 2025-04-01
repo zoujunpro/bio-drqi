@@ -80,4 +80,9 @@ public class BmsProductStockListPageRspDTO {
     private String supplierCode;
 
     private String supplierName;
+
+
+    private String produceDate;
+
+    private String expirationDate;
 }

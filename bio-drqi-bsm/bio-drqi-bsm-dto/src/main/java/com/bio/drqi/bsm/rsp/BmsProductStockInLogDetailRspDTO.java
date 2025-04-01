@@ -107,4 +107,9 @@ public class BmsProductStockInLogDetailRspDTO {
      * 单位编号
      */
     private String unitCode;
+
+
+    private String produceDate;
+
+    private String expirationDate;
 }

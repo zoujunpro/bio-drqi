@@ -128,4 +128,9 @@ public class BmsProductStockInLogQueryByTaskNumRspDTO {
      * 唯一编号
      */
     private String uniqueCode;
+
+
+    private String produceDate;
+
+    private String expirationDate;
 }

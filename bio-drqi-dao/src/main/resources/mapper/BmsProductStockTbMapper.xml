@@ -33,7 +33,7 @@
         product_category_code,product_type_code,brand_code,
         brand_name,product_specs,batch_no,
         total_store_number,current_stock_number,total_out_number,
-        unit_code,stock_location_number,product_inner_code,supplier_code,supplier_name,unique_code,produce_date,expirationDate
+        unit_code,stock_location_number,product_inner_code,supplier_code,supplier_name,unique_code,produce_date,expiration_date
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsProductStockTb" resultMap="BaseResultMap">
         select

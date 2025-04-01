@@ -40,8 +40,7 @@ public class BioTaskController {
     @WebLog(desc = "任务启动")
     @RequestLog("任务启动")
     public ResponseResult<BioTaskDtlTb> start(@Validated @RequestBody BioTaskStartReqDTO bioTaskStartReqDTO) {
-        bioTaskService.start(bioTaskStartReqDTO);
-        return ResponseResult.getSuccess(null);
+        return ResponseResult.getSuccess(bioTaskService.start(bioTaskStartReqDTO));
     }
 
     /**
@@ -54,8 +53,7 @@ public class BioTaskController {
     @WebLog(desc = "重新启动任务")
     @RequestLog("重新启动任务")
     public ResponseResult<BioTaskDtlTb> reStartTask(@RequestBody @Validated BioReStartTaskReqDTO bioReStartTaskReqDTO) {
-        bioTaskService.reStartTask(bioReStartTaskReqDTO);
-        return ResponseResult.getSuccess("启动成功");
+        return ResponseResult.getSuccess(bioTaskService.reStartTask(bioReStartTaskReqDTO));
     }
 
     /**
@@ -68,8 +66,7 @@ public class BioTaskController {
     @WebLog(desc = "执行任务")
     @RequestLog("执行任务")
     public ResponseResult<BioTaskDtlTb> executeTask(@RequestBody @Validated BioExecuteTaskReqDTO bioExecuteTaskReqDTO) {
-        bioTaskService.executeTask(bioExecuteTaskReqDTO);
-        return ResponseResult.getSuccess("执行任务成功");
+        return ResponseResult.getSuccess(bioTaskService.executeTask(bioExecuteTaskReqDTO));
     }
 
     /**
@@ -82,8 +79,7 @@ public class BioTaskController {
     @WebLog(desc = "拒绝任务")
     @RequestLog("拒绝任务")
     public ResponseResult<BioTaskDtlTb> rejectTask(@RequestBody @Validated BioRejectTaskReqDTO bioRejectTaskReqDTO) {
-        bioTaskService.rejectTask(bioRejectTaskReqDTO);
-        return ResponseResult.getSuccess("拒绝任务");
+        return ResponseResult.getSuccess(bioTaskService.rejectTask(bioRejectTaskReqDTO));
     }
 
     /**
@@ -96,8 +92,7 @@ public class BioTaskController {
     @WebLog(desc = "撤销任务")
     @RequestLog("撤销任务")
     public ResponseResult<BioTaskDtlTb> revokeTask(@RequestBody @Validated BioRevokeTaskReqDTO bioRevokeTaskReqDTO) {
-        bioTaskService.revokeTask(bioRevokeTaskReqDTO);
-        return ResponseResult.getSuccess("撤销任务");
+        return ResponseResult.getSuccess(bioTaskService.revokeTask(bioRevokeTaskReqDTO));
     }
 
     /**

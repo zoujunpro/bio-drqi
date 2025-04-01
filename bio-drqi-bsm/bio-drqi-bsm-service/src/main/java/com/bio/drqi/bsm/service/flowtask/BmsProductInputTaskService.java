@@ -4,11 +4,13 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.dto.BmsProductInputDTO;
+import com.bio.drqi.bsm.dto.BmsProductOutDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.mapper.*;
@@ -42,6 +44,9 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
 
     @Resource
     private BmsStockLocationDictMapper bmsStockLocationDictMapper;
+
+    @Resource
+    BmsProductOutTaskService bmsProductOutTaskService;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -111,6 +116,13 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setReceiveNumber(bmsOrderDetailTb.getReceiveNumber() + inputOrderDetail.getNumber());
                 bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
 
+                //入库直接出库
+                if (BioBsmContents.Y.equals(bmsProductInputDTO.getOutStockFlag())) {
+                    BmsProductOutDTO bmsProductOutDTO = BeanUtils.copyProperties(bmsProductStockTb, BmsProductOutDTO.class);
+                    bmsProductOutDTO.setNumber(inputOrderDetail.getNumber());
+                    bmsProductOutDTO.setRemark("入库直接出库");
+                    bmsProductOutTaskService.doOutStock(bioTaskDtlTb.getTaskNum(), bmsProductOutDTO);
+                }
                 //判断订单是否已经结束，如果已经结束则更新状态;
                 List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectAllByOrderNum(bmsOrderDetailTb.getOrderNum());
                 if (bmsOrderDetailTbList.stream().filter(orderDetailTb -> orderDetailTb.getPurchaseNumber().intValue() != orderDetailTb.getReceiveNumber().intValue()).count() == 0) {
@@ -119,7 +131,6 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
                     bmsOrderTbMapper.updateById(bmsOrderTb);
                 }
             }
-
         }
 
     }
@@ -132,7 +143,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
 
 
     private BmsProductStockTb updateOrInsertBmsProductStock(BmsProductInputDTO.OrderDetail inputOrderDetail, BmsOrderDetailTb bmsOrderDetailTb, String batchNo) {
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndProduceDate(bmsOrderDetailTb.getProductInnerCode(), bmsOrderDetailTb.getApplyUnitCode(), batchNo,inputOrderDetail.getProduceDate());
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndProduceDate(bmsOrderDetailTb.getProductInnerCode(), bmsOrderDetailTb.getApplyUnitCode(), batchNo, inputOrderDetail.getProduceDate());
         if (bmsProductStockTb == null) {
             bmsProductStockTb = new BmsProductStockTb();
             bmsProductStockTb.setProductName(bmsOrderDetailTb.getProductName());

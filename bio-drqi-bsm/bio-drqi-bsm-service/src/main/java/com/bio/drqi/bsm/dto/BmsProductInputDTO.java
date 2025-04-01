@@ -48,6 +48,12 @@ public class BmsProductInputDTO {
     private List<OrderDetail> orderDetailList;
 
 
+    /**
+     * 是否直接出库， Y N  默认为N
+     */
+    private String outStockFlag;
+
+
     @Data
     public static class OrderDetail {
 

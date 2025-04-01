@@ -56,39 +56,46 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
 
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
-        List<BmsProductOutDTO> bmsProductOutDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskForm(), BmsProductOutDTO.class);
-        for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
-            //扣减库存
-            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductOutDTO.getUniqueCode());
-            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductOutDTO.getNumber());
-            bmsProductStockTb.setTotalOutNumber(bmsProductStockTb.getTotalStoreNumber() + bmsProductOutDTO.getNumber());
-            bmsProductStockTbMapper.updateById(bmsProductStockTb);
-            //生成出库记录
+        if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            List<BmsProductOutDTO> bmsProductOutDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskForm(), BmsProductOutDTO.class);
+            for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
+                //扣减库存
+                doOutStock(bioTaskDtlTb.getTaskNum(), bmsProductOutDTO);
 
-            BmsProductStockOutLog bmsProductStockOutLog = new BmsProductStockOutLog();
-            bmsProductStockOutLog.setProductName(bmsProductStockTb.getProductName());
-            bmsProductStockOutLog.setProductOutCode(bmsProductStockTb.getProductOutCode());
-            bmsProductStockOutLog.setProductCategoryCode(bmsProductStockTb.getProductCategoryCode());
-            bmsProductStockOutLog.setProductTypeCode(bmsProductStockTb.getProductTypeCode());
-            bmsProductStockOutLog.setBrandCode(bmsProductStockTb.getBrandCode());
-            bmsProductStockOutLog.setBrandName(bmsProductStockTb.getBrandName());
-            bmsProductStockOutLog.setProductSpecs(bmsProductStockTb.getProductSpecs());
-            bmsProductStockOutLog.setBatchNo(bmsProductStockTb.getBatchNo());
-            bmsProductStockOutLog.setOutNumber(bmsProductOutDTO.getNumber());
-            bmsProductStockOutLog.setApplyUserId(SecurityContextHolder.getUserId());
-            bmsProductStockOutLog.setApplyUserName(SecurityContextHolder.getNickName());
-            bmsProductStockOutLog.setCreateTime(new Date());
-            bmsProductStockOutLog.setTaskNum(bioTaskDtlTb.getTaskNum());
-            bmsProductStockOutLog.setRemark(bmsProductOutDTO.getRemark());
-            bmsProductStockOutLog.setOutType(OutTypeEnum.TYPE_1.code);
-            bmsProductStockOutLog.setUnitCode(bmsProductOutDTO.getUnitCode());
-            bmsProductStockOutLog.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
-            bmsProductStockOutLog.setUniqueCode(bmsProductStockTb.getUniqueCode());
-            bmsProductStockOutLog.setSupplierName(bmsProductStockTb.getSupplierName());
-            bmsProductStockOutLog.setSupplierCode(bmsProductStockTb.getSupplierCode());
-            bmsProductStockOutLogMapper.insert(bmsProductStockOutLog);
-
+            }
         }
+
+    }
+
+    public void doOutStock(String taskNum, BmsProductOutDTO bmsProductOutDTO) {
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductOutDTO.getUniqueCode());
+        bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductOutDTO.getNumber());
+        bmsProductStockTb.setTotalOutNumber(bmsProductStockTb.getTotalStoreNumber() + bmsProductOutDTO.getNumber());
+        bmsProductStockTbMapper.updateById(bmsProductStockTb);
+        //生成出库记录
+
+        BmsProductStockOutLog bmsProductStockOutLog = new BmsProductStockOutLog();
+        bmsProductStockOutLog.setProductName(bmsProductStockTb.getProductName());
+        bmsProductStockOutLog.setProductOutCode(bmsProductStockTb.getProductOutCode());
+        bmsProductStockOutLog.setProductCategoryCode(bmsProductStockTb.getProductCategoryCode());
+        bmsProductStockOutLog.setProductTypeCode(bmsProductStockTb.getProductTypeCode());
+        bmsProductStockOutLog.setBrandCode(bmsProductStockTb.getBrandCode());
+        bmsProductStockOutLog.setBrandName(bmsProductStockTb.getBrandName());
+        bmsProductStockOutLog.setProductSpecs(bmsProductStockTb.getProductSpecs());
+        bmsProductStockOutLog.setBatchNo(bmsProductStockTb.getBatchNo());
+        bmsProductStockOutLog.setOutNumber(bmsProductOutDTO.getNumber());
+        bmsProductStockOutLog.setApplyUserId(SecurityContextHolder.getUserId());
+        bmsProductStockOutLog.setApplyUserName(SecurityContextHolder.getNickName());
+        bmsProductStockOutLog.setCreateTime(new Date());
+        bmsProductStockOutLog.setTaskNum(taskNum);
+        bmsProductStockOutLog.setRemark(bmsProductOutDTO.getRemark());
+        bmsProductStockOutLog.setOutType(OutTypeEnum.TYPE_1.code);
+        bmsProductStockOutLog.setUnitCode(bmsProductOutDTO.getUnitCode());
+        bmsProductStockOutLog.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
+        bmsProductStockOutLog.setUniqueCode(bmsProductStockTb.getUniqueCode());
+        bmsProductStockOutLog.setSupplierName(bmsProductStockTb.getSupplierName());
+        bmsProductStockOutLog.setSupplierCode(bmsProductStockTb.getSupplierCode());
+        bmsProductStockOutLogMapper.insert(bmsProductStockOutLog);
     }
 
     @Override

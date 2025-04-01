@@ -153,6 +153,8 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
             bmsProductStockTb.setSupplierCode(bmsOrderDetailTb.getSupplierCode());
             bmsProductStockTb.setProductInnerCode(bmsOrderDetailTb.getProductInnerCode());
             bmsProductStockTb.setUniqueCode(IdUtils.simpleUUID());
+            bmsProductStockTb.setProduceDate(inputOrderDetail.getProduceDate());
+            bmsProductStockTb.setExpirationDate(inputOrderDetail.getExpirationDate());
             bmsProductStockTbMapper.insert(bmsProductStockTb);
         } else {
             bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() + inputOrderDetail.getNumber());
@@ -197,6 +199,8 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockInLog.setSupplierName(bmsProductStockTb.getSupplierName());
         bmsProductStockInLog.setSupplierCode(bmsProductStockTb.getSupplierCode());
         bmsProductStockInLog.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
+        bmsProductStockInLog.setProduceDate(inputOrderDetail.getProduceDate());
+        bmsProductStockInLog.setExpirationDate(inputOrderDetail.getExpirationDate());
         bmsProductStockInLogMapper.insert(bmsProductStockInLog);
     }
 

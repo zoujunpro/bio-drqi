@@ -94,6 +94,9 @@ public class CerSeedTaskListener implements FlowTaskListener<BioTaskDtlTb> {
             throw new BusinessException(responseResult.getMessage());
         }
         List<UserBaseInfoRspDTO> rspDTOList = responseResult.getData();
+        if(CollectionUtil.isEmpty(rspDTOList)){
+            return;
+        }
         List<String> openIdList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(UserBaseInfoRspDTO::getFeiShuUserId).collect(Collectors.toList());
         String content = "**任务描述：**" + bioTaskDtlTb.getTaskDesc() + "\n" + "**申  请 人：**" + bioTaskDtlTb.getApplyUserName() + "\n" + "**申请时间：**" + DateUtil.format(bioTaskDtlTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         Message message = new Message();

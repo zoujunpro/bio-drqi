@@ -17,6 +17,9 @@ public class BmsPurchaseOrderDTO {
     private String applyUserDept;
 
 
+    private String applyFullDeptName;
+
+
     private String applyTime;
 
     /**

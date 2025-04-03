@@ -2,8 +2,7 @@ package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.bsm.req.BmsOrderListPageReqDTO;
-import com.bio.drqi.bsm.req.BmsOrderQueryListReqDTO;
+import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderQueryListRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderListPageRspDTO;
@@ -53,6 +52,40 @@ public class BmsOrderController {
     @WebLog(desc = "采购订单管理-详情")
     public ResponseResult<BmsOrderDetailRspDTO> detail(@RequestParam Integer id) {
         return ResponseResult.getSuccess(bmsOrderService.detail(id));
+    }
+
+    /**
+     * 上传合同
+     * @return
+     */
+    @WebLog(desc = "采购订单管理-上传合同")
+    @PostMapping("/uploadContract")
+    public ResponseResult<String> uploadContract(@RequestBody BmsOrderUploadContractReqDTO bmsOrderUploadContractReqDTO){
+        bmsOrderService.uploadContract(bmsOrderUploadContractReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 上传发票
+     * @return
+     */
+    @PostMapping("/uploadInvoice")
+    @WebLog(desc = "采购订单管理-上传发票")
+    public ResponseResult<String> uploadInvoice(@RequestBody  BmsOrderUploadInvoiceReqDTO bmsOrderUploadInvoiceReqDTO){
+        bmsOrderService.uploadInvoice(bmsOrderUploadInvoiceReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 订单报账结算
+     * @return
+     */
+
+    @WebLog(desc = "采购订单管理-订单报账结算")
+    @PostMapping("/reportAccount")
+    public ResponseResult<String> reportAccount(@RequestBody BmsOrderReportAccountReqDTO bmsOrderReportAccountReqDTO){
+        bmsOrderService.reportAccount(bmsOrderReportAccountReqDTO);
+        return ResponseResult.getSuccess("ok");
     }
 
 }

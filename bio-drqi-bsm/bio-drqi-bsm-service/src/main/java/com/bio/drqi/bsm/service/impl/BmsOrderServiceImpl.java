@@ -2,8 +2,7 @@ package com.bio.drqi.bsm.service.impl;
 
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
-import com.bio.drqi.bsm.req.BmsOrderListPageReqDTO;
-import com.bio.drqi.bsm.req.BmsOrderQueryListReqDTO;
+import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderQueryListRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderListPageRspDTO;
@@ -51,5 +50,39 @@ public class BmsOrderServiceImpl implements BmsOrderService {
         }
 
         return BeanUtils.copyProperties(bmsOrderTb, BmsOrderDetailRspDTO.class);
+    }
+
+    @Override
+    public void uploadContract(BmsOrderUploadContractReqDTO bmsOrderUploadContractReqDTO) {
+        BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderUploadContractReqDTO.getOrderNum());
+        if(bmsOrderTb==null){
+            log.error("订单不存在，orderNum={}",bmsOrderUploadContractReqDTO.getOrderNum());
+            throw new BusinessException("订单不存在");
+        }
+        bmsOrderTb.setContractUrls(bmsOrderUploadContractReqDTO.getContractUrls());
+        bmsOrderTbMapper.updateById(bmsOrderTb);
+    }
+
+    @Override
+    public void uploadInvoice(BmsOrderUploadInvoiceReqDTO bmsOrderUploadInvoiceReqDTO) {
+        BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderUploadInvoiceReqDTO.getOrderNum());
+        if(bmsOrderTb==null){
+            log.error("订单不存在，orderNum={}",bmsOrderUploadInvoiceReqDTO.getOrderNum());
+            throw new BusinessException("订单不存在");
+        }
+        bmsOrderTb.setInvoiceUrls(bmsOrderUploadInvoiceReqDTO.getInvoiceUrls());
+        bmsOrderTbMapper.updateById(bmsOrderTb);
+    }
+
+    @Override
+    public void reportAccount(BmsOrderReportAccountReqDTO bmsOrderReportAccountReqDTO) {
+        BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderReportAccountReqDTO.getOrderNum());
+        if(bmsOrderTb==null){
+            log.error("订单不存在，orderNum={}",bmsOrderReportAccountReqDTO.getOrderNum());
+            throw new BusinessException("订单不存在");
+        }
+        bmsOrderTb.setReportAccountTime(bmsOrderReportAccountReqDTO.getAccountTime());
+
+        bmsOrderTbMapper.updateById(bmsOrderTb);
     }
 }

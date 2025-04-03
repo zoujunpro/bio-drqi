@@ -1,5 +1,6 @@
 package com.bio.drqi.manage.listener;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import com.bio.base.api.RemoteUserService;
@@ -55,7 +56,7 @@ public class CerProjectTaskListener implements FlowTaskListener<BioTaskDtlTb> {
     static {
         vieMap.put("project_create", "projectInit");
         vieMap.put("sub_project_create", "subproject");
-        vieMap.put("implementation_plan","taskCreat");
+        vieMap.put("implementation_plan", "taskCreat");
         vieMap.put("vector_build", "vectorBuild");
         vieMap.put("plasmid_check", "plasmidCheck");
         vieMap.put("transform", "transform");
@@ -69,6 +70,7 @@ public class CerProjectTaskListener implements FlowTaskListener<BioTaskDtlTb> {
         vieMap.put("sample_and_test", "sampleAll");
 
     }
+
     @Override
     public void notice(EventType eventType, Supplier<BioTaskDtlTb> supplier) {
         BioTaskDtlTb bioTaskDtlTb = supplier.get();
@@ -99,8 +101,11 @@ public class CerProjectTaskListener implements FlowTaskListener<BioTaskDtlTb> {
             throw new BusinessException(responseResult.getMessage());
         }
         List<UserBaseInfoRspDTO> rspDTOList = responseResult.getData();
+        if (CollectionUtil.isEmpty(rspDTOList)) {
+            return;
+        }
         List<String> openIdList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(UserBaseInfoRspDTO::getFeiShuUserId).collect(Collectors.toList());
-        String content = "**任务描述：**" + bioTaskDtlTb.getTaskDesc()  + "\n"  + "**申  请 人：**" + bioTaskDtlTb.getApplyUserName() + "\n" + "**申请时间：**" + DateUtil.format(bioTaskDtlTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
+        String content = "**任务描述：**" + bioTaskDtlTb.getTaskDesc() + "\n" + "**申  请 人：**" + bioTaskDtlTb.getApplyUserName() + "\n" + "**申请时间：**" + DateUtil.format(bioTaskDtlTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         Message message = new Message();
         message.setTitle(title);
         message.setContent(content);

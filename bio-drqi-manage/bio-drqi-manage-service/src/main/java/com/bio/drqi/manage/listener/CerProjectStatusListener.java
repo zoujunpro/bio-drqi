@@ -1,5 +1,6 @@
 package com.bio.drqi.manage.listener;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.bio.base.api.RemoteUserService;
 import com.bio.base.user.req.QueryUserByIdListReqDTO;
 import com.bio.base.user.rsp.UserBaseInfoRspDTO;
@@ -77,6 +78,9 @@ public class CerProjectStatusListener {
             throw new BusinessException(responseResult.getMessage());
         }
         List<UserBaseInfoRspDTO> rspDTOList = responseResult.getData();
+        if(CollectionUtil.isEmpty(rspDTOList)){
+            return;
+        }
         List<String> openIdList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(UserBaseInfoRspDTO::getFeiShuUserId).collect(Collectors.toList());
         String content = "**项目名称：**" + cerProjectTb.getProjectName() + "\n" + "**项目编号：**" + cerProjectTb.getProjectCode();
         Message message = new Message();

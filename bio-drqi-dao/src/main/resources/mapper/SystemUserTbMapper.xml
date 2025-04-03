@@ -46,12 +46,11 @@
             #{item,jdbcType=NUMERIC}
         </foreach>
     </select>
-    <select id="selectAllByDeptIdAndManagerFlag" resultMap="BaseResultMap">
+    <select id="selectDeptLeaderByDeptName" resultType="com.bio.drqi.domain.SystemUserTb">
         select
         <include refid="Base_Column_List"/>
         from system_user_tb
-        where
-        dept_id = #{deptId,jdbcType=NUMERIC}
-        AND manager_flag = #{managerFlag,jdbcType=VARCHAR}
+        where id=(select leader_id from system_dept_tb where  parent_id=0 and ldap_dn like CONCAT('%',#{deptName,jdbcType=VARCHAR},'%'))
     </select>
+
 </mapper>

@@ -18,7 +18,9 @@ public interface SystemUserTbMapper extends BaseMapper<SystemUserTb> {
 
     List<SystemUserTb> selectAllByDeptIdIn(@Param("deptIdList") Collection<Integer> deptIdList);
 
-    List<SystemUserTb> selectAllByDeptIdAndManagerFlag(@Param("deptId") Integer deptId, @Param("managerFlag") String managerFlag);
+    SystemUserTb  selectDeptLeaderByDeptName(@Param("deptName") String deptName);
+
+
 
 }
 

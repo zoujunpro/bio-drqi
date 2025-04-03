@@ -133,8 +133,10 @@ public class EasyFlowConfiguration {
                         if (systemUserTb == null || systemUserTb.getDeptId() == null) {
                             return new ArrayList<>();
                         }
-                        List<SystemUserTb> systemUserTbList = systemUserTbMapper.selectAllByDeptIdAndManagerFlag(systemUserTb.getDeptId(), Constants.Y);
-                        return transSystemUserTbToFlowActor(systemUserTbList, nodeModel, applyAdmin);
+                        SystemDeptTb systemDeptTb = systemDeptTbMapper.selectById(systemUserTb.getDeptId());
+
+                        SystemUserTb leaderSystemUserTb = systemUserTbMapper.selectDeptLeaderByDeptName(systemDeptTb.getDeptName());
+                        return transSystemUserTbToFlowActor(Arrays.asList(leaderSystemUserTb), nodeModel, applyAdmin);
                     }
                 } else if (NodeType.copy.getValue() == nodeModel.getNodeType()) {
                     if (CollectionUtil.isNotEmpty(nodeModel.getNodeActorList())) {

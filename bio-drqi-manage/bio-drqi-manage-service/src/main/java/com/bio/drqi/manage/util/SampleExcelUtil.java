@@ -248,8 +248,8 @@ public class SampleExcelUtil {
         cell5.setCellValue("5");
         cell6.setCellValue("6");
         cell7.setCellValue("7");
-        cell8.setCellValue("7");
-        cell9.setCellValue("8");
+        cell8.setCellValue("8");
+        cell9.setCellValue("9");
         cell10.setCellValue("10");
         cell11.setCellValue("11");
         cell12.setCellValue("12");

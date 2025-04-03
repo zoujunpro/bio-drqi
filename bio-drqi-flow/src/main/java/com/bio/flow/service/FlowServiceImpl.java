@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class FlowServiceImpl implements FlowService {
 
-    private static final List<String> conditionType = Arrays.asList("seed_out_apply", "implementation_plan","sample_and_test");
+    private static final List<String> conditionType = Arrays.asList("seed_out_apply", "implementation_plan","sample_and_test","project_create");
 
     private static final String tenantId = "1000";
 

@@ -2,6 +2,7 @@ package com.bio.flow.configuration;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.domain.SystemDeptTb;
 import com.bio.drqi.domain.SystemUserRoleRef;
@@ -130,12 +131,12 @@ public class EasyFlowConfiguration {
                          * 部门负责人
                          */
                         SystemUserTb systemUserTb = systemUserTbMapper.selectById(Integer.valueOf(applyUserId));
-                        if (systemUserTb == null || systemUserTb.getDeptId() == null) {
+                        if (systemUserTb == null || systemUserTb.getDeptId() == null||systemUserTb.getDeptId()==-1) {
                             return new ArrayList<>();
                         }
-                        SystemDeptTb systemDeptTb = systemDeptTbMapper.selectById(systemUserTb.getDeptId());
+                       SystemDeptTb  firstDeptTb= findFirstDept(systemUserTb.getDeptId());
 
-                        SystemUserTb leaderSystemUserTb = systemUserTbMapper.selectDeptLeaderByDeptName(systemDeptTb.getDeptName());
+                        SystemUserTb leaderSystemUserTb = systemUserTbMapper.selectById(firstDeptTb.getLeaderId());
                         return transSystemUserTbToFlowActor(Arrays.asList(leaderSystemUserTb), nodeModel, applyAdmin);
                     }
                 } else if (NodeType.copy.getValue() == nodeModel.getNodeType()) {
@@ -206,6 +207,28 @@ public class EasyFlowConfiguration {
         };
     }
 
+
+    /**
+     * 找一级部门
+     * @param deptId
+     * @return
+     */
+    public SystemDeptTb findFirstDept(Integer deptId){
+        SystemDeptTb systemDeptTb = systemDeptTbMapper.selectById(deptId);
+        if(systemDeptTb==null){
+            throw new BusinessException("部门不存在");
+        }
+        if(systemDeptTb.getParentId()==0){
+            return systemDeptTb;
+        }else {
+            return findFirstDept(systemDeptTb.getParentId());
+        }
+
+
+
+
+
+    }
 
     private List<Integer> findAllDept(Integer id) {
         List<Integer> result = new ArrayList<>();

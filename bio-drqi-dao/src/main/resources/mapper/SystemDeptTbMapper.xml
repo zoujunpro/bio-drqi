@@ -13,12 +13,16 @@
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="status" column="status" jdbcType="VARCHAR"/>
             <result property="deptLevel" column="dept_level" jdbcType="INTEGER"/>
+            <result property="ldapDn" column="ldap_dn" jdbcType="VARCHAR"/>
+            <result property="ldapType" column="ldap_type" jdbcType="VARCHAR"/>
+            <result property="leaderId" column="leader_id" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,dept_name,
-        parent_id,order_nun,create_time,
-        update_time,status,dept_level
+        id,dept_name,parent_id,
+        order_nun,create_time,update_time,
+        status,dept_level,ldap_dn,
+        ldap_type,leader_id
     </sql>
     <select id="selectAllByParentId" resultMap="BaseResultMap">
         select
@@ -27,5 +31,4 @@
         where
         parent_id = #{parentId,jdbcType=NUMERIC}
     </select>
-
 </mapper>

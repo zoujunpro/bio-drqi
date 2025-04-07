@@ -8,13 +8,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
 * @author zou'jun
 * @description 针对表【system_dept_tb】的数据库操作Mapper
-* @createDate 2024-02-22 17:22:46
-* @Entity com.bio.cer.domain.SystemDeptTb
+* @createDate 2025-04-07 10:27:16
+* @Entity com.bio.drqi.domain.SystemDeptTb
 */
 public interface SystemDeptTbMapper extends BaseMapper<SystemDeptTb> {
-
     List<SystemDeptTb> selectAllByParentId(@Param("parentId") Integer parentId);
-
 }
 
 

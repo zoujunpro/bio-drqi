@@ -39,7 +39,7 @@ public class BmsTaskListener extends DefaultDuplicateCopyHandler implements Flow
     private final static Map<String, String> vieMap = new ConcurrentHashMap<>();
 
     @Value("${cer.properties.feiShuBmsJumpUrl}")
-    private String feiShuProjectJumpUrl;
+    private String feiShuBmsJumpUrl;
 
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
@@ -98,7 +98,7 @@ public class BmsTaskListener extends DefaultDuplicateCopyHandler implements Flow
         Message message = new Message();
         message.setTitle(title);
         message.setContent(content);
-        message.setUrl(String.format(feiShuProjectJumpUrl, vieMap.get(bioTaskDtlTb.getTaskTypeCode()), bioTaskDtlTb.getId()));
+        message.setUrl(String.format(feiShuBmsJumpUrl, vieMap.get(bioTaskDtlTb.getTaskTypeCode()), bioTaskDtlTb.getId()));
         feiShuService.sendCardMessage(openIdList, message);
     }
 

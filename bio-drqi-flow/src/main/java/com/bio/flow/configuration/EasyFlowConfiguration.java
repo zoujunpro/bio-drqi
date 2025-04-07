@@ -1,6 +1,7 @@
 package com.bio.flow.configuration;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
@@ -10,10 +11,12 @@ import com.bio.drqi.domain.SystemUserTb;
 import com.bio.drqi.mapper.SystemDeptTbMapper;
 import com.bio.drqi.mapper.SystemUserRoleRefMapper;
 import com.bio.drqi.mapper.SystemUserTbMapper;
+import com.bio.flow.hander.DefaultDuplicateCopyHandler;
 import com.easyflow.engine.core.FlowActor;
 import com.easyflow.engine.enums.NodeType;
 import com.easyflow.engine.enums.SetApprove;
 import com.easyflow.engine.enums.UseScope;
+import com.easyflow.engine.handler.DuplicateCopyHandler;
 import com.easyflow.engine.handler.TaskActorProvider;
 import com.easyflow.engine.model.NodeActor;
 import com.easyflow.engine.model.NodeModel;
@@ -22,10 +25,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -42,6 +42,19 @@ public class EasyFlowConfiguration {
 
     @Resource
     private SystemDeptTbMapper systemDeptTbMapper;
+
+    @Bean
+    public DuplicateCopyHandler getDuplicateCopyHandler() {
+        return new DuplicateCopyHandler() {
+            @Override
+            public void handle(List<FlowActor> flowActorList, Long instanceId) {
+                Map<String, DefaultDuplicateCopyHandler> map = SpringUtil.getBeansOfType(DefaultDuplicateCopyHandler.class);
+                map.values().forEach(duplicateCopyHandler -> {
+                    duplicateCopyHandler.doHandle(flowActorList, instanceId);
+                });
+            }
+        };
+    }
 
     @Bean
     public TaskActorProvider getTaskActorProvider() {
@@ -131,10 +144,10 @@ public class EasyFlowConfiguration {
                          * 部门负责人
                          */
                         SystemUserTb systemUserTb = systemUserTbMapper.selectById(Integer.valueOf(applyUserId));
-                        if (systemUserTb == null || systemUserTb.getDeptId() == null||systemUserTb.getDeptId()==-1) {
+                        if (systemUserTb == null || systemUserTb.getDeptId() == null || systemUserTb.getDeptId() == -1) {
                             return new ArrayList<>();
                         }
-                       SystemDeptTb  firstDeptTb= findFirstDept(systemUserTb.getDeptId());
+                        SystemDeptTb firstDeptTb = findFirstDept(systemUserTb.getDeptId());
 
                         SystemUserTb leaderSystemUserTb = systemUserTbMapper.selectById(firstDeptTb.getLeaderId());
                         return transSystemUserTbToFlowActor(Arrays.asList(leaderSystemUserTb), nodeModel, applyAdmin);
@@ -210,22 +223,20 @@ public class EasyFlowConfiguration {
 
     /**
      * 找一级部门
+     *
      * @param deptId
      * @return
      */
-    public SystemDeptTb findFirstDept(Integer deptId){
+    public SystemDeptTb findFirstDept(Integer deptId) {
         SystemDeptTb systemDeptTb = systemDeptTbMapper.selectById(deptId);
-        if(systemDeptTb==null){
+        if (systemDeptTb == null) {
             throw new BusinessException("部门不存在");
         }
-        if(systemDeptTb.getParentId()==0){
+        if (systemDeptTb.getParentId() == 0) {
             return systemDeptTb;
-        }else {
+        } else {
             return findFirstDept(systemDeptTb.getParentId());
         }
-
-
-
 
 
     }

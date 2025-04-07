@@ -18,6 +18,7 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.StringUtils;
 import com.bio.flow.enums.EventType;
+import com.bio.flow.hander.DefaultDuplicateCopyHandler;
 import com.bio.flow.service.FlowTaskListener;
 import com.easyflow.engine.FlowEngineService;
 import com.easyflow.engine.core.FlowActor;
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class CerSeedTaskListener implements FlowTaskListener<BioTaskDtlTb> {
+public class CerSeedTaskListener extends DefaultDuplicateCopyHandler implements FlowTaskListener<BioTaskDtlTb> {
 
     private final static Map<String, String> vieMap = new ConcurrentHashMap<>();
 
@@ -106,7 +107,8 @@ public class CerSeedTaskListener implements FlowTaskListener<BioTaskDtlTb> {
         feiShuService.sendCardMessage(openIdList, message);
     }
 
-    public void handle(List<FlowActor> flowActorList, Long instanceId) {
+    @Override
+    public void doHandle(List<FlowActor> flowActorList, Long instanceId) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
         if (Objects.nonNull(bioTaskDtlTb)) {
             if (SeedTaskTypeEnum.seed_store_apply.name().equals(bioTaskDtlTb.getTaskTypeCode())) {

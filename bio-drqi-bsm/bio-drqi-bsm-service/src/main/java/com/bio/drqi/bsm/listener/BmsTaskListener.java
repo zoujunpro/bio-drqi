@@ -1,4 +1,4 @@
-package com.bio.drqi.manage.listener;
+package com.bio.drqi.bsm.listener;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
@@ -34,11 +34,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class CerProjectTaskListener extends DefaultDuplicateCopyHandler implements FlowTaskListener<BioTaskDtlTb> {
+public class BmsTaskListener extends DefaultDuplicateCopyHandler implements FlowTaskListener<BioTaskDtlTb> {
 
     private final static Map<String, String> vieMap = new ConcurrentHashMap<>();
 
-    @Value("${cer.properties.feiShuProjectJumpUrl}")
+    @Value("${cer.properties.feiShuBmsJumpUrl}")
     private String feiShuProjectJumpUrl;
 
     @Resource
@@ -55,21 +55,9 @@ public class CerProjectTaskListener extends DefaultDuplicateCopyHandler implemen
 
 
     static {
-        vieMap.put("project_create", "projectInit");
-        vieMap.put("sub_project_create", "subproject");
-        vieMap.put("implementation_plan", "taskCreat");
-        vieMap.put("vector_build", "vectorBuild");
-        vieMap.put("plasmid_check", "plasmidCheck");
-        vieMap.put("transform", "transform");
-        vieMap.put("sample_test_apply", "sampleTestApply");
-        vieMap.put("sample_data_upload", "sampleDataUpload");
-        vieMap.put("test_data_upload", "testDataUpload");
-        vieMap.put("test_data_approve", "testDataApprove");
-        vieMap.put("cer_plant", "cerPlant");
-        vieMap.put("instant_verify_task", "instantVerifyTask");
-        vieMap.put("conversion_and_trans", "transplant");
-        vieMap.put("sample_and_test", "sampleAll");
-
+        vieMap.put("bms_purchase_apply", "conPurchase");
+        vieMap.put("bms_product_input", "conWarehousing");
+        vieMap.put("bms_product_out", "conOutboundApply");
     }
 
     @Override

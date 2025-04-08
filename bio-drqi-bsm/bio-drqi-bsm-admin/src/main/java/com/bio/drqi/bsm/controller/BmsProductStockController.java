@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsProductStockListPageReqDTO;
 import com.bio.drqi.bsm.req.BmsProductStockQueryListReqDTO;
@@ -31,6 +32,7 @@ public class BmsProductStockController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "库存明细管理-分页查询")
+    @RequirePermissions("bms:productStock:listPage")
     public ResponseResult<PageInfo<BmsProductStockListPageRspDTO>> listPage(@RequestBody BmsProductStockListPageReqDTO bmsProductStockListPageReqDTO) {
 
         return ResponseResult.getSuccess(bmsProductStockService.listPage(bmsProductStockListPageReqDTO));
@@ -43,6 +45,7 @@ public class BmsProductStockController {
      */
     @GetMapping("/detail")
     @WebLog(desc = "库存明细管理-详情")
+    @RequirePermissions("bms:productStock:detail")
     public ResponseResult<BmsProductStockDetailRspDTO> detail(@RequestParam Integer id) {
         return ResponseResult.getSuccess(bmsProductStockService.detail(id));
     }
@@ -53,6 +56,7 @@ public class BmsProductStockController {
      * @return
      */
     @GetMapping("/queryStockByUnitCode")
+    @WebLog(desc = "库存明细管理-查询库存中所有商品信息")
     public ResponseResult<List<String>> queryStockByUnitCode(@RequestParam String unitCode){
         return ResponseResult.getSuccess(bmsProductStockService.queryStockByUnitCode(unitCode));
     }

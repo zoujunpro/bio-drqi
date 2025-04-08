@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
@@ -32,6 +33,7 @@ public class BmsProductController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "材料管理-分页查询")
+    @RequirePermissions("bms:product:listPage")
     public ResponseResult<PageInfo<BmsProductListPageRspDTO>> listPage(@RequestBody @Validated BmsProductListPageReqDTO bmsProductListPageReqDTO) {
         return ResponseResult.getSuccess(bmsProductService.listPage(bmsProductListPageReqDTO));
     }
@@ -78,6 +80,7 @@ public class BmsProductController {
      */
     @PostMapping("/add")
     @WebLog(desc = "材料管理-添加")
+    @RequirePermissions("bms:product:add")
     public ResponseResult<String> add(@RequestBody @Validated BmsProductAddReqDTO bmsProductAddReqDTO) {
         bmsProductService.add(bmsProductAddReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -91,6 +94,7 @@ public class BmsProductController {
      */
     @GetMapping("/delete")
     @WebLog(desc = "材料管理-删除")
+    @RequirePermissions("bms:product:delete")
     public ResponseResult<String> delete(@RequestParam @Validated @NotNull Integer id) {
         bmsProductService.delete(id);
         return ResponseResult.getSuccess("ok");
@@ -104,6 +108,7 @@ public class BmsProductController {
      */
     @PostMapping("/edit")
     @WebLog(desc = "材料管理-编辑")
+    @RequirePermissions("bms:product:edit")
     public ResponseResult<String> edit(@RequestBody @Validated BmsProductEditReqDTO bmsProductEditReqDTO) {
         bmsProductService.edit(bmsProductEditReqDTO);
         return ResponseResult.getSuccess("ok");

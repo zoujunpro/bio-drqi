@@ -1,6 +1,8 @@
 package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.core.uuid.IdUtils;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailRspDTO;
@@ -31,6 +33,7 @@ public class BmsOrderController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "采购订单管理-分页查询")
+    @RequirePermissions("bms:order:listPage")
     public ResponseResult<PageInfo<BmsOrderListPageRspDTO>> listPage(@RequestBody @Validated BmsOrderListPageReqDTO bmsOrderListPageReqDTO) {
         return ResponseResult.getSuccess(bmsOrderService.listPage(bmsOrderListPageReqDTO));
     }
@@ -50,6 +53,7 @@ public class BmsOrderController {
      */
     @GetMapping("/detail")
     @WebLog(desc = "采购订单管理-详情")
+    @RequirePermissions("bms:order:detail")
     public ResponseResult<BmsOrderDetailRspDTO> detail(@RequestParam Integer id) {
         return ResponseResult.getSuccess(bmsOrderService.detail(id));
     }
@@ -60,6 +64,7 @@ public class BmsOrderController {
      */
     @WebLog(desc = "采购订单管理-上传合同")
     @PostMapping("/uploadContract")
+    @RequirePermissions("bms:order:uploadContract")
     public ResponseResult<String> uploadContract(@RequestBody BmsOrderUploadContractReqDTO bmsOrderUploadContractReqDTO){
         bmsOrderService.uploadContract(bmsOrderUploadContractReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -71,6 +76,7 @@ public class BmsOrderController {
      */
     @PostMapping("/uploadInvoice")
     @WebLog(desc = "采购订单管理-上传发票")
+    @RequirePermissions("bms:order:uploadInvoice")
     public ResponseResult<String> uploadInvoice(@RequestBody  BmsOrderUploadInvoiceReqDTO bmsOrderUploadInvoiceReqDTO){
         bmsOrderService.uploadInvoice(bmsOrderUploadInvoiceReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -83,9 +89,14 @@ public class BmsOrderController {
 
     @WebLog(desc = "采购订单管理-订单报账结算")
     @PostMapping("/reportAccount")
+    @RequirePermissions("bms:order:reportAccount")
     public ResponseResult<String> reportAccount(@RequestBody BmsOrderReportAccountReqDTO bmsOrderReportAccountReqDTO){
         bmsOrderService.reportAccount(bmsOrderReportAccountReqDTO);
         return ResponseResult.getSuccess("ok");
+    }
+
+    public static void main(String[] args) {
+        System.out.println(IdUtils.simpleUUID());
     }
 
 }

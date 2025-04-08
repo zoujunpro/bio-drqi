@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * 材料类型管理
  */
+@Deprecated
 @RestController
 @RequestMapping("/productType")
 public class BmsProductTypeController {

@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsProductStockOutLogListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockOutLogDetailRspDTO;
@@ -15,7 +16,7 @@ import javax.annotation.Resource;
  * 出库存明细管理
  */
 @RestController
-@RequestMapping("/productStockIn")
+@RequestMapping("/productStockOutLog")
 public class BmsProductStockOutLogController {
 
     @Resource
@@ -29,6 +30,7 @@ public class BmsProductStockOutLogController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "出库存明细管理-分页查询")
+    @RequirePermissions("bms:productStockOutLog:listPage")
     public ResponseResult<PageInfo<BmsProductStockOutLogListPageRspDTO>> listPage(@RequestBody BmsProductStockOutLogListPageReqDTO bmsProductStockOutLogListPageReqDTO) {
         return ResponseResult.getSuccess(bmsProductStockOutService.listPage(bmsProductStockOutLogListPageReqDTO));
 
@@ -42,6 +44,7 @@ public class BmsProductStockOutLogController {
      */
     @GetMapping("/detail")
     @WebLog(desc = "出库存明细管理-详情")
+    @RequirePermissions("bms:productStockOutLog:detail")
     public ResponseResult<BmsProductStockOutLogDetailRspDTO> detail(@RequestParam Integer id) {
         return ResponseResult.getSuccess(bmsProductStockOutService.detail(id));
     }

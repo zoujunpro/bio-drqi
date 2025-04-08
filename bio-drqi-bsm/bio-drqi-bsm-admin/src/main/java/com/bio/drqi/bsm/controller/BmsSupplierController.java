@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 
 import com.bio.drqi.bsm.req.BmsSupplierAddReqDTO;
@@ -37,6 +38,7 @@ public class BmsSupplierController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "供应商管理-分页查询")
+    @RequirePermissions("bms:supplier:listPage")
     public ResponseResult<PageInfo<BmsSupplierListPageRspDTO>> listPage(@RequestBody BmsSupplierListPageReqDTO bmsSupplierListPageReqDTO) {
         return ResponseResult.getSuccess(bmsSupplierService.listPage(bmsSupplierListPageReqDTO));
     }
@@ -61,6 +63,7 @@ public class BmsSupplierController {
      */
     @PostMapping("/add")
     @WebLog(desc = "供应商管理-新增")
+    @RequirePermissions("bms:supplier:add")
     public ResponseResult<String> add(@RequestBody BmsSupplierAddReqDTO bmsSupplierAddReqDTO) {
         bmsSupplierService.add(bmsSupplierAddReqDTO);
         return ResponseResult.getSuccess("成功");
@@ -74,6 +77,7 @@ public class BmsSupplierController {
      */
     @PostMapping("/edit")
     @WebLog(desc = "供应商管理-编辑")
+    @RequirePermissions("bms:supplier:edit")
     public ResponseResult<String> edit(@RequestBody BmsSupplierEditReqDTO  bmsSupplierEditReqDTO) {
         bmsSupplierService.edit(bmsSupplierEditReqDTO);
         return ResponseResult.getSuccess("成功");
@@ -86,6 +90,7 @@ public class BmsSupplierController {
      */
     @GetMapping("/detail")
     @WebLog(desc = "供应商管理-详情")
+    @RequirePermissions("bms:supplier:detail")
     public ResponseResult<BmsBrandDetailRspDTO> detail(@RequestParam Integer id ) {
         return ResponseResult.getSuccess(bmsSupplierService.detail(id));
     }
@@ -98,6 +103,7 @@ public class BmsSupplierController {
      */
     @GetMapping("/delete")
     @WebLog(desc = "供应商管理-删除")
+    @RequirePermissions("bms:supplier:delete")
     public ResponseResult<String> delete(@RequestParam Integer id) {
         bmsSupplierService.delete(id);
         return ResponseResult.getSuccess("ok");
@@ -121,6 +127,7 @@ public class BmsSupplierController {
      */
     @PostMapping("/exportExcel")
     @WebLog(desc = "供应商管理-导出")
+    @RequirePermissions("bms:supplier:exportExcel")
     public void exportExcel(@RequestBody BmsSupplierExportExcelReqDTO bmsSupplierExportExcelReqDTO) {
         bmsSupplierService.exportExcel(bmsSupplierExportExcelReqDTO);
     }
@@ -132,6 +139,7 @@ public class BmsSupplierController {
      */
     @GetMapping("/exportExcel")
     @WebLog(desc = "供应商管理-导入")
+    @RequirePermissions("bms:supplier:importExcel")
     public void importExcel() {
         bmsSupplierService.importExcel();
     }

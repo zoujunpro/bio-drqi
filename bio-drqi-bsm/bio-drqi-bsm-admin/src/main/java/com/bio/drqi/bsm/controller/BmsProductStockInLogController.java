@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsProductStockInLogListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogDetailRspDTO;
@@ -32,6 +33,7 @@ public class BmsProductStockInLogController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "入库存明细管理-分页查询")
+    @RequirePermissions("bms:productStockInLog:listPage")
     public ResponseResult<PageInfo<BmsProductStockInLogListPageRspDTO>> listPage(@RequestBody BmsProductStockInLogListPageReqDTO bmsProductStockInLogListPageReqDTO) {
         return ResponseResult.getSuccess(bmsProductStockInService.listPage(bmsProductStockInLogListPageReqDTO));
     }
@@ -43,6 +45,7 @@ public class BmsProductStockInLogController {
      */
     @GetMapping("/detail")
     @WebLog(desc = "入库存明细管理-详情")
+    @RequirePermissions("bms:productStockInLog:detail")
     public ResponseResult<BmsProductStockInLogDetailRspDTO> detail(@RequestParam Integer id) {
         return ResponseResult.getSuccess(bmsProductStockInService.detail(id));
     }

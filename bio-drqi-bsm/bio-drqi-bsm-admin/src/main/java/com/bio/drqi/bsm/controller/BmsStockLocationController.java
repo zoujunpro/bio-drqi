@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsStockLocationAddReqDTO;
 import com.bio.drqi.bsm.req.BmsStockLocationEditReqDTO;
@@ -48,6 +49,7 @@ public class BmsStockLocationController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "库房管理-分页查询")
+    @RequirePermissions("bms:bmsStockLocation:listPage")
     public ResponseResult<PageInfo<BmsStockLocationListPageRspDTO>> listPage(@RequestBody BmsStockLocationListPageReqDTO bmsStockLocationListPageReqDTO) {
         return ResponseResult.getSuccess(bmsStockLocationService.listPage(bmsStockLocationListPageReqDTO));
     }
@@ -60,6 +62,7 @@ public class BmsStockLocationController {
      */
     @PostMapping("/add")
     @WebLog(desc = "库房管理-新增")
+    @RequirePermissions("bms:bmsStockLocation:add")
     public ResponseResult<String> add(@RequestBody @Validated BmsStockLocationAddReqDTO bmsStockLocationAddReqDTO) {
         bmsStockLocationService.add(bmsStockLocationAddReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -71,8 +74,9 @@ public class BmsStockLocationController {
      * @param id
      * @return
      */
-    @GetMapping("/add")
+    @GetMapping("/delete")
     @WebLog(desc = "库房管理-删除")
+    @RequirePermissions("bms:bmsStockLocation:delete")
     public ResponseResult<String> delete(Integer id) {
         bmsStockLocationService.delete(id);
         return ResponseResult.getSuccess("ok");
@@ -87,6 +91,7 @@ public class BmsStockLocationController {
      */
     @PostMapping("/edit")
     @WebLog(desc = "库房管理-编辑")
+    @RequirePermissions("bms:bmsStockLocation:edit")
     public ResponseResult edit(@RequestBody BmsStockLocationEditReqDTO bmsStockLocationEditReqDTO) {
         return ResponseResult.getSuccess("ok");
     }

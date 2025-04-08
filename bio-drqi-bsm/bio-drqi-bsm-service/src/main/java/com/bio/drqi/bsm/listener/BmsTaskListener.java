@@ -55,9 +55,9 @@ public class BmsTaskListener extends DefaultDuplicateCopyHandler implements Flow
 
 
     static {
-        vieMap.put("bms_purchase_apply", "conPurchase");
-        vieMap.put("bms_product_input", "conWarehousing");
-        vieMap.put("bms_product_out", "conOutboundApply");
+        vieMap.put("bms_purchase_apply", "purchasingManage/purApply");
+        vieMap.put("bms_product_input", "InventoryManage/conWarehousing");
+        vieMap.put("bms_product_out", "InventoryManage/conOutboundApply");
     }
 
     @Override

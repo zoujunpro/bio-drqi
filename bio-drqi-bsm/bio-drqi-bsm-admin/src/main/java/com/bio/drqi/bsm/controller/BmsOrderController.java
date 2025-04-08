@@ -95,8 +95,4 @@ public class BmsOrderController {
         return ResponseResult.getSuccess("ok");
     }
 
-    public static void main(String[] args) {
-        System.out.println(IdUtils.simpleUUID());
-    }
-
 }

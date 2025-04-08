@@ -45,7 +45,6 @@ public class BmsBrandController {
      */
     @GetMapping("/listAll")
     @WebLog(desc = "品牌管理-查询所有")
-    @RequirePermissions("bms:brand:listAll")
     public ResponseResult<List<BmsBrandListAllRspDTO>> listAll() {
         return ResponseResult.getSuccess(bmsBrandService.listAll());
     }

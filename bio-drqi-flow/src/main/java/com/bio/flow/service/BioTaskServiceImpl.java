@@ -277,7 +277,7 @@ public class BioTaskServiceImpl implements BioTaskService {
             throw new BusinessException("暂未配置此流程，请联系开发人员配置");
         }
         if (!flowService.queryCanApplyList(bioTaskConf.getProcessId()).contains(String.valueOf(SecurityContextHolder.getUserId()))) {
-            throw new BusinessException("改流程未未给您配置访问权限，如果需要，请联系部门负责人");
+            throw new BusinessException("该流程未给您配置访问权限，如果需要，请联系部门负责人");
         }
         BioTaskTypeListRspDTO bioTaskTypeListRspDTO = new BioTaskTypeListRspDTO();
         bioTaskTypeListRspDTO.setTaskTypeName(bioTaskConf.getTaskTypeName());

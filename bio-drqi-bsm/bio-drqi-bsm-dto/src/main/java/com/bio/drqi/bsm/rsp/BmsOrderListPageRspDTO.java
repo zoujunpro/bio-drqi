@@ -110,4 +110,8 @@ public class BmsOrderListPageRspDTO {
 
     private String overFlag;
 
+    private String contractNumber;
+
+    private String paymentVoucherUrls;
+
 }

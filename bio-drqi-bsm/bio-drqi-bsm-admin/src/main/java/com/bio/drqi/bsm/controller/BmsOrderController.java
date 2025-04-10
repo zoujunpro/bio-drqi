@@ -95,4 +95,18 @@ public class BmsOrderController {
         return ResponseResult.getSuccess("ok");
     }
 
+    /**
+     * 上传结算凭证
+     * @return
+     */
+
+    @WebLog(desc = "采购订单管理-上传结算凭证")
+    @PostMapping("/uploadPaymentVoucher")
+    @RequirePermissions("bms:order:uploadPaymentVoucher")
+    public ResponseResult<String> uploadPaymentVoucher(@RequestBody BmsOrderUploadPaymentVoucherReqDTO bmsOrderUploadPaymentVoucherReqDTO){
+        bmsOrderService.uploadPaymentVoucher(bmsOrderUploadPaymentVoucherReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
+
 }

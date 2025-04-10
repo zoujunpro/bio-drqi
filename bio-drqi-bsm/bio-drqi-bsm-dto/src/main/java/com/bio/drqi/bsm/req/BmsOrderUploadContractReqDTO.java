@@ -13,4 +13,9 @@ public class BmsOrderUploadContractReqDTO {
      * 合同地址
      */
     private String contractUrls;
+
+    /**
+     * 合同编号
+     */
+    private String contractNumber;
 }

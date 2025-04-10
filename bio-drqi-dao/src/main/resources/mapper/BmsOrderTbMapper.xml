@@ -15,6 +15,8 @@
             <result property="applyUnitCode" column="apply_unit_code" jdbcType="VARCHAR"/>
             <result property="applyUnitName" column="apply_unit_name" jdbcType="VARCHAR"/>
             <result property="contractUrls" column="contract_urls" jdbcType="VARCHAR"/>
+            <result property="contractNumber" column="contract_number" jdbcType="VARCHAR"/>
+            <result property="paymentVoucherUrls" column="payment_voucher_urls" jdbcType="VARCHAR"/>
             <result property="purchaseDate" column="purchase_date" jdbcType="VARCHAR"/>
             <result property="purchaseTypeCode" column="purchase_type_code" jdbcType="VARCHAR"/>
             <result property="purchaseTypeName" column="purchase_type_name" jdbcType="VARCHAR"/>
@@ -36,7 +38,7 @@
         purchase_date,purchase_type_code,purchase_type_name,
         purchase_reason_remark,demand_require_time,demand_usage_time,
         invoice_urls,attachment_urls,create_time,
-        task_num,report_account_time,over_flag
+        task_num,report_account_time,over_flag,payment_voucher_urls,contract_number
     </sql>
     <select id="selectOneByTaskNum" resultMap="BaseResultMap">
         select

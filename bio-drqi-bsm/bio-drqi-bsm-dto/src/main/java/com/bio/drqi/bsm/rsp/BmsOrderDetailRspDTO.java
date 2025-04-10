@@ -108,6 +108,12 @@ public class BmsOrderDetailRspDTO {
      */
     private String reportAccountTime;
 
+    private String overFlag;
+
+
+    private String contractNumber;
+
+    private String paymentVoucherUrls;
 
 
 

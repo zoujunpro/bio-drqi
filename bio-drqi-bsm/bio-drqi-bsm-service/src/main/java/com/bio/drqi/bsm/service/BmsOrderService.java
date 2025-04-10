@@ -18,28 +18,32 @@ public interface BmsOrderService {
 
     PageInfo<BmsOrderListPageRspDTO> listPage(BmsOrderListPageReqDTO bmsOrderListPageReqDTO);
 
-    List<BmsOrderQueryListRspDTO> queryList( BmsOrderQueryListReqDTO bmsOrderQueryListReqDTO);
+    List<BmsOrderQueryListRspDTO> queryList(BmsOrderQueryListReqDTO bmsOrderQueryListReqDTO);
 
-    BmsOrderDetailRspDTO detail( Integer id);
-
+    BmsOrderDetailRspDTO detail(Integer id);
 
 
     /**
      * 上传合同
+     *
      * @return
      */
-    void uploadContract( BmsOrderUploadContractReqDTO bmsOrderUploadContractReqDTO);
+    void uploadContract(BmsOrderUploadContractReqDTO bmsOrderUploadContractReqDTO);
 
     /**
      * 上传发票
+     *
      * @return
      */
-    void uploadInvoice( BmsOrderUploadInvoiceReqDTO bmsOrderUploadInvoiceReqDTO);
+    void uploadInvoice(BmsOrderUploadInvoiceReqDTO bmsOrderUploadInvoiceReqDTO);
 
     /**
      * 订单报账结算
+     *
      * @return
      */
 
     void reportAccount(BmsOrderReportAccountReqDTO bmsOrderReportAccountReqDTO);
+
+    void uploadPaymentVoucher(BmsOrderUploadPaymentVoucherReqDTO bmsOrderUploadPaymentVoucherReqDTO);
 }

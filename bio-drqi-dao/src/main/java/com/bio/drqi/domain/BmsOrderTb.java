@@ -130,6 +130,10 @@ public class BmsOrderTb implements Serializable {
 
     private String overFlag;
 
+    private String contractNumber;
+
+    private String paymentVoucherUrls;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

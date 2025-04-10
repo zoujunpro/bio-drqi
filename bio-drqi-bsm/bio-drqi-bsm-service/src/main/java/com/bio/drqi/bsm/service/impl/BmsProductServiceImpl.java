@@ -133,7 +133,7 @@ public class BmsProductServiceImpl implements BmsProductService {
             productInnerCode = BioBsmContents.product_prefix + StringUtils.padl(nextProductInnerCode, 5, '0');
         }
         BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(bmsProductAddReqDTO.getProductName(), bmsProductAddReqDTO.getBrandCode(), bmsProductAddReqDTO.getProductSpecs());
-        if(bmsProductTb==null){
+        if(bmsProductTb!=null){
             throw new BusinessException("重复添加商品");
         }
          bmsProductTb = new BmsProductTb();

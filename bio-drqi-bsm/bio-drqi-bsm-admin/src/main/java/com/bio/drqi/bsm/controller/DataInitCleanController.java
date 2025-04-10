@@ -53,6 +53,13 @@ public class DataInitCleanController {
     @Resource
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
 
+    @Resource
+    private BmsProjectDictMapper bmsProjectDictMapper;
+
+
+    @Resource
+    private BmsProductTbMapper bmsProductTbMapper;
+
 
     /**
      * 供应商数据清洗
@@ -105,6 +112,8 @@ public class DataInitCleanController {
             bmsSupplierTb.setCreateUserId(null);
             bmsSupplierTb.setDeleteFlag(BioBsmContents.N);
             bmsSupplierTbMapper.insert(bmsSupplierTb);
+
+
         }
 
         return ResponseResult.getSuccess("OK");
@@ -118,8 +127,9 @@ public class DataInitCleanController {
         for (ProductCleanDataExcel productCleanDataExcel : productCleanDataExcelList) {
             log.info("清洗数据={}", productCleanDataExcel);
             String brandCode = null;
+            BmsBrandTb bmsBrandTb = null;
             if (StringUtils.isNotEmpty(productCleanDataExcel.brandName)) {
-                BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(productCleanDataExcel.brandName);
+                bmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(productCleanDataExcel.brandName);
                 if (bmsBrandTb == null) {
                     bmsBrandTb = new BmsBrandTb();
                     bmsBrandTb.setBrandName(productCleanDataExcel.brandName);
@@ -138,14 +148,21 @@ public class DataInitCleanController {
             if (bmsProductCategoryTb == null) {
                 throw new BusinessException("类别找不到" + productCleanDataExcel.productCategory);
             }
-            BmsProductAddReqDTO bmsProductAddReqDTO = new BmsProductAddReqDTO();
-            bmsProductAddReqDTO.setProductName(productCleanDataExcel.productName);
-            bmsProductAddReqDTO.setProductOutCode(productCleanDataExcel.productCode);
-            bmsProductAddReqDTO.setProductCategoryCode(bmsProductCategoryTb.getProductCategoryCode());
-            bmsProductAddReqDTO.setProductTypeCode(null);
-            bmsProductAddReqDTO.setBrandCode(brandCode);
-            bmsProductAddReqDTO.setProductSpecs(productCleanDataExcel.product_specs);
-            bmsProductService.add(bmsProductAddReqDTO);
+
+            BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(productCleanDataExcel.productName, bmsBrandTb != null ? bmsBrandTb.getBrandCode() : null, productCleanDataExcel.product_specs);
+            if(bmsProductTb==null){
+                BmsProductAddReqDTO bmsProductAddReqDTO = new BmsProductAddReqDTO();
+                bmsProductAddReqDTO.setProductName(productCleanDataExcel.productName);
+                bmsProductAddReqDTO.setProductOutCode(productCleanDataExcel.productCode);
+                bmsProductAddReqDTO.setProductCategoryCode(bmsProductCategoryTb.getProductCategoryCode());
+                bmsProductAddReqDTO.setProductTypeCode(null);
+                bmsProductAddReqDTO.setBrandCode(brandCode);
+                bmsProductAddReqDTO.setProductSpecs(productCleanDataExcel.product_specs);
+                bmsProductService.add(bmsProductAddReqDTO);
+            }else {
+                log.info("商品重复添加："+JSONUtil.toJsonStr(productCleanDataExcel));
+            }
+
         }
 
 

@@ -54,6 +54,9 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
     @Resource
     private BmsProductService bmsProductService;
 
+    @Resource
+    private BmsProjectDictMapper bmsProjectDictMapper;
+
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         BmsPurchaseOrderDTO bmsPurchaseOrderDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsPurchaseOrderDTO.class);
@@ -108,18 +111,21 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(product.getBrandName());
                 if (bmsBrandTb == null) {
                     bmsBrandTb = bmsBrandService.add(BmsBrandAddReqDTO.builder().brandName(product.getBrandName()).build());
-                    product .setBrandCode(bmsBrandTb.getBrandCode());
+                    product.setBrandCode(bmsBrandTb.getBrandCode());
                 }
                 //非常规采购进行商品创建
                 if (PurchaseTypeEnum.TYPE_2.code.equals(bmsOrderTb.getPurchaseTypeCode())) {
-                   BmsProductTb bmsProductTb= bmsProductService.add(BeanUtils.copyProperties(product,BmsProductAddReqDTO.class));
-                    product .setProductInnerCode(bmsProductTb.getProductInnerCode());
+                    BmsProductTb bmsProductTb = bmsProductService.add(BeanUtils.copyProperties(product, BmsProductAddReqDTO.class));
+                    product.setProductInnerCode(bmsProductTb.getProductInnerCode());
                 }
+
+                BmsProjectDict bmsProjectDict = bmsProjectDictMapper.selectOneByProjectCode(product.getProjectCode());
                 //创建订单
                 BmsOrderDetailTb bmsOrderDetailTb = new BmsOrderDetailTb();
                 bmsOrderDetailTb.setOrderNum(bmsOrderTb.getOrderNum());
                 bmsOrderDetailTb.setOrderDetailNum(IdUtils.simpleUUID());
                 bmsOrderDetailTb.setProjectCode(product.getProjectCode());
+                bmsOrderDetailTb.setProjectName(bmsProjectDict.getProjectName());
                 bmsOrderDetailTb.setSupplierName(product.getSupplierName());
                 bmsOrderDetailTb.setSupplierCode(product.getSupplierCode());
                 bmsOrderDetailTb.setContactUserTelephone(bmsSupplierTb.getContactUserTelephone());
@@ -212,6 +218,11 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
             if (BioBsmContents.Y.equals(bmsSupplierTb.getDeleteFlag())) {
                 log.error("供应商已经删除={}", product);
                 throw new BusinessException("供应商已经删除");
+            }
+
+            BmsProjectDict bmsProjectDict = bmsProjectDictMapper.selectOneByProjectCode(product.getProjectCode());
+            if(bmsProjectDict==null){
+                throw new BusinessException("项目不存在:"+product.getProjectCode());
             }
         }
     }

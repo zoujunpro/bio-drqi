@@ -103,7 +103,7 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                     cerVectorTaskTb.setTaskNum(bioTaskDtlTb.getTaskNum());
                     cerVectorTaskTb.setWordUrl(vectorTaskAddDTO.getWordUrl());
                     cerVectorTaskTb.setSpeciesCode(vectorTaskAddDTO.getSpeciesCode());
-                    cerVectorTaskTb.setExpectEndDate(vectorTaskAddDTO.getExpectEndDate());
+                    cerVectorTaskTb.setExpectStartDate(vectorTaskAddDTO.getExpectStartDate());
                     cerVectorTaskTb.setExpectEndDate(vectorTaskAddDTO.getExpectEndDate());
                     cerVectorTaskTb.setQualityInspectionResult(QualityInspectionResultEnum.nocheck.name());
                     cerVectorTaskTb.setVectorBuildFlag(CerProjectContents.N);

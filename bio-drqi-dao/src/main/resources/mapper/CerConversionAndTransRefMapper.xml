@@ -63,4 +63,13 @@
             <if test="plasmidName != null">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
         </where>
     </select>
+    <select id="selectAllByTransformCodeAndVectorTaskCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_conversion_and_trans_ref
+        where
+        transform_code = #{transformCode,jdbcType=VARCHAR}
+        AND vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

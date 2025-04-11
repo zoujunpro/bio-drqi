@@ -19,6 +19,7 @@ public interface CerConversionAndTransRefMapper extends BaseMapper<CerConversion
 
     int deleteByConversionAndTransId(@Param("conversionAndTransId") Integer conversionAndTransId);
 
+    List<CerConversionAndTransRef> selectAllByTransformCodeAndVectorTaskCode(@Param("transformCode") String transformCode, @Param("vectorTaskCode") String vectorTaskCode);
 
     List<CerConversionAndTransRef> selectSelective(CerConversionAndTransRef cerConversionAndTransRef);
 

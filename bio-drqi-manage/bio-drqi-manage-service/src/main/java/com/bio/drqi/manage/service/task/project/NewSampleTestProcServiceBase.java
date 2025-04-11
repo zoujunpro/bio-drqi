@@ -2,16 +2,16 @@ package com.bio.drqi.manage.service.task.project;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
-import com.bio.common.core.util.StringUtils;
-import com.bio.common.core.util.ValidatorUtil;
-import com.bio.drqi.enums.*;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.StringUtils;
+import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.*;
 import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
+import com.bio.drqi.manage.sample.req.LayoutConfirmReqDTO;
 import com.bio.drqi.manage.service.project.SampleTestService;
 import com.bio.drqi.mapper.*;
-import com.bio.drqi.manage.sample.req.LayoutConfirmReqDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -54,6 +54,12 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
 
     @Resource
     private CerSampleTestBioResultRefMapper cerSampleTestBioResultRefMapper;
+
+    @Resource
+    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+
+    @Resource
+    private CerConversionAndTransRefMapper cerConversionAndTransRefMapper;
 
 
 
@@ -213,6 +219,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(), firstSampleApply.getVectorTaskCode());
                 CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerTransformTb.getVectorTaskCode());
                 CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+                List<CerConversionAndTransRef> cerConversionAndTransRefList=cerConversionAndTransRefMapper.selectAllByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(),firstSampleApply.getVectorTaskCode());
                 for (int i = 1; i <= firstSampleApply.getSampleNum(); i++) {
                     CerSampleTestTb cerSampleTestTb = new CerSampleTestTb();
                     cerSampleTestTb.setProjectId(cerTransformTb.getProjectId());
@@ -234,6 +241,14 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     cerSampleTestTb.setSampleGeneration(firstSampleApply.getSampleGeneration());
                     cerSampleTestTb.setSampleTime(firstSampleApply.getSampleTime());
                     targetCerSampleTestTbList.add(cerSampleTestTb);
+
+                    //如果此转化编号已经移过苗，此时取样需要直接生成种植编号
+                    if(CollectionUtil.isNotEmpty(cerConversionAndTransRefList)){
+                        CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName());
+                        cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
+                        cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
+                        cerPlantDtlTbMapper.insert(cerPlantDtlTb);
+                    }
                 }
                 cerSampleCodePrefixTb.setCurrentIndex(cerSampleCodePrefixTb.getCurrentIndex() + firstSampleApply.getSampleNum());
                 cerSampleCodePrefixTbMapper.updateById(cerSampleCodePrefixTb);

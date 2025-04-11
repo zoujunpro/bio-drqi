@@ -55,6 +55,8 @@ public class CerConversionAndTransRef implements Serializable {
 
     private String plasmidName;
 
+    private String remark;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

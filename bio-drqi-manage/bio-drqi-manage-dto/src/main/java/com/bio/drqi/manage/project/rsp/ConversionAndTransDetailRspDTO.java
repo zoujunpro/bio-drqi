@@ -45,4 +45,7 @@ public class ConversionAndTransDetailRspDTO {
     private String transGeneFlag;
 
     private String plasmidName;
+
+    private String remark;
+
 }

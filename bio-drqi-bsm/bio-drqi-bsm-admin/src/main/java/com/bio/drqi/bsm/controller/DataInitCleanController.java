@@ -169,6 +169,37 @@ public class DataInitCleanController {
         return ResponseResult.getSuccess("OK");
     }
 
+    @GetMapping("/cleanProject")
+    public ResponseResult<String> cleanProject(){
+        List<CmsProjectDataExcel> cmsProjectDataExcelList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\cms项目21.xlsx", CmsProjectDataExcel.class);
+        for (CmsProjectDataExcel cmsProjectDataExcel:cmsProjectDataExcelList){
+            if("其他".equals(cmsProjectDataExcel.getProjectCode())){
+                cmsProjectDataExcel.setProjectName("其他");
+            }
+           BmsProjectDict bmsProjectDict= bmsProjectDictMapper.selectOneByProjectCode(cmsProjectDataExcel.projectCode);
+
+           if(bmsProjectDict==null){
+               bmsProjectDict=new BmsProjectDict();
+               bmsProjectDict.setProjectCode(cmsProjectDataExcel.projectCode);
+               bmsProjectDict.setProjectName(cmsProjectDataExcel.projectName);
+               bmsProjectDict.setCreateTime(new Date());
+               bmsProjectDictMapper.insert(bmsProjectDict);
+           }
+        }
+        return ResponseResult.getSuccess("pk");
+
+    }
+
+    @Data
+    public static class CmsProjectDataExcel{
+
+        @ExcelProperty("项目编号")
+        private String projectCode;
+
+        @ExcelProperty("项目名称")
+        private String projectName;
+
+    }
 
     @Data
     public static class ProductCleanDataExcel {

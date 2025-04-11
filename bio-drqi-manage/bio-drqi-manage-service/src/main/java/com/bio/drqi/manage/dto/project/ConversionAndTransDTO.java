@@ -57,6 +57,8 @@ public class ConversionAndTransDTO {
          * 确认接收数量
          */
         private Integer acceptNum;
+
+        private String remark;
     }
 
 
@@ -84,6 +86,8 @@ public class ConversionAndTransDTO {
          * 是否接收 Y N
          */
         private String dealResult;
+
+        private String remark;
 
     }
 

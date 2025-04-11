@@ -34,5 +34,6 @@ public class CerConversionAndTransConfirmReqDTO {
          * 当接受时填写数量
          */
         private Integer acceptNum;
+
     }
 }

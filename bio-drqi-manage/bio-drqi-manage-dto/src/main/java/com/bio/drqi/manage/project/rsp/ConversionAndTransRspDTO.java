@@ -50,6 +50,7 @@ public class ConversionAndTransRspDTO {
     private Integer transNumber;
 
 
+
     public List<String> getImageUrlList() {
         return JSONUtil.toList(this.getImageUrl(),String.class);
     }

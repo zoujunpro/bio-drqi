@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service("sample_and_test")
@@ -146,6 +147,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestBioInfoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        cerPlantDtlTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
 
     }
 
@@ -244,10 +246,12 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
 
                     //如果此转化编号已经移过苗，此时取样需要直接生成种植编号
                     if(CollectionUtil.isNotEmpty(cerConversionAndTransRefList)){
-                        CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName());
+                        CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(),bioTaskDtlTb.getTaskNum());
                         cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
                         cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
-                        cerPlantDtlTbMapper.insert(cerPlantDtlTb);
+                        if (Objects.isNull(cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(cerPlantDtlTb.getPlantCode(), cerPlantDtlTb.getVectorTaskCode()))) {
+                            cerPlantDtlTbMapper.insert(cerPlantDtlTb);
+                        }
                     }
                 }
                 cerSampleCodePrefixTb.setCurrentIndex(cerSampleCodePrefixTb.getCurrentIndex() + firstSampleApply.getSampleNum());

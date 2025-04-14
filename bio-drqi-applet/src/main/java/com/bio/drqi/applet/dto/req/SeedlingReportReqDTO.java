@@ -9,6 +9,7 @@ public class SeedlingReportReqDTO {
 
     private String vectorTaskCode;
 
+
     private String plantCode;
 
     /**

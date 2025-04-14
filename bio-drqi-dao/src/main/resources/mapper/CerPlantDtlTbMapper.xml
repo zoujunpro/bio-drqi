@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerPlantDtlTb">
         <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
         <result property="projectId" column="project_id" jdbcType="INTEGER"/>
         <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
         <result property="plantCode" column="plant_code" jdbcType="VARCHAR"/>
@@ -50,7 +51,7 @@
         pollination_method,plant_status,father_info,
         mother_info,pollination_date,harvest_date,
         other_field,edit_type,species_code,
-        acceptor_material,create_user_id,create_user_name,create_date,update_time
+        acceptor_material,create_user_id,create_user_name,create_date,update_time,task_num
     </sql>
     <select id="selectSelective" resultMap="BaseResultMap">
         select
@@ -103,4 +104,9 @@
         plant_code = #{plantCode,jdbcType=VARCHAR}
         AND vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
     </select>
+    <delete id="deleteByTaskNum">
+        delete
+        from cer_plant_dtl_tb
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </delete>
 </mapper>

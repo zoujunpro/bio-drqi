@@ -17,6 +17,11 @@ public class CerPlantDtlTb implements Serializable {
     private Integer id;
 
     /**
+     * 任务编号
+     */
+    private String taskNum;
+
+    /**
      * 所属项目ID
      */
     private Integer projectId;
@@ -172,7 +177,7 @@ public class CerPlantDtlTb implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    public static CerPlantDtlTb of(CerSampleTestTb cerSampleTestTb,Integer createUserId,String createUserName){
+    public static CerPlantDtlTb of(CerSampleTestTb cerSampleTestTb,Integer createUserId,String createUserName,String taskNum){
         CerPlantDtlTb cerPlantDtlTb=new CerPlantDtlTb();
         cerPlantDtlTb.setProjectId(cerSampleTestTb.getProjectId());
         cerPlantDtlTb.setProjectCode(cerSampleTestTb.getProjectCode());
@@ -203,6 +208,7 @@ public class CerPlantDtlTb implements Serializable {
         cerPlantDtlTb.setUpdateTime(null);
         cerPlantDtlTb.setCreateUserId(createUserId);
         cerPlantDtlTb.setCreateUserName(createUserName);
+        cerPlantDtlTb.setTaskNum(taskNum);
         return cerPlantDtlTb;
     }
 

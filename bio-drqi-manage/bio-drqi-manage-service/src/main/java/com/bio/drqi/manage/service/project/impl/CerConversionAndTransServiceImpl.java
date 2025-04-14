@@ -30,6 +30,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,14 +80,14 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
     public PageInfo<ConversionAndTransDetailRspDTO> listPageDetail(ConversionAndTransDetailReqDTO conversionAndTransDetailReqDTO) {
         CerConversionAndTransRef cerConversionAndTransRef = new CerConversionAndTransRef();
         cerConversionAndTransRef.setConversionAndTransId(conversionAndTransDetailReqDTO.getId());
-        if(conversionAndTransDetailReqDTO.getVectorTaskId()!=null){
+        if (conversionAndTransDetailReqDTO.getVectorTaskId() != null) {
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(conversionAndTransDetailReqDTO.getVectorTaskId());
             cerConversionAndTransRef.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         }
         PageHelper.startPage(conversionAndTransDetailReqDTO.getPageNum(), conversionAndTransDetailReqDTO.getPageSize());
         List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectSelective(cerConversionAndTransRef);
         PageInfo<CerConversionAndTransRef> srcPageInfo = new PageInfo<>(cerConversionAndTransRefList);
-        return BeanUtils.copyPageInfoProperties(srcPageInfo,ConversionAndTransDetailRspDTO.class);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo, ConversionAndTransDetailRspDTO.class);
     }
 
 
@@ -104,8 +105,6 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
 
         //初始化移苗记录
         CerConversionAndTransTb cerConversionAndTransTb = initcerConversionAndTransTb(bioTaskDtlTb, conversionAndTransDTO);
-
-
 
 
         for (CerConversionAndTransConfirmReqDTO.Content content : cerConversionAndTransConfirmReqDTO.getContentList()) {
@@ -135,7 +134,7 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 cerConversionAndTransRefMapper.insert(cerConversionAndTransRef);
 
                 //更新总移苗数量
-                cerConversionAndTransTb.setTransNumber(transFormList.get(0).getAcceptNum()+(cerConversionAndTransTb.getTransNumber()==null?0:cerConversionAndTransTb.getTransNumber()));
+                cerConversionAndTransTb.setTransNumber(transFormList.get(0).getAcceptNum() + (cerConversionAndTransTb.getTransNumber() == null ? 0 : cerConversionAndTransTb.getTransNumber()));
                 cerConversionAndTransTbMapper.updateById(cerConversionAndTransTb);
 
                 //取样疫苗
@@ -148,9 +147,9 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 if (!CerProjectContents.Y.equals(content.getDealResult())) {
                     continue;
                 }
-                CerSampleTestTb cerSampleTestTb=  cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(content.getVectorTaskCode(),content.getSampleCode());
-                if(cerSampleTestTb==null){
-                    throw new BusinessException("取样编号不存在"+content.getSampleCode());
+                CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(content.getVectorTaskCode(), content.getSampleCode());
+                if (cerSampleTestTb == null) {
+                    throw new BusinessException("取样编号不存在" + content.getSampleCode());
                 }
                 CerConversionAndTransRef cerConversionAndTransRef = new CerConversionAndTransRef();
                 cerConversionAndTransRef.setConversionAndTransId(cerConversionAndTransTb.getId());
@@ -166,16 +165,16 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 cerConversionAndTransRef.setRemark(sampleCodeList.get(0).getRemark());
                 cerConversionAndTransRefMapper.insert(cerConversionAndTransRef);
                 //更新总移苗数量
-                cerConversionAndTransTb.setTransNumber((cerConversionAndTransTb.getTransNumber()==null?0:cerConversionAndTransTb.getTransNumber())+1);
+                cerConversionAndTransTb.setTransNumber((cerConversionAndTransTb.getTransNumber() == null ? 0 : cerConversionAndTransTb.getTransNumber()) + 1);
                 cerConversionAndTransTbMapper.updateById(cerConversionAndTransTb);
 
                 //更新生成种植记录
-                CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName());
+                CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioTaskDtlTb.getTaskNum());
                 cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
                 cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
-                cerPlantDtlTbMapper.insert(cerPlantDtlTb);
-
-
+                if (Objects.isNull(cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(cerPlantDtlTb.getPlantCode(), cerPlantDtlTb.getVectorTaskCode()))) {
+                    cerPlantDtlTbMapper.insert(cerPlantDtlTb);
+                }
 
             }
 

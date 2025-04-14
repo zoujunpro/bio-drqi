@@ -24,7 +24,6 @@ public class CerConfServiceImpl implements CerConfService {
             speciesConfRspDTO.setSpeciesCode(cerSpeciesConf.getSpeciesCode());
             speciesConfRspDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
             speciesConfRspDTOList.add(speciesConfRspDTO);
-
         }
         return speciesConfRspDTOList;
     }

@@ -37,6 +37,9 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
     @Resource
     private CerSampleTestTbMapper cerSampleTestTbMapper;
 
+    @Resource
+    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+
     /**
      * 数据校验，暂时不做数据校验
      *
@@ -132,6 +135,7 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
         if (cerConversionAndTransTb != null) {
             cerConversionAndTransTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
             cerConversionAndTransRefMapper.deleteByConversionAndTransId(cerConversionAndTransTb.getId());
+            cerPlantDtlTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         }
     }
 }

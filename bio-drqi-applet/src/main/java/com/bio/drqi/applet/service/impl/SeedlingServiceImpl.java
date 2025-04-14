@@ -59,7 +59,7 @@ public class SeedlingServiceImpl implements SeedlingService {
         if (cerSampleTestOperateLog != null) {
             throw new BusinessException("已经做过保苗/剔苗操作");
         }
-        CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName());
+        CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(),null);
         cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
         cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
         cerPlantDtlTbMapper.insert(cerPlantDtlTb);

@@ -5,18 +5,14 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.applet.dto.rsp.ScanCodeT0PlantTestRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.PlantUniqueCodeDTO;
-import com.bio.drqi.domain.CerPlantDtlTb;
-import com.bio.drqi.domain.CerProjectTb;
-import com.bio.drqi.domain.CerSubProjectTb;
-import com.bio.drqi.domain.CerVectorTaskTb;
+import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.GenerationEnum;
-import com.bio.drqi.mapper.CerPlantDtlTbMapper;
-import com.bio.drqi.mapper.CerProjectTbMapper;
-import com.bio.drqi.mapper.CerSubProjectTbMapper;
-import com.bio.drqi.mapper.CerVectorTaskTbMapper;
+import com.bio.drqi.mapper.*;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class T0PlantCodeScanService extends AbstractBaseCodeScanService<PlantUniqueCodeDTO, ScanCodeT0PlantTestRspDTO> {
@@ -32,6 +28,9 @@ public class T0PlantCodeScanService extends AbstractBaseCodeScanService<PlantUni
 
     @Resource
     private CerSubProjectTbMapper cerSubProjectTbMapper;
+
+    @Resource
+    private CerSampleTestTbMapper cerSampleTestTbMapper;
 
 
     @Override
@@ -54,7 +53,7 @@ public class T0PlantCodeScanService extends AbstractBaseCodeScanService<PlantUni
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerPlantDtlTb.getProjectCode());
 
         CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerPlantDtlTb.getSubProjectCode());
-        ScanCodeT0PlantTestRspDTO scanCodeT0PlantTestRspDTO=new ScanCodeT0PlantTestRspDTO();
+        ScanCodeT0PlantTestRspDTO scanCodeT0PlantTestRspDTO = new ScanCodeT0PlantTestRspDTO();
 
         scanCodeT0PlantTestRspDTO.setProjectCode(cerProjectTb.getProjectCode());
         scanCodeT0PlantTestRspDTO.setProjectName(cerProjectTb.getProjectName());
@@ -63,7 +62,12 @@ public class T0PlantCodeScanService extends AbstractBaseCodeScanService<PlantUni
         scanCodeT0PlantTestRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         scanCodeT0PlantTestRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
         scanCodeT0PlantTestRspDTO.setPlantDtlInfo(BeanUtils.copyProperties(cerPlantDtlTb, ScanCodeT0PlantTestRspDTO.PlantDtlInfo.class));
-        scanCodeT0PlantTestRspDTO.getPlantDtlInfo().setGeneration(GenerationEnum.getGenerationDesc(scanCodeT0PlantTestRspDTO.getPlantDtlInfo().getGeneration())) ;
+        scanCodeT0PlantTestRspDTO.getPlantDtlInfo().setGeneration(GenerationEnum.getGenerationDesc(scanCodeT0PlantTestRspDTO.getPlantDtlInfo().getGeneration()));
+
+
+        //取样信息
+        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByVectorTaskCodeAndSampleCode(plantUniqueCodeDTO.getVectorTaskCode(), plantUniqueCodeDTO.getPlantCode());
+        scanCodeT0PlantTestRspDTO.setSampleInfoList(BeanUtils.copyToList(cerSampleTestTbList,ScanCodeT0PlantTestRspDTO.SampleInfo.class));
         return scanCodeT0PlantTestRspDTO;
     }
 }

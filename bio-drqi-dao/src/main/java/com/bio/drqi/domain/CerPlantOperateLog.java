@@ -16,7 +16,7 @@ public class CerPlantOperateLog implements Serializable {
     /**
      * 
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId( type = IdType.AUTO)
     private Long id;
 
     /**

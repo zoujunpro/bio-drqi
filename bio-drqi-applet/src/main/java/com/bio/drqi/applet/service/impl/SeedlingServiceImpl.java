@@ -14,6 +14,7 @@ import com.bio.drqi.applet.enums.CheckResultOperateEnum;
 import com.bio.drqi.applet.service.SeedlingService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.CerPlantFixedFieldEnum;
+import com.bio.drqi.enums.PlantOperateEnum;
 import com.bio.drqi.enums.PlantStatusEnum;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,7 @@ public class SeedlingServiceImpl implements SeedlingService {
     private CerSampleTestOperateLogMapper cerSampleTestOperateLogMapper;
 
     @Resource
-    private CerPlantReportLogMapper cerPlantReportLogMapper;
+    private CerPlantOperateLogMapper cerPlantOperateLogMapper;
 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
@@ -82,28 +83,30 @@ public class SeedlingServiceImpl implements SeedlingService {
 
     @Override
     public void remove(SeedlingRemoveReqDTO seedlingRemoveReqDTO) {
-        CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(seedlingRemoveReqDTO.getVectorTaskCode(), seedlingRemoveReqDTO.getSampleCode());
-        if (cerSampleTestTb == null) {
-            throw new BusinessException("找不到此取样信息");
+        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(seedlingRemoveReqDTO.getPlantCode(), seedlingRemoveReqDTO.getVectorTaskCode());
+        if (cerPlantDtlTb == null) {
+            throw new BusinessException("无此种植编号");
         }
-        CerSampleTestOperateLog cerSampleTestOperateLog = cerSampleTestOperateLogMapper.selectOneByUniqueCode(cerSampleTestTb.getProjectCode() + cerSampleTestTb.getSampleCode());
-        if (cerSampleTestOperateLog != null) {
-            throw new BusinessException("已经做过保苗/剔苗操作");
+        if(PlantStatusEnum.STATUS_3.code.equals(cerPlantDtlTb.getPlantStatus())){
+            throw new BusinessException("此苗已经剔除");
         }
-        cerSampleTestOperateLog = new CerSampleTestOperateLog();
-        cerSampleTestOperateLog.setProjectCode(cerSampleTestTb.getProjectCode());
-        cerSampleTestOperateLog.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
-        cerSampleTestOperateLog.setProjectId(cerSampleTestTb.getProjectId());
-        cerSampleTestOperateLog.setVectorTaskId(cerSampleTestTb.getVectorTaskId());
-        cerSampleTestOperateLog.setSampleCode(cerSampleTestTb.getSampleCode());
-        cerSampleTestOperateLog.setOperateCode(CheckResultOperateEnum.remove.name());
-        cerSampleTestOperateLog.setRemark(seedlingRemoveReqDTO.getRemark());
-        cerSampleTestOperateLog.setPictureUrls(JSONUtil.toJsonStr(seedlingRemoveReqDTO.getPictureUrls()));
-        cerSampleTestOperateLog.setCreateTime(new Date());
-        cerSampleTestOperateLog.setUniqueCode(cerSampleTestTb.getProjectCode() + cerSampleTestTb.getSampleCode());
-        cerSampleTestOperateLog.setCreateUserId(SecurityContextHolder.getUserId());
-        cerSampleTestOperateLog.setCreateUserName(SecurityContextHolder.getNickName());
-        cerSampleTestOperateLogMapper.insert(cerSampleTestOperateLog);
+
+        cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_3.code);
+        cerPlantDtlTbMapper.updateById(cerPlantDtlTb);
+
+        CerPlantOperateLog cerPlantOperateLog = new CerPlantOperateLog();
+        cerPlantOperateLog.setPlantCode(cerPlantDtlTb.getPlantCode());
+        cerPlantOperateLog.setPictureUrls(JSONUtil.toJsonStr(seedlingRemoveReqDTO.getPictureUrls()));
+        cerPlantOperateLog.setRemark(seedlingRemoveReqDTO.getRemark());
+        cerPlantOperateLog.setCreateTime(new Date());
+        cerPlantOperateLog.setCreateUserId(SecurityContextHolder.getUserId());
+        cerPlantOperateLog.setCreateUserName(SecurityContextHolder.getNickName());
+        cerPlantOperateLog.setPlantAttribute(null);
+        cerPlantOperateLog.setOperateCode(PlantOperateEnum.delete.name());
+        cerPlantOperateLog.setOperateName(PlantOperateEnum.delete.getDesc());
+        cerPlantOperateLogMapper.insert(cerPlantOperateLog);
+
+
 
     }
 
@@ -153,15 +156,17 @@ public class SeedlingServiceImpl implements SeedlingService {
         cerPlantDtlTb.setPlantStatus(seedlingReportReqDTO.getPlantStatus());
         cerPlantDtlTbMapper.updateById(cerPlantDtlTb);
 
-        CerPlantReportLog cerPlantReportLog = new CerPlantReportLog();
-        cerPlantReportLog.setPlantCode(seedlingReportReqDTO.getPlantCode());
-        cerPlantReportLog.setRemark(seedlingReportReqDTO.getRemark());
-        cerPlantReportLog.setCreateTime(new Date());
-        cerPlantReportLog.setCreateUserId(SecurityContextHolder.getUserId());
-        cerPlantReportLog.setCreateUserName(SecurityContextHolder.getNickName());
-        cerPlantReportLog.setPictureUrls(JSONUtil.toJsonStr(seedlingReportReqDTO.getPictureUrls()));
-        cerPlantReportLog.setPlantAttribute(JSONUtil.toJsonStr(seedlingReportReqDTO.getAttributes()));
-        cerPlantReportLogMapper.insert(cerPlantReportLog);
+        CerPlantOperateLog cerPlantOperateLog = new CerPlantOperateLog();
+        cerPlantOperateLog.setPlantCode(seedlingReportReqDTO.getPlantCode());
+        cerPlantOperateLog.setRemark(seedlingReportReqDTO.getRemark());
+        cerPlantOperateLog.setCreateTime(new Date());
+        cerPlantOperateLog.setCreateUserId(SecurityContextHolder.getUserId());
+        cerPlantOperateLog.setCreateUserName(SecurityContextHolder.getNickName());
+        cerPlantOperateLog.setPictureUrls(JSONUtil.toJsonStr(seedlingReportReqDTO.getPictureUrls()));
+        cerPlantOperateLog.setPlantAttribute(JSONUtil.toJsonStr(seedlingReportReqDTO.getAttributes()));
+        cerPlantOperateLog.setOperateCode(PlantOperateEnum.report.name());
+        cerPlantOperateLog.setOperateName(PlantOperateEnum.report.getDesc());
+        cerPlantOperateLogMapper.insert(cerPlantOperateLog);
 
     }
 

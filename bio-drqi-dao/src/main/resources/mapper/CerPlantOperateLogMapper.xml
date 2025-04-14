@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bio.drqi.mapper.CerPlantReportLogMapper">
+<mapper namespace="com.bio.drqi.mapper.CerPlantOperateLogMapper">
 
-    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerPlantReportLog">
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerPlantOperateLog">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="plantCode" column="plant_code" jdbcType="VARCHAR"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
@@ -13,13 +13,15 @@
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
         <result property="pictureUrls" column="picture_urls" jdbcType="VARCHAR"/>
         <result property="plantAttribute" column="plant_attribute" jdbcType="VARCHAR"/>
+        <result property="operateCode" column="operate_code" jdbcType="VARCHAR"/>
+        <result property="operateName" column="operate_name" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
         ,plant_code,
         remark,create_time,create_user_id,
-        create_user_name,picture_urls,plant_attribute
+        create_user_name,picture_urls,plant_attribute,operate_code,operate_name
     </sql>
 
 </mapper>

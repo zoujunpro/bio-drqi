@@ -1,7 +1,6 @@
 package com.bio.drqi.mapper;
-import org.apache.ibatis.annotations.Param;
 
-import com.bio.drqi.domain.CerPlantReportLog;
+import com.bio.drqi.domain.CerPlantOperateLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -10,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2024-11-22 15:51:44
 * @Entity com.bio.drqi.domain.CerPlantReportLog
 */
-public interface CerPlantReportLogMapper extends BaseMapper<CerPlantReportLog> {
+public interface CerPlantOperateLogMapper extends BaseMapper<CerPlantOperateLog> {
 
 
 }

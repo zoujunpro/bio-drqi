@@ -83,6 +83,7 @@ public class SampleTestServiceImpl implements SampleTestService {
     @Resource
     private OssService ossService;
 
+
     @Override
     public PageInfo<SampleApplyRspDTO> listPage(SampleApplyListPageReqDTO sampleApplyListPageReqDTO) {
         PageHelper.startPage(sampleApplyListPageReqDTO.getPageNum(), sampleApplyListPageReqDTO.getPageSize());
@@ -588,8 +589,9 @@ public class SampleTestServiceImpl implements SampleTestService {
             CerSampleTestBioResultRef cerSampleTestBioResultRef = new CerSampleTestBioResultRef();
             cerSampleTestBioResultRef.setApplyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
             cerSampleTestBioResultRef.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
-            CerSampleTestTb cerSampleTestTb = stringCerSampleTestTbMap.get(sampleTestBioInfoExcelDTO.getSampleCode());;
-            if(cerSampleTestTb!=null){
+            CerSampleTestTb cerSampleTestTb = stringCerSampleTestTbMap.get(sampleTestBioInfoExcelDTO.getSampleCode());
+            ;
+            if (cerSampleTestTb != null) {
                 cerSampleTestBioResultRef.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
             }
             cerSampleTestBioResultRef.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
@@ -629,8 +631,9 @@ public class SampleTestServiceImpl implements SampleTestService {
 
         if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
             cerSampleTestBioInfoResultTbList.forEach(cerSampleTestBioInfoResultTb -> {
-                CerSampleTestTb cerSampleTestTb = stringCerSampleTestTbMap.get(cerSampleTestBioInfoResultTb.getSampleCode());;
-                if(cerSampleTestTb!=null){
+                CerSampleTestTb cerSampleTestTb = stringCerSampleTestTbMap.get(cerSampleTestBioInfoResultTb.getSampleCode());
+                ;
+                if (cerSampleTestTb != null) {
                     cerSampleTestBioInfoResultTb.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
                 }
             });

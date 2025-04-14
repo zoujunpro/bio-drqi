@@ -24,19 +24,6 @@ public class SeedlingController {
     private SeedlingService seedlingService;
 
     /**
-     * 保苗
-     *
-     * @return
-     */
-    @PostMapping("remain")
-    @WebLog(desc = "保苗")
-    public ResponseResult<String> remain(@RequestBody SeedlingRemainReqDTO seedlingRemainReqDTO) {
-        seedlingService.remain(seedlingRemainReqDTO);
-        return ResponseResult.getSuccess(null);
-    }
-
-
-    /**
      * 剔苗
      *
      * @return

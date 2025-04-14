@@ -14,10 +14,10 @@ public class SeedlingRemoveReqDTO {
     @NotBlank(message = "参数缺失：实施方案编号")
     private String vectorTaskCode;
     /**
-     * 取样编号
+     * 种植编号
      */
-    @NotBlank(message = "参数缺失：取样编号")
-    private String sampleCode;
+    @NotBlank(message = "参数缺失：种植编号")
+    private String plantCode;
 
 
     private List<String> pictureUrls;

@@ -1,5 +1,7 @@
 package com.bio.drqi.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,10 +12,11 @@ import java.util.Date;
  * @TableName cer_plant_report_log
  */
 @Data
-public class CerPlantReportLog implements Serializable {
+public class CerPlantOperateLog implements Serializable {
     /**
      * 
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
@@ -51,6 +54,10 @@ public class CerPlantReportLog implements Serializable {
      */
     private String plantAttribute;
 
+
+    private String operateCode;
+
+    private String operateName;
 
     private static final long serialVersionUID = 1L;
 

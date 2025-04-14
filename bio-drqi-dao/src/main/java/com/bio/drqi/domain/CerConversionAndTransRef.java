@@ -18,7 +18,7 @@ public class CerConversionAndTransRef implements Serializable {
     /**
      * 主键ID
      */
-    @TableId
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**

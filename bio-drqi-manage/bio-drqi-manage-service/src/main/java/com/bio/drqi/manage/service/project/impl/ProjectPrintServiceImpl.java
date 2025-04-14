@@ -153,7 +153,10 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         if (CollectionUtil.isNotEmpty(plantPrintReqDTO.getContentList())) {
             for (PlantPrintReqDTO.Content content : plantPrintReqDTO.getContentList()) {
                 CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(content.getPlantCode(), content.getVectorTaskCode());
-               CerVectorTaskTb cerVectorTaskTb =cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
+                if(cerPlantDtlTb==null){
+                    throw new BusinessException("取样苗"+content.getPlantCode()+"未形成种植编号");
+                }
+                CerVectorTaskTb cerVectorTaskTb =cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
                 PlantPrintData plantPrintData = new PlantPrintData();
                 plantPrintData.setVectorTaskCode(content.getVectorTaskCode());
                 plantPrintData.setTransformCode(cerPlantDtlTb.getTransformCode());

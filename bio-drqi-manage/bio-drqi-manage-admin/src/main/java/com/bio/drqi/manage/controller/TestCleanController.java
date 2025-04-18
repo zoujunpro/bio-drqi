@@ -3,15 +3,17 @@ package com.bio.drqi.manage.controller;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioDictTypeEnum;
 import com.bio.drqi.enums.GenerationEnum;
+import com.bio.drqi.enums.PlantStatusEnum;
 import com.bio.drqi.enums.VectorTaskPlanEventTypeEnum;
-import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.service.DictInnerService;
 import com.bio.drqi.manage.util.LetterUtil;
@@ -91,6 +93,51 @@ public class TestCleanController {
 
     @Resource
     private CerVectorTaskPlanLogMapper cerVectorTaskPlanLogMapper;
+
+    @Resource
+    private CerConversionAndTransRefMapper cerConversionAndTransRefMapper;
+
+
+    @Resource
+    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+
+
+    @GetMapping("/cleanTrans")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanTrans(){
+       List<CerConversionAndTransRef> cerConversionAndTransRefList= cerConversionAndTransRefMapper.selectList(null);
+       for (CerConversionAndTransRef cerConversionAndTransRef:cerConversionAndTransRefList){
+           if(StringUtils.isNotEmpty(cerConversionAndTransRef.getSampleCode())){
+             CerPlantDtlTb cerPlantDtlTb=  cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(cerConversionAndTransRef.getSampleCode(),cerConversionAndTransRef.getVectorTaskCode());
+             if(cerPlantDtlTb==null){
+                CerSampleTestTb cerSampleTestTb= cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(cerConversionAndTransRef.getVectorTaskCode(),cerConversionAndTransRef.getSampleCode());
+                if(cerSampleTestTb!=null){
+                    cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(),cerSampleTestTb.getApplyNo());
+                    log.info("插入数据={}",cerPlantDtlTb);
+                    cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
+                    cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
+                    cerPlantDtlTbMapper.insert(cerPlantDtlTb);
+                }
+
+             }
+           }else if(StringUtils.isNotEmpty(cerConversionAndTransRef.getTransformCode())){
+             List<CerSampleTestTb> cerSampleTestTbList=  cerSampleTestTbMapper.selectAllByTransformCode(cerConversionAndTransRef.getTransformCode());
+             for (CerSampleTestTb cerSampleTestTb:cerSampleTestTbList){
+                 CerPlantDtlTb cerPlantDtlTb=  cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(cerSampleTestTb.getSampleCode(),cerSampleTestTb.getVectorTaskCode());
+                 if(cerPlantDtlTb==null){
+                     cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), cerSampleTestTb.getApplyUserName(),cerSampleTestTb.getApplyNo());
+                     log.info("插入数据={}",cerPlantDtlTb);
+                     cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
+                     cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
+                     cerPlantDtlTbMapper.insert(cerPlantDtlTb);
+                 }
+
+             }
+
+           }
+       }
+       return ResponseResult.getSuccess("ok");
+    }
 
 
     @GetMapping("cleanPrint")

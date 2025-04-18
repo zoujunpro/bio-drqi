@@ -72,7 +72,7 @@ public class SeedPrintServiceImpl implements SeedPrintService {
             seedOutLabelPrintDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
             seedOutLabelPrintDTO.setBreedName(cerBreedDict.getBreedName());
             seedOutLabelPrintDTO.setOutNumber(content.getNum());
-            seedOutLabelPrintDTO.setUnit(seedStockTb.getUnit());
+            seedOutLabelPrintDTO.setUnit(content.getPrintUnit());
             seedOutLabelPrintDTO.setHarvestTypeName(seedStockTb.getHarvestType());
             seedOutLabelPrintDTO.setProjectCode(seedStockTb.getProjectCode());
             if (StringUtils.isNotEmpty(seedStockTb.getHarvestType())) {

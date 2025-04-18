@@ -13,6 +13,7 @@ public class SeedOutPrintReqDTO {
     public static class Content {
         private String num;
         private Integer printNum;
+        private String printUnit;
         private Integer id;
 
         private String seedNum;

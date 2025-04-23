@@ -142,12 +142,17 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
 
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
+        NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
+
         cerSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestBioInfoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerPlantDtlTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
+
+        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(),ImplementationPlanTypeEnum.cer_plant.name());
+        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(),ImplementationPlanTypeEnum.sample_and_test.name());
 
     }
 
@@ -252,15 +257,19 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         if (Objects.isNull(cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(cerPlantDtlTb.getPlantCode(), cerPlantDtlTb.getVectorTaskCode()))) {
                             cerPlantDtlTbMapper.insert(cerPlantDtlTb);
                         }
+                        /**
+                         * 更新当前执行步骤
+                         */
+                        logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.cer_plant, bioTaskDtlTb.getTaskNum());
+                    }else {
+                        /**
+                         * 更新当前执行步骤
+                         */
+                        logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test, bioTaskDtlTb.getTaskNum());
                     }
                 }
                 cerSampleCodePrefixTb.setCurrentIndex(cerSampleCodePrefixTb.getCurrentIndex() + firstSampleApply.getSampleNum());
                 cerSampleCodePrefixTbMapper.updateById(cerSampleCodePrefixTb);
-
-                /**
-                 * 更新当前执行步骤
-                 */
-                logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test, bioTaskDtlTb.getTaskNum());
 
                 updateVectorTaskTimePlan(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test);
 

@@ -20,7 +20,7 @@ import java.util.List;
 public abstract class AbstractProjectBaseTaskService implements BaseTaskService {
 
     @Resource
-    private CerVectorStepLogMapper cerVectorStepLogMapper;
+    protected CerVectorStepLogMapper cerVectorStepLogMapper;
 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;

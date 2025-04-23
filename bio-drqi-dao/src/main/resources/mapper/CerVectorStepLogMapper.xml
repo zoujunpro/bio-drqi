@@ -33,4 +33,18 @@
         vector_Task_id = #{vectorTaskId,jdbcType=NUMERIC}
         order by id
     </select>
+    <delete id="deleteByVectorTaskIdAndStepCodeAndTaskNum">
+        delete
+        from cer_vector_step_log
+        where vector_Task_id = #{vectorTaskId,jdbcType=NUMERIC}
+          AND step_code = #{stepCode,jdbcType=VARCHAR}
+          AND task_num = #{taskNum,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteByTaskNumAndStepCode">
+        delete
+        from cer_vector_step_log
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+          AND step_code = #{stepCode,jdbcType=VARCHAR}
+    </delete>
+
 </mapper>

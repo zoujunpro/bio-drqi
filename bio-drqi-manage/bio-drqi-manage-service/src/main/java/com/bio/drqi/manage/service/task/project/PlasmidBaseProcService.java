@@ -83,6 +83,12 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         plasmidDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plasmidDTO));
         log.info("【任务工单】质粒质检校验结束");
+
+
+        /**
+         * 更新当前执行步骤
+         */
+        logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.plasmid_check, bioTaskDtlTb.getTaskNum());
     }
 
     @Override
@@ -140,6 +146,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         cerPlasmidQualityTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         PlasmidDTO plasmidDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlasmidDTO.class);
         cerVectorTaskTbMapper.updateQualityInspectionResultById(QualityInspectionResultEnum.nocheck.name(), plasmidDTO.getVectorTaskId());
+        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(),ImplementationPlanTypeEnum.plasmid_check.name());
     }
 
     /**
@@ -162,12 +169,6 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
             cerVectorTaskTb.setQualityInspectionResult(QualityInspectionResultEnum.pass.name());
             cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
         }
-
-        /**
-         * 更新当前执行步骤
-         */
-        logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.plasmid_check, bioTaskDtlTb.getTaskNum());
-
 
         updateVectorTaskTimePlan(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.plasmid_check);
     }

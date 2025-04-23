@@ -100,6 +100,11 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
         transformDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(transformDTO));
         log.info("【任务工单】转化再生完毕完毕");
+
+        /**
+         * 更新当前执行步骤
+         */
+        logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.transform, bioTaskDtlTb.getTaskNum());
     }
 
     @Override
@@ -146,10 +151,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
 
                 content.setTransformCode(cerTransformTb.getTransformCode());
             }
-            /**
-             * 更新当前执行步骤
-             */
-            logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.transform, bioTaskDtlTb.getTaskNum());
+
 
 
             updateVectorTaskTimePlan(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.transform);
@@ -161,7 +163,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
 
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
-
+        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(),ImplementationPlanTypeEnum.transform.name());
     }
 
 

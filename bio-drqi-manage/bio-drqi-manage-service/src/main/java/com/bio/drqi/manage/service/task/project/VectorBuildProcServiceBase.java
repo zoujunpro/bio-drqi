@@ -41,6 +41,8 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
     private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
 
+
+
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         log.info("【任务工单】载体构建开始");
@@ -82,6 +84,12 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
 
         cerVectorTaskTb.setVectorBuildFlag(CerProjectContents.Y);
         cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
+
+
+        /**
+         * 更新当前执行步骤
+         */
+        logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.vector_build, bioTaskDtlTb.getTaskNum());
 
     }
 
@@ -126,10 +134,6 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
                 throw new BusinessException("同一个项目中不能存在相同共转名称");
             }
 
-            /**
-             * 更新当前执行步骤
-             */
-            logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.vector_build, bioTaskDtlTb.getTaskNum());
 
 
             updateVectorTaskTimePlan(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.vector_build);
@@ -143,6 +147,7 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
         cerVectorTaskTb.setVectorBuildFlag(CerProjectContents.N);
         cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
+        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(),ImplementationPlanTypeEnum.vector_build.name());
     }
 
     private void doOtherVectorTask(VectorTaskAddDTO vectorTaskAddDTO, CerVectorTaskTb cerVectorTaskTb,String taskNum) {

@@ -27,7 +27,6 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
     @Resource
     private CerConversionAndTransRefMapper cerConversionAndTransRefMapper;
 
-
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
@@ -84,6 +83,25 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
             }
         }
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(conversionAndTransDTO));
+
+
+        //更新每一个实施方案的添加移苗步骤
+        List<String> vectorTaskCodeList = null;
+        if (CollectionUtil.isNotEmpty(conversionAndTransDTO.getSampleCodeList())) {
+            vectorTaskCodeList = conversionAndTransDTO.getSampleCodeList().stream().map(ConversionAndTransDTO.SampleCode::getVectorTaskCode).distinct().collect(Collectors.toList());
+        }
+        if (CollectionUtil.isNotEmpty(conversionAndTransDTO.getTransFormList())) {
+            vectorTaskCodeList = conversionAndTransDTO.getTransFormList().stream().map(ConversionAndTransDTO.TransForm::getVectorTaskCode).distinct().collect(Collectors.toList());
+        }
+        if (CollectionUtil.isNotEmpty(vectorTaskCodeList)) {
+            vectorTaskCodeList.forEach(vectorTaskCode -> {
+                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+                /**
+                 * 更新当前执行步骤
+                 */
+                logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.cer_plant, bioTaskDtlTb.getTaskNum());
+            });
+        }
     }
 
     @Override
@@ -107,25 +125,6 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
                 }
             }
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(conversionAndTransDTO));
-
-
-            //更新每一个实施方案的添加移苗步骤
-            List<String> vectorTaskCodeList = null;
-            if (CollectionUtil.isNotEmpty(conversionAndTransDTO.getSampleCodeList())) {
-                vectorTaskCodeList = conversionAndTransDTO.getSampleCodeList().stream().map(ConversionAndTransDTO.SampleCode::getVectorTaskCode).distinct().collect(Collectors.toList());
-            }
-            if (CollectionUtil.isNotEmpty(conversionAndTransDTO.getTransFormList())) {
-                vectorTaskCodeList = conversionAndTransDTO.getTransFormList().stream().map(ConversionAndTransDTO.TransForm::getVectorTaskCode).distinct().collect(Collectors.toList());
-            }
-            if (CollectionUtil.isNotEmpty(vectorTaskCodeList)) {
-                vectorTaskCodeList.forEach(vectorTaskCode -> {
-                    CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-                    /**
-                     * 更新当前执行步骤
-                     */
-                    logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.conversion_and_trans, bioTaskDtlTb.getTaskNum());
-                });
-            }
         }
     }
 
@@ -137,5 +136,7 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
             cerConversionAndTransRefMapper.deleteByConversionAndTransId(cerConversionAndTransTb.getId());
             cerPlantDtlTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         }
+        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(),ImplementationPlanTypeEnum.cer_plant.name());
+
     }
 }

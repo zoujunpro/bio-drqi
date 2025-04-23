@@ -15,6 +15,10 @@ public interface CerVectorStepLogMapper extends BaseMapper<CerVectorStepLog> {
     CerVectorStepLog selectOneByVectorTaskIdAndStepCode(@Param("vectorTaskId") Integer vectorTaskId, @Param("stepCode") String stepCode);
 
     List<CerVectorStepLog> selectAllByVectorTaskIdOrderById(@Param("vectorTaskId") Integer vectorTaskId);
+
+    int deleteByVectorTaskIdAndStepCodeAndTaskNum(@Param("vectorTaskId") Integer vectorTaskId, @Param("stepCode") String stepCode, @Param("taskNum") String taskNum);
+
+    int deleteByTaskNumAndStepCode(@Param("taskNum") String taskNum, @Param("stepCode") String stepCode);
 }
 
 

@@ -142,8 +142,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
 
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
-        NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
-
         cerSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());

@@ -84,24 +84,6 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
         }
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(conversionAndTransDTO));
 
-
-        //更新每一个实施方案的添加移苗步骤
-        List<String> vectorTaskCodeList = null;
-        if (CollectionUtil.isNotEmpty(conversionAndTransDTO.getSampleCodeList())) {
-            vectorTaskCodeList = conversionAndTransDTO.getSampleCodeList().stream().map(ConversionAndTransDTO.SampleCode::getVectorTaskCode).distinct().collect(Collectors.toList());
-        }
-        if (CollectionUtil.isNotEmpty(conversionAndTransDTO.getTransFormList())) {
-            vectorTaskCodeList = conversionAndTransDTO.getTransFormList().stream().map(ConversionAndTransDTO.TransForm::getVectorTaskCode).distinct().collect(Collectors.toList());
-        }
-        if (CollectionUtil.isNotEmpty(vectorTaskCodeList)) {
-            vectorTaskCodeList.forEach(vectorTaskCode -> {
-                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-                /**
-                 * 更新当前执行步骤
-                 */
-                logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.cer_plant, bioTaskDtlTb.getTaskNum());
-            });
-        }
     }
 
     @Override
@@ -124,6 +106,27 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
                     }
                 }
             }
+
+
+            //更新每一个实施方案的添加移苗步骤
+            List<String> vectorTaskCodeList = null;
+            if (CollectionUtil.isNotEmpty(conversionAndTransDTO.getSampleCodeList())) {
+                vectorTaskCodeList = conversionAndTransDTO.getSampleCodeList().stream().map(ConversionAndTransDTO.SampleCode::getVectorTaskCode).distinct().collect(Collectors.toList());
+            }
+
+            if (CollectionUtil.isNotEmpty(conversionAndTransDTO.getTransFormList())) {
+                vectorTaskCodeList = conversionAndTransDTO.getTransFormList().stream().map(ConversionAndTransDTO.TransForm::getVectorTaskCode).distinct().collect(Collectors.toList());
+            }
+            if (CollectionUtil.isNotEmpty(vectorTaskCodeList)) {
+                vectorTaskCodeList.forEach(vectorTaskCode -> {
+                    CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+                    /**
+                     * 更新当前执行步骤
+                     */
+                    logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.cer_plant, bioTaskDtlTb.getTaskNum());
+                });
+            }
+
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(conversionAndTransDTO));
         }
     }

@@ -86,10 +86,7 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
         cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
 
 
-        /**
-         * 更新当前执行步骤
-         */
-        logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.vector_build, bioTaskDtlTb.getTaskNum());
+
 
     }
 
@@ -134,6 +131,10 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
                 throw new BusinessException("同一个项目中不能存在相同共转名称");
             }
 
+            /**
+             * 更新当前执行步骤
+             */
+            logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.vector_build, bioTaskDtlTb.getTaskNum());
 
 
             updateVectorTaskTimePlan(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.vector_build);

@@ -4,6 +4,7 @@ import com.bio.drqi.manage.base.PageDTO;
 import lombok.Data;
 
 @Data
-public class PlantDtlListReqDTO extends PageDTO {
+public class PlantDtlListDetailReqDTO extends PageDTO {
 
+    private Integer vectorTaskId;
 }

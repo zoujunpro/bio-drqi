@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
- * 种植明细-分页查询
+ * 种植明细
  */
 @RestController
 @RequestMapping("/plantDtl")

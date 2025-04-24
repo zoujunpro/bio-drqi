@@ -10,10 +10,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.BioDictTypeEnum;
-import com.bio.drqi.enums.GenerationEnum;
-import com.bio.drqi.enums.PlantStatusEnum;
-import com.bio.drqi.enums.VectorTaskPlanEventTypeEnum;
+import com.bio.drqi.enums.*;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.service.DictInnerService;
 import com.bio.drqi.manage.util.LetterUtil;
@@ -87,10 +84,6 @@ public class TestCleanController {
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
-
-    @Resource
-    private OssService ossService;
-
     @Resource
     private CerVectorTaskPlanLogMapper cerVectorTaskPlanLogMapper;
 
@@ -101,42 +94,67 @@ public class TestCleanController {
     @Resource
     private CerPlantDtlTbMapper cerPlantDtlTbMapper;
 
+    @Resource
+    private CerVectorStepLogMapper cerVectorStepLogMapper;
+
+
+    @GetMapping("/cleanVectorStep")
+    public ResponseResult<String> cleanVectorStep() {
+
+        List<CerPlantDtlTb> cerPlantDtlTbList = cerPlantDtlTbMapper.selectSelective(null);
+        for (CerPlantDtlTb cerPlantDtlTb : cerPlantDtlTbList) {
+                CerVectorStepLog cerVectorStepLog = cerVectorStepLogMapper.selectOneByVectorTaskIdAndStepCode(cerPlantDtlTb.getVectorTaskId(), ImplementationPlanTypeEnum.cer_plant.name());
+                if(cerVectorStepLog==null){
+
+                    cerVectorStepLog=new CerVectorStepLog();
+                    cerVectorStepLog.setProjectId(cerPlantDtlTb.getProjectId());
+                    cerVectorStepLog.setVectorTaskId(cerPlantDtlTb.getVectorTaskId());
+                    cerVectorStepLog.setStepCode(ImplementationPlanTypeEnum.cer_plant.name());
+                    cerVectorStepLog.setCreateTime(new Date());
+                    cerVectorStepLog.setTaskNum(cerPlantDtlTb.getTaskNum());
+                    cerVectorStepLogMapper.insert(cerVectorStepLog);
+                    log.info("插入step={}",cerVectorStepLog);
+                }
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
 
     @GetMapping("/cleanTrans")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseResult<String> cleanTrans(){
-       List<CerConversionAndTransRef> cerConversionAndTransRefList= cerConversionAndTransRefMapper.selectList(null);
-       for (CerConversionAndTransRef cerConversionAndTransRef:cerConversionAndTransRefList){
-           if(StringUtils.isNotEmpty(cerConversionAndTransRef.getSampleCode())){
-             CerPlantDtlTb cerPlantDtlTb=  cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(cerConversionAndTransRef.getSampleCode(),cerConversionAndTransRef.getVectorTaskCode());
-             if(cerPlantDtlTb==null){
-                CerSampleTestTb cerSampleTestTb= cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(cerConversionAndTransRef.getVectorTaskCode(),cerConversionAndTransRef.getSampleCode());
-                if(cerSampleTestTb!=null){
-                    cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(),cerSampleTestTb.getApplyNo());
-                    log.info("插入数据={}",cerPlantDtlTb);
-                    cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
-                    cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
-                    cerPlantDtlTbMapper.insert(cerPlantDtlTb);
+    public ResponseResult<String> cleanTrans() {
+        List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectList(null);
+        for (CerConversionAndTransRef cerConversionAndTransRef : cerConversionAndTransRefList) {
+            if (StringUtils.isNotEmpty(cerConversionAndTransRef.getSampleCode())) {
+                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(cerConversionAndTransRef.getSampleCode(), cerConversionAndTransRef.getVectorTaskCode());
+                if (cerPlantDtlTb == null) {
+                    CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(cerConversionAndTransRef.getVectorTaskCode(), cerConversionAndTransRef.getSampleCode());
+                    if (cerSampleTestTb != null) {
+                        cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), cerSampleTestTb.getApplyNo());
+                        log.info("插入数据={}", cerPlantDtlTb);
+                        cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
+                        cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
+                        cerPlantDtlTbMapper.insert(cerPlantDtlTb);
+                    }
+
+                }
+            } else if (StringUtils.isNotEmpty(cerConversionAndTransRef.getTransformCode())) {
+                List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByTransformCode(cerConversionAndTransRef.getTransformCode());
+                for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
+                    CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(cerSampleTestTb.getSampleCode(), cerSampleTestTb.getVectorTaskCode());
+                    if (cerPlantDtlTb == null) {
+                        cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), cerSampleTestTb.getApplyUserName(), cerSampleTestTb.getApplyNo());
+                        log.info("插入数据={}", cerPlantDtlTb);
+                        cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
+                        cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
+                        cerPlantDtlTbMapper.insert(cerPlantDtlTb);
+                    }
+
                 }
 
-             }
-           }else if(StringUtils.isNotEmpty(cerConversionAndTransRef.getTransformCode())){
-             List<CerSampleTestTb> cerSampleTestTbList=  cerSampleTestTbMapper.selectAllByTransformCode(cerConversionAndTransRef.getTransformCode());
-             for (CerSampleTestTb cerSampleTestTb:cerSampleTestTbList){
-                 CerPlantDtlTb cerPlantDtlTb=  cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(cerSampleTestTb.getSampleCode(),cerSampleTestTb.getVectorTaskCode());
-                 if(cerPlantDtlTb==null){
-                     cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), cerSampleTestTb.getApplyUserName(),cerSampleTestTb.getApplyNo());
-                     log.info("插入数据={}",cerPlantDtlTb);
-                     cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
-                     cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
-                     cerPlantDtlTbMapper.insert(cerPlantDtlTb);
-                 }
-
-             }
-
-           }
-       }
-       return ResponseResult.getSuccess("ok");
+            }
+        }
+        return ResponseResult.getSuccess("ok");
     }
 
 

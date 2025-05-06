@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.TcExperimentDesignTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.TcExperimentDesignTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="experimentCode" column="experiment_code" jdbcType="VARCHAR"/>
+            <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
+            <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
+            <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+            <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+            <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
+            <result property="targetCharacter" column="target_character" jdbcType="VARCHAR"/>
+            <result property="generationCode" column="generation_code" jdbcType="VARCHAR"/>
+            <result property="geneType" column="gene_type" jdbcType="VARCHAR"/>
+            <result property="geneticCharacter" column="genetic_character" jdbcType="VARCHAR"/>
+            <result property="regionArea" column="region_area" jdbcType="VARCHAR"/>
+            <result property="areaUnit" column="area_unit" jdbcType="VARCHAR"/>
+            <result property="rowNumber" column="row_number" jdbcType="VARCHAR"/>
+            <result property="rowLength" column="row_length" jdbcType="VARCHAR"/>
+            <result property="rowSpace" column="row_space" jdbcType="VARCHAR"/>
+            <result property="seedingType" column="seeding_type" jdbcType="VARCHAR"/>
+            <result property="seedingNumber" column="seeding_number" jdbcType="INTEGER"/>
+            <result property="seedingUnit" column="seeding_unit" jdbcType="VARCHAR"/>
+            <result property="seedingTime" column="seeding_time" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,experiment_code,region_num,
+        seed_num,project_code,vector_task_code,
+        species_code,breed_code,target_character,
+        generation_code,gene_type,genetic_character,
+        region_area,area_unit,row_number,
+        row_length,row_space,seeding_type,
+        seeding_number,seeding_unit,seeding_time,
+        remark,task_num,create_user_id,
+        create_user_name,create_time
+    </sql>
+    <insert id="insertBatch">
+        insert into tc_experiment_design_tb(id,experiment_code,region_num,
+        seed_num,project_code,vector_task_code,
+        species_code,breed_code,target_character,
+        generation_code,gene_type,genetic_character,
+        region_area,area_unit,row_number,
+        row_length,row_space,seeding_type,
+        seeding_number,seeding_unit,seeding_time,
+        remark,task_num,create_user_id,
+        create_user_name,create_time)
+        values
+        <foreach collection="tcExperimentDesignTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.experimentCode,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},
+            #{item.seedNum,jdbcType=VARCHAR},#{item.projectCode,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},
+            #{item.speciesCode,jdbcType=VARCHAR},#{item.breedCode,jdbcType=VARCHAR},#{item.targetCharacter,jdbcType=VARCHAR},
+            #{item.generationCode,jdbcType=VARCHAR},#{item.geneType,jdbcType=VARCHAR},#{item.geneticCharacter,jdbcType=VARCHAR},
+            #{item.regionArea,jdbcType=VARCHAR},#{item.areaUnit,jdbcType=VARCHAR},#{item.rowNumber,jdbcType=VARCHAR},
+            #{item.rowLength,jdbcType=VARCHAR},#{item.rowSpace,jdbcType=VARCHAR},#{item.seedingType,jdbcType=VARCHAR},
+            #{item.seedingNumber,jdbcType=NUMERIC},#{item.seedingUnit,jdbcType=VARCHAR},#{item.seedingTime,jdbcType=VARCHAR},
+            #{item.remark,jdbcType=VARCHAR},#{item.taskNum,jdbcType=VARCHAR},#{item.createUserId,jdbcType=NUMERIC},
+            #{item.createUserName,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+</mapper>

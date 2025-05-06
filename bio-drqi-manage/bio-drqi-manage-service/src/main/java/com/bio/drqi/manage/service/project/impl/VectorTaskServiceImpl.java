@@ -118,7 +118,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         //复制工单
         if (StringUtils.isNotEmpty(getVectorTaskNumReqDTO.getVectorTaskCode())) {
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(getVectorTaskNumReqDTO.getVectorTaskCode());
-            if (cerVectorTaskTb.getVectorTaskCode().matches("^[0-9a-zA-Z]{1,8}\\-[0-9]{2}[a-z]$")) {
+            if (cerVectorTaskTb!=null&&cerVectorTaskTb.getVectorTaskCode().matches("^[0-9a-zA-Z]{1,8}\\-[0-9]{2}[a-z]$")) {
                 cerVectorTaskTbList = cerVectorTaskTbList.stream().filter(vectorTask -> vectorTask.getVectorTaskCode().matches("^[0-9a-zA-Z]{1,8}\\-[0-9]{2}[a-z]$")).filter(vectorTaskTb -> vectorTaskTb.getVectorTaskCode().contains(cerVectorTaskTb.getVectorTaskCode().substring(0, cerVectorTaskTb.getVectorTaskCode().length() - 1))).collect(Collectors.toList());
                 List<String> lastLetter = cerVectorTaskTbList.stream().map(vectorTask -> vectorTask.getVectorTaskCode().substring(vectorTask.getVectorTaskCode().length() - 1)).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
                 return cerVectorTaskTb.getVectorTaskCode().substring(0, cerVectorTaskTb.getVectorTaskCode().length() - 1) + LetterUtil.nextLetter(lastLetter.get(0));

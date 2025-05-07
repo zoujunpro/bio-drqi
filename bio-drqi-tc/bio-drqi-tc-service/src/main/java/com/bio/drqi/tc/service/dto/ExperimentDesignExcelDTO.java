@@ -1,100 +1,86 @@
-package com.bio.drqi.domain;
+package com.bio.drqi.tc.service.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
-import java.util.Date;
-
-/**
- * 田间试验设计表
- * @TableName tc_experiment_design_tb
- */
-@TableName(value ="tc_experiment_design_tb")
 @Data
-public class TcExperimentDesignTb implements Serializable {
-    /**
-     * 主键ID
-     */
-    @TableId
-    private Integer id;
-
+public class ExperimentDesignExcelDTO {
     /**
      * 实验编号
      */
+    @ExcelProperty("实验编号")
     private String experimentCode;
-
     /**
      * 小区编号
      */
+    @ExcelProperty("小区编号")
     private String regionNum;
 
     /**
      * 种子编号
      */
+    @ExcelProperty("种子编号")
     private String seedNum;
-
-    /**
-     * 项目编号
-     */
-    private String projectCode;
-
-    /**
-     * 实施方案编号
-     */
-    private String vectorTaskCode;
-
-    /**
-     * 物种
-     */
-    private String speciesCode;
 
     /**
      * 品种
      */
+    @ExcelProperty("品种")
     private String breedCode;
-
+    /**
+     * 实施方案编号
+     */
+    @ExcelProperty("实施方案编号")
+    private String vectorTaskCode;
     /**
      * 目标性状
      */
+    @ExcelProperty("目标性状")
     private String targetCharacter;
 
     /**
-     * 代次编号
+     * 世代
      */
+    @ExcelProperty("世代")
     private String generationCode;
 
     /**
      * 基因类型
      */
+    @ExcelProperty("基因型")
     private String geneType;
-
     /**
      * 基因型性状
      */
+    @ExcelProperty("基因型性状")
     private String geneticCharacter;
-
+    /**
+     * 项目编号
+     */
+    @ExcelProperty("项目编号")
+    private String projectCode;
     /**
      * 小区面积
      */
+    @ExcelProperty("小区面积")
     private String regionArea;
 
     /**
      * 面积单位
      */
+    @ExcelProperty("单位")
     private String areaUnit;
 
     /**
      * 行数
      */
+    @ExcelProperty("小区行数")
     private String rowNumber;
 
     /**
      * 行长
      */
+    @ExcelProperty("小区行数")
     private String rowLength;
 
     /**
@@ -141,14 +127,6 @@ public class TcExperimentDesignTb implements Serializable {
      * 创建人
      */
     private String createUserName;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 
 
 }

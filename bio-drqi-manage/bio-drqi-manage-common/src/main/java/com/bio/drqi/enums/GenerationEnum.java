@@ -13,7 +13,16 @@ public enum GenerationEnum {
     T7("T7", "07", "T7"),
     T8("T8", "08", "T8"),
     T9("T9", "09", "T9"),
-    TY("TY", "00", "原种");
+    TY("TY", "00", "原种"),
+    P1("P1", "11", "P1"),
+    P2("P2", "12", "P2"),
+    P3("P3", "13", "P3"),
+    P4("P4", "14", "P4"),
+    P5("P5", "15", "P5"),
+    P6("P6", "16", "P6"),
+    P7("P7", "17", "P7"),
+    P8("P8", "18", "P8"),
+    P9("P9", "19", "P9"),;
     public String num;
     public String code;
     public String desc;

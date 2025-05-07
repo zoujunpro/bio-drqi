@@ -7,9 +7,11 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.bsm.req.BmsPrintProductLabelReqDTO;
 import com.bio.drqi.bsm.service.BmsPrintService;
 import com.bio.drqi.domain.BmsProductStockInLog;
+import com.bio.drqi.domain.BmsProductStockTb;
 import com.bio.drqi.enums.SeedMaterialTypeEnum;
 import com.bio.drqi.manage.base.PrintRspDTO;
 import com.bio.drqi.mapper.BmsProductStockInLogMapper;
+import com.bio.drqi.mapper.BmsProductStockTbMapper;
 import com.bio.print.api.PrintApi;
 import com.bio.print.req.PrintDataReqDTO;
 import com.bio.print.rsp.BmsLabelPrintDTO;
@@ -26,7 +28,7 @@ public class BmsPrintServiceImpl implements BmsPrintService {
 
 
     @Resource
-    private BmsProductStockInLogMapper bmsProductStockInLogMapper;
+    private BmsProductStockTbMapper bmsProductStockTbMapper;
 
     @Resource
     private PrintApi printApi;
@@ -35,19 +37,20 @@ public class BmsPrintServiceImpl implements BmsPrintService {
     public PrintRspDTO productLabel(BmsPrintProductLabelReqDTO bmsPrintProductLabelReqDTO) {
         List<BmsLabelPrintDTO> bmsLabelPrintDTOList = new ArrayList<>();
         for (BmsPrintProductLabelReqDTO.Content content : bmsPrintProductLabelReqDTO.getContentList()) {
-            BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectOneByTaskNumAndProductInnerCodeAndBatchNo(bmsPrintProductLabelReqDTO.getTaskNum(),content.getProductInnerCode(),content.getBatchNo());
-            if (bmsProductStockInLog == null) {
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(content.getProductInnerCode(),content.getUnitCode(),content.getBatchNo());
+            if (bmsProductStockTb == null) {
                 log.error("本条要打印组装的数据content={}", JSONUtil.toJsonStr(content));
                 throw new BusinessException("找不到打印数据");
             }
             BmsLabelPrintDTO bmsLabelPrintDTO = new BmsLabelPrintDTO();
-            bmsLabelPrintDTO.setSupplierCode(bmsProductStockInLog.getSupplierCode());
-            bmsLabelPrintDTO.setProductInnerCode(bmsProductStockInLog.getProductInnerCode());
-            bmsLabelPrintDTO.setBatchNo(bmsProductStockInLog.getBatchNo());
+            bmsLabelPrintDTO.setSupplierCode(bmsProductStockTb.getSupplierCode());
+            bmsLabelPrintDTO.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
+            bmsLabelPrintDTO.setBatchNo(bmsProductStockTb.getBatchNo());
             bmsLabelPrintDTO.setPrintNum(content.getPrintNum());
             bmsLabelPrintDTO.setTaskNum(bmsPrintProductLabelReqDTO.getTaskNum());
-            bmsLabelPrintDTO.setExpirationDate(bmsProductStockInLog.getExpirationDate());
-            bmsLabelPrintDTO.setProduceDate(bmsProductStockInLog.getProduceDate());
+            bmsLabelPrintDTO.setExpirationDate(bmsProductStockTb.getExpirationDate());
+            bmsLabelPrintDTO.setUnitCode(content.getUnitCode());
+            bmsLabelPrintDTO.setProduceDate(bmsProductStockTb.getProduceDate());
             bmsLabelPrintDTOList.add(bmsLabelPrintDTO);
         }
         if (CollectionUtil.isNotEmpty(bmsLabelPrintDTOList)) {

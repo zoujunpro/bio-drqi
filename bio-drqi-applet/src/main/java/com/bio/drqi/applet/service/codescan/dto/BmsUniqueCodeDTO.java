@@ -7,9 +7,8 @@ public class BmsUniqueCodeDTO {
 
     private String productInnerCode;
 
-    private String taskNum;
-
     private String batchNo;
 
-    private String produceDate;
+    private String unitCode;
+
 }

@@ -24,35 +24,25 @@ import javax.annotation.Resource;
 public class BmsCodeScanService extends AbstractBaseCodeScanService<BmsUniqueCodeDTO, ScanCodeBmsRspDTO> {
 
     @Resource
-    private BmsProductStockInLogMapper bmsProductStockInLogMapper;
-
-    @Resource
     private BmsProductStockTbMapper bmsProductStockTbMapper;
 
     @Override
     public BmsUniqueCodeDTO parseUniqueCode(String uniqueCode) {
         String[] uniqueCodeArr = uniqueCode.split("\\|");
         BmsUniqueCodeDTO bmsUniqueCodeDTO = new BmsUniqueCodeDTO();
-        bmsUniqueCodeDTO.setTaskNum(uniqueCodeArr[0]);
-        bmsUniqueCodeDTO.setProductInnerCode(uniqueCodeArr[1]);
-        bmsUniqueCodeDTO.setBatchNo(uniqueCodeArr[2]);
-        bmsUniqueCodeDTO.setProduceDate(uniqueCodeArr[3]);
-
+        bmsUniqueCodeDTO.setProductInnerCode(uniqueCodeArr[0]);
+        bmsUniqueCodeDTO.setBatchNo(uniqueCodeArr[1]);
+        bmsUniqueCodeDTO.setUnitCode(uniqueCodeArr[2]);
         return bmsUniqueCodeDTO;
     }
 
 
     @Override
     public ScanCodeBmsRspDTO dealCodeContent(BmsUniqueCodeDTO bmsUniqueCodeDTO) {
-        BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectOneByTaskNumAndProductInnerCodeAndBatchNo(bmsUniqueCodeDTO.getTaskNum(), bmsUniqueCodeDTO.getProductInnerCode(), bmsUniqueCodeDTO.getBatchNo());
-        if (bmsProductStockInLog == null) {
-            log.error("扫码失败，找不到数据，{}", JSONUtil.toJsonStr(bmsUniqueCodeDTO));
-            throw new BusinessException("无此入库记录,任务订单号:" + bmsUniqueCodeDTO.getTaskNum() + " 商品编号:" + bmsUniqueCodeDTO.getProductInnerCode());
-        }
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo());
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsUniqueCodeDTO.getProductInnerCode(), bmsUniqueCodeDTO.getUnitCode(), bmsUniqueCodeDTO.getBatchNo());
         if (bmsProductStockTb == null) {
-            log.error("扫码数据异常，找不到数据，{}", JSONUtil.toJsonStr(bmsUniqueCodeDTO));
-            throw new BusinessException("数据异常，库存中找不到数据,商品编号：" + bmsProductStockInLog.getProductInnerCode() + " 批次号：" + bmsProductStockInLog.getProductInnerCode());
+            log.error("扫码失败，找不到库存数据，{}", JSONUtil.toJsonStr(bmsUniqueCodeDTO));
+            throw new BusinessException("扫码失败，找不到库存数据:" + " 商品编号:" + bmsUniqueCodeDTO.getProductInnerCode()+"批次号："+bmsUniqueCodeDTO.getBatchNo()+"单位："+bmsUniqueCodeDTO.getUnitCode());
         }
         ScanCodeBmsRspDTO scanCodeBmsRspDTO= BeanUtils.copyProperties(bmsProductStockTb, ScanCodeBmsRspDTO.class);
         return scanCodeBmsRspDTO;

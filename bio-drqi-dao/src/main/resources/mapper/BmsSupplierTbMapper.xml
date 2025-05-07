@@ -70,6 +70,7 @@
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
             <if test="deleteFlag != null">and delete_flag=#{deleteFlag,jdbcType=VARCHAR}</if>
         </where>
+        order by id desc
     </select>
     <select id="selectSupplierCodeAndSupplierCodeByDeleteFlagOrderByIdDesc" resultMap="BaseResultMap">
         select supplier_code, supplier_name

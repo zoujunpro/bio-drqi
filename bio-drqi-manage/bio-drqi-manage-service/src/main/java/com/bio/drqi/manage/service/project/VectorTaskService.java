@@ -8,6 +8,7 @@ import com.bio.drqi.manage.vector.rsp.VectorListPageRspDTO;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.vector.rsp.VectorTaskSpeciesRspDTO;
 import com.github.pagehelper.PageInfo;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -28,6 +29,8 @@ public interface VectorTaskService {
     List<StepListRspDTO> stepListByCode(String vectorTaskCode);
 
     VectorTaskAddDTO detail(Integer id);
+
+    VectorTaskAddDTO detailByCode( String vectorTaskCode);
 
     void stop(Integer id);
 

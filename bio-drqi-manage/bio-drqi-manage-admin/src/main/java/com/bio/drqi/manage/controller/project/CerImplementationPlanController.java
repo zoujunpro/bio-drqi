@@ -142,6 +142,19 @@ public class CerImplementationPlanController {
         return ResponseResult.getSuccess(vectorTaskService.detail(id));
     }
 
+    /**
+     * 查询实施方案详情(根据编号)
+     *
+     * @param vectorTaskCode
+     * @return
+     */
+    @GetMapping("/detailByCode")
+    @WebLog(desc = "查询实施方案详情(根据编号)")
+    public ResponseResult<VectorTaskAddDTO> detailByCode(@RequestParam String vectorTaskCode) {
+        return ResponseResult.getSuccess(vectorTaskService.detailByCode(vectorTaskCode));
+    }
+
+
 
 
     /**

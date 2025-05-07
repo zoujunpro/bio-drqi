@@ -35,7 +35,7 @@ public class BmsPrintServiceImpl implements BmsPrintService {
     public PrintRspDTO productLabel(BmsPrintProductLabelReqDTO bmsPrintProductLabelReqDTO) {
         List<BmsLabelPrintDTO> bmsLabelPrintDTOList = new ArrayList<>();
         for (BmsPrintProductLabelReqDTO.Content content : bmsPrintProductLabelReqDTO.getContentList()) {
-            BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectOneByTaskNumAndProductInnerCodeAndBatchNoAndProduceDate(bmsPrintProductLabelReqDTO.getTaskNum(),content.getProductInnerCode(),content.getBatchNo(),content.getProduceDate());
+            BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectOneByTaskNumAndProductInnerCodeAndBatchNo(bmsPrintProductLabelReqDTO.getTaskNum(),content.getProductInnerCode(),content.getBatchNo());
             if (bmsProductStockInLog == null) {
                 log.error("本条要打印组装的数据content={}", JSONUtil.toJsonStr(content));
                 throw new BusinessException("找不到打印数据");

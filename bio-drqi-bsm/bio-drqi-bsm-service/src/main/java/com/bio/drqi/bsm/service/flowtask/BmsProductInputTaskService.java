@@ -46,7 +46,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
     private BmsStockLocationDictMapper bmsStockLocationDictMapper;
 
     @Resource
-    BmsProductOutTaskService bmsProductOutTaskService;
+    private BmsProductOutTaskService bmsProductOutTaskService;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -143,7 +143,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
 
 
     private BmsProductStockTb updateOrInsertBmsProductStock(BmsProductInputDTO.OrderDetail inputOrderDetail, BmsOrderDetailTb bmsOrderDetailTb, String batchNo) {
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndProduceDate(bmsOrderDetailTb.getProductInnerCode(), bmsOrderDetailTb.getApplyUnitCode(), batchNo, inputOrderDetail.getProduceDate());
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsOrderDetailTb.getProductInnerCode(), bmsOrderDetailTb.getApplyUnitCode(), batchNo);
         if (bmsProductStockTb == null) {
             bmsProductStockTb = new BmsProductStockTb();
             bmsProductStockTb.setProductName(bmsOrderDetailTb.getProductName());

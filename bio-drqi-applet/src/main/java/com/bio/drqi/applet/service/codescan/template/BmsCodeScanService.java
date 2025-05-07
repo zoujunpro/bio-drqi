@@ -39,7 +39,7 @@ public class BmsCodeScanService extends AbstractBaseCodeScanService<BmsUniqueCod
 
     @Override
     public ScanCodeBmsRspDTO dealCodeContent(BmsUniqueCodeDTO bmsUniqueCodeDTO) {
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsUniqueCodeDTO.getProductInnerCode(), bmsUniqueCodeDTO.getBatchNo(), bmsUniqueCodeDTO.getUnitCode());
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsUniqueCodeDTO.getProductInnerCode(), bmsUniqueCodeDTO.getUnitCode(), bmsUniqueCodeDTO.getBatchNo());
         if (bmsProductStockTb == null) {
             log.error("扫码失败，找不到库存数据，{}", JSONUtil.toJsonStr(bmsUniqueCodeDTO));
             throw new BusinessException("扫码失败，找不到库存数据:" + " 商品编号:" + bmsUniqueCodeDTO.getProductInnerCode()+"批次号："+bmsUniqueCodeDTO.getBatchNo()+"单位："+bmsUniqueCodeDTO.getUnitCode());

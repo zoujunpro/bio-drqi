@@ -119,6 +119,67 @@ public class DataInitCleanController {
         return ResponseResult.getSuccess("OK");
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @GetMapping("/cleanProductStockExcel")
+    public ResponseResult<String> cleanProductStockExcel() {
+        List<ProductStockCleanDataExcel> productStockCleanDataExcelList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\耗材当前库存盘点-北京.xlsx", ProductStockCleanDataExcel.class);
+        for (ProductStockCleanDataExcel productStockCleanDataExcel : productStockCleanDataExcelList) {
+            BmsBrandTb bmsBrandTb = null;
+            if (StringUtils.isNotEmpty(productStockCleanDataExcel.brandName)) {
+                bmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(productStockCleanDataExcel.brandName);
+                if (bmsBrandTb == null) {
+                    log.info("找不到品牌：" + JSONUtil.toJsonStr(productStockCleanDataExcel));
+                    throw new BusinessException("找不到品牌");
+
+                }
+            }
+            BmsSupplierTb bmsSupplierTb = null;
+            if (StringUtils.isNotEmpty(productStockCleanDataExcel.getSupplierCode())) {
+                bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(productStockCleanDataExcel.supplierCode);
+                if(bmsSupplierTb==null){
+                    log.info("找不到供应商：" + JSONUtil.toJsonStr(productStockCleanDataExcel));
+                    throw new BusinessException("找不到供应商");
+                }
+            }
+            BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(productStockCleanDataExcel.productName, bmsBrandTb == null ? null : bmsBrandTb.getBrandCode(), productStockCleanDataExcel.product_specs);
+            if (bmsProductTb == null) {
+                log.info("商品信息找不到={}", JSONUtil.toJsonStr(productStockCleanDataExcel));
+                throw new BusinessException("商品信息找不到");
+            }
+            log.info("清洗数据={}", productStockCleanDataExcel);
+            BmsProductStockTb bmsProductStockTb = new BmsProductStockTb();
+            bmsProductStockTb.setProductName(productStockCleanDataExcel.productName);
+            bmsProductStockTb.setProductOutCode(productStockCleanDataExcel.productOutCode);
+            bmsProductStockTb.setProductCategoryCode(bmsProductTb.getProductCategoryCode());
+            bmsProductStockTb.setProductTypeCode(null);
+            if (bmsBrandTb != null) {
+                bmsProductStockTb.setBrandCode(bmsBrandTb.getBrandCode());
+                bmsProductStockTb.setBrandName(bmsBrandTb.getBrandName());
+            }
+
+            bmsProductStockTb.setProductSpecs(productStockCleanDataExcel.product_specs);
+            bmsProductStockTb.setBatchNo(productStockCleanDataExcel.batchNo);
+            bmsProductStockTb.setTotalStoreNumber(Integer.valueOf(productStockCleanDataExcel.total_store_number));
+            bmsProductStockTb.setCurrentStockNumber(Integer.valueOf(productStockCleanDataExcel.current_stock_number));
+            bmsProductStockTb.setTotalOutNumber(Integer.valueOf(productStockCleanDataExcel.total_out_number));
+            bmsProductStockTb.setUnitCode("beijing");
+            bmsProductStockTb.setStockLocationNumber(productStockCleanDataExcel.stock_location_number);
+            bmsProductStockTb.setProductInnerCode(bmsProductTb.getProductInnerCode());
+            if(bmsSupplierTb!=null){
+                bmsProductStockTb.setSupplierCode(bmsSupplierTb.getSupplierCode());
+                bmsProductStockTb.setSupplierName(bmsSupplierTb.getSupplierName());
+            }
+
+            bmsProductStockTb.setUniqueCode(IdUtils.simpleUUID());
+            bmsProductStockTb.setProduceDate(productStockCleanDataExcel.produce_date);
+            bmsProductStockTb.setExpirationDate(productStockCleanDataExcel.expiration_date);
+
+
+        }
+
+
+        return ResponseResult.getSuccess("OK");
+    }
 
     @Transactional(rollbackFor = Exception.class)
     @GetMapping("/cleanProductDataExcel")
@@ -150,7 +211,7 @@ public class DataInitCleanController {
             }
 
             BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(productCleanDataExcel.productName, bmsBrandTb != null ? bmsBrandTb.getBrandCode() : null, productCleanDataExcel.product_specs);
-            if(bmsProductTb==null){
+            if (bmsProductTb == null) {
                 BmsProductAddReqDTO bmsProductAddReqDTO = new BmsProductAddReqDTO();
                 bmsProductAddReqDTO.setProductName(productCleanDataExcel.productName);
                 bmsProductAddReqDTO.setProductOutCode(productCleanDataExcel.productCode);
@@ -159,8 +220,8 @@ public class DataInitCleanController {
                 bmsProductAddReqDTO.setBrandCode(brandCode);
                 bmsProductAddReqDTO.setProductSpecs(productCleanDataExcel.product_specs);
                 bmsProductService.add(bmsProductAddReqDTO);
-            }else {
-                log.info("商品重复添加："+JSONUtil.toJsonStr(productCleanDataExcel));
+            } else {
+                log.info("商品重复添加：" + JSONUtil.toJsonStr(productCleanDataExcel));
             }
 
         }
@@ -170,28 +231,28 @@ public class DataInitCleanController {
     }
 
     @GetMapping("/cleanProject")
-    public ResponseResult<String> cleanProject(){
+    public ResponseResult<String> cleanProject() {
         List<CmsProjectDataExcel> cmsProjectDataExcelList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\cms项目21.xlsx", CmsProjectDataExcel.class);
-        for (CmsProjectDataExcel cmsProjectDataExcel:cmsProjectDataExcelList){
-            if("其他".equals(cmsProjectDataExcel.getProjectCode())){
+        for (CmsProjectDataExcel cmsProjectDataExcel : cmsProjectDataExcelList) {
+            if ("其他".equals(cmsProjectDataExcel.getProjectCode())) {
                 cmsProjectDataExcel.setProjectName("其他");
             }
-           BmsProjectDict bmsProjectDict= bmsProjectDictMapper.selectOneByProjectCode(cmsProjectDataExcel.projectCode);
+            BmsProjectDict bmsProjectDict = bmsProjectDictMapper.selectOneByProjectCode(cmsProjectDataExcel.projectCode);
 
-           if(bmsProjectDict==null){
-               bmsProjectDict=new BmsProjectDict();
-               bmsProjectDict.setProjectCode(cmsProjectDataExcel.projectCode);
-               bmsProjectDict.setProjectName(cmsProjectDataExcel.projectName);
-               bmsProjectDict.setCreateTime(new Date());
-               bmsProjectDictMapper.insert(bmsProjectDict);
-           }
+            if (bmsProjectDict == null) {
+                bmsProjectDict = new BmsProjectDict();
+                bmsProjectDict.setProjectCode(cmsProjectDataExcel.projectCode);
+                bmsProjectDict.setProjectName(cmsProjectDataExcel.projectName);
+                bmsProjectDict.setCreateTime(new Date());
+                bmsProjectDictMapper.insert(bmsProjectDict);
+            }
         }
         return ResponseResult.getSuccess("pk");
 
     }
 
     @Data
-    public static class CmsProjectDataExcel{
+    public static class CmsProjectDataExcel {
 
         @ExcelProperty("项目编号")
         private String projectCode;
@@ -200,6 +261,7 @@ public class DataInitCleanController {
         private String projectName;
 
     }
+
 
     @Data
     public static class ProductCleanDataExcel {
@@ -223,6 +285,48 @@ public class DataInitCleanController {
 
     }
 
+    @Data
+    public static class ProductStockCleanDataExcel {
+
+        @ExcelProperty("商品名称")
+        private String productName;
+
+        @ExcelProperty("供应商编号")
+        private String supplierCode;
+
+        @ExcelProperty("品牌名称")
+        private String brandName;
+
+        @ExcelProperty("货号")
+        private String productOutCode;
+
+        @ExcelProperty("所属类别")
+        private String productCategory;
+
+        @ExcelProperty("商品规格")
+        private String product_specs;
+
+        @ExcelProperty("批次")
+        private String batchNo;
+
+        @ExcelProperty("累计入库数量")
+        private String total_store_number;
+
+        @ExcelProperty("当前库存数量")
+        private String current_stock_number;
+
+        @ExcelProperty("累计出库数量")
+        private String total_out_number;
+
+        @ExcelProperty("生产日期")
+        private String produce_date;
+
+        @ExcelProperty("过期日期")
+        private String expiration_date;
+
+        @ExcelProperty("库存位置编号")
+        private String stock_location_number;
+    }
 
     @Data
     public static class SupplierCleanDataExcel {

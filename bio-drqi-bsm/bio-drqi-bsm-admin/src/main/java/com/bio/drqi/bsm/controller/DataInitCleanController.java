@@ -124,40 +124,65 @@ public class DataInitCleanController {
     public ResponseResult<String> cleanProductStockExcel() {
         List<ProductStockCleanDataExcel> productStockCleanDataExcelList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\耗材当前库存盘点-北京.xlsx", ProductStockCleanDataExcel.class);
         for (ProductStockCleanDataExcel productStockCleanDataExcel : productStockCleanDataExcelList) {
-            BmsBrandTb bmsBrandTb = null;
-            if (StringUtils.isNotEmpty(productStockCleanDataExcel.brandName)) {
-                bmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(productStockCleanDataExcel.brandName);
-                if (bmsBrandTb == null) {
-                    log.info("找不到品牌：" + JSONUtil.toJsonStr(productStockCleanDataExcel));
-                    throw new BusinessException("找不到品牌");
+            BmsProductTb bmsProductTb = null;
+            if (StringUtils.isNotEmpty(productStockCleanDataExcel.getProductInnerCode())) {
+                bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(productStockCleanDataExcel.productInnerCode);
+            } else {
+                bmsProductTb = bmsProductTbMapper.selectOneByProductOutCode(productStockCleanDataExcel.productOutCode);
+                if (bmsProductTb == null) {
+                    //如果是新品牌就插入
+                    BmsBrandTb bmsBrandTb = null;
+                    if (StringUtils.isNotEmpty(productStockCleanDataExcel.brandName)) {
+                        bmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(productStockCleanDataExcel.brandName);
+                        if (bmsBrandTb == null) {
+                            bmsBrandTb = new BmsBrandTb();
+                            bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
+                            bmsBrandTb.setBrandName(productStockCleanDataExcel.brandName);
+                            bmsBrandTb.setCreateTime(new Date());
+                            bmsBrandTb.setDeleteFlag("N");
+                            bmsBrandTbMapper.insert(bmsBrandTb);
+                        }
+                    }
 
+                    //如果是新类别就插入
+                    BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryName(productStockCleanDataExcel.productCategory);
+                    if (bmsProductCategoryTb == null) {
+                        bmsProductCategoryTb = new BmsProductCategoryTb();
+                        bmsProductCategoryTb.setProductCategoryName(productStockCleanDataExcel.productCategory);
+                        bmsProductCategoryTb.setProductCategoryCode(IdUtils.simpleUUID());
+                        bmsProductCategoryTb.setCreateTime(new Date());
+                        bmsProductCategoryTbMapper.insert(bmsProductCategoryTb);
+                    }
+
+                    BmsProductAddReqDTO bmsProductAddReqDTO = new BmsProductAddReqDTO();
+                    bmsProductAddReqDTO.setProductName(productStockCleanDataExcel.productName);
+                    bmsProductAddReqDTO.setProductOutCode(productStockCleanDataExcel.productOutCode);
+                    bmsProductAddReqDTO.setProductCategoryCode(bmsProductCategoryTb.getProductCategoryCode());
+                    bmsProductAddReqDTO.setProductTypeCode(null);
+                    bmsProductAddReqDTO.setBrandCode(bmsBrandTb.getBrandCode());
+                    bmsProductAddReqDTO.setProductSpecs(productStockCleanDataExcel.product_specs);
+                    bmsProductTb = bmsProductService.add(bmsProductAddReqDTO);
                 }
             }
-            BmsSupplierTb bmsSupplierTb = null;
-            if (StringUtils.isNotEmpty(productStockCleanDataExcel.getSupplierCode())) {
-                bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(productStockCleanDataExcel.supplierCode);
-                if(bmsSupplierTb==null){
-                    log.info("找不到供应商：" + JSONUtil.toJsonStr(productStockCleanDataExcel));
-                    throw new BusinessException("找不到供应商");
-                }
-            }
-            BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(productStockCleanDataExcel.productName, bmsBrandTb == null ? null : bmsBrandTb.getBrandCode(), productStockCleanDataExcel.product_specs);
-            if (bmsProductTb == null) {
-                log.info("商品信息找不到={}", JSONUtil.toJsonStr(productStockCleanDataExcel));
-                throw new BusinessException("商品信息找不到");
-            }
-            log.info("清洗数据={}", productStockCleanDataExcel);
+            //插入数据
             BmsProductStockTb bmsProductStockTb = new BmsProductStockTb();
-            bmsProductStockTb.setProductName(productStockCleanDataExcel.productName);
-            bmsProductStockTb.setProductOutCode(productStockCleanDataExcel.productOutCode);
+            bmsProductStockTb.setProductName(bmsProductTb.getProductName());
+            bmsProductStockTb.setProductOutCode(bmsProductTb.getProductOutCode());
             bmsProductStockTb.setProductCategoryCode(bmsProductTb.getProductCategoryCode());
-            bmsProductStockTb.setProductTypeCode(null);
-            if (bmsBrandTb != null) {
+            bmsProductStockTb.setProductTypeCode(bmsProductTb.getProductTypeCode());
+            if (bmsProductTb.getBrandCode() != null) {
+                BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsProductTb.getBrandCode());
                 bmsProductStockTb.setBrandCode(bmsBrandTb.getBrandCode());
                 bmsProductStockTb.setBrandName(bmsBrandTb.getBrandName());
             }
 
-            bmsProductStockTb.setProductSpecs(productStockCleanDataExcel.product_specs);
+            if (StringUtils.isNotEmpty(productStockCleanDataExcel.getSupplierCode())) {
+                BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(productStockCleanDataExcel.getSupplierCode());
+                bmsProductStockTb.setSupplierCode(bmsSupplierTb.getSupplierCode());
+                bmsProductStockTb.setSupplierName(bmsSupplierTb.getSupplierName());
+            }
+
+            bmsProductStockTb.setProductSpecs(bmsProductTb.getProductSpecs());
             bmsProductStockTb.setBatchNo(productStockCleanDataExcel.batchNo);
             bmsProductStockTb.setTotalStoreNumber(Integer.valueOf(productStockCleanDataExcel.total_store_number));
             bmsProductStockTb.setCurrentStockNumber(Integer.valueOf(productStockCleanDataExcel.current_stock_number));
@@ -165,16 +190,10 @@ public class DataInitCleanController {
             bmsProductStockTb.setUnitCode("beijing");
             bmsProductStockTb.setStockLocationNumber(productStockCleanDataExcel.stock_location_number);
             bmsProductStockTb.setProductInnerCode(bmsProductTb.getProductInnerCode());
-            if(bmsSupplierTb!=null){
-                bmsProductStockTb.setSupplierCode(bmsSupplierTb.getSupplierCode());
-                bmsProductStockTb.setSupplierName(bmsSupplierTb.getSupplierName());
-            }
-
             bmsProductStockTb.setUniqueCode(IdUtils.simpleUUID());
             bmsProductStockTb.setProduceDate(productStockCleanDataExcel.produce_date);
             bmsProductStockTb.setExpirationDate(productStockCleanDataExcel.expiration_date);
-
-
+            bmsProductStockTbMapper.insert(bmsProductStockTb);
         }
 
 
@@ -296,6 +315,9 @@ public class DataInitCleanController {
 
         @ExcelProperty("品牌名称")
         private String brandName;
+
+        @ExcelProperty("内部编号")
+        private String productInnerCode;
 
         @ExcelProperty("货号")
         private String productOutCode;

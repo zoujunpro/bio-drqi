@@ -111,5 +111,12 @@
         AND brand_code = #{brandCode,jdbcType=VARCHAR}
         AND product_specs = #{productSpecs,jdbcType=VARCHAR}
     </select>
+    <select id="selectOneByProductOutCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_tb
+        where
+        product_out_code = #{productOutCode,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

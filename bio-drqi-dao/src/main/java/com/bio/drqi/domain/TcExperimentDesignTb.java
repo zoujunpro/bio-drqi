@@ -19,7 +19,7 @@ public class TcExperimentDesignTb implements Serializable {
     /**
      * 主键ID
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -88,6 +88,11 @@ public class TcExperimentDesignTb implements Serializable {
     private String areaUnit;
 
     /**
+     * 株距
+     */
+    private String plantSpace;
+
+    /**
      * 行数
      */
     private String rowNumber;
@@ -146,6 +151,16 @@ public class TcExperimentDesignTb implements Serializable {
      * 创建时间
      */
     private Date createTime;
+
+    /**
+     * 出苗率
+     */
+    private String emergenceRate;
+
+    /**
+     * 移栽时间
+     */
+    private String transplantTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

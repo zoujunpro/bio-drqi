@@ -68,7 +68,7 @@ public class ExperimentDesignExcelDTO {
     /**
      * 面积单位
      */
-    @ExcelProperty("单位")
+    @ExcelProperty("面积单位")
     private String areaUnit;
 
     /**
@@ -80,53 +80,62 @@ public class ExperimentDesignExcelDTO {
     /**
      * 行长
      */
-    @ExcelProperty("小区行数")
+    @ExcelProperty("小区行长(m)")
     private String rowLength;
 
     /**
      * 行距
      */
+    @ExcelProperty("行距(cm)")
     private String rowSpace;
+
+    /**
+     * 株距(cm)
+     */
+    @ExcelProperty("株距(cm)")
+    private String plantSpace;
 
     /**
      * 播种方式
      */
+    @ExcelProperty("播种方式")
     private String seedingType;
 
     /**
      * 播种数量
      */
+    @ExcelProperty("播种数量")
     private Integer seedingNumber;
 
     /**
      * 播种单位
      */
+    @ExcelProperty("播种单位")
     private String seedingUnit;
 
     /**
      * 播种时间
      */
+    @ExcelProperty("播种时间")
     private String seedingTime;
+    /**
+     * 出苗率
+     */
+    @ExcelProperty("出苗率")
+    private String emergenceRate;
+
+    /**
+     * 移栽时间
+     */
+    @ExcelProperty("移栽时间")
+    private String transplantTime;
 
     /**
      * 备注
      */
+    @ExcelProperty("备注")
     private String remark;
 
-    /**
-     * 任务编号
-     */
-    private String taskNum;
-
-    /**
-     * 创建人ID
-     */
-    private Integer createUserId;
-
-    /**
-     * 创建人
-     */
-    private String createUserName;
 
 
 }

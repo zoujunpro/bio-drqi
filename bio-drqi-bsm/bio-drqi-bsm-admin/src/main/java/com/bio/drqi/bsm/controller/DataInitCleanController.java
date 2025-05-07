@@ -60,6 +60,8 @@ public class DataInitCleanController {
     @Resource
     private BmsProductTbMapper bmsProductTbMapper;
 
+    
+
 
     /**
      * 供应商数据清洗

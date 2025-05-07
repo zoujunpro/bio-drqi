@@ -44,12 +44,12 @@ public class BmsCodeScanService extends AbstractBaseCodeScanService<BmsUniqueCod
 
     @Override
     public ScanCodeBmsRspDTO dealCodeContent(BmsUniqueCodeDTO bmsUniqueCodeDTO) {
-        BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectOneByTaskNumAndProductInnerCodeAndBatchNoAndProduceDate(bmsUniqueCodeDTO.getTaskNum(), bmsUniqueCodeDTO.getProductInnerCode(), bmsUniqueCodeDTO.getBatchNo(),bmsUniqueCodeDTO.getProduceDate());
+        BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectOneByTaskNumAndProductInnerCodeAndBatchNo(bmsUniqueCodeDTO.getTaskNum(), bmsUniqueCodeDTO.getProductInnerCode(), bmsUniqueCodeDTO.getBatchNo());
         if (bmsProductStockInLog == null) {
             log.error("扫码失败，找不到数据，{}", JSONUtil.toJsonStr(bmsUniqueCodeDTO));
             throw new BusinessException("无此入库记录,任务订单号:" + bmsUniqueCodeDTO.getTaskNum() + " 商品编号:" + bmsUniqueCodeDTO.getProductInnerCode());
         }
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndProduceDate(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo(),bmsProductStockInLog.getProduceDate());
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo());
         if (bmsProductStockTb == null) {
             log.error("扫码数据异常，找不到数据，{}", JSONUtil.toJsonStr(bmsUniqueCodeDTO));
             throw new BusinessException("数据异常，库存中找不到数据,商品编号：" + bmsProductStockInLog.getProductInnerCode() + " 批次号：" + bmsProductStockInLog.getProductInnerCode());

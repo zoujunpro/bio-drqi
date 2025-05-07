@@ -17,7 +17,7 @@ public interface BmsProductStockTbMapper extends BaseMapper<BmsProductStockTb> {
 
     BmsProductStockTb selectOneByUniqueCode(@Param("uniqueCode") String uniqueCode);
 
-    BmsProductStockTb selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndProduceDate(@Param("productInnerCode") String productInnerCode, @Param("unitCode") String unitCode, @Param("batchNo") String batchNo, @Param("produceDate") String produceDate);
+    BmsProductStockTb selectOneByProductInnerCodeAndUnitCodeAndBatchNo(@Param("productInnerCode") String productInnerCode, @Param("unitCode") String unitCode, @Param("batchNo") String batchNo);
     List<String> selectProductNameByUnitCode(@Param("unitCode") String unitCode);
 }
 

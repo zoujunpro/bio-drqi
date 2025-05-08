@@ -30,5 +30,15 @@
         where
         project_code = #{projectCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectSelective" resultType="com.bio.drqi.domain.BmsProjectDict">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_project_dict
+        <where>
+            <if test="projectCode != null and projectCode!=''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="projectName != null and projectName!=''">and project_name=#{projectName,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
+    </select>
 
 </mapper>

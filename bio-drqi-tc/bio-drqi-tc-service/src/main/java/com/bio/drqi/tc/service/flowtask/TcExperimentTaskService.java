@@ -41,7 +41,6 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         TcExperimentTaskDTO tcExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcExperimentTaskDTO.class);
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-
             TcExperimentTb tcExperimentTb = new TcExperimentTb();
             tcExperimentTb.setProjectCode(tcExperimentTaskDTO.getProjectCode());
             tcExperimentTb.setVectorTaskCode(tcExperimentTaskDTO.getVectorTaskCode());

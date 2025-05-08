@@ -101,4 +101,11 @@
         where
         order_detail_num = #{orderDetailNum,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByProjectCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_order_detail_tb
+        where
+        project_code = #{projectCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

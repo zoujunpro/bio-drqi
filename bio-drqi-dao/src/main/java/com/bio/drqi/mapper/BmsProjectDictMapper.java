@@ -16,6 +16,9 @@ public interface BmsProjectDictMapper extends BaseMapper<BmsProjectDict> {
     List<BmsProjectDict> selectAllOrderByIdDesc();
 
     BmsProjectDict selectOneByProjectCode(@Param("projectCode") String projectCode);
+
+
+    List<BmsProjectDict> selectSelective(BmsProjectDict bmsProjectDict);
 }
 
 

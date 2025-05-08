@@ -2,6 +2,7 @@ package com.bio.drqi.bsm.controller;
 
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsProjectAddReqDTO;
 import com.bio.drqi.bsm.req.BmsProjectEditReqDTO;
@@ -35,6 +36,7 @@ public class BmsProjectController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "耗材管理项目字典表-分页查询")
+    @RequirePermissions("bms:bmsProject:listPage")
     public ResponseResult<PageInfo<BmsProjectListPageRspDTO>> listPage(@RequestBody BmsProjectListPageReqDTO bmsProjectListPageReqDTO) {
         return ResponseResult.getSuccess(bmsProjectService.listPage(bmsProjectListPageReqDTO));
     }
@@ -58,6 +60,7 @@ public class BmsProjectController {
      */
     @PostMapping("/add")
     @WebLog(desc = "耗材管理项目字典表-新增")
+    @RequirePermissions("bms:bmsProject:add")
     public ResponseResult<String> add(@RequestBody BmsProjectAddReqDTO bmsProjectAddReqDTO) {
         bmsProjectService.add(bmsProjectAddReqDTO);
         return ResponseResult.getSuccess(null);
@@ -72,6 +75,7 @@ public class BmsProjectController {
      */
     @PostMapping("/edit")
     @WebLog(desc = "耗材管理项目字典表-编辑")
+    @RequirePermissions("bms:bmsProject:edit")
     public ResponseResult<String> edit(@RequestBody BmsProjectEditReqDTO bmsProjectEditReqDTO) {
         bmsProjectService.edit(bmsProjectEditReqDTO);
         return ResponseResult.getSuccess(null);
@@ -85,6 +89,7 @@ public class BmsProjectController {
      */
     @GetMapping("/delete")
     @WebLog(desc = "耗材管理项目字典表-删除")
+    @RequirePermissions("bms:bmsProject:delete")
     public ResponseResult<String> delete(@RequestParam Integer id) {
         bmsProjectService.delete(id);
         return ResponseResult.getSuccess(null);

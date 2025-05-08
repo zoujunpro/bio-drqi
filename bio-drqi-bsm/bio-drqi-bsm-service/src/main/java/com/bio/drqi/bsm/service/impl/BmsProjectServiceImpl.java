@@ -73,7 +73,7 @@ public class BmsProjectServiceImpl implements BmsProjectService {
         }
         bmsProjectDict.setProjectName(bmsProjectEditReqDTO.getProjectName());
         try {
-            bmsProjectDictMapper.insert(bmsProjectDict);
+            bmsProjectDictMapper.updateById(bmsProjectDict);
         } catch (DuplicateKeyException e) {
             throw new BusinessException("项目名称已经存在");
         }

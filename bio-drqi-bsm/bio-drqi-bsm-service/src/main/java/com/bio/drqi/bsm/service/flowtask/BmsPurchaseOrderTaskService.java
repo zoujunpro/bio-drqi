@@ -181,7 +181,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
         bmsOrderTb.setAttachmentUrls(bmsPurchaseOrderDTO.getAttachmentUrls());
         bmsOrderTb.setCreateTime(new Date());
         bmsOrderTb.setTaskNum(bioTaskDtlTb.getTaskNum());
-        bmsOrderTb.setReportAccountTime(bmsPurchaseOrderDTO.getDemandRequireTime());
+        bmsOrderTb.setReportAccountTime(null);
         bmsOrderTb.setOverFlag(BioBsmContents.N);
         bmsOrderTbMapper.insert(bmsOrderTb);
         return bmsOrderTb;

@@ -163,9 +163,15 @@ public class BmsPurchaseOrderDTO {
     public String getAllProductName(){
         StringBuilder stringBuilder=new StringBuilder("");
         for (Product product:productList){
-            stringBuilder.append(product).append(";");
+            stringBuilder.append(product.getProductName()).append(";");
         }
-        return stringBuilder.substring(0,stringBuilder.length()-1);
+        String str=stringBuilder.toString();
+        if(str.length()>1){
+            return str.substring(0,str.length()-1);
+        }else {
+            return null;
+        }
+
     }
 
 }

@@ -165,7 +165,13 @@ public class BmsPurchaseOrderDTO {
         for (Product product:productList){
             stringBuilder.append(product).append(";");
         }
-        return stringBuilder.substring(0,stringBuilder.length()-1);
+        String str=stringBuilder.toString();
+        if(str.length()>1){
+            return str.substring(0,str.length()-1);
+        }else {
+            return null;
+        }
+
     }
 
 }

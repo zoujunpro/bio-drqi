@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.TcSampleTestApplyTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.TcSampleTestApplyTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="sampleApplyNum" column="sample_apply_num" jdbcType="VARCHAR"/>
+            <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="sampleOrganize" column="sample_organize" jdbcType="VARCHAR"/>
+            <result property="applyType" column="apply_type" jdbcType="VARCHAR"/>
+            <result property="expectedSampleTime" column="expected_sample_time" jdbcType="VARCHAR"/>
+            <result property="expectedResultTime" column="expected_result_time" jdbcType="VARCHAR"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,sample_apply_num,experiment_num,
+        task_num,sample_organize,apply_type,
+        expected_sample_time,expected_result_time,create_user_id,
+        create_user_name,create_time
+    </sql>
+</mapper>

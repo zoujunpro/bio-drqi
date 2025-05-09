@@ -1,0 +1,18 @@
+package com.bio.drqi.mapper;
+
+import com.bio.drqi.domain.TcSampleTestTb;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+/**
+* @author zou'jun
+* @description 针对表【tc_sample_test_tb(田测取样检测表)】的数据库操作Mapper
+* @createDate 2025-05-09 09:39:20
+* @Entity com.bio.drqi.domain.TcSampleTestTb
+*/
+public interface TcSampleTestTbMapper extends BaseMapper<TcSampleTestTb> {
+
+}
+
+
+
+

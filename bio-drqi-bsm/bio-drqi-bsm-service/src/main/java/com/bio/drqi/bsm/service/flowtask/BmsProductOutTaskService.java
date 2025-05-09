@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 商品出库
@@ -52,6 +53,12 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
                 throw new BusinessException("批次号为：" + bmsProductOutDTO.getBatchNo() + "的" + bmsProductOutDTO.getProductName() + "库存不足");
             }
         }
+        List<String> productNameList = bmsProductOutDTOList.stream().map(BmsProductOutDTO::getProductName).collect(Collectors.toList());
+        StringBuilder productNames=new StringBuilder();
+        for (String productName:productNameList){
+            productNames.append(productName).append(";");
+        }
+        bioTaskDtlTb.setTaskDesc(productNames.substring(0,productNames.length()-1));
     }
 
     @Override

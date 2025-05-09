@@ -36,4 +36,7 @@ public class BmsProductOutDTO {
      * 备注
      */
     private String remark;
+
+
+
 }

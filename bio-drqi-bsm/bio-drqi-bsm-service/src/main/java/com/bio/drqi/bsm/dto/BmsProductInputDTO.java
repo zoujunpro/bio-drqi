@@ -171,5 +171,17 @@ public class BmsProductInputDTO {
         private List<String> stockLocationNumberList;
     }
 
+    public String getAllProductName(){
+        StringBuilder stringBuilder=new StringBuilder("");
+        for (OrderDetail orderDetail:orderDetailList){
+            stringBuilder.append(orderDetail.getProductName()).append(";");
+        }
+        String str=stringBuilder.toString();
+        if(str.length()>1){
+            return str.substring(0,str.length()-1);
+        }else {
+            return null;
+        }
 
+    }
 }

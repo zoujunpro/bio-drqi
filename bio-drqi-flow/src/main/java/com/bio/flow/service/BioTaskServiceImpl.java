@@ -92,7 +92,12 @@ public class BioTaskServiceImpl implements BioTaskService {
     public BioTaskDtlTb reStartTask(BioReStartTaskReqDTO bioReStartTaskReqDTO) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioReStartTaskReqDTO.getId());
         Assert.notNull(bioTaskDtlTb, "不存在此任务");
-
+        if(BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())){
+            throw new BusinessException("任务执行中，不能再次执行");
+        }
+        if(BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())){
+            throw new BusinessException("任务已经执行完毕，不能再次执行");
+        }
         BioTaskConf bioTaskConf = bioTaskConfMapper.selectOneByTaskTypeCode(bioTaskDtlTb.getTaskTypeCode());
         if (bioTaskConf == null) {
             throw new BusinessException("任务类型参数错误");

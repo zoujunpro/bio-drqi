@@ -49,7 +49,7 @@ public class BmsSupplierController {
      *
      * @return
      */
-    @GetMapping("/listALl")
+    @GetMapping("/listAll")
     @WebLog(desc = "供应商管理-查询全部")
     public ResponseResult<List<BmsSupplierListAllRspDTO>> listALl() {
         return ResponseResult.getSuccess(bmsSupplierService.listALl());

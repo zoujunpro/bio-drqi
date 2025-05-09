@@ -159,6 +159,15 @@ public class BmsPurchaseOrderDTO {
 
     }
 
+
+    public String getAllProductName(){
+        StringBuilder stringBuilder=new StringBuilder("");
+        for (Product product:productList){
+            stringBuilder.append(product).append(";");
+        }
+        return stringBuilder.substring(0,stringBuilder.length()-1);
+    }
+
 }
 
 

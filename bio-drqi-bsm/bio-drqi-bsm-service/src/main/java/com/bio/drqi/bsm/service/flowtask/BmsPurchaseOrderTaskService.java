@@ -73,6 +73,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
         //数据重新塞入到json
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(bmsPurchaseOrderDTO));
 
+        bioTaskDtlTb.setTaskDesc(bmsPurchaseOrderDTO.getPurchaseReasonRemark());
 
     }
 

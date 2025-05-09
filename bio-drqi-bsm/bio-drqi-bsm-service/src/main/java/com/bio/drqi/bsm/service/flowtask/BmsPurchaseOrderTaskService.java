@@ -194,9 +194,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
             throw new BusinessException("订单商品信息缺失");
         }
         for (BmsPurchaseOrderDTO.Product product : bmsPurchaseOrderDTO.getProductList()) {
-            //空格处理
-            product.setProductName(product.getProductName().trim());
-            product.setProductSpecs(product.getProductSpecs().trim());
+
 
             //常规采购
             if (PurchaseTypeEnum.TYPE_1.code.equals(purchaseTypeCode)) {
@@ -205,8 +203,12 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                     log.error("不存在的商品信息={}", product);
                     throw new BusinessException("商品不存在");
                 }
+                product.setProductName(bmsProductTb.getProductName());
+                product.setProductSpecs(bmsProductTb.getProductSpecs());
             } else if (PurchaseTypeEnum.TYPE_2.code.equals(purchaseTypeCode)) {
                 //非常规采购
+                product.setProductName(product.getProductName().trim());
+                product.setProductSpecs(product.getProductSpecs().trim());
             } else {
                 throw new BusinessException("采购类型错误");
             }

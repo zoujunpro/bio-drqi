@@ -98,8 +98,7 @@ public class NewSampleTestDTO {
         private String plasmidName;
 
 
-        @NotBlank(message = "转化编号缺失")
-        private String transformCode;
+
 
         @NotNull(message = "取样数量必填")
         private Integer sampleNum;

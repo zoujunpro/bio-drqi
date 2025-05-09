@@ -63,14 +63,45 @@ public class TcSampleTestTaskDTO {
     private String bioInfoResultExcelUrl;
 
 
-
-
-
     @Data
     public static class RepeatSampleApply{
+        /**
+         * 小区编号
+         */
+        private String regionNum;
+        /**
+         * 种子编号
+         */
+        private String seedNum;
+        /**
+         * 项目编号
+         */
+        private String projectCode;
+        /**
+         * 实施方案编号
+         */
         private String vectorTaskCode;
+
+        /**
+         * 品种编号
+         */
+        private String speciesCode;
+        /**
+         * 代次编号
+         */
+        private String generationCode;
+        /**
+         * 目标性状
+         */
+        private String targetCharacter;
+
+
+        /**
+         * 田测基因型
+         */
+        private String tcGene;
+
         private String sampleCode;
-        private String identifyPrimer;
         /**
          * 取样时间
          */
@@ -106,17 +137,25 @@ public class TcSampleTestTaskDTO {
         private String speciesCode;
 
         /**
-         * 目标性状
-         */
-        private String targetCharacter;
-
-        /**
          * 代次编号
          */
         private String generationCode;
 
+        /**
+         * 田测基因型
+         */
+        private String tcGene;
 
 
+        @NotNull(message = "取样数量必填")
+        private Integer sampleNum;
 
+        /**
+         * 取样时间
+         */
+        private String sampleTime;
+
+
+        private String targetCharacter ;
     }
 }

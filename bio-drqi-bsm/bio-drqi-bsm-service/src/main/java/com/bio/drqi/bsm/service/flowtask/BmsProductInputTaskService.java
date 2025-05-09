@@ -98,6 +98,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         }
 
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(bmsProductInputDTO));
+        bioTaskDtlTb.setTaskDesc(bmsProductInputDTO.getAllProductName());
     }
 
     @Override

@@ -23,9 +23,6 @@ public class BmsProductOutDTO {
     @NotBlank(message = "参数缺失：单位")
     private String unitCode;
 
-    @NotBlank(message = "参数缺失：品牌")
-    private String brandCode;
-
     @NotBlank(message = "参数缺失：规格")
     private String productSpecs;
 
@@ -36,4 +33,7 @@ public class BmsProductOutDTO {
      * 备注
      */
     private String remark;
+
+
+
 }

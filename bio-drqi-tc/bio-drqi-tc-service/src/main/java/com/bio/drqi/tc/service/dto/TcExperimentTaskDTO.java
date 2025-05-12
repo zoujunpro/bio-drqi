@@ -3,18 +3,17 @@ package com.bio.drqi.tc.service.dto;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Data
 public class TcExperimentTaskDTO {
 
-    @NotBlank(message = "参数缺失：项目信息")
-    private String projectCode;
-    @NotBlank(message = "参数缺失：项目信息")
-    private String projectName;
-    @NotBlank(message = "参数缺失：实施方案")
-    private String vectorTaskName;
-    @NotBlank(message = "参数缺失：实施方案")
-    private String vectorTaskCode;
+    @NotEmpty(message = "参数缺失：项目信息")
+    private List<String> projectCodeList;
+
+    @NotEmpty(message = "参数缺失：实施方案")
+    private List<String> vectorTaskCodeList;
 
     private String experimentGoal;
 
@@ -28,6 +27,12 @@ public class TcExperimentTaskDTO {
      * 田间设计excel地址
      */
     private String experimentDesignUrl;
+
+
+    private String speciesCode;
+
+
+    private String speciesName;
 
 
 }

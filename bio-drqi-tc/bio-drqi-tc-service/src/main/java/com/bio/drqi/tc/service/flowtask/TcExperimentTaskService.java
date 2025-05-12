@@ -42,10 +42,10 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         TcExperimentTaskDTO tcExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcExperimentTaskDTO.class);
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             TcExperimentTb tcExperimentTb = new TcExperimentTb();
-            tcExperimentTb.setProjectCode(tcExperimentTaskDTO.getProjectCode());
-            tcExperimentTb.setVectorTaskCode(tcExperimentTaskDTO.getVectorTaskCode());
-            tcExperimentTb.setSpeciesCode(tcExperimentTaskDTO.getProjectCode());
-            tcExperimentTb.setSpeciesName(tcExperimentTaskDTO.getProjectName());
+            tcExperimentTb.setProjectCodes(JSONUtil.toJsonStr(tcExperimentTaskDTO.getProjectCodeList()));
+            tcExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(tcExperimentTaskDTO.getVectorTaskCodeList()));
+            tcExperimentTb.setSpeciesCode(tcExperimentTaskDTO.getSpeciesCode());
+            tcExperimentTb.setSpeciesName(tcExperimentTaskDTO.getSpeciesName());
             tcExperimentTb.setFileUrl(tcExperimentTaskDTO.getFileUrl());
             tcExperimentTb.setExperimentGoal(tcExperimentTaskDTO.getExperimentGoal());
             tcExperimentTb.setExperimentAddress(tcExperimentTaskDTO.getExperimentAddress());

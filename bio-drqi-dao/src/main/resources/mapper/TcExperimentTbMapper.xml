@@ -6,8 +6,8 @@
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.TcExperimentTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
-            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+            <result property="projectCodes" column="project_codes" jdbcType="VARCHAR"/>
+            <result property="vectorTaskCodes" column="vector_task_codes" jdbcType="VARCHAR"/>
             <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
             <result property="speciesName" column="species_name" jdbcType="VARCHAR"/>
             <result property="fileUrl" column="file_url" jdbcType="VARCHAR"/>
@@ -21,7 +21,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,project_code,vector_task_code,
+        id,project_codes,vector_task_codes,
         species_code,species_name,file_url,
         experiment_goal,experiment_address,apply_user_name,
         apply_user_id,create_time,experiment_num,

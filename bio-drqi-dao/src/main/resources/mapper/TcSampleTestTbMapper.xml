@@ -14,14 +14,15 @@
             <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
             <result property="targetCharacter" column="target_character" jdbcType="VARCHAR"/>
             <result property="generationCode" column="generation_code" jdbcType="VARCHAR"/>
-            <result property="geneType" column="gene_type" jdbcType="VARCHAR"/>
-            <result property="geneticCharacter" column="genetic_character" jdbcType="VARCHAR"/>
+            <result property="tcGene" column="tc_gene" jdbcType="VARCHAR"/>
             <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
+            <result property="sampleTime" column="sample_time" jdbcType="VARCHAR"/>
             <result property="sampleApplyNum" column="sample_apply_num" jdbcType="VARCHAR"/>
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
             <result property="testIdentifyPrimer" column="test_identify_primer" jdbcType="VARCHAR"/>
             <result property="testMethod" column="test_method" jdbcType="VARCHAR"/>
             <result property="testEditType" column="test_edit_type" jdbcType="VARCHAR"/>
+            <result property="testOrgResult" column="test_org_result" jdbcType="VARCHAR"/>
             <result property="testNoTransIdentityPrimer" column="test_no_trans_identity_primer" jdbcType="VARCHAR"/>
             <result property="testIsGeneModifyPositive" column="test_is_gene_modify_positive" jdbcType="VARCHAR"/>
             <result property="testIfFixedPoint" column="test_if_fixed_point" jdbcType="VARCHAR"/>
@@ -44,14 +45,42 @@
         id,experiment_code,region_num,
         seed_num,project_code,vector_task_code,
         species_code,target_character,generation_code,
-        gene_type,genetic_character,sample_code,
-        sample_apply_num,task_num,test_identify_primer,
-        test_method,test_edit_type,test_no_trans_identity_primer,
+        tc_gene,sample_code,sample_time,sample_apply_num,
+        task_num,test_identify_primer,test_method,
+        test_edit_type,test_org_result,test_no_trans_identity_primer,
         test_is_gene_modify_positive,test_if_fixed_point,test_if_copy_insert,
         test_fixed_point_type,test_donor_residue_info,test_insertion_site,
         test_elisa_result,test_qbzr_seq,test_edit_residue_info,
         test_time,test_user_id,test_user_name,
-        identify_primer,check_result,apply_type,
-        test_org_result
+        identify_primer,check_result,apply_type
     </sql>
+    <insert id="insertBatch">
+        insert into tc_sample_test_tb(id,experiment_code,region_num,
+        seed_num,project_code,vector_task_code,
+        species_code,target_character,generation_code,
+        tc_gene,sample_code,sample_time,
+        sample_apply_num,task_num,test_identify_primer,
+        test_method,test_edit_type,test_org_result,
+        test_no_trans_identity_primer,test_is_gene_modify_positive,test_if_fixed_point,
+        test_if_copy_insert,test_fixed_point_type,test_donor_residue_info,
+        test_insertion_site,test_elisa_result,test_qbzr_seq,
+        test_edit_residue_info,test_time,test_user_id,
+        test_user_name,identify_primer,check_result,
+        apply_type)
+        values
+        <foreach collection="tcSampleTestTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.experimentCode,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},
+            #{item.seedNum,jdbcType=VARCHAR},#{item.projectCode,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},
+            #{item.speciesCode,jdbcType=VARCHAR},#{item.targetCharacter,jdbcType=VARCHAR},#{item.generationCode,jdbcType=VARCHAR},
+            #{item.tcGene,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},#{item.sampleTime,jdbcType=VARCHAR},
+            #{item.sampleApplyNum,jdbcType=VARCHAR},#{item.taskNum,jdbcType=VARCHAR},#{item.testIdentifyPrimer,jdbcType=VARCHAR},
+            #{item.testMethod,jdbcType=VARCHAR},#{item.testEditType,jdbcType=VARCHAR},#{item.testOrgResult,jdbcType=VARCHAR},
+            #{item.testNoTransIdentityPrimer,jdbcType=VARCHAR},#{item.testIsGeneModifyPositive,jdbcType=VARCHAR},#{item.testIfFixedPoint,jdbcType=VARCHAR},
+            #{item.testIfCopyInsert,jdbcType=VARCHAR},#{item.testFixedPointType,jdbcType=VARCHAR},#{item.testDonorResidueInfo,jdbcType=VARCHAR},
+            #{item.testInsertionSite,jdbcType=VARCHAR},#{item.testElisaResult,jdbcType=VARCHAR},#{item.testQbzrSeq,jdbcType=VARCHAR},
+            #{item.testEditResidueInfo,jdbcType=VARCHAR},#{item.testTime,jdbcType=VARCHAR},#{item.testUserId,jdbcType=NUMERIC},
+            #{item.testUserName,jdbcType=VARCHAR},#{item.identifyPrimer,jdbcType=VARCHAR},#{item.checkResult,jdbcType=VARCHAR},
+            #{item.applyType,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
 </mapper>

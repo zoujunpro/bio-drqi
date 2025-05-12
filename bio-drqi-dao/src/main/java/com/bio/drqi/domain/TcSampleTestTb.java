@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * 田测取样检测表
@@ -63,19 +62,19 @@ public class TcSampleTestTb implements Serializable {
     private String generationCode;
 
     /**
-     * 基因类型
+     * 田测基因型
      */
-    private String geneType;
-
-    /**
-     * 基因型性状
-     */
-    private String geneticCharacter;
+    private String tcGene;
 
     /**
      * 取样编号
      */
     private String sampleCode;
+
+    /**
+     * 取样时间
+     */
+    private String sampleTime;
 
     /**
      * 申请编号
@@ -101,6 +100,11 @@ public class TcSampleTestTb implements Serializable {
      * 编辑类型
      */
     private String testEditType;
+
+    /**
+     * 检测原始结果
+     */
+    private String testOrgResult;
 
     /**
      * 非转鉴定引物
@@ -182,12 +186,8 @@ public class TcSampleTestTb implements Serializable {
      */
     private String applyType;
 
-    /**
-     * 检测原始结果
-     */
-    private String testOrgResult;
-
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
 
 }

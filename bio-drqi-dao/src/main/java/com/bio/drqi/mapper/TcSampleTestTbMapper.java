@@ -1,4 +1,6 @@
 package com.bio.drqi.mapper;
+import org.apache.ibatis.annotations.Param;
+import java.util.Collection;
 
 import com.bio.drqi.domain.TcSampleTestTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -6,10 +8,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
 * @author zou'jun
 * @description 针对表【tc_sample_test_tb(田测取样检测表)】的数据库操作Mapper
-* @createDate 2025-05-09 09:39:20
+* @createDate 2025-05-12 10:45:09
 * @Entity com.bio.drqi.domain.TcSampleTestTb
 */
 public interface TcSampleTestTbMapper extends BaseMapper<TcSampleTestTb> {
+    int insertBatch(@Param("tcSampleTestTbCollection") Collection<TcSampleTestTb> tcSampleTestTbCollection);
 
 }
 

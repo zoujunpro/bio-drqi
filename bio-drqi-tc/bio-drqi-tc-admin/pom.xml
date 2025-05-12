@@ -12,4 +12,12 @@
     <artifactId>bio-drqi-tc-admin</artifactId>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-tc-service</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 </project>

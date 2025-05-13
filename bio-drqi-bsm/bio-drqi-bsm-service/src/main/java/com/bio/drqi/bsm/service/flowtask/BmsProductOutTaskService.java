@@ -77,7 +77,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
     public void doOutStock(String taskNum, BmsProductOutDTO bmsProductOutDTO) {
         BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductOutDTO.getUniqueCode());
         bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductOutDTO.getNumber());
-        bmsProductStockTb.setTotalOutNumber(bmsProductStockTb.getTotalStoreNumber() + bmsProductOutDTO.getNumber());
+        bmsProductStockTb.setTotalOutNumber(bmsProductStockTb.getTotalOutNumber() + bmsProductOutDTO.getNumber());
         bmsProductStockTbMapper.updateById(bmsProductStockTb);
         //生成出库记录
 

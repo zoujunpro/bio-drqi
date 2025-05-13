@@ -117,6 +117,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 }
                 //非常规采购进行商品创建
                 if (PurchaseTypeEnum.TYPE_2.code.equals(bmsOrderTb.getPurchaseTypeCode())) {
+
                     BmsProductTb bmsProductTb = bmsProductService.add(BeanUtils.copyProperties(product, BmsProductAddReqDTO.class));
                     product.setProductInnerCode(bmsProductTb.getProductInnerCode());
                 }

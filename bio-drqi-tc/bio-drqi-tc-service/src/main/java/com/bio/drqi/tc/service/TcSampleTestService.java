@@ -4,6 +4,9 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.*;
 import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
+import com.bio.drqi.tc.rsp.TcSampleTestListPageDetailRspDTO;
+import com.bio.drqi.tc.rsp.TcSampleTestListPageRspDTO;
+import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +15,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletResponse;
 
 public interface TcSampleTestService {
+
+
+    /**
+     * 田测取样检测管理-取样申请列表
+     *
+     * @param tcSampleTestListPageReqDTO
+     * @return
+     */
+    PageInfo<TcSampleTestListPageRspDTO> listPage(TcSampleTestListPageReqDTO tcSampleTestListPageReqDTO);
+
+
+    /**
+     * 田测取样检测管理-取样详情分页
+     *
+     * @param tcSampleTestListPageDetailReqDTO
+     * @return
+     */
+    PageInfo<TcSampleTestListPageDetailRspDTO> listPageDetail(TcSampleTestListPageDetailReqDTO tcSampleTestListPageDetailReqDTO);
 
 
     /**

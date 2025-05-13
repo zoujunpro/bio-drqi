@@ -4,7 +4,10 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.*;
 import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
+import com.bio.drqi.tc.rsp.TcSampleTestListPageDetailRspDTO;
+import com.bio.drqi.tc.rsp.TcSampleTestListPageRspDTO;
 import com.bio.drqi.tc.service.TcSampleTestService;
+import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +25,30 @@ public class TcSampleTestController {
     private TcSampleTestService tcSampleTestService;
 
 
+    /**
+     * 田测取样检测管理-取样申请列表分页
+     *
+     * @param tcSampleTestListPageReqDTO
+     * @return
+     */
+    @PostMapping("/listPage")
+    @WebLog(desc = "田测取样检测管理-取样申请列表")
+    public ResponseResult<PageInfo<TcSampleTestListPageRspDTO>> listPage(@RequestBody @Validated TcSampleTestListPageReqDTO tcSampleTestListPageReqDTO) {
+        return ResponseResult.getSuccess(tcSampleTestService.listPage(tcSampleTestListPageReqDTO));
+    }
+
+    /**
+     * 田测取样检测管理-取样详情分页
+     *
+     * @param tcSampleTestListPageDetailReqDTO
+     * @return
+     */
+    @PostMapping("/listPageDetail")
+    @WebLog(desc = "田测取样检测管理-取样详情分页")
+    public ResponseResult<PageInfo<TcSampleTestListPageDetailRspDTO>> listPageDetail(TcSampleTestListPageDetailReqDTO tcSampleTestListPageDetailReqDTO) {
+        return ResponseResult.getSuccess(tcSampleTestService.listPageDetail(tcSampleTestListPageDetailReqDTO));
+    }
+
 
     /**
      * 检测数据模板下载
@@ -29,7 +56,7 @@ public class TcSampleTestController {
     @PostMapping("downTestTemplate")
     @WebLog(desc = "检测数据模板下载")
     public void downTestTemplate(@Validated @RequestBody TcSampleTestDownTestTemplateReqDTO tcSampleTestDownTestTemplateReqDTO, HttpServletResponse response) {
-        tcSampleTestService.downTestTemplate(tcSampleTestDownTestTemplateReqDTO,response);
+        tcSampleTestService.downTestTemplate(tcSampleTestDownTestTemplateReqDTO, response);
     }
 
 
@@ -42,7 +69,6 @@ public class TcSampleTestController {
         tcSampleTestService.uploadTestTemplate(tcSampleTestUploadTestTemplateReqDTO);
         return ResponseResult.getSuccess("成功");
     }
-
 
 
     /**

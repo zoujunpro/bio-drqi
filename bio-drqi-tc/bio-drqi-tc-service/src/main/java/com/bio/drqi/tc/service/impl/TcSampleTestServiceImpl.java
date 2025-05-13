@@ -6,6 +6,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
@@ -13,16 +14,21 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.drqi.mapper.TcSampleLayoutTbMapper;
+import com.bio.drqi.mapper.TcSampleTestApplyTbMapper;
 import com.bio.drqi.mapper.TcSampleTestTbMapper;
 import com.bio.drqi.tc.SampleUnitDTO;
 import com.bio.drqi.tc.req.*;
 import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
+import com.bio.drqi.tc.rsp.TcSampleTestListPageDetailRspDTO;
+import com.bio.drqi.tc.rsp.TcSampleTestListPageRspDTO;
 import com.bio.drqi.tc.service.TcSampleTestService;
 import com.bio.drqi.tc.service.dto.IdentifyPrimerTemplateExcelDTO;
 import com.bio.drqi.tc.service.dto.TcTestExcelDTO;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
 import com.bio.drqi.tc.util.LayoutUtil;
 import com.bio.drqi.tc.util.TcSampleExcelUtil;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -44,6 +50,9 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     private TcSampleTestTbMapper tcSampleTestTbMapper;
 
     @Resource
+    private TcSampleTestApplyTbMapper tcSampleTestApplyTbMapper;
+
+    @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
     @Resource
@@ -54,6 +63,23 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
 
     @Value("${cer.properties.excelTemplatePath}")
     private String excelTemplatePath;
+
+    @Override
+    public PageInfo<TcSampleTestListPageRspDTO> listPage(TcSampleTestListPageReqDTO tcSampleTestListPageReqDTO) {
+        PageHelper.startPage(tcSampleTestListPageReqDTO.getPageNum(), tcSampleTestListPageReqDTO.getPageSize());
+        List<TcSampleTestApplyTb> tcSampleTestApplyTbList = tcSampleTestApplyTbMapper.selectSelective(BeanUtils.copyProperties(tcSampleTestListPageReqDTO, TcSampleTestApplyTb.class));
+        PageInfo<TcSampleTestApplyTb> srcPageInfo = new PageInfo<>(tcSampleTestApplyTbList);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo, TcSampleTestListPageRspDTO.class);
+    }
+
+    @Override
+    public PageInfo<TcSampleTestListPageDetailRspDTO> listPageDetail(TcSampleTestListPageDetailReqDTO tcSampleTestListPageDetailReqDTO) {
+        PageHelper.startPage(tcSampleTestListPageDetailReqDTO.getPageNum(), tcSampleTestListPageDetailReqDTO.getPageSize());
+        List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectSelective(BeanUtils.copyProperties(tcSampleTestListPageDetailReqDTO, TcSampleTestTb.class));
+        PageInfo<TcSampleTestTb> srcPageInfo=new PageInfo<>(tcSampleTestTbList);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo,TcSampleTestListPageDetailRspDTO.class);
+    }
+
 
     @Override
     public void downTestTemplate(TcSampleTestDownTestTemplateReqDTO tcSampleTestDownTestTemplateReqDTO, HttpServletResponse response) {

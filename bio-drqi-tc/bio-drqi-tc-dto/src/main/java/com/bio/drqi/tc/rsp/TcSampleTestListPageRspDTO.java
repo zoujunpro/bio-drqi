@@ -1,25 +1,11 @@
-package com.bio.drqi.domain;
+package com.bio.drqi.tc.rsp;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 
- * @TableName tc_sample_test_apply_tb
- */
-@TableName(value ="tc_sample_test_apply_tb")
 @Data
-public class TcSampleTestApplyTb implements Serializable {
-    /**
-     * 主键ID
-     */
-    @TableId
+public class TcSampleTestListPageRspDTO {
     private Integer id;
 
     /**
@@ -71,9 +57,5 @@ public class TcSampleTestApplyTb implements Serializable {
      * 创建日期
      */
     private Date createTime;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
-
 
 }

@@ -7,7 +7,7 @@
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.TcSampleTestApplyTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="sampleApplyNum" column="sample_apply_num" jdbcType="VARCHAR"/>
-            <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
+            <result property="experimentCode" column="experiment_code" jdbcType="VARCHAR"/>
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
             <result property="sampleOrganize" column="sample_organize" jdbcType="VARCHAR"/>
             <result property="applyType" column="apply_type" jdbcType="VARCHAR"/>
@@ -19,7 +19,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,sample_apply_num,experiment_num,
+        id,sample_apply_num,experiment_code,
         task_num,sample_organize,apply_type,
         expected_sample_time,expected_result_time,create_user_id,
         create_user_name,create_time
@@ -30,5 +30,23 @@
         from tc_sample_test_apply_tb
         where
         task_num = #{taskNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSelective" parameterType="com.bio.drqi.domain.TcSampleTestApplyTb" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_sample_test_apply_tb
+        <where>
+            <if test="sampleApplyNum != null and sampleApplyNum!=''">and sample_apply_num=#{sampleApplyNum,jdbcType=VARCHAR}</if>
+            <if test="experimentCode != null and experimentCode!=''">and experiment_code=#{experimentCode,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="sampleOrganize != null and sampleOrganize!=''">and sample_organize=#{sampleOrganize,jdbcType=VARCHAR}</if>
+            <if test="applyType != null and applyType!=''">and apply_type=#{applyType,jdbcType=VARCHAR}</if>
+            <if test="expectedSampleTime != null and expectedSampleTime!=''">and expected_sample_time=#{expectedSampleTime,jdbcType=VARCHAR}</if>
+            <if test="expectedResultTime != null and expectedResultTime!=''">and expected_result_time=#{expectedResultTime,jdbcType=VARCHAR}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+        </where>
+        order by id desc
     </select>
 </mapper>

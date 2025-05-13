@@ -73,4 +73,11 @@
             #{item.emergenceRate,jdbcType=VARCHAR},#{item.transplantTime,jdbcType=VARCHAR})
         </foreach>
     </insert>
+    <select id="selectAllByExperimentCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_experiment_design_tb
+        where
+        experiment_code = #{experimentCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

@@ -1,14 +1,10 @@
 package com.bio.drqi.tc.req;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.bio.drqi.common.dto.PageDTO;
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
-public class TcExperimentApplyListPageReqDTO extends PageDTO {
+public class TcExperimentListPageReqDTO extends PageDTO {
 
     /**
      * 项目编号

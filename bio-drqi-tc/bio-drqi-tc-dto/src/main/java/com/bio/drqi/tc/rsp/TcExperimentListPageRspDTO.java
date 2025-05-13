@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class TcExperimentApplyListPageRspDTO {
+public class TcExperimentListPageRspDTO {
 
     private Integer id;
 
@@ -62,7 +62,7 @@ public class TcExperimentApplyListPageRspDTO {
     /**
      * 实验编号
      */
-    private String experimentNum;
+    private String experimentCode;
 
     /**
      * 任务编号

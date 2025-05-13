@@ -41,7 +41,7 @@ public class TcExperimentController {
     @GetMapping("/listDetail")
     @WebLog(desc = "试验方案申请管理-田间设计列表")
     public ResponseResult<List<TcExperimentListDetailRspDTO>> listDetail(@RequestParam @Validated String experimentCode){
-        return null;
+        return ResponseResult.getSuccess(tcExperimentService.listDetail(experimentCode));
     }
 
 }

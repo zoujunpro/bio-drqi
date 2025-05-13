@@ -43,6 +43,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         List<BmsProductOutDTO> bmsProductOutDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskForm(), BmsProductOutDTO.class);
         for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
             ValidatorUtil.validator(bmsProductOutDTO);
+            BeanUtils.trimFiledSpace(bmsProductOutDTO);
         }
         for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductOutDTO.getUniqueCode());

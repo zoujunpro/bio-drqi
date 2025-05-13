@@ -51,6 +51,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         BmsProductInputDTO bmsProductInputDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsProductInputDTO.class);
+        BeanUtils.trimFiledSpace(bmsProductInputDTO);
         if (bmsProductInputDTO == null) {
             throw new BusinessException("入库信息缺失");
         }
@@ -64,6 +65,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
 
         for (BmsProductInputDTO.OrderDetail orderDetail : bmsProductInputDTO.getOrderDetailList()) {
             ValidatorUtil.validator(bmsProductInputDTO);
+            BeanUtils.trimFiledSpace(bmsProductInputDTO);
             BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectOneByOrderDetailNum(orderDetail.getOrderDetailNum());
             if (Objects.equals(bmsOrderDetailTb.getPurchaseNumber(), bmsOrderDetailTb.getReceiveNumber().intValue())) {
                 throw new BusinessException("该耗材已经全部到货");

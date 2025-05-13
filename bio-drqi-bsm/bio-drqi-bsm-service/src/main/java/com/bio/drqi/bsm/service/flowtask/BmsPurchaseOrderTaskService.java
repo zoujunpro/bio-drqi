@@ -62,6 +62,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
         BmsPurchaseOrderDTO bmsPurchaseOrderDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsPurchaseOrderDTO.class);
 
         ValidatorUtil.validator(bmsPurchaseOrderDTO);
+        BeanUtils.trimFiledSpace(bmsPurchaseOrderDTO);
 
         //单位校验
         if (PurchaseUnitEnum.valueOf(bmsPurchaseOrderDTO.getUnitCode()) == null) {
@@ -194,8 +195,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
             throw new BusinessException("订单商品信息缺失");
         }
         for (BmsPurchaseOrderDTO.Product product : bmsPurchaseOrderDTO.getProductList()) {
-
-
+            BeanUtils.trimFiledSpace(product);
             //常规采购
             if (PurchaseTypeEnum.TYPE_1.code.equals(purchaseTypeCode)) {
                 BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(product.getProductInnerCode());

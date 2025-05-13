@@ -3,18 +3,21 @@ package com.bio.drqi.tc.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.drqi.mapper.TcSampleLayoutTbMapper;
 import com.bio.drqi.mapper.TcSampleTestTbMapper;
 import com.bio.drqi.tc.SampleUnitDTO;
-import com.bio.drqi.tc.req.LayoutConfirmReqDTO;
-import com.bio.drqi.tc.req.UploadIdentifyPrimerTemplateReqDTO;
-import com.bio.drqi.tc.rsp.LayoutPreviewRspDTO;
+import com.bio.drqi.tc.req.TcSampleTestApproveSampleResultReqDTO;
+import com.bio.drqi.tc.req.TcSampleTestLayoutConfirmReqDTO;
+import com.bio.drqi.tc.req.TcSampleTestUploadIdentifyPrimerTemplateReqDTO;
+import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
 import com.bio.drqi.tc.service.TcSampleTestService;
 import com.bio.drqi.tc.service.dto.IdentifyPrimerTemplateExcelDTO;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
@@ -76,13 +79,15 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     }
 
     @Override
-    public void uploadIdentifyPrimerTemplate(UploadIdentifyPrimerTemplateReqDTO uploadIdentifyPrimerTemplateReqDTO) {
+    public void uploadIdentifyPrimerTemplate(TcSampleTestUploadIdentifyPrimerTemplateReqDTO tcSampleTestUploadIdentifyPrimerTemplateReqDTO) {
 
-        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(uploadIdentifyPrimerTemplateReqDTO.getApplyNo());
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcSampleTestUploadIdentifyPrimerTemplateReqDTO.getApplyNo());
 
-        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + uploadIdentifyPrimerTemplateReqDTO.getExcelUrl();
+        TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
+
+        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + tcSampleTestUploadIdentifyPrimerTemplateReqDTO.getExcelUrl();
         try {
-            ossService.downloadPath(tempFilePath, uploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
+            ossService.downloadPath(tempFilePath, tcSampleTestUploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
         } catch (Exception e) {
             log.error("【田测鉴定引物文件】文件从oss下载失败", e);
             throw new BusinessException("文件处理异常");
@@ -91,7 +96,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
 
         if (CollectionUtil.isNotEmpty(identifyPrimerTemplateExcelDTOList)) {
             for (IdentifyPrimerTemplateExcelDTO identifyPrimerTemplateExcelDTO : identifyPrimerTemplateExcelDTOList) {
-                TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneBySampleApplyNumAndSampleCode(uploadIdentifyPrimerTemplateReqDTO.getApplyNo(), identifyPrimerTemplateExcelDTO.getSampleCode());
+                TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneByExperimentCodeAndSampleCode(tcSampleTestTaskDTO.getExperimentCode(), identifyPrimerTemplateExcelDTO.getSampleCode());
                 if (tcSampleTestTb != null) {
                     tcSampleTestTb.setIdentifyPrimer(identifyPrimerTemplateExcelDTO.getIdentifyPrimer());
                     tcSampleTestTbMapper.updateIdentifyPrimerById(identifyPrimerTemplateExcelDTO.getIdentifyPrimer(), tcSampleTestTb.getId());
@@ -99,27 +104,26 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
             }
         }
 
-        TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
-        tcSampleTestTaskDTO.setIdentifyPrimerTemplateExcelUrl(uploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
+        tcSampleTestTaskDTO.setIdentifyPrimerTemplateExcelUrl(tcSampleTestUploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcSampleTestTaskDTO));
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
 
         //默认排版
-        LayoutConfirmReqDTO layoutConfirmReqDTO = getLayoutConfirmReqDTO(bioTaskDtlTb.getTaskNum());
-        if (CollectionUtil.isNotEmpty(layoutConfirmReqDTO.getNinetySixList()) || CollectionUtil.isNotEmpty(layoutConfirmReqDTO.getSingleList())) {
+        TcSampleTestLayoutConfirmReqDTO tcSampleTestLayoutConfirmReqDTO = getLayoutConfirmReqDTO(bioTaskDtlTb.getTaskNum());
+        if (CollectionUtil.isNotEmpty(tcSampleTestLayoutConfirmReqDTO.getNinetySixList()) || CollectionUtil.isNotEmpty(tcSampleTestLayoutConfirmReqDTO.getSingleList())) {
             //入库
-            layoutConfirm(layoutConfirmReqDTO);
+            layoutConfirm(tcSampleTestLayoutConfirmReqDTO);
         }
     }
 
     @Override
-    public LayoutPreviewRspDTO layoutPreview(String applyNo) {
+    public TcSampleTestLayoutPreviewRspDTO layoutPreview(String applyNo) {
         TcSampleLayoutTb tcSampleLayoutTb = tcSampleLayoutTbMapper.selectOneByApplyNo(applyNo);
         if (tcSampleLayoutTb == null) {
             return getLayoutPreviewRspDTO(applyNo);
         } else {
-            LayoutPreviewRspDTO layoutPreviewRspDTO = new LayoutPreviewRspDTO();
-            layoutPreviewRspDTO.setSingleList(JSONUtil.toList(tcSampleLayoutTb.getSingleContent(), SampleUnitDTO.class));
+            TcSampleTestLayoutPreviewRspDTO tcSampleTestLayoutPreviewRspDTO = new TcSampleTestLayoutPreviewRspDTO();
+            tcSampleTestLayoutPreviewRspDTO.setSingleList(JSONUtil.toList(tcSampleLayoutTb.getSingleContent(), SampleUnitDTO.class));
             JSONArray layoutListJsonArray = JSONUtil.parseArray(tcSampleLayoutTb.getPlateContent());
             List<List<List<SampleUnitDTO>>> ninetySixList = new ArrayList<>();
             //版list
@@ -133,25 +137,25 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
                 }
                 ninetySixList.add(layoutList);
             }
-            layoutPreviewRspDTO.setNinetySixList(ninetySixList);
-            return layoutPreviewRspDTO;
+            tcSampleTestLayoutPreviewRspDTO.setNinetySixList(ninetySixList);
+            return tcSampleTestLayoutPreviewRspDTO;
         }
     }
 
     @Override
-    public void layoutConfirm(LayoutConfirmReqDTO layoutConfirmReqDTO) {
-        TcSampleLayoutTb tcSampleLayoutTb = tcSampleLayoutTbMapper.selectOneByApplyNo(layoutConfirmReqDTO.getApplyNo());
+    public void layoutConfirm(TcSampleTestLayoutConfirmReqDTO tcSampleTestLayoutConfirmReqDTO) {
+        TcSampleLayoutTb tcSampleLayoutTb = tcSampleLayoutTbMapper.selectOneByApplyNo(tcSampleTestLayoutConfirmReqDTO.getApplyNo());
         if (tcSampleLayoutTb != null) {
-            tcSampleLayoutTb.setSingleContent(JSONUtil.toJsonStr(layoutConfirmReqDTO.getSingleList()));
-            tcSampleLayoutTb.setPlateContent(JSONUtil.toJsonStr(layoutConfirmReqDTO.getNinetySixList()));
+            tcSampleLayoutTb.setSingleContent(JSONUtil.toJsonStr(tcSampleTestLayoutConfirmReqDTO.getSingleList()));
+            tcSampleLayoutTb.setPlateContent(JSONUtil.toJsonStr(tcSampleTestLayoutConfirmReqDTO.getNinetySixList()));
             tcSampleLayoutTb.setCreateTime(new Date());
             tcSampleLayoutTbMapper.updateById(tcSampleLayoutTb);
         } else {
             tcSampleLayoutTb = new TcSampleLayoutTb();
-            tcSampleLayoutTb.setSingleContent(JSONUtil.toJsonStr(layoutConfirmReqDTO.getSingleList()));
-            tcSampleLayoutTb.setPlateContent(JSONUtil.toJsonStr(layoutConfirmReqDTO.getNinetySixList()));
+            tcSampleLayoutTb.setSingleContent(JSONUtil.toJsonStr(tcSampleTestLayoutConfirmReqDTO.getSingleList()));
+            tcSampleLayoutTb.setPlateContent(JSONUtil.toJsonStr(tcSampleTestLayoutConfirmReqDTO.getNinetySixList()));
             tcSampleLayoutTb.setCreateTime(new Date());
-            tcSampleLayoutTb.setApplyNo(layoutConfirmReqDTO.getApplyNo());
+            tcSampleLayoutTb.setApplyNo(tcSampleTestLayoutConfirmReqDTO.getApplyNo());
             tcSampleLayoutTbMapper.insert(tcSampleLayoutTb);
         }
     }
@@ -181,10 +185,10 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
             TcSampleExcelUtil.createExcel(applyNo, layoutList, singleSampleUnitDTOList, httpServletResponse, "取样标签排版.xlsx");
         } else {
             //默认排版
-            LayoutConfirmReqDTO layoutConfirmReqDTO = getLayoutConfirmReqDTO(applyNo);
-            if (CollectionUtil.isNotEmpty(layoutConfirmReqDTO.getNinetySixList()) || CollectionUtil.isNotEmpty(layoutConfirmReqDTO.getSingleList())) {
+            TcSampleTestLayoutConfirmReqDTO tcSampleTestLayoutConfirmReqDTO = getLayoutConfirmReqDTO(applyNo);
+            if (CollectionUtil.isNotEmpty(tcSampleTestLayoutConfirmReqDTO.getNinetySixList()) || CollectionUtil.isNotEmpty(tcSampleTestLayoutConfirmReqDTO.getSingleList())) {
                 //入库
-                layoutConfirm(layoutConfirmReqDTO);
+                layoutConfirm(tcSampleTestLayoutConfirmReqDTO);
                 //再次下载
                 dowLayoutExcel(applyNo, httpServletResponse);
             }
@@ -192,47 +196,65 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         }
     }
 
+    @Override
+    public void approveSampleResult(TcSampleTestApproveSampleResultReqDTO tcSampleTestApproveSampleResultReqDTO) {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcSampleTestApproveSampleResultReqDTO.getTaskNum());
+        if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            throw new BusinessException("不是执行中工单");
+        }
+        TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
+        for (TcSampleTestApproveSampleResultReqDTO.Content content : tcSampleTestApproveSampleResultReqDTO.getContentList()) {
+            TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneByExperimentCodeAndSampleCode(tcSampleTestTaskDTO.getExperimentCode(), content.getSampleCode());
+            if (tcSampleTestTb == null) {
+                log.error("approveSampleResult content={}", content);
+                throw new BusinessException("此试验中无此取样编号:" + content.getSampleCode() + ", 实现号：" + tcSampleTestTaskDTO.getExperimentCode());
+            }
+            tcSampleTestTb.setCheckResult(content.getCheckResult());
+            tcSampleTestTbMapper.updateById(tcSampleTestTb);
+        }
+    }
 
-    private LayoutConfirmReqDTO getLayoutConfirmReqDTO(String applyNo) {
-        LayoutConfirmReqDTO layoutConfirmReqDTO = new LayoutConfirmReqDTO();
+
+    private TcSampleTestLayoutConfirmReqDTO getLayoutConfirmReqDTO(String applyNo) {
+        TcSampleTestLayoutConfirmReqDTO tcSampleTestLayoutConfirmReqDTO = new TcSampleTestLayoutConfirmReqDTO();
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNum(applyNo);
         if (CollectionUtil.isEmpty(tcSampleTestTbList)) {
-            return layoutConfirmReqDTO;
+            return tcSampleTestLayoutConfirmReqDTO;
         }
         List<TcSampleTestTb> noIdentifyPrimerList = tcSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isEmpty(cerSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(noIdentifyPrimerList)) {
             noIdentifyPrimerList.forEach(tcSampleTestTb -> {
-                layoutConfirmReqDTO.fillSampleToSingleList(tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentCode(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(),tcSampleTestTb.getSampleCode(),tcSampleTestTb.getIdentifyPrimer());
+                tcSampleTestLayoutConfirmReqDTO.fillSampleToSingleList(tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentCode(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(), tcSampleTestTb.getSampleCode(), tcSampleTestTb.getIdentifyPrimer());
             });
         }
         //96孔板
         List<TcSampleTestTb> identifyPrimerList = tcSampleTestTbList.stream().filter(tcSampleTestTb -> StringUtils.isNotEmpty(tcSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(identifyPrimerList)) {
-            layoutConfirmReqDTO.setNinetySixList(LayoutUtil.fillSampleToNinetySixList(identifyPrimerList));
+            tcSampleTestLayoutConfirmReqDTO.setNinetySixList(LayoutUtil.fillSampleToNinetySixList(identifyPrimerList));
         }
-        layoutConfirmReqDTO.setApplyNo(applyNo);
-        return layoutConfirmReqDTO;
+        tcSampleTestLayoutConfirmReqDTO.setApplyNo(applyNo);
+        return tcSampleTestLayoutConfirmReqDTO;
     }
 
 
-    private LayoutPreviewRspDTO getLayoutPreviewRspDTO(String applyNo) {
-        LayoutPreviewRspDTO layoutPreviewRspDTO = new LayoutPreviewRspDTO();
+    private TcSampleTestLayoutPreviewRspDTO getLayoutPreviewRspDTO(String applyNo) {
+        TcSampleTestLayoutPreviewRspDTO tcSampleTestLayoutPreviewRspDTO = new TcSampleTestLayoutPreviewRspDTO();
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNum(applyNo);
         if (CollectionUtil.isEmpty(tcSampleTestTbList)) {
-            return layoutPreviewRspDTO;
+            return tcSampleTestLayoutPreviewRspDTO;
         }
         List<TcSampleTestTb> noIdentifyPrimerList = tcSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isEmpty(cerSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(noIdentifyPrimerList)) {
             noIdentifyPrimerList.forEach(tcSampleTestTb -> {
-                layoutPreviewRspDTO.fillSampleToSingleList(tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentCode(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(),tcSampleTestTb.getSampleCode(),tcSampleTestTb.getIdentifyPrimer());
+                tcSampleTestLayoutPreviewRspDTO.fillSampleToSingleList(tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentCode(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(), tcSampleTestTb.getSampleCode(), tcSampleTestTb.getIdentifyPrimer());
             });
         }
         //96孔板
         List<TcSampleTestTb> identifyPrimerList = tcSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isNotEmpty(cerSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(identifyPrimerList)) {
-            layoutPreviewRspDTO.setNinetySixList(LayoutUtil.fillSampleToNinetySixList(identifyPrimerList));
+            tcSampleTestLayoutPreviewRspDTO.setNinetySixList(LayoutUtil.fillSampleToNinetySixList(identifyPrimerList));
         }
 
-        return layoutPreviewRspDTO;
+        return tcSampleTestLayoutPreviewRspDTO;
     }
 }

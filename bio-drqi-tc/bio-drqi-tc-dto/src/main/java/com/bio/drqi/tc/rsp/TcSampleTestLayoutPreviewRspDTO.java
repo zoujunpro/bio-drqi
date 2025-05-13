@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class LayoutPreviewRspDTO {
+public class TcSampleTestLayoutPreviewRspDTO {
 
     /**
      * 单管集合

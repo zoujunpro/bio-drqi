@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import java.util.Collection;
 
@@ -12,7 +13,14 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.drqi.domain.TcSampleTestTb
 */
 public interface TcSampleTestTbMapper extends BaseMapper<TcSampleTestTb> {
+
     int insertBatch(@Param("tcSampleTestTbCollection") Collection<TcSampleTestTb> tcSampleTestTbCollection);
+
+    List<TcSampleTestTb> selectAllBySampleApplyNum(@Param("sampleApplyNum") String sampleApplyNum);
+
+    TcSampleTestTb selectOneBySampleApplyNumAndSampleCode(@Param("sampleApplyNum") String sampleApplyNum, @Param("sampleCode") String sampleCode);
+
+    int updateIdentifyPrimerById(@Param("identifyPrimer") String identifyPrimer, @Param("id") Integer id);
 
 }
 

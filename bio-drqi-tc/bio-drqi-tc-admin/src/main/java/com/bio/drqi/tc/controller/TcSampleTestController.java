@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 田测取样检测管理
+ */
 @RestController
 @RequestMapping("/tcSampleTest")
 public class TcSampleTestController {
@@ -20,14 +23,14 @@ public class TcSampleTestController {
     private TcSampleTestService tcSampleTestService;
 
     /**
-     * 下载填写鉴定引物模板
+     * 田测取样检测管理-下载填写鉴定引物模板
      *
      * @param response
      * @param applyNo
      * @return
      */
     @GetMapping("downIdentifyPrimerTemplate")
-    @WebLog(desc = "下载填写鉴定引物模板")
+    @WebLog(desc = "田测取样检测管理-下载填写鉴定引物模板")
     public void downIdentifyPrimerTemplate(HttpServletResponse response, @RequestParam @Validated String applyNo) {
         tcSampleTestService.downIdentifyPrimerTemplate(response, applyNo);
     }
@@ -38,7 +41,7 @@ public class TcSampleTestController {
      * @return
      */
     @PostMapping("uploadIdentifyPrimerTemplate")
-    @WebLog(desc = "上传填写鉴定引物模板")
+    @WebLog(desc = "田测取样检测管理-上传填写鉴定引物模板")
     public ResponseResult<String> uploadIdentifyPrimerTemplate(@RequestBody @Validated UploadIdentifyPrimerTemplateReqDTO uploadIdentifyPrimerTemplateReqDTO) {
         tcSampleTestService.uploadIdentifyPrimerTemplate(uploadIdentifyPrimerTemplateReqDTO);
         return ResponseResult.getSuccess("成功");
@@ -51,7 +54,7 @@ public class TcSampleTestController {
      * @return
      */
     @GetMapping("layoutPreview")
-    @WebLog(desc = "取样标签排版预览")
+    @WebLog(desc = "田测取样检测管理-取样标签排版预览")
     public ResponseResult<LayoutPreviewRspDTO> layoutPreview(@RequestParam @Validated String applyNo) {
         return ResponseResult.getSuccess(tcSampleTestService.layoutPreview(applyNo));
     }
@@ -64,11 +67,22 @@ public class TcSampleTestController {
      * @return
      */
     @PostMapping("layoutConfirm")
-    @WebLog(desc = "取样标签排版确认")
+    @WebLog(desc = "田测取样检测管理-取样标签排版确认")
     public ResponseResult layoutConfirm(@RequestBody @Validated LayoutConfirmReqDTO layoutConfirmReqDTO) {
         tcSampleTestService.layoutConfirm(layoutConfirmReqDTO);
         return ResponseResult.getSuccess("成功");
     }
 
+
+    /**
+     * 下载excel96孔板
+     *
+     * @return
+     */
+    @GetMapping("dowLayoutExcel")
+    @WebLog(desc = "下载excel96孔板")
+    public void dowLayoutExcel(@RequestParam @Validated String applyNo, HttpServletResponse httpServletResponse) {
+        tcSampleTestService.dowLayoutExcel(applyNo, httpServletResponse);
+    }
 
 }

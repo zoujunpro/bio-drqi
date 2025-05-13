@@ -41,4 +41,12 @@ public interface TcSampleTestService {
      * @return
      */
     void layoutConfirm(@RequestBody @Validated LayoutConfirmReqDTO layoutConfirmReqDTO);
+
+
+    /**
+     * 下载孔板信息
+     * @param applyNo
+     * @param httpServletResponse
+     */
+  void   dowLayoutExcel(String applyNo, HttpServletResponse httpServletResponse);
 }

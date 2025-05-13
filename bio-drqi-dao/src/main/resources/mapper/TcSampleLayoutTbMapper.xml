@@ -16,4 +16,11 @@
         id,apply_no,single_content,
         plate_content,create_time
     </sql>
+    <select id="selectOneByApplyNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_sample_layout_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+    </select>
 </mapper>

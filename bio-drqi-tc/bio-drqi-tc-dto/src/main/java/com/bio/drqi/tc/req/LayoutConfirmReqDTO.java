@@ -2,6 +2,7 @@ package com.bio.drqi.tc.req;
 
 import com.bio.drqi.tc.SampleUnitDTO;
 import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class LayoutConfirmReqDTO {
      */
     private List<List<List<SampleUnitDTO>>> ninetySixList = new ArrayList<List<List<SampleUnitDTO>>>();
 
-    public void fillSampleToSingleList(String vectorTaskCode, String transFormCode, String sampleCode, String identifyPrimer) {
-        singleList.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
+    public void fillSampleToSingleList(String vectorTaskCode, String experimentCode, String regionNum, String seedNum, String sampleCode, String identifyPrimer) {
+        singleList.add(new SampleUnitDTO(vectorTaskCode, experimentCode, regionNum, seedNum, sampleCode, identifyPrimer));
     }
 }

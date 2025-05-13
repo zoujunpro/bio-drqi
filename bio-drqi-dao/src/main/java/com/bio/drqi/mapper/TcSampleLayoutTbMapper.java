@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.TcSampleLayoutTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -10,6 +11,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.drqi.domain.TcSampleLayoutTb
 */
 public interface TcSampleLayoutTbMapper extends BaseMapper<TcSampleLayoutTb> {
+
+    TcSampleLayoutTb selectOneByApplyNo(@Param("applyNo") String applyNo);
 
 }
 

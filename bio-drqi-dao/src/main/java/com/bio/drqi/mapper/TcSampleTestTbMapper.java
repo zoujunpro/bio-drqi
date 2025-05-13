@@ -1,5 +1,7 @@
 package com.bio.drqi.mapper;
 import java.util.List;
+
+import com.bio.drqi.domain.CerSampleTestTb;
 import org.apache.ibatis.annotations.Param;
 import java.util.Collection;
 
@@ -15,6 +17,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface TcSampleTestTbMapper extends BaseMapper<TcSampleTestTb> {
 
     int insertBatch(@Param("tcSampleTestTbCollection") Collection<TcSampleTestTb> tcSampleTestTbCollection);
+
+    int updateBatchById(@Param("list") List<TcSampleTestTb> tcSampleTestTbCollection);
 
     List<TcSampleTestTb> selectAllBySampleApplyNum(@Param("sampleApplyNum") String sampleApplyNum);
 

@@ -109,12 +109,12 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         if (tcTestExcelDTOList.size() != tcSampleTestTbList.size()) {
             throw new BusinessException("有取样编号不存在此申请中");
         }
-        List<CerSampleTestTb> updateList = new ArrayList<>();
+        List<TcSampleTestTb> updateList = new ArrayList<TcSampleTestTb>();
         Map<String, TcSampleTestTb> tcSampleTestTbMap = tcSampleTestTbList.stream().collect(Collectors.toMap(TcSampleTestTb::getSampleCode, tcSampleTestTb -> tcSampleTestTb));
         for (TcTestExcelDTO tcTestExcelDTO : tcTestExcelDTOList) {
             log.info("检测数据上送 数据处理中：" + tcTestExcelDTO.getSampleCode());
             TcSampleTestTb tcSampleTestTb = tcSampleTestTbMap.get(tcTestExcelDTO.getSampleCode());
-            CerSampleTestTb updateCerSampleTestTb = new CerSampleTestTb();
+            TcSampleTestTb updateCerSampleTestTb = new TcSampleTestTb();
             updateCerSampleTestTb.setId(tcSampleTestTb.getId());
             updateCerSampleTestTb.setTestIdentifyPrimer(tcTestExcelDTO.getIdentifyPrimer());
             updateCerSampleTestTb.setTestMethod(tcTestExcelDTO.getTestMethod());
@@ -132,14 +132,13 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
             updateCerSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
             updateCerSampleTestTb.setTestUserName(SecurityContextHolder.getUserName());
             updateCerSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
-            updateCerSampleTestTb.setUpdateTime(new Date());
             updateList.add(updateCerSampleTestTb);
         }
 
         tcSampleTestTaskDTO.setTestDataExcelUrl(tcSampleTestUploadTestTemplateReqDTO.getExcelUrl());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcSampleTestTaskDTO));
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
-       // tcSampleTestTbMapper.updateBatchById(updateList);
+        tcSampleTestTbMapper.updateBatchById(updateList);
     }
 
     @Override

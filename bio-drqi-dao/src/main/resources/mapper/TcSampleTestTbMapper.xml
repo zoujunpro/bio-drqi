@@ -54,6 +54,57 @@
         test_time,test_user_id,test_user_name,
         identify_primer,check_result,apply_type
     </sql>
+
+    <update id="updateBatchById" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update cer_sample_test_tb
+            <set>
+                <if test="item.experimentCode != null">experiment_code=#{item.experimentCode,jdbcType=VARCHAR},</if>
+                <if test="item.regionNum != null">region_num=#{item.regionNum,jdbcType=VARCHAR},</if>
+                <if test="item.seedNum != null">seed_num=#{item.seedNum,jdbcType=VARCHAR},</if>
+                <if test="item.projectCode != null">project_code=#{item.projectCode,jdbcType=VARCHAR},</if>
+                <if test="item.vectorTaskCode != null">vector_task_code=#{item.vectorTaskCode,jdbcType=VARCHAR},</if>
+                <if test="item.speciesCode != null">species_code=#{item.speciesCode,jdbcType=VARCHAR},</if>
+                <if test="item.targetCharacter != null">target_character=#{item.targetCharacter,jdbcType=VARCHAR},</if>
+                <if test="item.generationCode != null">generation_code=#{item.generationCode,jdbcType=VARCHAR},</if>
+                <if test="item.tcGene != null">tc_gene=#{item.tcGene,jdbcType=VARCHAR},</if>
+                <if test="item.sampleCode != null">sample_code=#{item.sampleCode,jdbcType=VARCHAR},</if>
+                <if test="item.sampleTime != null">sample_time=#{item.sampleTime,jdbcType=VARCHAR},</if>
+                <if test="item.sampleApplyNum != null">sample_apply_num=#{item.sampleApplyNum,jdbcType=VARCHAR},</if>
+                <if test="item.taskNum != null">task_num=#{item.taskNum,jdbcType=VARCHAR},</if>
+                <if test="item.testIdentifyPrimer != null">test_identify_primer=#{item.testIdentifyPrimer,jdbcType=VARCHAR},</if>
+                <if test="item.testMethod != null">test_method=#{item.testMethod,jdbcType=VARCHAR},</if>
+                <if test="item.testEditType != null">test_edit_type=#{item.testEditType,jdbcType=VARCHAR},</if>
+                <if test="item.testOrgResult != null">test_org_result=#{item.testOrgResult,jdbcType=VARCHAR},</if>
+                <if test="item.testNoTransIdentityPrimer != null">
+                    test_no_trans_identity_primer=#{item.testNoTransIdentityPrimer,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testIsGeneModifyPositive != null">
+                    test_is_gene_modify_positive=#{item.testIsGeneModifyPositive,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testIfFixedPoint != null">test_if_fixed_point=#{item.testIfFixedPoint,jdbcType=VARCHAR},</if>
+                <if test="item.testIfCopyInsert != null">test_if_copy_insert=#{item.testIfCopyInsert,jdbcType=VARCHAR},</if>
+                <if test="item.testFixedPointType != null">test_fixed_point_type=#{item.testFixedPointType,jdbcType=VARCHAR},</if>
+                <if test="item.testDonorResidueInfo != null">test_donor_residue_info=#{item.testDonorResidueInfo,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testInsertionSite != null">test_insertion_site=#{item.testInsertionSite,jdbcType=VARCHAR},</if>
+                <if test="item.testElisaResult != null">test_elisa_result=#{item.testElisaResult,jdbcType=VARCHAR},</if>
+                <if test="item.testQbzrSeq != null">test_qbzr_seq=#{item.testQbzrSeq,jdbcType=VARCHAR},</if>
+                <if test="item.testEditResidueInfo != null">test_edit_residue_info=#{item.testEditResidueInfo,jdbcType=VARCHAR},</if>
+                <if test="item.testTime != null">test_time=#{item.testTime,jdbcType=VARCHAR},</if>
+                <if test="item.testUserId != null">test_user_id=#{item.testUserId,jdbcType=NUMERIC},</if>
+                <if test="item.testUserName != null">test_user_name=#{item.testUserName,jdbcType=VARCHAR},</if>
+                <if test="item.identifyPrimer != null">identify_primer=#{item.identifyPrimer,jdbcType=VARCHAR},</if>
+                <if test="item.checkResult != null">check_result=#{item.checkResult,jdbcType=VARCHAR},</if>
+                <if test="item.applyType != null">apply_type=#{item.applyType,jdbcType=VARCHAR},</if>
+            </set>
+            where id = ${item.id}
+        </foreach>
+    </update>
+
+
+
+
     <insert id="insertBatch">
         insert into tc_sample_test_tb(id,experiment_code,region_num,
         seed_num,project_code,vector_task_code,
@@ -116,6 +167,5 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </select>
-
 
 </mapper>

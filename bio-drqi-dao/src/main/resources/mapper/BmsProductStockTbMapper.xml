@@ -39,7 +39,7 @@
         select
         <include refid="Base_Column_List"/>
         from bms_product_stock_tb
-        where
+        <where>
             <if test="productName != null and productName != ''"> and product_name=#{productName,jdbcType=VARCHAR}</if>
             <if test="productOutCode != null and productOutCode!=''"> and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
             <if test="productCategoryCode != null and productCategoryCode!=''"> and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
@@ -55,6 +55,7 @@
             <if test="stockLocationNumber != null"> and stock_location_number=#{stockLocationNumber,jdbcType=VARCHAR}</if>
             <if test="produceDate != null"> and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
             <if test="expirationDate != null"> and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
+        </where>
         order by id desc
     </select>
 

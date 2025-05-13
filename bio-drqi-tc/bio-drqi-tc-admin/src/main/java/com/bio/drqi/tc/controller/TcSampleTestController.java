@@ -2,9 +2,7 @@ package com.bio.drqi.tc.controller;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.tc.req.TcSampleTestApproveSampleResultReqDTO;
-import com.bio.drqi.tc.req.TcSampleTestLayoutConfirmReqDTO;
-import com.bio.drqi.tc.req.TcSampleTestUploadIdentifyPrimerTemplateReqDTO;
+import com.bio.drqi.tc.req.*;
 import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
 import com.bio.drqi.tc.service.TcSampleTestService;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +20,30 @@ public class TcSampleTestController {
 
     @Resource
     private TcSampleTestService tcSampleTestService;
+
+
+
+    /**
+     * 检测数据模板下载
+     */
+    @PostMapping("downTestTemplate")
+    @WebLog(desc = "检测数据模板下载")
+    public void downTestTemplate(@Validated @RequestBody TcSampleTestDownTestTemplateReqDTO tcSampleTestDownTestTemplateReqDTO, HttpServletResponse response) {
+        tcSampleTestService.downTestTemplate(tcSampleTestDownTestTemplateReqDTO,response);
+    }
+
+
+    /**
+     * 上传检测数据
+     */
+    @PostMapping("uploadTestTemplate")
+    @WebLog(desc = "上传检测数据")
+    public ResponseResult<String> uploadTestTemplate(@Validated @RequestBody TcSampleTestUploadTestTemplateReqDTO tcSampleTestUploadTestTemplateReqDTO) {
+        tcSampleTestService.uploadTestTemplate(tcSampleTestUploadTestTemplateReqDTO);
+        return ResponseResult.getSuccess("成功");
+    }
+
+
 
     /**
      * 田测取样检测管理-下载填写鉴定引物模板

@@ -1,6 +1,7 @@
 package com.bio.drqi.tc.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
@@ -14,12 +15,11 @@ import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.drqi.mapper.TcSampleLayoutTbMapper;
 import com.bio.drqi.mapper.TcSampleTestTbMapper;
 import com.bio.drqi.tc.SampleUnitDTO;
-import com.bio.drqi.tc.req.TcSampleTestApproveSampleResultReqDTO;
-import com.bio.drqi.tc.req.TcSampleTestLayoutConfirmReqDTO;
-import com.bio.drqi.tc.req.TcSampleTestUploadIdentifyPrimerTemplateReqDTO;
+import com.bio.drqi.tc.req.*;
 import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
 import com.bio.drqi.tc.service.TcSampleTestService;
 import com.bio.drqi.tc.service.dto.IdentifyPrimerTemplateExcelDTO;
+import com.bio.drqi.tc.service.dto.TcTestExcelDTO;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
 import com.bio.drqi.tc.util.LayoutUtil;
 import com.bio.drqi.tc.util.TcSampleExcelUtil;
@@ -33,6 +33,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,6 +54,93 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
 
     @Value("${cer.properties.excelTemplatePath}")
     private String excelTemplatePath;
+
+    @Override
+    public void downTestTemplate(TcSampleTestDownTestTemplateReqDTO tcSampleTestDownTestTemplateReqDTO, HttpServletResponse response) {
+        List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNum(tcSampleTestDownTestTemplateReqDTO.getApplyNo());
+        List<TcTestExcelDTO> testExcelDTOList = new ArrayList<>();
+        for (TcSampleTestTb tcSampleTestTb : tcSampleTestTbList) {
+            TcTestExcelDTO tcTestExcelDTO = new TcTestExcelDTO();
+            tcTestExcelDTO.setExperimentCode(tcSampleTestTb.getExperimentCode());
+            tcTestExcelDTO.setRegionNum(tcSampleTestTb.getRegionNum());
+            tcTestExcelDTO.setSeedNum(tcSampleTestTb.getSeedNum());
+            tcTestExcelDTO.setSampleCode(tcSampleTestTb.getSampleCode());
+            tcTestExcelDTO.setSampleTime(tcSampleTestTb.getSampleTime());
+            tcTestExcelDTO.setGeneration(tcSampleTestTb.getGenerationCode());
+            tcTestExcelDTO.setVectorTaskCode(tcSampleTestTb.getVectorTaskCode());
+            testExcelDTOList.add(tcTestExcelDTO);
+        }
+        try {
+            String excelTemplateName = "田测检测数据上传模板_V1.xlsx";
+            String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
+            ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
+            ExcelUtil.fillExcel(templateDir, testExcelDTOList, TcTestExcelDTO.class, response);
+        } catch (Exception e) {
+            log.error("模板下载失败，", e);
+            throw new BusinessException("模板下载失败，请联系管理员检测模板配置");
+        }
+    }
+
+    @Override
+    public void uploadTestTemplate(TcSampleTestUploadTestTemplateReqDTO tcSampleTestUploadTestTemplateReqDTO) {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcSampleTestUploadTestTemplateReqDTO.getApplyNo());
+
+        TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
+
+
+        if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            throw new BusinessException("非执行中任务");
+        }
+        if (!tcSampleTestUploadTestTemplateReqDTO.getExcelUrl().endsWith("xlsx")) {
+            throw new BusinessException("文件格式错误");
+        }
+        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + tcSampleTestUploadTestTemplateReqDTO.getExcelUrl();
+        try {
+            ossService.downloadPath(tempFilePath, tcSampleTestUploadTestTemplateReqDTO.getExcelUrl());
+        } catch (Exception e) {
+            log.error("【任务工单】文件从oss下载失败", e);
+            throw new BusinessException("文件处理异常");
+        }
+        List<TcTestExcelDTO> tcTestExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcTestExcelDTO.class);
+        if (CollectionUtil.isEmpty(tcTestExcelDTOList)) {
+            throw new BusinessException("无数据提交");
+        }
+        List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNumAndSampleCodeIn(bioTaskDtlTb.getTaskNum(), tcTestExcelDTOList.stream().map(TcTestExcelDTO::getSampleCode).collect(Collectors.toList()));
+        if (tcTestExcelDTOList.size() != tcSampleTestTbList.size()) {
+            throw new BusinessException("有取样编号不存在此申请中");
+        }
+        List<CerSampleTestTb> updateList = new ArrayList<>();
+        Map<String, TcSampleTestTb> tcSampleTestTbMap = tcSampleTestTbList.stream().collect(Collectors.toMap(TcSampleTestTb::getSampleCode, tcSampleTestTb -> tcSampleTestTb));
+        for (TcTestExcelDTO tcTestExcelDTO : tcTestExcelDTOList) {
+            log.info("检测数据上送 数据处理中：" + tcTestExcelDTO.getSampleCode());
+            TcSampleTestTb tcSampleTestTb = tcSampleTestTbMap.get(tcTestExcelDTO.getSampleCode());
+            CerSampleTestTb updateCerSampleTestTb = new CerSampleTestTb();
+            updateCerSampleTestTb.setId(tcSampleTestTb.getId());
+            updateCerSampleTestTb.setTestIdentifyPrimer(tcTestExcelDTO.getIdentifyPrimer());
+            updateCerSampleTestTb.setTestMethod(tcTestExcelDTO.getTestMethod());
+            updateCerSampleTestTb.setTestEditType(tcTestExcelDTO.getEditType());
+            updateCerSampleTestTb.setTestNoTransIdentityPrimer(tcTestExcelDTO.getNoTransIdentityPrimer());
+            updateCerSampleTestTb.setTestIsGeneModifyPositive(tcTestExcelDTO.getIsGeneModifyPositive());
+            updateCerSampleTestTb.setTestIfFixedPoint(tcTestExcelDTO.getIfFixedPoint());
+            updateCerSampleTestTb.setTestIfCopyInsert(tcTestExcelDTO.getIfCopyInsert());
+            updateCerSampleTestTb.setTestFixedPointType(tcTestExcelDTO.getFixedPointType());
+            updateCerSampleTestTb.setTestDonorResidueInfo(tcTestExcelDTO.getDonorResidueInfo());
+            updateCerSampleTestTb.setTestInsertionSite(tcTestExcelDTO.getInsertionSite());
+            updateCerSampleTestTb.setTestElisaResult(tcTestExcelDTO.getElisaResult());
+            updateCerSampleTestTb.setTestQbzrSeq(tcTestExcelDTO.getQbzrSeq());
+            updateCerSampleTestTb.setTestEditResidueInfo(tcTestExcelDTO.getEditResidueInfo());
+            updateCerSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
+            updateCerSampleTestTb.setTestUserName(SecurityContextHolder.getUserName());
+            updateCerSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
+            updateCerSampleTestTb.setUpdateTime(new Date());
+            updateList.add(updateCerSampleTestTb);
+        }
+
+        tcSampleTestTaskDTO.setTestDataExcelUrl(tcSampleTestUploadTestTemplateReqDTO.getExcelUrl());
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcSampleTestTaskDTO));
+        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+       // tcSampleTestTbMapper.updateBatchById(updateList);
+    }
 
     @Override
     public void downIdentifyPrimerTemplate(HttpServletResponse response, String applyNo) {

@@ -1,16 +1,30 @@
 package com.bio.drqi.tc.service;
 
-import com.bio.drqi.tc.req.TcSampleTestApproveSampleResultReqDTO;
-import com.bio.drqi.tc.req.TcSampleTestLayoutConfirmReqDTO;
-import com.bio.drqi.tc.req.TcSampleTestUploadIdentifyPrimerTemplateReqDTO;
+import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.tc.req.*;
 import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 
 public interface TcSampleTestService {
+
+
+    /**
+     * 检测数据模板下载
+     */
+    void downTestTemplate(TcSampleTestDownTestTemplateReqDTO tcSampleTestDownTestTemplateReqDTO, HttpServletResponse response);
+
+
+    /**
+     * 上传检测数据
+     */
+    void uploadTestTemplate(TcSampleTestUploadTestTemplateReqDTO tcSampleTestUploadTestTemplateReqDTO);
+
 
     /**
      * 下载填写鉴定引物模板

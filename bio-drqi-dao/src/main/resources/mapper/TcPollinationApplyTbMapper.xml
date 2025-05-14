@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.TcPollinationApplyTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.TcPollinationApplyTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
+            <result property="sampleApplyNum" column="sample_apply_num" jdbcType="VARCHAR"/>
+            <result property="pollinationType" column="pollination_type" jdbcType="VARCHAR"/>
+            <result property="pollinationApplyNum" column="pollination_apply_num" jdbcType="VARCHAR"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,experiment_num,sample_apply_num,
+        pollination_type,pollination_apply_num,task_num,
+        create_user_id,create_user_name,create_time,
+        harvest_apply_num
+    </sql>
+    <select id="selectAllByPollinationApplyNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_pollination_apply_tb
+        where
+        pollination_apply_num = #{pollinationApplyNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.TcPollinationApplyTb">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_pollination_apply_tb
+        <where>
+            <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
+            <if test="sampleApplyNum != null and sampleApplyNum!=''">and sample_apply_num=#{sampleApplyNum,jdbcType=VARCHAR}</if>
+            <if test="pollinationType != null and pollinationType!=''">and pollination_type=#{pollinationType,jdbcType=VARCHAR}</if>
+            <if test="pollinationApplyNum != null and pollinationApplyNum!=''">and pollination_apply_num=#{pollinationApplyNum,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="createUserId != null">create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="createUserName != null">create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="harvestApplyNum != null and harvestApplyNum!=''">and harvest_apply_num=#{harvestApplyNum,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
+    </select>
+</mapper>

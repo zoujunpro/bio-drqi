@@ -124,7 +124,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
                     BmsProductOutDTO bmsProductOutDTO = BeanUtils.copyProperties(bmsProductStockTb, BmsProductOutDTO.class);
                     bmsProductOutDTO.setNumber(inputOrderDetail.getNumber());
                     bmsProductOutDTO.setRemark("入库直接出库");
-                    bmsProductOutTaskService.doOutStock(bioTaskDtlTb.getTaskNum(), bmsProductOutDTO);
+                    bmsProductOutTaskService.doOutStock(bioTaskDtlTb, bmsProductOutDTO);
                 }
                 //判断订单是否已经结束，如果已经结束则更新状态;
                 List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectAllByOrderNum(bmsOrderDetailTb.getOrderNum());
@@ -202,8 +202,8 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockInLog.setProductPrice(bmsOrderDetailTb.getPurchasePrice());
         bmsProductStockInLog.setStoreNumber(inputOrderDetail.getNumber());
         bmsProductStockInLog.setStoreAmount(bmsOrderDetailTb.getPurchasePrice().multiply(new BigDecimal(inputOrderDetail.getNumber())));
-        bmsProductStockInLog.setApplyUserId(SecurityContextHolder.getUserId());
-        bmsProductStockInLog.setApplyUserName(SecurityContextHolder.getNickName());
+        bmsProductStockInLog.setApplyUserId(bioTaskDtlTb.getApplyUserId());
+        bmsProductStockInLog.setApplyUserName(bioTaskDtlTb.getApplyUserName());
         bmsProductStockInLog.setCreateTime(new Date());
         bmsProductStockInLog.setTaskNum(bioTaskDtlTb.getTaskNum());
         bmsProductStockInLog.setOrderNum(bmsOrderDetailTb.getOrderNum());

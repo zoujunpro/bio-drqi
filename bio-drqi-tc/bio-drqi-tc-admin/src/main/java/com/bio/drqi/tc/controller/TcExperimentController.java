@@ -45,10 +45,10 @@ public class TcExperimentController {
      * 试验方案申请管理-查询所有未授粉实验方案
      * @return
      */
-    @GetMapping("/listNoPollination")
+    @GetMapping("/listByNoPollination")
     @WebLog(desc = "试验方案申请管理-查询所有未授粉实验方案")
-    public ResponseResult<List<TcExperimentListNoPollinationRspDTO>> listNoPollination() {
-        return ResponseResult.getSuccess(tcExperimentService.listNoPollination());
+    public ResponseResult<List<TcExperimentListNoPollinationRspDTO>> listByNoPollination() {
+        return ResponseResult.getSuccess(tcExperimentService.listByNoPollination());
     }
 
     /**

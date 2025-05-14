@@ -56,7 +56,7 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     }
 
     @Override
-    public List<TcExperimentListNoPollinationRspDTO> listNoPollination() {
+    public List<TcExperimentListNoPollinationRspDTO> listByNoPollination() {
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByPollinationNumIsNullOrderByIdDesc();
         return BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListNoPollinationRspDTO.class);
     }

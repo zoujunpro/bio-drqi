@@ -67,11 +67,11 @@ public class TcExperimentDesignTb implements Serializable {
      */
     private String generationCode;
 
+
     /**
      * 田测基因类
      */
     private String tcGene;
-
     /**
      * 小区面积
      */

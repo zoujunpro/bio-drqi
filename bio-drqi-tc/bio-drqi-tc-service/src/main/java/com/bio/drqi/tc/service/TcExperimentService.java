@@ -5,6 +5,7 @@ import com.bio.drqi.tc.rsp.TcExperimentListDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListPageRspDTO;
 import com.github.pagehelper.PageInfo;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface TcExperimentService {
@@ -18,6 +19,7 @@ public interface TcExperimentService {
     PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO);
 
 
+    void downTemplate(HttpServletResponse httpServletResponse);
 
 
     /**

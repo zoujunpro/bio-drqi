@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class ExperimentDesignExcelDTO {
+
     /**
      * 实验编号
      */
@@ -48,12 +49,7 @@ public class ExperimentDesignExcelDTO {
      * 基因类型
      */
     @ExcelProperty("基因型")
-    private String geneType;
-    /**
-     * 基因型性状
-     */
-    @ExcelProperty("基因型性状")
-    private String geneticCharacter;
+    private String tcGene;
     /**
      * 项目编号
      */

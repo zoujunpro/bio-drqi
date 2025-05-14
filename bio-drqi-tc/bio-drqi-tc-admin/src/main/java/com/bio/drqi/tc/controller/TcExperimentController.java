@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -22,6 +23,7 @@ public class TcExperimentController {
 
     @Resource
     private TcExperimentService tcExperimentService;
+
     /**
      * 试验方案申请管理-分页查询
      * @param tcExperimentListPageReqDTO
@@ -31,6 +33,16 @@ public class TcExperimentController {
     @WebLog(desc = "试验方案申请管理-分页查询")
     public ResponseResult<PageInfo<TcExperimentListPageRspDTO>> listPage(@Validated @RequestBody TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
         return ResponseResult.getSuccess(tcExperimentService.listPage(tcExperimentListPageReqDTO));
+    }
+    /**
+     * 试验方案申请管理-文件下载
+     * @param httpServletResponse
+     * @return
+     */
+    @PostMapping("/downTemplate")
+    @WebLog(desc = "试验方案申请管理-文件下载")
+    public void downTemplate(HttpServletResponse httpServletResponse) {
+        tcExperimentService.downTemplate(httpServletResponse);
     }
 
     /**

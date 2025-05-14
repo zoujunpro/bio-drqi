@@ -82,7 +82,7 @@ public class TcExperimentTb implements Serializable {
      */
     private String taskNum;
 
-    private String pollinationFlag;
+    private String pollinationNum;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

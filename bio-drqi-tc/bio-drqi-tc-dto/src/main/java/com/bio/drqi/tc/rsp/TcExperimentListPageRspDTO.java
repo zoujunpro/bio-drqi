@@ -72,5 +72,5 @@ public class TcExperimentListPageRspDTO {
     /**
      * 授粉标识
      */
-    private String pollinationFlag;
+    private String pollinationNum;
 }

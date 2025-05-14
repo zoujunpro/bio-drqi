@@ -10,7 +10,6 @@
             <result property="vectorTaskCodes" column="vector_task_codes" jdbcType="VARCHAR"/>
             <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
             <result property="speciesName" column="species_name" jdbcType="VARCHAR"/>
-            <result property="pollinationFlag" column="pollination_flag" jdbcType="VARCHAR"/>
             <result property="fileUrl" column="file_url" jdbcType="VARCHAR"/>
             <result property="experimentGoal" column="experiment_goal" jdbcType="VARCHAR"/>
             <result property="experimentAddress" column="experiment_address" jdbcType="VARCHAR"/>
@@ -19,6 +18,7 @@
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="pollinationNum" column="pollination_num" jdbcType="VARCHAR"/>
 
     </resultMap>
 
@@ -27,7 +27,7 @@
         species_code,species_name,file_url,
         experiment_goal,experiment_address,apply_user_name,
         apply_user_id,create_time,experiment_num,
-        task_num,pollination_flag
+        task_num,pollination_num
     </sql>
     <select id="selectSelective" resultType="com.bio.drqi.domain.TcExperimentTb">
         select
@@ -46,7 +46,7 @@
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
             <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
-            <if test="pollinationFlag != null">and pollination_flag=#{pollinationFlag,jdbcType=VARCHAR}</if>
+            <if test="pollinationNum != null and pollinationNum!=''">and pollination_num=#{pollinationNum,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

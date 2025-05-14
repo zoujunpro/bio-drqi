@@ -8,13 +8,16 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.TcExperimentDesignTb;
 import com.bio.drqi.domain.TcPollinationApplyTb;
+import com.bio.drqi.domain.TcPollinationTb;
 import com.bio.drqi.domain.TcSampleTestTb;
 import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
 import com.bio.drqi.mapper.TcPollinationApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
 import com.bio.drqi.mapper.TcSampleTestTbMapper;
 import com.bio.drqi.tc.req.TcPollinationCreatePollinationExcelReqDTO;
+import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageReqDTO;
+import com.bio.drqi.tc.rsp.TcPollinationListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcPollinationListPageRspDTO;
 import com.bio.drqi.tc.service.TcPollinationService;
 import com.bio.drqi.tc.service.dto.TcPollinationOneExcelDTO;
@@ -60,6 +63,14 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         List<TcPollinationApplyTb> tcPollinationApplyTbList = tcPollinationApplyTbMapper.selectSelective(BeanUtils.copyProperties(tcPollinationListPageReqDTO, TcPollinationApplyTb.class));
         PageInfo<TcPollinationApplyTb> srcPageInfo = new PageInfo<>(tcPollinationApplyTbList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, TcPollinationListPageRspDTO.class);
+    }
+
+    @Override
+    public PageInfo<TcPollinationListPageDetailRspDTO> listPageDetail(TcPollinationListPageDetailReqDTO tcPollinationListPageDetailReqDTO) {
+        PageHelper.startPage(tcPollinationListPageDetailReqDTO.getPageNum(), tcPollinationListPageDetailReqDTO.getPageSize());
+        List<TcPollinationTb> tcPollinationTbList = tcPollinationTbMapper.selectSelective(BeanUtils.copyProperties(tcPollinationListPageDetailReqDTO, TcPollinationTb.class));
+        PageInfo<TcPollinationTb> srcPageInfo = new PageInfo<>(tcPollinationTbList);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo, TcPollinationListPageDetailRspDTO.class);
     }
 
     @Override

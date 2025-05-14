@@ -4,7 +4,9 @@ package com.bio.drqi.tc.controller;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcPollinationCreatePollinationExcelReqDTO;
+import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageReqDTO;
+import com.bio.drqi.tc.rsp.TcPollinationListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcPollinationListPageRspDTO;
 import com.bio.drqi.tc.service.TcPollinationService;
 import com.github.pagehelper.PageInfo;
@@ -39,6 +41,19 @@ public class TcPollinationController {
     }
 
 
+
+    /**
+     * 授粉管理-授粉列表分页查询
+     *
+     * @return
+     */
+    @PostMapping("/listPageDetail")
+    @WebLog(desc = "授粉管理-授粉列表分页查询")
+    public ResponseResult<PageInfo<TcPollinationListPageDetailRspDTO>> listPageDetail(@RequestBody @Validated TcPollinationListPageDetailReqDTO tcPollinationListPageDetailReqDTO) {
+        return ResponseResult.getSuccess(tcPollinationService.listPageDetail(tcPollinationListPageDetailReqDTO));
+    }
+
+
     /**
      * 授粉管理-生成授粉excel
      */
@@ -47,5 +62,8 @@ public class TcPollinationController {
     public void createPollinationExcel(@RequestBody @Validated TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
             tcPollinationService.createPollinationExcel(tcPollinationCreatePollinationExcelReqDTO,httpServletResponse);
     }
+
+
+
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 授粉管理
@@ -34,7 +35,7 @@ public class TcPollinationController {
     @PostMapping("/listPage")
     @WebLog(desc = "授粉管理-分页查询")
     public ResponseResult<PageInfo<TcPollinationListPageRspDTO>> listPage(@RequestBody @Validated TcPollinationListPageReqDTO tcPollinationListPageReqDTO) {
-        return null;
+        return ResponseResult.getSuccess(tcPollinationService.listPage(tcPollinationListPageReqDTO));
     }
 
 
@@ -43,8 +44,8 @@ public class TcPollinationController {
      */
     @PostMapping("/createPollinationExcel")
     @WebLog(desc = "授粉管理-生成授粉excel")
-    public void createPollinationExcel(@RequestBody @Validated TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO) {
-
+    public void createPollinationExcel(@RequestBody @Validated TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
+            tcPollinationService.createPollinationExcel(tcPollinationCreatePollinationExcelReqDTO,httpServletResponse);
     }
 
 }

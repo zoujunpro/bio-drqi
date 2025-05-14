@@ -57,12 +57,7 @@ public class TcExperimentListDetailRspDTO {
     /**
      * 基因类型
      */
-    private String geneType;
-
-    /**
-     * 基因型性状
-     */
-    private String geneticCharacter;
+    private String tcGene;
 
     /**
      * 小区面积

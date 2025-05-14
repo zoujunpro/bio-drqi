@@ -68,14 +68,9 @@ public class TcExperimentDesignTb implements Serializable {
     private String generationCode;
 
     /**
-     * 基因类型
+     * 田测基因类
      */
-    private String geneType;
-
-    /**
-     * 基因型性状
-     */
-    private String geneticCharacter;
+    private String tcGene;
 
     /**
      * 小区面积

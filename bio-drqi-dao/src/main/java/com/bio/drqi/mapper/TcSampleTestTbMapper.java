@@ -32,6 +32,8 @@ public interface TcSampleTestTbMapper extends BaseMapper<TcSampleTestTb> {
 
     List<TcSampleTestTb> selectAllBySampleApplyNumAndSampleCodeIn(@Param("sampleApplyNum") String sampleApplyNum, @Param("sampleCodeList") Collection<String> sampleCodeList);
 
+    List<TcSampleTestTb> selectAllBySampleApplyNumAndRegionNumAndSeedNum(@Param("sampleApplyNum") String sampleApplyNum, @Param("regionNum") String regionNum, @Param("seedNum") String seedNum);
+
 }
 
 

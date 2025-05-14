@@ -28,7 +28,7 @@ public class LayoutUtil {
                 List<List<SampleUnitDTO>> lastNinetySixList = ninetySixList.get(ninetySixList.size() - 1);
                 lastNinetySixList.add(new ArrayList<SampleUnitDTO>());
                 vectorTaskCerSampleTestTbList.stream().sorted(Comparator.comparing(TcSampleTestTb::getId)).forEach(tcSampleTestTb -> {
-                    fillSampleToNinetySixList(ninetySixList, tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentCode(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(),tcSampleTestTb.getSampleCode(),tcSampleTestTb.getIdentifyPrimer());
+                    fillSampleToNinetySixList(ninetySixList, tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentNum(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(),tcSampleTestTb.getSampleCode(),tcSampleTestTb.getIdentifyPrimer());
                 });
             });
         });

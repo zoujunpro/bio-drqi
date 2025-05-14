@@ -42,6 +42,8 @@ public interface CerVectorTaskTbMapper extends BaseMapper<CerVectorTaskTb> {
     List<CerVectorTaskTb> selectAllForBoard(@Param("userId") Integer userId, @Param("projectId") Integer projectId, @Param("speciesCode") String speciesCode, @Param("taskStatus") String taskStatus);
 
     List<String> selectAllSpeciesCode();
+
+    List<CerVectorTaskTb> selectAllBySpeciesCode(@Param("speciesCode") String speciesCode);
 }
 
 

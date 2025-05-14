@@ -162,5 +162,12 @@
         <if test="speciesCode!=null and speciesCode!=''">and species_code = #{speciesCode,jdbcType=VARCHAR}</if>
         order by id desc
     </select>
+    <select id="selectAllBySpeciesCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb
+        where
+        species_code = #{speciesCode,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

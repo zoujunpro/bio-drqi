@@ -32,4 +32,6 @@ public interface ProjectService {
     void start(Integer id);
 
     void complete(Integer id);
+
+    List<ProjectQueryBySpeciesCodeRspDTO> queryBySpeciesCode(String speciesCode);
 }

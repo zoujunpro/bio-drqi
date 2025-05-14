@@ -1,7 +1,6 @@
 package com.bio.drqi.manage.controller.project;
 
 
-
 import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.manage.project.req.ProjectListReqDTO;
 import com.bio.drqi.manage.project.rsp.*;
@@ -22,7 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/project")
-public class  ProjectController {
+public class ProjectController {
 
     @Resource
     private ProjectService projectService;
@@ -85,7 +84,7 @@ public class  ProjectController {
      */
     @GetMapping("/findProjectAllSpecies")
     @WebLog(desc = "查询项目中所有物种")
-    public ResponseResult<List<ProjectSpeciesLispRspDTO>> findProjectAllSpecies(@RequestParam  String projectCode) {
+    public ResponseResult<List<ProjectSpeciesLispRspDTO>> findProjectAllSpecies(@RequestParam String projectCode) {
         return ResponseResult.getSuccess(projectService.findProjectAllSpecies(projectCode));
     }
 
@@ -96,7 +95,7 @@ public class  ProjectController {
     @GetMapping("/stop")
     @WebLog(desc = "暂停项目")
     @RequestLog("暂停项目")
-    public ResponseResult<String> stop(@RequestParam  Integer id) {
+    public ResponseResult<String> stop(@RequestParam Integer id) {
         projectService.stop(id);
         return ResponseResult.getSuccess("成功");
     }
@@ -107,18 +106,30 @@ public class  ProjectController {
     @GetMapping("/start")
     @WebLog(desc = "启动项目")
     @RequestLog("启动项目")
-    public ResponseResult<String> start(@RequestParam  Integer id) {
+    public ResponseResult<String> start(@RequestParam Integer id) {
         projectService.start(id);
         return ResponseResult.getSuccess("成功");
     }
+
     /**
      * 完成项目
      */
     @GetMapping("/complete")
     @WebLog(desc = "结束项目")
     @RequestLog("结束项目")
-    public ResponseResult<String> complete(@RequestParam  Integer id) {
+    public ResponseResult<String> complete(@RequestParam Integer id) {
         projectService.complete(id);
         return ResponseResult.getSuccess("成功");
+    }
+
+    /**
+     * 根据物种查询项目
+     *
+     * @param speciesCode
+     * @return
+     */
+    @GetMapping("/queryBySpeciesCode")
+    public ResponseResult<List<ProjectQueryBySpeciesCodeRspDTO>> queryBySpeciesCode(String speciesCode) {
+        return ResponseResult.getSuccess(projectService.queryBySpeciesCode(speciesCode));
     }
 }

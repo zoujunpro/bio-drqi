@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +52,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Resource
     private RemoteUserService remoteUserService;
 
+
     @Override
     public PageInfo<ProjectListRspDTO> listPage(ProjectListReqDTO projectListReqDTO) {
         PageHelper.startPage(projectListReqDTO.getPageNum(), projectListReqDTO.getPageSize());
@@ -65,7 +67,7 @@ public class ProjectServiceImpl implements ProjectService {
             selectCerProjectTb.setOrderType(projectListReqDTO.getOrder().getOrderType());
         }
         ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserById(SecurityContextHolder.getUserId());
-        if(responseResult.isError()){
+        if (responseResult.isError()) {
             throw new BusinessException(responseResult.getMessage());
         }
         List<UserDetailRspDTO.DataPermissionConfig> dataPermissionList = responseResult.getData().getDataPermissionConfigList();
@@ -222,6 +224,26 @@ public class ProjectServiceImpl implements ProjectService {
 
         // cerProjectStatusListener.notice(ProjectStatusEnum.compete,()->cerProjectTb.getId());
 
+    }
+
+    @Override
+    public List<ProjectQueryBySpeciesCodeRspDTO> queryBySpeciesCode(String speciesCode) {
+        List<ProjectQueryBySpeciesCodeRspDTO> result = new ArrayList<ProjectQueryBySpeciesCodeRspDTO>();
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllBySpeciesCode(speciesCode);
+        if (CollectionUtil.isNotEmpty(cerVectorTaskTbList)) {
+            Map<String, List<CerVectorTaskTb>> map = cerVectorTaskTbList.stream().collect(Collectors.groupingBy(CerVectorTaskTb::getProjectCode));
+            map.forEach((projectCode, list) -> {
+                CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(projectCode);
+                ProjectQueryBySpeciesCodeRspDTO projectQueryBySpeciesCodeRspDTO=new ProjectQueryBySpeciesCodeRspDTO();
+                projectQueryBySpeciesCodeRspDTO.setProjectCode(cerProjectTb.getProjectCode());
+                projectQueryBySpeciesCodeRspDTO.setProjectName(cerProjectTb.getProjectName());
+                list.forEach(cerVectorTaskTb -> {
+                    projectQueryBySpeciesCodeRspDTO.addImplementationPlanToList(cerVectorTaskTb.getVectorTaskCode(),cerVectorTaskTb.getVectorTaskName());
+                });
+                result.add(projectQueryBySpeciesCodeRspDTO);
+            });
+        }
+        return result;
     }
 
 }

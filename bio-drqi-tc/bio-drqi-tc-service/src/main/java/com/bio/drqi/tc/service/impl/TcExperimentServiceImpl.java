@@ -27,18 +27,13 @@ import java.util.List;
 @Slf4j
 public class TcExperimentServiceImpl implements TcExperimentService {
 
-    @Value("${cer.properties.excelTemplatePath}")
-    private String excelTemplatePath;
-
-
     @Resource
     private TcExperimentTbMapper tcExperimentTbMapper;
 
     @Resource
     private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
 
-    @Resource
-    private OssService ossService;
+
 
     @Override
     public PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
@@ -53,14 +48,6 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         return BeanUtils.copyPageInfoProperties(srcPageInfo, TcExperimentListPageRspDTO.class);
     }
 
-    @Override
-    public void downTemplate(HttpServletResponse httpServletResponse) {
-        try {
-            ossService.downloadFile(httpServletResponse, "template", "田间设计方案模板V1.0.xlsx");
-        } catch (Exception e) {
-            throw new BusinessException("移苗转化取样编号模板下载失败，请联系管理员检测模板配置");
-        }
-    }
 
     @Override
     public List<TcExperimentListDetailRspDTO> listDetail(String experimentCode) {

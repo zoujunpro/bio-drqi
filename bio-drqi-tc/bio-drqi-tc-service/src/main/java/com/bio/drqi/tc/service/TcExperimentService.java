@@ -19,9 +19,6 @@ public interface TcExperimentService {
     PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO);
 
 
-    void downTemplate(HttpServletResponse httpServletResponse);
-
-
     /**
      * 试验方案申请管理-田间设计列表
      * @param experimentCode

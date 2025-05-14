@@ -1,7 +1,9 @@
 package com.bio.drqi.tc.controller;
 
 
+import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.oss.service.OssService;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcPollinationCreatePollinationExcelReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
@@ -29,6 +31,8 @@ public class TcPollinationController {
     @Resource
     private TcPollinationService tcPollinationService;
 
+    @Resource
+    private OssService ossService;
     /**
      * 授粉管理-分页查询
      *
@@ -64,6 +68,19 @@ public class TcPollinationController {
     }
 
 
-
+    /**
+     * 授粉管理-田测授粉数据表单模板下载
+     * @param httpServletResponse
+     * @return
+     */
+    @PostMapping("/downTemplate")
+    @WebLog(desc = "试验方案申请管理-文件下载")
+    public void downTemplate(HttpServletResponse httpServletResponse) {
+        try {
+            ossService.downloadFile(httpServletResponse, "template", "田测授粉数据表单模板V1.0.xlsx");
+        } catch (Exception e) {
+            throw new BusinessException("田测授粉数据表单模板下载失败，请联系管理员检测模板配置");
+        }
+    }
 
 }

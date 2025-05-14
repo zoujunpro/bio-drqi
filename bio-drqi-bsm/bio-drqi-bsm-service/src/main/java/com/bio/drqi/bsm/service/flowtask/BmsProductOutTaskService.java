@@ -68,14 +68,14 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
             List<BmsProductOutDTO> bmsProductOutDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskForm(), BmsProductOutDTO.class);
             for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
                 //扣减库存
-                doOutStock(bioTaskDtlTb.getTaskNum(), bmsProductOutDTO);
+                doOutStock(bioTaskDtlTb, bmsProductOutDTO);
 
             }
         }
 
     }
 
-    public void doOutStock(String taskNum, BmsProductOutDTO bmsProductOutDTO) {
+    public void doOutStock(BioTaskDtlTb bioTaskDtlTb, BmsProductOutDTO bmsProductOutDTO) {
         BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductOutDTO.getUniqueCode());
         bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductOutDTO.getNumber());
         bmsProductStockTb.setTotalOutNumber(bmsProductStockTb.getTotalOutNumber() + bmsProductOutDTO.getNumber());
@@ -92,10 +92,10 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockOutLog.setProductSpecs(bmsProductStockTb.getProductSpecs());
         bmsProductStockOutLog.setBatchNo(bmsProductStockTb.getBatchNo());
         bmsProductStockOutLog.setOutNumber(bmsProductOutDTO.getNumber());
-        bmsProductStockOutLog.setApplyUserId(SecurityContextHolder.getUserId());
-        bmsProductStockOutLog.setApplyUserName(SecurityContextHolder.getNickName());
+        bmsProductStockOutLog.setApplyUserId(bioTaskDtlTb.getApplyUserId());
+        bmsProductStockOutLog.setApplyUserName(bioTaskDtlTb.getApplyUserName());
         bmsProductStockOutLog.setCreateTime(new Date());
-        bmsProductStockOutLog.setTaskNum(taskNum);
+        bmsProductStockOutLog.setTaskNum(bioTaskDtlTb.getTaskNum());
         bmsProductStockOutLog.setRemark(bmsProductOutDTO.getRemark());
         bmsProductStockOutLog.setOutType(OutTypeEnum.TYPE_1.code);
         bmsProductStockOutLog.setUnitCode(bmsProductOutDTO.getUnitCode());

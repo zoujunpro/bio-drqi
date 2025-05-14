@@ -144,8 +144,8 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setProductCategoryCode(product.getProductCategoryCode());
                 bmsOrderDetailTb.setProductCategoryName(product.getProductCategoryName());
                 bmsOrderDetailTb.setCreateTime(new Date());
-                bmsOrderDetailTb.setApplyUserId(SecurityContextHolder.getUserId());
-                bmsOrderDetailTb.setApplyUserName(SecurityContextHolder.getNickName());
+                bmsOrderDetailTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
+                bmsOrderDetailTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
                 bmsOrderDetailTb.setTaskNum(bioTaskDtlTb.getTaskNum());
                 bmsOrderDetailTb.setPictureUrls(product.getPictureUrls());
                 bmsOrderDetailTb.setPurchaseDate(bmsOrderTb.getPurchaseDate());
@@ -165,9 +165,9 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
     private BmsOrderTb initBmsOrderTb(BioTaskDtlTb bioTaskDtlTb, BmsPurchaseOrderDTO bmsPurchaseOrderDTO) {
         BmsOrderTb bmsOrderTb = new BmsOrderTb();
         bmsOrderTb.setOrderNum(bioTaskDtlTb.getTaskNum());
-        bmsOrderTb.setApplyUserId(SecurityContextHolder.getUserId());
+        bmsOrderTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
         bmsOrderTb.setApplyTime(DateUtil.formatDateTime(new Date()));
-        bmsOrderTb.setApplyUserName(SecurityContextHolder.getNickName());
+        bmsOrderTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
         bmsOrderTb.setApplyUserDepartment(bmsPurchaseOrderDTO.getApplyUserDept());
         bmsOrderTb.setPurchaseDepartment(bmsPurchaseOrderDTO.getPurchaseDepartment());
         bmsOrderTb.setApplyUnitCode(bmsPurchaseOrderDTO.getUnitCode());

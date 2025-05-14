@@ -54,9 +54,14 @@ public class TcPollinationListPageDetailRspDTO {
     private String fSeedNum;
 
     /**
-     * 品种
+     * 父本品种
      */
-    private String speciesCode;
+    private String fBreedCode;
+
+    /**
+     * 母本品种
+     */
+    private String mBreedCode;
 
     /**
      * 母本实施方案编号

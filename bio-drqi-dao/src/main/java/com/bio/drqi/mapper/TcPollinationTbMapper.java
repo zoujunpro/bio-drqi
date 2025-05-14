@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.Collection;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,6 +17,8 @@ public interface TcPollinationTbMapper extends BaseMapper<TcPollinationTb> {
     List<TcPollinationTb> selectAllByPollinationApplyNum(@Param("pollinationApplyNum") String pollinationApplyNum);
 
     List<TcPollinationTb> selectSelective(TcPollinationTb tcPollinationTb);
+
+    int insertBatch(@Param("tcPollinationTbCollection") Collection<TcPollinationTb> tcPollinationTbCollection);
 
 }
 

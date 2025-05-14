@@ -67,9 +67,14 @@ public class TcPollinationTb implements Serializable {
     private String fSeedNum;
 
     /**
-     * 品种
+     * 父本品种
      */
-    private String speciesCode;
+    private String fBreedName;
+
+    /**
+     * 母本品种
+     */
+    private String mBreedName;
 
     /**
      * 母本实施方案编号
@@ -94,12 +99,12 @@ public class TcPollinationTb implements Serializable {
     /**
      * 母本基因类型
      */
-    private String mGeneType;
+    private String mTcGene;
 
     /**
      * 父本基因类型
      */
-    private String fGeneType;
+    private String fTcGene;
 
     /**
      * 授粉时间

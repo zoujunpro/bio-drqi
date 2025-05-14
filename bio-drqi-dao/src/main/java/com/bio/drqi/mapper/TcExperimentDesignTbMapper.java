@@ -16,6 +16,7 @@ public interface TcExperimentDesignTbMapper extends BaseMapper<TcExperimentDesig
     int insertBatch(@Param("tcExperimentDesignTbCollection") Collection<TcExperimentDesignTb> tcExperimentDesignTbCollection);
 
     List<TcExperimentDesignTb> selectAllByExperimentCode(@Param("experimentNum") String experimentNum);
+
 }
 
 

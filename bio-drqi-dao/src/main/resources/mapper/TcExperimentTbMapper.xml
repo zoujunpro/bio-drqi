@@ -50,4 +50,12 @@
         </where>
         order by id desc
     </select>
+    <select id="selectAllByPollinationNumIsNullOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_experiment_tb
+        where
+        pollination_num is null
+        order by id desc
+    </select>
 </mapper>

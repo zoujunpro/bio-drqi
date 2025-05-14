@@ -10,6 +10,7 @@ import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
 import com.bio.drqi.mapper.TcExperimentTbMapper;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListDetailRspDTO;
+import com.bio.drqi.tc.rsp.TcExperimentListNoPollinationRspDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListPageRspDTO;
 import com.bio.drqi.tc.service.TcExperimentService;
 import com.github.pagehelper.PageHelper;
@@ -34,7 +35,6 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
 
 
-
     @Override
     public PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
         PageHelper.startPage(tcExperimentListPageReqDTO.getPageNum(), tcExperimentListPageReqDTO.getPageSize());
@@ -53,5 +53,11 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     public List<TcExperimentListDetailRspDTO> listDetail(String experimentCode) {
         List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentCode(experimentCode);
         return BeanUtils.copyListProperties(tcExperimentDesignTbList, TcExperimentListDetailRspDTO.class);
+    }
+
+    @Override
+    public List<TcExperimentListNoPollinationRspDTO> listNoPollination() {
+        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByPollinationNumIsNullOrderByIdDesc();
+        return BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListNoPollinationRspDTO.class);
     }
 }

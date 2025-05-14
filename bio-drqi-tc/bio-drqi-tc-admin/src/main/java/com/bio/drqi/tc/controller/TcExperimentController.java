@@ -6,6 +6,7 @@ import com.bio.common.oss.service.OssService;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListDetailRspDTO;
+import com.bio.drqi.tc.rsp.TcExperimentListNoPollinationRspDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListPageRspDTO;
 import com.bio.drqi.tc.service.TcExperimentService;
 import com.github.pagehelper.PageInfo;
@@ -39,6 +40,17 @@ public class TcExperimentController {
     public ResponseResult<PageInfo<TcExperimentListPageRspDTO>> listPage(@Validated @RequestBody TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
         return ResponseResult.getSuccess(tcExperimentService.listPage(tcExperimentListPageReqDTO));
     }
+
+    /**
+     * 试验方案申请管理-查询所有未授粉实验方案
+     * @return
+     */
+    @GetMapping("/listNoPollination")
+    @WebLog(desc = "试验方案申请管理-查询所有未授粉实验方案")
+    public ResponseResult<List<TcExperimentListNoPollinationRspDTO>> listNoPollination() {
+        return ResponseResult.getSuccess(tcExperimentService.listNoPollination());
+    }
+
     /**
      * 试验方案申请管理-文件下载
      * @param httpServletResponse

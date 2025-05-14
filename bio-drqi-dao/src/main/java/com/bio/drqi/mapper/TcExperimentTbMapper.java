@@ -16,6 +16,8 @@ public interface TcExperimentTbMapper extends BaseMapper<TcExperimentTb> {
 
     List<TcExperimentTb> selectSelective(TcExperimentTb tcExperimentTb);
 
+    List<TcExperimentTb> selectAllByPollinationNumIsNullOrderByIdDesc();
+
 }
 
 

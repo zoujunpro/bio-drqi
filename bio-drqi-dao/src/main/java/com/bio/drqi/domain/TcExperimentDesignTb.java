@@ -25,7 +25,7 @@ public class TcExperimentDesignTb implements Serializable {
     /**
      * 实验编号
      */
-    private String experimentCode;
+    private String experimentNum;
 
     /**
      * 小区编号

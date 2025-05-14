@@ -68,7 +68,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
             for (TcSampleTestTaskDTO.FirstSampleApply firstSampleApply : tcSampleTestTaskDTO.getFirstSampleApplyList()) {
                 for (int i = 1; i <= firstSampleApply.getSampleNum(); i++) {
                     TcSampleTestTb tcSampleTestTb = new TcSampleTestTb();
-                    tcSampleTestTb.setExperimentCode(tcSampleTestApplyTb.getSampleApplyNum());
+                    tcSampleTestTb.setExperimentNum(tcSampleTestApplyTb.getExperimentNum());
                     tcSampleTestTb.setRegionNum(firstSampleApply.getRegionNum());
                     tcSampleTestTb.setSeedNum(firstSampleApply.getSeedNum());
                     tcSampleTestTb.setProjectCode(firstSampleApply.getProjectCode());
@@ -91,7 +91,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         if (CollectionUtil.isNotEmpty(tcSampleTestTaskDTO.getRepeatSampleApplyList())) {
             for (TcSampleTestTaskDTO.RepeatSampleApply repeatSampleApply : tcSampleTestTaskDTO.getRepeatSampleApplyList()) {
                 TcSampleTestTb tcSampleTestTb = new TcSampleTestTb();
-                tcSampleTestTb.setExperimentCode(tcSampleTestApplyTb.getSampleApplyNum());
+                tcSampleTestTb.setExperimentNum(tcSampleTestApplyTb.getExperimentNum());
                 tcSampleTestTb.setRegionNum(repeatSampleApply.getRegionNum());
                 tcSampleTestTb.setSeedNum(repeatSampleApply.getSeedNum());
                 tcSampleTestTb.setProjectCode(repeatSampleApply.getProjectCode());

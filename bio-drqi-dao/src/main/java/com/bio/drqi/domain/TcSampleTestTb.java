@@ -18,13 +18,13 @@ public class TcSampleTestTb implements Serializable {
     /**
      * 主键ID
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
      * 实验编号
      */
-    private String experimentCode;
+    private String experimentNum;
 
     /**
      * 小区编号

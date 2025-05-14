@@ -66,7 +66,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             List<TcExperimentDesignTb> tcExperimentDesignTbList = new ArrayList<TcExperimentDesignTb>();
             for (ExperimentDesignExcelDTO experimentDesignExcelDTO:experimentDesignExcelDTOList){
                 TcExperimentDesignTb tcExperimentDesignTb = new TcExperimentDesignTb();
-                tcExperimentDesignTb.setExperimentCode(experimentDesignExcelDTO.getExperimentCode());
+                tcExperimentDesignTb.setExperimentNum(experimentDesignExcelDTO.getExperimentNum());
                 tcExperimentDesignTb.setRegionNum(experimentDesignExcelDTO.getRegionNum());
                 tcExperimentDesignTb.setSeedNum(experimentDesignExcelDTO.getSeedNum());
                 tcExperimentDesignTb.setProjectCode(experimentDesignExcelDTO.getProjectCode());

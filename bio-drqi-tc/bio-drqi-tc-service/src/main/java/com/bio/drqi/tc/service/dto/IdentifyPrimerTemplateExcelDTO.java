@@ -11,7 +11,7 @@ public class IdentifyPrimerTemplateExcelDTO {
 
     @NotBlank(message = "数据不全：实验编号")
     @ExcelProperty("实验编号")
-    private String experimentCode;
+    private String experimentNum;
 
     @NotBlank(message = "数据不全：小区编号")
     @ExcelProperty("小区编号")

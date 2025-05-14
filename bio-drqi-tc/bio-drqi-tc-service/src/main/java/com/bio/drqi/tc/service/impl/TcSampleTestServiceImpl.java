@@ -87,7 +87,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         List<TcTestExcelDTO> testExcelDTOList = new ArrayList<>();
         for (TcSampleTestTb tcSampleTestTb : tcSampleTestTbList) {
             TcTestExcelDTO tcTestExcelDTO = new TcTestExcelDTO();
-            tcTestExcelDTO.setExperimentCode(tcSampleTestTb.getExperimentCode());
+            tcTestExcelDTO.setExperimentNum(tcSampleTestTb.getExperimentNum());
             tcTestExcelDTO.setRegionNum(tcSampleTestTb.getRegionNum());
             tcTestExcelDTO.setSeedNum(tcSampleTestTb.getSeedNum());
             tcTestExcelDTO.setSampleCode(tcSampleTestTb.getSampleCode());
@@ -174,7 +174,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
             List<IdentifyPrimerTemplateExcelDTO> identifyPrimerTemplateExcelDTOList = new ArrayList<IdentifyPrimerTemplateExcelDTO>();
             for (TcSampleTestTb tcSampleTestTb : tcSampleTestTbList) {
                 IdentifyPrimerTemplateExcelDTO identifyPrimerTemplateExcelDTO = new IdentifyPrimerTemplateExcelDTO();
-                identifyPrimerTemplateExcelDTO.setExperimentCode(tcSampleTestTb.getExperimentCode());
+                identifyPrimerTemplateExcelDTO.setExperimentNum(tcSampleTestTb.getExperimentNum());
                 identifyPrimerTemplateExcelDTO.setRegionNum(tcSampleTestTb.getRegionNum());
                 identifyPrimerTemplateExcelDTO.setSeedNum(tcSampleTestTb.getSeedNum());
                 identifyPrimerTemplateExcelDTO.setVectorTaskCode(tcSampleTestTb.getVectorTaskCode());
@@ -337,7 +337,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         List<TcSampleTestTb> noIdentifyPrimerList = tcSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isEmpty(cerSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(noIdentifyPrimerList)) {
             noIdentifyPrimerList.forEach(tcSampleTestTb -> {
-                tcSampleTestLayoutConfirmReqDTO.fillSampleToSingleList(tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentCode(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(), tcSampleTestTb.getSampleCode(), tcSampleTestTb.getIdentifyPrimer());
+                tcSampleTestLayoutConfirmReqDTO.fillSampleToSingleList(tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentNum(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(), tcSampleTestTb.getSampleCode(), tcSampleTestTb.getIdentifyPrimer());
             });
         }
         //96孔板
@@ -359,7 +359,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         List<TcSampleTestTb> noIdentifyPrimerList = tcSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isEmpty(cerSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(noIdentifyPrimerList)) {
             noIdentifyPrimerList.forEach(tcSampleTestTb -> {
-                tcSampleTestLayoutPreviewRspDTO.fillSampleToSingleList(tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentCode(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(), tcSampleTestTb.getSampleCode(), tcSampleTestTb.getIdentifyPrimer());
+                tcSampleTestLayoutPreviewRspDTO.fillSampleToSingleList(tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentNum(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(), tcSampleTestTb.getSampleCode(), tcSampleTestTb.getIdentifyPrimer());
             });
         }
         //96孔板

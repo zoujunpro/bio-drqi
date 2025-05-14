@@ -7,7 +7,7 @@
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.TcSampleTestApplyTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="sampleApplyNum" column="sample_apply_num" jdbcType="VARCHAR"/>
-            <result property="experimentCode" column="experiment_code" jdbcType="VARCHAR"/>
+            <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
             <result property="sampleOrganize" column="sample_organize" jdbcType="VARCHAR"/>
             <result property="applyType" column="apply_type" jdbcType="VARCHAR"/>
@@ -19,7 +19,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,sample_apply_num,experiment_code,
+        id,sample_apply_num,experiment_num,
         task_num,sample_organize,apply_type,
         expected_sample_time,expected_result_time,create_user_id,
         create_user_name,create_time
@@ -37,7 +37,7 @@
         from tc_sample_test_apply_tb
         <where>
             <if test="sampleApplyNum != null and sampleApplyNum!=''">and sample_apply_num=#{sampleApplyNum,jdbcType=VARCHAR}</if>
-            <if test="experimentCode != null and experimentCode!=''">and experiment_code=#{experimentCode,jdbcType=VARCHAR}</if>
+            <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
             <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="sampleOrganize != null and sampleOrganize!=''">and sample_organize=#{sampleOrganize,jdbcType=VARCHAR}</if>
             <if test="applyType != null and applyType!=''">and apply_type=#{applyType,jdbcType=VARCHAR}</if>

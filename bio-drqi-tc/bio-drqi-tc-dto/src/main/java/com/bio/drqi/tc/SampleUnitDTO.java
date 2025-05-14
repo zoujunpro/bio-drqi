@@ -6,7 +6,7 @@ import org.springframework.util.StringUtils;
 @Data
 public class SampleUnitDTO {
     private String vectorTaskCode;
-    private String experimentCode;
+    private String experimentNum;
     private String regionNum;
     private String seedNum;
     private String sampleCode;
@@ -14,11 +14,11 @@ public class SampleUnitDTO {
     private String identifyPrimer;
 
     public boolean ifNull() {
-        return StringUtils.isEmpty(this.vectorTaskCode) && StringUtils.isEmpty(this.seedNum) && StringUtils.isEmpty(this.sampleCode)&&StringUtils.isEmpty(this.regionNum)&&StringUtils.isEmpty(this.experimentCode);
+        return StringUtils.isEmpty(this.vectorTaskCode) && StringUtils.isEmpty(this.seedNum) && StringUtils.isEmpty(this.sampleCode)&&StringUtils.isEmpty(this.regionNum)&&StringUtils.isEmpty(this.experimentNum);
     }
-    public SampleUnitDTO fillData(String vectorTaskCode, String experimentCode,String regionNum,String seedNum, String sampleCode, String identifyPrimer) {
+    public SampleUnitDTO fillData(String vectorTaskCode, String experimentNum,String regionNum,String seedNum, String sampleCode, String identifyPrimer) {
         this.vectorTaskCode = vectorTaskCode;
-        this.experimentCode = experimentCode;
+        this.experimentNum = experimentNum;
         this.sampleCode = sampleCode;
         this.uniqueId = vectorTaskCode + sampleCode;
         this.identifyPrimer = identifyPrimer;
@@ -26,9 +26,9 @@ public class SampleUnitDTO {
         this.seedNum=seedNum;
         return this;
     }
-    public SampleUnitDTO(String vectorTaskCode, String experimentCode,String regionNum,String seedNum, String sampleCode, String identifyPrimer) {
+    public SampleUnitDTO(String vectorTaskCode, String experimentNum,String regionNum,String seedNum, String sampleCode, String identifyPrimer) {
         this.vectorTaskCode = vectorTaskCode;
-        this.experimentCode = experimentCode;
+        this.experimentNum = experimentNum;
         this.regionNum=regionNum;
         this.seedNum=seedNum;
         this.sampleCode = sampleCode;

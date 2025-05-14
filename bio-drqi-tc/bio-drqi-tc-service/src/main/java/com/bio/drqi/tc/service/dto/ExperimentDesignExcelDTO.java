@@ -9,7 +9,7 @@ public class ExperimentDesignExcelDTO {
      * 实验编号
      */
     @ExcelProperty("实验编号")
-    private String experimentCode;
+    private String experimentNum;
     /**
      * 小区编号
      */

@@ -15,7 +15,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface TcExperimentDesignTbMapper extends BaseMapper<TcExperimentDesignTb> {
     int insertBatch(@Param("tcExperimentDesignTbCollection") Collection<TcExperimentDesignTb> tcExperimentDesignTbCollection);
 
-    List<TcExperimentDesignTb> selectAllByExperimentCode(@Param("experimentCode") String experimentCode);
+    List<TcExperimentDesignTb> selectAllByExperimentCode(@Param("experimentNum") String experimentNum);
 }
 
 

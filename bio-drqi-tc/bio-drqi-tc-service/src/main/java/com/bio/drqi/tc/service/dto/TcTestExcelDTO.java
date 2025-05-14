@@ -14,7 +14,7 @@ public class TcTestExcelDTO {
      */
     @ExcelProperty("实验编号")
     @NotBlank(message = "参数缺失：实验编号")
-    private String experimentCode;
+    private String experimentNum;
     /**
      * 小区编号
      */

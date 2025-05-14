@@ -19,7 +19,7 @@ public class TcSampleTestApplyTb implements Serializable {
     /**
      * 主键ID
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -30,7 +30,7 @@ public class TcSampleTestApplyTb implements Serializable {
     /**
      * 实验编号
      */
-    private String experimentCode;
+    private String experimentNum;
 
     /**
      * 任务编号

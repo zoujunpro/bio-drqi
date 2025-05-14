@@ -62,7 +62,7 @@ public class TcExperimentListPageRspDTO {
     /**
      * 实验编号
      */
-    private String experimentCode;
+    private String experimentNum;
 
     /**
      * 任务编号

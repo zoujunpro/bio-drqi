@@ -41,4 +41,5 @@ public interface VectorTaskService {
     String getInstantVerifyTaskCode(String vectorTaskCode);
 
     List<VectorTaskSpeciesRspDTO> findAllSpecies();
+
 }

@@ -269,6 +269,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         return result;
     }
 
+
     private List<VectorTaskAddDTO.ExcelVector> parseExcelVector(String excelUrl) {
         if (StringUtils.isEmpty(excelUrl)) {
             return new ArrayList<>();

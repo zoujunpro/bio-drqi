@@ -43,6 +43,8 @@ public interface CerVectorTaskTbMapper extends BaseMapper<CerVectorTaskTb> {
 
     List<String> selectAllSpeciesCode();
 
+    List<String> selectAllSpeciesCodeNoCondition();
+
     List<CerVectorTaskTb> selectAllBySpeciesCode(@Param("speciesCode") String speciesCode);
 }
 

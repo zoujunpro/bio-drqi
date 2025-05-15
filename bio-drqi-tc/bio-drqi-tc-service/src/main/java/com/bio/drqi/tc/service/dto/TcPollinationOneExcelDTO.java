@@ -11,7 +11,7 @@ public class TcPollinationOneExcelDTO {
 
     private String seedNum;
 
-    private String breedCode;
+    private String breedName;
 
     private String vectorTaskCode;
 

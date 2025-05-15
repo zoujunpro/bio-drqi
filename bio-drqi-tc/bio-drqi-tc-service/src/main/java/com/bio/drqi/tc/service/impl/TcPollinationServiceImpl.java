@@ -82,7 +82,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
             tcPollinationOneExcelDTO.setExperimentNum(tcExperimentDesignTb.getExperimentNum());
             tcPollinationOneExcelDTO.setRegionNum(tcExperimentDesignTb.getRegionNum());
             tcPollinationOneExcelDTO.setSeedNum(tcExperimentDesignTb.getSeedNum());
-            tcPollinationOneExcelDTO.setBreedCode(tcExperimentDesignTb.getBreedCode());
+            tcPollinationOneExcelDTO.setBreedName(tcExperimentDesignTb.getBreedName());
             tcPollinationOneExcelDTO.setVectorTaskCode(tcExperimentDesignTb.getVectorTaskCode());
             tcPollinationOneExcelDTO.setGenerationCode(tcExperimentDesignTb.getGenerationCode());
             tcPollinationOneExcelDTO.setTcGene(tcExperimentDesignTb.getTcGene());

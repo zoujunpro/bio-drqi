@@ -56,7 +56,7 @@ public class TcExperimentController {
      * @param httpServletResponse
      * @return
      */
-    @PostMapping("/downTemplate")
+    @GetMapping("/downTemplate")
     @WebLog(desc = "试验方案申请管理-文件下载")
     public void downTemplate(HttpServletResponse httpServletResponse) {
         try {

@@ -12,7 +12,7 @@
         <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
         <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
         <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
-        <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
+        <result property="breedName" column="breed_name" jdbcType="VARCHAR"/>
         <result property="targetCharacter" column="target_character" jdbcType="VARCHAR"/>
         <result property="generationCode" column="generation_code" jdbcType="VARCHAR"/>
         <result property="tcGene" column="tc_gene" jdbcType="VARCHAR"/>
@@ -39,7 +39,7 @@
         id
         ,experiment_num,region_num,
         seed_num,project_code,vector_task_code,
-        species_code,breed_code,target_character,
+        species_code,breed_name,target_character,
         generation_code,tc_gene,
         region_area,area_unit,plant_space,
         row_number,row_length,row_space,
@@ -51,7 +51,7 @@
     <insert id="insertBatch">
         insert into tc_experiment_design_tb(id,experiment_num,region_num,
         seed_num,project_code,vector_task_code,
-        species_code,breed_code,target_character,
+        species_code,breed_name,target_character,
         generation_code,tc_gene,
         region_area,area_unit,plant_space,
         row_number,row_length,row_space,
@@ -63,7 +63,7 @@
         <foreach collection="tcExperimentDesignTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},
             #{item.seedNum,jdbcType=VARCHAR},#{item.projectCode,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},
-            #{item.speciesCode,jdbcType=VARCHAR},#{item.breedCode,jdbcType=VARCHAR},#{item.targetCharacter,jdbcType=VARCHAR},
+            #{item.speciesCode,jdbcType=VARCHAR},#{item.breedName,jdbcType=VARCHAR},#{item.targetCharacter,jdbcType=VARCHAR},
             #{item.generationCode,jdbcType=VARCHAR},#{item.tc_gene,jdbcType=VARCHAR},
             #{item.regionArea,jdbcType=VARCHAR},#{item.areaUnit,jdbcType=VARCHAR},#{item.plantSpace,jdbcType=VARCHAR},
             #{item.rowNumber,jdbcType=VARCHAR},#{item.rowLength,jdbcType=VARCHAR},#{item.rowSpace,jdbcType=VARCHAR},

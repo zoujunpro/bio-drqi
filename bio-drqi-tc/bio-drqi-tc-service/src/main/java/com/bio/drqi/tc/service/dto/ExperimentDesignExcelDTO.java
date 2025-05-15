@@ -27,7 +27,7 @@ public class ExperimentDesignExcelDTO {
      * 品种
      */
     @ExcelProperty("品种")
-    private String breedCode;
+    private String breedName;
     /**
      * 实施方案编号
      */

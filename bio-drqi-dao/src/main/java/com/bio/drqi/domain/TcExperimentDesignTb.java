@@ -55,7 +55,7 @@ public class TcExperimentDesignTb implements Serializable {
     /**
      * 品种
      */
-    private String breedCode;
+    private String breedName;
 
     /**
      * 目标性状

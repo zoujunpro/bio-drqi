@@ -71,8 +71,8 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
                 tcExperimentDesignTb.setSeedNum(experimentDesignExcelDTO.getSeedNum());
                 tcExperimentDesignTb.setProjectCode(experimentDesignExcelDTO.getProjectCode());
                 tcExperimentDesignTb.setVectorTaskCode(experimentDesignExcelDTO.getVectorTaskCode());
-                tcExperimentDesignTb.setSpeciesCode(experimentDesignExcelDTO.getBreedCode());
-                tcExperimentDesignTb.setBreedCode(null);
+                tcExperimentDesignTb.setSpeciesCode(tcExperimentTb.getSpeciesCode());
+                tcExperimentDesignTb.setBreedName(experimentDesignExcelDTO.getBreedName());
                 tcExperimentDesignTb.setTargetCharacter(experimentDesignExcelDTO.getTargetCharacter());
                 tcExperimentDesignTb.setGenerationCode(experimentDesignExcelDTO.getGenerationCode());
                 tcExperimentDesignTb.setTcGene(experimentDesignExcelDTO.getTcGene());

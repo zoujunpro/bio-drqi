@@ -50,8 +50,8 @@ public class TcExperimentServiceImpl implements TcExperimentService {
 
 
     @Override
-    public List<TcExperimentListDetailRspDTO> listDetail(String experimentCode) {
-        List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentCode(experimentCode);
+    public List<TcExperimentListDetailRspDTO> listDetail(String experimentNum) {
+        List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(experimentNum);
         return BeanUtils.copyListProperties(tcExperimentDesignTbList, TcExperimentListDetailRspDTO.class);
     }
 

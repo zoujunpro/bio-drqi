@@ -76,7 +76,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
     @Override
     public void createPollinationExcel(TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
         List<TcPollinationOneExcelDTO> tcPollinationOneExcelDTOList = new ArrayList<TcPollinationOneExcelDTO>();
-        List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentCode(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum());
+        List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum());
         for (TcExperimentDesignTb tcExperimentDesignTb : tcExperimentDesignTbList) {
             TcPollinationOneExcelDTO tcPollinationOneExcelDTO = new TcPollinationOneExcelDTO();
             tcPollinationOneExcelDTO.setExperimentNum(tcExperimentDesignTb.getExperimentNum());

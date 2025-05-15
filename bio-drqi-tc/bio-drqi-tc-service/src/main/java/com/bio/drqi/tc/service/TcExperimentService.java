@@ -22,10 +22,10 @@ public interface TcExperimentService {
 
     /**
      * 试验方案申请管理-田间设计列表
-     * @param experimentCode
+     * @param experimentNum
      * @return
      */
-    List<TcExperimentListDetailRspDTO> listDetail( String experimentCode);
+    List<TcExperimentListDetailRspDTO> listDetail( String experimentNum);
 
     List<TcExperimentListNoPollinationRspDTO> listByNoPollination();
 }

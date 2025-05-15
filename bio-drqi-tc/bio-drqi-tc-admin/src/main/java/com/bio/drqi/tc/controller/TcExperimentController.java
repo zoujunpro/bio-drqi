@@ -67,13 +67,13 @@ public class TcExperimentController {
 
     /**
      * 试验方案申请管理-田间设计列表
-     * @param experimentCode
+     * @param experimentNum
      * @return
      */
     @GetMapping("/listDetail")
     @WebLog(desc = "试验方案申请管理-田间设计列表")
-    public ResponseResult<List<TcExperimentListDetailRspDTO>> listDetail(@RequestParam @Validated String experimentCode){
-        return ResponseResult.getSuccess(tcExperimentService.listDetail(experimentCode));
+    public ResponseResult<List<TcExperimentListDetailRspDTO>> listDetail(@RequestParam @Validated String experimentNum){
+        return ResponseResult.getSuccess(tcExperimentService.listDetail(experimentNum));
     }
 
 }

@@ -95,9 +95,9 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
                 tcExperimentDesignTb.setRegionArea(experimentDesignExcelDTO.getRegionArea());
                 tcExperimentDesignTb.setAreaUnit(experimentDesignExcelDTO.getAreaUnit());
                 tcExperimentDesignTb.setPlantSpace(experimentDesignExcelDTO.getPlantSpace());
-                tcExperimentDesignTb.setRowNumber(experimentDesignExcelDTO.getRowNumber());
-                tcExperimentDesignTb.setRowLength(experimentDesignExcelDTO.getRowLength());
-                tcExperimentDesignTb.setRowSpace(experimentDesignExcelDTO.getRowSpace());
+                tcExperimentDesignTb.setRowsNumber(experimentDesignExcelDTO.getRowsNumber());
+                tcExperimentDesignTb.setRowsLength(experimentDesignExcelDTO.getRowsLength());
+                tcExperimentDesignTb.setRowsSpace(experimentDesignExcelDTO.getRowsSpace());
                 tcExperimentDesignTb.setSeedingType(experimentDesignExcelDTO.getSeedingType());
                 tcExperimentDesignTb.setSeedingNumber(experimentDesignExcelDTO.getSeedingNumber());
                 tcExperimentDesignTb.setSeedingUnit(experimentDesignExcelDTO.getSeedingUnit());

@@ -71,19 +71,19 @@ public class ExperimentDesignExcelDTO {
      * 行数
      */
     @ExcelProperty("小区行数")
-    private String rowNumber;
+    private String rowsNumber;
 
     /**
      * 行长
      */
     @ExcelProperty("小区行长(m)")
-    private String rowLength;
+    private String rowsLength;
 
     /**
      * 行距
      */
     @ExcelProperty("行距(cm)")
-    private String rowSpace;
+    private String rowsSpace;
 
     /**
      * 株距(cm)

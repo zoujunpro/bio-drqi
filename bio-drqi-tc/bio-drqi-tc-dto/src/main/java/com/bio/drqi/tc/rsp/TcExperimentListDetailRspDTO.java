@@ -77,17 +77,17 @@ public class TcExperimentListDetailRspDTO {
     /**
      * 行数
      */
-    private String rowNumber;
+    private String rowsNumber;
 
     /**
      * 行长
      */
-    private String rowLength;
+    private String rowsLength;
 
     /**
      * 行距
      */
-    private String rowSpace;
+    private String rowsSpace;
 
     /**
      * 播种方式

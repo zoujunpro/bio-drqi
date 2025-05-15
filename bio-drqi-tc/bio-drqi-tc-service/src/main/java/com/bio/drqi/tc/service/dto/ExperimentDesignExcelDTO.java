@@ -7,11 +7,6 @@ import lombok.Data;
 public class ExperimentDesignExcelDTO {
 
     /**
-     * 实验编号
-     */
-    @ExcelProperty("实验编号")
-    private String experimentNum;
-    /**
      * 小区编号
      */
     @ExcelProperty("小区编号")

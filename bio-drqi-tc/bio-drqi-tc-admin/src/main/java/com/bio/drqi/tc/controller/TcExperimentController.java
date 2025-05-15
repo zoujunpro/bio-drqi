@@ -57,7 +57,6 @@ public class TcExperimentController {
      * @return
      */
     @GetMapping("/downTemplate")
-    @WebLog(desc = "试验方案申请管理-文件下载")
     public void downTemplate(HttpServletResponse httpServletResponse) {
         try {
             ossService.downloadFile(httpServletResponse, "template", "田间设计方案模板V1.0.xlsx");

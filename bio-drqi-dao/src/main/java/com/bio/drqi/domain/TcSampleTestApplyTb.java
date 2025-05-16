@@ -47,6 +47,9 @@ public class TcSampleTestApplyTb implements Serializable {
      */
     private String applyType;
 
+
+    private String testType;
+
     /**
      * 预计取样时间
      */

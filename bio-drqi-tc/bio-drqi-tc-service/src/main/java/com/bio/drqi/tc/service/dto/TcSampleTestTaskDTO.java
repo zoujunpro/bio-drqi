@@ -29,7 +29,6 @@ public class TcSampleTestTaskDTO {
     @NotBlank(message = "参数缺失：testType")
     private String testType;
 
-
     /**
      * 预计取样时间
      */

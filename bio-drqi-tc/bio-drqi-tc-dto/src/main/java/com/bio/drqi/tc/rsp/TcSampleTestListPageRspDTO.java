@@ -34,6 +34,11 @@ public class TcSampleTestListPageRspDTO {
     private String applyType;
 
     /**
+     * 取样类型 one 单管    more 96孔板
+     */
+    private String testType;
+
+    /**
      * 预计取样时间
      */
     private String expectedSampleTime;

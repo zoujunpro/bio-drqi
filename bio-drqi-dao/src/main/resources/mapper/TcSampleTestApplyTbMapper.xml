@@ -11,6 +11,7 @@
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
             <result property="sampleOrganize" column="sample_organize" jdbcType="VARCHAR"/>
             <result property="applyType" column="apply_type" jdbcType="VARCHAR"/>
+            <result property="testType" column="test_type" jdbcType="VARCHAR"/>
             <result property="expectedSampleTime" column="expected_sample_time" jdbcType="VARCHAR"/>
             <result property="expectedResultTime" column="expected_result_time" jdbcType="VARCHAR"/>
             <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
@@ -20,7 +21,7 @@
 
     <sql id="Base_Column_List">
         id,sample_apply_num,experiment_num,
-        task_num,sample_organize,apply_type,
+        task_num,sample_organize,apply_type,test_type,
         expected_sample_time,expected_result_time,create_user_id,
         create_user_name,create_time
     </sql>
@@ -41,6 +42,7 @@
             <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="sampleOrganize != null and sampleOrganize!=''">and sample_organize=#{sampleOrganize,jdbcType=VARCHAR}</if>
             <if test="applyType != null and applyType!=''">and apply_type=#{applyType,jdbcType=VARCHAR}</if>
+            <if test="testType != null and testType!=''">and test_type=#{testType,jdbcType=VARCHAR}</if>
             <if test="expectedSampleTime != null and expectedSampleTime!=''">and expected_sample_time=#{expectedSampleTime,jdbcType=VARCHAR}</if>
             <if test="expectedResultTime != null and expectedResultTime!=''">and expected_result_time=#{expectedResultTime,jdbcType=VARCHAR}</if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>

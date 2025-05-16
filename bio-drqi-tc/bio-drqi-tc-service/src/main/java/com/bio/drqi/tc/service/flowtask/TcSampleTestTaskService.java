@@ -55,6 +55,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         tcSampleTestApplyTb.setTaskNum(bioTaskDtlTb.getTaskNum());
         tcSampleTestApplyTb.setSampleOrganize(tcSampleTestTaskDTO.getSampleOrganize());
         tcSampleTestApplyTb.setApplyType(tcSampleTestTaskDTO.getApplyType());
+        tcSampleTestApplyTb.setTestType(tcSampleTestTaskDTO.getTestType());
         tcSampleTestApplyTb.setExpectedSampleTime(tcSampleTestTaskDTO.getExpectedSampleTime());
         tcSampleTestApplyTb.setExpectedResultTime(tcSampleTestTaskDTO.getExpectedResultTime());
         tcSampleTestApplyTb.setCreateUserId(SecurityContextHolder.getUserId());

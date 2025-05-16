@@ -334,8 +334,8 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         List<TcSampleTestQueryListBySampleCodeListRspDTO> result=new ArrayList<>();
         List<String> sampleCodeList = tcSampleTestQueryListBySampleCodeListReqDTO.getContentList().stream().map(TcSampleTestQueryListBySampleCodeListReqDTO.Content::getSampleCode).collect(Collectors.toList());
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleCodeInAndApplyType(sampleCodeList, SampleTestApplyTypeEnum.first.name());
-        for (TcSampleTestTb tcSampleTestTb:tcSampleTestTbList){
-        return BeanUtils.copyListProperties(tcSampleTestTbList,TcSampleTestQueryListBySampleCodeListRspDTO.class);
+        if(CollectionUtil.isNotEmpty(tcSampleTestTbList)){
+            return BeanUtils.copyListProperties(tcSampleTestTbList,TcSampleTestQueryListBySampleCodeListRspDTO.class);
         }
         return result;
     }

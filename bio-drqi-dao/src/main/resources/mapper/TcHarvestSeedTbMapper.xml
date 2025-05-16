@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.TcHarvestSeedTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.TcHarvestSeedTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
+            <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+            <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+            <result property="generationCode" column="generation_code" jdbcType="VARCHAR"/>
+            <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
+            <result property="pollinationMethodCode" column="pollination_method_code" jdbcType="VARCHAR"/>
+            <result property="pollinationDate" column="pollination_date" jdbcType="VARCHAR"/>
+            <result property="fartherSeedNum" column="farther_seed_num" jdbcType="VARCHAR"/>
+            <result property="matherSeedNum" column="mather_seed_num" jdbcType="VARCHAR"/>
+            <result property="experimentAddress" column="experiment_address" jdbcType="VARCHAR"/>
+            <result property="seedNumber" column="seed_number" jdbcType="DECIMAL"/>
+            <result property="unit" column="unit" jdbcType="VARCHAR"/>
+            <result property="seedType" column="seed_type" jdbcType="VARCHAR"/>
+            <result property="harvestTypeName" column="harvest_type_name" jdbcType="VARCHAR"/>
+            <result property="harvestTypeCode" column="harvest_type_code" jdbcType="VARCHAR"/>
+            <result property="harvestTime" column="harvest_time" jdbcType="VARCHAR"/>
+            <result property="geneticCharacter" column="genetic_character" jdbcType="VARCHAR"/>
+            <result property="geneType" column="gene_type" jdbcType="VARCHAR"/>
+            <result property="remakName" column="remak_name" jdbcType="VARCHAR"/>
+            <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,experiment_num,project_code,
+        vector_task_code,species_code,generation_code,
+        breed_code,pollination_method_code,pollination_date,
+        farther_seed_num,mather_seed_num,experiment_address,
+        seed_number,unit,seed_type,
+        harvest_type_name,harvest_type_code,harvest_time,
+        genetic_character,gene_type,remak_name,
+        harvest_apply_num
+    </sql>
+</mapper>

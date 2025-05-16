@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.TcHarvestSeedApplyTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.TcHarvestSeedApplyTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="pollinationApplyNum" column="pollination_apply_num" jdbcType="VARCHAR"/>
+            <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
+            <result property="harvestTime" column="harvest_time" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
+            <result property="harvestFileUrl" column="harvest_file_url" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,task_num,pollination_apply_num,
+        harvest_apply_num,harvest_time,create_time,
+        create_user_id,create_user_name,experiment_num,
+        harvest_file_url
+    </sql>
+    <select id="selectOneByPollinationApplyNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_harvest_seed_apply_tb
+        where
+        pollination_apply_num = #{pollinationApplyNum,jdbcType=VARCHAR}
+    </select>
+</mapper>

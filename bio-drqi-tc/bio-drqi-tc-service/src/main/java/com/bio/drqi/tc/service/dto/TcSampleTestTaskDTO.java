@@ -24,6 +24,13 @@ public class TcSampleTestTaskDTO {
     private String applyType;
 
     /**
+     * one 单管检测   more 96孔板检测
+     */
+    @NotBlank(message = "参数缺失：testType")
+    private String testType;
+
+
+    /**
      * 预计取样时间
      */
     private String expectedSampleTime;

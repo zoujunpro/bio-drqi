@@ -1,18 +1,14 @@
 package com.bio.drqi.tc.service;
 
-import com.bio.common.core.dto.ResponseResult;
-import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.*;
 import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
 import com.bio.drqi.tc.rsp.TcSampleTestListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcSampleTestListPageRspDTO;
+import com.bio.drqi.tc.rsp.TcSampleTestQueryListBySampleCodeListRspDTO;
 import com.github.pagehelper.PageInfo;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public interface TcSampleTestService {
 
@@ -69,7 +65,7 @@ public interface TcSampleTestService {
      * @param applyNo
      * @return
      */
-    TcSampleTestLayoutPreviewRspDTO layoutPreview(@RequestParam @Validated String applyNo);
+    TcSampleTestLayoutPreviewRspDTO layoutPreview(String applyNo);
 
 
     /**
@@ -78,7 +74,7 @@ public interface TcSampleTestService {
      * @param tcSampleTestLayoutConfirmReqDTO
      * @return
      */
-    void layoutConfirm(@RequestBody @Validated TcSampleTestLayoutConfirmReqDTO tcSampleTestLayoutConfirmReqDTO);
+    void layoutConfirm(TcSampleTestLayoutConfirmReqDTO tcSampleTestLayoutConfirmReqDTO);
 
 
     /**
@@ -94,4 +90,7 @@ public interface TcSampleTestService {
      * 取样检测审批
      */
     void approveSampleResult(TcSampleTestApproveSampleResultReqDTO tcSampleTestApproveSampleResultReqDTO);
+
+
+    List<TcSampleTestQueryListBySampleCodeListRspDTO> queryListBySampleCodeList(TcSampleTestQueryListBySampleCodeListReqDTO tcSampleTestQueryListBySampleCodeListReqDTO);
 }

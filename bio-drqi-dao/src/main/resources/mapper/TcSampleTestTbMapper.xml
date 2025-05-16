@@ -222,5 +222,17 @@
         AND region_num = #{regionNum,jdbcType=VARCHAR}
         AND seed_num = #{seedNum,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllBySampleCodeInAndApplyType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_sample_test_tb
+        where
+        sample_code in
+        <foreach collection="sampleCodeList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+        AND apply_type = #{applyType,jdbcType=VARCHAR}
+    </select>
+
 
 </mapper>

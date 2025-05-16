@@ -17,10 +17,12 @@ import com.bio.drqi.mapper.TcSampleLayoutTbMapper;
 import com.bio.drqi.mapper.TcSampleTestApplyTbMapper;
 import com.bio.drqi.mapper.TcSampleTestTbMapper;
 import com.bio.drqi.tc.SampleUnitDTO;
+import com.bio.drqi.tc.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.tc.req.*;
 import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
 import com.bio.drqi.tc.rsp.TcSampleTestListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcSampleTestListPageRspDTO;
+import com.bio.drqi.tc.rsp.TcSampleTestQueryListBySampleCodeListRspDTO;
 import com.bio.drqi.tc.service.TcSampleTestService;
 import com.bio.drqi.tc.service.dto.IdentifyPrimerTemplateExcelDTO;
 import com.bio.drqi.tc.service.dto.TcTestExcelDTO;
@@ -76,8 +78,8 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     public PageInfo<TcSampleTestListPageDetailRspDTO> listPageDetail(TcSampleTestListPageDetailReqDTO tcSampleTestListPageDetailReqDTO) {
         PageHelper.startPage(tcSampleTestListPageDetailReqDTO.getPageNum(), tcSampleTestListPageDetailReqDTO.getPageSize());
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectSelective(BeanUtils.copyProperties(tcSampleTestListPageDetailReqDTO, TcSampleTestTb.class));
-        PageInfo<TcSampleTestTb> srcPageInfo=new PageInfo<>(tcSampleTestTbList);
-        return BeanUtils.copyPageInfoProperties(srcPageInfo,TcSampleTestListPageDetailRspDTO.class);
+        PageInfo<TcSampleTestTb> srcPageInfo = new PageInfo<>(tcSampleTestTbList);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo, TcSampleTestListPageDetailRspDTO.class);
     }
 
 
@@ -325,6 +327,17 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
             tcSampleTestTb.setCheckResult(content.getCheckResult());
             tcSampleTestTbMapper.updateById(tcSampleTestTb);
         }
+    }
+
+    @Override
+    public List<TcSampleTestQueryListBySampleCodeListRspDTO> queryListBySampleCodeList(TcSampleTestQueryListBySampleCodeListReqDTO tcSampleTestQueryListBySampleCodeListReqDTO) {
+        List<TcSampleTestQueryListBySampleCodeListRspDTO> result=new ArrayList<>();
+        List<String> sampleCodeList = tcSampleTestQueryListBySampleCodeListReqDTO.getContentList().stream().map(TcSampleTestQueryListBySampleCodeListReqDTO.Content::getSampleCode).collect(Collectors.toList());
+        List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleCodeInAndApplyType(sampleCodeList, SampleTestApplyTypeEnum.first.name());
+        for (TcSampleTestTb tcSampleTestTb:tcSampleTestTbList){
+        return BeanUtils.copyListProperties(tcSampleTestTbList,TcSampleTestQueryListBySampleCodeListRspDTO.class);
+        }
+        return result;
     }
 
 

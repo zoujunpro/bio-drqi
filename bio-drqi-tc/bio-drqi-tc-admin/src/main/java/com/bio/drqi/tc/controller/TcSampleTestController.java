@@ -6,6 +6,7 @@ import com.bio.drqi.tc.req.*;
 import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
 import com.bio.drqi.tc.rsp.TcSampleTestListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcSampleTestListPageRspDTO;
+import com.bio.drqi.tc.rsp.TcSampleTestQueryListBySampleCodeListRspDTO;
 import com.bio.drqi.tc.service.TcSampleTestService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * 田测取样检测管理
@@ -85,7 +87,7 @@ public class TcSampleTestController {
     }
 
     /**
-     * 上传填写鉴定引物模板
+     * 田测取样检测管理-上传填写鉴定引物模板
      *
      * @return
      */
@@ -97,7 +99,7 @@ public class TcSampleTestController {
     }
 
     /**
-     * 取样标签排版预览
+     * 田测取样检测管理-取样标签排版预览
      *
      * @param applyNo
      * @return
@@ -110,7 +112,7 @@ public class TcSampleTestController {
 
 
     /**
-     * 取样标签排版确认
+     * 田测取样检测管理-取样标签排版确认
      *
      * @param tcSampleTestLayoutConfirmReqDTO
      * @return
@@ -124,7 +126,7 @@ public class TcSampleTestController {
 
 
     /**
-     * 下载excel96孔板
+     * 田测取样检测管理-下载excel96孔板
      *
      * @return
      */
@@ -136,13 +138,24 @@ public class TcSampleTestController {
 
 
     /**
-     * 取样检测审批
+     * 田测取样检测管理-取样检测审批
      */
     @PostMapping("approveSampleResult")
     @WebLog(desc = "取样结果审批")
     public ResponseResult<String> approveSampleResult(@Validated @RequestBody TcSampleTestApproveSampleResultReqDTO tcSampleTestApproveSampleResultReqDTO) {
         tcSampleTestService.approveSampleResult(tcSampleTestApproveSampleResultReqDTO);
         return ResponseResult.getSuccess("成功");
+    }
+
+
+    /**
+     * 田测取样检测管理-根据取样编号获取取样信息
+     * @param tcSampleTestQueryListBySampleCodeListReqDTO
+     * @return
+     */
+    @PostMapping("queryListBySampleCodeList")
+    public ResponseResult<List<TcSampleTestQueryListBySampleCodeListRspDTO>>  queryListBySampleCodeList(@RequestBody @Validated TcSampleTestQueryListBySampleCodeListReqDTO tcSampleTestQueryListBySampleCodeListReqDTO){
+        return ResponseResult.getSuccess(tcSampleTestService.queryListBySampleCodeList(tcSampleTestQueryListBySampleCodeListReqDTO));
     }
 
 }

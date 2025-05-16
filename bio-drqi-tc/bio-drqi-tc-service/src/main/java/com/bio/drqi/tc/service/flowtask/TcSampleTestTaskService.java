@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.TcSampleTestApplyTbMapper;
@@ -33,6 +34,9 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         }
         ValidatorUtil.validator(tcSampleTestTaskDTO);
 
+        if (StringUtils.isEmpty(tcSampleTestTaskDTO.getFirstSampleApplyList()) && StringUtils.isEmpty(tcSampleTestTaskDTO.getRepeatSampleApplyList())) {
+            throw new BusinessException("缺少取样数据");
+        }
         //校验
 
         //插入数据库

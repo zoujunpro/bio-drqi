@@ -42,7 +42,7 @@ public class TcExperimentListDetailRspDTO {
     /**
      * 品种
      */
-    private String breedCode;
+    private String breedName;
 
     /**
      * 目标性状
@@ -55,7 +55,7 @@ public class TcExperimentListDetailRspDTO {
     private String generationCode;
 
     /**
-     * 基因类型
+     * 田测基因型
      */
     private String tcGene;
 
@@ -143,5 +143,4 @@ public class TcExperimentListDetailRspDTO {
      * 移栽时间
      */
     private String transplantTime;
-
 }

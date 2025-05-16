@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.TcSampleTestTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="experimentCode" column="experiment_code" jdbcType="VARCHAR"/>
+            <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
             <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
             <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
             <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
@@ -42,7 +42,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,experiment_code,region_num,
+        id,experiment_num,region_num,
         seed_num,project_code,vector_task_code,
         species_code,target_character,generation_code,
         tc_gene,sample_code,sample_time,sample_apply_num,
@@ -59,7 +59,7 @@
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
             update cer_sample_test_tb
             <set>
-                <if test="item.experimentCode != null">experiment_code=#{item.experimentCode,jdbcType=VARCHAR},</if>
+                <if test="item.experimentNum != null">experiment_num=#{item.experimentNum,jdbcType=VARCHAR},</if>
                 <if test="item.regionNum != null">region_num=#{item.regionNum,jdbcType=VARCHAR},</if>
                 <if test="item.seedNum != null">seed_num=#{item.seedNum,jdbcType=VARCHAR},</if>
                 <if test="item.projectCode != null">project_code=#{item.projectCode,jdbcType=VARCHAR},</if>
@@ -106,7 +106,7 @@
 
 
     <insert id="insertBatch">
-        insert into tc_sample_test_tb(id,experiment_code,region_num,
+        insert into tc_sample_test_tb(id,experiment_num,region_num,
         seed_num,project_code,vector_task_code,
         species_code,target_character,generation_code,
         tc_gene,sample_code,sample_time,
@@ -120,7 +120,7 @@
         apply_type)
         values
         <foreach collection="tcSampleTestTbCollection" item="item" separator=",">
-            (#{item.id,jdbcType=NUMERIC},#{item.experimentCode,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},
+            (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},
             #{item.seedNum,jdbcType=VARCHAR},#{item.projectCode,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},
             #{item.speciesCode,jdbcType=VARCHAR},#{item.targetCharacter,jdbcType=VARCHAR},#{item.generationCode,jdbcType=VARCHAR},
             #{item.tcGene,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},#{item.sampleTime,jdbcType=VARCHAR},
@@ -152,7 +152,7 @@
         <include refid="Base_Column_List"/>
         from tc_sample_test_tb
         where
-        experiment_code = #{experimentCode,jdbcType=VARCHAR}
+        experiment_num = #{experimentNum,jdbcType=VARCHAR}
         AND sample_code = #{sampleCode,jdbcType=VARCHAR}
     </select>
 
@@ -172,7 +172,7 @@
         <include refid="Base_Column_List"/>
         from tc_sample_test_tb
         <where>
-            <if test="experimentCode != null and experimentCode!=''">and experiment_code=#{item.experimentCode,jdbcType=VARCHAR}</if>
+            <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{item.experimentNum,jdbcType=VARCHAR}</if>
             <if test="regionNum != null and regionNum!=''">and region_num=#{item.regionNum,jdbcType=VARCHAR}</if>
             <if test="seedNum != null and seedNum!=''">and seed_num=#{item.seedNum,jdbcType=VARCHAR}</if>
             <if test="projectCode != null and projectCode!=''">and project_code=#{item.projectCode,jdbcType=VARCHAR}</if>

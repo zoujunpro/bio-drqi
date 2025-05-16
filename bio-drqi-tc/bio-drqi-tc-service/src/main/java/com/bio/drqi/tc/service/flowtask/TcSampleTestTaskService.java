@@ -88,7 +88,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                     tcSampleTestTb.setTargetCharacter(firstSampleApply.getTargetCharacter());
                     tcSampleTestTb.setGenerationCode(firstSampleApply.getGenerationCode());
                     tcSampleTestTb.setTcGene(firstSampleApply.getTcGene());
-                    tcSampleTestTb.setSampleCode(cerSampleCodePrefixTb+ DateUtil.format(new Date(),"HHmmss")+i);
+                    tcSampleTestTb.setSampleCode(cerSampleCodePrefixTb.getSampleCodePrefix()+ DateUtil.format(new Date(),"HHmmss")+i);
                     tcSampleTestTb.setSampleTime(firstSampleApply.getSampleTime());
                     tcSampleTestTb.setSampleApplyNum(tcSampleTestApplyTb.getSampleApplyNum());
                     tcSampleTestTb.setTaskNum(tcSampleTestApplyTb.getTaskNum());

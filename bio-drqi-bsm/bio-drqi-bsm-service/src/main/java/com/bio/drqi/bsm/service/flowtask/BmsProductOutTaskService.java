@@ -45,6 +45,9 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
             ValidatorUtil.validator(bmsProductOutDTO);
             BeanUtils.trimFiledSpace(bmsProductOutDTO);
         }
+        if(CollectionUtil.isEmpty(bmsProductOutDTOList)){
+            throw new BusinessException("请选择出库数据");
+        }
         for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductOutDTO.getUniqueCode());
             if (bmsProductStockTb == null) {

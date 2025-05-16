@@ -54,7 +54,6 @@ public class CerImplementationTimePlanController {
      */
     @PostMapping("/exportExcel")
     @WebLog(desc = "实时方案预估时间导出")
-    @RequestLog("实时方案预估时间导出")
     public void exportExcel(@RequestBody VectorTaskTimePlanExportReqDTO vectorTaskTimePlanExportReqDTO, HttpServletResponse httpServletResponse) {
         cerImplementationTimePlanService.exportExcel(vectorTaskTimePlanExportReqDTO, httpServletResponse);
     }

@@ -1,12 +1,14 @@
 package com.bio.drqi.tc.service.flowtask;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.CerSampleCodePrefixTbMapper;
 import com.bio.drqi.mapper.TcSampleTestApplyTbMapper;
 import com.bio.drqi.mapper.TcSampleTestTbMapper;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
@@ -25,6 +27,9 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
 
     @Resource
     private TcSampleTestApplyTbMapper tcSampleTestApplyTbMapper;
+
+    @Resource
+    private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -71,6 +76,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         //首次取样
         if (CollectionUtil.isNotEmpty(tcSampleTestTaskDTO.getFirstSampleApplyList())) {
             for (TcSampleTestTaskDTO.FirstSampleApply firstSampleApply : tcSampleTestTaskDTO.getFirstSampleApplyList()) {
+                CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(firstSampleApply.getVectorTaskCode());
                 for (int i = 1; i <= firstSampleApply.getSampleNum(); i++) {
                     TcSampleTestTb tcSampleTestTb = new TcSampleTestTb();
                     tcSampleTestTb.setExperimentNum(tcSampleTestApplyTb.getExperimentNum());
@@ -82,11 +88,12 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                     tcSampleTestTb.setTargetCharacter(firstSampleApply.getTargetCharacter());
                     tcSampleTestTb.setGenerationCode(firstSampleApply.getGenerationCode());
                     tcSampleTestTb.setTcGene(firstSampleApply.getTcGene());
-                    tcSampleTestTb.setSampleCode(null);
+                    tcSampleTestTb.setSampleCode(cerSampleCodePrefixTb+ DateUtil.format(new Date(),"HHmmss")+i);
                     tcSampleTestTb.setSampleTime(firstSampleApply.getSampleTime());
                     tcSampleTestTb.setSampleApplyNum(tcSampleTestApplyTb.getSampleApplyNum());
                     tcSampleTestTb.setTaskNum(tcSampleTestApplyTb.getTaskNum());
                     tcSampleTestTb.setApplyType(tcSampleTestApplyTb.getApplyType());
+                    tcSampleTestTb.setUniqueCode(tcSampleTestTb.getSampleCode());
                     batchList.add(tcSampleTestTb);
                 }
 

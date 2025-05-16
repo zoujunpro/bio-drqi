@@ -39,6 +39,7 @@
             <result property="identifyPrimer" column="identify_primer" jdbcType="VARCHAR"/>
             <result property="checkResult" column="check_result" jdbcType="VARCHAR"/>
             <result property="applyType" column="apply_type" jdbcType="VARCHAR"/>
+            <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -52,7 +53,7 @@
         test_fixed_point_type,test_donor_residue_info,test_insertion_site,
         test_elisa_result,test_qbzr_seq,test_edit_residue_info,
         test_time,test_user_id,test_user_name,
-        identify_primer,check_result,apply_type
+        identify_primer,check_result,apply_type,unique_code
     </sql>
 
     <update id="updateBatchById" parameterType="java.util.List">
@@ -97,6 +98,7 @@
                 <if test="item.identifyPrimer != null">identify_primer=#{item.identifyPrimer,jdbcType=VARCHAR},</if>
                 <if test="item.checkResult != null">check_result=#{item.checkResult,jdbcType=VARCHAR},</if>
                 <if test="item.applyType != null">apply_type=#{item.applyType,jdbcType=VARCHAR},</if>
+                <if test="item.uniqueCode != null">unique_code=#{item.uniqueCode,jdbcType=VARCHAR},</if>
             </set>
             where id = ${item.id}
         </foreach>
@@ -117,7 +119,7 @@
         test_insertion_site,test_elisa_result,test_qbzr_seq,
         test_edit_residue_info,test_time,test_user_id,
         test_user_name,identify_primer,check_result,
-        apply_type)
+        apply_type,unique_code)
         values
         <foreach collection="tcSampleTestTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},
@@ -131,7 +133,7 @@
             #{item.testInsertionSite,jdbcType=VARCHAR},#{item.testElisaResult,jdbcType=VARCHAR},#{item.testQbzrSeq,jdbcType=VARCHAR},
             #{item.testEditResidueInfo,jdbcType=VARCHAR},#{item.testTime,jdbcType=VARCHAR},#{item.testUserId,jdbcType=NUMERIC},
             #{item.testUserName,jdbcType=VARCHAR},#{item.identifyPrimer,jdbcType=VARCHAR},#{item.checkResult,jdbcType=VARCHAR},
-            #{item.applyType,jdbcType=VARCHAR})
+            #{item.applyType,jdbcType=VARCHAR},#{item.uniqueCode,jdbcType=VARCHAR})
         </foreach>
     </insert>
     <select id="selectAllBySampleApplyNum" resultMap="BaseResultMap">

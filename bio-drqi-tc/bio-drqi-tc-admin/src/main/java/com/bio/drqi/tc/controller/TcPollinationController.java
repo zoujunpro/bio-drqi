@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 授粉管理
+ * 授粉收获管理
  */
 @RestController
 @RequestMapping("/tcPollination")

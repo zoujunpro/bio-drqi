@@ -73,4 +73,9 @@ public class TcExperimentListPageRspDTO {
      * 授粉标识
      */
     private String pollinationNum;
+
+    /**
+     * 田间设计附件
+     */
+    private String designUrl;
 }

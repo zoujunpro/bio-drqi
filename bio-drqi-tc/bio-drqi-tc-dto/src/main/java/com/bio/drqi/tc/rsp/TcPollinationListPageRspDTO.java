@@ -53,9 +53,6 @@ public class TcPollinationListPageRspDTO {
      */
     private String harvestApplyNum;
 
-    /**
-     * 田间设计附件
-     */
-    private String designUrl;
+
 
 }

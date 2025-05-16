@@ -62,6 +62,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             tcExperimentTb.setCreateTime(new Date());
             tcExperimentTb.setExperimentNum(bioTaskDtlTb.getTaskNum());
             tcExperimentTb.setTaskNum(bioTaskDtlTb.getTaskNum());
+            tcExperimentTb.setDesignUrl(tcExperimentTaskDTO.getExperimentDesignUrl());
             tcExperimentTbMapper.insert(tcExperimentTb);
 
             if(StringUtils.isEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())){

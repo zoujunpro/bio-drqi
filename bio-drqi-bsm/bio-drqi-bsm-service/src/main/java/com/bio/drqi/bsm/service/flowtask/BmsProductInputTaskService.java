@@ -62,6 +62,9 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         if (BioBsmContents.Y.equals(bmsOrderTb.getOverFlag())) {
             throw new BusinessException("该订单已经完成");
         }
+        if(CollectionUtil.isEmpty(bmsProductInputDTO.getOrderDetailList())){
+            throw new BusinessException("没有入库数据");
+        }
 
         for (BmsProductInputDTO.OrderDetail orderDetail : bmsProductInputDTO.getOrderDetailList()) {
             ValidatorUtil.validator(bmsProductInputDTO);

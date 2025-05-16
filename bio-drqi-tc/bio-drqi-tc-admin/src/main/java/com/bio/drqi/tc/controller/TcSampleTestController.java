@@ -154,6 +154,7 @@ public class TcSampleTestController {
      * @return
      */
     @PostMapping("queryListBySampleCodeList")
+    @WebLog(desc = "田测取样检测管理-根据取样编号获取取样信息")
     public ResponseResult<List<TcSampleTestQueryListBySampleCodeListRspDTO>>  queryListBySampleCodeList(@RequestBody @Validated TcSampleTestQueryListBySampleCodeListReqDTO tcSampleTestQueryListBySampleCodeListReqDTO){
         return ResponseResult.getSuccess(tcSampleTestService.queryListBySampleCodeList(tcSampleTestQueryListBySampleCodeListReqDTO));
     }

@@ -100,6 +100,9 @@ public class FlowServiceImpl implements FlowService {
     public List<ProcessDetailRspDTO> processDetail(ProcessDetailReqDTO processDetailReqDTO) {
         List<ProcessDetailRspDTO> result = new ArrayList<>();
         BioTaskConf bioTaskConf = bioTaskConfMapper.selectOneByProcessId(Long.parseLong(processDetailReqDTO.getProcessId()));
+        if(bioTaskConf==null){
+            throw new BusinessException("工作流已经变更，请刷新流程");
+        }
         FlowActor flowActor = FlowActor.of(tenantId, String.valueOf(SecurityContextHolder.getUserId()), SecurityContextHolder.getNickName());
         List<NodeModel> nodeModelList = flowEngineService.findProcessNodeModelList(Long.valueOf(processDetailReqDTO.getProcessId()), getArgs(processDetailReqDTO.getFormObject(), bioTaskConf.getTaskTypeCode()), flowActor);
         if (CollectionUtil.isNotEmpty(nodeModelList)) {

@@ -23,13 +23,6 @@
         create_user_id,create_user_name,create_time,
         harvest_apply_num
     </sql>
-    <select id="selectAllByPollinationApplyNum" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from tc_pollination_apply_tb
-        where
-        pollination_apply_num = #{pollinationApplyNum,jdbcType=VARCHAR}
-    </select>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.TcPollinationApplyTb">
         select
         <include refid="Base_Column_List"/>
@@ -46,5 +39,12 @@
             <if test="harvestApplyNum != null and harvestApplyNum!=''">and harvest_apply_num=#{harvestApplyNum,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
+    </select>
+    <select id="selectOneByPollinationApplyNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_pollination_apply_tb
+        where
+        pollination_apply_num = #{pollinationApplyNum,jdbcType=VARCHAR}
     </select>
 </mapper>

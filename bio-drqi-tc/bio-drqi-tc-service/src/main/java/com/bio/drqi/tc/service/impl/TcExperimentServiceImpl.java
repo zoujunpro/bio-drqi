@@ -9,6 +9,7 @@ import com.bio.drqi.domain.TcExperimentTb;
 import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
 import com.bio.drqi.mapper.TcExperimentTbMapper;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
+import com.bio.drqi.tc.rsp.TcExperimentListAllRspDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListNoPollinationRspDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListPageRspDTO;
@@ -46,6 +47,12 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectSelective(tcExperimentTb);
         PageInfo<TcExperimentTb> srcPageInfo = new PageInfo<>(tcExperimentTbList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, TcExperimentListPageRspDTO.class);
+    }
+
+    @Override
+    public List<TcExperimentListAllRspDTO> listAll() {
+        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectALlOrderByIdDesc();
+        return BeanUtils.copyListProperties(tcExperimentTbList,TcExperimentListAllRspDTO.class);
     }
 
 

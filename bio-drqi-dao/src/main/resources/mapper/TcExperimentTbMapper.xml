@@ -58,4 +58,10 @@
         pollination_num is null
         order by id desc
     </select>
+    <select id="selectALlOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_experiment_tb
+        order by id desc
+    </select>
 </mapper>

@@ -5,6 +5,7 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.oss.service.OssService;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
+import com.bio.drqi.tc.rsp.TcExperimentListAllRspDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListNoPollinationRspDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListPageRspDTO;
@@ -39,6 +40,17 @@ public class TcExperimentController {
     @WebLog(desc = "试验方案申请管理-分页查询")
     public ResponseResult<PageInfo<TcExperimentListPageRspDTO>> listPage(@Validated @RequestBody TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
         return ResponseResult.getSuccess(tcExperimentService.listPage(tcExperimentListPageReqDTO));
+    }
+
+    /**
+     * 试验方案申请管理-查询所有试验
+     * @param
+     * @return
+     */
+    @GetMapping("/listAll")
+    @WebLog(desc = "试验方案申请管理-查询所有试验")
+    public ResponseResult<List<TcExperimentListAllRspDTO>> listAll() {
+        return ResponseResult.getSuccess(tcExperimentService.listAll());
     }
 
     /**

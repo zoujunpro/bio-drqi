@@ -1,6 +1,7 @@
 package com.bio.drqi.tc.service;
 
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
+import com.bio.drqi.tc.rsp.TcExperimentListAllRspDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListNoPollinationRspDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListPageRspDTO;
@@ -19,6 +20,7 @@ public interface TcExperimentService {
      */
     PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO);
 
+    List<TcExperimentListAllRspDTO> listAll();
 
     /**
      * 试验方案申请管理-田间设计列表

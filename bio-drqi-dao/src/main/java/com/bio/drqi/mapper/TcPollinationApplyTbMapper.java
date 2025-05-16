@@ -12,9 +12,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.drqi.domain.TcPollinationApplyTb
 */
 public interface TcPollinationApplyTbMapper extends BaseMapper<TcPollinationApplyTb> {
-    List<TcPollinationApplyTb> selectAllByPollinationApplyNum(@Param("pollinationApplyNum") String pollinationApplyNum);
-
     List<TcPollinationApplyTb>  selectSelective(TcPollinationApplyTb tcPollinationApplyTb);
+
+    TcPollinationApplyTb selectOneByPollinationApplyNum(@Param("pollinationApplyNum") String pollinationApplyNum);
 }
 
 

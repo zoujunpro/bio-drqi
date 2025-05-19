@@ -47,7 +47,7 @@ public class TcSampleTestController {
      */
     @PostMapping("/listPageDetail")
     @WebLog(desc = "田测取样检测管理-取样详情分页")
-    public ResponseResult<PageInfo<TcSampleTestListPageDetailRspDTO>> listPageDetail(TcSampleTestListPageDetailReqDTO tcSampleTestListPageDetailReqDTO) {
+    public ResponseResult<PageInfo<TcSampleTestListPageDetailRspDTO>> listPageDetail(@RequestBody @Validated TcSampleTestListPageDetailReqDTO tcSampleTestListPageDetailReqDTO) {
         return ResponseResult.getSuccess(tcSampleTestService.listPageDetail(tcSampleTestListPageDetailReqDTO));
     }
 
@@ -82,7 +82,7 @@ public class TcSampleTestController {
      */
     @GetMapping("downIdentifyPrimerTemplate")
     @WebLog(desc = "田测取样检测管理-下载填写鉴定引物模板")
-    public void downIdentifyPrimerTemplate(HttpServletResponse response, @RequestParam @Validated String applyNo) {
+    public void downIdentifyPrimerTemplate( @RequestParam @Validated String applyNo ,HttpServletResponse response) {
         tcSampleTestService.downIdentifyPrimerTemplate(response, applyNo);
     }
 

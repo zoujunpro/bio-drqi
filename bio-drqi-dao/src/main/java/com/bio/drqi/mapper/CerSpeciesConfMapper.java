@@ -19,7 +19,6 @@ public interface CerSpeciesConfMapper extends BaseMapper<CerSpeciesConf> {
 
     List<CerSpeciesConf> selectAllBySpeciesCodeIn(@Param("speciesCodeList") Collection<String> speciesCodeList);
 
-
 }
 
 

@@ -58,7 +58,7 @@
 
     <update id="updateBatchById" parameterType="java.util.List">
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
-            update cer_sample_test_tb
+            update tc_sample_test_tb
             <set>
                 <if test="item.experimentNum != null">experiment_num=#{item.experimentNum,jdbcType=VARCHAR},</if>
                 <if test="item.regionNum != null">region_num=#{item.regionNum,jdbcType=VARCHAR},</if>

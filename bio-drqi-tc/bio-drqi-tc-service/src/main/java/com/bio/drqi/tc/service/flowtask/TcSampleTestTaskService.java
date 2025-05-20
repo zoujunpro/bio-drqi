@@ -60,7 +60,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
     private void bathInsertData(BioTaskDtlTb bioTaskDtlTb, TcSampleTestTaskDTO tcSampleTestTaskDTO) {
         TcSampleTestApplyTb tcSampleTestApplyTb = new TcSampleTestApplyTb();
         tcSampleTestApplyTb.setSampleApplyNum(bioTaskDtlTb.getTaskNum());
-        tcSampleTestApplyTb.setExperimentNum(tcSampleTestTaskDTO.getExperimentCode());
+        tcSampleTestApplyTb.setExperimentNum(tcSampleTestTaskDTO.getExperimentNum());
         tcSampleTestApplyTb.setTaskNum(bioTaskDtlTb.getTaskNum());
         tcSampleTestApplyTb.setSampleOrganize(tcSampleTestTaskDTO.getSampleOrganize());
         tcSampleTestApplyTb.setApplyType(tcSampleTestTaskDTO.getApplyType());

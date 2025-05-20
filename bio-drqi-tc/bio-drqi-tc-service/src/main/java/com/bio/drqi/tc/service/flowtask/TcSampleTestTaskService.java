@@ -85,6 +85,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                     tcSampleTestTb.setProjectCode(firstSampleApply.getProjectCode());
                     tcSampleTestTb.setVectorTaskCode(firstSampleApply.getVectorTaskCode());
                     tcSampleTestTb.setSpeciesCode(firstSampleApply.getSpeciesCode());
+                    tcSampleTestTb.setBreedName(firstSampleApply.getBreedName());
                     tcSampleTestTb.setTargetCharacter(firstSampleApply.getTargetCharacter());
                     tcSampleTestTb.setGenerationCode(firstSampleApply.getGenerationCode());
                     tcSampleTestTb.setTcGene(firstSampleApply.getTcGene());
@@ -109,6 +110,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                 tcSampleTestTb.setProjectCode(repeatSampleApply.getProjectCode());
                 tcSampleTestTb.setVectorTaskCode(repeatSampleApply.getVectorTaskCode());
                 tcSampleTestTb.setSpeciesCode(repeatSampleApply.getSpeciesCode());
+                tcSampleTestTb.setBreedName(repeatSampleApply.getBreedName());
                 tcSampleTestTb.setTargetCharacter(repeatSampleApply.getTargetCharacter());
                 tcSampleTestTb.setGenerationCode(repeatSampleApply.getGenerationCode());
                 tcSampleTestTb.setTcGene(repeatSampleApply.getTcGene());

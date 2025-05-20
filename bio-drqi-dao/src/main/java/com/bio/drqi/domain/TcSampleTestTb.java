@@ -47,10 +47,14 @@ public class TcSampleTestTb implements Serializable {
     private String vectorTaskCode;
 
     /**
-     * 品种编号
+     * 物种编号
      */
     private String speciesCode;
 
+    /**
+     * 品种
+     */
+    private String breedName;
     /**
      * 目标性状
      */

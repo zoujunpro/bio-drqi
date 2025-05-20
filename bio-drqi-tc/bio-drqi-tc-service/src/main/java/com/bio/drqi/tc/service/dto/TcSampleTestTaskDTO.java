@@ -89,9 +89,13 @@ public class TcSampleTestTaskDTO {
         private String vectorTaskCode;
 
         /**
-         * 品种编号
+         * 物种编号
          */
         private String speciesCode;
+        /**
+         * 品种
+         */
+        private String breedName;
         /**
          * 代次编号
          */
@@ -138,9 +142,13 @@ public class TcSampleTestTaskDTO {
         private String vectorTaskCode;
 
         /**
-         * 品种编号
+         * 物种编号
          */
         private String speciesCode;
+        /**
+         * 品种
+         */
+        private String breedName;
 
         /**
          * 代次编号

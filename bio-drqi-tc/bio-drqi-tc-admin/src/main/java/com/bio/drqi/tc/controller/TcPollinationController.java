@@ -1,6 +1,7 @@
 package com.bio.drqi.tc.controller;
 
 
+import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
@@ -74,15 +75,15 @@ public class TcPollinationController {
 
 
     /**
-     * 授粉管理-田测授粉数据表单模板下载
+     * 授粉管理-授粉结果表下载
      * @param httpServletResponse
      * @return
      */
     @PostMapping("/downTemplate")
-    @WebLog(desc = "试验方案申请管理-文件下载")
+    @WebLog(desc = "授粉管理-授粉结果表下载")
     public void downTemplate(HttpServletResponse httpServletResponse) {
         try {
-            ossService.downloadFile(httpServletResponse, "template", "田测授粉数据表单模板V1.0.xlsx");
+            ossService.downloadFile(httpServletResponse, "template", "田测授粉结果表单模板V1.0.xlsx");
         } catch (Exception e) {
             throw new BusinessException("田测授粉数据表单模板下载失败，请联系管理员检测模板配置");
         }
@@ -112,8 +113,11 @@ public class TcPollinationController {
         tcPollinationExcelDTO.setHarvestTypeName("1");
         tcPollinationExcelDTO.setRemark("1");
         tcPollinationOneExcelDTOList.add(tcPollinationExcelDTO);
-        ExcelUtil.fillExcel("D:/2025test.xlsx","C:\\Users\\zou'jun\\Desktop\\田测\\田测授粉数据表单模板V2.0.xlsx", tcPollinationOneExcelDTOList, TcPollinationExcelDTO.class);
-
+        //ExcelUtil.fillExcel("D:/2025test.xlsx","C:\\Users\\zou'jun\\Desktop\\田测\\田测授粉数据表单模板V2.0.xlsx", tcPollinationOneExcelDTOList, TcPollinationExcelDTO.class);
+     List<TcPollinationExcelDTO> result=   ExcelUtil.readExcel("D:/2025test.xlsx",TcPollinationExcelDTO.class);
+     for (TcPollinationExcelDTO tcPollinationExcelDTO1:result){
+         System.out.println(JSONUtil.toJsonStr(tcPollinationExcelDTO1));
+     }
 
     }
 

@@ -16,6 +16,7 @@ public interface TcSampleTestApplyTbMapper extends BaseMapper<TcSampleTestApplyT
 
     TcSampleTestApplyTb selectOneByTaskNum(@Param("taskNum") String taskNum);
 
+    List<TcSampleTestApplyTb> selectAllByExperimentNum(@Param("experimentNum") String experimentNum);
 
     List<TcSampleTestApplyTb> selectSelective(TcSampleTestApplyTb tcSampleTestApplyTb);
 

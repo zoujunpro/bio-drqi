@@ -57,6 +57,18 @@ public class TcSampleTestController {
     }
 
     /**
+     * 田测取样检测管理-根据试验编号查询取样申请信息
+     *
+     * @param experimentNum
+     * @return
+     */
+    @GetMapping("/listByExperimentNum")
+    @WebLog(desc = "田测取样检测管理-根据试验编号查询取样申请信息")
+    public ResponseResult<List<String>> listByExperimentNum(@RequestParam @Validated  String experimentNum) {
+        return ResponseResult.getSuccess(tcSampleTestService.listByExperimentNum(experimentNum));
+    }
+
+    /**
      * 田测取样检测管理-重复取样模板下载
      */
     @PostMapping("downTestRepeatSampleTemplate")
@@ -77,6 +89,8 @@ public class TcSampleTestController {
     public void downTestTemplate(@Validated @RequestBody TcSampleTestDownTestTemplateReqDTO tcSampleTestDownTestTemplateReqDTO, HttpServletResponse response) {
         tcSampleTestService.downTestTemplate(tcSampleTestDownTestTemplateReqDTO, response);
     }
+
+
 
 
     /**

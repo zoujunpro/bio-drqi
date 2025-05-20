@@ -6,6 +6,8 @@ import com.bio.drqi.tc.rsp.TcSampleTestListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcSampleTestListPageRspDTO;
 import com.bio.drqi.tc.rsp.TcSampleTestQueryListBySampleCodeListRspDTO;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -29,6 +31,9 @@ public interface TcSampleTestService {
      * @return
      */
     PageInfo<TcSampleTestListPageDetailRspDTO> listPageDetail(TcSampleTestListPageDetailReqDTO tcSampleTestListPageDetailReqDTO);
+
+
+    List<String> listByExperimentNum( String experimentNum);
 
 
     /**

@@ -82,6 +82,15 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         return BeanUtils.copyPageInfoProperties(srcPageInfo, TcSampleTestListPageDetailRspDTO.class);
     }
 
+    @Override
+    public List<String> listByExperimentNum(String experimentNum) {
+        List<TcSampleTestApplyTb> tcSampleTestApplyTbList = tcSampleTestApplyTbMapper.selectAllByExperimentNum(experimentNum);
+        if (CollectionUtil.isNotEmpty(tcSampleTestApplyTbList)) {
+            return tcSampleTestApplyTbList.stream().map(TcSampleTestApplyTb::getSampleApplyNum).collect(Collectors.toList());
+        }
+        return null;
+    }
+
 
     @Override
     public void downTestTemplate(TcSampleTestDownTestTemplateReqDTO tcSampleTestDownTestTemplateReqDTO, HttpServletResponse response) {
@@ -331,11 +340,11 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
 
     @Override
     public List<TcSampleTestQueryListBySampleCodeListRspDTO> queryListBySampleCodeList(TcSampleTestQueryListBySampleCodeListReqDTO tcSampleTestQueryListBySampleCodeListReqDTO) {
-        List<TcSampleTestQueryListBySampleCodeListRspDTO> result=new ArrayList<>();
+        List<TcSampleTestQueryListBySampleCodeListRspDTO> result = new ArrayList<>();
         List<String> sampleCodeList = tcSampleTestQueryListBySampleCodeListReqDTO.getContentList().stream().map(TcSampleTestQueryListBySampleCodeListReqDTO.Content::getSampleCode).collect(Collectors.toList());
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleCodeInAndApplyType(sampleCodeList, SampleTestApplyTypeEnum.first.name());
-        if(CollectionUtil.isNotEmpty(tcSampleTestTbList)){
-            return BeanUtils.copyListProperties(tcSampleTestTbList,TcSampleTestQueryListBySampleCodeListRspDTO.class);
+        if (CollectionUtil.isNotEmpty(tcSampleTestTbList)) {
+            return BeanUtils.copyListProperties(tcSampleTestTbList, TcSampleTestQueryListBySampleCodeListRspDTO.class);
         }
         return result;
     }

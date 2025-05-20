@@ -1,6 +1,8 @@
 package com.bio.drqi.tc.controller;
 
+import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.oss.service.OssService;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.*;
 import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
@@ -25,6 +27,9 @@ public class TcSampleTestController {
 
     @Resource
     private TcSampleTestService tcSampleTestService;
+
+    @Resource
+    private OssService ossService;
 
 
     /**
@@ -51,22 +56,34 @@ public class TcSampleTestController {
         return ResponseResult.getSuccess(tcSampleTestService.listPageDetail(tcSampleTestListPageDetailReqDTO));
     }
 
+    /**
+     * 田测取样检测管理-重复取样模板下载
+     */
+    @PostMapping("downTestRepeatSampleTemplate")
+    @WebLog(desc = "田测取样检测管理-重复取样模板下载")
+    public void downTestRepeatSampleTemplate(HttpServletResponse response) {
+        try {
+            ossService.downloadFile(response, "template", "田测重复取样模板V1.0.xlsx");
+        } catch (Exception e) {
+            throw new BusinessException("重复取样模板下载失败，请联系管理员检测模板配置");
+        }
+    }
 
     /**
-     * 检测数据模板下载
+     * 田测取样检测管理-检测数据模板下载
      */
     @PostMapping("downTestTemplate")
-    @WebLog(desc = "检测数据模板下载")
+    @WebLog(desc = "田测取样检测管理-检测数据模板下载")
     public void downTestTemplate(@Validated @RequestBody TcSampleTestDownTestTemplateReqDTO tcSampleTestDownTestTemplateReqDTO, HttpServletResponse response) {
         tcSampleTestService.downTestTemplate(tcSampleTestDownTestTemplateReqDTO, response);
     }
 
 
     /**
-     * 上传检测数据
+     * 田测取样检测管理-上传检测数据
      */
     @PostMapping("uploadTestTemplate")
-    @WebLog(desc = "上传检测数据")
+    @WebLog(desc = "田测取样检测管理-上传检测数据")
     public ResponseResult<String> uploadTestTemplate(@Validated @RequestBody TcSampleTestUploadTestTemplateReqDTO tcSampleTestUploadTestTemplateReqDTO) {
         tcSampleTestService.uploadTestTemplate(tcSampleTestUploadTestTemplateReqDTO);
         return ResponseResult.getSuccess("成功");

@@ -28,8 +28,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("test")
+//@RestController
+//@RequestMapping("test")
 @Slf4j
 public class TestCleanController {
 

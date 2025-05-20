@@ -5,7 +5,9 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.common.core.uuid.IdUtils;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.domain.TcExperimentDesignTb;
 import com.bio.drqi.domain.TcPollinationApplyTb;
 import com.bio.drqi.domain.TcPollinationTb;
@@ -14,6 +16,7 @@ import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
 import com.bio.drqi.mapper.TcPollinationApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
 import com.bio.drqi.mapper.TcSampleTestTbMapper;
+import com.bio.drqi.tc.enums.PollinationParentFlagEnum;
 import com.bio.drqi.tc.req.TcPollinationCreatePollinationExcelReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageReqDTO;
@@ -32,6 +35,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -75,10 +80,56 @@ public class TcPollinationServiceImpl implements TcPollinationService {
     @Override
     public void createPollinationExcel(TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
         List<TcPollinationExcelDTO> tcPollinationOneExcelDTOList = new ArrayList<TcPollinationExcelDTO>();
+        for (TcPollinationCreatePollinationExcelReqDTO.Content content : tcPollinationCreatePollinationExcelReqDTO.getContentList()) {
+            TcExperimentDesignTb tcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum(), content.getRegionNum(), content.getSeedNum());
+            if (tcExperimentDesignTb == null) {
+                throw new BusinessException("数据异常，找不到此试验设计种子信息 试验：" + tcPollinationCreatePollinationExcelReqDTO.getExperimentNum() + "种子号：" + content.getSeedNum() + "区域：" + content.getRegionNum());
+            }
+            //没有单株编号
+            if (BioDrQiContents.Y.equals(content.getSinglePlantFlag())) {
+                if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {
+                    TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, null);
+                    tcPollinationOneExcelDTOList.add(tcPollinationExcelDTO);
 
+                } else if (PollinationParentFlagEnum.mother.name().equals(content.getParentFlag())) {
+                    TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofMather(tcExperimentDesignTb, null);
+                    tcPollinationOneExcelDTOList.add(tcPollinationExcelDTO);
+                } else if (PollinationParentFlagEnum.parent.name().equals(content.getParentFlag())) {
+                    TcPollinationExcelDTO fatherTcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, null);
+                    tcPollinationOneExcelDTOList.add(fatherTcPollinationExcelDTO);
+                    TcPollinationExcelDTO matherTcPollinationExcelDTO = TcPollinationExcelDTO.ofMather(tcExperimentDesignTb, null);
+                    tcPollinationOneExcelDTOList.add(matherTcPollinationExcelDTO);
+                }
+            } else {
+                List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNumAndSeedNumAndRegionNum(tcPollinationCreatePollinationExcelReqDTO.getSampleApplyNum(), content.getSeedNum(), content.getRegionNum());
+                List<String> sampleCodeList = tcSampleTestTbList.stream().map(TcSampleTestTb::getSampleCode).distinct().collect(Collectors.toList());
+                for (int i = 0; i < content.getSinglePlantNumber(); i++) {
+                    String sampleCode=null;
+                    if(i<sampleCodeList.size()){
+                        sampleCode=sampleCodeList.get(i);
+                    }else {
+                        //todo 生成单株编号
+                        sampleCode= IdUtils.simpleUUID();
+                    }
+                    if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {
+
+                        TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, sampleCode);
+                        tcPollinationOneExcelDTOList.add(tcPollinationExcelDTO);
+                    } else if (PollinationParentFlagEnum.mother.name().equals(content.getParentFlag())) {
+                        TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofMather(tcExperimentDesignTb, sampleCode);
+                        tcPollinationOneExcelDTOList.add(tcPollinationExcelDTO);
+                    } else if (PollinationParentFlagEnum.parent.name().equals(content.getParentFlag())) {
+                        TcPollinationExcelDTO fatherTcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, sampleCode);
+                        tcPollinationOneExcelDTOList.add(fatherTcPollinationExcelDTO);
+                        TcPollinationExcelDTO matherTcPollinationExcelDTO = TcPollinationExcelDTO.ofMather(tcExperimentDesignTb, sampleCode);
+                        tcPollinationOneExcelDTOList.add(matherTcPollinationExcelDTO);
+                    }
+                }
+            }
+        }
+        String excelTemplateName = "田测授粉数据表单模板V1.0.xlsx";
+        String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
         try {
-            String excelTemplateName = "田测授粉表单模板V1.0.xlsx";
-            String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
             ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
             ExcelUtil.fillExcel(templateDir, tcPollinationOneExcelDTOList, TcPollinationExcelDTO.class, httpServletResponse);
         } catch (Exception e) {

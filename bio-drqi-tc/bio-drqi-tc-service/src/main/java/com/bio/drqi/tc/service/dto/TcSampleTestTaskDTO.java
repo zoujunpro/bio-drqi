@@ -11,7 +11,7 @@ public class TcSampleTestTaskDTO {
     /**
      * 实验编号
      */
-    private String experimentCode;
+    private String experimentNum;
 
     /**
      * 取样组织

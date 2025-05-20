@@ -4,13 +4,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 @Data
-public class TcPollinationDataExcelDTO {
-    /**
-     * 实验编号
-     */
-    @ExcelProperty("试验编号(母本)")
-    private String mExperimentNum;
-
+public class TcPollinationExcelDTO {
 
     /**
      * 母本小区编号
@@ -41,16 +35,12 @@ public class TcPollinationDataExcelDTO {
      * 母本世代
      */
     @ExcelProperty("世代(母本)")
-    private String mGenerationCode;
+    private String mGenerationName;
     /**
      * 母本基因类型
      */
     @ExcelProperty("基因型(母本)")
     private String mTcGene;
-
-
-    @ExcelProperty("试验编号(父本)")
-    private String fExperimentNum;
     /**
      * 父本小区编号
      */
@@ -82,7 +72,7 @@ public class TcPollinationDataExcelDTO {
      * 父本世代
      */
     @ExcelProperty("世代(父本)")
-    private String fGenerationCode;
+    private String fGenerationName;
     /**
      * 父本基因类型
      */

@@ -211,7 +211,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
 
         if (CollectionUtil.isNotEmpty(identifyPrimerTemplateExcelDTOList)) {
             for (IdentifyPrimerTemplateExcelDTO identifyPrimerTemplateExcelDTO : identifyPrimerTemplateExcelDTOList) {
-                TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneByExperimentCodeAndSampleCode(tcSampleTestTaskDTO.getExperimentCode(), identifyPrimerTemplateExcelDTO.getSampleCode());
+                TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneByExperimentNumAndSampleCode(tcSampleTestTaskDTO.getExperimentNum(), identifyPrimerTemplateExcelDTO.getSampleCode());
                 if (tcSampleTestTb != null) {
                     tcSampleTestTb.setIdentifyPrimer(identifyPrimerTemplateExcelDTO.getIdentifyPrimer());
                     tcSampleTestTbMapper.updateIdentifyPrimerById(identifyPrimerTemplateExcelDTO.getIdentifyPrimer(), tcSampleTestTb.getId());
@@ -319,10 +319,10 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         }
         TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
         for (TcSampleTestApproveSampleResultReqDTO.Content content : tcSampleTestApproveSampleResultReqDTO.getContentList()) {
-            TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneByExperimentCodeAndSampleCode(tcSampleTestTaskDTO.getExperimentCode(), content.getSampleCode());
+            TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneByExperimentNumAndSampleCode(tcSampleTestTaskDTO.getExperimentNum(), content.getSampleCode());
             if (tcSampleTestTb == null) {
                 log.error("approveSampleResult content={}", content);
-                throw new BusinessException("此试验中无此取样编号:" + content.getSampleCode() + ", 实现号：" + tcSampleTestTaskDTO.getExperimentCode());
+                throw new BusinessException("此试验中无此取样编号:" + content.getSampleCode() + ", 实现号：" + tcSampleTestTaskDTO.getExperimentNum());
             }
             tcSampleTestTb.setCheckResult(content.getCheckResult());
             tcSampleTestTbMapper.updateById(tcSampleTestTb);

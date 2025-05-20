@@ -20,8 +20,7 @@ import com.bio.drqi.tc.req.TcPollinationListPageReqDTO;
 import com.bio.drqi.tc.rsp.TcPollinationListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcPollinationListPageRspDTO;
 import com.bio.drqi.tc.service.TcPollinationService;
-import com.bio.drqi.tc.service.dto.TcPollinationOneExcelDTO;
-import com.bio.drqi.tc.service.dto.TcTestExcelDTO;
+import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -75,29 +74,13 @@ public class TcPollinationServiceImpl implements TcPollinationService {
 
     @Override
     public void createPollinationExcel(TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
-        List<TcPollinationOneExcelDTO> tcPollinationOneExcelDTOList = new ArrayList<TcPollinationOneExcelDTO>();
-        List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum());
-        for (TcExperimentDesignTb tcExperimentDesignTb : tcExperimentDesignTbList) {
-            TcPollinationOneExcelDTO tcPollinationOneExcelDTO = new TcPollinationOneExcelDTO();
-            tcPollinationOneExcelDTO.setExperimentNum(tcExperimentDesignTb.getExperimentNum());
-            tcPollinationOneExcelDTO.setRegionNum(tcExperimentDesignTb.getRegionNum());
-            tcPollinationOneExcelDTO.setSeedNum(tcExperimentDesignTb.getSeedNum());
-            tcPollinationOneExcelDTO.setBreedName(tcExperimentDesignTb.getBreedName());
-            tcPollinationOneExcelDTO.setVectorTaskCode(tcExperimentDesignTb.getVectorTaskCode());
-            tcPollinationOneExcelDTO.setGenerationCode(tcExperimentDesignTb.getGenerationCode());
-            tcPollinationOneExcelDTO.setTcGene(tcExperimentDesignTb.getTcGene());
-            tcPollinationOneExcelDTO.setSampleApplyNum(tcPollinationCreatePollinationExcelReqDTO.getSampleApplyNum());
-            if (StringUtils.isNotEmpty(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum())) {
-                List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNumAndRegionNumAndSeedNum(tcPollinationCreatePollinationExcelReqDTO.getSampleApplyNum(), tcExperimentDesignTb.getRegionNum(), tcExperimentDesignTb.getSeedNum());
-                tcPollinationOneExcelDTO.setSampleNumber(CollectionUtil.isEmpty(tcSampleTestTbList) ? 0 : tcSampleTestTbList.size());
-            }
-            tcPollinationOneExcelDTOList.add(tcPollinationOneExcelDTO);
-        }
+        List<TcPollinationExcelDTO> tcPollinationOneExcelDTOList = new ArrayList<TcPollinationExcelDTO>();
+
         try {
             String excelTemplateName = "田测授粉表单模板V1.0.xlsx";
             String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
             ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
-            ExcelUtil.fillExcel(templateDir, tcPollinationOneExcelDTOList, TcPollinationOneExcelDTO.class, httpServletResponse);
+            ExcelUtil.fillExcel(templateDir, tcPollinationOneExcelDTOList, TcPollinationExcelDTO.class, httpServletResponse);
         } catch (Exception e) {
             log.error("模板下载失败，", e);
             throw new BusinessException("模板下载失败，请联系管理员检测模板配置");

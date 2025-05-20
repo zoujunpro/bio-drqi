@@ -1,6 +1,5 @@
 package com.bio.drqi.tc.service.flowtask;
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
@@ -11,11 +10,9 @@ import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.domain.TcPollinationTb;
 import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
-import com.bio.drqi.tc.service.dto.TcPollinationDataExcelDTO;
+import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import com.bio.drqi.tc.service.dto.TcPollinationTaskDTO;
-import com.bio.drqi.tc.service.dto.TcTestExcelDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -60,32 +57,32 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
             }
 
             List<TcPollinationTb> tcPollinationTbList=new ArrayList<>();
-            List<TcPollinationDataExcelDTO> tcPollinationDataExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcPollinationDataExcelDTO.class);
-            for (TcPollinationDataExcelDTO tcPollinationDataExcelDTO:tcPollinationDataExcelDTOList){
+            List<TcPollinationExcelDTO> tcPollinationExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcPollinationExcelDTO.class);
+            for (TcPollinationExcelDTO tcPollinationExcelDTO : tcPollinationExcelDTOList){
                 TcPollinationTb tcPollinationTb=new TcPollinationTb();
                 tcPollinationTb.setExperimentNum(tcPollinationTaskDTO.getExperimentNum());
                 tcPollinationTb.setSampleApplyNum(tcPollinationTaskDTO.getSampleApplyNum());
                 tcPollinationTb.setPollinationApplyNum(bioTaskDtlTb.getTaskNum());
-                tcPollinationTb.setMRegionNum(tcPollinationDataExcelDTO.getMRegionNum());
-                tcPollinationTb.setFRegionNum(tcPollinationDataExcelDTO.getFRegionNum());
-                tcPollinationTb.setMSampleCode(tcPollinationDataExcelDTO.getMSampleCode());
-                tcPollinationTb.setFSampleCode(tcPollinationDataExcelDTO.getFSampleCode());
-                tcPollinationTb.setMSeedNum(tcPollinationDataExcelDTO.getMSeedNum());
-                tcPollinationTb.setFSeedNum(tcPollinationDataExcelDTO.getFSeedNum());
-                tcPollinationTb.setFBreedName(tcPollinationDataExcelDTO.getFBreedName());
-                tcPollinationTb.setMBreedName(tcPollinationDataExcelDTO.getMBreedName());
-                tcPollinationTb.setMVectorTaskCode(tcPollinationDataExcelDTO.getMVectorTaskCode());
-                tcPollinationTb.setFVectorTaskCode(tcPollinationDataExcelDTO.getFVectorTaskCode());
-                tcPollinationTb.setMGenerationCode(tcPollinationDataExcelDTO.getMGenerationCode());
-                tcPollinationTb.setFGenerationCode(tcPollinationDataExcelDTO.getFGenerationCode());
-                tcPollinationTb.setMTcGene(tcPollinationDataExcelDTO.getMTcGene());
-                tcPollinationTb.setFTcGene(tcPollinationDataExcelDTO.getFTcGene());
-                tcPollinationTb.setPollinationDate(tcPollinationDataExcelDTO.getPollinationDate());
+                tcPollinationTb.setMRegionNum(tcPollinationExcelDTO.getMRegionNum());
+                tcPollinationTb.setFRegionNum(tcPollinationExcelDTO.getFRegionNum());
+                tcPollinationTb.setMSampleCode(tcPollinationExcelDTO.getMSampleCode());
+                tcPollinationTb.setFSampleCode(tcPollinationExcelDTO.getFSampleCode());
+                tcPollinationTb.setMSeedNum(tcPollinationExcelDTO.getMSeedNum());
+                tcPollinationTb.setFSeedNum(tcPollinationExcelDTO.getFSeedNum());
+                tcPollinationTb.setFBreedName(tcPollinationExcelDTO.getFBreedName());
+                tcPollinationTb.setMBreedName(tcPollinationExcelDTO.getMBreedName());
+                tcPollinationTb.setMVectorTaskCode(tcPollinationExcelDTO.getMVectorTaskCode());
+                tcPollinationTb.setFVectorTaskCode(tcPollinationExcelDTO.getFVectorTaskCode());
+                tcPollinationTb.setMGenerationCode(tcPollinationExcelDTO.getMGenerationName());
+                tcPollinationTb.setFGenerationCode(tcPollinationExcelDTO.getFGenerationName());
+                tcPollinationTb.setMTcGene(tcPollinationExcelDTO.getMTcGene());
+                tcPollinationTb.setFTcGene(tcPollinationExcelDTO.getFTcGene());
+                tcPollinationTb.setPollinationDate(tcPollinationExcelDTO.getPollinationDate());
                 tcPollinationTb.setPollinationMethodCode(null);
-                tcPollinationTb.setPollinationMethodName(tcPollinationDataExcelDTO.getPollinationMethodName());
+                tcPollinationTb.setPollinationMethodName(tcPollinationExcelDTO.getPollinationMethodName());
                 tcPollinationTb.setHarvestTypeCode(null);
-                tcPollinationTb.setHarvestTypeName(tcPollinationDataExcelDTO.getHarvestTypeName());
-                tcPollinationTb.setRemark(tcPollinationDataExcelDTO.getRemark());
+                tcPollinationTb.setHarvestTypeName(tcPollinationExcelDTO.getHarvestTypeName());
+                tcPollinationTb.setRemark(tcPollinationExcelDTO.getRemark());
                 tcPollinationTbList.add(tcPollinationTb);
             }
             tcPollinationTbMapper.insertBatch(tcPollinationTbList);

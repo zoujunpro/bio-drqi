@@ -56,12 +56,12 @@ public class TcPollinationListPageDetailRspDTO {
     /**
      * 父本品种
      */
-    private String fBreedCode;
+    private String fBreedName;
 
     /**
      * 母本品种
      */
-    private String mBreedCode;
+    private String mBreedName;
 
     /**
      * 母本实施方案编号
@@ -81,7 +81,7 @@ public class TcPollinationListPageDetailRspDTO {
     /**
      * 父本世代
      */
-    private String fGenerationCode;
+    private String fGenerationName;
 
     /**
      * 母本基因类型

@@ -38,6 +38,7 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     @Resource
     private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
 
+    @Resource
     private TcSampleTestTbMapper tcSampleTestTbMapper;
 
 

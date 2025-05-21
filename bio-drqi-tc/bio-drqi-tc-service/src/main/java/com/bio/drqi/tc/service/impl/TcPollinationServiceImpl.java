@@ -29,6 +29,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -80,7 +81,8 @@ public class TcPollinationServiceImpl implements TcPollinationService {
 
     @Override
     public void createPollinationExcel(TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
-        List<TcPollinationExcelDTO> tcPollinationOneExcelDTOList = new ArrayList<TcPollinationExcelDTO>();
+        List<TcPollinationExcelDTO> matherList = new ArrayList<TcPollinationExcelDTO>();
+        List<TcPollinationExcelDTO> fatherList = new ArrayList<TcPollinationExcelDTO>();
         for (TcPollinationCreatePollinationExcelReqDTO.Content content : tcPollinationCreatePollinationExcelReqDTO.getContentList()) {
             TcExperimentDesignTb tcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum(), content.getRegionNum(), content.getSeedNum());
             if (tcExperimentDesignTb == null) {
@@ -90,41 +92,50 @@ public class TcPollinationServiceImpl implements TcPollinationService {
             if (BioDrQiContents.N.equals(content.getSinglePlantFlag())) {
                 if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {
                     TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, null);
-                    tcPollinationOneExcelDTOList.add(tcPollinationExcelDTO);
+                    fatherList.add(tcPollinationExcelDTO);
 
                 } else if (PollinationParentFlagEnum.mother.name().equals(content.getParentFlag())) {
                     TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofMather(tcExperimentDesignTb, null);
-                    tcPollinationOneExcelDTOList.add(tcPollinationExcelDTO);
+                    matherList.add(tcPollinationExcelDTO);
                 } else if (PollinationParentFlagEnum.parent.name().equals(content.getParentFlag())) {
                     TcPollinationExcelDTO fatherTcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, null);
-                    tcPollinationOneExcelDTOList.add(fatherTcPollinationExcelDTO);
+                    fatherList.add(fatherTcPollinationExcelDTO);
                     TcPollinationExcelDTO matherTcPollinationExcelDTO = TcPollinationExcelDTO.ofMather(tcExperimentDesignTb, null);
-                    tcPollinationOneExcelDTOList.add(matherTcPollinationExcelDTO);
+                    matherList.add(matherTcPollinationExcelDTO);
                 }
             } else {
                 List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNumAndSeedNumAndRegionNumAndCheckResult(tcPollinationCreatePollinationExcelReqDTO.getSampleApplyNum(), content.getSeedNum(), content.getRegionNum(), SampleTestCheckResultEnum.stay.name());
                 List<String> sampleCodeList = tcSampleTestTbList.stream().map(TcSampleTestTb::getSampleCode).distinct().collect(Collectors.toList());
                 for (int i = 0; i < content.getSinglePlantNumber(); i++) {
-                    String sampleCode=null;
-                    if(i<sampleCodeList.size()){
-                        sampleCode=sampleCodeList.get(i);
-                    }else {
+                    String sampleCode = null;
+                    if (i < sampleCodeList.size()) {
+                        sampleCode = sampleCodeList.get(i);
+                    } else {
                         //todo 生成单株编号
-                        sampleCode= IdUtils.simpleUUID();
+                        sampleCode = IdUtils.simpleUUID();
                     }
                     if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {
 
                         TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, sampleCode);
-                        tcPollinationOneExcelDTOList.add(tcPollinationExcelDTO);
+                        fatherList.add(tcPollinationExcelDTO);
                     } else if (PollinationParentFlagEnum.mother.name().equals(content.getParentFlag())) {
                         TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofMather(tcExperimentDesignTb, sampleCode);
-                        tcPollinationOneExcelDTOList.add(tcPollinationExcelDTO);
+                        matherList.add(tcPollinationExcelDTO);
                     } else if (PollinationParentFlagEnum.parent.name().equals(content.getParentFlag())) {
                         TcPollinationExcelDTO fatherTcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, sampleCode);
-                        tcPollinationOneExcelDTOList.add(fatherTcPollinationExcelDTO);
+                        fatherList.add(fatherTcPollinationExcelDTO);
                         TcPollinationExcelDTO matherTcPollinationExcelDTO = TcPollinationExcelDTO.ofMather(tcExperimentDesignTb, sampleCode);
-                        tcPollinationOneExcelDTOList.add(matherTcPollinationExcelDTO);
+                        matherList.add(matherTcPollinationExcelDTO);
                     }
+                }
+            }
+        }
+        if (CollectionUtil.isNotEmpty(fatherList)) {
+            for (int i = 0; i < fatherList.size(); i++) {
+                if (i < matherList.size()) {
+                    BeanUtils.copyProperties(fatherList.get(i),matherList.get(i));
+                }else {
+                    matherList.add(fatherList.get(i));
                 }
             }
         }
@@ -132,7 +143,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
         try {
             ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
-            ExcelUtil.fillExcel(templateDir, tcPollinationOneExcelDTOList, TcPollinationExcelDTO.class, httpServletResponse);
+            ExcelUtil.fillExcel(templateDir, matherList, TcPollinationExcelDTO.class, httpServletResponse);
         } catch (Exception e) {
             log.error("模板下载失败，", e);
             throw new BusinessException("模板下载失败，请联系管理员检测模板配置");

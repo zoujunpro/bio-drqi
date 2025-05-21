@@ -248,6 +248,11 @@
         AND seed_num = #{seedNum,jdbcType=VARCHAR}
         AND region_num = #{regionNum,jdbcType=VARCHAR}
     </select>
+    <delete id="deleteBySampleApplyNum">
+        delete
+        from tc_sample_test_tb
+        where sample_apply_num = #{sampleApplyNum,jdbcType=VARCHAR}
+    </delete>
 
 
 </mapper>

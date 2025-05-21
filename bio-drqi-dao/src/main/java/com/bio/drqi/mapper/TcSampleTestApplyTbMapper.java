@@ -20,6 +20,8 @@ public interface TcSampleTestApplyTbMapper extends BaseMapper<TcSampleTestApplyT
 
     List<TcSampleTestApplyTb> selectSelective(TcSampleTestApplyTb tcSampleTestApplyTb);
 
+    int deleteBySampleApplyNum(@Param("sampleApplyNum") String sampleApplyNum);
+
 
 
 }

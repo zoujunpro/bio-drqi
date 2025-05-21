@@ -1,12 +1,11 @@
 package com.bio.drqi.tc.service;
 
+import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.tc.req.*;
-import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
-import com.bio.drqi.tc.rsp.TcSampleTestListPageDetailRspDTO;
-import com.bio.drqi.tc.rsp.TcSampleTestListPageRspDTO;
-import com.bio.drqi.tc.rsp.TcSampleTestQueryListBySampleCodeListRspDTO;
+import com.bio.drqi.tc.rsp.*;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +32,7 @@ public interface TcSampleTestService {
     PageInfo<TcSampleTestListPageDetailRspDTO> listPageDetail(TcSampleTestListPageDetailReqDTO tcSampleTestListPageDetailReqDTO);
 
 
-    List<String> listByExperimentNum( String experimentNum);
+    List<String> listByExperimentNum(String experimentNum);
 
 
     /**
@@ -98,4 +97,19 @@ public interface TcSampleTestService {
 
 
     List<TcSampleTestQueryListBySampleCodeListRspDTO> queryListBySampleCodeList(TcSampleTestQueryListBySampleCodeListReqDTO tcSampleTestQueryListBySampleCodeListReqDTO);
+
+
+    void uploadBioInfoSampleTestResult(TcSampleTestUploadBioInfoSampleTestResultReqDTO tcSampleTestUploadBioInfoSampleTestResultReqDTO);
+
+    List<TcSampleTestQueryBioInfoSampleTestResultRspDTO> queryBioInfoSampleTestResult(Integer id);
+
+    void bioInfoSampleTestResultConfirm(TcSampleTestBioInfoSampleTestResultConfirmReqDTO tcSampleTestBioInfoSampleTestResultConfirmReqDTO);
+
+    void synBioInfoSampleTestResult(Integer id);
+
+    Object bioInfoSampleTestResultDetail( Integer bioInfoId);
+
+    Integer bioInfoHead( String applyNo);
+
+    PageInfo<TcSampleTestBioInfoPageRspDTO> bioInfoPage(TcSampleTestBioInfoPageReqDTO tcSampleTestBioInfoPageReqDTO);
 }

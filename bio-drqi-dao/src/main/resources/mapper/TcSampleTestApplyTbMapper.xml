@@ -58,4 +58,9 @@
         where
         experiment_num = #{experimentNum,jdbcType=VARCHAR}
     </select>
+    <delete id="deleteBySampleApplyNum">
+        delete
+        from tc_sample_test_apply_tb
+        where sample_apply_num = #{sampleApplyNum,jdbcType=VARCHAR}
+    </delete>
 </mapper>

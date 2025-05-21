@@ -19,10 +19,7 @@ import com.bio.drqi.mapper.TcSampleTestTbMapper;
 import com.bio.drqi.tc.SampleUnitDTO;
 import com.bio.drqi.tc.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.tc.req.*;
-import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
-import com.bio.drqi.tc.rsp.TcSampleTestListPageDetailRspDTO;
-import com.bio.drqi.tc.rsp.TcSampleTestListPageRspDTO;
-import com.bio.drqi.tc.rsp.TcSampleTestQueryListBySampleCodeListRspDTO;
+import com.bio.drqi.tc.rsp.*;
 import com.bio.drqi.tc.service.TcSampleTestService;
 import com.bio.drqi.tc.service.dto.IdentifyPrimerTemplateExcelDTO;
 import com.bio.drqi.tc.service.dto.TcTestExcelDTO;
@@ -347,6 +344,41 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
             return BeanUtils.copyListProperties(tcSampleTestTbList, TcSampleTestQueryListBySampleCodeListRspDTO.class);
         }
         return result;
+    }
+
+    @Override
+    public void uploadBioInfoSampleTestResult(TcSampleTestUploadBioInfoSampleTestResultReqDTO tcSampleTestUploadBioInfoSampleTestResultReqDTO) {
+
+    }
+
+    @Override
+    public List<TcSampleTestQueryBioInfoSampleTestResultRspDTO> queryBioInfoSampleTestResult(Integer id) {
+        return null;
+    }
+
+    @Override
+    public void bioInfoSampleTestResultConfirm(TcSampleTestBioInfoSampleTestResultConfirmReqDTO tcSampleTestBioInfoSampleTestResultConfirmReqDTO) {
+
+    }
+
+    @Override
+    public void synBioInfoSampleTestResult(Integer id) {
+
+    }
+
+    @Override
+    public Object bioInfoSampleTestResultDetail(Integer bioInfoId) {
+        return null;
+    }
+
+    @Override
+    public Integer bioInfoHead(String applyNo) {
+        return null;
+    }
+
+    @Override
+    public PageInfo<TcSampleTestBioInfoPageRspDTO> bioInfoPage(TcSampleTestBioInfoPageReqDTO tcSampleTestBioInfoPageReqDTO) {
+        return null;
     }
 
 

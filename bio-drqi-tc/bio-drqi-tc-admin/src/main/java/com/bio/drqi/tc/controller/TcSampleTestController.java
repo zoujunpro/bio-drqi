@@ -5,10 +5,7 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.oss.service.OssService;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.*;
-import com.bio.drqi.tc.rsp.TcSampleTestLayoutPreviewRspDTO;
-import com.bio.drqi.tc.rsp.TcSampleTestListPageDetailRspDTO;
-import com.bio.drqi.tc.rsp.TcSampleTestListPageRspDTO;
-import com.bio.drqi.tc.rsp.TcSampleTestQueryListBySampleCodeListRspDTO;
+import com.bio.drqi.tc.rsp.*;
 import com.bio.drqi.tc.service.TcSampleTestService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
@@ -189,5 +186,107 @@ public class TcSampleTestController {
     public ResponseResult<List<TcSampleTestQueryListBySampleCodeListRspDTO>>  queryListBySampleCodeList(@RequestBody @Validated TcSampleTestQueryListBySampleCodeListReqDTO tcSampleTestQueryListBySampleCodeListReqDTO){
         return ResponseResult.getSuccess(tcSampleTestService.queryListBySampleCodeList(tcSampleTestQueryListBySampleCodeListReqDTO));
     }
+
+
+    /**
+     * 生信结果核对模板下载
+     */
+    @PostMapping("downSampleTestBioInfoResultTemplate")
+    @WebLog(desc = "田测取样检测管理-生信结果核对模板下载")
+    public void downSampleTestBioInfoResultTemplate(HttpServletResponse response) {
+        try {
+            ossService.downloadFile(response, "template", "生信结果核对模板V1.0.xlsx");
+        } catch (Exception e) {
+            throw new BusinessException("生信结果核对模板下载失败，请联系管理员检测模板配置");
+        }
+    }
+
+    /**
+     * 上传生信检测结果数据核对模板
+     *
+     * @param tcSampleTestUploadBioInfoSampleTestResultReqDTO
+     * @return
+     */
+    @PostMapping("uploadBioInfoSampleTestResult")
+    @WebLog(desc = "田测取样检测管理-上传生信检测结果数据核对模板")
+    public ResponseResult<String> uploadBioInfoSampleTestResult(@RequestBody TcSampleTestUploadBioInfoSampleTestResultReqDTO tcSampleTestUploadBioInfoSampleTestResultReqDTO) {
+        tcSampleTestService.uploadBioInfoSampleTestResult(tcSampleTestUploadBioInfoSampleTestResultReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 生信检测结果查看
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("queryBioInfoSampleTestResult")
+    @WebLog(desc = "田测取样检测管理-生信检测结果查看")
+    public ResponseResult<List<TcSampleTestQueryBioInfoSampleTestResultRspDTO>> queryBioInfoSampleTestResult(@RequestParam Integer id) {
+        return ResponseResult.getSuccess(tcSampleTestService.queryBioInfoSampleTestResult(id));
+    }
+
+    /**
+     * 生信检测结果确认
+     *
+     * @param tcSampleTestBioInfoSampleTestResultConfirmReqDTO
+     * @return
+     */
+    @PostMapping("bioInfoSampleTestResultConfirm")
+    @WebLog(desc = "田测取样检测管理-生信检测结果确认")
+    public ResponseResult<String> bioInfoSampleTestResultConfirm(@RequestBody TcSampleTestBioInfoSampleTestResultConfirmReqDTO tcSampleTestBioInfoSampleTestResultConfirmReqDTO) {
+        tcSampleTestService.bioInfoSampleTestResultConfirm(tcSampleTestBioInfoSampleTestResultConfirmReqDTO);
+        return ResponseResult.getSuccess(null);
+    }
+
+
+    /**
+     * 同步生信检测结果数据
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("synBioInfoSampleTestResult")
+    @WebLog(desc = "田测取样检测管理-同步生信检测结果数据")
+    public ResponseResult<String> synBioInfoSampleTestResult(@RequestParam Integer id) {
+        tcSampleTestService.synBioInfoSampleTestResult(id);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 生信检测结果数据详情
+     *
+     * @param bioInfoId
+     * @return
+     */
+    @GetMapping("bioInfoSampleTestResultDetail")
+    @WebLog(desc = "田测取样检测管理-生信检测结果数据详情")
+    public ResponseResult<Object> bioInfoSampleTestResultDetail(@RequestParam Integer bioInfoId) {
+        return ResponseResult.getSuccess(tcSampleTestService.bioInfoSampleTestResultDetail(bioInfoId));
+    }
+
+
+    /**
+     * 生信检测结果分页详情头
+     *
+     * @return
+     */
+    @GetMapping("bioInfoHead")
+    @WebLog(desc = "田测取样检测管理-生信检测结果分页详情头")
+    public ResponseResult<Integer> bioInfoHead(@RequestParam @Validated String applyNo) {
+        return ResponseResult.getSuccess(tcSampleTestService.bioInfoHead(applyNo));
+    }
+
+    /**
+     * 生信检测结果分页详情
+     *
+     * @return
+     */
+    @PostMapping("bioInfoPage")
+    @WebLog(desc = "田测取样检测管理-生信检测结果分页详情")
+    public ResponseResult<PageInfo<TcSampleTestBioInfoPageRspDTO>> bioInfoPage(@RequestBody @Validated TcSampleTestBioInfoPageReqDTO tcSampleTestBioInfoPageReqDTO) {
+        return ResponseResult.getSuccess(tcSampleTestService.bioInfoPage(tcSampleTestBioInfoPageReqDTO));
+    }
+
 
 }

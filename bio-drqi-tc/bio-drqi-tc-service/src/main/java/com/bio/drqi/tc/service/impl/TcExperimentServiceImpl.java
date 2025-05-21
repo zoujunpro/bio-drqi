@@ -1,18 +1,21 @@
 package com.bio.drqi.tc.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
+import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.TcExperimentDesignTb;
 import com.bio.drqi.domain.TcExperimentTb;
+import com.bio.drqi.domain.TcSampleTestTb;
 import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
 import com.bio.drqi.mapper.TcExperimentTbMapper;
+import com.bio.drqi.mapper.TcSampleTestTbMapper;
+import com.bio.drqi.tc.enums.SampleTestCheckResultEnum;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
-import com.bio.drqi.tc.rsp.TcExperimentListAllRspDTO;
-import com.bio.drqi.tc.rsp.TcExperimentListDetailRspDTO;
-import com.bio.drqi.tc.rsp.TcExperimentListNoPollinationRspDTO;
-import com.bio.drqi.tc.rsp.TcExperimentListPageRspDTO;
+import com.bio.drqi.tc.req.TcExperimentQueryListExperimentDesignReqDTO;
+import com.bio.drqi.tc.rsp.*;
 import com.bio.drqi.tc.service.TcExperimentService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -35,6 +38,8 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     @Resource
     private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
 
+    private TcSampleTestTbMapper tcSampleTestTbMapper;
+
 
     @Override
     public PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
@@ -43,7 +48,7 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         tcExperimentTb.setVectorTaskCodes(tcExperimentListPageReqDTO.getVectorTaskCode());
         tcExperimentTb.setProjectCodes(tcExperimentListPageReqDTO.getProjectCode());
         tcExperimentTb.setSpeciesCode(tcExperimentListPageReqDTO.getSpeciesCode());
-        tcExperimentListPageReqDTO.setExperimentCode(tcExperimentListPageReqDTO.getExperimentCode());
+        tcExperimentTb.setExperimentNum(tcExperimentListPageReqDTO.getExperimentNum());
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectSelective(tcExperimentTb);
         PageInfo<TcExperimentTb> srcPageInfo = new PageInfo<>(tcExperimentTbList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, TcExperimentListPageRspDTO.class);
@@ -52,7 +57,25 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     @Override
     public List<TcExperimentListAllRspDTO> listAll() {
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectALlOrderByIdDesc();
-        return BeanUtils.copyListProperties(tcExperimentTbList,TcExperimentListAllRspDTO.class);
+        return BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListAllRspDTO.class);
+    }
+
+    @Override
+    public List<TcExperimentQueryListExperimentDesignRspDTO> queryListExperimentDesign(TcExperimentQueryListExperimentDesignReqDTO tcExperimentQueryListExperimentDesignReqDTO) {
+        List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcExperimentQueryListExperimentDesignReqDTO.getExperimentNum());
+        if (CollectionUtil.isNotEmpty(tcExperimentDesignTbList)) {
+            List<TcExperimentQueryListExperimentDesignRspDTO> result = BeanUtils.copyListProperties(tcExperimentDesignTbList, TcExperimentQueryListExperimentDesignRspDTO.class);
+            if (StringUtils.isNotEmpty(tcExperimentQueryListExperimentDesignReqDTO.getSampleApplyNum())) {
+                result.forEach(obj -> {
+                    List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNumAndSeedNumAndRegionNumAndCheckResult(tcExperimentQueryListExperimentDesignReqDTO.getSampleApplyNum(), obj.getSeedNum(), obj.getRegionNum(), SampleTestCheckResultEnum.stay.name());
+                    obj.setStayNumber(StringUtils.isNotEmpty(tcSampleTestTbList) ? tcSampleTestTbList.size() : 0);
+                });
+            }
+            return result;
+
+        }
+
+        return null;
     }
 
 

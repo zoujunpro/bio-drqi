@@ -12,16 +12,16 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioTaskStatusEnum;
-import com.bio.drqi.mapper.BioTaskDtlTbMapper;
-import com.bio.drqi.mapper.TcSampleLayoutTbMapper;
-import com.bio.drqi.mapper.TcSampleTestApplyTbMapper;
-import com.bio.drqi.mapper.TcSampleTestTbMapper;
+import com.bio.drqi.external.client.BioInfoClientApi;
+import com.bio.drqi.external.dto.BioResult;
+import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.SampleUnitDTO;
 import com.bio.drqi.tc.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.tc.req.*;
 import com.bio.drqi.tc.rsp.*;
 import com.bio.drqi.tc.service.TcSampleTestService;
 import com.bio.drqi.tc.service.dto.IdentifyPrimerTemplateExcelDTO;
+import com.bio.drqi.tc.service.dto.TcSampleTestBioInfoExcelDTO;
 import com.bio.drqi.tc.service.dto.TcTestExcelDTO;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
 import com.bio.drqi.tc.util.LayoutUtil;
@@ -35,10 +35,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +58,20 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
 
     @Resource
     private TcSampleLayoutTbMapper tcSampleLayoutTbMapper;
+
+    @Resource
+    private TcSampleTestBioResultRefMapper tcSampleTestBioResultRefMapper;
+
+    @Resource
+    private TcSampleTestBioInfoResultTbMapper tcSampleTestBioInfoResultTbMapper;
+
+
+    private BioInfoClientApi bioInfoClientApi;
+
+
+    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(50, 50, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(10000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+
+
 
     @Value("${cer.properties.excelTemplatePath}")
     private String excelTemplatePath;
@@ -348,7 +361,90 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
 
     @Override
     public void uploadBioInfoSampleTestResult(TcSampleTestUploadBioInfoSampleTestResultReqDTO tcSampleTestUploadBioInfoSampleTestResultReqDTO) {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcSampleTestUploadBioInfoSampleTestResultReqDTO.getApplyNo());
+        if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            throw new BusinessException("非执行中任务，无法进行操作");
+        }
+        TcSampleTestTaskDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
+        newSampleTestDTO.setBioInfoResultExcelUrl(tcSampleTestUploadBioInfoSampleTestResultReqDTO.getExcelUrl());
 
+        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + tcSampleTestUploadBioInfoSampleTestResultReqDTO.getExcelUrl();
+        try {
+            ossService.downloadPath(tempFilePath, tcSampleTestUploadBioInfoSampleTestResultReqDTO.getExcelUrl());
+        } catch (Exception e) {
+            log.error("【生信检测结果】文件从oss下载失败", e);
+            throw new BusinessException("文件处理异常");
+        }
+        Date currentDate = new Date();
+        //解析excel
+        List<TcSampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcSampleTestBioInfoExcelDTO.class);
+        if (sampleTestBioInfoExcelDTOList == null) {
+            throw new BusinessException("excel无数据");
+        }
+        sampleTestBioInfoExcelDTOList = sampleTestBioInfoExcelDTOList.stream().filter(sampleTestBioInfoExcelDTO -> StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getSampleId()) && StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getRunId())).collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)) {
+            throw new BusinessException("excel数据异常或者格式不对");
+        }
+        //保存excel数据
+        tcSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNum(tcSampleTestUploadBioInfoSampleTestResultReqDTO.getApplyNo());
+        Map<String, TcSampleTestTb> stringTcSampleTestTbMap = tcSampleTestTbList.stream().collect(Collectors.toMap(TcSampleTestTb::getSampleCode, tcSampleTestTb -> tcSampleTestTb));
+        List<TcSampleTestBioResultRef> tcSampleTestBioResultRefArrayList = new ArrayList<>();
+        for (TcSampleTestBioInfoExcelDTO tcSampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
+            TcSampleTestBioResultRef tcSampleTestBioResultRef = new TcSampleTestBioResultRef();
+            tcSampleTestBioResultRef.setApplyNo(tcSampleTestUploadBioInfoSampleTestResultReqDTO.getApplyNo());
+            tcSampleTestBioResultRef.setSampleCode(tcSampleTestBioInfoExcelDTO.getSampleCode());
+            TcSampleTestTb tcSampleTestTb = stringTcSampleTestTbMap.get(tcSampleTestBioInfoExcelDTO.getSampleCode());
+            if (tcSampleTestTb != null) {
+                tcSampleTestBioResultRef.setVectorTaskCode(tcSampleTestTb.getVectorTaskCode());
+            }
+            tcSampleTestBioResultRef.setSampleId(tcSampleTestBioInfoExcelDTO.getSampleId());
+            tcSampleTestBioResultRef.setRunId(tcSampleTestBioInfoExcelDTO.getRunId());
+            tcSampleTestBioResultRef.setCreateTime(currentDate);
+            tcSampleTestBioResultRefArrayList.add(tcSampleTestBioResultRef);
+        }
+        if (CollectionUtil.isNotEmpty(tcSampleTestBioResultRefArrayList)) {
+            tcSampleTestBioResultRefMapper.insertBatch(tcSampleTestBioResultRefArrayList);
+        }
+
+        tcSampleTestBioInfoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        List<TcSampleTestBioInfoResultTb> tcSampleTestBioInfoResultTbArrayList = new ArrayList<>();
+        AtomicInteger executeNum = new AtomicInteger(0);
+        for (TcSampleTestBioInfoExcelDTO tcSampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
+            while (threadPool.getPoolSize() > 1000) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                }
+            }
+
+            Future<List<TcSampleTestBioInfoResultTb>> future = threadPool.submit(() -> {
+                return synBioInfoResult(executeNum, tcSampleTestBioInfoExcelDTO.getSampleId(), tcSampleTestBioInfoExcelDTO.getRunId(), tcSampleTestUploadBioInfoSampleTestResultReqDTO.getApplyNo(), tcSampleTestBioInfoExcelDTO.getSampleCode());
+            });
+            List<TcSampleTestBioInfoResultTb> currentTcSampleTestBioInfoResultTbList = null;
+            try {
+                currentTcSampleTestBioInfoResultTbList = future.get();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            if (CollectionUtil.isNotEmpty(currentTcSampleTestBioInfoResultTbList)) {
+                tcSampleTestBioInfoResultTbArrayList.addAll(currentTcSampleTestBioInfoResultTbList);
+            }
+
+        }
+
+        if (CollectionUtil.isNotEmpty(tcSampleTestBioInfoResultTbArrayList)) {
+            tcSampleTestBioInfoResultTbArrayList.forEach(cerSampleTestBioInfoResultTb -> {
+                TcSampleTestTb tcSampleTestTb = stringTcSampleTestTbMap.get(cerSampleTestBioInfoResultTb.getSampleCode());
+                ;
+                if (tcSampleTestTb != null) {
+                    cerSampleTestBioInfoResultTb.setVectorTaskCode(tcSampleTestTb.getVectorTaskCode());
+                }
+            });
+            tcSampleTestBioInfoResultTbMapper.insertBatch(tcSampleTestBioInfoResultTbArrayList);
+        }
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
+        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
     }
 
     @Override
@@ -379,6 +475,35 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     @Override
     public PageInfo<TcSampleTestBioInfoPageRspDTO> bioInfoPage(TcSampleTestBioInfoPageReqDTO tcSampleTestBioInfoPageReqDTO) {
         return null;
+    }
+
+    private List<TcSampleTestBioInfoResultTb> synBioInfoResult(AtomicInteger executeNum, String sampleId, String runId, String applyNo, String sampleCode) {
+        log.info("获取生信检测结果 当前处理第{}数据 sampleCode={}", executeNum.get(), sampleCode);
+        if (StringUtils.isEmpty(sampleId) || StringUtils.isEmpty(runId)) {
+            return null;
+        }
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("RunID", runId);
+        paramMap.put("sampleID", sampleId);
+        BioResult<List<Map<String, String>>> bioInfoResultRspDTOBioResult = bioInfoClientApi.sampleTestBioInfoResult(paramMap);
+        List<TcSampleTestBioInfoResultTb> tcSampleTestBioInfoResultTbList = new ArrayList<>();
+        for (Map<String, String> map : bioInfoResultRspDTOBioResult.getData()) {
+            TcSampleTestBioInfoResultTb tcSampleTestBioInfoResultTb = new TcSampleTestBioInfoResultTb();
+            tcSampleTestBioInfoResultTb.setApplyNo(applyNo);
+            tcSampleTestBioInfoResultTb.setSampleCode(sampleCode);
+            tcSampleTestBioInfoResultTb.setSampleId(map.get("sampleID"));
+            tcSampleTestBioInfoResultTb.setUniqueDbCode(map.get("Unique_DB_code"));
+            tcSampleTestBioInfoResultTb.setRunId(map.get("RunID"));
+            tcSampleTestBioInfoResultTb.setHapId(map.get("HapID"));
+            tcSampleTestBioInfoResultTb.setVarType(map.get("vartype"));
+            tcSampleTestBioInfoResultTb.setMutate(map.get("mutate"));
+            tcSampleTestBioInfoResultTb.setRatio(map.get("ratio"));
+            tcSampleTestBioInfoResultTb.setConfirmStatus(map.get("ConfirmStatus"));
+            tcSampleTestBioInfoResultTb.setResultKey(map.get("ResultKey"));
+            tcSampleTestBioInfoResultTbList.add(tcSampleTestBioInfoResultTb);
+        }
+        executeNum.addAndGet(1);
+        return tcSampleTestBioInfoResultTbList;
     }
 
 

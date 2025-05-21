@@ -5,10 +5,8 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.oss.service.OssService;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
-import com.bio.drqi.tc.rsp.TcExperimentListAllRspDTO;
-import com.bio.drqi.tc.rsp.TcExperimentListDetailRspDTO;
-import com.bio.drqi.tc.rsp.TcExperimentListNoPollinationRspDTO;
-import com.bio.drqi.tc.rsp.TcExperimentListPageRspDTO;
+import com.bio.drqi.tc.req.TcExperimentQueryListExperimentDesignReqDTO;
+import com.bio.drqi.tc.rsp.*;
 import com.bio.drqi.tc.service.TcExperimentService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
@@ -51,6 +49,17 @@ public class TcExperimentController {
     @WebLog(desc = "试验方案申请管理-查询所有试验")
     public ResponseResult<List<TcExperimentListAllRspDTO>> listAll() {
         return ResponseResult.getSuccess(tcExperimentService.listAll());
+    }
+
+    /**
+     * 试验方案申请管理-条件查询试验设计
+     * @param
+     * @return
+     */
+    @PostMapping("/queryListExperimentDesign")
+    @WebLog(desc = "试验方案申请管理-条件查询试验设计")
+    public ResponseResult<List<TcExperimentQueryListExperimentDesignRspDTO>> queryListExperimentDesign(@Validated @RequestBody TcExperimentQueryListExperimentDesignReqDTO tcExperimentQueryListExperimentDesignReqDTO) {
+        return ResponseResult.getSuccess(tcExperimentService.queryListExperimentDesign(tcExperimentQueryListExperimentDesignReqDTO));
     }
 
     /**

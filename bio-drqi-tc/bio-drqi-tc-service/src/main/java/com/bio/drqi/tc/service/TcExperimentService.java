@@ -1,11 +1,12 @@
 package com.bio.drqi.tc.service;
 
+import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
-import com.bio.drqi.tc.rsp.TcExperimentListAllRspDTO;
-import com.bio.drqi.tc.rsp.TcExperimentListDetailRspDTO;
-import com.bio.drqi.tc.rsp.TcExperimentListNoPollinationRspDTO;
-import com.bio.drqi.tc.rsp.TcExperimentListPageRspDTO;
+import com.bio.drqi.tc.req.TcExperimentQueryListExperimentDesignReqDTO;
+import com.bio.drqi.tc.rsp.*;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -22,11 +23,14 @@ public interface TcExperimentService {
 
     List<TcExperimentListAllRspDTO> listAll();
 
-    /**
-     * 试验方案申请管理-田间设计列表
-     * @param experimentNum
-     * @return
-     */
+
+    List<TcExperimentQueryListExperimentDesignRspDTO> queryListExperimentDesign( TcExperimentQueryListExperimentDesignReqDTO tcExperimentQueryListExperimentDesignReqDTO);
+
+        /**
+         * 试验方案申请管理-田间设计列表
+         * @param experimentNum
+         * @return
+         */
     List<TcExperimentListDetailRspDTO> listDetail( String experimentNum);
 
     List<TcExperimentListNoPollinationRspDTO> listByNoPollination();

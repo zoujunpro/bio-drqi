@@ -24,5 +24,5 @@ public class TcExperimentListPageReqDTO extends PageDTO {
     /**
      * 实验编号
      */
-    private String experimentCode;
+    private String experimentNum;
 }

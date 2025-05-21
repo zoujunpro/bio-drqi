@@ -87,7 +87,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                 throw new BusinessException("数据异常，找不到此试验设计种子信息 试验：" + tcPollinationCreatePollinationExcelReqDTO.getExperimentNum() + "种子号：" + content.getSeedNum() + "区域：" + content.getRegionNum());
             }
             //没有单株编号
-            if (BioDrQiContents.Y.equals(content.getSinglePlantFlag())) {
+            if (BioDrQiContents.N.equals(content.getSinglePlantFlag())) {
                 if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {
                     TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, null);
                     tcPollinationOneExcelDTOList.add(tcPollinationExcelDTO);

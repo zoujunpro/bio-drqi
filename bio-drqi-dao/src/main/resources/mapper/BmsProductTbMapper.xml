@@ -118,5 +118,12 @@
         where
         product_out_code = #{productOutCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectOneByProductName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_tb
+        where
+        product_name = #{productName,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

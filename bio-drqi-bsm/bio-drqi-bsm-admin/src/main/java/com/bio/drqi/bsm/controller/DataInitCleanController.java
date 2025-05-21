@@ -113,7 +113,7 @@ public class DataInitCleanController {
             bmsSupplierTb.setCreateUserName(null);
             bmsSupplierTb.setCreateUserId(null);
             bmsSupplierTb.setDeleteFlag(BioBsmContents.N);
-            bmsSupplierTbMapper.insert(bmsSupplierTb);
+           // bmsSupplierTbMapper.insert(bmsSupplierTb);
 
 
         }
@@ -124,13 +124,12 @@ public class DataInitCleanController {
     @Transactional(rollbackFor = Exception.class)
     @GetMapping("/cleanProductStockExcel")
     public ResponseResult<String> cleanProductStockExcel() {
-        List<ProductStockCleanDataExcel> productStockCleanDataExcelList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\耗材当前库存盘点-北京.xlsx", ProductStockCleanDataExcel.class);
+        List<ProductStockCleanDataExcel> productStockCleanDataExcelList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\耗材当前库存盘点-天津.xlsx", ProductStockCleanDataExcel.class);
         for (ProductStockCleanDataExcel productStockCleanDataExcel : productStockCleanDataExcelList) {
+            log.info("当前处理数据"+JSONUtil.toJsonStr(productStockCleanDataExcel));
+            productStockCleanDataExcel.setProductName(productStockCleanDataExcel.getProductName().trim());
             BmsProductTb bmsProductTb = null;
-            if (StringUtils.isNotEmpty(productStockCleanDataExcel.getProductInnerCode())) {
-                bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(productStockCleanDataExcel.productInnerCode);
-            } else {
-                bmsProductTb = bmsProductTbMapper.selectOneByProductOutCode(productStockCleanDataExcel.productOutCode);
+                bmsProductTb = bmsProductTbMapper.selectOneByProductName(productStockCleanDataExcel.productName);
                 if (bmsProductTb == null) {
                     //如果是新品牌就插入
                     BmsBrandTb bmsBrandTb = null;
@@ -165,7 +164,6 @@ public class DataInitCleanController {
                     bmsProductAddReqDTO.setProductSpecs(productStockCleanDataExcel.product_specs);
                     bmsProductTb = bmsProductService.add(bmsProductAddReqDTO);
                 }
-            }
             //插入数据
             BmsProductStockTb bmsProductStockTb = new BmsProductStockTb();
             bmsProductStockTb.setProductName(bmsProductTb.getProductName());
@@ -186,10 +184,10 @@ public class DataInitCleanController {
 
             bmsProductStockTb.setProductSpecs(bmsProductTb.getProductSpecs());
             bmsProductStockTb.setBatchNo(productStockCleanDataExcel.batchNo);
-            bmsProductStockTb.setTotalStoreNumber(Integer.valueOf(productStockCleanDataExcel.total_store_number));
+            bmsProductStockTb.setTotalStoreNumber(Integer.valueOf(productStockCleanDataExcel.current_stock_number));
             bmsProductStockTb.setCurrentStockNumber(Integer.valueOf(productStockCleanDataExcel.current_stock_number));
-            bmsProductStockTb.setTotalOutNumber(Integer.valueOf(productStockCleanDataExcel.total_out_number));
-            bmsProductStockTb.setUnitCode("beijing");
+            bmsProductStockTb.setTotalOutNumber(Integer.valueOf(productStockCleanDataExcel.current_stock_number));
+            bmsProductStockTb.setUnitCode("tianjin");
             bmsProductStockTb.setStockLocationNumber(productStockCleanDataExcel.stock_location_number);
             bmsProductStockTb.setProductInnerCode(bmsProductTb.getProductInnerCode());
             bmsProductStockTb.setUniqueCode(IdUtils.simpleUUID());

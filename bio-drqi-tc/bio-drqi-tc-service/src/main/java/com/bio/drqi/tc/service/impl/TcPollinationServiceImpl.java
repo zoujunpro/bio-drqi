@@ -133,8 +133,17 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         if (CollectionUtil.isNotEmpty(fatherList)) {
             for (int i = 0; i < fatherList.size(); i++) {
                 if (i < matherList.size()) {
-                    BeanUtils.copyProperties(fatherList.get(i),matherList.get(i));
-                }else {
+                    TcPollinationExcelDTO matherTcPollinationExcelDTO = matherList.get(i);
+                    TcPollinationExcelDTO fatherTcPollinationExcelDTO = fatherList.get(i);
+                    matherTcPollinationExcelDTO.setFatherRegionNum(fatherTcPollinationExcelDTO.getFatherRegionNum());
+                    matherTcPollinationExcelDTO.setFatherSeedNum(fatherTcPollinationExcelDTO.getFatherSeedNum());
+                    matherTcPollinationExcelDTO.setFatherSampleCode(null);
+                    matherTcPollinationExcelDTO.setFatherBreedName(fatherTcPollinationExcelDTO.getFatherBreedName());
+                    matherTcPollinationExcelDTO.setFatherVectorTaskCode(fatherTcPollinationExcelDTO.getFatherVectorTaskCode());
+                    matherTcPollinationExcelDTO.setFatherGenerationName(fatherTcPollinationExcelDTO.getFatherGenerationName());
+                    matherTcPollinationExcelDTO.setFatherTcGene(fatherTcPollinationExcelDTO.getFatherTcGene());
+                    matherTcPollinationExcelDTO.setFatherSampleCode(fatherTcPollinationExcelDTO.getFatherSampleCode());
+                } else {
                     matherList.add(fatherList.get(i));
                 }
             }

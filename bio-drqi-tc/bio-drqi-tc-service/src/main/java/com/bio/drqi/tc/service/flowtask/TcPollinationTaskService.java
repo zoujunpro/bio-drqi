@@ -6,10 +6,13 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.domain.BioDict;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.domain.TcPollinationApplyTb;
 import com.bio.drqi.domain.TcPollinationTb;
+import com.bio.drqi.enums.BioDictTypeEnum;
 import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.mapper.BioDictMapper;
 import com.bio.drqi.mapper.TcPollinationApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
@@ -22,6 +25,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service("tc_pollination_task_apply")
@@ -35,9 +40,10 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
     private TcPollinationTbMapper tcPollinationTbMapper;
 
     @Resource
-    private TcPollinationApplyTbMapper  tcPollinationApplyTbMapper;
+    private TcPollinationApplyTbMapper tcPollinationApplyTbMapper;
 
-
+    @Resource
+    private BioDictMapper bioDictMapper;
 
 
     @Override
@@ -45,6 +51,12 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
         TcPollinationTaskDTO tcPollinationTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcPollinationTaskDTO.class);
         ValidatorUtil.validator(tcPollinationTaskDTO);
         BeanUtils.trimFiledSpace(tcPollinationTaskDTO);
+
+        BioDict bioDict = bioDictMapper.selectOneByDictTypeAndDictValueCode(BioDictTypeEnum.POLLINATE_TYPE.name(), tcPollinationTaskDTO.getPollinationType());
+        if (bioDict == null) {
+            throw new BusinessException("授粉方式错误");
+        }
+        tcPollinationTaskDTO.setPollinationName(bioDict.getDictValueName());
     }
 
     @Override
@@ -62,7 +74,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                 throw new BusinessException("文件处理异常");
             }
 
-            TcPollinationApplyTb tcPollinationApplyTb=new TcPollinationApplyTb();
+            TcPollinationApplyTb tcPollinationApplyTb = new TcPollinationApplyTb();
             tcPollinationApplyTb.setExperimentNum(tcPollinationTaskDTO.getExperimentNum());
             tcPollinationApplyTb.setSampleApplyNum(tcPollinationTaskDTO.getSampleApplyNum());
             tcPollinationApplyTb.setPollinationType(tcPollinationTaskDTO.getPollinationType());
@@ -74,10 +86,11 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
             tcPollinationApplyTb.setHarvestApplyNum(null);
             tcPollinationApplyTbMapper.insert(tcPollinationApplyTb);
 
-            List<TcPollinationTb> tcPollinationTbList=new ArrayList<>();
+            List<TcPollinationTb> tcPollinationTbList = new ArrayList<>();
             List<TcPollinationExcelDTO> tcPollinationExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcPollinationExcelDTO.class);
-            for (TcPollinationExcelDTO tcPollinationExcelDTO : tcPollinationExcelDTOList){
-                TcPollinationTb tcPollinationTb=new TcPollinationTb();
+            for (TcPollinationExcelDTO tcPollinationExcelDTO : tcPollinationExcelDTOList) {
+                ValidatorUtil.validator(tcPollinationTaskDTO);
+                TcPollinationTb tcPollinationTb = new TcPollinationTb();
                 tcPollinationTb.setExperimentNum(tcPollinationTaskDTO.getExperimentNum());
                 tcPollinationTb.setSampleApplyNum(tcPollinationTaskDTO.getSampleApplyNum());
                 tcPollinationTb.setPollinationApplyNum(bioTaskDtlTb.getTaskNum());
@@ -96,10 +109,14 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                 tcPollinationTb.setMTcGene(tcPollinationExcelDTO.getMotherTcGene());
                 tcPollinationTb.setFTcGene(tcPollinationExcelDTO.getFatherTcGene());
                 tcPollinationTb.setPollinationDate(tcPollinationExcelDTO.getPollinationDate());
-                tcPollinationTb.setPollinationMethodCode(null);
-                tcPollinationTb.setPollinationMethodName(tcPollinationTaskDTO.getPollinationType());
-                tcPollinationTb.setHarvestTypeCode(null);
+                tcPollinationTb.setPollinationMethodCode(tcPollinationTaskDTO.getPollinationType());
+                tcPollinationTb.setPollinationMethodName(tcPollinationTaskDTO.getPollinationName());
                 tcPollinationTb.setHarvestTypeName(tcPollinationExcelDTO.getHarvestTypeName());
+                BioDict bioDict = bioDictMapper.selectOneByDictTypeAndDictValueName(BioDictTypeEnum.HARVEST_TYPE.name(), tcPollinationExcelDTO.getHarvestTypeName());
+                if(bioDict==null){
+                    throw new BusinessException("收获方式填写错误："+tcPollinationExcelDTO.getHarvestTypeName());
+                }
+                tcPollinationTb.setHarvestTypeCode(bioDict.getDictValueCode());
                 tcPollinationTb.setRemark(tcPollinationExcelDTO.getRemark());
                 tcPollinationTbList.add(tcPollinationTb);
             }

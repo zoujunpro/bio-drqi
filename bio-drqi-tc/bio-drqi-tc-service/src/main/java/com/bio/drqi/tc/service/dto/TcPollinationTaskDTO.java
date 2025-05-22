@@ -15,6 +15,8 @@ public class TcPollinationTaskDTO {
     @NotBlank(message = "参数缺失：授粉方式")
     private String pollinationType;
 
+    private String pollinationName;
+
     @NotBlank(message = "参数缺失：授粉表单")
     private String pollinationExcelUrl;
 }

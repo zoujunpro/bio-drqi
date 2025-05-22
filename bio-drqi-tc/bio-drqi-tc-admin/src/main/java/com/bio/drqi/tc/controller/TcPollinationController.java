@@ -109,7 +109,6 @@ public class TcPollinationController {
         tcPollinationExcelDTO.setFatherGenerationName("1");
         tcPollinationExcelDTO.setFatherTcGene("1");
         tcPollinationExcelDTO.setPollinationDate("1");
-        tcPollinationExcelDTO.setPollinationMethodName("1");
         tcPollinationExcelDTO.setHarvestTypeName("1");
         tcPollinationExcelDTO.setRemark("1");
         tcPollinationOneExcelDTOList.add(tcPollinationExcelDTO);

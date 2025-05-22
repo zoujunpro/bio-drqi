@@ -1,5 +1,6 @@
 package com.bio.drqi.tc.rsp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.Date;
@@ -26,71 +27,85 @@ public class TcPollinationListPageDetailRspDTO {
     /**
      * 母本小区编号
      */
+    @JsonProperty("mRegionNum")
     private String mRegionNum;
 
     /**
      * 父本小区编号
      */
+    @JsonProperty("fRegionNum")
     private String fRegionNum;
 
     /**
      * 母本单株编号
      */
+    @JsonProperty("mSampleCode")
     private String mSampleCode;
 
     /**
      * 父本单株编号
      */
+    @JsonProperty("fSampleCode")
     private String fSampleCode;
 
     /**
      * 母本种子编号
      */
+    @JsonProperty("mSeedNum")
     private String mSeedNum;
 
     /**
      * 父本种子编号
      */
+    @JsonProperty("fSeedNum")
     private String fSeedNum;
 
     /**
      * 父本品种
      */
+    @JsonProperty("fBreedName")
     private String fBreedName;
 
     /**
      * 母本品种
      */
+    @JsonProperty("mBreedName")
     private String mBreedName;
 
     /**
      * 母本实施方案编号
      */
+    @JsonProperty("mVectorTaskCode")
     private String mVectorTaskCode;
 
     /**
      * 父本实施方案编号
      */
+    @JsonProperty("fVectorTaskCode")
     private String fVectorTaskCode;
 
     /**
      * 母本世代
      */
+    @JsonProperty("mGenerationCode")
     private String mGenerationCode;
 
     /**
      * 父本世代
      */
+    @JsonProperty("fGenerationName")
     private String fGenerationName;
 
     /**
      * 母本基因类型
      */
+    @JsonProperty("mGeneType")
     private String mGeneType;
 
     /**
      * 父本基因类型
      */
+    @JsonProperty("fGeneType")
     private String fGeneType;
 
     /**

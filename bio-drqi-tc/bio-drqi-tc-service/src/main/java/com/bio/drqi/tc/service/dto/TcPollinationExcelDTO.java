@@ -1,5 +1,6 @@
 package com.bio.drqi.tc.service.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.bio.drqi.domain.TcExperimentDesignTb;
 import lombok.Data;
@@ -109,11 +110,14 @@ public class TcPollinationExcelDTO {
     @ExcelProperty(value ={"授粉信息","收获方式"})
     @NotBlank(message = "参数缺失：收获方式")
     private String harvestTypeName;
+
+    @ExcelIgnore
+    private String harvestTypeCode;
+
     /**
      * 备注
      */
     @ExcelProperty(value ={"授粉信息","备注"})
-
     private String remark;
 
 

@@ -15,6 +15,9 @@ public interface TcPollinationApplyTbMapper extends BaseMapper<TcPollinationAppl
     List<TcPollinationApplyTb>  selectSelective(TcPollinationApplyTb tcPollinationApplyTb);
 
     TcPollinationApplyTb selectOneByPollinationApplyNum(@Param("pollinationApplyNum") String pollinationApplyNum);
+
+
+    TcPollinationApplyTb selectOneByExperimentNum(@Param("experimentNum") String experimentNum);
 }
 
 

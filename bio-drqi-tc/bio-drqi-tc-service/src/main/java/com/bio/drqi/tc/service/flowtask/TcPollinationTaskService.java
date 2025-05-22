@@ -6,13 +6,11 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
-import com.bio.drqi.domain.BioDict;
-import com.bio.drqi.domain.BioTaskDtlTb;
-import com.bio.drqi.domain.TcPollinationApplyTb;
-import com.bio.drqi.domain.TcPollinationTb;
+import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioDictTypeEnum;
 import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.mapper.BioDictMapper;
+import com.bio.drqi.mapper.TcExperimentTbMapper;
 import com.bio.drqi.mapper.TcPollinationApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
@@ -39,6 +37,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
     @Resource
     private TcPollinationTbMapper tcPollinationTbMapper;
 
+
     @Resource
     private TcPollinationApplyTbMapper tcPollinationApplyTbMapper;
 
@@ -52,10 +51,39 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
         ValidatorUtil.validator(tcPollinationTaskDTO);
         BeanUtils.trimFiledSpace(tcPollinationTaskDTO);
 
+
+        TcPollinationApplyTb tcPollinationApplyTb = tcPollinationApplyTbMapper.selectOneByPollinationApplyNum(tcPollinationTaskDTO.getPollinationName());
+        if (tcPollinationApplyTb != null) {
+            throw new BusinessException("该试验已经授粉");
+        }
+
+
         BioDict bioDict = bioDictMapper.selectOneByDictTypeAndDictValueCode(BioDictTypeEnum.POLLINATE_TYPE.name(), tcPollinationTaskDTO.getPollinationType());
         if (bioDict == null) {
             throw new BusinessException("授粉方式错误");
         }
+
+        if (!tcPollinationTaskDTO.getPollinationExcelUrl().endsWith("xlsx")) {
+            throw new BusinessException("文件格式错误");
+        }
+        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + tcPollinationTaskDTO.getPollinationExcelUrl();
+        try {
+            ossService.downloadPath(tempFilePath, tcPollinationTaskDTO.getPollinationExcelUrl());
+        } catch (Exception e) {
+            log.error("【任务工单】文件从oss下载失败", e);
+            throw new BusinessException("文件处理异常");
+        }
+        List<TcPollinationExcelDTO> tcPollinationExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcPollinationExcelDTO.class);
+        for (TcPollinationExcelDTO tcPollinationExcelDTO : tcPollinationExcelDTOList) {
+            ValidatorUtil.validator(tcPollinationTaskDTO);
+            BioDict harvestTypeDict = bioDictMapper.selectOneByDictTypeAndDictValueName(BioDictTypeEnum.HARVEST_TYPE.name(), tcPollinationExcelDTO.getHarvestTypeName());
+            if (harvestTypeDict == null) {
+                throw new BusinessException("收获方式填写错误：" + tcPollinationExcelDTO.getHarvestTypeName());
+            }
+            tcPollinationExcelDTO.setHarvestTypeCode(harvestTypeDict.getDictValueCode());
+        }
+
+        tcPollinationTaskDTO.setTcPollinationExcelDTOList(tcPollinationExcelDTOList);
         tcPollinationTaskDTO.setPollinationName(bioDict.getDictValueName());
     }
 
@@ -63,17 +91,6 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         TcPollinationTaskDTO tcPollinationTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcPollinationTaskDTO.class);
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-            if (!tcPollinationTaskDTO.getPollinationExcelUrl().endsWith("xlsx")) {
-                throw new BusinessException("文件格式错误");
-            }
-            String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + tcPollinationTaskDTO.getPollinationExcelUrl();
-            try {
-                ossService.downloadPath(tempFilePath, tcPollinationTaskDTO.getPollinationExcelUrl());
-            } catch (Exception e) {
-                log.error("【任务工单】文件从oss下载失败", e);
-                throw new BusinessException("文件处理异常");
-            }
-
             TcPollinationApplyTb tcPollinationApplyTb = new TcPollinationApplyTb();
             tcPollinationApplyTb.setExperimentNum(tcPollinationTaskDTO.getExperimentNum());
             tcPollinationApplyTb.setSampleApplyNum(tcPollinationTaskDTO.getSampleApplyNum());
@@ -87,8 +104,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
             tcPollinationApplyTbMapper.insert(tcPollinationApplyTb);
 
             List<TcPollinationTb> tcPollinationTbList = new ArrayList<>();
-            List<TcPollinationExcelDTO> tcPollinationExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcPollinationExcelDTO.class);
-            for (TcPollinationExcelDTO tcPollinationExcelDTO : tcPollinationExcelDTOList) {
+            for (TcPollinationExcelDTO tcPollinationExcelDTO : tcPollinationTaskDTO.getTcPollinationExcelDTOList()) {
                 ValidatorUtil.validator(tcPollinationTaskDTO);
                 TcPollinationTb tcPollinationTb = new TcPollinationTb();
                 tcPollinationTb.setExperimentNum(tcPollinationTaskDTO.getExperimentNum());
@@ -112,11 +128,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                 tcPollinationTb.setPollinationMethodCode(tcPollinationTaskDTO.getPollinationType());
                 tcPollinationTb.setPollinationMethodName(tcPollinationTaskDTO.getPollinationName());
                 tcPollinationTb.setHarvestTypeName(tcPollinationExcelDTO.getHarvestTypeName());
-                BioDict bioDict = bioDictMapper.selectOneByDictTypeAndDictValueName(BioDictTypeEnum.HARVEST_TYPE.name(), tcPollinationExcelDTO.getHarvestTypeName());
-                if(bioDict==null){
-                    throw new BusinessException("收获方式填写错误："+tcPollinationExcelDTO.getHarvestTypeName());
-                }
-                tcPollinationTb.setHarvestTypeCode(bioDict.getDictValueCode());
+                tcPollinationTb.setHarvestTypeCode(tcPollinationExcelDTO.getHarvestTypeCode());
                 tcPollinationTb.setRemark(tcPollinationExcelDTO.getRemark());
                 tcPollinationTbList.add(tcPollinationTb);
             }

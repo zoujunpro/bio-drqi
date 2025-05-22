@@ -99,8 +99,7 @@ public class CommonService {
     }
 
     public static void main(String[] args) {
-        String url = "http://172.16.14.2:10091/ ?name=%s&username=%s&serect_lab=%s&TJlab=False";
-        String ss = String.format(url, "EWE", "NA", "F");
-        System.out.println(ss);
+        List<List<Object>> s= ExcelUtil.readExcel("C:\\Users\\zou'jun\\Downloads\\授粉模板11.xlsx");
+        s.stream().forEach(System.out::println);
     }
 };

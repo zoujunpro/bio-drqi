@@ -79,7 +79,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                 tcPollinationTb.setFTcGene(tcPollinationExcelDTO.getFatherTcGene());
                 tcPollinationTb.setPollinationDate(tcPollinationExcelDTO.getPollinationDate());
                 tcPollinationTb.setPollinationMethodCode(null);
-                tcPollinationTb.setPollinationMethodName(tcPollinationExcelDTO.getPollinationMethodName());
+                tcPollinationTb.setPollinationMethodName(tcPollinationTaskDTO.getPollinationType());
                 tcPollinationTb.setHarvestTypeCode(null);
                 tcPollinationTb.setHarvestTypeName(tcPollinationExcelDTO.getHarvestTypeName());
                 tcPollinationTb.setRemark(tcPollinationExcelDTO.getRemark());

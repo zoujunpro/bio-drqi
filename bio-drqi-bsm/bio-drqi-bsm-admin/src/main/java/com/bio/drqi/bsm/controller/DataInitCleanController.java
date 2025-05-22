@@ -195,8 +195,6 @@ public class DataInitCleanController {
             bmsProductStockTb.setExpirationDate(productStockCleanDataExcel.expiration_date);
             bmsProductStockTbMapper.insert(bmsProductStockTb);
         }
-
-
         return ResponseResult.getSuccess("OK");
     }
 

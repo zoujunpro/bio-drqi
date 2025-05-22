@@ -87,11 +87,6 @@ public class TcPollinationExcelDTO {
     private String pollinationDate;
 
     /**
-     * 授粉方式名称
-     */
-    @ExcelProperty(value ={"授粉信息","授粉方式"})
-    private String pollinationMethodName;
-    /**
      * 收获方式名称
      */
     @ExcelProperty(value ={"授粉信息","收获方式"})

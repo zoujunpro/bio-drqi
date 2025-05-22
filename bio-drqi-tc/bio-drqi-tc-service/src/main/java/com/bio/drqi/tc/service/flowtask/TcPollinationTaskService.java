@@ -85,6 +85,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
 
         tcPollinationTaskDTO.setTcPollinationExcelDTOList(tcPollinationExcelDTOList);
         tcPollinationTaskDTO.setPollinationName(bioDict.getDictValueName());
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcPollinationTaskDTO));
     }
 
     @Override

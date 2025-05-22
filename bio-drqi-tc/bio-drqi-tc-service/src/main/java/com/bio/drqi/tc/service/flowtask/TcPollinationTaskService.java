@@ -7,8 +7,10 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.BioTaskDtlTb;
+import com.bio.drqi.domain.TcPollinationApplyTb;
 import com.bio.drqi.domain.TcPollinationTb;
 import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.mapper.TcPollinationApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import com.bio.drqi.tc.service.dto.TcPollinationTaskDTO;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -30,6 +33,9 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
 
     @Resource
     private TcPollinationTbMapper tcPollinationTbMapper;
+
+    @Resource
+    private TcPollinationApplyTbMapper  tcPollinationApplyTbMapper;
 
 
 
@@ -55,6 +61,18 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                 log.error("【任务工单】文件从oss下载失败", e);
                 throw new BusinessException("文件处理异常");
             }
+
+            TcPollinationApplyTb tcPollinationApplyTb=new TcPollinationApplyTb();
+            tcPollinationApplyTb.setExperimentNum(tcPollinationTaskDTO.getExperimentNum());
+            tcPollinationApplyTb.setSampleApplyNum(tcPollinationTaskDTO.getSampleApplyNum());
+            tcPollinationApplyTb.setPollinationType(tcPollinationTaskDTO.getPollinationType());
+            tcPollinationApplyTb.setPollinationApplyNum(bioTaskDtlTb.getTaskNum());
+            tcPollinationApplyTb.setTaskNum(bioTaskDtlTb.getTaskNum());
+            tcPollinationApplyTb.setCreateUserId(bioTaskDtlTb.getApplyUserId());
+            tcPollinationApplyTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
+            tcPollinationApplyTb.setCreateTime(new Date());
+            tcPollinationApplyTb.setHarvestApplyNum(null);
+            tcPollinationApplyTbMapper.insert(tcPollinationApplyTb);
 
             List<TcPollinationTb> tcPollinationTbList=new ArrayList<>();
             List<TcPollinationExcelDTO> tcPollinationExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcPollinationExcelDTO.class);

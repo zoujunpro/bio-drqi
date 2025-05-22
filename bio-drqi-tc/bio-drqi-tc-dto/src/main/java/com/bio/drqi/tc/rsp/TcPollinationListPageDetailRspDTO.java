@@ -93,8 +93,8 @@ public class TcPollinationListPageDetailRspDTO {
     /**
      * 父本世代
      */
-    @JsonProperty("fGenerationName")
-    private String fGenerationName;
+    @JsonProperty("fGenerationCode")
+    private String fGenerationCode;
 
     /**
      * 母本基因类型

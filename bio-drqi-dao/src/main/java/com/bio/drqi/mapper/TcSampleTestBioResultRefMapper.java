@@ -17,6 +17,8 @@ public interface TcSampleTestBioResultRefMapper extends BaseMapper<TcSampleTestB
 
     int insertBatch(@Param("tcSampleTestBioResultRefCollection") Collection<TcSampleTestBioResultRef> tcSampleTestBioResultRefCollection);
 
+    TcSampleTestBioResultRef selectOneByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
+
 }
 
 

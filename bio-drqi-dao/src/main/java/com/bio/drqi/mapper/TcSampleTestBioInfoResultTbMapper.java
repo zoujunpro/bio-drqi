@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.List;
 import java.util.Collection;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,6 +18,11 @@ public interface TcSampleTestBioInfoResultTbMapper extends BaseMapper<TcSampleTe
 
     int insertBatch(@Param("tcSampleTestBioInfoResultTbCollection") Collection<TcSampleTestBioInfoResultTb> tcSampleTestBioInfoResultTbCollection);
 
+    List<TcSampleTestBioInfoResultTb> selectAllByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
+
+    int deleteByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
+
+    Integer selectMaxHead(@Param("applyNo") String applyNo);
 }
 
 

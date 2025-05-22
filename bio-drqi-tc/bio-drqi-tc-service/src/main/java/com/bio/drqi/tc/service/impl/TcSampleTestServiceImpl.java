@@ -66,6 +66,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     private TcSampleTestBioInfoResultTbMapper tcSampleTestBioInfoResultTbMapper;
 
 
+    @Resource
     private BioInfoClientApi bioInfoClientApi;
 
 
@@ -449,32 +450,85 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
 
     @Override
     public List<TcSampleTestQueryBioInfoSampleTestResultRspDTO> queryBioInfoSampleTestResult(Integer id) {
-        return null;
+        TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectById(id);
+        if (tcSampleTestTb == null) {
+            throw new BusinessException("参数错误，找不到此取样信息：" + id);
+        }
+        List<TcSampleTestBioInfoResultTb> tcSampleTestBioInfoResultTbList = tcSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(tcSampleTestTb.getSampleApplyNum(), tcSampleTestTb.getSampleCode());
+        return BeanUtils.copyListProperties(tcSampleTestBioInfoResultTbList, TcSampleTestQueryBioInfoSampleTestResultRspDTO.class);
     }
 
     @Override
     public void bioInfoSampleTestResultConfirm(TcSampleTestBioInfoSampleTestResultConfirmReqDTO tcSampleTestBioInfoSampleTestResultConfirmReqDTO) {
+        TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectById(tcSampleTestBioInfoSampleTestResultConfirmReqDTO.getId());
 
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcSampleTestTb.getSampleApplyNum());
+        if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            throw new BusinessException("非执行中任务，无法进行操作");
+        }
+        List<TcSampleTestBioInfoResultTb> tcSampleTestBioInfoResultTbList = tcSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(tcSampleTestTb.getSampleApplyNum(), tcSampleTestTb.getSampleCode());
+        tcSampleTestBioInfoResultTbList.forEach(tcSampleTestBioInfoResultTb -> {
+            if (!tcSampleTestBioInfoSampleTestResultConfirmReqDTO.getBioInfoIdList().contains(tcSampleTestBioInfoResultTb.getId())) {
+                tcSampleTestBioInfoResultTbMapper.deleteById(tcSampleTestBioInfoResultTb.getId());
+            }
+        });
     }
 
     @Override
     public void synBioInfoSampleTestResult(Integer id) {
-
+        TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectById(id);
+        TcSampleTestBioResultRef tcSampleTestBioResultRef = tcSampleTestBioResultRefMapper.selectOneByApplyNoAndSampleCode(tcSampleTestTb.getSampleApplyNum(), tcSampleTestTb.getSampleCode());
+        if (tcSampleTestBioResultRef == null) {
+            throw new BusinessException("excel没匹配到该生信检测数据");
+        }
+        tcSampleTestBioInfoResultTbMapper.deleteByApplyNoAndSampleCode(tcSampleTestTb.getSampleApplyNum(), tcSampleTestTb.getSampleCode());
+        List<TcSampleTestBioInfoResultTb> tcSampleTestBioInfoResultTbList = synBioInfoResult(new AtomicInteger(1), tcSampleTestBioResultRef.getSampleId(), tcSampleTestBioResultRef.getRunId(), tcSampleTestTb.getSampleApplyNum(), tcSampleTestTb.getSampleCode());
+        if (CollectionUtil.isNotEmpty(tcSampleTestBioInfoResultTbList)) {
+            for (TcSampleTestBioInfoResultTb tcSampleTestBioInfoResultTb : tcSampleTestBioInfoResultTbList) {
+                tcSampleTestBioInfoResultTbMapper.insert(tcSampleTestBioInfoResultTb);
+            }
+        }
     }
 
     @Override
     public Object bioInfoSampleTestResultDetail(Integer bioInfoId) {
-        return null;
+        TcSampleTestBioInfoResultTb tcSampleTestBioInfoResultTb = tcSampleTestBioInfoResultTbMapper.selectById(bioInfoId);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("sampleID", tcSampleTestBioInfoResultTb.getSampleId());
+        paramMap.put("QBuniqCode", tcSampleTestBioInfoResultTb.getUniqueDbCode());
+        paramMap.put("HapID", tcSampleTestBioInfoResultTb.getHapId());
+        Object o = bioInfoClientApi.sampleTestBioInfoResultDetail(paramMap);
+        return o;
     }
 
     @Override
     public Integer bioInfoHead(String applyNo) {
-        return null;
+        Integer maxHead = tcSampleTestBioInfoResultTbMapper.selectMaxHead(applyNo);
+        return maxHead == null ? 0 : maxHead;
     }
 
     @Override
     public PageInfo<TcSampleTestBioInfoPageRspDTO> bioInfoPage(TcSampleTestBioInfoPageReqDTO tcSampleTestBioInfoPageReqDTO) {
-        return null;
+        PageHelper.startPage(tcSampleTestBioInfoPageReqDTO.getPageNum(), tcSampleTestBioInfoPageReqDTO.getPageSize());
+        TcSampleTestTb tcSampleTestTb = new TcSampleTestTb();
+        tcSampleTestTb.setVectorTaskCode(tcSampleTestBioInfoPageReqDTO.getApplyNo());
+        tcSampleTestTb.setVectorTaskCode(tcSampleTestBioInfoPageReqDTO.getVectorTaskCode());
+        List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectSelective(tcSampleTestTb);
+        PageInfo<TcSampleTestTb> srcPageInfo = new PageInfo<>(tcSampleTestTbList);
+        if (CollectionUtil.isEmpty(tcSampleTestTbList)) {
+                return new PageInfo<TcSampleTestBioInfoPageRspDTO>();
+        }
+        PageInfo<TcSampleTestBioInfoPageRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, TcSampleTestBioInfoPageRspDTO.class);
+        targetPageInfo.getList().forEach(bioInfoPageRspDTO -> {
+            List<TcSampleTestBioInfoResultTb> tcSampleTestBioInfoResultTbList = tcSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(tcSampleTestBioInfoPageReqDTO.getApplyNo(), bioInfoPageRspDTO.getSampleCode());
+            if (CollectionUtil.isNotEmpty(tcSampleTestBioInfoResultTbList)) {
+                tcSampleTestBioInfoResultTbList.forEach(tcSampleTestBioInfoResultTb -> {
+                    bioInfoPageRspDTO.addBioInfoResultToList(tcSampleTestBioInfoResultTb.getSampleId(), tcSampleTestBioInfoResultTb.getVarType(), tcSampleTestBioInfoResultTb.getMutate(), tcSampleTestBioInfoResultTb.getRatio());
+                });
+
+            }
+        });
+        return targetPageInfo;
     }
 
     private List<TcSampleTestBioInfoResultTb> synBioInfoResult(AtomicInteger executeNum, String sampleId, String runId, String applyNo, String sampleCode) {

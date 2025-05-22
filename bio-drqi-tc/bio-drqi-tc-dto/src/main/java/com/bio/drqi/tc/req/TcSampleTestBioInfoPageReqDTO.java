@@ -8,5 +8,5 @@ public class TcSampleTestBioInfoPageReqDTO extends PageDTO {
 
     private String applyNo;
 
-    private Integer vectorTaskId;
+    private String vectorTaskCode;
 }

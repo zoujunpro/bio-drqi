@@ -8,6 +8,7 @@ import com.bio.drqi.domain.TcPollinationTb;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
 import com.bio.drqi.tc.req.TcHarvestCreateHarvestExcelReqDTO;
 import com.bio.drqi.tc.service.TcHarvestService;
+import com.bio.drqi.tc.service.dto.TcHarvestExcelDTO;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,32 +42,31 @@ public class TcHarvestServiceImpl implements TcHarvestService {
             throw new BusinessException("无授粉数据");
         }
 
-        List<TcPollinationExcelDTO> tcPollinationExcelDTOList=new ArrayList<>();
+        List<TcHarvestExcelDTO> tcHarvestExcelDTOList=new ArrayList<>();
         for (TcPollinationTb tcPollinationTb: tcPollinationTbList){
-            TcPollinationExcelDTO tcPollinationExcelDTO=new TcPollinationExcelDTO();
-            tcPollinationExcelDTO.setMotherRegionNum(tcPollinationTb.getMRegionNum());
-            tcPollinationExcelDTO.setMotherSeedNum(tcPollinationTb.getMSeedNum());
-            tcPollinationExcelDTO.setMotherSampleCode(tcPollinationTb.getMSampleCode());
-            tcPollinationExcelDTO.setMotherBreedName(tcPollinationTb.getMBreedName());
-            tcPollinationExcelDTO.setMotherVectorTaskCode(tcPollinationTb.getMVectorTaskCode());
-            tcPollinationExcelDTO.setMotherGenerationName(tcPollinationTb.getMGenerationCode());
-            tcPollinationExcelDTO.setMotherTcGene(tcPollinationTb.getMTcGene());
-            tcPollinationExcelDTO.setFatherRegionNum(tcPollinationTb.getFRegionNum());
-            tcPollinationExcelDTO.setFatherSeedNum(tcPollinationTb.getFSeedNum());
-            tcPollinationExcelDTO.setFatherSampleCode(tcPollinationTb.getFSampleCode());
-            tcPollinationExcelDTO.setFatherBreedName(tcPollinationTb.getFBreedName());
-            tcPollinationExcelDTO.setFatherVectorTaskCode(tcPollinationTb.getFVectorTaskCode());
-            tcPollinationExcelDTO.setFatherGenerationName(tcPollinationTb.getFGenerationCode());
-            tcPollinationExcelDTO.setFatherTcGene(tcPollinationTb.getFTcGene());
-            tcPollinationExcelDTO.setPollinationDate(tcPollinationTb.getPollinationDate());
-            tcPollinationExcelDTO.setHarvestTypeName(tcPollinationTb.getHarvestTypeName());
-            tcPollinationExcelDTOList.add(tcPollinationExcelDTO);
+            TcHarvestExcelDTO tcHarvestExcelDTO=new TcHarvestExcelDTO();
+            tcHarvestExcelDTO.setMotherRegionNum(tcPollinationTb.getMRegionNum());
+            tcHarvestExcelDTO.setMotherSeedNum(tcPollinationTb.getMSeedNum());
+            tcHarvestExcelDTO.setMotherSampleCode(tcPollinationTb.getMSampleCode());
+            tcHarvestExcelDTO.setMotherBreedName(tcPollinationTb.getMBreedName());
+            tcHarvestExcelDTO.setMotherVectorTaskCode(tcPollinationTb.getMVectorTaskCode());
+            tcHarvestExcelDTO.setMotherGenerationName(tcPollinationTb.getMGenerationCode());
+            tcHarvestExcelDTO.setMotherTcGene(tcPollinationTb.getMTcGene());
+            tcHarvestExcelDTO.setFatherRegionNum(tcPollinationTb.getFRegionNum());
+            tcHarvestExcelDTO.setFatherSeedNum(tcPollinationTb.getFSeedNum());
+            tcHarvestExcelDTO.setFatherSampleCode(tcPollinationTb.getFSampleCode());
+            tcHarvestExcelDTO.setFatherBreedName(tcPollinationTb.getFBreedName());
+            tcHarvestExcelDTO.setFatherVectorTaskCode(tcPollinationTb.getFVectorTaskCode());
+            tcHarvestExcelDTO.setFatherGenerationName(tcPollinationTb.getFGenerationCode());
+            tcHarvestExcelDTO.setFatherTcGene(tcPollinationTb.getFTcGene());
+            tcHarvestExcelDTO.setHarvestTypeName(tcPollinationTb.getHarvestTypeName());
+            tcHarvestExcelDTOList.add(tcHarvestExcelDTO);
         }
         String excelTemplateName = "田测收获模板表V1.0.xlsx";
         String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
         try {
             ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
-            ExcelUtil.fillExcel(templateDir, tcPollinationExcelDTOList, TcPollinationExcelDTO.class, httpServletResponse);
+            ExcelUtil.fillExcel(templateDir, tcHarvestExcelDTOList, TcHarvestExcelDTO.class, httpServletResponse);
         } catch (Exception e) {
             log.error("模板下载失败，", e);
             throw new BusinessException("模板下载失败，请联系管理员检测模板配置");

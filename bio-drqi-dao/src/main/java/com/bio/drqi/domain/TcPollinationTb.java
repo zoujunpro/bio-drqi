@@ -7,12 +7,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
- * 
  * @TableName tc_pollination_tb
  */
-@TableName(value ="tc_pollination_tb")
+@TableName(value = "tc_pollination_tb")
 @Data
 public class TcPollinationTb implements Serializable {
     /**
@@ -135,6 +135,11 @@ public class TcPollinationTb implements Serializable {
      * 备注
      */
     private String remark;
+
+
+    private String unit;
+
+    private BigDecimal seedNumber;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

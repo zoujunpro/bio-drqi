@@ -13,6 +13,7 @@ import com.bio.drqi.mapper.TcHarvestSeedApplyTbMapper;
 import com.bio.drqi.mapper.TcHarvestSeedTbMapper;
 import com.bio.drqi.mapper.TcPollinationApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
+import com.bio.drqi.tc.service.dto.TcHarvestExcelDTO;
 import com.bio.drqi.tc.service.dto.TcHarvestTaskDTO;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -92,11 +94,23 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
                 log.error("【任务工单】文件从oss下载失败", e);
                 throw new BusinessException("文件处理异常");
             }
-            List<TcPollinationExcelDTO> tcPollinationExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcPollinationExcelDTO.class);
-            for (TcPollinationExcelDTO tcPollinationExcelDTO:tcPollinationExcelDTOList){
-
+            List<TcHarvestExcelDTO> tcHarvestExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcHarvestExcelDTO.class);
+            for (TcHarvestExcelDTO tcHarvestExcelDTO : tcHarvestExcelDTOList) {
+                TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode
+                        (tcPollinationApplyTb.getExperimentNum(),
+                                tcHarvestExcelDTO.getFatherRegionNum(),
+                                tcHarvestExcelDTO.getMotherRegionNum(),
+                                tcHarvestExcelDTO.getFatherSeedNum(),
+                                tcHarvestExcelDTO.getMotherSeedNum(),
+                                tcHarvestExcelDTO.getFatherSampleCode(),
+                                tcHarvestExcelDTO.getMotherSampleCode());
+                if (tcPollinationTb == null) {
+                    throw new BusinessException("无此授粉记录：" + JSONUtil.toJsonStr(tcHarvestExcelDTO));
+                }
+                tcPollinationTb.setUnit(tcHarvestExcelDTO.getUnit());
+                tcPollinationTb.setSeedNumber(new BigDecimal(StringUtils.isEmpty(tcHarvestExcelDTO.getSeedNumber()) ? "0" : tcHarvestExcelDTO.getSeedNumber()));
+                tcPollinationTbMapper.updateById(tcPollinationTb);
             }
-
 
 
         }

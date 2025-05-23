@@ -62,6 +62,11 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
             if (StringUtils.isNotEmpty(tcPollinationApplyTb.getHarvestApplyNum())) {
                 throw new BusinessException("该授粉批次已经收获");
             }
+
+            tcPollinationApplyTb.setHarvestApplyNum(bioTaskDtlTb.getTaskNum());
+            tcPollinationApplyTbMapper.updateById(tcPollinationApplyTb);
+
+
             TcHarvestSeedApplyTb tcHarvestSeedApplyTb = new TcHarvestSeedApplyTb();
             tcHarvestSeedApplyTb.setTaskNum(bioTaskDtlTb.getTaskNum());
             tcHarvestSeedApplyTb.setPollinationApplyNum(tcHarvestTaskDTO.getPollinationApplyNum());

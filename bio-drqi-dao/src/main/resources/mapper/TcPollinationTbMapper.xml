@@ -125,7 +125,7 @@
                 AND f_sample_code = #{fSampleCode,jdbcType=VARCHAR}
             </when>
             <otherwise>
-                AND f_sample_code=null
+                AND f_sample_code is null
             </otherwise>
         </choose>
         <choose>
@@ -133,7 +133,7 @@
                 AND m_sample_code = #{mSampleCode,jdbcType=VARCHAR}
             </when>
             <otherwise>
-                AND m_sample_code =null
+                AND m_sample_code  is null
             </otherwise>
         </choose>
     </select>

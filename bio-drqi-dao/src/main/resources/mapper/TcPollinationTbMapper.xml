@@ -104,4 +104,15 @@
             #{item.harvestTypeCode,jdbcType=VARCHAR},#{item.harvestTypeName,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR})
         </foreach>
     </insert>
+    <select id="selectOneByExperimentNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_pollination_tb
+        where
+        experiment_num = #{experimentNum,jdbcType=VARCHAR}
+        AND f_seed_num = #{fSeedNum,jdbcType=VARCHAR}
+        AND m_seed_num = #{mSeedNum,jdbcType=VARCHAR}
+        AND f_sample_code = #{fSampleCode,jdbcType=VARCHAR}
+        AND m_sample_code = #{mSampleCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

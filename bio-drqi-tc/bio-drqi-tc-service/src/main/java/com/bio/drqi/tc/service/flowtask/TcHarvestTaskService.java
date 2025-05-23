@@ -3,23 +3,25 @@ package com.bio.drqi.tc.service.flowtask;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
-import com.bio.drqi.domain.BioTaskDtlTb;
-import com.bio.drqi.domain.TcHarvestSeedApplyTb;
-import com.bio.drqi.domain.TcHarvestSeedTb;
-import com.bio.drqi.domain.TcPollinationApplyTb;
+import com.bio.common.oss.service.OssService;
+import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.mapper.TcHarvestSeedApplyTbMapper;
 import com.bio.drqi.mapper.TcHarvestSeedTbMapper;
 import com.bio.drqi.mapper.TcPollinationApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
 import com.bio.drqi.tc.service.dto.TcHarvestTaskDTO;
+import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.util.List;
 
 
 @Service("tc_harvest_task_apply")
@@ -33,7 +35,12 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
     private TcHarvestSeedTbMapper tcHarvestSeedTbMapper;
 
     @Resource
+    private OssService ossService;
+
+    @Resource
     private TcPollinationApplyTbMapper tcPollinationApplyTbMapper;
+
+    private TcPollinationTbMapper tcPollinationTbMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -74,6 +81,21 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
             tcPollinationApplyTbMapper.updateById(tcPollinationApplyTb);
 
             //解析excel
+
+            if (!tcHarvestTaskDTO.getHarvestFileUrl().endsWith("xlsx")) {
+                throw new BusinessException("文件格式错误");
+            }
+            String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + tcHarvestTaskDTO.getHarvestFileUrl();
+            try {
+                ossService.downloadPath(tempFilePath, tcHarvestTaskDTO.getHarvestFileUrl());
+            } catch (Exception e) {
+                log.error("【任务工单】文件从oss下载失败", e);
+                throw new BusinessException("文件处理异常");
+            }
+            List<TcPollinationExcelDTO> tcPollinationExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcPollinationExcelDTO.class);
+            for (TcPollinationExcelDTO tcPollinationExcelDTO:tcPollinationExcelDTOList){
+
+            }
 
 
 

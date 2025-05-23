@@ -52,7 +52,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
         BeanUtils.trimFiledSpace(tcPollinationTaskDTO);
 
 
-        TcPollinationApplyTb tcPollinationApplyTb = tcPollinationApplyTbMapper.selectOneByPollinationApplyNum(tcPollinationTaskDTO.getPollinationName());
+        TcPollinationApplyTb tcPollinationApplyTb = tcPollinationApplyTbMapper.selectOneByExperimentNum(tcPollinationTaskDTO.getExperimentNum());
         if (tcPollinationApplyTb != null) {
             throw new BusinessException("该试验已经授粉");
         }
@@ -84,7 +84,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
         }
 
         tcPollinationTaskDTO.setTcPollinationExcelDTOList(tcPollinationExcelDTOList);
-        tcPollinationTaskDTO.setPollinationName(bioDict.getDictValueName());
+        tcPollinationTaskDTO.setPollinationTypeName(bioDict.getDictValueName());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcPollinationTaskDTO));
     }
 
@@ -127,7 +127,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                 tcPollinationTb.setFTcGene(tcPollinationExcelDTO.getFatherTcGene());
                 tcPollinationTb.setPollinationDate(tcPollinationExcelDTO.getPollinationDate());
                 tcPollinationTb.setPollinationMethodCode(tcPollinationTaskDTO.getPollinationType());
-                tcPollinationTb.setPollinationMethodName(tcPollinationTaskDTO.getPollinationName());
+                tcPollinationTb.setPollinationMethodName(tcPollinationTaskDTO.getPollinationTypeName());
                 tcPollinationTb.setHarvestTypeName(tcPollinationExcelDTO.getHarvestTypeName());
                 tcPollinationTb.setHarvestTypeCode(tcPollinationExcelDTO.getHarvestTypeCode());
                 tcPollinationTb.setRemark(tcPollinationExcelDTO.getRemark());

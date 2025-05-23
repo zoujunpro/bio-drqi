@@ -31,17 +31,13 @@ import java.util.List;
 public class TcHarvestTaskService extends AbstractTcBaseTaskService {
 
     @Resource
-    private TcHarvestSeedApplyTbMapper tcHarvestSeedApplyTbMapper;
-
-    @Resource
-    private TcHarvestSeedTbMapper tcHarvestSeedTbMapper;
-
-    @Resource
     private OssService ossService;
 
     @Resource
     private TcPollinationApplyTbMapper tcPollinationApplyTbMapper;
 
+
+    @Resource
     private TcPollinationTbMapper tcPollinationTbMapper;
 
     @Override
@@ -49,6 +45,40 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
         TcHarvestTaskDTO tcHarvestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcHarvestTaskDTO.class);
         ValidatorUtil.validator(tcHarvestTaskDTO);
         BeanUtils.trimFiledSpace(tcHarvestTaskDTO);
+
+        TcPollinationApplyTb tcPollinationApplyTb = tcPollinationApplyTbMapper.selectOneByPollinationApplyNum(tcHarvestTaskDTO.getPollinationApplyNum());
+        if (tcPollinationApplyTb == null) {
+            throw new BusinessException("不存在此授粉批次");
+        }
+        if (StringUtils.isNotEmpty(tcPollinationApplyTb.getHarvestApplyNum())) {
+            throw new BusinessException("该授粉批次已经收获");
+        }
+        if (!tcHarvestTaskDTO.getHarvestFileUrl().endsWith("xlsx")) {
+            throw new BusinessException("文件格式错误");
+        }
+        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + tcHarvestTaskDTO.getHarvestFileUrl();
+        try {
+            ossService.downloadPath(tempFilePath, tcHarvestTaskDTO.getHarvestFileUrl());
+        } catch (Exception e) {
+            log.error("【任务工单】文件从oss下载失败", e);
+            throw new BusinessException("文件处理异常");
+        }
+        List<TcHarvestExcelDTO> tcHarvestExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcHarvestExcelDTO.class);
+        for (TcHarvestExcelDTO tcHarvestExcelDTO:tcHarvestExcelDTOList){
+            TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode
+                    (tcPollinationApplyTb.getExperimentNum(),
+                            tcHarvestExcelDTO.getFatherRegionNum(),
+                            tcHarvestExcelDTO.getMotherRegionNum(),
+                            tcHarvestExcelDTO.getFatherSeedNum(),
+                            tcHarvestExcelDTO.getMotherSeedNum(),
+                            tcHarvestExcelDTO.getFatherSampleCode(),
+                            tcHarvestExcelDTO.getMotherSampleCode());
+            if (tcPollinationTb == null) {
+                throw new BusinessException("无此授粉记录：" + JSONUtil.toJsonStr(tcHarvestExcelDTO));
+            }
+        }
+        tcHarvestTaskDTO.setTcHarvestExcelDTOList(tcHarvestExcelDTOList);
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcHarvestTaskDTO));
     }
 
     @Override
@@ -56,16 +86,8 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
         TcHarvestTaskDTO tcHarvestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcHarvestTaskDTO.class);
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             TcPollinationApplyTb tcPollinationApplyTb = tcPollinationApplyTbMapper.selectOneByPollinationApplyNum(tcHarvestTaskDTO.getPollinationApplyNum());
-            if (tcPollinationApplyTb == null) {
-                throw new BusinessException("不存在此授粉批次");
-            }
-            if (StringUtils.isNotEmpty(tcPollinationApplyTb.getHarvestApplyNum())) {
-                throw new BusinessException("该授粉批次已经收获");
-            }
-
             tcPollinationApplyTb.setHarvestApplyNum(bioTaskDtlTb.getTaskNum());
             tcPollinationApplyTbMapper.updateById(tcPollinationApplyTb);
-
 
             /*TcHarvestSeedApplyTb tcHarvestSeedApplyTb = new TcHarvestSeedApplyTb();
             tcHarvestSeedApplyTb.setTaskNum(bioTaskDtlTb.getTaskNum());
@@ -89,18 +111,7 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
 
             //解析excel
 
-            if (!tcHarvestTaskDTO.getHarvestFileUrl().endsWith("xlsx")) {
-                throw new BusinessException("文件格式错误");
-            }
-            String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + tcHarvestTaskDTO.getHarvestFileUrl();
-            try {
-                ossService.downloadPath(tempFilePath, tcHarvestTaskDTO.getHarvestFileUrl());
-            } catch (Exception e) {
-                log.error("【任务工单】文件从oss下载失败", e);
-                throw new BusinessException("文件处理异常");
-            }
-            List<TcHarvestExcelDTO> tcHarvestExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcHarvestExcelDTO.class);
-            for (TcHarvestExcelDTO tcHarvestExcelDTO : tcHarvestExcelDTOList) {
+            for (TcHarvestExcelDTO tcHarvestExcelDTO : tcHarvestTaskDTO.getTcHarvestExcelDTOList()) {
                 TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode
                         (tcPollinationApplyTb.getExperimentNum(),
                                 tcHarvestExcelDTO.getFatherRegionNum(),

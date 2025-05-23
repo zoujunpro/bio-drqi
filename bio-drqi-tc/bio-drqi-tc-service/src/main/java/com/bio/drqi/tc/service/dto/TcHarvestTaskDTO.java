@@ -3,6 +3,7 @@ package com.bio.drqi.tc.service.dto;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Data
 public class TcHarvestTaskDTO {
@@ -19,6 +20,10 @@ public class TcHarvestTaskDTO {
      */
     @NotBlank(message = "参数缺失：收获excel地址")
     private String harvestFileUrl;
+
+
+    private List<TcHarvestExcelDTO>  tcHarvestExcelDTOList;
+
 
 
 }

@@ -9,10 +9,7 @@ import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioDictTypeEnum;
 import com.bio.drqi.enums.BioTaskStatusEnum;
-import com.bio.drqi.mapper.BioDictMapper;
-import com.bio.drqi.mapper.TcExperimentTbMapper;
-import com.bio.drqi.mapper.TcPollinationApplyTbMapper;
-import com.bio.drqi.mapper.TcPollinationTbMapper;
+import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import com.bio.drqi.tc.service.dto.TcPollinationTaskDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +37,9 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
 
     @Resource
     private TcPollinationApplyTbMapper tcPollinationApplyTbMapper;
+
+    @Resource
+    private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
 
     @Resource
     private BioDictMapper bioDictMapper;
@@ -76,6 +76,16 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
         List<TcPollinationExcelDTO> tcPollinationExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcPollinationExcelDTO.class);
         for (TcPollinationExcelDTO tcPollinationExcelDTO : tcPollinationExcelDTOList) {
             ValidatorUtil.validator(tcPollinationTaskDTO);
+
+            TcExperimentDesignTb father = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationTaskDTO.getExperimentNum(), tcPollinationExcelDTO.getFatherRegionNum(), tcPollinationExcelDTO.getFatherSeedNum());
+            if(father==null){
+                throw new BusinessException("实验中无此区域为："+tcPollinationExcelDTO.getFatherRegionNum()+"的种子编号:"+tcPollinationExcelDTO.getFatherSeedNum());
+            }
+            TcExperimentDesignTb mather = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationTaskDTO.getExperimentNum(), tcPollinationExcelDTO.getMotherRegionNum(), tcPollinationExcelDTO.getMotherSeedNum());
+            if(mather==null){
+                throw new BusinessException("实验中无此区域为："+tcPollinationExcelDTO.getMotherRegionNum()+"的种子编号:"+tcPollinationExcelDTO.getMotherSeedNum());
+            }
+
             BioDict harvestTypeDict = bioDictMapper.selectOneByDictTypeAndDictValueName(BioDictTypeEnum.HARVEST_TYPE.name(), tcPollinationExcelDTO.getHarvestTypeName());
             if (harvestTypeDict == null) {
                 throw new BusinessException("收获方式填写错误：" + tcPollinationExcelDTO.getHarvestTypeName());

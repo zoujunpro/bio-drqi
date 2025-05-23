@@ -67,7 +67,7 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
             tcPollinationApplyTbMapper.updateById(tcPollinationApplyTb);
 
 
-            TcHarvestSeedApplyTb tcHarvestSeedApplyTb = new TcHarvestSeedApplyTb();
+            /*TcHarvestSeedApplyTb tcHarvestSeedApplyTb = new TcHarvestSeedApplyTb();
             tcHarvestSeedApplyTb.setTaskNum(bioTaskDtlTb.getTaskNum());
             tcHarvestSeedApplyTb.setPollinationApplyNum(tcHarvestTaskDTO.getPollinationApplyNum());
             tcHarvestSeedApplyTb.setHarvestApplyNum(bioTaskDtlTb.getTaskNum());
@@ -85,7 +85,7 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
 
             //更新收获批次号
             tcPollinationApplyTb.setHarvestApplyNum(tcHarvestSeedApplyTb.getHarvestApplyNum());
-            tcPollinationApplyTbMapper.updateById(tcPollinationApplyTb);
+            tcPollinationApplyTbMapper.updateById(tcPollinationApplyTb);*/
 
             //解析excel
 

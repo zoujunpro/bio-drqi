@@ -130,7 +130,7 @@
         </choose>
         <choose>
             <when test="mSampleCode !=null and mSampleCode!='' ">
-                AND f_sample_code = #{fSampleCode,jdbcType=VARCHAR}
+                AND m_sample_code = #{mSampleCode,jdbcType=VARCHAR}
             </when>
             <otherwise>
                 AND m_sample_code =null

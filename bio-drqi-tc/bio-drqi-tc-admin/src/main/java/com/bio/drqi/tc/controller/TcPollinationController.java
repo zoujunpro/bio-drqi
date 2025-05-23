@@ -16,10 +16,7 @@ import com.bio.drqi.tc.service.TcPollinationService;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -49,6 +46,15 @@ public class TcPollinationController {
         return ResponseResult.getSuccess(tcPollinationService.listPage(tcPollinationListPageReqDTO));
     }
 
+    /**
+     * 授粉管理-查询未收获的授粉申请批次号
+     * @return
+     */
+    @GetMapping("/listPollinationApplyNumNotHarvest")
+    @WebLog(desc = "授粉管理-查询未收获的授粉申请批次号")
+    public ResponseResult<List<String>> listPollinationApplyNumNotHarvest(){
+        return ResponseResult.getSuccess(tcPollinationService.listPollinationApplyNumNotHarvest());
+    }
 
 
     /**

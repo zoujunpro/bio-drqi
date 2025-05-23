@@ -54,4 +54,12 @@
         where
         experiment_num = #{experimentNum,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByHarvestApplyNumIsNullOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_pollination_apply_tb
+        where
+        harvest_apply_num is null
+        order by id desc
+    </select>
 </mapper>

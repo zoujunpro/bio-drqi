@@ -70,6 +70,11 @@ public class TcPollinationServiceImpl implements TcPollinationService {
     }
 
     @Override
+    public List<String> listPollinationApplyNumNotHarvest() {
+        return tcPollinationApplyTbMapper.selectAllByHarvestApplyNumIsNullOrderByIdDesc().stream().map(TcPollinationApplyTb::getPollinationApplyNum).collect(Collectors.toList());
+    }
+
+    @Override
     public PageInfo<TcPollinationListPageDetailRspDTO> listPageDetail(TcPollinationListPageDetailReqDTO tcPollinationListPageDetailReqDTO) {
         PageHelper.startPage(tcPollinationListPageDetailReqDTO.getPageNum(), tcPollinationListPageDetailReqDTO.getPageSize());
         List<TcPollinationTb> tcPollinationTbList = tcPollinationTbMapper.selectSelective(BeanUtils.copyProperties(tcPollinationListPageDetailReqDTO, TcPollinationTb.class));

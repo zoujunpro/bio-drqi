@@ -8,6 +8,7 @@ import com.bio.drqi.tc.rsp.TcPollinationListPageRspDTO;
 import com.github.pagehelper.PageInfo;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public interface TcPollinationService {
 
@@ -17,6 +18,8 @@ public interface TcPollinationService {
      * @return
      */
     PageInfo<TcPollinationListPageRspDTO> listPage(TcPollinationListPageReqDTO tcPollinationListPageReqDTO);
+
+    List<String> listPollinationApplyNumNotHarvest();
 
     /**
      * 授粉管理-授粉列表分页查询

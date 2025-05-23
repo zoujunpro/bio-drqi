@@ -18,6 +18,9 @@ public interface TcPollinationApplyTbMapper extends BaseMapper<TcPollinationAppl
 
 
     TcPollinationApplyTb selectOneByExperimentNum(@Param("experimentNum") String experimentNum);
+
+
+    List<TcPollinationApplyTb> selectAllByHarvestApplyNumIsNullOrderByIdDesc();
 }
 
 

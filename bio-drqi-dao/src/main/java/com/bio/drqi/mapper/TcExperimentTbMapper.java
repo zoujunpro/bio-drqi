@@ -20,6 +20,10 @@ public interface TcExperimentTbMapper extends BaseMapper<TcExperimentTb> {
 
     List<TcExperimentTb> selectALlOrderByIdDesc();
 
+    TcExperimentTb selectOneByPollinationNum(@Param("pollinationNum") String pollinationNum);
+
+    TcExperimentTb selectOneByExperimentNum(@Param("experimentNum") String experimentNum);
+
 }
 
 

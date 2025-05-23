@@ -42,6 +42,9 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
     private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
 
     @Resource
+    private TcExperimentTbMapper tcExperimentTbMapper;
+
+    @Resource
     private BioDictMapper bioDictMapper;
 
 
@@ -56,7 +59,6 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
         if (tcPollinationApplyTb != null) {
             throw new BusinessException("该试验已经授粉");
         }
-
 
         BioDict bioDict = bioDictMapper.selectOneByDictTypeAndDictValueCode(BioDictTypeEnum.POLLINATE_TYPE.name(), tcPollinationTaskDTO.getPollinationType());
         if (bioDict == null) {
@@ -78,12 +80,12 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
             ValidatorUtil.validator(tcPollinationTaskDTO);
 
             TcExperimentDesignTb father = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationTaskDTO.getExperimentNum(), tcPollinationExcelDTO.getFatherRegionNum(), tcPollinationExcelDTO.getFatherSeedNum());
-            if(father==null){
-                throw new BusinessException("实验中无此区域为："+tcPollinationExcelDTO.getFatherRegionNum()+"的种子编号:"+tcPollinationExcelDTO.getFatherSeedNum());
+            if (father == null) {
+                throw new BusinessException("实验中无此区域为：" + tcPollinationExcelDTO.getFatherRegionNum() + "的种子编号:" + tcPollinationExcelDTO.getFatherSeedNum());
             }
             TcExperimentDesignTb mather = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationTaskDTO.getExperimentNum(), tcPollinationExcelDTO.getMotherRegionNum(), tcPollinationExcelDTO.getMotherSeedNum());
-            if(mather==null){
-                throw new BusinessException("实验中无此区域为："+tcPollinationExcelDTO.getMotherRegionNum()+"的种子编号:"+tcPollinationExcelDTO.getMotherSeedNum());
+            if (mather == null) {
+                throw new BusinessException("实验中无此区域为：" + tcPollinationExcelDTO.getMotherRegionNum() + "的种子编号:" + tcPollinationExcelDTO.getMotherSeedNum());
             }
 
             BioDict harvestTypeDict = bioDictMapper.selectOneByDictTypeAndDictValueName(BioDictTypeEnum.HARVEST_TYPE.name(), tcPollinationExcelDTO.getHarvestTypeName());
@@ -113,6 +115,10 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
             tcPollinationApplyTb.setCreateTime(new Date());
             tcPollinationApplyTb.setHarvestApplyNum(null);
             tcPollinationApplyTbMapper.insert(tcPollinationApplyTb);
+
+            TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcPollinationApplyTb.getExperimentNum());
+            tcExperimentTb.setPollinationNum(tcPollinationApplyTb.getPollinationApplyNum());
+            tcExperimentTbMapper.updateById(tcExperimentTb);
 
             List<TcPollinationTb> tcPollinationTbList = new ArrayList<>();
             for (TcPollinationExcelDTO tcPollinationExcelDTO : tcPollinationTaskDTO.getTcPollinationExcelDTOList()) {

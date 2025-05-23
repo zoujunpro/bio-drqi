@@ -95,7 +95,7 @@
         m_vector_task_code,f_vector_task_code,m_generation_code,
         f_generation_code,m_tc_gene,f_tc_gene,
         pollination_date,pollination_method_code,pollination_method_name,
-        harvest_type_code,harvest_type_name,remark,seed_number)
+        harvest_type_code,harvest_type_name,remark,unit,seed_number)
         values
         <foreach collection="tcPollinationTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.sampleApplyNum,jdbcType=VARCHAR},

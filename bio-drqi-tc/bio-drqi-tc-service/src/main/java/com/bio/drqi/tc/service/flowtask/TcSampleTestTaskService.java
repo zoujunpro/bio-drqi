@@ -75,9 +75,10 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         List<TcSampleTestTb> batchList = new ArrayList<TcSampleTestTb>();
         //首次取样
         if (CollectionUtil.isNotEmpty(tcSampleTestTaskDTO.getFirstSampleApplyList())) {
-            for (TcSampleTestTaskDTO.FirstSampleApply firstSampleApply : tcSampleTestTaskDTO.getFirstSampleApplyList()) {
+            for (int i=0;i<tcSampleTestTaskDTO.getFirstSampleApplyList().size();i++) {
+              TcSampleTestTaskDTO.FirstSampleApply firstSampleApply= tcSampleTestTaskDTO.getFirstSampleApplyList().get(i);
                 CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(firstSampleApply.getVectorTaskCode());
-                for (int i = 1; i <= firstSampleApply.getSampleNum(); i++) {
+                for (int j = 1; j <= firstSampleApply.getSampleNum(); j++) {
                     TcSampleTestTb tcSampleTestTb = new TcSampleTestTb();
                     tcSampleTestTb.setExperimentNum(tcSampleTestApplyTb.getExperimentNum());
                     tcSampleTestTb.setRegionNum(firstSampleApply.getRegionNum());
@@ -89,7 +90,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                     tcSampleTestTb.setTargetCharacter(firstSampleApply.getTargetCharacter());
                     tcSampleTestTb.setGenerationCode(firstSampleApply.getGenerationCode());
                     tcSampleTestTb.setTcGene(firstSampleApply.getTcGene());
-                    tcSampleTestTb.setSampleCode(cerSampleCodePrefixTb.getSampleCodePrefix()+ DateUtil.format(new Date(),"HHmmss")+i);
+                    tcSampleTestTb.setSampleCode(cerSampleCodePrefixTb.getSampleCodePrefix()+ DateUtil.format(new Date(),"HHmmss")+i+j);
                     tcSampleTestTb.setSampleTime(firstSampleApply.getSampleTime());
                     tcSampleTestTb.setSampleApplyNum(tcSampleTestApplyTb.getSampleApplyNum());
                     tcSampleTestTb.setTaskNum(tcSampleTestApplyTb.getTaskNum());

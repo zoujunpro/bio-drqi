@@ -3,6 +3,7 @@ package com.bio.drqi.bsm.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.drqi.bsm.req.BmsProductStockEditDateReqDTO;
 import com.bio.drqi.bsm.req.BmsProductStockListPageReqDTO;
 import com.bio.drqi.bsm.req.BmsProductStockQueryListReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockDetailRspDTO;
@@ -48,7 +49,7 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
     @Override
     public List<String> queryStockByUnitCode(String unitCode) {
         List<String> productNameList = bmsProductStockTbMapper.selectProductNameByUnitCode(unitCode);
-        if(CollectionUtil.isNotEmpty(productNameList)){
+        if (CollectionUtil.isNotEmpty(productNameList)) {
             return productNameList.stream().distinct().collect(Collectors.toList());
         }
         return null;
@@ -56,7 +57,19 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
 
     @Override
     public List<BmsProductStockQueryListRspDTO> queryList(BmsProductStockQueryListReqDTO bmsProductStockQueryListReqDTO) {
-       List<BmsProductStockTb> bmsProductStockTbList= bmsProductStockTbMapper.selectSelective(BeanUtils.copyProperties(bmsProductStockQueryListReqDTO,BmsProductStockTb.class));
-        return BeanUtils.copyListProperties(bmsProductStockTbList,BmsProductStockQueryListRspDTO.class);
+        List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(BeanUtils.copyProperties(bmsProductStockQueryListReqDTO, BmsProductStockTb.class));
+        return BeanUtils.copyListProperties(bmsProductStockTbList, BmsProductStockQueryListRspDTO.class);
+    }
+
+    @Override
+    public void editDate(BmsProductStockEditDateReqDTO bmsProductStockEditDateReqDTO) {
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectById(bmsProductStockEditDateReqDTO.getId());
+        if(bmsProductStockTb==null){
+            throw new BusinessException("不存在此库存");
+        }
+        bmsProductStockTb.setExpirationDate(bmsProductStockTb.getExpirationDate());
+        bmsProductStockTb.setProduceDate(bmsProductStockTb.getProduceDate());
+        bmsProductStockTbMapper.updateById(bmsProductStockTb);
+
     }
 }

@@ -1,5 +1,6 @@
 package com.bio.drqi.bsm.service;
 
+import com.bio.drqi.bsm.req.BmsProductStockEditDateReqDTO;
 import com.bio.drqi.bsm.req.BmsProductStockListPageReqDTO;
 import com.bio.drqi.bsm.req.BmsProductStockQueryListReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockDetailRspDTO;
@@ -34,4 +35,6 @@ public interface BmsProductStockService {
     List<String> queryStockByUnitCode( String unitCode);
 
     List<BmsProductStockQueryListRspDTO> queryList(@RequestBody BmsProductStockQueryListReqDTO bmsProductStockQueryListReqDTO);
+
+    void editDate( BmsProductStockEditDateReqDTO bmsProductStockEditDateReqDTO);
 }

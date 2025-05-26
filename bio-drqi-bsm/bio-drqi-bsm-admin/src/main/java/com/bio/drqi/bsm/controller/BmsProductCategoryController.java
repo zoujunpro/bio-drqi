@@ -9,6 +9,7 @@ import com.bio.drqi.bsm.rsp.BmsProductCategoryListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductTyListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsProductCategoryService;
 import com.bio.drqi.bsm.service.BmsProductTypeService;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +59,7 @@ public class BmsProductCategoryController {
     @PostMapping("/add")
     @WebLog(desc = "材料类别管理-新增")
     @RequirePermissions("bms:productCategory:add")
+    @RequestLog("材料管理-导出全部")
     public ResponseResult<String> add(@RequestBody BmsProductCategoryAddReqDTO bmsProductCategoryAddReqDTO) {
         bmsProductCategoryService.add(bmsProductCategoryAddReqDTO);
         return ResponseResult.getSuccess("ok");

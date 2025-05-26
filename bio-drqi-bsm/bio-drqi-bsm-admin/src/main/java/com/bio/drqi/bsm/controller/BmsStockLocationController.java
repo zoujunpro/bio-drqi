@@ -10,6 +10,7 @@ import com.bio.drqi.bsm.rsp.BmsStockLocationListAllStockRspDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationQueryByUnitRspDTO;
 import com.bio.drqi.bsm.service.BmsStockLocationService;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +64,7 @@ public class BmsStockLocationController {
     @PostMapping("/add")
     @WebLog(desc = "库房管理-新增")
     @RequirePermissions("bms:bmsStockLocation:add")
+    @RequestLog("库房管理-新增")
     public ResponseResult<String> add(@RequestBody @Validated BmsStockLocationAddReqDTO bmsStockLocationAddReqDTO) {
         bmsStockLocationService.add(bmsStockLocationAddReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -76,6 +78,7 @@ public class BmsStockLocationController {
      */
     @GetMapping("/delete")
     @WebLog(desc = "库房管理-删除")
+    @RequestLog("库房管理-删除")
     @RequirePermissions("bms:bmsStockLocation:delete")
     public ResponseResult<String> delete(Integer id) {
         bmsStockLocationService.delete(id);
@@ -92,6 +95,7 @@ public class BmsStockLocationController {
     @PostMapping("/edit")
     @WebLog(desc = "库房管理-编辑")
     @RequirePermissions("bms:bmsStockLocation:edit")
+    @RequestLog("库房管理-编辑")
     public ResponseResult edit(@RequestBody BmsStockLocationEditReqDTO bmsStockLocationEditReqDTO) {
         return ResponseResult.getSuccess("ok");
     }

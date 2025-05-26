@@ -10,6 +10,7 @@ import com.bio.drqi.bsm.req.BmsProjectListPageReqDTO;
 import com.bio.drqi.bsm.req.BmsProjectQueryAllReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProjectListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsProjectService;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +62,7 @@ public class BmsProjectController {
     @PostMapping("/add")
     @WebLog(desc = "耗材管理项目字典表-新增")
     @RequirePermissions("bms:bmsProject:add")
+    @RequestLog("耗材管理项目字典表-新增")
     public ResponseResult<String> add(@RequestBody BmsProjectAddReqDTO bmsProjectAddReqDTO) {
         bmsProjectService.add(bmsProjectAddReqDTO);
         return ResponseResult.getSuccess(null);
@@ -76,6 +78,7 @@ public class BmsProjectController {
     @PostMapping("/edit")
     @WebLog(desc = "耗材管理项目字典表-编辑")
     @RequirePermissions("bms:bmsProject:edit")
+    @RequestLog("耗材管理项目字典表-编辑")
     public ResponseResult<String> edit(@RequestBody BmsProjectEditReqDTO bmsProjectEditReqDTO) {
         bmsProjectService.edit(bmsProjectEditReqDTO);
         return ResponseResult.getSuccess(null);
@@ -90,6 +93,7 @@ public class BmsProjectController {
     @GetMapping("/delete")
     @WebLog(desc = "耗材管理项目字典表-删除")
     @RequirePermissions("bms:bmsProject:delete")
+    @RequestLog("耗材管理项目字典表-删除")
     public ResponseResult<String> delete(@RequestParam Integer id) {
         bmsProjectService.delete(id);
         return ResponseResult.getSuccess(null);

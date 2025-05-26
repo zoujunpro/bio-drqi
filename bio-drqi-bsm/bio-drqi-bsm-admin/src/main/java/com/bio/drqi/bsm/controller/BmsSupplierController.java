@@ -13,6 +13,7 @@ import com.bio.drqi.bsm.rsp.BmsSupplierListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierQueryByBrandCodeRspDTO;
 import com.bio.drqi.bsm.service.BmsSupplierService;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -91,6 +92,7 @@ public class BmsSupplierController {
     @GetMapping("/detail")
     @WebLog(desc = "供应商管理-详情")
     @RequirePermissions("bms:supplier:detail")
+    @RequestLog("库存明细管理-详情")
     public ResponseResult<BmsBrandDetailRspDTO> detail(@RequestParam Integer id ) {
         return ResponseResult.getSuccess(bmsSupplierService.detail(id));
     }
@@ -104,6 +106,7 @@ public class BmsSupplierController {
     @GetMapping("/delete")
     @WebLog(desc = "供应商管理-删除")
     @RequirePermissions("bms:supplier:delete")
+    @RequestLog("库存明细管理-删除")
     public ResponseResult<String> delete(@RequestParam Integer id) {
         bmsSupplierService.delete(id);
         return ResponseResult.getSuccess("ok");
@@ -117,6 +120,7 @@ public class BmsSupplierController {
      */
     @GetMapping("/move")
     @WebLog(desc = "供应商管理-移出回收站供应商")
+    @RequestLog("库存明细管理-移出回收站供应商")
     public ResponseResult<String> move(Integer id){
         return ResponseResult.getSuccess("ok");
     }

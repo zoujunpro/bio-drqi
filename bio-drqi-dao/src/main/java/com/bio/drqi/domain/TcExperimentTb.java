@@ -86,6 +86,8 @@ public class TcExperimentTb implements Serializable {
 
     private String designUrl;
 
+    private String sampleCodePrefix;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

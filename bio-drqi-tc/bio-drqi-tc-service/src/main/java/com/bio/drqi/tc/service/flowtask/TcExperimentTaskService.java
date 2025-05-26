@@ -7,7 +7,10 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.enums.SampleGroupPergixEnum;
+import com.bio.drqi.common.util.LetterUtil;
 import com.bio.drqi.domain.BioTaskDtlTb;
+import com.bio.drqi.domain.CerSampleCodePrefixTb;
 import com.bio.drqi.domain.TcExperimentDesignTb;
 import com.bio.drqi.domain.TcExperimentTb;
 import com.bio.drqi.enums.BioTaskStatusEnum;
@@ -23,6 +26,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("tc_experiment_task_apply")
 @Slf4j
@@ -63,9 +67,10 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             tcExperimentTb.setExperimentNum(bioTaskDtlTb.getTaskNum());
             tcExperimentTb.setTaskNum(bioTaskDtlTb.getTaskNum());
             tcExperimentTb.setDesignUrl(tcExperimentTaskDTO.getExperimentDesignUrl());
+            tcExperimentTb.setSampleCodePrefix(createSampleCode());
             tcExperimentTbMapper.insert(tcExperimentTb);
 
-            if(StringUtils.isEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())){
+            if (StringUtils.isEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {
                 throw new BusinessException("大田试验田间设计缺失");
             }
 
@@ -77,11 +82,11 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
                 throw new BusinessException("文件处理异常");
             }
             List<ExperimentDesignExcelDTO> experimentDesignExcelDTOList = ExcelUtil.readExcel(tempFilePath, ExperimentDesignExcelDTO.class);
-            if(CollectionUtil.isEmpty(experimentDesignExcelDTOList)){
+            if (CollectionUtil.isEmpty(experimentDesignExcelDTOList)) {
                 throw new BusinessException("大田试验田间设计没有具体内容");
             }
             List<TcExperimentDesignTb> tcExperimentDesignTbList = new ArrayList<TcExperimentDesignTb>();
-            for (ExperimentDesignExcelDTO experimentDesignExcelDTO:experimentDesignExcelDTOList){
+            for (ExperimentDesignExcelDTO experimentDesignExcelDTO : experimentDesignExcelDTOList) {
                 TcExperimentDesignTb tcExperimentDesignTb = new TcExperimentDesignTb();
                 tcExperimentDesignTb.setExperimentNum(tcExperimentTb.getExperimentNum());
                 tcExperimentDesignTb.setRegionNum(experimentDesignExcelDTO.getRegionNum());
@@ -119,5 +124,15 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
 
+    }
+
+
+    private String createSampleCode() {
+        String maxSampleCodePrefix = tcExperimentTbMapper.selectMaxSampleCodePerfix();
+        if (StringUtils.isEmpty(maxSampleCodePrefix)) {
+            return "AA";
+        } else {
+            return SampleGroupPergixEnum.T.name() + LetterUtil.nextLetterForInstantVerify(maxSampleCodePrefix.substring(1));
+        }
     }
 }

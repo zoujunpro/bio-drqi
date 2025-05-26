@@ -1,4 +1,4 @@
-package com.bio.drqi.manage.util;
+package com.bio.drqi.common.util;
 
 import java.util.Random;
 
@@ -47,7 +47,7 @@ public class LetterUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(nextLetterForInstantVerify(randomLetter(2)));
+        System.out.println(nextLetterForInstantVerify("AZ"));
     }
 
 }

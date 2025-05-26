@@ -17,7 +17,7 @@ import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.service.project.VectorTaskService;
-import com.bio.drqi.manage.util.LetterUtil;
+import com.bio.drqi.common.util.LetterUtil;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.manage.vector.rsp.VectorTaskSpeciesRspDTO;
 import com.github.pagehelper.PageHelper;

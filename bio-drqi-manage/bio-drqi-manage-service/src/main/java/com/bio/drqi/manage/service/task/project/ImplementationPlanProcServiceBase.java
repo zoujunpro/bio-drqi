@@ -11,7 +11,7 @@ import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
-import com.bio.drqi.manage.util.LetterUtil;
+import com.bio.drqi.common.util.LetterUtil;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;

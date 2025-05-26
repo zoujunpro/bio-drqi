@@ -24,6 +24,8 @@ public interface TcExperimentTbMapper extends BaseMapper<TcExperimentTb> {
 
     TcExperimentTb selectOneByExperimentNum(@Param("experimentNum") String experimentNum);
 
+    String selectMaxSampleCodePerfix();
+
 }
 
 

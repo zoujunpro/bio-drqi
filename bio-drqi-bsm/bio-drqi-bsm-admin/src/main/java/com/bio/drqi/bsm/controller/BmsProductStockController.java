@@ -86,6 +86,7 @@ public class BmsProductStockController {
      */
     @PostMapping("/editDate")
     @WebLog(desc = "库存明细管理-更新日期")
+    @RequirePermissions("bms:productStock:editDate")
     public ResponseResult<String> editDate(@RequestBody BmsProductStockEditDateReqDTO bmsProductStockEditDateReqDTO) {
         bmsProductStockService.editDate(bmsProductStockEditDateReqDTO);
         return ResponseResult.getSuccess(null);

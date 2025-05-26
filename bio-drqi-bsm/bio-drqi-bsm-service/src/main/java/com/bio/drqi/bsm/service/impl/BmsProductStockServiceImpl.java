@@ -67,8 +67,8 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         if(bmsProductStockTb==null){
             throw new BusinessException("不存在此库存");
         }
-        bmsProductStockTb.setExpirationDate(bmsProductStockTb.getExpirationDate());
-        bmsProductStockTb.setProduceDate(bmsProductStockTb.getProduceDate());
+        bmsProductStockTb.setExpirationDate(bmsProductStockEditDateReqDTO.getExpirationDate());
+        bmsProductStockTb.setProduceDate(bmsProductStockEditDateReqDTO.getProduceDate());
         bmsProductStockTbMapper.updateById(bmsProductStockTb);
 
     }

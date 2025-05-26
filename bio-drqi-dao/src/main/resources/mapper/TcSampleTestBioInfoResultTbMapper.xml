@@ -67,7 +67,7 @@
     <select id="selectMaxHead" resultType="java.lang.Integer">
         select max(a.num) as maxHead
         from (select count(*) as num
-              from cer_sample_test_bio_info_result_tb
+              from tc_sample_test_bio_info_result_tb
               where apply_no = #{applyNo,jdbcType=VARCHAR}
               GROUP BY sample_code) a
     </select>

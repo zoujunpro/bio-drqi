@@ -7,14 +7,8 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.contents.BioDrQiContents;
-import com.bio.drqi.domain.TcExperimentDesignTb;
-import com.bio.drqi.domain.TcPollinationApplyTb;
-import com.bio.drqi.domain.TcPollinationTb;
-import com.bio.drqi.domain.TcSampleTestTb;
-import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
-import com.bio.drqi.mapper.TcPollinationApplyTbMapper;
-import com.bio.drqi.mapper.TcPollinationTbMapper;
-import com.bio.drqi.mapper.TcSampleTestTbMapper;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.enums.PollinationParentFlagEnum;
 import com.bio.drqi.tc.enums.SampleTestCheckResultEnum;
 import com.bio.drqi.tc.req.TcHarvestCreateHarvestExcelReqDTO;
@@ -56,6 +50,9 @@ public class TcPollinationServiceImpl implements TcPollinationService {
     private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
 
     @Resource
+    private TcExperimentTbMapper tcExperimentTbMapper;
+
+    @Resource
     private TcSampleTestTbMapper tcSampleTestTbMapper;
 
     @Resource
@@ -86,12 +83,14 @@ public class TcPollinationServiceImpl implements TcPollinationService {
     public void createPollinationExcel(TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
         List<TcPollinationExcelDTO> matherList = new ArrayList<TcPollinationExcelDTO>();
         List<TcPollinationExcelDTO> fatherList = new ArrayList<TcPollinationExcelDTO>();
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum());
+
         for (TcPollinationCreatePollinationExcelReqDTO.Content content : tcPollinationCreatePollinationExcelReqDTO.getContentList()) {
             TcExperimentDesignTb tcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum(), content.getRegionNum(), content.getSeedNum());
             if (tcExperimentDesignTb == null) {
                 throw new BusinessException("数据异常，找不到此试验设计种子信息 试验：" + tcPollinationCreatePollinationExcelReqDTO.getExperimentNum() + "种子号：" + content.getSeedNum() + "区域：" + content.getRegionNum());
             }
-            //没有单株编号
+            //没有单株编号,非单株取样
             if (BioDrQiContents.N.equals(content.getSinglePlantFlag())) {
                 if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {
                     TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, null);
@@ -114,8 +113,9 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     if (i < sampleCodeList.size()) {
                         sampleCode = sampleCodeList.get(i);
                     } else {
-                        //todo 生成单株编号
-                        sampleCode = IdUtils.simpleUUID();
+                        //生成单株编号
+                        sampleCode =tcExperimentTb.getSampleCodePrefix()+tcExperimentTb.getNextSampleNumber();
+                        tcExperimentTb.setNextSampleNumber(tcExperimentTb.getNextSampleNumber()+1);
                     }
                     if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {
 

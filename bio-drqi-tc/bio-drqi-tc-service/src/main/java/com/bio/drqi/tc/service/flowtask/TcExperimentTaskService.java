@@ -68,6 +68,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             tcExperimentTb.setTaskNum(bioTaskDtlTb.getTaskNum());
             tcExperimentTb.setDesignUrl(tcExperimentTaskDTO.getExperimentDesignUrl());
             tcExperimentTb.setSampleCodePrefix(createSampleCode());
+            tcExperimentTb.setNextSampleNumber(1);
             tcExperimentTbMapper.insert(tcExperimentTb);
 
             if (StringUtils.isEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {

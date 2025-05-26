@@ -8,9 +8,7 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.mapper.CerSampleCodePrefixTbMapper;
-import com.bio.drqi.mapper.TcSampleTestApplyTbMapper;
-import com.bio.drqi.mapper.TcSampleTestTbMapper;
+import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +16,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service("tc_sample_test_task_apply")
 public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
@@ -29,7 +28,13 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
     private TcSampleTestApplyTbMapper tcSampleTestApplyTbMapper;
 
     @Resource
-    private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
+    private TcSampleTestBioResultRefMapper  tcSampleTestBioResultRefMapper;
+
+    @Resource
+    private TcSampleTestBioInfoResultTbMapper tcSampleTestBioInfoResultTbMapper;
+
+    @Resource
+    private TcExperimentTbMapper tcExperimentTbMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -49,7 +54,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
             TcSampleTestApplyTb tcSampleTestApplyTb = tcSampleTestApplyTbMapper.selectOneByTaskNum(bioTaskDtlTb.getTaskNum());
             if (tcSampleTestApplyTb == null) {
                 synchronized (this) {
-                    bathInsertData(bioTaskDtlTb, tcSampleTestTaskDTO);
+                    bathInsertData(bioTaskDtlTb, tcSampleTestTaskDTO, tcSampleTestApplyTb.getExperimentNum());
                     //如果是单管，则直接默认生成模板
                 }
             }
@@ -57,7 +62,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
 
     }
 
-    private void bathInsertData(BioTaskDtlTb bioTaskDtlTb, TcSampleTestTaskDTO tcSampleTestTaskDTO) {
+    private void bathInsertData(BioTaskDtlTb bioTaskDtlTb, TcSampleTestTaskDTO tcSampleTestTaskDTO, String experimentNum) {
         TcSampleTestApplyTb tcSampleTestApplyTb = new TcSampleTestApplyTb();
         tcSampleTestApplyTb.setSampleApplyNum(bioTaskDtlTb.getTaskNum());
         tcSampleTestApplyTb.setExperimentNum(tcSampleTestTaskDTO.getExperimentNum());
@@ -75,9 +80,10 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         List<TcSampleTestTb> batchList = new ArrayList<TcSampleTestTb>();
         //首次取样
         if (CollectionUtil.isNotEmpty(tcSampleTestTaskDTO.getFirstSampleApplyList())) {
-            for (int i=0;i<tcSampleTestTaskDTO.getFirstSampleApplyList().size();i++) {
-              TcSampleTestTaskDTO.FirstSampleApply firstSampleApply= tcSampleTestTaskDTO.getFirstSampleApplyList().get(i);
-                CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(firstSampleApply.getVectorTaskCode());
+            TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByPollinationNum(experimentNum);
+            Integer nextSampleNumber = tcExperimentTb.getNextSampleNumber();
+            for (int i = 0; i < tcSampleTestTaskDTO.getFirstSampleApplyList().size(); i++) {
+                TcSampleTestTaskDTO.FirstSampleApply firstSampleApply = tcSampleTestTaskDTO.getFirstSampleApplyList().get(i);
                 for (int j = 1; j <= firstSampleApply.getSampleNum(); j++) {
                     TcSampleTestTb tcSampleTestTb = new TcSampleTestTb();
                     tcSampleTestTb.setExperimentNum(tcSampleTestApplyTb.getExperimentNum());
@@ -90,16 +96,21 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                     tcSampleTestTb.setTargetCharacter(firstSampleApply.getTargetCharacter());
                     tcSampleTestTb.setGenerationCode(firstSampleApply.getGenerationCode());
                     tcSampleTestTb.setTcGene(firstSampleApply.getTcGene());
-                    tcSampleTestTb.setSampleCode(cerSampleCodePrefixTb.getSampleCodePrefix()+ DateUtil.format(new Date(),"HHmmss")+i+j);
+                    tcSampleTestTb.setSampleCode(tcExperimentTb.getSampleCodePrefix() + nextSampleNumber);
                     tcSampleTestTb.setSampleTime(firstSampleApply.getSampleTime());
                     tcSampleTestTb.setSampleApplyNum(tcSampleTestApplyTb.getSampleApplyNum());
                     tcSampleTestTb.setTaskNum(tcSampleTestApplyTb.getTaskNum());
                     tcSampleTestTb.setApplyType(tcSampleTestApplyTb.getApplyType());
                     tcSampleTestTb.setUniqueCode(tcSampleTestTb.getSampleCode());
                     batchList.add(tcSampleTestTb);
+
+                    //算出下次取样编号
+                    nextSampleNumber = nextSampleNumber + 1;
                 }
 
             }
+            tcExperimentTb.setNextSampleNumber(nextSampleNumber);
+            tcExperimentTbMapper.updateById(tcExperimentTb);
         }
         //重复取样
         if (CollectionUtil.isNotEmpty(tcSampleTestTaskDTO.getRepeatSampleApplyList())) {
@@ -133,9 +144,19 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
 
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
+        TcSampleTestApplyTb tcSampleTestApplyTb = tcSampleTestApplyTbMapper.selectOneByTaskNum(bioTaskDtlTb.getTaskNum());
         tcSampleTestApplyTbMapper.deleteBySampleApplyNum(bioTaskDtlTb.getTaskNum());
+        List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNum(bioTaskDtlTb.getTaskNum());
+        if (CollectionUtil.isNotEmpty(tcSampleTestTbList)) {
+            Optional<Integer> minSampleCodeOptional = tcSampleTestTbList.stream().map(tcSampleTestTb -> Integer.valueOf(tcSampleTestTb.getSampleCode().substring(3))).min(Integer::compare);
+            if (minSampleCodeOptional.isPresent()) {
+                TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByPollinationNum(tcSampleTestApplyTb.getExperimentNum());
+                tcExperimentTb.setNextSampleNumber(minSampleCodeOptional.get());
+                tcExperimentTbMapper.updateById(tcExperimentTb);
+            }
+        }
         tcSampleTestTbMapper.deleteBySampleApplyNum(bioTaskDtlTb.getTaskNum());
-
-
+        tcSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        tcSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
     }
 }

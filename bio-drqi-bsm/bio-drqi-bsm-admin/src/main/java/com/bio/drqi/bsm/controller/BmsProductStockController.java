@@ -3,6 +3,7 @@ package com.bio.drqi.bsm.controller;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.bsm.req.BmsProductStockEditDateReqDTO;
 import com.bio.drqi.bsm.req.BmsProductStockListPageReqDTO;
 import com.bio.drqi.bsm.req.BmsProductStockQueryListReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockDetailRspDTO;
@@ -27,6 +28,7 @@ public class BmsProductStockController {
 
     /**
      * 库存明细管理-分页查询
+     *
      * @param bmsProductStockListPageReqDTO
      * @return
      */
@@ -40,6 +42,7 @@ public class BmsProductStockController {
 
     /**
      * 库存明细管理-详情
+     *
      * @param id
      * @return
      */
@@ -52,24 +55,40 @@ public class BmsProductStockController {
 
     /**
      * 库存明细管理-查询库存中所有商品信息
+     *
      * @param unitCode
      * @return
      */
     @GetMapping("/queryStockByUnitCode")
     @WebLog(desc = "库存明细管理-查询库存中所有商品信息")
-    public ResponseResult<List<String>> queryStockByUnitCode(@RequestParam String unitCode){
+    public ResponseResult<List<String>> queryStockByUnitCode(@RequestParam String unitCode) {
         return ResponseResult.getSuccess(bmsProductStockService.queryStockByUnitCode(unitCode));
     }
 
     /**
      * 库存明细管理-条件查询码库存明细列表
+     *
      * @param bmsProductStockQueryListReqDTO
      * @return
      */
     @PostMapping("/queryList")
-    public ResponseResult<List<BmsProductStockQueryListRspDTO>> queryList(@RequestBody BmsProductStockQueryListReqDTO bmsProductStockQueryListReqDTO){
+    @WebLog(desc = "库存明细管理-条件查询码库存明细列表")
+    public ResponseResult<List<BmsProductStockQueryListRspDTO>> queryList(@RequestBody BmsProductStockQueryListReqDTO bmsProductStockQueryListReqDTO) {
 
         return ResponseResult.getSuccess(bmsProductStockService.queryList(bmsProductStockQueryListReqDTO));
+    }
+
+
+    /**
+     * 库存明细管理-更新日期
+     * @param bmsProductStockEditDateReqDTO
+     * @return
+     */
+    @PostMapping("/editDate")
+    @WebLog(desc = "库存明细管理-更新日期")
+    public ResponseResult<String> editDate(@RequestBody BmsProductStockEditDateReqDTO bmsProductStockEditDateReqDTO) {
+        bmsProductStockService.editDate(bmsProductStockEditDateReqDTO);
+        return ResponseResult.getSuccess(null);
     }
 
 }

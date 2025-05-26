@@ -113,7 +113,7 @@ public class DataInitCleanController {
             bmsSupplierTb.setCreateUserName(null);
             bmsSupplierTb.setCreateUserId(null);
             bmsSupplierTb.setDeleteFlag(BioBsmContents.N);
-           // bmsSupplierTbMapper.insert(bmsSupplierTb);
+            bmsSupplierTbMapper.insert(bmsSupplierTb);
 
 
         }

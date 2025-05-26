@@ -72,14 +72,15 @@ public class DataInitCleanController {
                 if (expirationDate.contains("/")) {
                     String[] s = expirationDate.split("/");
                     bmsProductStockTb.setExpirationDate(s[0]+"-"+StringUtils.padl(s[1],2,'0')+"-"+StringUtils.padl(s[2],2,'0'));
+                    System.out.println("更改后日期expirationDate="+bmsProductStockTb.getExpirationDate());
                     editFlag = true;
                 }
             }
             if (StringUtils.isNotEmpty(produceDate)) {
                 if (produceDate.contains("/")) {
                     String[] s = produceDate.split("/");
-                    bmsProductStockTb.setExpirationDate(s[0]+"-"+StringUtils.padl(s[1],2,'0')+"-"+StringUtils.padl(s[2],2,'0'));
-                    bmsProductStockTb.setProduceDate(produceDate.replace("/", "-"));
+                    bmsProductStockTb.setProduceDate(s[0]+"-"+StringUtils.padl(s[1],2,'0')+"-"+StringUtils.padl(s[2],2,'0'));
+                    System.out.println("更改后日期produceDate="+bmsProductStockTb.getProduceDate());
                     editFlag = true;
                 }
             }

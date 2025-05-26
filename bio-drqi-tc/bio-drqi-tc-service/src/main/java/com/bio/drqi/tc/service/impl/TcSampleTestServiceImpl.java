@@ -12,6 +12,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.enums.GenerationEnum;
 import com.bio.drqi.external.client.BioInfoClientApi;
 import com.bio.drqi.external.dto.BioResult;
 import com.bio.drqi.mapper.*;
@@ -90,7 +91,23 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         PageHelper.startPage(tcSampleTestListPageDetailReqDTO.getPageNum(), tcSampleTestListPageDetailReqDTO.getPageSize());
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectSelective(BeanUtils.copyProperties(tcSampleTestListPageDetailReqDTO, TcSampleTestTb.class));
         PageInfo<TcSampleTestTb> srcPageInfo = new PageInfo<>(tcSampleTestTbList);
-        return BeanUtils.copyPageInfoProperties(srcPageInfo, TcSampleTestListPageDetailRspDTO.class);
+        PageInfo<TcSampleTestListPageDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, TcSampleTestListPageDetailRspDTO.class);
+        List<String> sameCodeList = tcSampleTestTbList.stream().map(TcSampleTestTb::getSampleCode).collect(Collectors.toList());
+        List<TcSampleTestBioInfoResultTb> tcSampleTestBioInfoResultTbList = tcSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCodeIn(tcSampleTestListPageDetailReqDTO.getSampleApplyNum(), sameCodeList);
+        if (CollectionUtil.isNotEmpty(tcSampleTestBioInfoResultTbList)) {
+            Map<String, List<TcSampleTestBioInfoResultTb>> listMap = tcSampleTestBioInfoResultTbList.stream().collect(Collectors.groupingBy(TcSampleTestBioInfoResultTb::getSampleCode));
+            targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
+                List<TcSampleTestBioInfoResultTb> list = listMap.get(sampleTestListDetailRspDTO.getSampleCode());
+                sampleTestListDetailRspDTO.setMatchNum(list == null ? 0 : list.size());
+                sampleTestListDetailRspDTO.setGenerationName(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getGenerationCode()));
+            });
+        } else {
+            targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
+                sampleTestListDetailRspDTO.setMatchNum(0);
+                sampleTestListDetailRspDTO.setGenerationName(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getGenerationCode()));
+            });
+        }
+        return targetPageInfo;
     }
 
     @Override

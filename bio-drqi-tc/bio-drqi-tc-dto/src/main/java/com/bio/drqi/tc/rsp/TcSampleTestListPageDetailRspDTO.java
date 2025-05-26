@@ -52,6 +52,13 @@ public class TcSampleTestListPageDetailRspDTO {
      */
     private String generationCode;
 
+
+    /**
+     * 代次编号
+     */
+    private String generationName;
+
+
     /**
      * 田测基因型
      */
@@ -176,5 +183,8 @@ public class TcSampleTestListPageDetailRspDTO {
      * 取样类型 F首次取样   R重复取样
      */
     private String applyType;
+
+
+    private Integer matchNum;
 
 }

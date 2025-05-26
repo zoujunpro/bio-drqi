@@ -71,5 +71,16 @@
               where apply_no = #{applyNo,jdbcType=VARCHAR}
               GROUP BY sample_code) a
     </select>
+    <select id="selectAllByApplyNoAndSampleCodeIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_sample_test_bio_info_result_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+        AND sample_code in
+        <foreach collection="sampleCodeList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 
 </mapper>

@@ -23,6 +23,8 @@ public interface TcSampleTestBioInfoResultTbMapper extends BaseMapper<TcSampleTe
     int deleteByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
 
     Integer selectMaxHead(@Param("applyNo") String applyNo);
+
+    List<TcSampleTestBioInfoResultTb> selectAllByApplyNoAndSampleCodeIn(@Param("applyNo") String applyNo, @Param("sampleCodeList") Collection<String> sampleCodeList);
 }
 
 

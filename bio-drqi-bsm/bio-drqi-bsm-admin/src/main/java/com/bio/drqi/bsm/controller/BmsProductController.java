@@ -7,6 +7,7 @@ import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -68,6 +69,7 @@ public class BmsProductController {
      */
     @PostMapping("/exportExcel")
     @WebLog(desc = "材料管理-导出全部")
+    @RequestLog("材料管理-导出全部")
     public void exportExcel(@RequestBody @Validated BmsProductExportExcelReqDTO bmsProductExportExcelReqDTO) {
         bmsProductService.exportExcel(bmsProductExportExcelReqDTO);
     }
@@ -81,6 +83,7 @@ public class BmsProductController {
     @PostMapping("/add")
     @WebLog(desc = "材料管理-添加")
     @RequirePermissions("bms:product:add")
+    @RequestLog("材料管理-添加")
     public ResponseResult<String> add(@RequestBody @Validated BmsProductAddReqDTO bmsProductAddReqDTO) {
         bmsProductService.add(bmsProductAddReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -95,6 +98,7 @@ public class BmsProductController {
     @GetMapping("/delete")
     @WebLog(desc = "材料管理-删除")
     @RequirePermissions("bms:product:delete")
+    @RequestLog("材料管理-删除")
     public ResponseResult<String> delete(@RequestParam @Validated @NotNull Integer id) {
         bmsProductService.delete(id);
         return ResponseResult.getSuccess("ok");
@@ -109,6 +113,7 @@ public class BmsProductController {
     @PostMapping("/edit")
     @WebLog(desc = "材料管理-编辑")
     @RequirePermissions("bms:product:edit")
+    @RequestLog("材料管理-编辑")
     public ResponseResult<String> edit(@RequestBody @Validated BmsProductEditReqDTO bmsProductEditReqDTO) {
         bmsProductService.edit(bmsProductEditReqDTO);
         return ResponseResult.getSuccess("ok");

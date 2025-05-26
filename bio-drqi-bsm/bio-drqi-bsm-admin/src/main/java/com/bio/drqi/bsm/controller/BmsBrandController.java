@@ -9,6 +9,7 @@ import com.bio.drqi.bsm.req.BmsBrandListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsBrandService;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,6 +58,7 @@ public class BmsBrandController {
     @PostMapping("/add")
     @WebLog(desc = "品牌管理-新增")
     @RequirePermissions("bms:brand:add")
+    @RequestLog("品牌管理-新增")
     public ResponseResult<String> add(@RequestBody BmsBrandAddReqDTO bmsBrandAddReqDTO) {
         bmsBrandService.add(bmsBrandAddReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -70,6 +72,7 @@ public class BmsBrandController {
     @GetMapping("/delete")
     @WebLog(desc = "品牌管理-删除")
     @RequirePermissions("bms:brand:delete")
+    @RequestLog("品牌管理-删除")
     public ResponseResult<String> delete(@RequestParam Integer id) {
         bmsBrandService.delete(id);
         return ResponseResult.getSuccess("ok");
@@ -83,6 +86,7 @@ public class BmsBrandController {
     @PostMapping("/edit")
     @WebLog(desc = "品牌管理-修改")
     @RequirePermissions("bms:brand:edit")
+    @RequestLog("品牌管理-修改")
     public ResponseResult<String> edit(@RequestBody BmsBrandEditReqDTO bmsBrandEditReqDTO) {
         bmsBrandService.edit(bmsBrandEditReqDTO);
         return ResponseResult.getSuccess("ok");

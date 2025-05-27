@@ -167,11 +167,11 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
     @Override
     public void remark(SeedStockRemarkReqDTO seedStockRemarkReqDTO) {
-        SeedStockTb seedStockTb = seedStockTbMapper.selectById(seedStockRemarkReqDTO.getRemark());
+        SeedStockTb seedStockTb = seedStockTbMapper.selectById(seedStockRemarkReqDTO.getId());
         if(seedStockTb==null){
             throw new BusinessException("参数异常，不存在此种子");
         }
-        seedStockTb.setRemarks(seedStockRemarkReqDTO.getRemark());
+        seedStockTb.setRemarks(seedStockRemarkReqDTO.getRemarks());
         seedStockTbMapper.updateById(seedStockTb);
 
     }

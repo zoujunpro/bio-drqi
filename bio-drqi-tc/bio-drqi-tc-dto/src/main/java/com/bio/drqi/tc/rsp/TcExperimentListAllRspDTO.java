@@ -1,5 +1,6 @@
 package com.bio.drqi.tc.rsp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -45,5 +46,6 @@ public class TcExperimentListAllRspDTO {
     /**
      * 创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
 }

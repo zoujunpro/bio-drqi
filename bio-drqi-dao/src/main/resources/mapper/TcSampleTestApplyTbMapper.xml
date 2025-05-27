@@ -27,7 +27,7 @@
         id,sample_apply_num,experiment_num,
         task_num,sample_organize,apply_type,test_type,
         expected_sample_time,expected_result_time,create_user_id,
-        create_user_name,create_time,sequence_type,result_excel_url,identify_primer_excel_url
+        create_user_name,create_time,one_result_excel_url,ngs_result_excel_url,identify_primer_excel_url
     </sql>
     <select id="selectOneByTaskNum" resultMap="BaseResultMap">
         select

@@ -114,6 +114,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
             tcPollinationApplyTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
             tcPollinationApplyTb.setCreateTime(new Date());
             tcPollinationApplyTb.setHarvestApplyNum(null);
+            tcPollinationApplyTb.setPollinationExcelUrl(tcPollinationTaskDTO.getPollinationExcelUrl());
             tcPollinationApplyTbMapper.insert(tcPollinationApplyTb);
 
             TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcPollinationApplyTb.getExperimentNum());

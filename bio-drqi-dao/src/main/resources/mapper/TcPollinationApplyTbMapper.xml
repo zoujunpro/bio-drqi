@@ -15,13 +15,16 @@
             <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
+            <result property="pollinationExcelUrl" column="pollination_excel_url" jdbcType="VARCHAR"/>
+            <result property="harvestExcelUrl" column="harvest_excel_url" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
         id,experiment_num,sample_apply_num,
         pollination_type,pollination_apply_num,task_num,
         create_user_id,create_user_name,create_time,
-        harvest_apply_num
+        harvest_apply_num,pollination_excel_url,harvest_excel_url
     </sql>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.TcPollinationApplyTb">
         select

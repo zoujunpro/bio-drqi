@@ -87,6 +87,8 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             TcPollinationApplyTb tcPollinationApplyTb = tcPollinationApplyTbMapper.selectOneByPollinationApplyNum(tcHarvestTaskDTO.getPollinationApplyNum());
             tcPollinationApplyTb.setHarvestApplyNum(bioTaskDtlTb.getTaskNum());
+            tcPollinationApplyTb.setHarvestExcelUrl(tcHarvestTaskDTO.getHarvestFileUrl());
+            tcPollinationApplyTb.setHarvestApplyNum(bioTaskDtlTb.getTaskNum());
             tcPollinationApplyTbMapper.updateById(tcPollinationApplyTb);
 
             /*TcHarvestSeedApplyTb tcHarvestSeedApplyTb = new TcHarvestSeedApplyTb();

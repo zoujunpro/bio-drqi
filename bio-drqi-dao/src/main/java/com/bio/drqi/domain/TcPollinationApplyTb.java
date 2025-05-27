@@ -67,6 +67,10 @@ public class TcPollinationApplyTb implements Serializable {
      */
     private String harvestApplyNum;
 
+    private String pollinationExcelUrl;
+
+    private String harvestExcelUrl;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

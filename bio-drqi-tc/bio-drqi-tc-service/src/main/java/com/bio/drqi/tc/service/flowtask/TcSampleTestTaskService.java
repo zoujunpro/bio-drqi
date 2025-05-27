@@ -7,7 +7,9 @@ import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
+import com.bio.drqi.common.enums.SequenceTypeEnum;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
     private TcSampleTestApplyTbMapper tcSampleTestApplyTbMapper;
 
     @Resource
-    private TcSampleTestBioResultRefMapper  tcSampleTestBioResultRefMapper;
+    private TcSampleTestBioResultRefMapper tcSampleTestBioResultRefMapper;
 
     @Resource
     private TcSampleTestBioInfoResultTbMapper tcSampleTestBioInfoResultTbMapper;
@@ -139,6 +141,22 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
 
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
+        if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
+            TcSampleTestApplyTb tcSampleTestApplyTb = tcSampleTestApplyTbMapper.selectOneByTaskNum(bioTaskDtlTb.getTaskNum());
+
+            tcSampleTestApplyTb.setIdentifyPrimerExcelUrl(tcSampleTestTaskDTO.getIdentifyPrimerTemplateExcelUrl());
+            if (StringUtils.isNotEmpty(tcSampleTestTaskDTO.getBioInfoResultExcelUrl())) {
+                tcSampleTestApplyTb.setResultExcelUrl(tcSampleTestTaskDTO.getBioInfoResultExcelUrl());
+                tcSampleTestApplyTb.setSequenceType(SequenceTypeEnum.CODE_1.code);
+            } else {
+                tcSampleTestApplyTb.setResultExcelUrl(tcSampleTestTaskDTO.getTestDataExcelUrl());
+                tcSampleTestApplyTb.setSequenceType(SequenceTypeEnum.CODE_2.code);
+            }
+            tcSampleTestApplyTbMapper.updateById(tcSampleTestApplyTb);
+
+        }
+
 
     }
 

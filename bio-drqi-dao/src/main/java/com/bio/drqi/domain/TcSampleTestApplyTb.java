@@ -75,6 +75,21 @@ public class TcSampleTestApplyTb implements Serializable {
      */
     private Date createTime;
 
+    /**
+     * 测序类型 1 NGS测序  2一代测序
+     */
+    private String sequenceType;
+
+    /**
+     *测序结果文件
+     */
+    private String resultExcelUrl;
+
+    /**
+     * 孔板引物排版文件
+     */
+    private String identifyPrimerExcelUrl;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

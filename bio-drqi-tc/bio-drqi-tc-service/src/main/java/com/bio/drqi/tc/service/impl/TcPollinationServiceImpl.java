@@ -85,6 +85,22 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         List<TcPollinationExcelDTO> matherList = new ArrayList<TcPollinationExcelDTO>();
         List<TcPollinationExcelDTO> fatherList = new ArrayList<TcPollinationExcelDTO>();
         TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum());
+        //已经授粉的，不在生成单株编号
+        if (StringUtils.isNotEmpty(tcExperimentTb.getPollinationNum())) {
+            throw new BusinessException("已经授粉的无法再次下载授粉信息");
+        }
+
+        //重复下载excel,下载前需要判断是否回退取样编号
+        if (StringUtils.isNotEmpty(tcExperimentTb.getSingleNumbers())) {
+            int beginNumber = Integer.valueOf(tcExperimentTb.getSingleNumbers().split("-")[0]);
+            int endNumber = Integer.valueOf(tcExperimentTb.getSingleNumbers().split("-")[1]);
+            if (tcExperimentTb.getNextSampleNumber() == endNumber) {
+                tcExperimentTb.setNextSampleNumber(beginNumber);
+            }
+        }
+        //没有取样编号的单株编号起始号
+        Integer noSampleSingleNumberStart = tcExperimentTb.getNextSampleNumber();
+
 
         for (TcPollinationCreatePollinationExcelReqDTO.Content content : tcPollinationCreatePollinationExcelReqDTO.getContentList()) {
             TcExperimentDesignTb tcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum(), content.getRegionNum(), content.getSeedNum());
@@ -107,12 +123,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     matherList.add(matherTcPollinationExcelDTO);
                 }
             } else {
-                //没有取样编号的单株编号起始号
-                Integer noSampleSingleNumberStart=0;
-                //没有取样编号的单株编号当前号
-                Integer noSampleSingleNumberCurrent=0;
-                //没有取样编号的单株编号结束号
-                Integer noSampleSingleNumberEnd=0;
+
                 List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNumAndSeedNumAndRegionNumAndCheckResult(tcPollinationCreatePollinationExcelReqDTO.getSampleApplyNum(), content.getSeedNum(), content.getRegionNum(), SampleTestCheckResultEnum.stay.name());
                 List<String> sampleCodeList = tcSampleTestTbList.stream().map(TcSampleTestTb::getSampleCode).distinct().collect(Collectors.toList());
                 for (int i = 0; i < content.getSinglePlantNumber(); i++) {
@@ -120,22 +131,8 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     if (i < sampleCodeList.size()) {
                         sampleCode = sampleCodeList.get(i);
                     } else {
-
-                        //已经授粉的，不在生成单株编号
-                        if(StringUtils.isNotEmpty(tcExperimentTb.getPollinationNum())){
-
-                        }else {
-                            //首次下载
-                            if(StringUtils.isEmpty(tcExperimentTb.getSingleNumbers())){
-                                noSampleSingleNumberStart=tcExperimentTb.getNextSampleNumber();
-                                noSampleSingleNumberCurrent=tcExperimentTb.getNextSampleNumber();
-                            }else {
-
-                            }
-
-                        }
-                        sampleCode =tcExperimentTb.getSampleCodePrefix()+tcExperimentTb.getNextSampleNumber();
-                        tcExperimentTb.setNextSampleNumber(tcExperimentTb.getNextSampleNumber()+1);
+                        sampleCode = tcExperimentTb.getSampleCodePrefix() + tcExperimentTb.getNextSampleNumber();
+                        tcExperimentTb.setNextSampleNumber(tcExperimentTb.getNextSampleNumber() + 1);
                     }
                     if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {
 
@@ -175,6 +172,10 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
         try {
             ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
+            if(!noSampleSingleNumberStart.equals(tcExperimentTb.getNextSampleNumber())){
+                tcExperimentTb.setSingleNumbers(noSampleSingleNumberStart+"-"+tcExperimentTb.getNextSampleNumber());
+                tcExperimentTbMapper.updateById(tcExperimentTb);
+            }
             ExcelUtil.fillExcel(templateDir, matherList, TcPollinationExcelDTO.class, httpServletResponse);
         } catch (Exception e) {
             log.error("模板下载失败，", e);

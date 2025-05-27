@@ -209,7 +209,6 @@
             <if test="checkResult != null and checkResult!=''">and check_result=#{checkResult,jdbcType=VARCHAR}</if>
             <if test="applyType != null">and apply_type=#{applyType,jdbcType=VARCHAR}</if>
         </where>
-        order by id desc
     </select>
     <select id="selectAllBySampleApplyNumAndRegionNumAndSeedNum" resultMap="BaseResultMap">
         select

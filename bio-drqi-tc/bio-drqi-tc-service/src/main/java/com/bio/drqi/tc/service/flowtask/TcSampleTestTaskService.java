@@ -54,7 +54,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
             TcSampleTestApplyTb tcSampleTestApplyTb = tcSampleTestApplyTbMapper.selectOneByTaskNum(bioTaskDtlTb.getTaskNum());
             if (tcSampleTestApplyTb == null) {
                 synchronized (this) {
-                    bathInsertData(bioTaskDtlTb, tcSampleTestTaskDTO, tcSampleTestApplyTb.getExperimentNum());
+                    bathInsertData(bioTaskDtlTb, tcSampleTestTaskDTO, tcSampleTestTaskDTO.getExperimentNum());
                     //如果是单管，则直接默认生成模板
                 }
             }

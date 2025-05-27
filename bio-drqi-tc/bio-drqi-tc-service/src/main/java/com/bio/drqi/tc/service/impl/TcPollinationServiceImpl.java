@@ -194,7 +194,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         try {
             ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
             if (!noSampleSingleNumberStart.equals(tcExperimentTb.getNextSampleNumber())) {
-                tcExperimentTb.setSingleNumbers(noSampleSingleNumberStart + "-" + tcExperimentTb.getNextSampleNumber());
+                tcExperimentTb.setSingleNumbers(noSampleSingleNumberStart + "-" + (tcExperimentTb.getNextSampleNumber()-1));
                 tcExperimentTbMapper.updateById(tcExperimentTb);
             }
             ExcelUtil.fillExcel(templateDir, matherList, TcPollinationExcelDTO.class, httpServletResponse);

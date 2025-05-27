@@ -132,7 +132,6 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
     }
 
 
-
     @Override
     public PageInfo<SeedInStoreDTO.ExecuteFormContent> seedInData(SeedInDataReqDTO seedInDataReqDTO) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(seedInDataReqDTO.getTaskNum());
@@ -166,7 +165,16 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         return result;
     }
 
+    @Override
+    public void remark(SeedStockRemarkReqDTO seedStockRemarkReqDTO) {
+        SeedStockTb seedStockTb = seedStockTbMapper.selectById(seedStockRemarkReqDTO.getRemark());
+        if(seedStockTb==null){
+            throw new BusinessException("参数异常，不存在此种子");
+        }
+        seedStockTb.setRemarks(seedStockRemarkReqDTO.getRemark());
+        seedStockTbMapper.updateById(seedStockTb);
 
+    }
 
 
     private PageInfo<SeedStockPageRspDTO> getSeedStockPageRspDTOPageInfo(SeedStockPageReqDTO seedStockPageReqDTO, Boolean notEmptySeedNumberFlag) {

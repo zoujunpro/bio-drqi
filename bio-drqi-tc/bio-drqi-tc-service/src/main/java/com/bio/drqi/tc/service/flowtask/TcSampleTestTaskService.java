@@ -80,7 +80,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         List<TcSampleTestTb> batchList = new ArrayList<TcSampleTestTb>();
         //首次取样
         if (CollectionUtil.isNotEmpty(tcSampleTestTaskDTO.getFirstSampleApplyList())) {
-            TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByPollinationNum(experimentNum);
+            TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(experimentNum);
             Integer nextSampleNumber = tcExperimentTb.getNextSampleNumber();
             for (int i = 0; i < tcSampleTestTaskDTO.getFirstSampleApplyList().size(); i++) {
                 TcSampleTestTaskDTO.FirstSampleApply firstSampleApply = tcSampleTestTaskDTO.getFirstSampleApplyList().get(i);

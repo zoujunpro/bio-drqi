@@ -130,9 +130,10 @@ public class SeedStockController {
      * @param seedStockRemarkReqDTO
      * @return
      */
-    @GetMapping("/findAllSeedNum")
+    @GetMapping("/remark")
     @WebLog(desc = "种子库存-备注")
     @RequestLog("种子库存-备注")
+    @RequirePermissions("seed:stock:remark")
     public ResponseResult<String> remark(@RequestBody @Validated SeedStockRemarkReqDTO seedStockRemarkReqDTO) {
         seedStoreService.remark(seedStockRemarkReqDTO);
         return ResponseResult.getSuccess("ok");

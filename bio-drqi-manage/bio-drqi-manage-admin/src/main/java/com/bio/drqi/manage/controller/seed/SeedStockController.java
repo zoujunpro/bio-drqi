@@ -130,7 +130,7 @@ public class SeedStockController {
      * @param seedStockRemarkReqDTO
      * @return
      */
-    @GetMapping("/remark")
+    @PostMapping("/remark")
     @WebLog(desc = "种子库存-备注")
     @RequestLog("种子库存-备注")
     @RequirePermissions("seed:stock:remark")

@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
+import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.contents.BioDrQiContents;
@@ -106,6 +107,12 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     matherList.add(matherTcPollinationExcelDTO);
                 }
             } else {
+                //没有取样编号的单株编号起始号
+                Integer noSampleSingleNumberStart=0;
+                //没有取样编号的单株编号当前号
+                Integer noSampleSingleNumberCurrent=0;
+                //没有取样编号的单株编号结束号
+                Integer noSampleSingleNumberEnd=0;
                 List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNumAndSeedNumAndRegionNumAndCheckResult(tcPollinationCreatePollinationExcelReqDTO.getSampleApplyNum(), content.getSeedNum(), content.getRegionNum(), SampleTestCheckResultEnum.stay.name());
                 List<String> sampleCodeList = tcSampleTestTbList.stream().map(TcSampleTestTb::getSampleCode).distinct().collect(Collectors.toList());
                 for (int i = 0; i < content.getSinglePlantNumber(); i++) {
@@ -113,7 +120,20 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     if (i < sampleCodeList.size()) {
                         sampleCode = sampleCodeList.get(i);
                     } else {
-                        //生成单株编号
+
+                        //已经授粉的，不在生成单株编号
+                        if(StringUtils.isNotEmpty(tcExperimentTb.getPollinationNum())){
+
+                        }else {
+                            //首次下载
+                            if(StringUtils.isEmpty(tcExperimentTb.getSingleNumbers())){
+                                noSampleSingleNumberStart=tcExperimentTb.getNextSampleNumber();
+                                noSampleSingleNumberCurrent=tcExperimentTb.getNextSampleNumber();
+                            }else {
+
+                            }
+
+                        }
                         sampleCode =tcExperimentTb.getSampleCodePrefix()+tcExperimentTb.getNextSampleNumber();
                         tcExperimentTb.setNextSampleNumber(tcExperimentTb.getNextSampleNumber()+1);
                     }

@@ -12,6 +12,7 @@ import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageReqDTO;
 import com.bio.drqi.tc.rsp.TcPollinationListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcPollinationListPageRspDTO;
+import com.bio.drqi.tc.rsp.TcPollinationListPollinationApplyNumNotHarvestRspDTO;
 import com.bio.drqi.tc.service.TcPollinationService;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import com.github.pagehelper.PageInfo;
@@ -53,7 +54,7 @@ public class TcPollinationController {
      */
     @GetMapping("/listPollinationApplyNumNotHarvest")
     @WebLog(desc = "授粉管理-查询未收获的授粉申请批次号")
-    public ResponseResult<List<String>> listPollinationApplyNumNotHarvest(){
+    public ResponseResult<List<TcPollinationListPollinationApplyNumNotHarvestRspDTO>> listPollinationApplyNumNotHarvest(){
         return ResponseResult.getSuccess(tcPollinationService.listPollinationApplyNumNotHarvest());
     }
 

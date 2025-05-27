@@ -66,15 +66,16 @@ public class TcSampleTestListPageRspDTO {
     private Date createTime;
 
 
-    /**
-     * 测序类型 1 NGS测序  2一代测序
-     */
-    private String sequenceType;
 
     /**
-     *测序结果文件
+     * 一代测序结果文件
      */
-    private String resultExcelUrl;
+    private String oneResultExcelUrl;
+
+    /**
+     *NGS测序结果文件
+     */
+    private String ngsResultExcelUrl;
 
     /**
      * 孔板引物排版文件

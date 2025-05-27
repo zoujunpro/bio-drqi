@@ -144,15 +144,9 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
             TcSampleTestApplyTb tcSampleTestApplyTb = tcSampleTestApplyTbMapper.selectOneByTaskNum(bioTaskDtlTb.getTaskNum());
-
             tcSampleTestApplyTb.setIdentifyPrimerExcelUrl(tcSampleTestTaskDTO.getIdentifyPrimerTemplateExcelUrl());
-            if (StringUtils.isNotEmpty(tcSampleTestTaskDTO.getBioInfoResultExcelUrl())) {
-                tcSampleTestApplyTb.setResultExcelUrl(tcSampleTestTaskDTO.getBioInfoResultExcelUrl());
-                tcSampleTestApplyTb.setSequenceType(SequenceTypeEnum.CODE_1.code);
-            } else {
-                tcSampleTestApplyTb.setResultExcelUrl(tcSampleTestTaskDTO.getTestDataExcelUrl());
-                tcSampleTestApplyTb.setSequenceType(SequenceTypeEnum.CODE_2.code);
-            }
+            tcSampleTestApplyTb.setNgsResultExcelUrl(tcSampleTestTaskDTO.getBioInfoResultExcelUrl());
+            tcSampleTestApplyTb.setOneResultExcelUrl(tcSampleTestTaskDTO.getTestDataExcelUrl());
             tcSampleTestApplyTbMapper.updateById(tcSampleTestApplyTb);
 
         }

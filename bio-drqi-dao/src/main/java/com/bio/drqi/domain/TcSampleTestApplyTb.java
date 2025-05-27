@@ -76,14 +76,14 @@ public class TcSampleTestApplyTb implements Serializable {
     private Date createTime;
 
     /**
-     * 测序类型 1 NGS测序  2一代测序
+     * 一代测序结果文件
      */
-    private String sequenceType;
+    private String oneResultExcelUrl;
 
     /**
-     *测序结果文件
+     *NGS测序结果文件
      */
-    private String resultExcelUrl;
+    private String ngsResultExcelUrl;
 
     /**
      * 孔板引物排版文件

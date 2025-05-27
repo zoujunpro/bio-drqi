@@ -528,7 +528,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     public PageInfo<TcSampleTestBioInfoPageRspDTO> bioInfoPage(TcSampleTestBioInfoPageReqDTO tcSampleTestBioInfoPageReqDTO) {
         PageHelper.startPage(tcSampleTestBioInfoPageReqDTO.getPageNum(), tcSampleTestBioInfoPageReqDTO.getPageSize());
         TcSampleTestTb tcSampleTestTb = new TcSampleTestTb();
-        tcSampleTestTb.setVectorTaskCode(tcSampleTestBioInfoPageReqDTO.getApplyNo());
+        tcSampleTestTb.setSampleApplyNum(tcSampleTestBioInfoPageReqDTO.getApplyNo());
         tcSampleTestTb.setVectorTaskCode(tcSampleTestBioInfoPageReqDTO.getVectorTaskCode());
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectSelective(tcSampleTestTb);
         PageInfo<TcSampleTestTb> srcPageInfo = new PageInfo<>(tcSampleTestTbList);

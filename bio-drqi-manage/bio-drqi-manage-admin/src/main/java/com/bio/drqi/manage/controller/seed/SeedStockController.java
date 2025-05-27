@@ -101,6 +101,7 @@ public class SeedStockController {
 
     /**
      * 分页查询所在工单的入库记录明细
+     *
      * @param seedInDataReqDTO
      * @return
      */
@@ -120,5 +121,21 @@ public class SeedStockController {
     public ResponseResult<List<SeedTaskSeedNumRspDTO>> findAllSeedNum(@RequestParam @Validated String taskNum) {
         List<SeedTaskSeedNumRspDTO> res = seedStoreService.findAllSeedNum(taskNum);
         return ResponseResult.getSuccess(res);
+    }
+
+
+    /**
+     * 种子库存-备注
+     *
+     * @param seedStockRemarkReqDTO
+     * @return
+     */
+    @PostMapping("/remark")
+    @WebLog(desc = "种子库存-备注")
+    @RequestLog("种子库存-备注")
+    @RequirePermissions("seed:stock:remark")
+    public ResponseResult<String> remark(@RequestBody @Validated SeedStockRemarkReqDTO seedStockRemarkReqDTO) {
+        seedStoreService.remark(seedStockRemarkReqDTO);
+        return ResponseResult.getSuccess("ok");
     }
 }

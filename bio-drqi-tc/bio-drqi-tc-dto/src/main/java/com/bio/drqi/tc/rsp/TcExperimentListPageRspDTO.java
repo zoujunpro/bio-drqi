@@ -78,4 +78,9 @@ public class TcExperimentListPageRspDTO {
      * 田间设计附件
      */
     private String designUrl;
+
+
+    private String sampleCodePrefix;
+
+    private Integer nextSampleNumber;
 }

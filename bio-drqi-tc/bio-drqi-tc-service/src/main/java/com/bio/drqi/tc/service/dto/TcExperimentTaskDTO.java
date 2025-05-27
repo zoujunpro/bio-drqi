@@ -35,4 +35,8 @@ public class TcExperimentTaskDTO {
     private String speciesName;
 
 
+    private String sampleCodePrefix;
+
+
+
 }

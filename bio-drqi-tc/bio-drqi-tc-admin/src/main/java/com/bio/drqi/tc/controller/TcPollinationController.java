@@ -15,6 +15,7 @@ import com.bio.drqi.tc.rsp.TcPollinationListPageRspDTO;
 import com.bio.drqi.tc.service.TcPollinationService;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import com.github.pagehelper.PageInfo;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,6 +75,7 @@ public class TcPollinationController {
      */
     @PostMapping("/createPollinationExcel")
     @WebLog(desc = "授粉管理-生成授粉excel")
+    @Transactional(rollbackFor = Exception.class)
     public void createPollinationExcel(@RequestBody @Validated TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
             tcPollinationService.createPollinationExcel(tcPollinationCreatePollinationExcelReqDTO,httpServletResponse);
     }

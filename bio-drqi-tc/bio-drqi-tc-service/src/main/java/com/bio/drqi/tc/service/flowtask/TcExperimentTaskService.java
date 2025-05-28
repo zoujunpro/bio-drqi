@@ -7,13 +7,12 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.SampleGroupPergixEnum;
 import com.bio.drqi.common.util.LetterUtil;
 import com.bio.drqi.domain.BioTaskDtlTb;
-import com.bio.drqi.domain.CerSampleCodePrefixTb;
 import com.bio.drqi.domain.TcExperimentDesignTb;
 import com.bio.drqi.domain.TcExperimentTb;
-import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
 import com.bio.drqi.mapper.TcExperimentTbMapper;
 import com.bio.drqi.tc.service.dto.ExperimentDesignExcelDTO;
@@ -26,7 +25,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service("tc_experiment_task_apply")
 @Slf4j

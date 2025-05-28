@@ -45,7 +45,11 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         TcExperimentTaskDTO tcExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcExperimentTaskDTO.class);
         ValidatorUtil.validator(tcExperimentTaskDTO);
+        if (StringUtils.isEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {
+            validatorExcel(tcExperimentTaskDTO);
+        }
     }
+
 
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
@@ -72,18 +76,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             if (StringUtils.isEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {
                 throw new BusinessException("大田试验田间设计缺失");
             }
-
-            String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + tcExperimentTaskDTO.getExperimentDesignUrl();
-            try {
-                ossService.downloadPath(tempFilePath, tcExperimentTaskDTO.getExperimentDesignUrl());
-            } catch (Exception e) {
-                log.error("【大田试验田间设计】文件从oss下载失败", e);
-                throw new BusinessException("文件处理异常");
-            }
-            List<ExperimentDesignExcelDTO> experimentDesignExcelDTOList = ExcelUtil.readExcel(tempFilePath, ExperimentDesignExcelDTO.class);
-            if (CollectionUtil.isEmpty(experimentDesignExcelDTOList)) {
-                throw new BusinessException("大田试验田间设计没有具体内容");
-            }
+            List<ExperimentDesignExcelDTO> experimentDesignExcelDTOList = validatorExcel(tcExperimentTaskDTO);
             List<TcExperimentDesignTb> tcExperimentDesignTbList = new ArrayList<TcExperimentDesignTb>();
             for (ExperimentDesignExcelDTO experimentDesignExcelDTO : experimentDesignExcelDTOList) {
                 TcExperimentDesignTb tcExperimentDesignTb = new TcExperimentDesignTb();
@@ -125,6 +118,34 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
 
+    }
+
+
+    private List<ExperimentDesignExcelDTO> validatorExcel(TcExperimentTaskDTO tcExperimentTaskDTO) {
+        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + tcExperimentTaskDTO.getExperimentDesignUrl();
+        try {
+            ossService.downloadPath(tempFilePath, tcExperimentTaskDTO.getExperimentDesignUrl());
+        } catch (Exception e) {
+            log.error("【大田试验田间设计】文件从oss下载失败", e);
+            throw new BusinessException("文件处理异常");
+        }
+        List<ExperimentDesignExcelDTO> experimentDesignExcelDTOList = ExcelUtil.readExcel(tempFilePath, ExperimentDesignExcelDTO.class);
+        if (CollectionUtil.isEmpty(experimentDesignExcelDTOList)) {
+            throw new BusinessException("大田试验田间设计没有具体内容");
+        }
+        for (ExperimentDesignExcelDTO experimentDesignExcelDTO : experimentDesignExcelDTOList) {
+            ValidatorUtil.validator(experimentDesignExcelDTO);
+            if (!tcExperimentTaskDTO.getProjectCodeList().contains(experimentDesignExcelDTO.getProjectCode())) {
+                throw new BusinessException("excel大田设计文件中项目不是目标试验项目");
+            }
+            if (!tcExperimentTaskDTO.getVectorTaskCodeList().contains(experimentDesignExcelDTO.getVectorTaskCode())) {
+                throw new BusinessException("excel大田设计文件中实现方案编号不正确，必须归属所选方案中");
+            }
+            if (experimentDesignExcelDTO.getProjectCode().startsWith(experimentDesignExcelDTO.getVectorTaskCode())) {
+                throw new BusinessException("实施方案:" + experimentDesignExcelDTO.getVectorTaskCode() + "不属于此项目:" + experimentDesignExcelDTO.getProjectCode());
+            }
+        }
+        return experimentDesignExcelDTOList;
     }
 
 

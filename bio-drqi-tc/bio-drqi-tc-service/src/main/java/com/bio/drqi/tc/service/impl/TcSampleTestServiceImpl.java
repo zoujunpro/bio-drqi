@@ -74,7 +74,6 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(50, 50, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(10000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
 
 
-
     @Value("${cer.properties.excelTemplatePath}")
     private String excelTemplatePath;
 
@@ -90,6 +89,9 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     public PageInfo<TcSampleTestListPageDetailRspDTO> listPageDetail(TcSampleTestListPageDetailReqDTO tcSampleTestListPageDetailReqDTO) {
         PageHelper.startPage(tcSampleTestListPageDetailReqDTO.getPageNum(), tcSampleTestListPageDetailReqDTO.getPageSize());
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectSelective(BeanUtils.copyProperties(tcSampleTestListPageDetailReqDTO, TcSampleTestTb.class));
+        if (CollectionUtil.isEmpty(tcSampleTestTbList)) {
+            return new PageInfo<TcSampleTestListPageDetailRspDTO>();
+        }
         PageInfo<TcSampleTestTb> srcPageInfo = new PageInfo<>(tcSampleTestTbList);
         PageInfo<TcSampleTestListPageDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, TcSampleTestListPageDetailRspDTO.class);
         List<String> sameCodeList = tcSampleTestTbList.stream().map(TcSampleTestTb::getSampleCode).collect(Collectors.toList());
@@ -533,7 +535,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectSelective(tcSampleTestTb);
         PageInfo<TcSampleTestTb> srcPageInfo = new PageInfo<>(tcSampleTestTbList);
         if (CollectionUtil.isEmpty(tcSampleTestTbList)) {
-                return new PageInfo<TcSampleTestBioInfoPageRspDTO>();
+            return new PageInfo<TcSampleTestBioInfoPageRspDTO>();
         }
         PageInfo<TcSampleTestBioInfoPageRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, TcSampleTestBioInfoPageRspDTO.class);
         targetPageInfo.getList().forEach(bioInfoPageRspDTO -> {

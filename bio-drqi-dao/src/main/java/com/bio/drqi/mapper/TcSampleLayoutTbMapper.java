@@ -14,6 +14,8 @@ public interface TcSampleLayoutTbMapper extends BaseMapper<TcSampleLayoutTb> {
 
     TcSampleLayoutTb selectOneByApplyNo(@Param("applyNo") String applyNo);
 
+    int deleteByApplyNo(@Param("applyNo") String applyNo);
+
 }
 
 

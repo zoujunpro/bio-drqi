@@ -39,6 +39,10 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
     @Resource
     private TcExperimentTbMapper tcExperimentTbMapper;
 
+
+    @Resource
+    private TcSampleLayoutTbMapper tcSampleLayoutTbMapper;
+
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
@@ -176,5 +180,6 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         tcSampleTestTbMapper.deleteBySampleApplyNum(bioTaskDtlTb.getTaskNum());
         tcSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         tcSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        tcSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
     }
 }

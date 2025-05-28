@@ -45,7 +45,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         TcExperimentTaskDTO tcExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcExperimentTaskDTO.class);
         ValidatorUtil.validator(tcExperimentTaskDTO);
-        if (StringUtils.isEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {
+        if (StringUtils.isNotEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {
             validatorExcel(tcExperimentTaskDTO);
         }
     }

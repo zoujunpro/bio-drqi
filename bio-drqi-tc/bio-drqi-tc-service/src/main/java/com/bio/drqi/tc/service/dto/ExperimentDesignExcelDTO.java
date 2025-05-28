@@ -4,6 +4,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 public class ExperimentDesignExcelDTO {
@@ -113,7 +114,7 @@ public class ExperimentDesignExcelDTO {
      * 播种数量
      */
     @ExcelProperty("播种数量")
-    @NotBlank(message = "播种数量必填")
+    @NotNull(message = "播种数量必填")
     private Integer seedingNumber;
 
     /**

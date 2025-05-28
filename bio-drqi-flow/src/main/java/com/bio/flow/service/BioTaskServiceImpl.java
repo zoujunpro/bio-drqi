@@ -140,6 +140,9 @@ public class BioTaskServiceImpl implements BioTaskService {
         if (StringUtils.isNotEmpty(bioExecuteTaskReqDTO.getFormObject())) {
             bioTaskDtlTb.setTaskForm(bioExecuteTaskReqDTO.getFormObject());
         }
+        BioTaskConf bioTaskConf = bioTaskConfMapper.selectOneByTaskTypeCode(bioTaskDtlTb.getTaskTypeCode());
+        BaseTaskService baseTaskService = SpringUtils.getBean(bioTaskConf.getTaskTypeCode());
+        baseTaskService.executeTask(bioTaskDtlTb);
 
         FlowHisInstanceTb flowHisInstanceTb = flowService.execute(SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), bioTaskDtlTb.getInstanceId(), flowService.getArgs(bioTaskDtlTb.getTaskForm(), bioTaskDtlTb.getTaskTypeCode()), null);
 
@@ -414,7 +417,6 @@ public class BioTaskServiceImpl implements BioTaskService {
             /**
              * 任务执行中
              */
-            baseTaskService.executeTask(bioTaskDtlTb);
 
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
 

@@ -168,7 +168,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         if (CollectionUtil.isNotEmpty(tcSampleTestTbList)) {
             Optional<Integer> minSampleCodeOptional = tcSampleTestTbList.stream().map(tcSampleTestTb -> Integer.valueOf(tcSampleTestTb.getSampleCode().substring(3))).min(Integer::compare);
             if (minSampleCodeOptional.isPresent()) {
-                TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByPollinationNum(tcSampleTestApplyTb.getExperimentNum());
+                TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcSampleTestApplyTb.getExperimentNum());
                 tcExperimentTb.setNextSampleNumber(minSampleCodeOptional.get());
                 tcExperimentTbMapper.updateById(tcExperimentTb);
             }

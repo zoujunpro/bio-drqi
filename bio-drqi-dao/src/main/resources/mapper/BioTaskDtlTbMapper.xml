@@ -52,7 +52,7 @@
         <include refid="Base_Column_List"/>
         from bio_task_dtl_tb
         where instance_id in (select DISTINCT instance_id from flow_task_actor_tb where
-        actor_id=#{applyUserId,jdbcType=VARCHAR})
+        actor_id=#{actorUserId,jdbcType=VARCHAR})
         <if test="taskTypeCode != null and taskTypeCode!=''">
             and task_type_code=#{taskTypeCode,jdbcType=VARCHAR}
         </if>
@@ -62,6 +62,9 @@
         <if test="taskCategory != null and taskCategory!=''">
             and task_category=#{taskCategory,jdbcType=VARCHAR}
         </if>
+        <if test="applyUserId != null">
+            and apply_user_id=#{applyUserId,jdbcType=NUMERIC}
+        </if>
         order by id desc
     </select>
 
@@ -70,7 +73,7 @@
         <include refid="Base_Column_List"/>
         from bio_task_dtl_tb
         where instance_id in (select DISTINCT instance_id from flow_his_commit_tb where
-        create_id=#{applyUserId,jdbcType=VARCHAR})
+        create_id=#{actorUserId,jdbcType=VARCHAR})
         <if test="taskTypeCode != null and taskTypeCode!=''">
             and task_type_code=#{taskTypeCode,jdbcType=VARCHAR}
         </if>
@@ -82,6 +85,9 @@
         </if>
         <if test="taskCategory != null and taskCategory!=''">
             and task_category=#{taskCategory,jdbcType=VARCHAR}
+        </if>
+        <if test="applyUserId != null">
+          and apply_user_id=#{applyUserId,jdbcType=NUMERIC}
         </if>
         order by id desc
     </select>

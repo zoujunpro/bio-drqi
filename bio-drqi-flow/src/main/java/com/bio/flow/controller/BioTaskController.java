@@ -226,7 +226,7 @@ public class BioTaskController {
     }
 
     /**
-     *
+     *查询工单发起人员
      * @param taskCategory
      * @return
      */
@@ -236,6 +236,11 @@ public class BioTaskController {
         return ResponseResult.getSuccess(bioTaskService.queryAllTaskUser(taskCategory));
     }
 
+    /**
+     *导出任务工单
+     * @param bioExportExcelReqDTO
+     * @return
+     */
     @PostMapping("/exportExcel")
     @WebLog(desc = "导出任务工单")
     @RequestLog("导出任务工单")

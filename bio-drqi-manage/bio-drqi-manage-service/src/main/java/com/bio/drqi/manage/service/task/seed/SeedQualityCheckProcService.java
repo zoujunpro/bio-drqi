@@ -5,6 +5,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.manage.dto.seed.SeedQualityCheckDTO;
 import com.bio.drqi.mapper.SeedQualityCheckConfigMapper;
 import com.bio.drqi.mapper.SeedQualityCheckDtlTbMapper;
@@ -80,6 +81,7 @@ public class SeedQualityCheckProcService extends AbstractSeedTaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
+        if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
         SeedQualityCheckDTO seedQualityCheckDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedQualityCheckDTO.class);
         String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + seedQualityCheckDTO.getExcelUrl();
         try {
@@ -131,6 +133,7 @@ public class SeedQualityCheckProcService extends AbstractSeedTaskService {
             });
             //更新最新的种子考种信息
             seedStockTbMapper.updateById(seedStockTb.buildCheckResult(currentCheckResultList));
+        }
         }
     }
 

@@ -414,6 +414,8 @@ public class BioTaskServiceImpl implements BioTaskService {
             /**
              * 任务执行中
              */
+            baseTaskService.executeTask(bioTaskDtlTb);
+
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
 
             bioTaskNotice(bioTaskDtlTb, EventType.active);

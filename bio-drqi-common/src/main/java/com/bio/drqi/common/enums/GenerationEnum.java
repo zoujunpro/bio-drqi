@@ -1,4 +1,4 @@
-package com.bio.drqi.enums;
+package com.bio.drqi.common.enums;
 
 import org.springframework.util.StringUtils;
 

@@ -8,6 +8,7 @@ import com.bio.base.api.RemoteUserService;
 import com.bio.base.user.rsp.UserDetailRspDTO;
 import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.contents.CerProjectContents;
 
 import com.bio.drqi.enums.*;

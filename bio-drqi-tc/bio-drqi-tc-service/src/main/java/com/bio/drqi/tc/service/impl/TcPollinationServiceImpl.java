@@ -5,15 +5,13 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
-import com.bio.common.core.uuid.IdUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.contents.BioDrQiContents;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.BioDictTypeEnum;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.enums.PollinationParentFlagEnum;
 import com.bio.drqi.tc.enums.SampleTestCheckResultEnum;
-import com.bio.drqi.tc.req.TcHarvestCreateHarvestExcelReqDTO;
 import com.bio.drqi.tc.req.TcPollinationCreatePollinationExcelReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageReqDTO;
@@ -74,21 +72,19 @@ public class TcPollinationServiceImpl implements TcPollinationService {
 
     @Override
     public List<TcPollinationListPollinationApplyNumNotHarvestRspDTO> listPollinationApplyNumNotHarvest() {
-        List<TcPollinationListPollinationApplyNumNotHarvestRspDTO> tcPollinationListPollinationApplyNumNotHarvestRspDTOS=new ArrayList<>();
+        List<TcPollinationListPollinationApplyNumNotHarvestRspDTO> tcPollinationListPollinationApplyNumNotHarvestRspDTOS = new ArrayList<>();
         List<TcPollinationApplyTb> tcPollinationApplyTbList = tcPollinationApplyTbMapper.selectAllByHarvestApplyNumIsNullOrderByIdDesc();
-        for (TcPollinationApplyTb tcPollinationApplyTb:tcPollinationApplyTbList){
+        for (TcPollinationApplyTb tcPollinationApplyTb : tcPollinationApplyTbList) {
             BioDict bioDict = bioDictMapper.selectOneByDictTypeAndDictValueCode(BioDictTypeEnum.POLLINATE_TYPE.name(), tcPollinationApplyTb.getPollinationType());
 
-            TcPollinationListPollinationApplyNumNotHarvestRspDTO tcPollinationListPollinationApplyNumNotHarvestRspDTO=new TcPollinationListPollinationApplyNumNotHarvestRspDTO();
-            tcPollinationListPollinationApplyNumNotHarvestRspDTO.setPollinationTypeName(bioDict==null?"未知":bioDict.getDictValueName());
+            TcPollinationListPollinationApplyNumNotHarvestRspDTO tcPollinationListPollinationApplyNumNotHarvestRspDTO = new TcPollinationListPollinationApplyNumNotHarvestRspDTO();
+            tcPollinationListPollinationApplyNumNotHarvestRspDTO.setPollinationTypeName(bioDict == null ? "未知" : bioDict.getDictValueName());
             tcPollinationListPollinationApplyNumNotHarvestRspDTO.setPollinationApplyNum(tcPollinationApplyTb.getPollinationApplyNum());
             tcPollinationListPollinationApplyNumNotHarvestRspDTO.setCreateUserName(tcPollinationApplyTb.getCreateUserName());
             tcPollinationListPollinationApplyNumNotHarvestRspDTO.setCreateTime(tcPollinationApplyTb.getCreateTime());
             tcPollinationListPollinationApplyNumNotHarvestRspDTOS.add(tcPollinationListPollinationApplyNumNotHarvestRspDTO);
         }
         return tcPollinationListPollinationApplyNumNotHarvestRspDTOS;
-
-
 
 
     }
@@ -194,7 +190,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         try {
             ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
             if (!noSampleSingleNumberStart.equals(tcExperimentTb.getNextSampleNumber())) {
-                tcExperimentTb.setSingleNumbers(noSampleSingleNumberStart + "-" + (tcExperimentTb.getNextSampleNumber()-1));
+                tcExperimentTb.setSingleNumbers(noSampleSingleNumberStart + "-" + (tcExperimentTb.getNextSampleNumber() - 1));
                 tcExperimentTbMapper.updateById(tcExperimentTb);
             }
             ExcelUtil.fillExcel(templateDir, matherList, TcPollinationExcelDTO.class, httpServletResponse);

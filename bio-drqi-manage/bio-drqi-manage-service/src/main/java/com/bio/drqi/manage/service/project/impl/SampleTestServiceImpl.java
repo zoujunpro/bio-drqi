@@ -14,7 +14,7 @@ import com.bio.common.oss.service.OssService;
 import com.bio.drqi.manage.base.SampleUnitDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
-import com.bio.drqi.enums.GenerationEnum;
+import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.external.client.BioInfoClientApi;
 import com.bio.drqi.external.dto.BioResult;
 import com.bio.drqi.manage.dto.project.*;

@@ -1,15 +1,16 @@
 package com.bio.drqi.tc.service.flowtask;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
-import com.bio.drqi.common.enums.SequenceTypeEnum;
-import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.domain.BioTaskDtlTb;
+import com.bio.drqi.domain.TcExperimentTb;
+import com.bio.drqi.domain.TcSampleTestApplyTb;
+import com.bio.drqi.domain.TcSampleTestTb;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.enums.SampleTestTypeEnum;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
@@ -147,8 +148,8 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
-        if(SampleTestTypeEnum.more.name().equals(tcSampleTestTaskDTO.getTestType())){
-            if(StringUtils.isEmpty(tcSampleTestTaskDTO.getIdentifyPrimerTemplateExcelUrl())){
+        if (SampleTestTypeEnum.more.name().equals(tcSampleTestTaskDTO.getTestType())) {
+            if (StringUtils.isEmpty(tcSampleTestTaskDTO.getIdentifyPrimerTemplateExcelUrl())) {
                 throw new BusinessException("孔板取样必须上传鉴定引物");
             }
         }

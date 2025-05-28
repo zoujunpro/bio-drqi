@@ -12,7 +12,7 @@ import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.CerSpeciesConf;
 import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
-import com.bio.drqi.enums.GenerationEnum;
+import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.enums.SeedTaskTypeEnum;
 
 import com.bio.drqi.manage.dto.seed.SeedDestructionDTO;

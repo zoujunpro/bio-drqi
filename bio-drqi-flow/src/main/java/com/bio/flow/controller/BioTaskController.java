@@ -237,7 +237,8 @@ public class BioTaskController {
     }
 
     @PostMapping("/exportExcel")
-    @WebLog(desc = "导入任务工单")
+    @WebLog(desc = "导出任务工单")
+    @RequestLog("导出任务工单")
     public void  exportExcel(@RequestBody BioExportExcelReqDTO bioExportExcelReqDTO, HttpServletResponse httpServletResponse){
         bioTaskService.exportExcel(bioExportExcelReqDTO,httpServletResponse);
     }

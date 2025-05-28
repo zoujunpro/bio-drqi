@@ -1,4 +1,4 @@
-package com.bio.drqi.enums;
+package com.bio.drqi.common.enums;
 
 public enum BioTaskStatusEnum {
     TASK_STATUS_1("1","审批中(执行中)"),

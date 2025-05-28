@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.service.project.impl;
 
-import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.manage.transform.req.ApprovePassTransformQueryReqDTO;
 import com.bio.drqi.manage.transform.req.TransformListByVectorTaskReqDTO;
 import com.bio.drqi.manage.transform.req.TransformListByVectorTaskRspDTO;

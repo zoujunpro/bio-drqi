@@ -10,8 +10,8 @@ import com.bio.base.user.rsp.UserDetailRspDTO;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.CerSpeciesConf;
-import com.bio.drqi.enums.BioDictTypeEnum;
-import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.enums.GenerationEnum;
 import com.bio.drqi.enums.SeedTaskTypeEnum;
 

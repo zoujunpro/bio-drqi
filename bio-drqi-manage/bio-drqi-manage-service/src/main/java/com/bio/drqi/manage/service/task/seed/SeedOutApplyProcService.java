@@ -3,7 +3,7 @@ package com.bio.drqi.manage.service.task.seed;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.drqi.domain.BioTaskDtlTb;
-import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.manage.dto.seed.SeedOutDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

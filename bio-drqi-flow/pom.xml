@@ -48,12 +48,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>bio.drqi</groupId>
-            <artifactId>bio-drqi-common-manage</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>bio.common</groupId>
             <artifactId>bio-common-web</artifactId>
             <version>1.0-SNAPSHOT</version>

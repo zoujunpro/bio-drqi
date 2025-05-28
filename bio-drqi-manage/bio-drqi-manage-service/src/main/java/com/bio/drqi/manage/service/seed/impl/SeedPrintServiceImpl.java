@@ -5,7 +5,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.drqi.manage.base.PrintRspDTO;
-import com.bio.drqi.enums.BioDictTypeEnum;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.enums.GenerationEnum;
 import com.bio.drqi.enums.SeedMaterialTypeEnum;
 import com.bio.drqi.manage.print.SeedInPrintReqDTO;

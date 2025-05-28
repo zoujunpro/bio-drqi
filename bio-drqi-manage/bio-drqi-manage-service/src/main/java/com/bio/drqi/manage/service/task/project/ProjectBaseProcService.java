@@ -3,7 +3,7 @@ package com.bio.drqi.manage.service.task.project;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 
-import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;

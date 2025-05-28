@@ -1,4 +1,4 @@
-package com.bio.drqi.enums;
+package com.bio.drqi.common.enums;
 
 public enum BioDictTypeEnum {
     SEED_TYPE,

@@ -7,17 +7,15 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
-import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.BioTaskStatusEnum;
-import com.bio.drqi.mapper.TcHarvestSeedApplyTbMapper;
-import com.bio.drqi.mapper.TcHarvestSeedTbMapper;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.domain.BioTaskDtlTb;
+import com.bio.drqi.domain.TcPollinationApplyTb;
+import com.bio.drqi.domain.TcPollinationTb;
 import com.bio.drqi.mapper.TcPollinationApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
 import com.bio.drqi.tc.service.dto.TcHarvestExcelDTO;
 import com.bio.drqi.tc.service.dto.TcHarvestTaskDTO;
-import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -64,7 +62,7 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
             throw new BusinessException("文件处理异常");
         }
         List<TcHarvestExcelDTO> tcHarvestExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcHarvestExcelDTO.class);
-        for (TcHarvestExcelDTO tcHarvestExcelDTO:tcHarvestExcelDTOList){
+        for (TcHarvestExcelDTO tcHarvestExcelDTO : tcHarvestExcelDTOList) {
             TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode
                     (tcPollinationApplyTb.getExperimentNum(),
                             tcHarvestExcelDTO.getFatherRegionNum(),

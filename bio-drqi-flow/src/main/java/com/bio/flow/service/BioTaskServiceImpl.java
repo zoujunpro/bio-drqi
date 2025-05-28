@@ -1,5 +1,7 @@
 package com.bio.flow.service;
 
+
+
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -8,16 +10,18 @@ import com.bio.base.user.rsp.UserBaseInfoRspDTO;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.SpringUtils;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.BioTaskConf;
 import com.bio.drqi.domain.BioTaskDtlTb;
-import com.bio.drqi.enums.BioTaskStatusEnum;
-import com.bio.drqi.enums.QueryTypeEnum;
 import com.bio.drqi.mapper.BioTaskConfMapper;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.flow.dto.*;
 import com.bio.flow.enums.EventType;
+import com.bio.flow.enums.QueryTypeEnum;
 import com.easyflow.engine.entity.FlowHisInstanceTb;
 import com.easyflow.engine.enums.InstanceState;
 import com.github.pagehelper.PageHelper;
@@ -27,7 +31,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -92,10 +98,10 @@ public class BioTaskServiceImpl implements BioTaskService {
     public BioTaskDtlTb reStartTask(BioReStartTaskReqDTO bioReStartTaskReqDTO) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioReStartTaskReqDTO.getId());
         Assert.notNull(bioTaskDtlTb, "不存在此任务");
-        if(BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())){
+        if (BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
             throw new BusinessException("任务执行中，不能再次执行");
         }
-        if(BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())){
+        if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             throw new BusinessException("任务已经执行完毕，不能再次执行");
         }
         BioTaskConf bioTaskConf = bioTaskConfMapper.selectOneByTaskTypeCode(bioTaskDtlTb.getTaskTypeCode());
@@ -183,7 +189,7 @@ public class BioTaskServiceImpl implements BioTaskService {
          */
         afterFLow(bioTaskDtlTb, flowHisInstanceTb);
 
-         bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioRevokeTaskReqDTO.getId());
+        bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioRevokeTaskReqDTO.getId());
         return bioTaskDtlTb;
     }
 
@@ -220,7 +226,7 @@ public class BioTaskServiceImpl implements BioTaskService {
         } else if (QueryTypeEnum.TYPE_3 == queryTypeEnum) {
             bioTaskDtlTbList = bioTaskDtlTbMapper.selectSelective(BioTaskDtlTb.builder().taskNum(bioTaskListPageReqDTO.getTaskNum()).taskStatus(bioTaskListPageReqDTO.getTaskStatus()).taskTypeCode(bioTaskListPageReqDTO.getTaskTypeCode()).applyUserId(SecurityContextHolder.getUserId()).taskCategory(bioTaskListPageReqDTO.getTaskCategory()).build());
         } else if (QueryTypeEnum.TYPE_4 == queryTypeEnum) {
-            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForAlreadyApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(),bioTaskListPageReqDTO.getTaskStatus());
+            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForAlreadyApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(), bioTaskListPageReqDTO.getTaskStatus());
         }
         PageInfo<BioTaskDtlTb> pageInfo = new PageInfo<>(bioTaskDtlTbList);
         List<BioTaskListPageRspDTO> bioTaskListPageRspDTOList = getTaskListPageRspDTOS(bioTaskDtlTbList);
@@ -364,6 +370,16 @@ public class BioTaskServiceImpl implements BioTaskService {
 
         }
         return result;
+    }
+
+    @Override
+    public void exportExcel(BioExportExcelReqDTO bioExportExcelReqDTO, HttpServletResponse httpServletResponse) {
+        List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectSelective(BioTaskDtlTb.builder().taskNum(bioExportExcelReqDTO.getTaskNum()).taskTypeCode(bioExportExcelReqDTO.getTaskTypeCode()).taskStatus(bioExportExcelReqDTO.getTaskStatus()).applyUserId(bioExportExcelReqDTO.getApplyUserId()).taskCategory(bioExportExcelReqDTO.getTaskCategory()).build());
+        List<BioTaskExcelDTO> bioTaskExcelDTOList= BeanUtils.copyToList(bioTaskDtlTbList,BioTaskExcelDTO.class);
+        bioTaskExcelDTOList.forEach(bioTaskExcelDTO -> {
+            bioTaskExcelDTO.setTaskStatusName(BioTaskStatusEnum.getNameByStatus(bioTaskExcelDTO.getTaskStatus()));
+        });
+        ExcelUtil.writeExcel("任务工单"+System.currentTimeMillis()+".xlsx","sheet1",bioTaskExcelDTOList,BioTaskExcelDTO.class,httpServletResponse );
     }
 
 

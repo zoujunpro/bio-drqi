@@ -6,7 +6,7 @@ import com.bio.drqi.applet.dto.rsp.ScanCodeSeedRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.SeedUniqueCodeDTO;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.BioDictTypeEnum;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.enums.GenerationEnum;
 import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;

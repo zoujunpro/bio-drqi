@@ -6,8 +6,8 @@ import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.domain.BioTaskDtlTb;
-import com.bio.drqi.enums.QueryTypeEnum;
 import com.bio.flow.dto.*;
+import com.bio.flow.enums.QueryTypeEnum;
 import com.bio.flow.service.BioTaskService;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -233,5 +234,11 @@ public class BioTaskController {
     @WebLog(desc = "查询工单发起人员")
     public ResponseResult<List<BioQueryAllTaskUserRspDTO>>  queryAllTaskUser(@RequestParam String taskCategory){
         return ResponseResult.getSuccess(bioTaskService.queryAllTaskUser(taskCategory));
+    }
+
+    @PostMapping("/exportExcel")
+    @WebLog(desc = "导入任务工单")
+    public void  exportExcel(@RequestBody BioExportExcelReqDTO bioExportExcelReqDTO, HttpServletResponse httpServletResponse){
+        bioTaskService.exportExcel(bioExportExcelReqDTO,httpServletResponse);
     }
 }

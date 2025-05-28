@@ -7,10 +7,10 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.domain.TcExperimentDesignTb;
 import com.bio.drqi.domain.TcExperimentTb;
-import com.bio.drqi.enums.BioTaskStatusEnum;
 import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
 import com.bio.drqi.mapper.TcExperimentTbMapper;
 import com.bio.drqi.tc.service.dto.ExperimentDesignExcelDTO;
@@ -65,7 +65,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             tcExperimentTb.setDesignUrl(tcExperimentTaskDTO.getExperimentDesignUrl());
             tcExperimentTbMapper.insert(tcExperimentTb);
 
-            if(StringUtils.isEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())){
+            if (StringUtils.isEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {
                 throw new BusinessException("大田试验田间设计缺失");
             }
 
@@ -77,11 +77,11 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
                 throw new BusinessException("文件处理异常");
             }
             List<ExperimentDesignExcelDTO> experimentDesignExcelDTOList = ExcelUtil.readExcel(tempFilePath, ExperimentDesignExcelDTO.class);
-            if(CollectionUtil.isEmpty(experimentDesignExcelDTOList)){
+            if (CollectionUtil.isEmpty(experimentDesignExcelDTOList)) {
                 throw new BusinessException("大田试验田间设计没有具体内容");
             }
             List<TcExperimentDesignTb> tcExperimentDesignTbList = new ArrayList<TcExperimentDesignTb>();
-            for (ExperimentDesignExcelDTO experimentDesignExcelDTO:experimentDesignExcelDTOList){
+            for (ExperimentDesignExcelDTO experimentDesignExcelDTO : experimentDesignExcelDTOList) {
                 TcExperimentDesignTb tcExperimentDesignTb = new TcExperimentDesignTb();
                 tcExperimentDesignTb.setExperimentNum(tcExperimentTb.getExperimentNum());
                 tcExperimentDesignTb.setRegionNum(experimentDesignExcelDTO.getRegionNum());

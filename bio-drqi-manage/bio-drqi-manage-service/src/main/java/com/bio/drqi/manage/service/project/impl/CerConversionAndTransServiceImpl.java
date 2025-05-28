@@ -5,7 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.enums.ConversionAndTransTypeEnum;
 import com.bio.drqi.enums.PlantStatusEnum;
 import com.bio.drqi.manage.dto.project.ConversionAndTransDTO;

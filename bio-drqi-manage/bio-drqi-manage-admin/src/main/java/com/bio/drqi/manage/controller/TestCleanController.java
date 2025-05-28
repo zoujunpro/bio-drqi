@@ -8,7 +8,7 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
-import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.*;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
@@ -20,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Date;

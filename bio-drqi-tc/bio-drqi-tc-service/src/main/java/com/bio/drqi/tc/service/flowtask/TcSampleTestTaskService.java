@@ -110,6 +110,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                     tcSampleTestTb.setTaskNum(tcSampleTestApplyTb.getTaskNum());
                     tcSampleTestTb.setApplyType(tcSampleTestApplyTb.getApplyType());
                     tcSampleTestTb.setUniqueCode(tcSampleTestTb.getSampleCode());
+                    tcSampleTestTb.setTcSampleCode(firstSampleApply.getRegionNum()+tcSampleTestTb.getSampleCode().substring(3));
                     batchList.add(tcSampleTestTb);
 
                     //算出下次取样编号
@@ -139,6 +140,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                 tcSampleTestTb.setTaskNum(tcSampleTestApplyTb.getTaskNum());
                 tcSampleTestTb.setApplyType(tcSampleTestApplyTb.getApplyType());
                 tcSampleTestTb.setSampleTime(repeatSampleApply.getSampleTime());
+                tcSampleTestTb.setTcSampleCode(repeatSampleApply.getRegionNum()+tcSampleTestTb.getSampleCode().substring(3));
                 batchList.add(tcSampleTestTb);
             }
         }

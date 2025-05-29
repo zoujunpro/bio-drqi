@@ -41,6 +41,8 @@
             <result property="checkResult" column="check_result" jdbcType="VARCHAR"/>
             <result property="applyType" column="apply_type" jdbcType="VARCHAR"/>
             <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
+             <result property="tcSampleCode" column="tc_sample_code" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -54,7 +56,7 @@
         test_fixed_point_type,test_donor_residue_info,test_insertion_site,
         test_elisa_result,test_qbzr_seq,test_edit_residue_info,
         test_time,test_user_id,test_user_name,
-        identify_primer,check_result,apply_type,unique_code
+        identify_primer,check_result,apply_type,unique_code,tcSampleCode
     </sql>
 
     <update id="updateBatchById" parameterType="java.util.List">
@@ -121,7 +123,7 @@
         test_insertion_site,test_elisa_result,test_qbzr_seq,
         test_edit_residue_info,test_time,test_user_id,
         test_user_name,identify_primer,check_result,
-        apply_type,unique_code)
+        apply_type,unique_code,tc_sample_code)
         values
         <foreach collection="tcSampleTestTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},
@@ -135,7 +137,7 @@
             #{item.testInsertionSite,jdbcType=VARCHAR},#{item.testElisaResult,jdbcType=VARCHAR},#{item.testQbzrSeq,jdbcType=VARCHAR},
             #{item.testEditResidueInfo,jdbcType=VARCHAR},#{item.testTime,jdbcType=VARCHAR},#{item.testUserId,jdbcType=NUMERIC},
             #{item.testUserName,jdbcType=VARCHAR},#{item.identifyPrimer,jdbcType=VARCHAR},#{item.checkResult,jdbcType=VARCHAR},
-            #{item.applyType,jdbcType=VARCHAR},#{item.uniqueCode,jdbcType=VARCHAR})
+            #{item.applyType,jdbcType=VARCHAR},#{item.uniqueCode,jdbcType=VARCHAR},#{item.tcSampleCode,jdbcType=VARCHAR})
         </foreach>
     </insert>
     <select id="selectAllBySampleApplyNum" resultMap="BaseResultMap">

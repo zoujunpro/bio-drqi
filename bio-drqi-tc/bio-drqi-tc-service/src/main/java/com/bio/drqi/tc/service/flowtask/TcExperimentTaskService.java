@@ -7,6 +7,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.SampleGroupPergixEnum;
 import com.bio.drqi.common.util.LetterUtil;
@@ -71,6 +72,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             tcExperimentTb.setDesignUrl(tcExperimentTaskDTO.getExperimentDesignUrl());
             tcExperimentTb.setSampleCodePrefix(createSampleCode());
             tcExperimentTb.setNextSampleNumber(1);
+            tcExperimentTb.setOverFlag(BioDrQiContents.N);
             tcExperimentTbMapper.insert(tcExperimentTb);
 
             if (StringUtils.isEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {

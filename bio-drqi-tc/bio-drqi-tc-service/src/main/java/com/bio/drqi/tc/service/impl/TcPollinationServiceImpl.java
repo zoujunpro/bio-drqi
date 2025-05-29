@@ -127,7 +127,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
             tcPollinationSingleNumTbMapper.deleteByExperimentNumAndPollinationApplyNumIsNull(tcExperimentTb.getExperimentNum());
             Integer beginSingleNumber = Integer.valueOf(tcPollinationSingleNumTbList.get(0).getSingleNumber().substring(3));
             Integer endSingleNumber = Integer.valueOf(tcPollinationSingleNumTbList.get(tcPollinationSingleNumTbList.size() - 1).getSingleNumber().substring(3));
-            if (endSingleNumber.equals(tcExperimentTb.getNextSampleNumber())) {
+            if (endSingleNumber.equals(tcExperimentTb.getNextSampleNumber()-1)) {
                 tcExperimentTb.setNextSampleNumber(beginSingleNumber);
                 tcExperimentTbMapper.updateById(tcExperimentTb);
             }

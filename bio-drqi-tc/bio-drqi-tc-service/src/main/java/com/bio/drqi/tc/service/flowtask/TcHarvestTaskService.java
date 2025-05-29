@@ -62,6 +62,10 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
             throw new BusinessException("文件处理异常");
         }
         List<TcHarvestExcelDTO> tcHarvestExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcHarvestExcelDTO.class);
+        List<TcPollinationTb> tcPollinationTbList = tcPollinationTbMapper.selectAllByPollinationApplyNum(tcPollinationApplyTb.getHarvestApplyNum());
+        if (tcPollinationTbList.size() != tcHarvestExcelDTOList.size()) {
+            throw new BusinessException("收获总数据和授粉数不匹配，请核实收获内容");
+        }
         for (TcHarvestExcelDTO tcHarvestExcelDTO : tcHarvestExcelDTOList) {
             TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode
                     (tcPollinationApplyTb.getExperimentNum(),
@@ -89,27 +93,6 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
             tcPollinationApplyTb.setHarvestApplyNum(bioTaskDtlTb.getTaskNum());
             tcPollinationApplyTbMapper.updateById(tcPollinationApplyTb);
 
-            /*TcHarvestSeedApplyTb tcHarvestSeedApplyTb = new TcHarvestSeedApplyTb();
-            tcHarvestSeedApplyTb.setTaskNum(bioTaskDtlTb.getTaskNum());
-            tcHarvestSeedApplyTb.setPollinationApplyNum(tcHarvestTaskDTO.getPollinationApplyNum());
-            tcHarvestSeedApplyTb.setHarvestApplyNum(bioTaskDtlTb.getTaskNum());
-            tcHarvestSeedApplyTb.setHarvestTime(new String());
-            tcHarvestSeedApplyTb.setCreateTime(bioTaskDtlTb.getCreateTime());
-            tcHarvestSeedApplyTb.setCreateUserId(bioTaskDtlTb.getApplyUserId());
-            tcHarvestSeedApplyTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
-            tcHarvestSeedApplyTb.setExperimentNum(tcPollinationApplyTb.getExperimentNum());
-            tcHarvestSeedApplyTb.setHarvestFileUrl(tcHarvestTaskDTO.getHarvestFileUrl());
-            try {
-                tcHarvestSeedApplyTbMapper.insert(tcHarvestSeedApplyTb);
-            } catch (DuplicateKeyException e) {
-                throw new BusinessException("重复收获操作");
-            }
-
-            //更新收获批次号
-            tcPollinationApplyTb.setHarvestApplyNum(tcHarvestSeedApplyTb.getHarvestApplyNum());
-            tcPollinationApplyTbMapper.updateById(tcPollinationApplyTb);*/
-
-            //解析excel
 
             for (TcHarvestExcelDTO tcHarvestExcelDTO : tcHarvestTaskDTO.getTcHarvestExcelDTOList()) {
                 TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode

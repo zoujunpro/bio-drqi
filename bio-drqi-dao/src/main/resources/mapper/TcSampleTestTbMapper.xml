@@ -56,7 +56,7 @@
         test_fixed_point_type,test_donor_residue_info,test_insertion_site,
         test_elisa_result,test_qbzr_seq,test_edit_residue_info,
         test_time,test_user_id,test_user_name,
-        identify_primer,check_result,apply_type,unique_code,tcSampleCode
+        identify_primer,check_result,apply_type,unique_code,tc_sample_code
     </sql>
 
     <update id="updateBatchById" parameterType="java.util.List">

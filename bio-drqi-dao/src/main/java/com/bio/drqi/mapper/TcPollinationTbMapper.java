@@ -20,6 +20,8 @@ public interface TcPollinationTbMapper extends BaseMapper<TcPollinationTb> {
 
     int insertBatch(@Param("tcPollinationTbCollection") Collection<TcPollinationTb> tcPollinationTbCollection);
 
+    List<TcPollinationTb> selectAllByExperimentNum(@Param("experimentNum") String experimentNum);
+
 
     TcPollinationTb selectOneByExperimentNumAndMRegionNumAndMSeedNumAndMSampleCode(@Param("experimentNum") String experimentNum, @Param("mRegionNum") String mRegionNum, @Param("mSeedNum") String mSeedNum, @Param("mSampleCode") String mSampleCode);
 

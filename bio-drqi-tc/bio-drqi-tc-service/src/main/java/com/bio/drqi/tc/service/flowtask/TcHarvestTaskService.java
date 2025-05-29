@@ -9,10 +9,13 @@ import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.BioTaskDtlTb;
+import com.bio.drqi.domain.TcExperimentTb;
 import com.bio.drqi.domain.TcPollinationApplyTb;
 import com.bio.drqi.domain.TcPollinationTb;
+import com.bio.drqi.mapper.TcExperimentTbMapper;
 import com.bio.drqi.mapper.TcPollinationApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
+import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.service.dto.TcHarvestExcelDTO;
 import com.bio.drqi.tc.service.dto.TcHarvestTaskDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +39,9 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
 
 
     @Resource
+    private TcExperimentTbMapper tcExperimentTbMapper;
+
+    @Resource
     private TcPollinationTbMapper tcPollinationTbMapper;
 
     @Override
@@ -44,13 +50,14 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
         ValidatorUtil.validator(tcHarvestTaskDTO);
         BeanUtils.trimFiledSpace(tcHarvestTaskDTO);
 
-        TcPollinationApplyTb tcPollinationApplyTb = tcPollinationApplyTbMapper.selectOneByPollinationApplyNum(tcHarvestTaskDTO.getPollinationApplyNum());
-        if (tcPollinationApplyTb == null) {
-            throw new BusinessException("不存在此授粉批次");
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcHarvestTaskDTO.getExperimentNum());
+        if (tcExperimentTb == null) {
+            throw new BusinessException("不存在此试验");
         }
-        if (StringUtils.isNotEmpty(tcPollinationApplyTb.getHarvestApplyNum())) {
-            throw new BusinessException("该授粉批次已经收获");
+        if(ExperimentStatusEnum.INIT.status.equals(tcExperimentTb.getExperimentStatus())){
+            throw  new BusinessException("非进行中项目，无法进行任何操作");
         }
+
         if (!tcHarvestTaskDTO.getHarvestFileUrl().endsWith("xlsx")) {
             throw new BusinessException("文件格式错误");
         }
@@ -62,13 +69,13 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
             throw new BusinessException("文件处理异常");
         }
         List<TcHarvestExcelDTO> tcHarvestExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcHarvestExcelDTO.class);
-        List<TcPollinationTb> tcPollinationTbList = tcPollinationTbMapper.selectAllByPollinationApplyNum(tcPollinationApplyTb.getHarvestApplyNum());
+        List<TcPollinationTb> tcPollinationTbList = tcPollinationTbMapper.selectAllByExperimentNum(tcExperimentTb.getExperimentNum());
         if (tcPollinationTbList.size() != tcHarvestExcelDTOList.size()) {
             throw new BusinessException("收获总数据和授粉数不匹配，请核实收获内容");
         }
         for (TcHarvestExcelDTO tcHarvestExcelDTO : tcHarvestExcelDTOList) {
             TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode
-                    (tcPollinationApplyTb.getExperimentNum(),
+                    (tcExperimentTb.getExperimentNum(),
                             tcHarvestExcelDTO.getFatherRegionNum(),
                             tcHarvestExcelDTO.getMotherRegionNum(),
                             tcHarvestExcelDTO.getFatherSeedNum(),
@@ -87,16 +94,15 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         TcHarvestTaskDTO tcHarvestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcHarvestTaskDTO.class);
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-            TcPollinationApplyTb tcPollinationApplyTb = tcPollinationApplyTbMapper.selectOneByPollinationApplyNum(tcHarvestTaskDTO.getPollinationApplyNum());
-            tcPollinationApplyTb.setHarvestApplyNum(bioTaskDtlTb.getTaskNum());
-            tcPollinationApplyTb.setHarvestExcelUrl(tcHarvestTaskDTO.getHarvestFileUrl());
-            tcPollinationApplyTb.setHarvestApplyNum(bioTaskDtlTb.getTaskNum());
-            tcPollinationApplyTbMapper.updateById(tcPollinationApplyTb);
+            TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcHarvestTaskDTO.getExperimentNum());
+            tcExperimentTb.setHarvestApplyNum(bioTaskDtlTb.getTaskNum());
+            tcExperimentTb.setHarvestExcelUrl(tcHarvestTaskDTO.getHarvestFileUrl());
+            tcExperimentTbMapper.updateById(tcExperimentTb);
 
 
             for (TcHarvestExcelDTO tcHarvestExcelDTO : tcHarvestTaskDTO.getTcHarvestExcelDTOList()) {
                 TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode
-                        (tcPollinationApplyTb.getExperimentNum(),
+                        (tcExperimentTb.getExperimentNum(),
                                 tcHarvestExcelDTO.getFatherRegionNum(),
                                 tcHarvestExcelDTO.getMotherRegionNum(),
                                 tcHarvestExcelDTO.getFatherSeedNum(),

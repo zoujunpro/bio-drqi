@@ -88,7 +88,11 @@ public class TcExperimentTb implements Serializable {
 
     private Integer nextSampleNumber;
 
-    private String overFlag;
+    /**
+     *
+     * 试验状态 1 进行中  2试验结束 3试验终止
+     */
+    private String experimentStatus;
 
     /**
      * 收获批次号

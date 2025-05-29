@@ -66,6 +66,8 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     @Resource
     private TcSampleTestBioInfoResultTbMapper tcSampleTestBioInfoResultTbMapper;
 
+    @Resource
+    private TcExperimentTbMapper tcExperimentTbMapper;
 
     @Resource
     private BioInfoClientApi bioInfoClientApi;
@@ -316,6 +318,8 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     @Override
     public void dowLayoutExcel(String applyNo, HttpServletResponse httpServletResponse) {
         TcSampleLayoutTb tcSampleLayoutTb = tcSampleLayoutTbMapper.selectOneByApplyNo(applyNo);
+        TcSampleTestApplyTb tcSampleTestApplyTb = tcSampleTestApplyTbMapper.selectOneByTaskNum(applyNo);
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcSampleTestApplyTb.getExperimentNum());
         List<List<List<SampleUnitDTO>>> layoutList = null;
         if (tcSampleLayoutTb != null) {
             List<SampleUnitDTO> singleSampleUnitDTOList = JSONUtil.toList(tcSampleLayoutTb.getSingleContent(), SampleUnitDTO.class);
@@ -335,7 +339,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
                 }
 
             }
-            TcSampleExcelUtil.createExcel(applyNo, layoutList, singleSampleUnitDTOList, httpServletResponse, "取样标签排版.xlsx");
+            TcSampleExcelUtil.createExcel(tcSampleTestApplyTb,tcExperimentTb, layoutList, singleSampleUnitDTOList, httpServletResponse, "取样标签排版.xlsx");
         } else {
             //默认排版
             TcSampleTestLayoutConfirmReqDTO tcSampleTestLayoutConfirmReqDTO = getLayoutConfirmReqDTO(applyNo);

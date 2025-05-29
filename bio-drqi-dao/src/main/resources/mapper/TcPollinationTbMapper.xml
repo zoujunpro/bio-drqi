@@ -137,4 +137,21 @@
             </otherwise>
         </choose>
     </select>
+    <select id="selectOneByExperimentNumAndMRegionNumAndMSeedNumAndMSampleCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_pollination_tb
+        where
+        experiment_num = #{experimentNum,jdbcType=VARCHAR}
+        AND m_region_num = #{mRegionNum,jdbcType=VARCHAR}
+        AND m_seed_num = #{mSeedNum,jdbcType=VARCHAR}
+        <choose>
+            <when test="mSampleCode !=null and mSampleCode!='' ">
+                AND m_sample_code = #{mSampleCode,jdbcType=VARCHAR}
+            </when>
+            <otherwise>
+                AND m_sample_code  is null
+            </otherwise>
+        </choose>
+    </select>
 </mapper>

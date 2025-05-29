@@ -21,7 +21,9 @@
             <result property="designUrl" column="design_url" jdbcType="VARCHAR"/>
             <result property="sampleCodePrefix" column="sample_code_prefix" jdbcType="VARCHAR"/>
             <result property="nextSampleNumber" column="next_sample_number" jdbcType="VARCHAR"/>
-           <result property="overFlag" column="over_flag" jdbcType="VARCHAR"/>
+            <result property="overFlag" column="over_flag" jdbcType="VARCHAR"/>
+            <result property="harvestExcelUrl" column="harvest_excel_url" jdbcType="VARCHAR"/>
+            <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -29,7 +31,7 @@
         species_code,species_name,file_url,
         experiment_goal,experiment_address,apply_user_name,
         apply_user_id,create_time,experiment_num,
-        task_num,design_url,sample_code_prefix,next_sample_number,over_flag
+        task_num,design_url,sample_code_prefix,next_sample_number,over_flag, harvest_apply_num,harvest_excel_url
     </sql>
     <select id="selectSelective" resultType="com.bio.drqi.domain.TcExperimentTb">
         select

@@ -53,9 +53,6 @@ public class TcPollinationListPageRspDTO {
      */
     private String harvestApplyNum;
 
-    private String pollinationExcelUrl;
-
-    private String harvestExcelUrl;
 
 
 

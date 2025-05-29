@@ -90,6 +90,14 @@ public class TcExperimentTb implements Serializable {
 
     private String overFlag;
 
+    /**
+     * 收获批次号
+     */
+    private String harvestApplyNum;
+
+
+
+    private String harvestExcelUrl;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -81,13 +81,14 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
         }
         List<TcPollinationExcelDTO> tcPollinationExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcPollinationExcelDTO.class);
         for (TcPollinationExcelDTO tcPollinationExcelDTO : tcPollinationExcelDTOList) {
+            //校验1:必填项校验
             ValidatorUtil.validator(tcPollinationTaskDTO);
-
+            //校验2:父本存在性校验
             TcExperimentDesignTb father = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationTaskDTO.getExperimentNum(), tcPollinationExcelDTO.getFatherRegionNum(), tcPollinationExcelDTO.getFatherSeedNum());
             if (father == null) {
                 throw new BusinessException("实验中无此区域为：" + tcPollinationExcelDTO.getFatherRegionNum() + "的种子编号:" + tcPollinationExcelDTO.getFatherSeedNum());
             }
-            //父本单珠编号校验
+            //校验3:父本单珠编号校验
             if (StringUtils.isNotEmpty(tcPollinationExcelDTO.getFatherSampleCode())) {
                 TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneBySampleApplyNumAndSampleCode(tcPollinationTaskDTO.getSampleApplyNum(), tcPollinationExcelDTO.getFatherSampleCode());
                 TcPollinationSingleNumTb tcPollinationSingleNumTb = tcPollinationSingleNumTbMapper.selectOneBySingleNumber(tcPollinationExcelDTO.getFatherSampleCode());
@@ -109,12 +110,12 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                     throw new BusinessException("单珠编号为" + tcPollinationExcelDTO.getFatherSeedNum() + "的父本不存在");
                 }
             }
-
+            //校验4:母本存在性校验
             TcExperimentDesignTb mather = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationTaskDTO.getExperimentNum(), tcPollinationExcelDTO.getMotherRegionNum(), tcPollinationExcelDTO.getMotherSeedNum());
             if (mather == null) {
                 throw new BusinessException("实验中无此区域为：" + tcPollinationExcelDTO.getMotherRegionNum() + "的种子编号:" + tcPollinationExcelDTO.getMotherSeedNum());
             }
-            //母本单珠编号校验
+            //校验5:母本单珠编号校验
             if (StringUtils.isNotEmpty(tcPollinationExcelDTO.getMotherSampleCode())) {
                 TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneBySampleApplyNumAndSampleCode(tcPollinationTaskDTO.getSampleApplyNum(), tcPollinationExcelDTO.getMotherSampleCode());
                 TcPollinationSingleNumTb tcPollinationSingleNumTb = tcPollinationSingleNumTbMapper.selectOneBySingleNumber(tcPollinationExcelDTO.getMotherSampleCode());
@@ -136,12 +137,18 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                     throw new BusinessException("单珠编号为" + tcPollinationExcelDTO.getMotherSampleCode() + "的母本不存在");
                 }
             }
-
+            //校验6: 收获方式校验
             BioDict harvestTypeDict = bioDictMapper.selectOneByDictTypeAndDictValueName(BioDictTypeEnum.HARVEST_TYPE.name(), tcPollinationExcelDTO.getHarvestTypeName());
             if (harvestTypeDict == null) {
                 throw new BusinessException("收获方式填写错误：" + tcPollinationExcelDTO.getHarvestTypeName());
             }
             tcPollinationExcelDTO.setHarvestTypeCode(harvestTypeDict.getDictValueCode());
+
+            //校验7:授粉中母本只能授粉一次
+            TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndMRegionNumAndMSeedNumAndMSampleCode(tcPollinationTaskDTO.getExperimentNum(), tcPollinationExcelDTO.getMotherRegionNum(), tcPollinationExcelDTO.getMotherSeedNum(), tcPollinationExcelDTO.getMotherSampleCode());
+            if(tcPollinationTb!=null){
+                throw new BusinessException("小区编号："+tcPollinationExcelDTO.getMotherRegionNum()+" 种子编号："+tcPollinationExcelDTO.getMotherSeedNum()+(StringUtils.isNotEmpty(tcPollinationExcelDTO.getMotherSampleCode())?"取样编号:"+tcPollinationExcelDTO.getMotherSampleCode():"")+"的母本已经受过粉");
+            }
         }
 
         tcPollinationTaskDTO.setTcPollinationExcelDTOList(tcPollinationExcelDTOList);
@@ -162,7 +169,6 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
             tcPollinationApplyTb.setCreateUserId(bioTaskDtlTb.getApplyUserId());
             tcPollinationApplyTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
             tcPollinationApplyTb.setCreateTime(new Date());
-            tcPollinationApplyTb.setHarvestApplyNum(null);
             tcPollinationApplyTb.setPollinationExcelUrl(tcPollinationTaskDTO.getPollinationExcelUrl());
             tcPollinationApplyTbMapper.insert(tcPollinationApplyTb);
 

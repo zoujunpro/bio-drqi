@@ -78,4 +78,9 @@ public class TcExperimentListPageRspDTO {
     private String sampleCodePrefix;
 
     private Integer nextSampleNumber;
+
+
+    private String pollinationExcelUrl;
+
+    private String harvestExcelUrl;
 }

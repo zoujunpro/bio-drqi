@@ -70,11 +70,6 @@ public class TcExperimentListPageRspDTO {
     private String taskNum;
 
     /**
-     * 授粉标识
-     */
-    private String pollinationNum;
-
-    /**
      * 田间设计附件
      */
     private String designUrl;

@@ -250,14 +250,13 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
 
         if (CollectionUtil.isNotEmpty(identifyPrimerTemplateExcelDTOList)) {
             for (IdentifyPrimerTemplateExcelDTO identifyPrimerTemplateExcelDTO : identifyPrimerTemplateExcelDTOList) {
-                TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneByExperimentNumAndSampleCode(tcSampleTestTaskDTO.getExperimentNum(), identifyPrimerTemplateExcelDTO.getSampleCode());
+                TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneBySampleApplyNumAndSampleCode(tcSampleTestUploadIdentifyPrimerTemplateReqDTO.getApplyNo(), identifyPrimerTemplateExcelDTO.getSampleCode());
                 if (tcSampleTestTb != null) {
                     tcSampleTestTb.setIdentifyPrimer(identifyPrimerTemplateExcelDTO.getIdentifyPrimer());
                     tcSampleTestTbMapper.updateIdentifyPrimerById(identifyPrimerTemplateExcelDTO.getIdentifyPrimer(), tcSampleTestTb.getId());
                 }
             }
         }
-
         tcSampleTestTaskDTO.setIdentifyPrimerTemplateExcelUrl(tcSampleTestUploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcSampleTestTaskDTO));
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
@@ -358,7 +357,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         }
         TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
         for (TcSampleTestApproveSampleResultReqDTO.Content content : tcSampleTestApproveSampleResultReqDTO.getContentList()) {
-            TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneByExperimentNumAndSampleCode(tcSampleTestTaskDTO.getExperimentNum(), content.getSampleCode());
+            TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneBySampleApplyNumAndSampleCode(tcSampleTestApproveSampleResultReqDTO.getTaskNum(), content.getSampleCode());
             if (tcSampleTestTb == null) {
                 log.error("approveSampleResult content={}", content);
                 throw new BusinessException("此试验中无此取样编号:" + content.getSampleCode() + ", 实现号：" + tcSampleTestTaskDTO.getExperimentNum());

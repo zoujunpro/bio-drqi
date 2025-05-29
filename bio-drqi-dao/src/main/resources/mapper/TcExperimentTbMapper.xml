@@ -18,11 +18,9 @@
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
-            <result property="pollinationNum" column="pollination_num" jdbcType="VARCHAR"/>
             <result property="designUrl" column="design_url" jdbcType="VARCHAR"/>
             <result property="sampleCodePrefix" column="sample_code_prefix" jdbcType="VARCHAR"/>
             <result property="nextSampleNumber" column="next_sample_number" jdbcType="VARCHAR"/>
-            <result property="singleNumbers" column="single_numbers" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -30,7 +28,7 @@
         species_code,species_name,file_url,
         experiment_goal,experiment_address,apply_user_name,
         apply_user_id,create_time,experiment_num,
-        task_num,pollination_num,design_url,sample_code_prefix,next_sample_number,single_numbers
+        task_num,design_url,sample_code_prefix,next_sample_number
     </sql>
     <select id="selectSelective" resultType="com.bio.drqi.domain.TcExperimentTb">
         select
@@ -49,7 +47,6 @@
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
             <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
-            <if test="pollinationNum != null and pollinationNum!=''">and pollination_num=#{pollinationNum,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>
@@ -66,13 +63,6 @@
         <include refid="Base_Column_List"/>
         from tc_experiment_tb
         order by id desc
-    </select>
-    <select id="selectOneByPollinationNum" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from tc_experiment_tb
-        where
-        pollination_num = #{pollinationNum,jdbcType=VARCHAR}
     </select>
     <select id="selectOneByExperimentNum" resultMap="BaseResultMap">
         select

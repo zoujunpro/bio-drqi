@@ -1,6 +1,8 @@
 package com.bio.drqi.tc.service.impl;
+import java.util.Date;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
@@ -62,6 +64,9 @@ public class TcPollinationServiceImpl implements TcPollinationService {
     @Resource
     private BioDictMapper bioDictMapper;
 
+    @Resource
+    private TcPollinationSingleNumTbMapper tcPollinationSingleNumTbMapper;
+
     @Override
     public PageInfo<TcPollinationListPageRspDTO> listPage(TcPollinationListPageReqDTO tcPollinationListPageReqDTO) {
         PageHelper.startPage(tcPollinationListPageReqDTO.getPageNum(), tcPollinationListPageReqDTO.getPageSize());
@@ -101,24 +106,34 @@ public class TcPollinationServiceImpl implements TcPollinationService {
     public void createPollinationExcel(TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
         List<TcPollinationExcelDTO> matherList = new ArrayList<TcPollinationExcelDTO>();
         List<TcPollinationExcelDTO> fatherList = new ArrayList<TcPollinationExcelDTO>();
+        List<TcPollinationSingleNumTb> currentTcPollinationSingleNumTbList = new ArrayList<TcPollinationSingleNumTb>();
         TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum());
-        //已经授粉的，不在生成单株编号
-        if (StringUtils.isNotEmpty(tcExperimentTb.getPollinationNum())) {
-            throw new BusinessException("已经授粉的无法再次下载授粉信息");
+        if (tcExperimentTb == null) {
+            throw new BusinessException("试验方案不存在");
+        }
+        //先下载授粉表格，校验授粉模板是否存在
+        String excelTemplateName = "田测授粉数据表单模板V1.0.xlsx";
+        String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
+        try {
+            ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
+        } catch (Exception e) {
+            log.error("模板下载失败，", e);
+            throw new BusinessException("模板下载失败，请联系管理员检测模板配置");
         }
 
-        //重复下载excel,下载前需要判断是否回退取样编号
-        if (StringUtils.isNotEmpty(tcExperimentTb.getSingleNumbers())) {
-            int beginNumber = Integer.valueOf(tcExperimentTb.getSingleNumbers().split("-")[0]);
-            int endNumber = Integer.valueOf(tcExperimentTb.getSingleNumbers().split("-")[1]);
-            if (tcExperimentTb.getNextSampleNumber() == endNumber) {
-                tcExperimentTb.setNextSampleNumber(beginNumber);
+        //下载授粉表单时，先判断是否有上次下载记录，如果有则把上次下载记录清空,同时判断是否需要回退取样编号起始位置
+        List<TcPollinationSingleNumTb> tcPollinationSingleNumTbList = tcPollinationSingleNumTbMapper.selectAllByExperimentNumAndPollinationApplyNumIsNull(tcExperimentTb.getExperimentNum());
+        if (CollectionUtil.isNotEmpty(tcPollinationSingleNumTbList)) {
+            tcPollinationSingleNumTbMapper.deleteByExperimentNumAndPollinationApplyNumIsNull(tcExperimentTb.getExperimentNum());
+            Integer beginSingleNumber = Integer.valueOf(tcPollinationSingleNumTbList.get(0).getSingleNumber().substring(3));
+            Integer endSingleNumber = Integer.valueOf(tcPollinationSingleNumTbList.get(tcPollinationSingleNumTbList.size() - 1).getSingleNumber().substring(3));
+            if (endSingleNumber.equals(tcExperimentTb.getNextSampleNumber())) {
+                tcExperimentTb.setNextSampleNumber(beginSingleNumber);
+                tcExperimentTbMapper.updateById(tcExperimentTb);
             }
         }
-        //没有取样编号的单株编号起始号
-        Integer noSampleSingleNumberStart = tcExperimentTb.getNextSampleNumber();
 
-
+        //循环遍历excel
         for (TcPollinationCreatePollinationExcelReqDTO.Content content : tcPollinationCreatePollinationExcelReqDTO.getContentList()) {
             TcExperimentDesignTb tcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum(), content.getRegionNum(), content.getSeedNum());
             if (tcExperimentDesignTb == null) {
@@ -140,7 +155,6 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     matherList.add(matherTcPollinationExcelDTO);
                 }
             } else {
-
                 List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNumAndSeedNumAndRegionNumAndCheckResult(tcPollinationCreatePollinationExcelReqDTO.getSampleApplyNum(), content.getSeedNum(), content.getRegionNum(), SampleTestCheckResultEnum.stay.name());
                 List<String> sampleCodeList = tcSampleTestTbList.stream().map(TcSampleTestTb::getSampleCode).distinct().collect(Collectors.toList());
                 for (int i = 0; i < content.getSinglePlantNumber(); i++) {
@@ -148,8 +162,18 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     if (i < sampleCodeList.size()) {
                         sampleCode = sampleCodeList.get(i);
                     } else {
+                        //生成单株编号，同时更新取样编号的下次开始编号
                         sampleCode = tcExperimentTb.getSampleCodePrefix() + tcExperimentTb.getNextSampleNumber();
                         tcExperimentTb.setNextSampleNumber(tcExperimentTb.getNextSampleNumber() + 1);
+                        TcPollinationSingleNumTb tcPollinationSingleNumTb=new TcPollinationSingleNumTb();
+                        tcPollinationSingleNumTb.setExperimentNum(tcExperimentTb.getExperimentNum());
+                        tcPollinationSingleNumTb.setPollinationApplyNum(null);
+                        tcPollinationSingleNumTb.setSeedNum(content.getSeedNum());
+                        tcPollinationSingleNumTb.setRegionNum(content.getRegionNum());
+                        tcPollinationSingleNumTb.setSingleNumber(sampleCode);
+                        tcPollinationSingleNumTb.setCreateTime(new Date());
+                        tcPollinationSingleNumTb.setCreateUserName(SecurityContextHolder.getNickName());
+                        currentTcPollinationSingleNumTbList.add(tcPollinationSingleNumTb);
                     }
                     if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {
 
@@ -185,19 +209,12 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                 }
             }
         }
-        String excelTemplateName = "田测授粉数据表单模板V1.0.xlsx";
-        String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
-        try {
-            ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
-            if (!noSampleSingleNumberStart.equals(tcExperimentTb.getNextSampleNumber())) {
-                tcExperimentTb.setSingleNumbers(noSampleSingleNumberStart + "-" + (tcExperimentTb.getNextSampleNumber() - 1));
-                tcExperimentTbMapper.updateById(tcExperimentTb);
-            }
-            ExcelUtil.fillExcel(templateDir, matherList, TcPollinationExcelDTO.class, httpServletResponse);
-        } catch (Exception e) {
-            log.error("模板下载失败，", e);
-            throw new BusinessException("模板下载失败，请联系管理员检测模板配置");
+        //判断是否有单株编号生成
+        if(CollectionUtil.isNotEmpty(currentTcPollinationSingleNumTbList)){
+            tcPollinationSingleNumTbMapper.insertBatch(currentTcPollinationSingleNumTbList);
+            tcExperimentTbMapper.updateById(tcExperimentTb);
         }
+        ExcelUtil.fillExcel(templateDir, matherList, TcPollinationExcelDTO.class, httpServletResponse);
     }
 
 }

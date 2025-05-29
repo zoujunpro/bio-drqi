@@ -11,6 +11,7 @@ import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
+import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import com.bio.drqi.tc.service.dto.TcPollinationTaskDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Service("tc_pollination_task_apply")
@@ -49,6 +48,9 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
     private TcSampleTestTbMapper tcSampleTestTbMapper;
 
     @Resource
+    private TcExperimentTbMapper tcExperimentTbMapper;
+
+    @Resource
     private BioDictMapper bioDictMapper;
 
 
@@ -58,12 +60,16 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
         ValidatorUtil.validator(tcPollinationTaskDTO);
         BeanUtils.trimFiledSpace(tcPollinationTaskDTO);
 
-
-        TcPollinationApplyTb tcPollinationApplyTb = tcPollinationApplyTbMapper.selectOneByExperimentNum(tcPollinationTaskDTO.getExperimentNum());
-        if (tcPollinationApplyTb != null) {
-            throw new BusinessException("该试验已经授粉");
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcPollinationTaskDTO.getExperimentNum());
+        if (tcExperimentTb == null) {
+            throw new BusinessException("不存在此试验");
         }
-
+        if (ExperimentStatusEnum.INIT.status.equals(tcExperimentTb.getExperimentStatus())) {
+            throw new BusinessException("非进行中试验，无法进行任何操作");
+        }
+        if (tcExperimentTb.getHarvestApplyNum() != null) {
+            throw new BusinessException("该试验已经收获，无法再授粉");
+        }
         BioDict bioDict = bioDictMapper.selectOneByDictTypeAndDictValueCode(BioDictTypeEnum.POLLINATE_TYPE.name(), tcPollinationTaskDTO.getPollinationType());
         if (bioDict == null) {
             throw new BusinessException("授粉方式错误");
@@ -146,8 +152,8 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
 
             //校验7:授粉中母本只能授粉一次
             TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndMRegionNumAndMSeedNumAndMSampleCode(tcPollinationTaskDTO.getExperimentNum(), tcPollinationExcelDTO.getMotherRegionNum(), tcPollinationExcelDTO.getMotherSeedNum(), tcPollinationExcelDTO.getMotherSampleCode());
-            if(tcPollinationTb!=null){
-                throw new BusinessException("小区编号："+tcPollinationExcelDTO.getMotherRegionNum()+" 种子编号："+tcPollinationExcelDTO.getMotherSeedNum()+(StringUtils.isNotEmpty(tcPollinationExcelDTO.getMotherSampleCode())?"取样编号:"+tcPollinationExcelDTO.getMotherSampleCode():"")+"的母本已经受过粉");
+            if (tcPollinationTb != null) {
+                throw new BusinessException("小区编号：" + tcPollinationExcelDTO.getMotherRegionNum() + " 种子编号：" + tcPollinationExcelDTO.getMotherSeedNum() + (StringUtils.isNotEmpty(tcPollinationExcelDTO.getMotherSampleCode()) ? "取样编号:" + tcPollinationExcelDTO.getMotherSampleCode() : "") + "的母本已经受过粉");
             }
         }
 

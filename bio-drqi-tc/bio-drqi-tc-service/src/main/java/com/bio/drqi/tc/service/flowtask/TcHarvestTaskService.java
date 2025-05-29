@@ -55,7 +55,7 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
             throw new BusinessException("不存在此试验");
         }
         if(ExperimentStatusEnum.INIT.status.equals(tcExperimentTb.getExperimentStatus())){
-            throw  new BusinessException("非进行中项目，无法进行任何操作");
+            throw  new BusinessException("非进行中试验，无法进行任何操作");
         }
 
         if (!tcHarvestTaskDTO.getHarvestFileUrl().endsWith("xlsx")) {

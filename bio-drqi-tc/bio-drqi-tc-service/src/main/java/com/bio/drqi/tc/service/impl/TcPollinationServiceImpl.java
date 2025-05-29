@@ -12,6 +12,7 @@ import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
+import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.enums.PollinationParentFlagEnum;
 import com.bio.drqi.tc.enums.SampleTestCheckResultEnum;
 import com.bio.drqi.tc.req.TcPollinationCreatePollinationExcelReqDTO;
@@ -110,6 +111,12 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum());
         if (tcExperimentTb == null) {
             throw new BusinessException("试验方案不存在");
+        }
+        if (ExperimentStatusEnum.INIT.status.equals(tcExperimentTb.getExperimentStatus())) {
+            throw new BusinessException("非进行中试验，无法进行任何操作");
+        }
+        if (tcExperimentTb.getHarvestApplyNum() != null) {
+            throw new BusinessException("该试验已经收获，无需再授粉");
         }
         //先下载授粉表格，校验授粉模板是否存在
         String excelTemplateName = "田测授粉数据表单模板V1.0.xlsx";

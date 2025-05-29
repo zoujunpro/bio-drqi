@@ -12,6 +12,7 @@ import com.bio.drqi.domain.TcExperimentTb;
 import com.bio.drqi.domain.TcSampleTestApplyTb;
 import com.bio.drqi.domain.TcSampleTestTb;
 import com.bio.drqi.mapper.*;
+import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.enums.SampleTestTypeEnum;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
 import org.springframework.stereotype.Service;
@@ -35,11 +36,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
     private TcSampleTestBioResultRefMapper tcSampleTestBioResultRefMapper;
 
     @Resource
-    private TcSampleTestBioInfoResultTbMapper tcSampleTestBioInfoResultTbMapper;
-
-    @Resource
     private TcExperimentTbMapper tcExperimentTbMapper;
-
 
     @Resource
     private TcSampleLayoutTbMapper tcSampleLayoutTbMapper;
@@ -55,7 +52,15 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         if (StringUtils.isEmpty(tcSampleTestTaskDTO.getFirstSampleApplyList()) && StringUtils.isEmpty(tcSampleTestTaskDTO.getRepeatSampleApplyList())) {
             throw new BusinessException("缺少取样数据");
         }
-        //校验
+
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcSampleTestTaskDTO.getExperimentNum());
+        if(tcExperimentTb==null){
+            throw new BusinessException("不存在此试验");
+        }
+
+        if (ExperimentStatusEnum.INIT.status.equals(tcExperimentTb.getExperimentStatus())) {
+            throw new BusinessException("非进行中试验，无法进行任何操作");
+        }
 
         //插入数据库
         synchronized (this) {
@@ -110,7 +115,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                     tcSampleTestTb.setTaskNum(tcSampleTestApplyTb.getTaskNum());
                     tcSampleTestTb.setApplyType(tcSampleTestApplyTb.getApplyType());
                     tcSampleTestTb.setUniqueCode(tcSampleTestTb.getSampleCode());
-                    tcSampleTestTb.setTcSampleCode(firstSampleApply.getRegionNum()+tcSampleTestTb.getSampleCode().substring(3));
+                    tcSampleTestTb.setTcSampleCode(firstSampleApply.getRegionNum() + tcSampleTestTb.getSampleCode().substring(3));
                     batchList.add(tcSampleTestTb);
 
                     //算出下次取样编号
@@ -140,7 +145,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                 tcSampleTestTb.setTaskNum(tcSampleTestApplyTb.getTaskNum());
                 tcSampleTestTb.setApplyType(tcSampleTestApplyTb.getApplyType());
                 tcSampleTestTb.setSampleTime(repeatSampleApply.getSampleTime());
-                tcSampleTestTb.setTcSampleCode(repeatSampleApply.getRegionNum()+tcSampleTestTb.getSampleCode().substring(3));
+                tcSampleTestTb.setTcSampleCode(repeatSampleApply.getRegionNum() + tcSampleTestTb.getSampleCode().substring(3));
                 batchList.add(tcSampleTestTb);
             }
         }

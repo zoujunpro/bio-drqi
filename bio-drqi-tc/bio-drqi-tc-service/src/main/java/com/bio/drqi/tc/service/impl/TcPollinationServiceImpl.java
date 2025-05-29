@@ -112,7 +112,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         if (tcExperimentTb == null) {
             throw new BusinessException("试验方案不存在");
         }
-        if (ExperimentStatusEnum.INIT.status.equals(tcExperimentTb.getExperimentStatus())) {
+        if (!ExperimentStatusEnum.INIT.status.equals(tcExperimentTb.getExperimentStatus())) {
             throw new BusinessException("非进行中试验，无法进行任何操作");
         }
         if (tcExperimentTb.getHarvestApplyNum() != null) {

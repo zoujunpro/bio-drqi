@@ -1,7 +1,12 @@
 package com.bio.drqi.tc.controller;
+
+import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcHarvestCreateHarvestExcelReqDTO;
+import com.bio.drqi.tc.req.TcHarvestListPageReqDTO;
+import com.bio.drqi.tc.rsp.TcHarvestListPageRspDTO;
 import com.bio.drqi.tc.service.TcHarvestService;
+import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,12 +27,17 @@ public class TcHarvestController {
     private TcHarvestService tcHarvestService;
 
 
+    public ResponseResult<PageInfo<TcHarvestListPageRspDTO>> listPage(@RequestBody @Validated TcHarvestListPageReqDTO TcHarvestListPageReqDTO) {
+        return ResponseResult.getSuccess(null);
+    }
+
+
     /**
      * 田测收获管理-生成收获excel
      */
     @PostMapping("/createHarvestExcel")
     @WebLog(desc = "田测收获管理-生成收获excel")
     public void createHarvestExcel(@RequestBody @Validated TcHarvestCreateHarvestExcelReqDTO tcHarvestCreateHarvestExcelReqDTO, HttpServletResponse httpServletResponse) {
-        tcHarvestService.createHarvestExcel(tcHarvestCreateHarvestExcelReqDTO,httpServletResponse);
+        tcHarvestService.createHarvestExcel(tcHarvestCreateHarvestExcelReqDTO, httpServletResponse);
     }
 }

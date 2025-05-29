@@ -6,6 +6,7 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.domain.TcExperimentDesignTb;
 import com.bio.drqi.domain.TcExperimentTb;
 import com.bio.drqi.domain.TcSampleTestTb;
@@ -57,7 +58,7 @@ public class TcExperimentServiceImpl implements TcExperimentService {
 
     @Override
     public List<TcExperimentListAllRspDTO> listAll() {
-        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectALlOrderByIdDesc();
+        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByOverFlagOrderByIdDesc(BioDrQiContents.N);
         return BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListAllRspDTO.class);
     }
 
@@ -86,9 +87,5 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         return BeanUtils.copyListProperties(tcExperimentDesignTbList, TcExperimentListDetailRspDTO.class);
     }
 
-    @Override
-    public List<TcExperimentListNoPollinationRspDTO> listByNoPollination() {
-        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByPollinationNumIsNullOrderByIdDesc();
-        return BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListNoPollinationRspDTO.class);
-    }
+
 }

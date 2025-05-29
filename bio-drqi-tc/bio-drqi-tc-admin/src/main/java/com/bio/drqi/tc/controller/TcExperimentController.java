@@ -62,15 +62,6 @@ public class TcExperimentController {
         return ResponseResult.getSuccess(tcExperimentService.queryListExperimentDesign(tcExperimentQueryListExperimentDesignReqDTO));
     }
 
-    /**
-     * 试验方案申请管理-查询所有未授粉实验方案
-     * @return
-     */
-    @GetMapping("/listByNoPollination")
-    @WebLog(desc = "试验方案申请管理-查询所有未授粉实验方案")
-    public ResponseResult<List<TcExperimentListNoPollinationRspDTO>> listByNoPollination() {
-        return ResponseResult.getSuccess(tcExperimentService.listByNoPollination());
-    }
 
     /**
      * 试验方案申请管理-文件下载

@@ -33,5 +33,4 @@ public interface TcExperimentService {
          */
     List<TcExperimentListDetailRspDTO> listDetail( String experimentNum);
 
-    List<TcExperimentListNoPollinationRspDTO> listByNoPollination();
 }

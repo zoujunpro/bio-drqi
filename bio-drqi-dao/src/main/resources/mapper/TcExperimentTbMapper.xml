@@ -73,5 +73,13 @@
     <select id="selectMaxSampleCodePerfix" resultType="java.lang.String">
         select max(sample_code_prefix) from tc_experiment_tb
     </select>
+    <select id="selectAllByExperimentStatusOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_experiment_tb
+        where
+        experiment_status = #{experimentStatus,jdbcType=VARCHAR}
+        order by id desc
+    </select>
 
 </mapper>

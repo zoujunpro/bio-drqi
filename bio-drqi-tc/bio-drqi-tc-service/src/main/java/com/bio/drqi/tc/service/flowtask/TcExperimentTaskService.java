@@ -16,6 +16,7 @@ import com.bio.drqi.domain.TcExperimentDesignTb;
 import com.bio.drqi.domain.TcExperimentTb;
 import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
 import com.bio.drqi.mapper.TcExperimentTbMapper;
+import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.service.dto.ExperimentDesignExcelDTO;
 import com.bio.drqi.tc.service.dto.TcExperimentTaskDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -72,7 +73,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             tcExperimentTb.setDesignUrl(tcExperimentTaskDTO.getExperimentDesignUrl());
             tcExperimentTb.setSampleCodePrefix(createSampleCode());
             tcExperimentTb.setNextSampleNumber(1);
-            tcExperimentTb.setOverFlag(BioDrQiContents.N);
+            tcExperimentTb.setExperimentStatus(ExperimentStatusEnum.INIT.status);
             tcExperimentTbMapper.insert(tcExperimentTb);
 
             if (StringUtils.isEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {

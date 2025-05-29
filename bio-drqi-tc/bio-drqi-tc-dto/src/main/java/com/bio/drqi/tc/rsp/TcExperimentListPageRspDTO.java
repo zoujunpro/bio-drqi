@@ -79,8 +79,18 @@ public class TcExperimentListPageRspDTO {
 
     private Integer nextSampleNumber;
 
+    /**
+     *
+     * 试验状态 1 进行中  2试验结束 3试验终止
+     */
+    private String experimentStatus;
 
-    private String pollinationExcelUrl;
+    /**
+     * 收获批次号
+     */
+    private String harvestApplyNum;
+
+
 
     private String harvestExcelUrl;
 }

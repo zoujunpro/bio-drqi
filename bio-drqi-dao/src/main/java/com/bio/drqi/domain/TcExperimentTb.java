@@ -100,9 +100,6 @@ public class TcExperimentTb implements Serializable {
     private String harvestApplyNum;
 
 
-
-    private String harvestExcelUrl;
-
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

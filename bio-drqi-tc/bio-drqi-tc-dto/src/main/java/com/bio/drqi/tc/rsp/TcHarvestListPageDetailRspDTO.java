@@ -143,4 +143,9 @@ public class TcHarvestListPageDetailRspDTO {
     private String unit;
 
     private BigDecimal seedNumber;
+
+    private String harvestApplyNum;
+
+    private String harvestRemark;
+
 }

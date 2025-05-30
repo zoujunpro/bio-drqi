@@ -118,7 +118,6 @@ public class TcHarvestExcelDTO {
     @NotBlank(message = "参数缺失：收获方式")
     private String harvestTypeName;
 
-
     /**
      * 备注
      */

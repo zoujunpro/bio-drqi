@@ -1,6 +1,7 @@
 package com.bio.drqi.common.enums;
 
 public enum BioTaskStatusEnum {
+    TASK_STATUS_0("0","草稿"),
     TASK_STATUS_1("1","审批中(执行中)"),
     TASK_STATUS_2("2","审批通过"),
     TASK_STATUS_3("3","审批拒绝"),

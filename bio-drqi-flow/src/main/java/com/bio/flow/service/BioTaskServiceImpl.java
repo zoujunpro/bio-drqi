@@ -1,7 +1,6 @@
 package com.bio.flow.service;
 
 
-
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -30,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -225,11 +223,11 @@ public class BioTaskServiceImpl implements BioTaskService {
         if (QueryTypeEnum.TYPE_1 == queryTypeEnum) {
             bioTaskDtlTbList = bioTaskDtlTbMapper.selectSelective(BioTaskDtlTb.builder().taskNum(bioTaskListPageReqDTO.getTaskNum()).taskTypeCode(bioTaskListPageReqDTO.getTaskTypeCode()).taskStatus(bioTaskListPageReqDTO.getTaskStatus()).applyUserId(bioTaskListPageReqDTO.getApplyUserId()).taskCategory(bioTaskListPageReqDTO.getTaskCategory()).build());
         } else if (QueryTypeEnum.TYPE_2 == queryTypeEnum) {
-            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForPendingApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(),bioTaskListPageReqDTO.getApplyUserId());
+            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForPendingApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(), bioTaskListPageReqDTO.getApplyUserId());
         } else if (QueryTypeEnum.TYPE_3 == queryTypeEnum) {
             bioTaskDtlTbList = bioTaskDtlTbMapper.selectSelective(BioTaskDtlTb.builder().taskNum(bioTaskListPageReqDTO.getTaskNum()).taskStatus(bioTaskListPageReqDTO.getTaskStatus()).taskTypeCode(bioTaskListPageReqDTO.getTaskTypeCode()).applyUserId(SecurityContextHolder.getUserId()).taskCategory(bioTaskListPageReqDTO.getTaskCategory()).build());
         } else if (QueryTypeEnum.TYPE_4 == queryTypeEnum) {
-            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForAlreadyApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(), bioTaskListPageReqDTO.getTaskStatus(),bioTaskListPageReqDTO.getApplyUserId());
+            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForAlreadyApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(), bioTaskListPageReqDTO.getTaskStatus(), bioTaskListPageReqDTO.getApplyUserId());
         }
         PageInfo<BioTaskDtlTb> pageInfo = new PageInfo<>(bioTaskDtlTbList);
         List<BioTaskListPageRspDTO> bioTaskListPageRspDTOList = getTaskListPageRspDTOS(bioTaskDtlTbList);
@@ -325,26 +323,68 @@ public class BioTaskServiceImpl implements BioTaskService {
     }
 
 
-    private BioTaskDtlTb initTask(BioTaskStartReqDTO bioTaskStartReqDTO, BioTaskConf bioTaskConf) {
-        log.info("【任务工单】 初始化任务开始");
+    private BioTaskDtlTb initTempTask(BioTaskTemporarySaveReqDTO bioTaskTemporarySaveReqDTO, BioTaskConf bioTaskConf) {
+        log.info("【任务工单】 草稿初始化任务开始");
         BioTaskDtlTb bioTaskDtlTb = new BioTaskDtlTb();
-        bioTaskDtlTb.setTaskTypeCode(bioTaskStartReqDTO.getTaskType());
+        bioTaskDtlTb.setTaskTypeCode(bioTaskTemporarySaveReqDTO.getTaskType());
         bioTaskDtlTb.setTaskTypeName(bioTaskConf.getTaskTypeName());
-        bioTaskDtlTb.setTaskStatus(BioTaskStatusEnum.TASK_STATUS_1.status);
-        bioTaskDtlTb.setTaskDesc(bioTaskStartReqDTO.getTaskDesc());
+        bioTaskDtlTb.setTaskStatus(BioTaskStatusEnum.TASK_STATUS_0.status);
+        bioTaskDtlTb.setTaskDesc(bioTaskTemporarySaveReqDTO.getTaskDesc());
         bioTaskDtlTb.setApplyUserId(SecurityContextHolder.getUserId());
         bioTaskDtlTb.setApplyUserName(SecurityContextHolder.getNickName());
         bioTaskDtlTb.setApplyTime(new Date());
         bioTaskDtlTb.setCreateTime(new Date());
         bioTaskDtlTb.setUpdateTime(null);
-        bioTaskDtlTb.setTaskForm(bioTaskStartReqDTO.getFormObject());
-        bioTaskDtlTb.setRefTaskNum(bioTaskStartReqDTO.getRefTaskNum());
+        bioTaskDtlTb.setTaskForm(bioTaskTemporarySaveReqDTO.getFormObject());
+        bioTaskDtlTb.setRefTaskNum(bioTaskTemporarySaveReqDTO.getRefTaskNum());
         bioTaskDtlTb.setTaskCategory(bioTaskConf.getTaskCategory());
         bioTaskDtlTbMapper.insert(bioTaskDtlTb);
         bioTaskDtlTb.setTaskNum(bioTaskConf.getBeginLetter() + StringUtils.padl(bioTaskDtlTb.getId() + "", 7, '0'));
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
-        log.info("【任务工单】 初始化任务结束");
+        log.info("【任务工单】 草稿初始化任务结束");
         return bioTaskDtlTb;
+    }
+
+    private BioTaskDtlTb initTask(BioTaskStartReqDTO bioTaskStartReqDTO, BioTaskConf bioTaskConf) {
+        if (bioTaskStartReqDTO.getId() != null) {
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioTaskStartReqDTO.getId());
+            if(bioTaskDtlTb==null){
+                throw new BusinessException("数据异常，无此任务");
+            }
+            if (BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
+                throw new BusinessException("任务执行中，不能再次执行");
+            }
+            if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
+                throw new BusinessException("任务已经执行完毕，不能再次执行");
+            }
+            bioTaskDtlTb.setTaskForm(bioTaskStartReqDTO.getFormObject());
+            bioTaskDtlTb.setRefTaskNum(bioTaskStartReqDTO.getRefTaskNum());
+            bioTaskDtlTb.setTaskCategory(bioTaskConf.getTaskCategory());
+            bioTaskDtlTb.setTaskStatus(BioTaskStatusEnum.TASK_STATUS_1.status);
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+            return bioTaskDtlTb;
+        } else {
+            log.info("【任务工单】 初始化任务开始");
+            BioTaskDtlTb bioTaskDtlTb = new BioTaskDtlTb();
+            bioTaskDtlTb.setTaskTypeCode(bioTaskStartReqDTO.getTaskType());
+            bioTaskDtlTb.setTaskTypeName(bioTaskConf.getTaskTypeName());
+            bioTaskDtlTb.setTaskStatus(BioTaskStatusEnum.TASK_STATUS_1.status);
+            bioTaskDtlTb.setTaskDesc(bioTaskStartReqDTO.getTaskDesc());
+            bioTaskDtlTb.setApplyUserId(SecurityContextHolder.getUserId());
+            bioTaskDtlTb.setApplyUserName(SecurityContextHolder.getNickName());
+            bioTaskDtlTb.setApplyTime(new Date());
+            bioTaskDtlTb.setCreateTime(new Date());
+            bioTaskDtlTb.setUpdateTime(null);
+            bioTaskDtlTb.setTaskForm(bioTaskStartReqDTO.getFormObject());
+            bioTaskDtlTb.setRefTaskNum(bioTaskStartReqDTO.getRefTaskNum());
+            bioTaskDtlTb.setTaskCategory(bioTaskConf.getTaskCategory());
+            bioTaskDtlTbMapper.insert(bioTaskDtlTb);
+            bioTaskDtlTb.setTaskNum(bioTaskConf.getBeginLetter() + StringUtils.padl(bioTaskDtlTb.getId() + "", 7, '0'));
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+            log.info("【任务工单】 初始化任务结束");
+            return bioTaskDtlTb;
+        }
+
     }
 
 
@@ -354,8 +394,17 @@ public class BioTaskServiceImpl implements BioTaskService {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioTaskTemporarySaveReqDTO.getId());
         if (bioTaskDtlTb != null) {
             bioTaskDtlTb.setTaskForm(bioTaskTemporarySaveReqDTO.getFormObject());
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        } else {
+            BioTaskConf bioTaskConf = bioTaskConfMapper.selectOneByTaskTypeCode(bioTaskTemporarySaveReqDTO.getTaskType());
+            if (bioTaskConf == null) {
+                throw new BusinessException("任务类型参数错误");
+            }
+            /**
+             * 初始化草稿任务
+             */
+            initTempTask(bioTaskTemporarySaveReqDTO, bioTaskConf);
         }
-        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
     }
 
     @Override
@@ -378,11 +427,11 @@ public class BioTaskServiceImpl implements BioTaskService {
     @Override
     public void exportExcel(BioExportExcelReqDTO bioExportExcelReqDTO, HttpServletResponse httpServletResponse) {
         List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectSelective(BioTaskDtlTb.builder().taskNum(bioExportExcelReqDTO.getTaskNum()).taskTypeCode(bioExportExcelReqDTO.getTaskTypeCode()).taskStatus(bioExportExcelReqDTO.getTaskStatus()).applyUserId(bioExportExcelReqDTO.getApplyUserId()).taskCategory(bioExportExcelReqDTO.getTaskCategory()).build());
-        List<BioTaskExcelDTO> bioTaskExcelDTOList= BeanUtils.copyToList(bioTaskDtlTbList,BioTaskExcelDTO.class);
+        List<BioTaskExcelDTO> bioTaskExcelDTOList = BeanUtils.copyToList(bioTaskDtlTbList, BioTaskExcelDTO.class);
         bioTaskExcelDTOList.forEach(bioTaskExcelDTO -> {
             bioTaskExcelDTO.setTaskStatusName(BioTaskStatusEnum.getNameByStatus(bioTaskExcelDTO.getTaskStatus()));
         });
-        ExcelUtil.writeExcel("任务工单"+System.currentTimeMillis()+".xlsx","sheet1",bioTaskExcelDTOList,BioTaskExcelDTO.class,httpServletResponse );
+        ExcelUtil.writeExcel("任务工单" + System.currentTimeMillis() + ".xlsx", "sheet1", bioTaskExcelDTOList, BioTaskExcelDTO.class, httpServletResponse);
     }
 
 

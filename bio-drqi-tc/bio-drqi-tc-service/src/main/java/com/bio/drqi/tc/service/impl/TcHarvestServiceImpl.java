@@ -37,7 +37,7 @@ public class TcHarvestServiceImpl implements TcHarvestService {
 
     @Override
     public void createHarvestExcel(TcHarvestCreateHarvestExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
-        List<TcPollinationTb> tcPollinationTbList = tcPollinationTbMapper.selectAllByPollinationApplyNum(tcPollinationCreatePollinationExcelReqDTO.getPollinationNum());
+        List<TcPollinationTb> tcPollinationTbList = tcPollinationTbMapper.selectAllByExperimentNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum());
         if(CollectionUtil.isEmpty(tcPollinationTbList)){
             throw new BusinessException("无授粉数据");
         }

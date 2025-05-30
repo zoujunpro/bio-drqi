@@ -14,6 +14,8 @@ public class TcHarvestTaskDTO {
     private String experimentNum;
 
 
+    private String harvestTime;
+
     /**
      *收获excel地址
      */

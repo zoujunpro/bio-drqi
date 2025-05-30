@@ -122,7 +122,7 @@ public class TcHarvestExcelDTO {
     /**
      * 备注
      */
-    @ExcelProperty(value ={"授粉信息","备注"})
+    @ExcelProperty(value ={"收获信息","备注"})
     private String remark;
 
 

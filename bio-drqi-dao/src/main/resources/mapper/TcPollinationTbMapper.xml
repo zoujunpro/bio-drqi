@@ -31,6 +31,8 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
         <result property="seedNumber" column="seed_number" jdbcType="VARCHAR"/>
         <result property="unit" column="unit" jdbcType="VARCHAR"/>
+        <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
+        <result property="harvestRemark" column="harvest_remark" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -42,7 +44,7 @@
         m_generation_code,f_generation_code,m_tc_gene,
         f_tc_gene,pollination_date,pollination_method_code,
         pollination_method_name,harvest_type_code,harvest_type_name,
-        remark,unit,seed_number
+        remark,unit,seed_number,harvest_apply_num,harvest_remark
     </sql>
     <select id="selectAllByPollinationApplyNum" resultMap="BaseResultMap">
         select
@@ -84,6 +86,8 @@
             <if test="harvestTypeCode != null">and harvest_type_code=#{harvestTypeCode,jdbcType=VARCHAR}</if>
             <if test="harvestTypeName != null">and harvest_type_name=#{harvestTypeName,jdbcType=VARCHAR}</if>
             <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
+            <if test="harvestApplyNum != null">and harvest_apply_num=#{harvestApplyNum,jdbcType=VARCHAR}</if>
+            <if test="harvestRemark != null">and harvest_remark=#{harvestRemark,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

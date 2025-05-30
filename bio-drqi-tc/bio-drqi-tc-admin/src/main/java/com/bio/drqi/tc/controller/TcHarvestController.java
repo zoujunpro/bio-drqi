@@ -3,7 +3,9 @@ package com.bio.drqi.tc.controller;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcHarvestCreateHarvestExcelReqDTO;
+import com.bio.drqi.tc.req.TcHarvestListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcHarvestListPageReqDTO;
+import com.bio.drqi.tc.rsp.TcHarvestListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcHarvestListPageRspDTO;
 import com.bio.drqi.tc.service.TcHarvestService;
 import com.github.pagehelper.PageInfo;
@@ -26,16 +28,22 @@ public class TcHarvestController {
     @Resource
     private TcHarvestService tcHarvestService;
 
+    @PostMapping("/listPage")
+    @WebLog(desc = "田测收获管理-分页查询申请列表")
+    public ResponseResult<PageInfo<TcHarvestListPageRspDTO>> listPage(@RequestBody TcHarvestListPageReqDTO tcHarvestListPageReqDTO) {
+        return null;
+    }
 
     /**
-     * 田测收获管理-分页查询
-     * @param tcHarvestListPageReqDTO
+     * 田测收获管理-分页查询收获详情列表
+     *
+     * @param tcHarvestListPageDetailReqDTO
      * @return
      */
-    @PostMapping("/listPage")
-    @WebLog(desc = "田测收获管理-分页查询")
-    public ResponseResult<PageInfo<TcHarvestListPageRspDTO>> listPage(@RequestBody TcHarvestListPageReqDTO tcHarvestListPageReqDTO) {
-        return ResponseResult.getSuccess(tcHarvestService.listPage(tcHarvestListPageReqDTO));
+    @PostMapping("/listPageDetail")
+    @WebLog(desc = "田测收获管理-分页查询收获详情列表")
+    public ResponseResult<PageInfo<TcHarvestListPageDetailRspDTO>> listPageDetail(@RequestBody @Validated TcHarvestListPageDetailReqDTO tcHarvestListPageDetailReqDTO) {
+        return ResponseResult.getSuccess(tcHarvestService.listPageDetail(tcHarvestListPageDetailReqDTO));
     }
 
 

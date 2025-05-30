@@ -5,19 +5,22 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.domain.TcHarvestSeedApplyTb;
 import com.bio.drqi.domain.TcPollinationTb;
+import com.bio.drqi.mapper.TcHarvestSeedApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
 import com.bio.drqi.tc.req.TcHarvestCreateHarvestExcelReqDTO;
+import com.bio.drqi.tc.req.TcHarvestListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcHarvestListPageReqDTO;
+import com.bio.drqi.tc.rsp.TcHarvestListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcHarvestListPageRspDTO;
-import com.bio.drqi.tc.rsp.TcPollinationListPageDetailRspDTO;
 import com.bio.drqi.tc.service.TcHarvestService;
 import com.bio.drqi.tc.service.dto.TcHarvestExcelDTO;
-import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,14 +42,25 @@ public class TcHarvestServiceImpl implements TcHarvestService {
     private TcPollinationTbMapper tcPollinationTbMapper;
 
     @Resource
+    private TcHarvestSeedApplyTbMapper tcHarvestSeedApplyTbMapper;
+
+    @Resource
     private OssService ossService;
 
     @Override
     public PageInfo<TcHarvestListPageRspDTO> listPage(TcHarvestListPageReqDTO tcHarvestListPageReqDTO) {
         PageHelper.startPage(tcHarvestListPageReqDTO.getPageNum(), tcHarvestListPageReqDTO.getPageSize());
-        List<TcPollinationTb> tcPollinationTbList = tcPollinationTbMapper.selectSelective(BeanUtils.copyProperties(tcHarvestListPageReqDTO, TcPollinationTb.class));
-        PageInfo<TcPollinationTb> srcPageInfo = new PageInfo<>(tcPollinationTbList);
+        List<TcHarvestSeedApplyTb> tcHarvestSeedApplyTbList = tcHarvestSeedApplyTbMapper.selectSelective(BeanUtils.copyProperties(tcHarvestListPageReqDTO, TcHarvestSeedApplyTb.class));
+        PageInfo<TcHarvestSeedApplyTb> srcPageInfo = new PageInfo<>(tcHarvestSeedApplyTbList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, TcHarvestListPageRspDTO.class);
+    }
+
+    @Override
+    public PageInfo<TcHarvestListPageDetailRspDTO> listPageDetail(TcHarvestListPageDetailReqDTO tcHarvestListPageDetailReqDTO) {
+        PageHelper.startPage(tcHarvestListPageDetailReqDTO.getPageNum(), tcHarvestListPageDetailReqDTO.getPageSize());
+        List<TcPollinationTb> tcPollinationTbList = tcPollinationTbMapper.selectSelective(BeanUtils.copyProperties(tcHarvestListPageDetailReqDTO, TcPollinationTb.class));
+        PageInfo<TcPollinationTb> srcPageInfo = new PageInfo<>(tcPollinationTbList);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo, TcHarvestListPageDetailRspDTO.class);
     }
 
     @Override

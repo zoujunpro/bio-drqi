@@ -3,6 +3,8 @@ package com.bio.drqi.tc.controller;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcHarvestCreateHarvestExcelReqDTO;
+import com.bio.drqi.tc.req.TcHarvestListPageReqDTO;
+import com.bio.drqi.tc.rsp.TcHarvestListPageRspDTO;
 import com.bio.drqi.tc.service.TcHarvestService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +26,17 @@ public class TcHarvestController {
     @Resource
     private TcHarvestService tcHarvestService;
 
+
+    /**
+     * 田测收获管理-分页查询
+     * @param tcHarvestListPageReqDTO
+     * @return
+     */
+    @PostMapping("/listPage")
+    @WebLog(desc = "田测收获管理-分页查询")
+    public ResponseResult<PageInfo<TcHarvestListPageRspDTO>> listPage(@RequestBody TcHarvestListPageReqDTO tcHarvestListPageReqDTO) {
+        return ResponseResult.getSuccess(tcHarvestService.listPage(tcHarvestListPageReqDTO));
+    }
 
 
     /**

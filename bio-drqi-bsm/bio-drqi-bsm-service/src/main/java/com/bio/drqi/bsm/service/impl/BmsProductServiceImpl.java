@@ -133,32 +133,41 @@ public class BmsProductServiceImpl implements BmsProductService {
             productInnerCode = BioBsmContents.product_prefix + StringUtils.padl(nextProductInnerCode, 5, '0');
         }
         BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(bmsProductAddReqDTO.getProductName(), bmsProductAddReqDTO.getBrandCode(), bmsProductAddReqDTO.getProductSpecs());
-        if(bmsProductTb!=null){
-            throw new BusinessException("重复添加商品");
-        }
-         bmsProductTb = new BmsProductTb();
-        bmsProductTb.setProductName(bmsProductAddReqDTO.getProductName());
-        bmsProductTb.setProductOutCode(bmsProductAddReqDTO.getProductOutCode());
-        bmsProductTb.setProductInnerCode(productInnerCode);
-        bmsProductTb.setProductCategoryCode(bmsProductAddReqDTO.getProductCategoryCode());
-        bmsProductTb.setProductTypeCode(bmsProductAddReqDTO.getProductTypeCode());
-        if (bmsBrandTb != null) {
-            bmsProductTb.setBrandName(bmsBrandTb.getBrandName());
-            bmsProductTb.setBrandCode(bmsProductAddReqDTO.getBrandCode());
+        if (bmsProductTb != null) {
+            if (BioDrQiContents.N.equals(bmsProductTb.getDeleteFlag())) {
+                throw new BusinessException("重复添加商品");
+            } else {
+                bmsProductTb.setCreateTime(new Date());
+                bmsProductTb.setCreateUserId(SecurityContextHolder.getUserId());
+                bmsProductTb.setCreateUserName(SecurityContextHolder.getNickName());
+                bmsProductTb.setDeleteFlag(BioDrQiContents.N);
+                bmsProductTbMapper.updateById(bmsProductTb);
+            }
+        } else {
+            bmsProductTb = new BmsProductTb();
+            bmsProductTb.setProductName(bmsProductAddReqDTO.getProductName());
+            bmsProductTb.setProductOutCode(bmsProductAddReqDTO.getProductOutCode());
+            bmsProductTb.setProductInnerCode(productInnerCode);
+            bmsProductTb.setProductCategoryCode(bmsProductAddReqDTO.getProductCategoryCode());
+            bmsProductTb.setProductTypeCode(bmsProductAddReqDTO.getProductTypeCode());
+            if (bmsBrandTb != null) {
+                bmsProductTb.setBrandName(bmsBrandTb.getBrandName());
+                bmsProductTb.setBrandCode(bmsProductAddReqDTO.getBrandCode());
+            }
+
+            bmsProductTb.setProductSpecs(bmsProductAddReqDTO.getProductSpecs());
+            bmsProductTb.setCreateTime(new Date());
+            bmsProductTb.setCreateUserId(SecurityContextHolder.getUserId());
+            bmsProductTb.setCreateUserName(SecurityContextHolder.getNickName());
+            bmsProductTb.setDeleteFlag(BioDrQiContents.N);
+            log.info("商品入库={}", bmsProductTb);
+            try {
+                bmsProductTbMapper.insert(bmsProductTb);
+            } catch (DuplicateKeyException e) {
+                throw new BusinessException("请不要重复添加此材料");
+            }
         }
 
-        bmsProductTb.setProductSpecs(bmsProductAddReqDTO.getProductSpecs());
-        bmsProductTb.setCreateTime(new Date());
-        bmsProductTb.setCreateUserId(SecurityContextHolder.getUserId());
-        bmsProductTb.setCreateUserName(SecurityContextHolder.getNickName());
-        bmsProductTb.setDeleteFlag(BioDrQiContents.N);
-        log.info("商品入库={}", bmsProductTb);
-        try {
-
-            bmsProductTbMapper.insert(bmsProductTb);
-        } catch (DuplicateKeyException e) {
-            throw new BusinessException("请不要重复添加此材料");
-        }
         return bmsProductTb;
     }
 

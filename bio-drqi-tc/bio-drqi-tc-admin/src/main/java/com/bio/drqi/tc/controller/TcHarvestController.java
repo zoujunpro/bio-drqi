@@ -36,7 +36,7 @@ public class TcHarvestController {
     @PostMapping("/listPage")
     @WebLog(desc = "田测收获管理-分页查询申请列表")
     public ResponseResult<PageInfo<TcHarvestListPageRspDTO>> listPage(@RequestBody TcHarvestListPageReqDTO tcHarvestListPageReqDTO) {
-        return null;
+        return ResponseResult.getSuccess(tcHarvestService.listPage(tcHarvestListPageReqDTO));
     }
 
     /**

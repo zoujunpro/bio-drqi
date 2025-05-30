@@ -28,6 +28,11 @@ public class TcHarvestController {
     @Resource
     private TcHarvestService tcHarvestService;
 
+    /**
+     * 田测收获管理-分页查询申请列表
+     * @param tcHarvestListPageReqDTO
+     * @return
+     */
     @PostMapping("/listPage")
     @WebLog(desc = "田测收获管理-分页查询申请列表")
     public ResponseResult<PageInfo<TcHarvestListPageRspDTO>> listPage(@RequestBody TcHarvestListPageReqDTO tcHarvestListPageReqDTO) {

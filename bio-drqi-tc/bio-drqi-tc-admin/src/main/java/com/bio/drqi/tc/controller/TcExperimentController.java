@@ -41,15 +41,28 @@ public class TcExperimentController {
     }
 
     /**
-     * 试验方案申请管理-查询所有试验
+     * 试验方案申请管理-查询所有启用试验
      * @param
      * @return
      */
     @GetMapping("/listAll")
-    @WebLog(desc = "试验方案申请管理-查询所有试验")
+    @WebLog(desc = "试验方案申请管理-查询所有启用试验")
     public ResponseResult<List<TcExperimentListAllRspDTO>> listAll() {
         return ResponseResult.getSuccess(tcExperimentService.listAll());
     }
+
+
+    /**
+     * 试验方案申请管理-查询未收获试验
+     * @param
+     * @return
+     */
+    @GetMapping("/listNoHarvest")
+    @WebLog(desc = "试验方案申请管理-查询未收获试验")
+    public ResponseResult<List<TcExperimentListNoHarvestRspDTO>> listNoHarvest() {
+        return ResponseResult.getSuccess(tcExperimentService.listNoHarvest());
+    }
+
 
     /**
      * 试验方案申请管理-条件查询试验设计

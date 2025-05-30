@@ -23,6 +23,8 @@ public interface TcExperimentService {
 
     List<TcExperimentListAllRspDTO> listAll();
 
+    List<TcExperimentListNoHarvestRspDTO> listNoHarvest();
+
 
     List<TcExperimentQueryListExperimentDesignRspDTO> queryListExperimentDesign( TcExperimentQueryListExperimentDesignReqDTO tcExperimentQueryListExperimentDesignReqDTO);
 

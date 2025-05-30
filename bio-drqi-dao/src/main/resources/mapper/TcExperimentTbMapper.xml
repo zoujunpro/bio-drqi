@@ -81,5 +81,14 @@
         experiment_status = #{experimentStatus,jdbcType=VARCHAR}
         order by id desc
     </select>
+    <select id="selectAllByExperimentStatusAndHarvestApplyNumIsNullOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_experiment_tb
+        where
+        experiment_status = #{experimentStatus,jdbcType=VARCHAR}
+        AND harvest_apply_num is null
+        order by id desc
+    </select>
 
 </mapper>

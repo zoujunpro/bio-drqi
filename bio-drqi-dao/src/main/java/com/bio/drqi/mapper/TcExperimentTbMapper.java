@@ -24,6 +24,8 @@ public interface TcExperimentTbMapper extends BaseMapper<TcExperimentTb> {
 
     List<TcExperimentTb> selectAllByExperimentStatusOrderByIdDesc(@Param("experimentStatus") String experimentStatus);
 
+    List<TcExperimentTb> selectAllByExperimentStatusAndHarvestApplyNumIsNullOrderByIdDesc(@Param("experimentStatus") String experimentStatus);
+
     String selectMaxSampleCodePerfix();
 
 }

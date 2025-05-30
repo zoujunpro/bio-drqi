@@ -64,6 +64,12 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     }
 
     @Override
+    public List<TcExperimentListNoHarvestRspDTO> listNoHarvest() {
+        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByExperimentStatusAndHarvestApplyNumIsNullOrderByIdDesc(ExperimentStatusEnum.INIT.status);
+        return BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListNoHarvestRspDTO.class);
+    }
+
+    @Override
     public List<TcExperimentQueryListExperimentDesignRspDTO> queryListExperimentDesign(TcExperimentQueryListExperimentDesignReqDTO tcExperimentQueryListExperimentDesignReqDTO) {
         List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcExperimentQueryListExperimentDesignReqDTO.getExperimentNum());
         if (CollectionUtil.isNotEmpty(tcExperimentDesignTbList)) {

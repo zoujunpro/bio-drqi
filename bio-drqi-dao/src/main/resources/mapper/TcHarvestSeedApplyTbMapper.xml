@@ -37,6 +37,7 @@
             <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
             <if test="harvestFileUrl != null">harvest_file_url=#{harvestFileUrl,jdbcType=VARCHAR}</if>
         </where>
+        order by id desc
     </select>
 
 </mapper>

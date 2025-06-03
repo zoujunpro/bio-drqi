@@ -13,7 +13,6 @@ public class BioTaskTemporarySaveReqDTO {
     /**
      * 工单类型
      */
-    @NotNull(message = "任务主键缺失")
     private Integer id;
     /**
      * 任务表单
@@ -22,12 +21,10 @@ public class BioTaskTemporarySaveReqDTO {
 
 
     /**工单类型*/
-    @NotBlank(message = "工单类型参数缺失")
     private String taskType;
 
 
     /**任务工单描述*/
-    @NotBlank(message = "任务工单描述参数缺失")
     private String taskDesc;
 
     /**

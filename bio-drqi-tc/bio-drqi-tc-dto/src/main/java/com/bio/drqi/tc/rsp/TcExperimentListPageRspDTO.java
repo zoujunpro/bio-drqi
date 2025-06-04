@@ -90,4 +90,6 @@ public class TcExperimentListPageRspDTO {
      */
     private String harvestApplyNum;
 
+    private String downHarvestTemplateFlag;
+
 }

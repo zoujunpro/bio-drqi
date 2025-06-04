@@ -116,7 +116,7 @@ public class TcExperimentController {
      * @return
      */
 
-    @PostMapping("/complete")
+    @GetMapping("/complete")
     @WebLog(desc = "试验方案申请管理-完成")
     @RequestLog("试验方案申请管理-完成")
     public ResponseResult<String> complete(@RequestParam @Validated Integer id) {
@@ -132,7 +132,7 @@ public class TcExperimentController {
      * @return
      */
 
-    @PostMapping("/stop")
+    @GetMapping("/stop")
     @WebLog(desc = "试验方案申请管理-暂停")
     @RequestLog("试验方案申请管理-暂停")
     public ResponseResult<String> stop(@RequestParam @Validated Integer id) {
@@ -147,7 +147,7 @@ public class TcExperimentController {
      * @return
      */
 
-    @PostMapping("/start")
+    @GetMapping("/start")
     @WebLog(desc = "试验方案申请管理-启用")
     @RequestLog("试验方案申请管理-启用")
     public ResponseResult<String> start(@RequestParam @Validated Integer id) {

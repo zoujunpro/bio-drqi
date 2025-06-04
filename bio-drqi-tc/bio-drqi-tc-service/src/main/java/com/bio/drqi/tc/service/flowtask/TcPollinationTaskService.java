@@ -15,6 +15,7 @@ import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import com.bio.drqi.tc.service.dto.TcPollinationTaskDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -208,7 +209,13 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                 tcPollinationTb.setRemark(tcPollinationExcelDTO.getRemark());
                 tcPollinationTbList.add(tcPollinationTb);
             }
-            tcPollinationTbMapper.insertBatch(tcPollinationTbList);
+            try {
+                tcPollinationTbMapper.insertBatch(tcPollinationTbList);
+            } catch (DuplicateKeyException e) {
+                log.error("重复授粉：",e);
+                throw new BusinessException("有重复授粉数据");
+
+            }
         }
     }
 

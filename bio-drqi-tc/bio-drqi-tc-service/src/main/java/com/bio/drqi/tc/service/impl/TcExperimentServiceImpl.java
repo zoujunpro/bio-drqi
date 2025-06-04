@@ -111,7 +111,7 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         if (tcExperimentTb == null) {
             throw new BusinessException("找不到试验");
         }
-        if(ExperimentStatusEnum.INIT.status.equals(tcExperimentTb.getExperimentStatus())){
+        if(!ExperimentStatusEnum.INIT.status.equals(tcExperimentTb.getExperimentStatus())){
             throw new BusinessException("只有进行中项目可以暂停");
         }
         tcExperimentTb.setExperimentStatus(ExperimentStatusEnum.STOP.status);
@@ -124,7 +124,7 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         if (tcExperimentTb == null) {
             throw new BusinessException("找不到试验");
         }
-        if(ExperimentStatusEnum.STOP.status.equals(tcExperimentTb.getExperimentStatus())){
+        if(!ExperimentStatusEnum.STOP.status.equals(tcExperimentTb.getExperimentStatus())){
             throw new BusinessException("只有暂停中项目可以再次启用");
         }
         tcExperimentTb.setExperimentStatus(ExperimentStatusEnum.INIT.status);

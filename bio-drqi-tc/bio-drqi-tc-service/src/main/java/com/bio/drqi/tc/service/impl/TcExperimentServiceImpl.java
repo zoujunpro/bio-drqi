@@ -94,5 +94,42 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         return BeanUtils.copyListProperties(tcExperimentDesignTbList, TcExperimentListDetailRspDTO.class);
     }
 
+    @Override
+    public void complete(Integer id) {
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectById(id);
+        if (tcExperimentTb == null) {
+            throw new BusinessException("找不到试验");
+        }
+        tcExperimentTb.setExperimentStatus(ExperimentStatusEnum.OVER.status);
+        tcExperimentTbMapper.updateById(tcExperimentTb);
+
+    }
+
+    @Override
+    public void stop(Integer id) {
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectById(id);
+        if (tcExperimentTb == null) {
+            throw new BusinessException("找不到试验");
+        }
+        if(ExperimentStatusEnum.INIT.status.equals(tcExperimentTb.getExperimentStatus())){
+            throw new BusinessException("只有进行中项目可以暂停");
+        }
+        tcExperimentTb.setExperimentStatus(ExperimentStatusEnum.STOP.status);
+        tcExperimentTbMapper.updateById(tcExperimentTb);
+    }
+
+    @Override
+    public void start(Integer id) {
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectById(id);
+        if (tcExperimentTb == null) {
+            throw new BusinessException("找不到试验");
+        }
+        if(ExperimentStatusEnum.STOP.status.equals(tcExperimentTb.getExperimentStatus())){
+            throw new BusinessException("只有暂停中项目可以再次启用");
+        }
+        tcExperimentTb.setExperimentStatus(ExperimentStatusEnum.INIT.status);
+        tcExperimentTbMapper.updateById(tcExperimentTb);
+    }
+
 
 }

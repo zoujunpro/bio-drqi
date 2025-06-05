@@ -56,7 +56,17 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         TcExperimentTaskDTO tcExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcExperimentTaskDTO.class);
+        List<ExperimentDesignExcelDTO> experimentDesignExcelDTOList = null;
+        if (StringUtils.isNotEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {
+            experimentDesignExcelDTOList = validatorExcel(tcExperimentTaskDTO);
+        }
+
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
+
+            if (CollectionUtil.isEmpty(experimentDesignExcelDTOList)) {
+                throw new BusinessException("大田试验田间设计缺失");
+            }
+
             TcExperimentTb tcExperimentTb = new TcExperimentTb();
             tcExperimentTb.setProjectCodes(JSONUtil.toJsonStr(tcExperimentTaskDTO.getProjectCodeList()));
             tcExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(tcExperimentTaskDTO.getVectorTaskCodeList()));
@@ -76,10 +86,6 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             tcExperimentTb.setExperimentStatus(ExperimentStatusEnum.INIT.status);
             tcExperimentTbMapper.insert(tcExperimentTb);
 
-            if (StringUtils.isEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {
-                throw new BusinessException("大田试验田间设计缺失");
-            }
-            List<ExperimentDesignExcelDTO> experimentDesignExcelDTOList = validatorExcel(tcExperimentTaskDTO);
             List<TcExperimentDesignTb> tcExperimentDesignTbList = new ArrayList<TcExperimentDesignTb>();
             for (ExperimentDesignExcelDTO experimentDesignExcelDTO : experimentDesignExcelDTOList) {
                 TcExperimentDesignTb tcExperimentDesignTb = new TcExperimentDesignTb();

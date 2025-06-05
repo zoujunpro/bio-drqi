@@ -27,6 +27,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service("tc_experiment_task_apply")
 @Slf4j
@@ -154,6 +156,15 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
                 throw new BusinessException("实施方案:" + experimentDesignExcelDTO.getVectorTaskCode() + "不属于此项目:" + experimentDesignExcelDTO.getProjectCode());
             }
         }
+        Map<String, List<ExperimentDesignExcelDTO>> listMap = experimentDesignExcelDTOList.stream().collect(Collectors.groupingBy(ExperimentDesignExcelDTO::getRegionNum));
+        listMap.forEach((regionNun,list)->{
+            if(list.size()!=list.stream().map(ExperimentDesignExcelDTO::getSeedNum).distinct().collect(Collectors.toList()).size()){
+                throw new BusinessException("小区："+regionNun+" 有重复种子编号");
+            }
+        });
+
+
+
         return experimentDesignExcelDTOList;
     }
 

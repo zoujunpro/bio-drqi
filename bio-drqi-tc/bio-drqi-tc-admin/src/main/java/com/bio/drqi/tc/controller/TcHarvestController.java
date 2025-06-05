@@ -59,6 +59,7 @@ public class TcHarvestController {
      */
     @PostMapping("/createHarvestExcel")
     @WebLog(desc = "田测收获管理-生成收获excel")
+    @RequirePermissions("tc:tcHarvest:createHarvestExcel")
     public void createHarvestExcel(@RequestBody @Validated TcHarvestCreateHarvestExcelReqDTO tcHarvestCreateHarvestExcelReqDTO, HttpServletResponse httpServletResponse) {
         tcHarvestService.createHarvestExcel(tcHarvestCreateHarvestExcelReqDTO, httpServletResponse);
     }

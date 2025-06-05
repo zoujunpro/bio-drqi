@@ -7,14 +7,8 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.contents.BioDrQiContents;
-import com.bio.drqi.domain.TcExperimentDesignTb;
-import com.bio.drqi.domain.TcExperimentTb;
-import com.bio.drqi.domain.TcHarvestSeedApplyTb;
-import com.bio.drqi.domain.TcSampleTestTb;
-import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
-import com.bio.drqi.mapper.TcExperimentTbMapper;
-import com.bio.drqi.mapper.TcHarvestSeedApplyTbMapper;
-import com.bio.drqi.mapper.TcSampleTestTbMapper;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.enums.SampleTestCheckResultEnum;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
@@ -30,6 +24,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,11 +44,15 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     @Resource
     private TcHarvestSeedApplyTbMapper tcHarvestSeedApplyTbMapper;
 
+    @Resource
+    private TcPollinationApplyTbMapper tcPollinationApplyTbMapper;
+
 
     @Override
     public PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
         PageHelper.startPage(tcExperimentListPageReqDTO.getPageNum(), tcExperimentListPageReqDTO.getPageSize());
         List<TcHarvestSeedApplyTb> tcHarvestSeedApplyTbList = tcHarvestSeedApplyTbMapper.selectSelective(null);
+        List<TcPollinationApplyTb> tcPollinationApplyTbList = tcPollinationApplyTbMapper.selectSelective(null);
         TcExperimentTb tcExperimentTb = new TcExperimentTb();
         tcExperimentTb.setVectorTaskCodes(tcExperimentListPageReqDTO.getVectorTaskCode());
         tcExperimentTb.setProjectCodes(tcExperimentListPageReqDTO.getProjectCode());
@@ -62,13 +61,13 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectSelective(tcExperimentTb);
         PageInfo<TcExperimentTb> srcPageInfo = new PageInfo<>(tcExperimentTbList);
         PageInfo<TcExperimentListPageRspDTO> resultPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, TcExperimentListPageRspDTO.class);
-        if (CollectionUtil.isNotEmpty(tcHarvestSeedApplyTbList)) {
-            List<String> experimentNumList = tcHarvestSeedApplyTbList.stream().map(TcHarvestSeedApplyTb::getExperimentNum).distinct().collect(Collectors.toList());
-            if (CollectionUtil.isNotEmpty(resultPageInfo.getList())) {
-                resultPageInfo.getList().forEach(tcExperimentListPageRspDTO -> {
-                    tcExperimentListPageRspDTO.setDownHarvestTemplateFlag(experimentNumList.contains(tcExperimentListPageRspDTO.getExperimentNum())?BioDrQiContents.Y:BioDrQiContents.N);
-                });
-            }
+        List<String> harvestExperimentNumList = tcHarvestSeedApplyTbList.stream().map(TcHarvestSeedApplyTb::getExperimentNum).distinct().collect(Collectors.toList());
+        List<String> pollinationExperimentNumList = tcPollinationApplyTbList.stream().map(TcPollinationApplyTb::getExperimentNum).distinct().collect(Collectors.toList());
+        if (CollectionUtil.isNotEmpty(resultPageInfo.getList())) {
+            resultPageInfo.getList().forEach(tcExperimentListPageRspDTO -> {
+                tcExperimentListPageRspDTO.setHarvestFlag(harvestExperimentNumList.contains(tcExperimentListPageRspDTO.getExperimentNum()) ? BioDrQiContents.Y : BioDrQiContents.N);
+                tcExperimentListPageRspDTO.setPollinationFlag(pollinationExperimentNumList.contains(tcExperimentListPageRspDTO.getExperimentNum()) ? BioDrQiContents.Y : BioDrQiContents.N);
+            });
         }
         return resultPageInfo;
     }

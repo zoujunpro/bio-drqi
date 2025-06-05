@@ -3,6 +3,7 @@ package com.bio.drqi.tc.controller;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.oss.service.OssService;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
@@ -38,6 +39,7 @@ public class TcExperimentController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "试验方案申请管理-分页查询")
+    @RequirePermissions("tc:tcExperiment:listPage")
     public ResponseResult<PageInfo<TcExperimentListPageRspDTO>> listPage(@Validated @RequestBody TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
         return ResponseResult.getSuccess(tcExperimentService.listPage(tcExperimentListPageReqDTO));
     }
@@ -119,6 +121,7 @@ public class TcExperimentController {
     @GetMapping("/complete")
     @WebLog(desc = "试验方案申请管理-完成")
     @RequestLog("试验方案申请管理-完成")
+    @RequirePermissions("tc:tcExperiment:complete")
     public ResponseResult<String> complete(@RequestParam @Validated Integer id) {
         tcExperimentService.complete(id);
         return ResponseResult.getSuccess("ok");
@@ -135,6 +138,7 @@ public class TcExperimentController {
     @GetMapping("/stop")
     @WebLog(desc = "试验方案申请管理-暂停")
     @RequestLog("试验方案申请管理-暂停")
+    @RequirePermissions("tc:tcExperiment:stop")
     public ResponseResult<String> stop(@RequestParam @Validated Integer id) {
         tcExperimentService.stop(id);
         return ResponseResult.getSuccess("ok");
@@ -150,6 +154,7 @@ public class TcExperimentController {
     @GetMapping("/start")
     @WebLog(desc = "试验方案申请管理-启用")
     @RequestLog("试验方案申请管理-启用")
+    @RequirePermissions("tc:tcExperiment:start")
     public ResponseResult<String> start(@RequestParam @Validated Integer id) {
         tcExperimentService.start(id);
         return ResponseResult.getSuccess("ok");

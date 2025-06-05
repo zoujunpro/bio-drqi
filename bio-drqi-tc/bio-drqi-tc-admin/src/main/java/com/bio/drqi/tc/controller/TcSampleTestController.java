@@ -3,6 +3,7 @@ package com.bio.drqi.tc.controller;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.oss.service.OssService;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.*;
 import com.bio.drqi.tc.rsp.*;
@@ -37,6 +38,7 @@ public class TcSampleTestController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "田测取样检测管理-取样申请列表")
+    @RequirePermissions("tc:tcSampleTest:listPage")
     public ResponseResult<PageInfo<TcSampleTestListPageRspDTO>> listPage(@RequestBody @Validated TcSampleTestListPageReqDTO tcSampleTestListPageReqDTO) {
         return ResponseResult.getSuccess(tcSampleTestService.listPage(tcSampleTestListPageReqDTO));
     }

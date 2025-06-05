@@ -1,6 +1,7 @@
 package com.bio.drqi.tc.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcHarvestCreateHarvestExcelReqDTO;
 import com.bio.drqi.tc.req.TcHarvestListPageDetailReqDTO;
@@ -35,6 +36,7 @@ public class TcHarvestController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "田测收获管理-分页查询申请列表")
+    @RequirePermissions("tc:tcHarvest:listPage")
     public ResponseResult<PageInfo<TcHarvestListPageRspDTO>> listPage(@RequestBody TcHarvestListPageReqDTO tcHarvestListPageReqDTO) {
         return ResponseResult.getSuccess(tcHarvestService.listPage(tcHarvestListPageReqDTO));
     }

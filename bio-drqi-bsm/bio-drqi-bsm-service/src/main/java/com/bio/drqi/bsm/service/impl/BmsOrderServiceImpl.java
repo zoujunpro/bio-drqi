@@ -37,7 +37,9 @@ public class BmsOrderServiceImpl implements BmsOrderService {
 
     @Override
     public List<BmsOrderQueryListRspDTO> queryList(BmsOrderQueryListReqDTO bmsOrderQueryListReqDTO) {
-        List<BmsOrderTb> bmsOrderTbList = bmsOrderTbMapper.selectSelective(BeanUtils.copyProperties(bmsOrderQueryListReqDTO, BmsOrderTb.class));
+        BmsOrderTb bmsOrderTb = BeanUtils.copyProperties(bmsOrderQueryListReqDTO, BmsOrderTb.class);
+        bmsOrderTb.setApplyUnitCode(bmsOrderQueryListReqDTO.getUnitCode());
+        List<BmsOrderTb> bmsOrderTbList = bmsOrderTbMapper.selectSelective(bmsOrderTb);
         return BeanUtils.copyListProperties(bmsOrderTbList, BmsOrderQueryListRspDTO.class);
     }
 
@@ -55,8 +57,8 @@ public class BmsOrderServiceImpl implements BmsOrderService {
     @Override
     public void uploadContract(BmsOrderUploadContractReqDTO bmsOrderUploadContractReqDTO) {
         BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderUploadContractReqDTO.getOrderNum());
-        if(bmsOrderTb==null){
-            log.error("订单不存在，orderNum={}",bmsOrderUploadContractReqDTO.getOrderNum());
+        if (bmsOrderTb == null) {
+            log.error("订单不存在，orderNum={}", bmsOrderUploadContractReqDTO.getOrderNum());
             throw new BusinessException("订单不存在");
         }
         bmsOrderTb.setContractNumber(bmsOrderUploadContractReqDTO.getContractNumber());
@@ -67,8 +69,8 @@ public class BmsOrderServiceImpl implements BmsOrderService {
     @Override
     public void uploadInvoice(BmsOrderUploadInvoiceReqDTO bmsOrderUploadInvoiceReqDTO) {
         BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderUploadInvoiceReqDTO.getOrderNum());
-        if(bmsOrderTb==null){
-            log.error("订单不存在，orderNum={}",bmsOrderUploadInvoiceReqDTO.getOrderNum());
+        if (bmsOrderTb == null) {
+            log.error("订单不存在，orderNum={}", bmsOrderUploadInvoiceReqDTO.getOrderNum());
             throw new BusinessException("订单不存在");
         }
         bmsOrderTb.setInvoiceUrls(bmsOrderUploadInvoiceReqDTO.getInvoiceUrls());
@@ -78,8 +80,8 @@ public class BmsOrderServiceImpl implements BmsOrderService {
     @Override
     public void reportAccount(BmsOrderReportAccountReqDTO bmsOrderReportAccountReqDTO) {
         BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderReportAccountReqDTO.getOrderNum());
-        if(bmsOrderTb==null){
-            log.error("订单不存在，orderNum={}",bmsOrderReportAccountReqDTO.getOrderNum());
+        if (bmsOrderTb == null) {
+            log.error("订单不存在，orderNum={}", bmsOrderReportAccountReqDTO.getOrderNum());
             throw new BusinessException("订单不存在");
         }
         bmsOrderTb.setReportAccountTime(bmsOrderReportAccountReqDTO.getAccountTime());
@@ -90,8 +92,8 @@ public class BmsOrderServiceImpl implements BmsOrderService {
     @Override
     public void uploadPaymentVoucher(BmsOrderUploadPaymentVoucherReqDTO bmsOrderUploadPaymentVoucherReqDTO) {
         BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderUploadPaymentVoucherReqDTO.getOrderNum());
-        if(bmsOrderTb==null){
-            log.error("订单不存在，orderNum={}",bmsOrderUploadPaymentVoucherReqDTO.getOrderNum());
+        if (bmsOrderTb == null) {
+            log.error("订单不存在，orderNum={}", bmsOrderUploadPaymentVoucherReqDTO.getOrderNum());
             throw new BusinessException("订单不存在");
         }
         bmsOrderTb.setPaymentVoucherUrls(bmsOrderUploadPaymentVoucherReqDTO.getPaymentVoucherUrls());

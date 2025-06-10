@@ -176,6 +176,15 @@ public class BioTaskServiceImpl implements BioTaskService {
     }
 
     @Override
+    public BioTaskDtlTb backTask(BioBackTaskReqDTO bioRejectTaskReqDTO) {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioRejectTaskReqDTO.getId());
+        Assert.notNull(bioTaskDtlTb, "不存在此任务");
+        FlowHisInstanceTb flowHisInstanceTb = flowService.back(SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), bioTaskDtlTb.getInstanceId(), null, bioRejectTaskReqDTO.getReason());
+
+        return  bioTaskDtlTbMapper.selectById(bioRejectTaskReqDTO.getId());
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class, timeout = 120000)
     public BioTaskDtlTb revokeTask(BioRevokeTaskReqDTO bioRevokeTaskReqDTO) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioRevokeTaskReqDTO.getId());
@@ -348,7 +357,7 @@ public class BioTaskServiceImpl implements BioTaskService {
     private BioTaskDtlTb initTask(BioTaskStartReqDTO bioTaskStartReqDTO, BioTaskConf bioTaskConf) {
         if (bioTaskStartReqDTO.getId() != null) {
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioTaskStartReqDTO.getId());
-            if(bioTaskDtlTb==null){
+            if (bioTaskDtlTb == null) {
                 throw new BusinessException("数据异常，无此任务");
             }
             if (BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {

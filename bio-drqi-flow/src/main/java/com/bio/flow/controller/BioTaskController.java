@@ -83,6 +83,19 @@ public class BioTaskController {
         return ResponseResult.getSuccess(bioTaskService.rejectTask(bioRejectTaskReqDTO));
     }
 
+
+    /**
+     * 回退任务
+     *
+     * @param bioRejectTaskReqDTO
+     * @return
+     */
+    @PostMapping("/back")
+    @WebLog(desc = "回退任务")
+    @RequestLog("回退任务")
+    public ResponseResult<BioTaskDtlTb> backTask(@RequestBody @Validated BioBackTaskReqDTO bioRejectTaskReqDTO) {
+        return ResponseResult.getSuccess(bioTaskService.backTask(bioRejectTaskReqDTO));
+    }
     /**
      * 撤销任务
      *

@@ -1,10 +1,13 @@
 package com.bio.flow.service;
 
 
+import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.flow.dto.*;
 import com.bio.flow.enums.QueryTypeEnum;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -35,6 +38,9 @@ public interface BioTaskService {
      * @return
      */
     BioTaskDtlTb rejectTask(BioRejectTaskReqDTO bioRejectTaskReqDTO);
+
+
+    BioTaskDtlTb backTask(BioBackTaskReqDTO bioRejectTaskReqDTO);
 
     /**
      * 撤销任务

@@ -79,6 +79,14 @@ public class FlowServiceImpl implements FlowService {
     }
 
     @Override
+    public FlowHisInstanceTb back(String userName, Integer userId, Long instanceId, Map<String, Object> args, String remarks) {
+        FlowActor flowActor = FlowActor.of(tenantId, String.valueOf(userId), userName);
+        flowEngineService.executeBack(instanceId, flowActor, args, remarks);
+        FlowHisInstanceTb flowHisInstanceTb = flowEngineService.getQueryService().getHistInstance(instanceId);
+        return flowHisInstanceTb;
+    }
+
+    @Override
     public FlowHisInstanceTb revoke(String userName, Integer userId, Long instanceId, String remarks) {
         List<FlowHisCommitTb> flowHisCommitTbList = flowEngineService.getQueryService().getFlowCommitTbByInstanceId(instanceId);
         if (CollectionUtil.isNotEmpty(flowHisCommitTbList) && flowHisCommitTbList.stream().map(FlowEntity::getCreateId).distinct().count() > 1) {

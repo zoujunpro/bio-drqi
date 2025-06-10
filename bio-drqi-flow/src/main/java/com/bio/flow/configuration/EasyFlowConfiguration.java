@@ -139,9 +139,9 @@ public class EasyFlowConfiguration {
                         /**
                          * 连续上级
                          */
-                    } else if (SetApprove.manager.getValue() == nodeModel.getSetApprove()) {
+                    } else if (SetApprove.current_manager.getValue() == nodeModel.getSetApprove()) {
                         /**
-                         * 部门负责人
+                         * 发起人部门负责人
                          */
                         SystemUserTb systemUserTb = systemUserTbMapper.selectById(Integer.valueOf(applyUserId));
                         if (systemUserTb == null || systemUserTb.getDeptId() == null || systemUserTb.getDeptId() == -1) {
@@ -151,6 +151,18 @@ public class EasyFlowConfiguration {
 
                         SystemUserTb leaderSystemUserTb = systemUserTbMapper.selectById(firstDeptTb.getLeaderId());
                         return transSystemUserTbToFlowActor(Arrays.asList(leaderSystemUserTb), nodeModel, applyAdmin);
+                    }else if (SetApprove.appoint_manager.getValue() == nodeModel.getSetApprove()){
+                        //指定部门负责人
+                        List<Integer> deptIdList = nodeModel.getNodeActorList().stream().map(nodeActor -> Integer.valueOf(nodeActor.getId())).collect(Collectors.toList());
+                        if(CollectionUtil.isEmpty(deptIdList)){
+                            throw new BusinessException("指定部门时没选择部门信息");
+                        }
+                        SystemDeptTb systemDeptTb = systemDeptTbMapper.selectById(deptIdList.get(0));
+                        if(systemDeptTb==null){
+                            throw new BusinessException("部门信息不存在");
+                        }
+                        SystemUserTb deptSystemUserTb = systemUserTbMapper.selectById(systemDeptTb.getLeaderId());
+                        return transSystemUserTbToFlowActor(Arrays.asList(deptSystemUserTb), nodeModel, applyAdmin);
                     }
                 } else if (NodeType.copy.getValue() == nodeModel.getNodeType()) {
                     if (CollectionUtil.isNotEmpty(nodeModel.getNodeActorList())) {

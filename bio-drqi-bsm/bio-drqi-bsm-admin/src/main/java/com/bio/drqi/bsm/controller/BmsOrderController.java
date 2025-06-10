@@ -64,7 +64,7 @@ public class BmsOrderController {
      */
     @WebLog(desc = "采购订单管理-上传合同")
     @PostMapping("/uploadContract")
-    @RequirePermissions("bms:order:uploadContract")
+    @RequirePermissions("bms:order:edit")
     public ResponseResult<String> uploadContract(@RequestBody BmsOrderUploadContractReqDTO bmsOrderUploadContractReqDTO){
         bmsOrderService.uploadContract(bmsOrderUploadContractReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -76,7 +76,7 @@ public class BmsOrderController {
      */
     @PostMapping("/uploadInvoice")
     @WebLog(desc = "采购订单管理-上传发票")
-    @RequirePermissions("bms:order:uploadInvoice")
+    @RequirePermissions("bms:order:edit")
     public ResponseResult<String> uploadInvoice(@RequestBody  BmsOrderUploadInvoiceReqDTO bmsOrderUploadInvoiceReqDTO){
         bmsOrderService.uploadInvoice(bmsOrderUploadInvoiceReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -89,7 +89,7 @@ public class BmsOrderController {
 
     @WebLog(desc = "采购订单管理-订单报账结算")
     @PostMapping("/reportAccount")
-    @RequirePermissions("bms:order:reportAccount")
+    @RequirePermissions("bms:order:edit")
     public ResponseResult<String> reportAccount(@RequestBody BmsOrderReportAccountReqDTO bmsOrderReportAccountReqDTO){
         bmsOrderService.reportAccount(bmsOrderReportAccountReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -102,7 +102,7 @@ public class BmsOrderController {
 
     @WebLog(desc = "采购订单管理-上传结算凭证")
     @PostMapping("/uploadPaymentVoucher")
-    @RequirePermissions("bms:order:uploadPaymentVoucher")
+    @RequirePermissions("bms:order:edit")
     public ResponseResult<String> uploadPaymentVoucher(@RequestBody BmsOrderUploadPaymentVoucherReqDTO bmsOrderUploadPaymentVoucherReqDTO){
         bmsOrderService.uploadPaymentVoucher(bmsOrderUploadPaymentVoucherReqDTO);
         return ResponseResult.getSuccess("ok");

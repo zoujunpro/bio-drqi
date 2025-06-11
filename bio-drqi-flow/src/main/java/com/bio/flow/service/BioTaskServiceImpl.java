@@ -180,6 +180,10 @@ public class BioTaskServiceImpl implements BioTaskService {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioRejectTaskReqDTO.getId());
         Assert.notNull(bioTaskDtlTb, "不存在此任务");
         FlowHisInstanceTb flowHisInstanceTb = flowService.back(SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), bioTaskDtlTb.getInstanceId(), null, bioRejectTaskReqDTO.getReason());
+        /**
+         * 流程执行后判断流程状态
+         */
+        afterFLow(bioTaskDtlTb, flowHisInstanceTb);
 
         return  bioTaskDtlTbMapper.selectById(bioRejectTaskReqDTO.getId());
     }

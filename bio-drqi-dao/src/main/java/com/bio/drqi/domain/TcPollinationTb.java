@@ -141,6 +141,10 @@ public class TcPollinationTb implements Serializable {
 
     private BigDecimal seedNumber;
 
+    private String harvestApplyNum;
+
+    private String harvestRemark;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

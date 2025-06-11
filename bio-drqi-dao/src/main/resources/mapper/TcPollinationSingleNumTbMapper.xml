@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.TcPollinationSingleNumTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.TcPollinationSingleNumTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
+            <result property="pollinationApplyNum" column="pollination_apply_num" jdbcType="VARCHAR"/>
+            <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
+            <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
+            <result property="singleNumber" column="single_number" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,experiment_num,pollination_apply_num,
+        seed_num,region_num,single_number,
+        create_time,create_user_name
+    </sql>
+    <select id="selectAllByExperimentNumAndPollinationApplyNumIsNull" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_pollination_single_num_tb
+        where
+        experiment_num = #{experimentNum,jdbcType=VARCHAR}
+        AND pollination_apply_num is null
+    </select>
+    <delete id="deleteByExperimentNumAndPollinationApplyNumIsNull">
+        delete
+        from tc_pollination_single_num_tb
+        where experiment_num = #{experimentNum,jdbcType=VARCHAR}
+          AND pollination_apply_num is null
+    </delete>
+    <insert id="insertBatch">
+        insert into tc_pollination_single_num_tb(id,experiment_num,pollination_apply_num,
+        seed_num,region_num,single_number,
+        create_time,create_user_name)
+        values
+        <foreach collection="tcPollinationSingleNumTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.pollinationApplyNum,jdbcType=VARCHAR},
+            #{item.seedNum,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},#{item.singleNumber,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP},#{item.createUserName,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <select id="selectOneBySingleNumber" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_pollination_single_num_tb
+        where
+        single_number = #{singleNumber,jdbcType=VARCHAR}
+    </select>
+</mapper>

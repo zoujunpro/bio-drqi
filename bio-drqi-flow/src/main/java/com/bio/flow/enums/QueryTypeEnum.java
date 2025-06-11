@@ -1,4 +1,4 @@
-package com.bio.drqi.enums;
+package com.bio.flow.enums;
 
 public enum QueryTypeEnum {
     TYPE_1(1,"查询所有"),

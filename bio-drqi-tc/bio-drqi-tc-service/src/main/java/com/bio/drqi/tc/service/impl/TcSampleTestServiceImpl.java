@@ -10,9 +10,9 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.BioTaskStatusEnum;
-import com.bio.drqi.enums.GenerationEnum;
 import com.bio.drqi.external.client.BioInfoClientApi;
 import com.bio.drqi.external.dto.BioResult;
 import com.bio.drqi.mapper.*;
@@ -23,8 +23,8 @@ import com.bio.drqi.tc.rsp.*;
 import com.bio.drqi.tc.service.TcSampleTestService;
 import com.bio.drqi.tc.service.dto.IdentifyPrimerTemplateExcelDTO;
 import com.bio.drqi.tc.service.dto.TcSampleTestBioInfoExcelDTO;
-import com.bio.drqi.tc.service.dto.TcTestExcelDTO;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
+import com.bio.drqi.tc.service.dto.TcTestExcelDTO;
 import com.bio.drqi.tc.util.LayoutUtil;
 import com.bio.drqi.tc.util.TcSampleExcelUtil;
 import com.github.pagehelper.PageHelper;
@@ -66,13 +66,14 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     @Resource
     private TcSampleTestBioInfoResultTbMapper tcSampleTestBioInfoResultTbMapper;
 
+    @Resource
+    private TcExperimentTbMapper tcExperimentTbMapper;
 
     @Resource
     private BioInfoClientApi bioInfoClientApi;
 
 
     private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(50, 50, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(10000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
-
 
 
     @Value("${cer.properties.excelTemplatePath}")
@@ -90,6 +91,9 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     public PageInfo<TcSampleTestListPageDetailRspDTO> listPageDetail(TcSampleTestListPageDetailReqDTO tcSampleTestListPageDetailReqDTO) {
         PageHelper.startPage(tcSampleTestListPageDetailReqDTO.getPageNum(), tcSampleTestListPageDetailReqDTO.getPageSize());
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectSelective(BeanUtils.copyProperties(tcSampleTestListPageDetailReqDTO, TcSampleTestTb.class));
+        if (CollectionUtil.isEmpty(tcSampleTestTbList)) {
+            return new PageInfo<TcSampleTestListPageDetailRspDTO>();
+        }
         PageInfo<TcSampleTestTb> srcPageInfo = new PageInfo<>(tcSampleTestTbList);
         PageInfo<TcSampleTestListPageDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, TcSampleTestListPageDetailRspDTO.class);
         List<String> sameCodeList = tcSampleTestTbList.stream().map(TcSampleTestTb::getSampleCode).collect(Collectors.toList());
@@ -248,14 +252,13 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
 
         if (CollectionUtil.isNotEmpty(identifyPrimerTemplateExcelDTOList)) {
             for (IdentifyPrimerTemplateExcelDTO identifyPrimerTemplateExcelDTO : identifyPrimerTemplateExcelDTOList) {
-                TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneByExperimentNumAndSampleCode(tcSampleTestTaskDTO.getExperimentNum(), identifyPrimerTemplateExcelDTO.getSampleCode());
+                TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneBySampleApplyNumAndSampleCode(tcSampleTestUploadIdentifyPrimerTemplateReqDTO.getApplyNo(), identifyPrimerTemplateExcelDTO.getSampleCode());
                 if (tcSampleTestTb != null) {
                     tcSampleTestTb.setIdentifyPrimer(identifyPrimerTemplateExcelDTO.getIdentifyPrimer());
                     tcSampleTestTbMapper.updateIdentifyPrimerById(identifyPrimerTemplateExcelDTO.getIdentifyPrimer(), tcSampleTestTb.getId());
                 }
             }
         }
-
         tcSampleTestTaskDTO.setIdentifyPrimerTemplateExcelUrl(tcSampleTestUploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcSampleTestTaskDTO));
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
@@ -315,6 +318,8 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     @Override
     public void dowLayoutExcel(String applyNo, HttpServletResponse httpServletResponse) {
         TcSampleLayoutTb tcSampleLayoutTb = tcSampleLayoutTbMapper.selectOneByApplyNo(applyNo);
+        TcSampleTestApplyTb tcSampleTestApplyTb = tcSampleTestApplyTbMapper.selectOneByTaskNum(applyNo);
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcSampleTestApplyTb.getExperimentNum());
         List<List<List<SampleUnitDTO>>> layoutList = null;
         if (tcSampleLayoutTb != null) {
             List<SampleUnitDTO> singleSampleUnitDTOList = JSONUtil.toList(tcSampleLayoutTb.getSingleContent(), SampleUnitDTO.class);
@@ -334,7 +339,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
                 }
 
             }
-            TcSampleExcelUtil.createExcel(applyNo, layoutList, singleSampleUnitDTOList, httpServletResponse, "取样标签排版.xlsx");
+            TcSampleExcelUtil.createExcel(tcSampleTestApplyTb,tcExperimentTb, layoutList, singleSampleUnitDTOList, httpServletResponse, "取样标签排版.xlsx");
         } else {
             //默认排版
             TcSampleTestLayoutConfirmReqDTO tcSampleTestLayoutConfirmReqDTO = getLayoutConfirmReqDTO(applyNo);
@@ -356,7 +361,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         }
         TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
         for (TcSampleTestApproveSampleResultReqDTO.Content content : tcSampleTestApproveSampleResultReqDTO.getContentList()) {
-            TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneByExperimentNumAndSampleCode(tcSampleTestTaskDTO.getExperimentNum(), content.getSampleCode());
+            TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneBySampleApplyNumAndSampleCode(tcSampleTestApproveSampleResultReqDTO.getTaskNum(), content.getSampleCode());
             if (tcSampleTestTb == null) {
                 log.error("approveSampleResult content={}", content);
                 throw new BusinessException("此试验中无此取样编号:" + content.getSampleCode() + ", 实现号：" + tcSampleTestTaskDTO.getExperimentNum());
@@ -533,7 +538,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectSelective(tcSampleTestTb);
         PageInfo<TcSampleTestTb> srcPageInfo = new PageInfo<>(tcSampleTestTbList);
         if (CollectionUtil.isEmpty(tcSampleTestTbList)) {
-                return new PageInfo<TcSampleTestBioInfoPageRspDTO>();
+            return new PageInfo<TcSampleTestBioInfoPageRspDTO>();
         }
         PageInfo<TcSampleTestBioInfoPageRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, TcSampleTestBioInfoPageRspDTO.class);
         targetPageInfo.getList().forEach(bioInfoPageRspDTO -> {

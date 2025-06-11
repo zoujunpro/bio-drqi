@@ -6,6 +6,7 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.oss.service.OssService;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcPollinationCreatePollinationExcelReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
@@ -44,6 +45,7 @@ public class TcPollinationController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "授粉管理-分页查询")
+    @RequirePermissions("tc:tcPollination:listPage")
     public ResponseResult<PageInfo<TcPollinationListPageRspDTO>> listPage(@RequestBody @Validated TcPollinationListPageReqDTO tcPollinationListPageReqDTO) {
         return ResponseResult.getSuccess(tcPollinationService.listPage(tcPollinationListPageReqDTO));
     }
@@ -77,6 +79,7 @@ public class TcPollinationController {
     @PostMapping("/createPollinationExcel")
     @WebLog(desc = "授粉管理-生成授粉excel")
     @Transactional(rollbackFor = Exception.class)
+    @RequirePermissions("tc:tcPollination:createPollinationExcel")
     public void createPollinationExcel(@RequestBody @Validated TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
             tcPollinationService.createPollinationExcel(tcPollinationCreatePollinationExcelReqDTO,httpServletResponse);
     }

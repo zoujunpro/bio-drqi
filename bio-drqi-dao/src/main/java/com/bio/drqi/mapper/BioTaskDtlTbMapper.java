@@ -19,17 +19,19 @@ public interface BioTaskDtlTbMapper extends BaseMapper<BioTaskDtlTb> {
 
     BioTaskDtlTb selectOneByInstanceId(@Param("instanceId") Long instanceId);
 
-    List<BioTaskDtlTb> selectForPendingApproval(@Param("applyUserId") String applyUserId,
-                                                @Param("taskNum") String taskNum,
-                                                @Param("taskTypeCode") String taskTypeCode,
-                                                @Param("taskCategory") String taskCategory
-    );
-
-    List<BioTaskDtlTb> selectForAlreadyApproval(@Param("applyUserId") String applyUserId,
+    List<BioTaskDtlTb> selectForPendingApproval(@Param("actorUserId") String actorUserId,
                                                 @Param("taskNum") String taskNum,
                                                 @Param("taskTypeCode") String taskTypeCode,
                                                 @Param("taskCategory") String taskCategory,
-                                                @Param("taskStatus") String taskStatus);
+                                                @Param("applyUserId") Integer applyUserId
+    );
+
+    List<BioTaskDtlTb> selectForAlreadyApproval(@Param("actorUserId") String actorUserId,
+                                                @Param("taskNum") String taskNum,
+                                                @Param("taskTypeCode") String taskTypeCode,
+                                                @Param("taskCategory") String taskCategory,
+                                                @Param("taskStatus") String taskStatus,
+                                                @Param("applyUserId") Integer applyUserId);
 
     List<BioTaskDtlTb> selectSelective(BioTaskDtlTb bioTaskDtlTb);
 

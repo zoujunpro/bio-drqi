@@ -48,14 +48,9 @@ public class TcPollinationListPageRspDTO {
      */
     private Date createTime;
 
-    /**
-     * 收获批次号
-     */
-    private String harvestApplyNum;
-
     private String pollinationExcelUrl;
 
-    private String harvestExcelUrl;
+
 
 
 

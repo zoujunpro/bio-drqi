@@ -70,11 +70,6 @@ public class TcExperimentListPageRspDTO {
     private String taskNum;
 
     /**
-     * 授粉标识
-     */
-    private String pollinationNum;
-
-    /**
      * 田间设计附件
      */
     private String designUrl;
@@ -83,4 +78,20 @@ public class TcExperimentListPageRspDTO {
     private String sampleCodePrefix;
 
     private Integer nextSampleNumber;
+
+    /**
+     *
+     * 试验状态 1 进行中  2试验结束 3试验终止
+     */
+    private String experimentStatus;
+
+    /**
+     * 收获批次号
+     */
+    private String harvestApplyNum;
+
+    private String harvestFlag;
+
+    private String pollinationFlag;
+
 }

@@ -5,29 +5,39 @@
 <mapper namespace="com.bio.drqi.mapper.TcHarvestSeedApplyTbMapper">
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.TcHarvestSeedApplyTb">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
-            <result property="pollinationApplyNum" column="pollination_apply_num" jdbcType="VARCHAR"/>
-            <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
-            <result property="harvestTime" column="harvest_time" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
-            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
-            <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
-            <result property="harvestFileUrl" column="harvest_file_url" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+        <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
+        <result property="harvestTime" column="harvest_time" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+        <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+        <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
+        <result property="harvestFileUrl" column="harvest_file_url" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,task_num,pollination_apply_num,
+        id
+        ,task_num,
         harvest_apply_num,harvest_time,create_time,
         create_user_id,create_user_name,experiment_num,
         harvest_file_url
     </sql>
-    <select id="selectOneByPollinationApplyNum" resultMap="BaseResultMap">
+    <select id="selectSelective" resultType="com.bio.drqi.domain.TcHarvestSeedApplyTb">
         select
         <include refid="Base_Column_List"/>
         from tc_harvest_seed_apply_tb
-        where
-        pollination_apply_num = #{pollinationApplyNum,jdbcType=VARCHAR}
+        <where>
+            <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="harvestApplyNum != null and harvestApplyNum!=''">and harvest_apply_num=#{harvestApplyNum,jdbcType=VARCHAR}</if>
+            <if test="harvestTime != null">and harvest_time=#{harvestTime,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
+            <if test="harvestFileUrl != null">harvest_file_url=#{harvestFileUrl,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
     </select>
+
 </mapper>

@@ -52,18 +52,24 @@ public class BmsBrandServiceImpl implements BmsBrandService {
 
     @Override
     public BmsBrandTb add(BmsBrandAddReqDTO bmsBrandAddReqDTO) {
-        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode( bmsBrandAddReqDTO.getBrandName());
-        if (Objects.nonNull(bmsBrandTb) && BioDrQiContents.N.equals(bmsBrandTb.getDeleteFlag())) {
-            throw new BusinessException("该品牌已经存在");
+        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsBrandAddReqDTO.getBrandName());
+        if (Objects.nonNull(bmsBrandTb)) {
+            if (BioDrQiContents.N.equals(bmsBrandTb.getDeleteFlag())) {
+                throw new BusinessException("该品牌已经存在");
+            } else {
+                bmsBrandTb.setDeleteFlag(BioDrQiContents.N);
+                bmsBrandTbMapper.updateById(bmsBrandTb);
+            }
+        } else {
+            bmsBrandTb = new BmsBrandTb();
+            bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
+            bmsBrandTb.setBrandName(bmsBrandAddReqDTO.getBrandName());
+            bmsBrandTb.setCreateTime(new Date());
+            bmsBrandTb.setCreateUserId(SecurityContextHolder.getUserId());
+            bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
+            bmsBrandTb.setDeleteFlag(BioDrQiContents.N);
+            bmsBrandTbMapper.insert(bmsBrandTb);
         }
-        bmsBrandTb = new BmsBrandTb();
-        bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
-        bmsBrandTb.setBrandName(bmsBrandAddReqDTO.getBrandName());
-        bmsBrandTb.setCreateTime(new Date());
-        bmsBrandTb.setCreateUserId(SecurityContextHolder.getUserId());
-        bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
-        bmsBrandTb.setDeleteFlag(BioDrQiContents.N);
-        bmsBrandTbMapper.insert(bmsBrandTb);
         return bmsBrandTb;
     }
 

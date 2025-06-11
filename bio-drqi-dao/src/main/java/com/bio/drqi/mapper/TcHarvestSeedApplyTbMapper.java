@@ -4,6 +4,8 @@ import org.apache.ibatis.annotations.Param;
 import com.bio.drqi.domain.TcHarvestSeedApplyTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
 * @author zou'jun
 * @description 针对表【tc_harvest_seed_apply_tb】的数据库操作Mapper
@@ -12,7 +14,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface TcHarvestSeedApplyTbMapper extends BaseMapper<TcHarvestSeedApplyTb> {
 
-    TcHarvestSeedApplyTb selectOneByPollinationApplyNum(@Param("pollinationApplyNum") String pollinationApplyNum);
+
+    List<TcHarvestSeedApplyTb> selectSelective(TcHarvestSeedApplyTb tcHarvestSeedApplyTb);
 
 }
 

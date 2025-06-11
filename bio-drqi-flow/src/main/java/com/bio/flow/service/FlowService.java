@@ -17,6 +17,9 @@ public interface FlowService {
 
     FlowHisInstanceTb reject(String userName, Integer userId, Long instanceId, Map<String, Object> args, String remarks);
 
+    FlowHisInstanceTb back(String userName, Integer userId, Long instanceId, Map<String, Object> args, String remarks);
+
+
     FlowHisInstanceTb revoke(String userName, Integer userId, Long instanceId,  String remarks);
 
     /**

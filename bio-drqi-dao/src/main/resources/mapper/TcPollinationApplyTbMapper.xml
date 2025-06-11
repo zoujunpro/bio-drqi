@@ -14,17 +14,14 @@
             <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
             <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
             <result property="pollinationExcelUrl" column="pollination_excel_url" jdbcType="VARCHAR"/>
-            <result property="harvestExcelUrl" column="harvest_excel_url" jdbcType="VARCHAR"/>
 
     </resultMap>
 
     <sql id="Base_Column_List">
         id,experiment_num,sample_apply_num,
         pollination_type,pollination_apply_num,task_num,
-        create_user_id,create_user_name,create_time,
-        harvest_apply_num,pollination_excel_url,harvest_excel_url
+        create_user_id,create_user_name,create_time,pollination_excel_url
     </sql>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.TcPollinationApplyTb">
         select
@@ -39,7 +36,6 @@
             <if test="createUserId != null">create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
             <if test="createUserName != null">create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
             <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP},</if>
-            <if test="harvestApplyNum != null and harvestApplyNum!=''">and harvest_apply_num=#{harvestApplyNum,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>
@@ -56,13 +52,5 @@
         from tc_pollination_apply_tb
         where
         experiment_num = #{experimentNum,jdbcType=VARCHAR}
-    </select>
-    <select id="selectAllByHarvestApplyNumIsNullOrderByIdDesc" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from tc_pollination_apply_tb
-        where
-        harvest_apply_num is null
-        order by id desc
     </select>
 </mapper>

@@ -3,7 +3,9 @@ package com.bio.drqi.tc.controller;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.oss.service.OssService;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
 import com.bio.drqi.tc.req.TcExperimentQueryListExperimentDesignReqDTO;
 import com.bio.drqi.tc.rsp.*;
@@ -31,28 +33,46 @@ public class TcExperimentController {
 
     /**
      * 试验方案申请管理-分页查询
+     *
      * @param tcExperimentListPageReqDTO
      * @return
      */
     @PostMapping("/listPage")
     @WebLog(desc = "试验方案申请管理-分页查询")
+    @RequirePermissions("tc:tcExperiment:listPage")
     public ResponseResult<PageInfo<TcExperimentListPageRspDTO>> listPage(@Validated @RequestBody TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
         return ResponseResult.getSuccess(tcExperimentService.listPage(tcExperimentListPageReqDTO));
     }
 
     /**
-     * 试验方案申请管理-查询所有试验
+     * 试验方案申请管理-查询所有启用试验
+     *
      * @param
      * @return
      */
     @GetMapping("/listAll")
-    @WebLog(desc = "试验方案申请管理-查询所有试验")
+    @WebLog(desc = "试验方案申请管理-查询所有启用试验")
     public ResponseResult<List<TcExperimentListAllRspDTO>> listAll() {
         return ResponseResult.getSuccess(tcExperimentService.listAll());
     }
 
+
+    /**
+     * 试验方案申请管理-查询未收获试验
+     *
+     * @param
+     * @return
+     */
+    @GetMapping("/listNoHarvest")
+    @WebLog(desc = "试验方案申请管理-查询未收获试验")
+    public ResponseResult<List<TcExperimentListNoHarvestRspDTO>> listNoHarvest() {
+        return ResponseResult.getSuccess(tcExperimentService.listNoHarvest());
+    }
+
+
     /**
      * 试验方案申请管理-条件查询试验设计
+     *
      * @param
      * @return
      */
@@ -62,18 +82,10 @@ public class TcExperimentController {
         return ResponseResult.getSuccess(tcExperimentService.queryListExperimentDesign(tcExperimentQueryListExperimentDesignReqDTO));
     }
 
-    /**
-     * 试验方案申请管理-查询所有未授粉实验方案
-     * @return
-     */
-    @GetMapping("/listByNoPollination")
-    @WebLog(desc = "试验方案申请管理-查询所有未授粉实验方案")
-    public ResponseResult<List<TcExperimentListNoPollinationRspDTO>> listByNoPollination() {
-        return ResponseResult.getSuccess(tcExperimentService.listByNoPollination());
-    }
 
     /**
      * 试验方案申请管理-文件下载
+     *
      * @param httpServletResponse
      * @return
      */
@@ -88,13 +100,64 @@ public class TcExperimentController {
 
     /**
      * 试验方案申请管理-田间设计列表
+     *
      * @param experimentNum
      * @return
      */
     @GetMapping("/listDetail")
     @WebLog(desc = "试验方案申请管理-田间设计列表")
-    public ResponseResult<List<TcExperimentListDetailRspDTO>> listDetail(@RequestParam @Validated String experimentNum){
+    public ResponseResult<List<TcExperimentListDetailRspDTO>> listDetail(@RequestParam @Validated String experimentNum) {
         return ResponseResult.getSuccess(tcExperimentService.listDetail(experimentNum));
+    }
+
+
+    /**
+     * 试验方案申请管理-完成
+     *
+     * @param id
+     * @return
+     */
+
+    @GetMapping("/complete")
+    @WebLog(desc = "试验方案申请管理-完成")
+    @RequestLog("试验方案申请管理-完成")
+    @RequirePermissions("tc:tcExperiment:complete")
+    public ResponseResult<String> complete(@RequestParam @Validated Integer id) {
+        tcExperimentService.complete(id);
+        return ResponseResult.getSuccess("ok");
+    }
+
+
+    /**
+     * 试验方案申请管理-暂停
+     *
+     * @param id
+     * @return
+     */
+
+    @GetMapping("/stop")
+    @WebLog(desc = "试验方案申请管理-暂停")
+    @RequestLog("试验方案申请管理-暂停")
+    @RequirePermissions("tc:tcExperiment:stop")
+    public ResponseResult<String> stop(@RequestParam @Validated Integer id) {
+        tcExperimentService.stop(id);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 试验方案申请管理-启用
+     *
+     * @param id
+     * @return
+     */
+
+    @GetMapping("/start")
+    @WebLog(desc = "试验方案申请管理-启用")
+    @RequestLog("试验方案申请管理-启用")
+    @RequirePermissions("tc:tcExperiment:start")
+    public ResponseResult<String> start(@RequestParam @Validated Integer id) {
+        tcExperimentService.start(id);
+        return ResponseResult.getSuccess("ok");
     }
 
 }

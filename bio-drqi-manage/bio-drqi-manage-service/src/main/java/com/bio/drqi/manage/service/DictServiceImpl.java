@@ -4,7 +4,7 @@ import com.bio.drqi.manage.conf.AcceptorMaterialListRspDTO;
 import com.bio.drqi.manage.conf.BreedListRspDTO;
 import com.bio.drqi.manage.conf.SeedProduceAddressListRsp;
 import com.bio.drqi.manage.conf.SpeciesBreedListRspDTO;
-import com.bio.drqi.enums.BioDictTypeEnum;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.manage.system.rsp.DictInfoRspDTO;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;

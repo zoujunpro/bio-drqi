@@ -6,9 +6,8 @@ import com.bio.drqi.applet.dto.rsp.ScanCodeT0PlantTestRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.PlantUniqueCodeDTO;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.GenerationEnum;
+import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.mapper.*;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

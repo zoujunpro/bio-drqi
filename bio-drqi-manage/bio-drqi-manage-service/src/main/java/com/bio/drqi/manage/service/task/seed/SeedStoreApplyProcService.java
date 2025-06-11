@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.GenerationEnum;
+import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
 import com.bio.drqi.mapper.*;
 import com.bio.common.core.dto.BusinessException;

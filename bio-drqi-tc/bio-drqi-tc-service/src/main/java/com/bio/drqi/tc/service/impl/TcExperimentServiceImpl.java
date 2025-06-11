@@ -6,12 +6,10 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
-import com.bio.drqi.domain.TcExperimentDesignTb;
-import com.bio.drqi.domain.TcExperimentTb;
-import com.bio.drqi.domain.TcSampleTestTb;
-import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
-import com.bio.drqi.mapper.TcExperimentTbMapper;
-import com.bio.drqi.mapper.TcSampleTestTbMapper;
+import com.bio.drqi.common.contents.BioDrQiContents;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.*;
+import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.enums.SampleTestCheckResultEnum;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
 import com.bio.drqi.tc.req.TcExperimentQueryListExperimentDesignReqDTO;
@@ -26,7 +24,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -41,10 +41,18 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     @Resource
     private TcSampleTestTbMapper tcSampleTestTbMapper;
 
+    @Resource
+    private TcHarvestSeedApplyTbMapper tcHarvestSeedApplyTbMapper;
+
+    @Resource
+    private TcPollinationApplyTbMapper tcPollinationApplyTbMapper;
+
 
     @Override
     public PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
         PageHelper.startPage(tcExperimentListPageReqDTO.getPageNum(), tcExperimentListPageReqDTO.getPageSize());
+        List<TcHarvestSeedApplyTb> tcHarvestSeedApplyTbList = tcHarvestSeedApplyTbMapper.selectSelective(null);
+        List<TcPollinationApplyTb> tcPollinationApplyTbList = tcPollinationApplyTbMapper.selectSelective(null);
         TcExperimentTb tcExperimentTb = new TcExperimentTb();
         tcExperimentTb.setVectorTaskCodes(tcExperimentListPageReqDTO.getVectorTaskCode());
         tcExperimentTb.setProjectCodes(tcExperimentListPageReqDTO.getProjectCode());
@@ -52,13 +60,28 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         tcExperimentTb.setExperimentNum(tcExperimentListPageReqDTO.getExperimentNum());
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectSelective(tcExperimentTb);
         PageInfo<TcExperimentTb> srcPageInfo = new PageInfo<>(tcExperimentTbList);
-        return BeanUtils.copyPageInfoProperties(srcPageInfo, TcExperimentListPageRspDTO.class);
+        PageInfo<TcExperimentListPageRspDTO> resultPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, TcExperimentListPageRspDTO.class);
+        List<String> harvestExperimentNumList = tcHarvestSeedApplyTbList.stream().map(TcHarvestSeedApplyTb::getExperimentNum).distinct().collect(Collectors.toList());
+        List<String> pollinationExperimentNumList = tcPollinationApplyTbList.stream().map(TcPollinationApplyTb::getExperimentNum).distinct().collect(Collectors.toList());
+        if (CollectionUtil.isNotEmpty(resultPageInfo.getList())) {
+            resultPageInfo.getList().forEach(tcExperimentListPageRspDTO -> {
+                tcExperimentListPageRspDTO.setHarvestFlag(harvestExperimentNumList.contains(tcExperimentListPageRspDTO.getExperimentNum()) ? BioDrQiContents.Y : BioDrQiContents.N);
+                tcExperimentListPageRspDTO.setPollinationFlag(pollinationExperimentNumList.contains(tcExperimentListPageRspDTO.getExperimentNum()) ? BioDrQiContents.Y : BioDrQiContents.N);
+            });
+        }
+        return resultPageInfo;
     }
 
     @Override
     public List<TcExperimentListAllRspDTO> listAll() {
-        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectALlOrderByIdDesc();
+        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByExperimentStatusOrderByIdDesc(ExperimentStatusEnum.INIT.status);
         return BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListAllRspDTO.class);
+    }
+
+    @Override
+    public List<TcExperimentListNoHarvestRspDTO> listNoHarvest() {
+        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByExperimentStatusAndHarvestApplyNumIsNullOrderByIdDesc(ExperimentStatusEnum.INIT.status);
+        return BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListNoHarvestRspDTO.class);
     }
 
     @Override
@@ -87,8 +110,41 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     }
 
     @Override
-    public List<TcExperimentListNoPollinationRspDTO> listByNoPollination() {
-        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByPollinationNumIsNullOrderByIdDesc();
-        return BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListNoPollinationRspDTO.class);
+    public void complete(Integer id) {
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectById(id);
+        if (tcExperimentTb == null) {
+            throw new BusinessException("找不到试验");
+        }
+        tcExperimentTb.setExperimentStatus(ExperimentStatusEnum.OVER.status);
+        tcExperimentTbMapper.updateById(tcExperimentTb);
+
     }
+
+    @Override
+    public void stop(Integer id) {
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectById(id);
+        if (tcExperimentTb == null) {
+            throw new BusinessException("找不到试验");
+        }
+        if (!ExperimentStatusEnum.INIT.status.equals(tcExperimentTb.getExperimentStatus())) {
+            throw new BusinessException("只有进行中项目可以暂停");
+        }
+        tcExperimentTb.setExperimentStatus(ExperimentStatusEnum.STOP.status);
+        tcExperimentTbMapper.updateById(tcExperimentTb);
+    }
+
+    @Override
+    public void start(Integer id) {
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectById(id);
+        if (tcExperimentTb == null) {
+            throw new BusinessException("找不到试验");
+        }
+        if (!ExperimentStatusEnum.STOP.status.equals(tcExperimentTb.getExperimentStatus())) {
+            throw new BusinessException("只有暂停中项目可以再次启用");
+        }
+        tcExperimentTb.setExperimentStatus(ExperimentStatusEnum.INIT.status);
+        tcExperimentTbMapper.updateById(tcExperimentTb);
+    }
+
+
 }

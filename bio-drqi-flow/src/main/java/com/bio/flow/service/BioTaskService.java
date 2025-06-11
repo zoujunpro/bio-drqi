@@ -1,13 +1,15 @@
 package com.bio.flow.service;
 
 
+import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.domain.BioTaskDtlTb;
-import com.bio.drqi.enums.QueryTypeEnum;
 import com.bio.flow.dto.*;
+import com.bio.flow.enums.QueryTypeEnum;
 import com.github.pagehelper.PageInfo;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 
-
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface BioTaskService {
@@ -37,6 +39,9 @@ public interface BioTaskService {
      */
     BioTaskDtlTb rejectTask(BioRejectTaskReqDTO bioRejectTaskReqDTO);
 
+
+    BioTaskDtlTb backTask(BioBackTaskReqDTO bioRejectTaskReqDTO);
+
     /**
      * 撤销任务
      *
@@ -47,22 +52,23 @@ public interface BioTaskService {
 
     BioTaskDetailRspDTO detail(Integer id);
 
-    BioTaskDetailRspDTO detailByTaskNum( String taskNum);
+    BioTaskDetailRspDTO detailByTaskNum(String taskNum);
 
     PageInfo<BioTaskListPageRspDTO> listPage(BioTaskListPageReqDTO bioTaskListPageReqDTO, QueryTypeEnum queryTypeEnum);
 
 
     List<BioTaskTypeListRspDTO> listAllTaskType(String category);
 
-    BioTaskTypeListRspDTO listOneTaskType( String taskTypeCode);
+    BioTaskTypeListRspDTO listOneTaskType(String taskTypeCode);
 
 
     List<QueryListRspDTO> queryList(QueryListReqDTO queryListReqDTO);
 
 
-
     void temporarySave(BioTaskTemporarySaveReqDTO bioTaskTemporarySaveReqDTO);
 
-    List<BioQueryAllTaskUserRspDTO> queryAllTaskUser( String taskCategory);
+    List<BioQueryAllTaskUserRspDTO> queryAllTaskUser(String taskCategory);
+
+    void exportExcel(BioExportExcelReqDTO bioExportExcelReqDTO, HttpServletResponse httpServletResponse);
 
 }

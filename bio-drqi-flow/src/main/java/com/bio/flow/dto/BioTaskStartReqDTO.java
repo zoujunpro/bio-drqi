@@ -14,6 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class BioTaskStartReqDTO {
+
+    private Integer id;
     /**工单类型*/
     @NotBlank(message = "工单类型参数缺失")
     private String taskType;

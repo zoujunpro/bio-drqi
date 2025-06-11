@@ -23,4 +23,9 @@
         where
         apply_no = #{applyNo,jdbcType=VARCHAR}
     </select>
+    <delete id="deleteByApplyNo">
+        delete
+        from tc_sample_layout_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+    </delete>
 </mapper>

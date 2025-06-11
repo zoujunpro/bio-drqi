@@ -187,4 +187,6 @@ public class TcSampleTestListPageDetailRspDTO {
 
     private Integer matchNum;
 
+    private String tcSampleCode;
+
 }

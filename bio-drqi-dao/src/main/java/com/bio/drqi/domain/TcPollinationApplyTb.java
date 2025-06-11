@@ -62,14 +62,8 @@ public class TcPollinationApplyTb implements Serializable {
      */
     private Date createTime;
 
-    /**
-     * 收获批次号
-     */
-    private String harvestApplyNum;
-
     private String pollinationExcelUrl;
 
-    private String harvestExcelUrl;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

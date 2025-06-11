@@ -7,13 +7,14 @@ import java.util.List;
 
 @Data
 public class TcHarvestTaskDTO {
-
     /**
-     * 授粉批次号
+     * 实验编号
      */
-    @NotBlank(message = "参数缺失：授粉批次号")
-    private String pollinationApplyNum;
+    @NotBlank(message = "参数缺失：请选择试验")
+    private String experimentNum;
 
+
+    private String harvestTime;
 
     /**
      *收获excel地址

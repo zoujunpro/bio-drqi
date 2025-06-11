@@ -1,5 +1,6 @@
 package com.bio.drqi.tc.rsp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -61,6 +62,24 @@ public class TcSampleTestListPageRspDTO {
     /**
      * 创建日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
+
+
+
+    /**
+     * 一代测序结果文件
+     */
+    private String oneResultExcelUrl;
+
+    /**
+     *NGS测序结果文件
+     */
+    private String ngsResultExcelUrl;
+
+    /**
+     * 孔板引物排版文件
+     */
+    private String identifyPrimerExcelUrl;
 
 }

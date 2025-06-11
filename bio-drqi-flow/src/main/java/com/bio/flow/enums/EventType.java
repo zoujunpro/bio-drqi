@@ -15,5 +15,7 @@ public enum EventType {
      * 撤销
      */
     revoke,
+
+    back,
     ;
 }

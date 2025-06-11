@@ -91,6 +91,10 @@ public class CerProjectTaskListener extends DefaultDuplicateCopyHandler implemen
             List<FlowTaskActorTb> flowTaskActorTbList = flowEngineService.getQueryService().getActiveTaskActorByInstanceId(bioTaskDtlTb.getInstanceId());
             String title = "你有一个" + bioTaskDtlTb.getTaskTypeName() + "待审批";
             sendMessage(bioTaskDtlTb, title, flowTaskActorTbList.stream().map(flowTaskActorTb -> Integer.valueOf(flowTaskActorTb.getActorId())).collect(Collectors.toList()));
+        }else if (EventType.back == eventType) {
+            List<FlowTaskActorTb> flowTaskActorTbList = flowEngineService.getQueryService().getActiveTaskActorByInstanceId(bioTaskDtlTb.getInstanceId());
+            String title = "你有一个回退" + bioTaskDtlTb.getTaskTypeName() + "待审批";
+            sendMessage(bioTaskDtlTb, title, flowTaskActorTbList.stream().map(flowTaskActorTb -> Integer.valueOf(flowTaskActorTb.getActorId())).collect(Collectors.toList()));
         }
     }
 

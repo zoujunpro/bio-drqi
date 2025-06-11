@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.drqi.enums.QualityInspectionResultEnum;
 import com.bio.common.core.context.SecurityContextHolder;

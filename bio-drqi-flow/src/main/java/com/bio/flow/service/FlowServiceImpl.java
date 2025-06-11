@@ -228,6 +228,7 @@ public class FlowServiceImpl implements FlowService {
                 model.setNodeType(nodeModel.getNodeType());
                 model.setExamineMode(nodeModel.getExamineMode());
                 model.setNodeStatus(TaskState.active.getValue());
+                result.getModelList().add(model);
             }else {
                 result.getModelList().get(result.getModelList().size() - 1).setNodeStatus(TaskState.active.getValue());
             }

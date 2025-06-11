@@ -22,6 +22,7 @@ public class ApproveDetailRspDTO {
          * 节点ID
          */
         private String nodeId;
+
         /**
          * 节点名称
          */

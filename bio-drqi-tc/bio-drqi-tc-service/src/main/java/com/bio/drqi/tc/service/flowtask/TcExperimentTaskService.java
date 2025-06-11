@@ -150,7 +150,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
                 throw new BusinessException("excel大田设计文件中项目不是目标试验项目");
             }
             if (!tcExperimentTaskDTO.getVectorTaskCodeList().contains(experimentDesignExcelDTO.getVectorTaskCode())) {
-                throw new BusinessException("excel大田设计文件中实现方案编号不正确，必须归属所选方案中");
+                throw new BusinessException("excel大田设计文件中实验方案编号不正确，必须归属所选方案中");
             }
             if (!experimentDesignExcelDTO.getVectorTaskCode().startsWith(experimentDesignExcelDTO.getProjectCode())) {
                 throw new BusinessException("实施方案:" + experimentDesignExcelDTO.getVectorTaskCode() + "不属于此项目:" + experimentDesignExcelDTO.getProjectCode());

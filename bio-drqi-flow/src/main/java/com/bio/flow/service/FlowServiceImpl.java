@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class FlowServiceImpl implements FlowService {
 
-    private static final List<String> conditionType = Arrays.asList("seed_out_apply", "implementation_plan","sample_and_test","project_create","bms_purchase_apply","bms_product_out","bms_product_input","tc_sample_test_task_apply");
+    private static final List<String> conditionType = Arrays.asList("seed_out_apply", "implementation_plan", "sample_and_test", "project_create", "bms_purchase_apply", "bms_product_out", "bms_product_input", "tc_sample_test_task_apply");
 
 
     private static final String tenantId = "1000";
@@ -94,7 +94,7 @@ public class FlowServiceImpl implements FlowService {
         }
         FlowActor flowActor = FlowActor.of(tenantId, String.valueOf(userId), userName);
         flowEngineService.getRuntimeService().revoke(instanceId, flowActor, remarks);
-        FlowHisInstanceTb flowHisInstanceTb=  flowEngineService.getQueryService().getHistInstance(instanceId);
+        FlowHisInstanceTb flowHisInstanceTb = flowEngineService.getQueryService().getHistInstance(instanceId);
         return flowHisInstanceTb;
     }
 
@@ -108,7 +108,7 @@ public class FlowServiceImpl implements FlowService {
     public List<ProcessDetailRspDTO> processDetail(ProcessDetailReqDTO processDetailReqDTO) {
         List<ProcessDetailRspDTO> result = new ArrayList<>();
         BioTaskConf bioTaskConf = bioTaskConfMapper.selectOneByProcessId(Long.parseLong(processDetailReqDTO.getProcessId()));
-        if(bioTaskConf==null){
+        if (bioTaskConf == null) {
             throw new BusinessException("工作流已经变更，请刷新流程");
         }
         FlowActor flowActor = FlowActor.of(tenantId, String.valueOf(SecurityContextHolder.getUserId()), SecurityContextHolder.getNickName());
@@ -171,6 +171,81 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public ApproveDetailRspDTO approveDetail(String instanceId) {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(Long.valueOf(instanceId));
+        ApproveDetailRspDTO result = new ApproveDetailRspDTO();
+        FlowHisInstanceTb flowHisInstanceTb = flowEngineService.getQueryService().getHistInstance(Long.valueOf(instanceId));
+        result.setInstanceId(String.valueOf(flowHisInstanceTb.getId()));
+        result.setStatus(flowHisInstanceTb.getInstanceState());
+
+        List<NodeModel> nodeModelList = flowEngineService.findInstanceNodeModelList(Long.valueOf(instanceId), getArgs(bioTaskDtlTb.getTaskForm(), bioTaskDtlTb.getTaskTypeCode()));
+        Map<String, NodeModel> nodeIdNodeModelMap = nodeModelList.stream().collect(Collectors.toMap(NodeModel::getNodeId, nodeModel -> nodeModel));
+        List<FlowHisTaskTb> flowHisTaskTbList = flowEngineService.getQueryService().getHisTaskByInstanceId(Long.valueOf(instanceId)).stream().sorted(Comparator.comparingLong(FlowHisTaskTb::getId)).collect(Collectors.toList());
+        for (FlowHisTaskTb flowHisTaskTb : flowHisTaskTbList) {
+            NodeModel nodeModel = nodeIdNodeModelMap.get(flowHisTaskTb.getTaskNodeId());
+            ApproveDetailRspDTO.Model model = new ApproveDetailRspDTO.Model();
+            model.setNodeId(nodeModel.getNodeId());
+            model.setNodeName(nodeModel.getNodeName());
+            model.setNodeType(nodeModel.getNodeType());
+            model.setExamineMode(nodeModel.getExamineMode());
+            model.setNodeStatus(flowHisTaskTb.getTaskState());
+            if (result.getModelList().size() == 0) {
+                result.getModelList().add(model);
+            } else {
+                if (!flowHisTaskTb.getTaskNodeId().equals(result.getModelList().get(result.getModelList().size() - 1).getNodeId())) {
+                    result.getModelList().add(model);
+                } else {
+                    //有执行记录代表已经执行过，先设定节点状态是执行完毕
+                    result.getModelList().get(result.getModelList().size() - 1).setNodeStatus(flowHisTaskTb.getTaskState());
+                }
+            }
+        }
+        Map<String, List<FlowHisCommitTb>> flowHisCommitTbMapList = flowEngineService.getQueryService().getFlowCommitTbByInstanceId(Long.parseLong(instanceId)).stream().collect(Collectors.groupingBy(FlowHisCommitTb::getTaskNodeId));
+        for (ApproveDetailRspDTO.Model model : result.getModelList()) {
+            List<FlowHisCommitTb> flowHisCommitTbList = flowHisCommitTbMapList.get(model.getNodeId());
+            if (CollectionUtil.isNotEmpty(flowHisCommitTbList)) {
+                for (FlowHisCommitTb flowHisCommitTb : flowHisCommitTbList) {
+                    ApproveDetailRspDTO.NodeUser nodeUser = new ApproveDetailRspDTO.NodeUser();
+                    nodeUser.setUserId(flowHisCommitTb.getCreateId());
+                    nodeUser.setUsername(flowHisCommitTb.getCreateName());
+                    nodeUser.setApproveResult(flowHisCommitTb.getCommitDesc());
+                    nodeUser.setApproveCode(flowHisCommitTb.getCommitType());
+                    nodeUser.setApproveTime(flowHisCommitTb.getCreateTime());
+                    nodeUser.setApproveRemark(flowHisCommitTb.getMessage());
+                    model.getNodeUserList().add(nodeUser);
+                }
+            }
+        }
+        //当前正在执行节点
+        List<FlowTaskTb> executeNodeList = flowEngineService.getQueryService().getTasksByInstanceId(Long.valueOf(instanceId));
+        if(CollectionUtil.isNotEmpty(executeNodeList)){
+            FlowTaskTb flowTaskTb=executeNodeList.get(0);
+            //判断当前执行节点是否已经被部分执行，如果不是则加入执行列表中,如果是则更改流程状态为执行中
+            if(!flowTaskTb.getTaskNodeId().equals(result.getModelList().get(result.getModelList().size() - 1).getNodeId())){
+                ApproveDetailRspDTO.Model model = new ApproveDetailRspDTO.Model();
+                NodeModel nodeModel = nodeIdNodeModelMap.get(flowTaskTb.getTaskNodeId());
+                model.setNodeId(nodeModel.getNodeId());
+                model.setNodeName(nodeModel.getNodeName());
+                model.setNodeType(nodeModel.getNodeType());
+                model.setExamineMode(nodeModel.getExamineMode());
+                model.setNodeStatus(TaskState.active.getValue());
+            }else {
+                result.getModelList().get(result.getModelList().size() - 1).setNodeStatus(TaskState.active.getValue());
+            }
+        }
+        List<FlowTaskActorTb> flowTaskActorTbList = flowEngineService.getQueryService().getActiveTaskActorByInstanceId(Long.valueOf(instanceId));
+        for (FlowTaskActorTb flowTaskActorTb : flowTaskActorTbList) {
+            if (StringUtils.equals(flowTaskActorTb.getTaskNodeId(), result.getModelList().get(result.getModelList().size()-1).getNodeId())) {
+                ApproveDetailRspDTO.NodeUser nodeUser = new ApproveDetailRspDTO.NodeUser();
+                nodeUser.setUserId(flowTaskActorTb.getActorId());
+                nodeUser.setUsername(flowTaskActorTb.getActorName());
+                result.getModelList().get(result.getModelList().size()-1).getNodeUserList().add(nodeUser);
+            }
+        }
+        return result;
+    }
+
+
+    public ApproveDetailRspDTO approveDetailDemo(String instanceId) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(Long.valueOf(instanceId));
         ApproveDetailRspDTO result = new ApproveDetailRspDTO();
         FlowHisInstanceTb flowHisInstanceTb = flowEngineService.getQueryService().getHistInstance(Long.valueOf(instanceId));

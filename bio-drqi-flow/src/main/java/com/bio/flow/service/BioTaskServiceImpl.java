@@ -176,6 +176,7 @@ public class BioTaskServiceImpl implements BioTaskService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, timeout = 120000)
     public BioTaskDtlTb backTask(BioBackTaskReqDTO bioRejectTaskReqDTO) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioRejectTaskReqDTO.getId());
         Assert.notNull(bioTaskDtlTb, "不存在此任务");

@@ -79,6 +79,7 @@ public class BioTaskListPageRspDTO {
     private String instanceId;
 
 
+    private String nodeType;
 
 
 }

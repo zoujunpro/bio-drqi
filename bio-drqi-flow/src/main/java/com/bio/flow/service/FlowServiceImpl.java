@@ -159,6 +159,21 @@ public class FlowServiceImpl implements FlowService {
 
     }
 
+    @Override
+    public Map<Long, String> queryListFlowTaskByInstanceIds(List<Long> instanceIdList) {
+        Map<Long, String> map = new HashMap<>();
+        if (CollectionUtil.isNotEmpty(instanceIdList)) {
+            List<FlowTaskTb> flowTaskTbList = flowEngineService.getQueryService().getActiveTaskByInstanceIds(instanceIdList);
+            for (FlowTaskTb flowTaskTb : flowTaskTbList) {
+                if(!map.containsKey(flowTaskTb.getInstanceId())){
+                    map.put(flowTaskTb.getInstanceId(),String.valueOf(flowTaskTb.getTaskType()));
+                }
+
+            }
+        }
+        return map;
+    }
+
     private boolean isJSONObject(String str) {
         try {
             Object object = JSONUtil.toBean(str, Object.class);
@@ -182,7 +197,7 @@ public class FlowServiceImpl implements FlowService {
         Map<String, NodeModel> nodeIdNodeModelMap = nodeModelList.stream().collect(Collectors.toMap(NodeModel::getNodeId, nodeModel -> nodeModel));
         List<FlowHisTaskTb> flowHisTaskTbList = flowEngineService.getQueryService().getHisTaskByInstanceId(Long.valueOf(instanceId)).stream().sorted(Comparator.comparingLong(FlowHisTaskTb::getId)).collect(Collectors.toList());
         for (FlowHisTaskTb flowHisTaskTb : flowHisTaskTbList) {
-            List<ApproveDetailRspDTO.NodeUser> nodeUserList=  findNoteUser(flowHisCommitTbMapList,flowHisTaskTb.getId());
+            List<ApproveDetailRspDTO.NodeUser> nodeUserList = findNoteUser(flowHisCommitTbMapList, flowHisTaskTb.getId());
             NodeModel nodeModel = nodeIdNodeModelMap.get(flowHisTaskTb.getTaskNodeId());
             ApproveDetailRspDTO.Model model = new ApproveDetailRspDTO.Model();
             model.setNodeId(nodeModel.getNodeId());

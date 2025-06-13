@@ -22,6 +22,7 @@ import com.bio.flow.dto.*;
 import com.bio.flow.enums.EventType;
 import com.bio.flow.enums.QueryTypeEnum;
 import com.easyflow.engine.entity.FlowHisInstanceTb;
+import com.easyflow.engine.entity.FlowTaskTb;
 import com.easyflow.engine.enums.InstanceState;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -186,7 +188,7 @@ public class BioTaskServiceImpl implements BioTaskService {
          */
         afterFLow(bioTaskDtlTb, flowHisInstanceTb);
 
-        return  bioTaskDtlTbMapper.selectById(bioRejectTaskReqDTO.getId());
+        return bioTaskDtlTbMapper.selectById(bioRejectTaskReqDTO.getId());
     }
 
     @Override
@@ -245,9 +247,14 @@ public class BioTaskServiceImpl implements BioTaskService {
         }
         PageInfo<BioTaskDtlTb> pageInfo = new PageInfo<>(bioTaskDtlTbList);
         List<BioTaskListPageRspDTO> bioTaskListPageRspDTOList = getTaskListPageRspDTOS(bioTaskDtlTbList);
+        Map<Long, String> instanceTaskTypeMap = flowService.queryListFlowTaskByInstanceIds(bioTaskListPageRspDTOList.stream().map(bioTaskListPageRspDTO -> Long.valueOf(bioTaskListPageRspDTO.getInstanceId())).collect(Collectors.toList()));
+        bioTaskListPageRspDTOList.forEach(bioTaskListPageRspDTO -> {
+            bioTaskListPageRspDTO.setNodeType(instanceTaskTypeMap.get(Long.valueOf(bioTaskListPageRspDTO.getInstanceId())));
+        });
         PageInfo<BioTaskListPageRspDTO> pageResult = new PageInfo<>();
         pageResult.setTotal(pageInfo.getTotal());
         pageResult.setList(bioTaskListPageRspDTOList);
+
         return pageResult;
     }
 

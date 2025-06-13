@@ -45,4 +45,7 @@ public interface FlowService {
     List<String> queryCanApplyList(Long processId);
 
     Map<String, Object> getArgs(String str,String taskTypeCode);
+
+
+    Map<Long,String>queryListFlowTaskByInstanceIds(List<Long> instanceIdList);
 }

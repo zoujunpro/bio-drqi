@@ -80,7 +80,7 @@ public class CommonController {
         return ResponseResult.getSuccess(commonService.getPlasmidDetail(plasmidId));
     }
 
-    @GetMapping("/notice")
+    @PostMapping("/notice")
     @WebLog(desc = "飞书通知")
     public ResponseResult<String> notice(@RequestBody CommonNoticeReqDTO commonNoticeReqDTO) {
         commonService.notice(commonNoticeReqDTO);

@@ -48,7 +48,7 @@ public class MessageUtil {
             JSONObject json = JSONUtil.parseObj(s);
             json.putByPath("header.title.content", message.getTitle());
             json.putByPath("body.elements.1.text.content", message.getContent());
-            json.putByPath("body.elements.2.text.content", message.getTitle());
+            json.putByPath("body.elements.2.text.content", message.getTime());
             return json.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -11,6 +11,7 @@ import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.enums.SeedTaskTypeEnum;
 import com.bio.drqi.feishu.FeiShuService;
+import com.bio.drqi.feishu.MessageTypeEnum;
 import com.bio.drqi.feishu.dto.Message;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
@@ -95,7 +96,7 @@ public class CerSeedTaskListener extends DefaultDuplicateCopyHandler implements 
             throw new BusinessException(responseResult.getMessage());
         }
         List<UserBaseInfoRspDTO> rspDTOList = responseResult.getData();
-        if(CollectionUtil.isEmpty(rspDTOList)){
+        if (CollectionUtil.isEmpty(rspDTOList)) {
             return;
         }
         List<String> openIdList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(UserBaseInfoRspDTO::getFeiShuUserId).collect(Collectors.toList());
@@ -104,7 +105,7 @@ public class CerSeedTaskListener extends DefaultDuplicateCopyHandler implements 
         message.setTitle(title);
         message.setContent(content);
         message.setUrl(String.format(feiShuSeedJumpUrl, vieMap.get(bioTaskDtlTb.getTaskTypeCode()), bioTaskDtlTb.getId()));
-        feiShuService.sendCardMessage(openIdList, message);
+        feiShuService.sendCardMessage(openIdList, message,MessageTypeEnum.drqi);
     }
 
     @Override

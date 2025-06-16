@@ -13,6 +13,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.domain.CerProjectTb;
 import com.bio.drqi.feishu.FeiShuService;
+import com.bio.drqi.feishu.MessageTypeEnum;
 import com.bio.drqi.feishu.dto.Message;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.drqi.mapper.CerProjectTbMapper;
@@ -87,7 +88,7 @@ public class CerProjectStatusListener {
         message.setTitle(title);
         message.setContent(content);
         message.setUrl("http://172.16.14.2:18888/#/poc/productDetail/" + cerProjectTb.getId());
-        feiShuService.sendCardMessage(openIdList, message);
+        feiShuService.sendCardMessage(openIdList, message,MessageTypeEnum.drqi);
     }
 
     private static boolean isNumber(String str) {

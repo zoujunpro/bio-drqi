@@ -11,6 +11,7 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.feishu.FeiShuService;
+import com.bio.drqi.feishu.MessageTypeEnum;
 import com.bio.drqi.feishu.dto.Message;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.flow.enums.EventType;
@@ -99,7 +100,7 @@ public class BmsTaskListener extends DefaultDuplicateCopyHandler implements Flow
         message.setTitle(title);
         message.setContent(content);
         message.setUrl(String.format(feiShuBmsJumpUrl, vieMap.get(bioTaskDtlTb.getTaskTypeCode()), bioTaskDtlTb.getId()));
-        feiShuService.sendCardMessage(openIdList, message);
+        feiShuService.sendCardMessage(openIdList, message,MessageTypeEnum.drqi);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.bio.drqi.manage.controller;
 
+import com.bio.drqi.manage.common.CommonNoticeReqDTO;
 import com.bio.drqi.manage.common.OssUploadReqDTO;
 import com.bio.drqi.manage.common.OssUploadRspDTO;
 import com.bio.common.core.dto.ResponseResult;
@@ -7,10 +8,7 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.service.common.CommonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
@@ -72,6 +70,7 @@ public class CommonController {
 
     /**
      * 获取质粒详情
+     *
      * @param plasmidId
      * @return
      */
@@ -79,6 +78,14 @@ public class CommonController {
     @WebLog(desc = "获取质粒详情")
     public ResponseResult<Object> getPlasmidDetail(@RequestParam @Validated String plasmidId) {
         return ResponseResult.getSuccess(commonService.getPlasmidDetail(plasmidId));
+    }
+
+    @GetMapping("/notice")
+    @WebLog(desc = "飞书通知")
+    public ResponseResult<String> notice(@RequestBody CommonNoticeReqDTO commonNoticeReqDTO) {
+        commonService.notice(commonNoticeReqDTO);
+        return ResponseResult.getSuccess("通知成功");
+
     }
 
 }

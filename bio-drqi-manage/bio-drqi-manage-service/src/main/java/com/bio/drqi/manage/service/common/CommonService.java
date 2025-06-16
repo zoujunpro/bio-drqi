@@ -7,6 +7,10 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.base.api.RemoteUserService;
 import com.bio.base.user.rsp.UserDetailRspDTO;
+import com.bio.drqi.feishu.FeiShuService;
+import com.bio.drqi.feishu.MessageTypeEnum;
+import com.bio.drqi.feishu.dto.Message;
+import com.bio.drqi.manage.common.CommonNoticeReqDTO;
 import com.bio.drqi.manage.common.OssUploadReqDTO;
 import com.bio.drqi.manage.common.OssUploadRspDTO;
 import com.bio.common.core.context.SecurityContextHolder;
@@ -18,9 +22,11 @@ import com.bio.common.oss.service.OssService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +43,11 @@ public class CommonService {
     private String tempOssPath;
 
     @Resource
-    public RemoteUserService remoteUserService;
+    private RemoteUserService remoteUserService;
+
+
+    @Resource
+    private FeiShuService feiShuService;
 
     public OssUploadRspDTO upload(OssUploadReqDTO ossUploadReqDTO) {
         OssUploadRspDTO ossUploadRspDTO = new OssUploadRspDTO();
@@ -71,12 +81,12 @@ public class CommonService {
 
     public Object getPlasmidDetail(String plasmidId) {
         String url = "http://172.16.14.2:10091/Search_plasmid_detail?name=%s&username=%s&serect_lab=%s&TJlab=False";
-        ResponseResult<UserDetailRspDTO> responseResult= remoteUserService.queryUserById(SecurityContextHolder.getUserId());
-        if(responseResult.isError()){
+        ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserById(SecurityContextHolder.getUserId());
+        if (responseResult.isError()) {
             throw new BusinessException(responseResult.getMessage());
         }
-        UserDetailRspDTO userDetailRspDTO=responseResult.getData();
-        List<UserDetailRspDTO.DataPermissionConfig>  dataPermissionConfigList= userDetailRspDTO.getDataPermissionConfigList();
+        UserDetailRspDTO userDetailRspDTO = responseResult.getData();
+        List<UserDetailRspDTO.DataPermissionConfig> dataPermissionConfigList = userDetailRspDTO.getDataPermissionConfigList();
         dataPermissionConfigList = dataPermissionConfigList.stream().filter(dataPermissionConfig -> "PLASMID_VIEW".equals(dataPermissionConfig.getPermissionType())).collect(Collectors.toList());
         String nickName = userDetailRspDTO.getNickname();
         String serect_lab = "T";
@@ -98,8 +108,27 @@ public class CommonService {
         return JSONUtil.toBean(ss, Map.class);
     }
 
+
+    public void notice(CommonNoticeReqDTO commonNoticeReqDTO) {
+        String[] usernames = commonNoticeReqDTO.getUsernames().split(",");
+        List<String> openIdList=new ArrayList<>();
+        for (String username : usernames) {
+            ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserByLoginName(username);
+            if(responseResult.isError()){
+                throw new BusinessException(responseResult.getMessage());
+            }
+            openIdList.add(responseResult.getData().getFeiShuUserId());
+
+        }
+        Message message=new Message();
+        message.setTitle(commonNoticeReqDTO.getTitle());
+        message.setContent(commonNoticeReqDTO.getContent());
+        message.setTime(DateUtil.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
+        feiShuService.sendCardMessage(openIdList,message, MessageTypeEnum.alarm);
+    }
+
     public static void main(String[] args) {
-        List<List<Object>> s= ExcelUtil.readExcel("C:\\Users\\zou'jun\\Downloads\\授粉模板11.xlsx");
+        List<List<Object>> s = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Downloads\\授粉模板11.xlsx");
         s.stream().forEach(System.out::println);
     }
 };

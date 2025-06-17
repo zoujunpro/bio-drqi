@@ -83,7 +83,7 @@ public class CerProjectStatusListener {
         if(CollectionUtil.isEmpty(rspDTOList)){
             return;
         }
-        List<NoticeUserDTO> noticeUserDTOList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(userBaseInfoRspDTO->new NoticeUserDTO(userBaseInfoRspDTO.getUsername(),userBaseInfoRspDTO.getFeiShuUserId())).collect(Collectors.toList());
+        List<NoticeUserDTO> noticeUserDTOList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(userBaseInfoRspDTO->new NoticeUserDTO(userBaseInfoRspDTO.getNickName(),userBaseInfoRspDTO.getFeiShuUserId())).collect(Collectors.toList());
         String content = "**项目名称：**" + cerProjectTb.getProjectName() + "\n" + "**项目编号：**" + cerProjectTb.getProjectCode();
         Message message = new Message();
         message.setTitle(title);

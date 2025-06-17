@@ -171,8 +171,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         if(seedStockTb==null){
             throw new BusinessException("参数异常，不存在此种子");
         }
-        seedStockTb.setRemarks(seedStockRemarkReqDTO.getRemarks());
-        seedStockTbMapper.updateById(seedStockTb);
+        seedStockTbMapper.updateRemarksById(seedStockRemarkReqDTO.getRemarks(),seedStockTb.getId());
 
     }
 

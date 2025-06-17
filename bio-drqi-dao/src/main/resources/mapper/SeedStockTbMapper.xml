@@ -189,6 +189,11 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </delete>
+    <update id="updateRemarksById">
+        update seed_stock_tb
+        set remarks = #{remarks,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=NUMERIC}
+    </update>
 
 
 </mapper>

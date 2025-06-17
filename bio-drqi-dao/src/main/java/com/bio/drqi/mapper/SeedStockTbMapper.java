@@ -17,6 +17,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface SeedStockTbMapper extends BaseMapper<SeedStockTb> {
     SeedStockTb selectOneBySeedNum(@Param("seedNum") String seedNum);
 
+    int updateRemarksById(@Param("remarks") String remarks, @Param("id") Integer id);
+
     List<SeedStockTb> selectAllByBreedCodeAndGeneration(@Param("breedCode") String breedCode, @Param("generation") String generation);
 
     List<SeedStockTb> selectSelective(SeedStockTb seedStockTb);

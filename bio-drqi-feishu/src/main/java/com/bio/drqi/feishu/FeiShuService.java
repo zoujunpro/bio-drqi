@@ -15,18 +15,19 @@ import java.util.UUID;
 @Slf4j
 public abstract class FeiShuService {
 
-    public abstract void sendCardMessage(List<String> openIdList, Message message);
+    public abstract void sendCardMessage(List<String> openIdList, Message message,MessageTypeEnum messageTypeEnum);
 
 
-    protected void sendCardMessage(String appId, String secret, String openId, Message message) throws Exception {
+    protected void sendCardMessage(String appId, String secret, String openId, Message message,MessageTypeEnum messageTypeEnum) throws Exception {
         Client client = Client.newBuilder(appId, secret).build();
+        String msgType=messageTypeEnum.getMessageType();
         // 创建请求对象
-        String mes = MessageUtil.replaceContent(message.getContent(), message.getTitle(), message.getUrl());
+        String mes = MessageUtil.replaceContent(message,messageTypeEnum);
         CreateMessageReq req = CreateMessageReq.newBuilder()
                 .receiveIdType("open_id")
                 .createMessageReqBody(CreateMessageReqBody.newBuilder()
                         .receiveId(openId)
-                        .msgType("interactive")
+                        .msgType(msgType)
                         .content(mes)
                         .uuid(UUID.randomUUID().toString())
                         .build())

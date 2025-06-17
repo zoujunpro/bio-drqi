@@ -18,11 +18,11 @@ public class FeiShuServiceImpl extends FeiShuService {
 
 
     @Override
-    public void sendCardMessage(List<String> openIdList, Message message) {
+    public void sendCardMessage(List<String> openIdList, Message message,MessageTypeEnum messageTypeEnum) {
         for (String openId : openIdList) {
             new Thread(() -> {
                 try {
-                    sendCardMessage(feiShuProperties.getAppId(), feiShuProperties.getSecret(), openId, message);
+                    sendCardMessage(feiShuProperties.getAppId(), feiShuProperties.getSecret(), openId, message,messageTypeEnum);
                     log.info("飞书卡片消息发送成功：openId={},message={}", openId, message);
                 } catch (Exception e) {
                     log.error("飞书卡片消息发送失败：openId={}", openId, e);

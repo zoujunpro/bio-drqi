@@ -1,0 +1,63 @@
+{
+  "schema": "2.0",
+  "config": {
+    "update_multi": true,
+    "style": {
+      "text_size": {
+        "normal_v2": {
+          "default": "normal",
+          "pc": "normal",
+          "mobile": "heading"
+        }
+      }
+    }
+  },
+  "body": {
+    "direction": "vertical",
+    "padding": "12px 12px 12px 12px",
+    "elements": [
+      {
+        "tag": "hr",
+        "margin": "0px 0px 0px 0px"
+      },
+      {
+        "tag": "div",
+        "text": {
+          "tag": "plain_text",
+          "content": "当前机房温度超过 25 度：21.8℃",
+          "text_size": "normal_v2",
+          "text_align": "left",
+          "text_color": "default"
+        },
+        "margin": "0px 0px 0px 0px"
+      },
+      {
+        "tag": "div",
+        "text": {
+          "tag": "plain_text",
+          "content": "2025-06-16 13:23:45",
+          "text_size": "normal_v2",
+          "text_align": "right",
+          "text_color": "default"
+        },
+        "margin": "0px 0px 0px 0px"
+      }
+    ]
+  },
+  "header": {
+    "title": {
+      "tag": "plain_text",
+      "content": "温度告警通知"
+    },
+    "subtitle": {
+      "tag": "plain_text",
+      "content": ""
+    },
+    "template": "red",
+    "icon": {
+      "tag": "standard_icon",
+      "token": "home_outlined"
+    },
+    "padding": "12px 12px 12px 12px"
+  }
+}

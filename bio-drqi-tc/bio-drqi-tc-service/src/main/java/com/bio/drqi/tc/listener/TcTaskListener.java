@@ -61,6 +61,7 @@ public class TcTaskListener extends DefaultDuplicateCopyHandler implements FlowT
         vieMap.put("tc_sample_test_task_apply", "fieldSample");
         vieMap.put("tc_pollination_task_apply", "fieldPollination");
         vieMap.put("tc_harvest_task_apply", "fieldHarvest");
+        vieMap.put("tc_test_task_apply","fieldTrial");
     }
 
     @Override

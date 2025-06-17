@@ -10,6 +10,7 @@ import com.bio.base.user.rsp.UserDetailRspDTO;
 import com.bio.drqi.feishu.FeiShuService;
 import com.bio.drqi.feishu.MessageTypeEnum;
 import com.bio.drqi.feishu.dto.Message;
+import com.bio.drqi.feishu.dto.NoticeUserDTO;
 import com.bio.drqi.manage.common.CommonNoticeReqDTO;
 import com.bio.drqi.manage.common.OssUploadReqDTO;
 import com.bio.drqi.manage.common.OssUploadRspDTO;
@@ -19,6 +20,7 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.mapper.BioNoticeLogMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -111,20 +113,23 @@ public class CommonService {
 
     public void notice(CommonNoticeReqDTO commonNoticeReqDTO) {
         String[] usernames = commonNoticeReqDTO.getUsernames().split(",");
-        List<String> openIdList=new ArrayList<>();
+        List<NoticeUserDTO> noticeUserDTOList=new ArrayList<>();
         for (String username : usernames) {
             ResponseResult<UserDetailRspDTO> responseResult = remoteUserService.queryUserByLoginName(username);
-            if(responseResult.isError()){
+            if (responseResult.isError()) {
                 throw new BusinessException(responseResult.getMessage());
             }
-            openIdList.add(responseResult.getData().getFeiShuUserId());
-
+            NoticeUserDTO noticeUserDTO=new NoticeUserDTO();
+            noticeUserDTO.setOpenId(responseResult.getData().getFeiShuUserId());
+            noticeUserDTO.setUsername(responseResult.getData().getUsername());
+            noticeUserDTOList.add(noticeUserDTO);
         }
-        Message message=new Message();
+
+        Message message = new Message();
         message.setTitle(commonNoticeReqDTO.getTitle());
         message.setContent(commonNoticeReqDTO.getContent());
-        message.setTime(DateUtil.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
-        feiShuService.sendCardMessage(openIdList,message, MessageTypeEnum.alarm);
+        message.setTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        feiShuService.sendCardMessage(noticeUserDTOList, message, MessageTypeEnum.alarm);
     }
 
     public static void main(String[] args) {

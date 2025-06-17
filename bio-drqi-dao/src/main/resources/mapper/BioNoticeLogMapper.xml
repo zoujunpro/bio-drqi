@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BioNoticeLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioNoticeLog">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="noticeUserName" column="notice_user_name" jdbcType="VARCHAR"/>
+            <result property="noticeContent" column="notice_content" jdbcType="VARCHAR"/>
+            <result property="noticeType" column="notice_type" jdbcType="VARCHAR"/>
+            <result property="noticeTime" column="notice_time" jdbcType="TIMESTAMP"/>
+            <result property="readFlag" column="read_flag" jdbcType="VARCHAR"/>
+            <result property="openId" column="open_id" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,notice_user_name,notice_content,
+        notice_type,notice_time,read_flag,open_id
+        create_time
+    </sql>
+</mapper>

@@ -13,6 +13,7 @@ import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.feishu.FeiShuService;
 import com.bio.drqi.feishu.MessageTypeEnum;
 import com.bio.drqi.feishu.dto.Message;
+import com.bio.drqi.feishu.dto.NoticeUserDTO;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.flow.enums.EventType;
 import com.bio.flow.hander.DefaultDuplicateCopyHandler;
@@ -95,13 +96,13 @@ public class TcTaskListener extends DefaultDuplicateCopyHandler implements FlowT
         if (CollectionUtil.isEmpty(rspDTOList)) {
             return;
         }
-        List<String> openIdList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(UserBaseInfoRspDTO::getFeiShuUserId).collect(Collectors.toList());
+        List<NoticeUserDTO> noticeUserDTOList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(userBaseInfoRspDTO->new NoticeUserDTO(userBaseInfoRspDTO.getUsername(),userBaseInfoRspDTO.getFeiShuUserId())).collect(Collectors.toList());
         String content = "**任务描述：**" + bioTaskDtlTb.getTaskDesc() + "\n" + "**申  请 人：**" + bioTaskDtlTb.getApplyUserName() + "\n" + "**申请时间：**" + DateUtil.format(bioTaskDtlTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         Message message = new Message();
         message.setTitle(title);
         message.setContent(content);
         message.setUrl(String.format(feiShuTcJumpUrl, vieMap.get(bioTaskDtlTb.getTaskTypeCode()), bioTaskDtlTb.getId()));
-        feiShuService.sendCardMessage(openIdList, message,MessageTypeEnum.drqi);
+        feiShuService.sendCardMessage(noticeUserDTOList, message,MessageTypeEnum.drqi);
     }
 
     @Override

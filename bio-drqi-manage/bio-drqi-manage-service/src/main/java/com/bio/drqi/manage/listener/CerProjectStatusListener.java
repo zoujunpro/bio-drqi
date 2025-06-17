@@ -15,6 +15,7 @@ import com.bio.drqi.domain.CerProjectTb;
 import com.bio.drqi.feishu.FeiShuService;
 import com.bio.drqi.feishu.MessageTypeEnum;
 import com.bio.drqi.feishu.dto.Message;
+import com.bio.drqi.feishu.dto.NoticeUserDTO;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.drqi.mapper.CerProjectTbMapper;
 import com.easyflow.engine.FlowEngineService;
@@ -82,13 +83,13 @@ public class CerProjectStatusListener {
         if(CollectionUtil.isEmpty(rspDTOList)){
             return;
         }
-        List<String> openIdList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(UserBaseInfoRspDTO::getFeiShuUserId).collect(Collectors.toList());
+        List<NoticeUserDTO> noticeUserDTOList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(userBaseInfoRspDTO->new NoticeUserDTO(userBaseInfoRspDTO.getUsername(),userBaseInfoRspDTO.getFeiShuUserId())).collect(Collectors.toList());
         String content = "**项目名称：**" + cerProjectTb.getProjectName() + "\n" + "**项目编号：**" + cerProjectTb.getProjectCode();
         Message message = new Message();
         message.setTitle(title);
         message.setContent(content);
         message.setUrl("http://172.16.14.2:18888/#/poc/productDetail/" + cerProjectTb.getId());
-        feiShuService.sendCardMessage(openIdList, message,MessageTypeEnum.drqi);
+        feiShuService.sendCardMessage(noticeUserDTOList, message,MessageTypeEnum.drqi);
     }
 
     private static boolean isNumber(String str) {

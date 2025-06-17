@@ -3,6 +3,7 @@ package com.bio.drqi.feishu;
 
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.feishu.dto.Message;
+import com.bio.drqi.feishu.dto.NoticeUserDTO;
 import com.lark.oapi.Client;
 import com.lark.oapi.service.im.v1.model.CreateMessageReq;
 import com.lark.oapi.service.im.v1.model.CreateMessageReqBody;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Slf4j
 public abstract class FeiShuService {
 
-    public abstract void sendCardMessage(List<String> openIdList, Message message,MessageTypeEnum messageTypeEnum);
+    public abstract void sendCardMessage(List<NoticeUserDTO> noticeUserDTOList, Message message, MessageTypeEnum messageTypeEnum);
 
 
     protected void sendCardMessage(String appId, String secret, String openId, Message message,MessageTypeEnum messageTypeEnum) throws Exception {

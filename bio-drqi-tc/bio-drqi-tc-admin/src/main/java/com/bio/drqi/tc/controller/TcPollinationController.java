@@ -11,6 +11,7 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcPollinationCreatePollinationExcelReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageReqDTO;
+import com.bio.drqi.tc.rsp.TcPollinationCreatePollinationExcelRspDTO;
 import com.bio.drqi.tc.rsp.TcPollinationListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcPollinationListPageRspDTO;
 import com.bio.drqi.tc.rsp.TcPollinationListPollinationApplyNumNotHarvestRspDTO;
@@ -80,8 +81,8 @@ public class TcPollinationController {
     @WebLog(desc = "授粉管理-生成授粉excel")
     @Transactional(rollbackFor = Exception.class)
     @RequirePermissions("tc:tcPollination:createPollinationExcel")
-    public void createPollinationExcel(@RequestBody @Validated TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
-            tcPollinationService.createPollinationExcel(tcPollinationCreatePollinationExcelReqDTO,httpServletResponse);
+    public ResponseResult<List<TcPollinationExcelDTO>> createPollinationExcel(@RequestBody @Validated TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
+            return ResponseResult.getSuccess(tcPollinationService.createPollinationExcel(tcPollinationCreatePollinationExcelReqDTO,httpServletResponse));
     }
 
 

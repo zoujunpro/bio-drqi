@@ -1,4 +1,5 @@
 package com.bio.drqi.tc.service.impl;
+
 import java.util.Date;
 
 import cn.hutool.core.collection.CollectionUtil;
@@ -17,6 +18,7 @@ import com.bio.drqi.tc.enums.SampleTestCheckResultEnum;
 import com.bio.drqi.tc.req.TcPollinationCreatePollinationExcelReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageReqDTO;
+import com.bio.drqi.tc.rsp.TcPollinationCreatePollinationExcelRspDTO;
 import com.bio.drqi.tc.rsp.TcPollinationListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcPollinationListPageRspDTO;
 import com.bio.drqi.tc.rsp.TcPollinationListPollinationApplyNumNotHarvestRspDTO;
@@ -103,7 +105,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
     }
 
     @Override
-    public void createPollinationExcel(TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
+    public List<TcPollinationExcelDTO> createPollinationExcel(TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
         List<TcPollinationExcelDTO> matherList = new ArrayList<TcPollinationExcelDTO>();
         List<TcPollinationExcelDTO> fatherList = new ArrayList<TcPollinationExcelDTO>();
         List<TcPollinationSingleNumTb> currentTcPollinationSingleNumTbList = new ArrayList<TcPollinationSingleNumTb>();
@@ -133,7 +135,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
             tcPollinationSingleNumTbMapper.deleteByExperimentNumAndPollinationApplyNumIsNull(tcExperimentTb.getExperimentNum());
             Integer beginSingleNumber = Integer.valueOf(tcPollinationSingleNumTbList.get(0).getSingleNumber().substring(3));
             Integer endSingleNumber = Integer.valueOf(tcPollinationSingleNumTbList.get(tcPollinationSingleNumTbList.size() - 1).getSingleNumber().substring(3));
-            if (endSingleNumber.equals(tcExperimentTb.getNextSampleNumber()-1)) {
+            if (endSingleNumber.equals(tcExperimentTb.getNextSampleNumber() - 1)) {
                 tcExperimentTb.setNextSampleNumber(beginSingleNumber);
                 tcExperimentTbMapper.updateById(tcExperimentTb);
             }
@@ -171,7 +173,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                         //生成单株编号，同时更新取样编号的下次开始编号
                         sampleCode = tcExperimentTb.getSampleCodePrefix() + tcExperimentTb.getNextSampleNumber();
                         tcExperimentTb.setNextSampleNumber(tcExperimentTb.getNextSampleNumber() + 1);
-                        TcPollinationSingleNumTb tcPollinationSingleNumTb=new TcPollinationSingleNumTb();
+                        TcPollinationSingleNumTb tcPollinationSingleNumTb = new TcPollinationSingleNumTb();
                         tcPollinationSingleNumTb.setExperimentNum(tcExperimentTb.getExperimentNum());
                         tcPollinationSingleNumTb.setPollinationApplyNum(null);
                         tcPollinationSingleNumTb.setSeedNum(content.getSeedNum());
@@ -216,11 +218,12 @@ public class TcPollinationServiceImpl implements TcPollinationService {
             }
         }
         //判断是否有单株编号生成
-        if(CollectionUtil.isNotEmpty(currentTcPollinationSingleNumTbList)){
+        if (CollectionUtil.isNotEmpty(currentTcPollinationSingleNumTbList)) {
             tcPollinationSingleNumTbMapper.insertBatch(currentTcPollinationSingleNumTbList);
             tcExperimentTbMapper.updateById(tcExperimentTb);
         }
-        ExcelUtil.fillExcel(templateDir, matherList, TcPollinationExcelDTO.class, httpServletResponse);
+        return matherList;
+        //  ExcelUtil.fillExcel(templateDir, matherList, TcPollinationExcelDTO.class, httpServletResponse);
     }
 
 }

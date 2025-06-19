@@ -29,6 +29,10 @@ public class IdentifyPrimerTemplateExcelDTO {
     @ExcelProperty("取样编号")
     private String sampleCode;
 
+    @NotBlank(message = "数据不全：田间取样编号")
+    @ExcelProperty("田间取样编号")
+    private String tcSampleCode;
+
     @NotBlank(message = "数据不全：分区编号")
     @ExcelProperty("分区编号")
     private String identifyPrimer;

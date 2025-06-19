@@ -2,6 +2,7 @@ package com.bio.drqi.tc.service.dto;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.domain.TcExperimentDesignTb;
 import lombok.Data;
 
@@ -28,6 +29,14 @@ public class TcPollinationExcelDTO {
     @ExcelProperty(value ={"母本","单株编号(母)"})
     @NotBlank(message = "参数缺失：单株编号(母)")
     private String motherSampleCode;
+
+    /**
+     * 母本大田单株编号
+     */
+    @ExcelProperty(value ={"母本","大田单株编号(母)"})
+    @NotBlank(message = "参数缺失：大田单株编号(母)")
+    private String motherTcSampleCode;
+
     /**
      * 母本品种
      */
@@ -64,6 +73,13 @@ public class TcPollinationExcelDTO {
     @ExcelProperty(value ={"父本","种子编号(父)"})
     @NotBlank(message = "参数缺失：种子编号(父)")
     private String fatherSeedNum;
+
+    /**
+     * 父本大田单株编号
+     */
+    @ExcelProperty(value ={"父本","大田单株编号(父)"})
+    @NotBlank(message = "参数缺失：大田单株编号(父)")
+    private String fatherTcSampleCode;
 
     /**
      * 父本单株编号
@@ -130,6 +146,9 @@ public class TcPollinationExcelDTO {
         tcPollinationExcelDTO.setMotherVectorTaskCode(tcExperimentDesignTb.getVectorTaskCode());
         tcPollinationExcelDTO.setMotherGenerationName(tcExperimentDesignTb.getGenerationCode());
         tcPollinationExcelDTO.setMotherTcGene(tcExperimentDesignTb.getTcGene());
+        if(StringUtils.isNotEmpty(sample)){
+            tcPollinationExcelDTO.setMotherTcSampleCode(tcExperimentDesignTb.getRegionNum()+sample.substring(3));
+        }
         return tcPollinationExcelDTO;
     }
 
@@ -143,6 +162,9 @@ public class TcPollinationExcelDTO {
         tcPollinationExcelDTO.setFatherGenerationName(tcExperimentDesignTb.getGenerationCode());
         tcPollinationExcelDTO.setFatherTcGene(tcExperimentDesignTb.getTcGene());
         tcPollinationExcelDTO.setFatherSampleCode(sample);
+        if(StringUtils.isNotEmpty(sample)){
+            tcPollinationExcelDTO.setFatherTcSampleCode(tcExperimentDesignTb.getRegionNum()+sample.substring(3));
+        }
         return tcPollinationExcelDTO;
     }
 

@@ -11,6 +11,7 @@
             <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
             <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
             <result property="singleNumber" column="single_number" jdbcType="VARCHAR"/>
+            <result property="tcSingleNumber" column="tc_single_number" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
     </resultMap>
@@ -18,7 +19,7 @@
     <sql id="Base_Column_List">
         id,experiment_num,pollination_apply_num,
         seed_num,region_num,single_number,
-        create_time,create_user_name
+        create_time,create_user_name,tc_single_number
     </sql>
     <select id="selectAllByExperimentNumAndPollinationApplyNumIsNull" resultMap="BaseResultMap">
         select
@@ -36,12 +37,12 @@
     </delete>
     <insert id="insertBatch">
         insert into tc_pollination_single_num_tb(id,experiment_num,pollination_apply_num,
-        seed_num,region_num,single_number,
+        seed_num,region_num,single_number,tc_single_number,
         create_time,create_user_name)
         values
         <foreach collection="tcPollinationSingleNumTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.pollinationApplyNum,jdbcType=VARCHAR},
-            #{item.seedNum,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},#{item.singleNumber,jdbcType=VARCHAR},
+            #{item.seedNum,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},#{item.singleNumber,jdbcType=VARCHAR},#{item.tcSingleNumber,jdbcType=VARCHAR},
             #{item.createTime,jdbcType=TIMESTAMP},#{item.createUserName,jdbcType=VARCHAR})
         </foreach>
     </insert>

@@ -173,6 +173,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                         //生成单株编号，同时更新取样编号的下次开始编号
                         sampleCode = tcExperimentTb.getSampleCodePrefix() + tcExperimentTb.getNextSampleNumber();
                         tcExperimentTb.setNextSampleNumber(tcExperimentTb.getNextSampleNumber() + 1);
+
                         TcPollinationSingleNumTb tcPollinationSingleNumTb = new TcPollinationSingleNumTb();
                         tcPollinationSingleNumTb.setExperimentNum(tcExperimentTb.getExperimentNum());
                         tcPollinationSingleNumTb.setPollinationApplyNum(null);
@@ -181,6 +182,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                         tcPollinationSingleNumTb.setSingleNumber(sampleCode);
                         tcPollinationSingleNumTb.setCreateTime(new Date());
                         tcPollinationSingleNumTb.setCreateUserName(SecurityContextHolder.getNickName());
+                        tcPollinationSingleNumTb.setTcSingleNumber(tcPollinationSingleNumTb.getRegionNum()+tcPollinationSingleNumTb.getSingleNumber().substring(3));
                         currentTcPollinationSingleNumTbList.add(tcPollinationSingleNumTb);
                     }
                     if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {
@@ -212,6 +214,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     matherTcPollinationExcelDTO.setFatherGenerationName(fatherTcPollinationExcelDTO.getFatherGenerationName());
                     matherTcPollinationExcelDTO.setFatherTcGene(fatherTcPollinationExcelDTO.getFatherTcGene());
                     matherTcPollinationExcelDTO.setFatherSampleCode(fatherTcPollinationExcelDTO.getFatherSampleCode());
+                    matherTcPollinationExcelDTO.setFatherTcSampleCode(fatherTcPollinationExcelDTO.getFatherTcSampleCode());
                 } else {
                     matherList.add(fatherList.get(i));
                 }

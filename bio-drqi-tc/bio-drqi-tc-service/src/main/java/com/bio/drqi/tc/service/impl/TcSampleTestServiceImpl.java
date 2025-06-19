@@ -222,13 +222,14 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
                 identifyPrimerTemplateExcelDTO.setSeedNum(tcSampleTestTb.getSeedNum());
                 identifyPrimerTemplateExcelDTO.setVectorTaskCode(tcSampleTestTb.getVectorTaskCode());
                 identifyPrimerTemplateExcelDTO.setSampleCode(tcSampleTestTb.getSampleCode());
+                identifyPrimerTemplateExcelDTO.setTcSampleCode(tcSampleTestTb.getTcSampleCode());
                 identifyPrimerTemplateExcelDTOList.add(identifyPrimerTemplateExcelDTO);
             }
-            String excelTemplateName = "田测鉴定引物填写模板V1.0.xlsx";
-            String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
-            ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
-            ExcelUtil.writeExcel("田测鉴定引物.xlsx", "sheet", identifyPrimerTemplateExcelDTOList, IdentifyPrimerTemplateExcelDTO.class,  response);
-            ExcelUtil.fillExcel(templateDir, identifyPrimerTemplateExcelDTOList, IdentifyPrimerTemplateExcelDTO.class, response);
+           // String excelTemplateName = "田测鉴定引物填写模板V1.0.xlsx";
+            //String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
+            //ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
+            ExcelUtil.writeExcel("田测鉴定引物"+applyNo+".xlsx", "sheet", identifyPrimerTemplateExcelDTOList, IdentifyPrimerTemplateExcelDTO.class,  response);
+           // ExcelUtil.fillExcel(templateDir, identifyPrimerTemplateExcelDTOList, IdentifyPrimerTemplateExcelDTO.class, response);
         } catch (Exception e) {
             log.error("模板下载失败，", e);
             throw new BusinessException("田测鉴定引物填写模板下载失败，请联系管理员检测模板配置");

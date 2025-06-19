@@ -155,11 +155,6 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
-        if (SampleTestTypeEnum.more.name().equals(tcSampleTestTaskDTO.getTestType())) {
-            if (StringUtils.isEmpty(tcSampleTestTaskDTO.getIdentifyPrimerTemplateExcelUrl())) {
-                throw new BusinessException("孔板取样必须上传鉴定引物");
-            }
-        }
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             TcSampleTestApplyTb tcSampleTestApplyTb = tcSampleTestApplyTbMapper.selectOneByTaskNum(bioTaskDtlTb.getTaskNum());
             tcSampleTestApplyTb.setIdentifyPrimerExcelUrl(tcSampleTestTaskDTO.getIdentifyPrimerTemplateExcelUrl());

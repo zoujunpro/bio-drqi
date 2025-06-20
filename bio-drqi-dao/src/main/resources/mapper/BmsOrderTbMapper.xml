@@ -29,10 +29,9 @@
     <sql id="Base_Column_List">
         id,order_num,apply_user_id,apply_time,
         apply_user_name,apply_user_department,purchase_department,
-        apply_unit_code,apply_unit_name,contract_urls,
-        purchase_date,purchase_type_code,purchase_type_name,
+        apply_unit_code,apply_unit_name, purchase_date,purchase_type_code,purchase_type_name,
         purchase_reason_remark,demand_require_time,demand_usage_time,create_time,
-        task_num,over_flag,
+        task_num,over_flag
     </sql>
     <select id="selectOneByTaskNum" resultMap="BaseResultMap">
         select
@@ -63,14 +62,12 @@
             <if test="purchaseDate != null and purchaseDate!=''">and  purchase_date=#{purchaseDate,jdbcType=VARCHAR}</if>
             <if test="purchaseTypeCode != null">and  purchase_type_code=#{purchaseTypeCode,jdbcType=VARCHAR}</if>
             <if test="purchaseTypeName != null">and  purchase_type_name=#{purchaseTypeName,jdbcType=VARCHAR}</if>
-            <if test="purchaseReasonRemark != null">and  purchase_reason_remark=#{purchaseReasonRemark,jdbcType=VARCHAR}
-            </if>
+            <if test="purchaseReasonRemark != null">and  purchase_reason_remark=#{purchaseReasonRemark,jdbcType=VARCHAR}</if>
             <if test="demandRequireTime != null">and  demand_require_time=#{demandRequireTime,jdbcType=VARCHAR}</if>
             <if test="demandUsageTime != null">and  demand_usage_time=#{demandUsageTime,jdbcType=VARCHAR}</if>
             <if test="createTime != null">and  create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="taskNum != null and taskNum!=''">and  task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="overFlag != null and overFlag!=''">and  over_flag=#{overFlag,jdbcType=VARCHAR}</if>
-
         </where>
         order by id desc
     </select>

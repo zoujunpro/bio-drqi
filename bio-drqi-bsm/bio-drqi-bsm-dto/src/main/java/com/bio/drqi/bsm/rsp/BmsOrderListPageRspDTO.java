@@ -84,15 +84,9 @@ public class BmsOrderListPageRspDTO {
     private String demandUsageTime;
 
     /**
-     * 发票信息
-     */
-    private String invoiceUrls;
-
-    /**
      * 附件地址
      */
     private String attachmentUrls;
-
     /**
      * 创建日期
      */
@@ -103,15 +97,7 @@ public class BmsOrderListPageRspDTO {
      */
     private String taskNum;
 
-    /**
-     * 报账日期
-     */
-    private String reportAccountTime;
-
     private String overFlag;
 
-    private String contractNumber;
-
-    private String paymentVoucherUrls;
 
 }

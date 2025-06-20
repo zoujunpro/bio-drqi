@@ -3,11 +3,11 @@ package com.bio.drqi.bsm.req;
 import lombok.Data;
 
 @Data
-public class BmsOrderReportAccountReqDTO {
+public class BmsOrderDetailReportAccountReqDTO {
     /**
      * 订单编号
      */
-    private String orderNum;
+    private Integer id;
 
     /**
      * 报账结算日期 yyyy-mm-dd

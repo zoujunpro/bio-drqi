@@ -3,11 +3,11 @@ package com.bio.drqi.bsm.req;
 import lombok.Data;
 
 @Data
-public class BmsOrderUploadPaymentVoucherReqDTO {
+public class BmsOrderDetailUploadPaymentVoucherReqDTO {
     /**
      * 订单编号
      */
-    private String orderNum;
+    private Integer id;
 
     private String paymentVoucherUrls;
 }

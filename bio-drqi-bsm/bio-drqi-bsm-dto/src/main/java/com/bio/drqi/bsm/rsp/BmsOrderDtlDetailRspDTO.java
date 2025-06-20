@@ -1,13 +1,17 @@
 package com.bio.drqi.bsm.rsp;
 
-import com.bio.drqi.manage.base.PageDTO;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class BmsOrderDetailListPageRspDTO {
+public class BmsOrderDtlDetailRspDTO {
+    /**
+     * 主键
+     */
     private Integer id;
 
     /**
@@ -75,6 +79,8 @@ public class BmsOrderDetailListPageRspDTO {
      */
     private String productOutCode;
 
+    private String productInnerCode;
+
     /**
      * 采购单价
      */
@@ -134,9 +140,6 @@ public class BmsOrderDetailListPageRspDTO {
 
     private String purchaseDepartment;
 
-    /**
-     * 到货数量
-     */
     private Integer receiveNumber;
 
 
@@ -156,4 +159,6 @@ public class BmsOrderDetailListPageRspDTO {
      * 报账日期
      */
     private String reportAccountTime;
+
+
 }

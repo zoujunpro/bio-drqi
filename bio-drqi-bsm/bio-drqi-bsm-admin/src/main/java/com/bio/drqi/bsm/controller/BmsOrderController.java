@@ -58,55 +58,6 @@ public class BmsOrderController {
         return ResponseResult.getSuccess(bmsOrderService.detail(id));
     }
 
-    /**
-     * 上传合同
-     * @return
-     */
-    @WebLog(desc = "采购订单管理-上传合同")
-    @PostMapping("/uploadContract")
-    @RequirePermissions("bms:order:edit")
-    public ResponseResult<String> uploadContract(@RequestBody BmsOrderUploadContractReqDTO bmsOrderUploadContractReqDTO){
-        bmsOrderService.uploadContract(bmsOrderUploadContractReqDTO);
-        return ResponseResult.getSuccess("ok");
-    }
-
-    /**
-     * 上传发票
-     * @return
-     */
-    @PostMapping("/uploadInvoice")
-    @WebLog(desc = "采购订单管理-上传发票")
-    @RequirePermissions("bms:order:edit")
-    public ResponseResult<String> uploadInvoice(@RequestBody  BmsOrderUploadInvoiceReqDTO bmsOrderUploadInvoiceReqDTO){
-        bmsOrderService.uploadInvoice(bmsOrderUploadInvoiceReqDTO);
-        return ResponseResult.getSuccess("ok");
-    }
-
-    /**
-     * 订单报账结算
-     * @return
-     */
-
-    @WebLog(desc = "采购订单管理-订单报账结算")
-    @PostMapping("/reportAccount")
-    @RequirePermissions("bms:order:edit")
-    public ResponseResult<String> reportAccount(@RequestBody BmsOrderReportAccountReqDTO bmsOrderReportAccountReqDTO){
-        bmsOrderService.reportAccount(bmsOrderReportAccountReqDTO);
-        return ResponseResult.getSuccess("ok");
-    }
-
-    /**
-     * 上传结算凭证
-     * @return
-     */
-
-    @WebLog(desc = "采购订单管理-上传结算凭证")
-    @PostMapping("/uploadPaymentVoucher")
-    @RequirePermissions("bms:order:edit")
-    public ResponseResult<String> uploadPaymentVoucher(@RequestBody BmsOrderUploadPaymentVoucherReqDTO bmsOrderUploadPaymentVoucherReqDTO){
-        bmsOrderService.uploadPaymentVoucher(bmsOrderUploadPaymentVoucherReqDTO);
-        return ResponseResult.getSuccess("ok");
-    }
 
 
 }

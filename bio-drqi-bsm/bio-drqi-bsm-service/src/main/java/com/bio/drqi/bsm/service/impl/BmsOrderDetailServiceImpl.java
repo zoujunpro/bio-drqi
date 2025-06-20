@@ -1,10 +1,12 @@
 package com.bio.drqi.bsm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
-import com.bio.drqi.bsm.req.BmsOrderDetailListPageReqDTO;
+import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailQueryByOrderNumRspDTO;
+import com.bio.drqi.bsm.rsp.BmsOrderDtlDetailRspDTO;
 import com.bio.drqi.bsm.service.BmsOrderDetailService;
 import com.bio.drqi.domain.BmsOrderDetailTb;
 import com.bio.drqi.mapper.BmsOrderDetailTbMapper;
@@ -24,7 +26,7 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     private BmsOrderDetailTbMapper bmsOrderDetailTbMapper;
 
     @Override
-    public PageInfo<BmsOrderDetailListPageRspDTO> listPage(BmsOrderDetailListPageReqDTO  bmsOrderDetailListPageReqDTO) {
+    public PageInfo<BmsOrderDetailListPageRspDTO> listPage(BmsOrderDetailListPageReqDTO bmsOrderDetailListPageReqDTO) {
         PageHelper.startPage(bmsOrderDetailListPageReqDTO.getPageNum(), bmsOrderDetailListPageReqDTO.getPageSize());
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectSelective(BeanUtils.copyProperties(bmsOrderDetailListPageReqDTO, BmsOrderDetailTb.class));
         if (CollectionUtil.isEmpty(bmsOrderDetailTbList)) {
@@ -32,12 +34,66 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
         }
         PageInfo<BmsOrderDetailTb> srcPageInfo = new PageInfo<>(bmsOrderDetailTbList);
 
-        return BeanUtils.copyPageInfoProperties(srcPageInfo,BmsOrderDetailListPageRspDTO.class);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsOrderDetailListPageRspDTO.class);
+    }
+
+    @Override
+    public BmsOrderDtlDetailRspDTO detail(Integer id) {
+        BmsOrderDetailTb bmsOrderDetailTb=   bmsOrderDetailTbMapper.selectById(id);
+        return BeanUtils.copyProperties(bmsOrderDetailTb,BmsOrderDtlDetailRspDTO.class);
     }
 
     @Override
     public List<BmsOrderDetailQueryByOrderNumRspDTO> queryByOrderNum(String orderNum) {
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectAllByOrderNum(orderNum);
         return BeanUtils.copyListProperties(bmsOrderDetailTbList, BmsOrderDetailQueryByOrderNumRspDTO.class);
+    }
+
+    @Override
+    public void uploadContract(BmsOrderDetailUploadContractReqDTO bmsOrderDetailUploadContractReqDTO) {
+        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailUploadContractReqDTO.getId());
+        if (bmsOrderDetailTb == null) {
+            log.error("订单不存在，orderDetailId={}", bmsOrderDetailUploadContractReqDTO.getId());
+            throw new BusinessException("订单不存在");
+        }
+        bmsOrderDetailTb.setContractNumber(bmsOrderDetailUploadContractReqDTO.getContractNumber());
+        bmsOrderDetailTb.setContractUrls(bmsOrderDetailUploadContractReqDTO.getContractUrls());
+        bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+    }
+
+    @Override
+    public void uploadInvoice(BmsOrderDetailUploadInvoiceReqDTO bmsOrderDetailUploadInvoiceReqDTO) {
+        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailUploadInvoiceReqDTO.getId());
+        if (bmsOrderDetailTb == null) {
+            log.error("订单不存在，orderDetailId={}", bmsOrderDetailUploadInvoiceReqDTO.getId());
+            throw new BusinessException("订单不存在");
+        }
+        bmsOrderDetailTb.setInvoiceUrls(bmsOrderDetailUploadInvoiceReqDTO.getInvoiceUrls());
+        bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+    }
+
+    @Override
+    public void reportAccount(BmsOrderDetailReportAccountReqDTO bmsOrderDetailReportAccountReqDTO) {
+        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailReportAccountReqDTO.getId());
+
+        if (bmsOrderDetailTb == null) {
+            log.error("订单不存在，orderDetailId={}", bmsOrderDetailReportAccountReqDTO.getId());
+            throw new BusinessException("订单不存在");
+        }
+        bmsOrderDetailTb.setReportAccountTime(bmsOrderDetailReportAccountReqDTO.getAccountTime());
+
+        bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+    }
+
+    @Override
+    public void uploadPaymentVoucher(BmsOrderDetailUploadPaymentVoucherReqDTO bmsOrderDetailUploadPaymentVoucherReqDTO) {
+        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailUploadPaymentVoucherReqDTO.getId());
+        if (bmsOrderDetailTb == null) {
+            log.error("订单不存在，orderDetailId={}", bmsOrderDetailUploadPaymentVoucherReqDTO.getId());
+            throw new BusinessException("订单不存在");
+        }
+        bmsOrderDetailTb.setPaymentVoucherUrls(bmsOrderDetailUploadPaymentVoucherReqDTO.getPaymentVoucherUrls());
+
+        bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
     }
 }

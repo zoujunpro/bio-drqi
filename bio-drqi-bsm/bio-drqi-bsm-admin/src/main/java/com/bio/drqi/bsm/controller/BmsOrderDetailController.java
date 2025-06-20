@@ -1,10 +1,13 @@
 package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.bsm.req.BmsOrderDetailListPageReqDTO;
+import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailQueryByOrderNumRspDTO;
+import com.bio.drqi.bsm.rsp.BmsOrderDetailRspDTO;
+import com.bio.drqi.bsm.rsp.BmsOrderDtlDetailRspDTO;
 import com.bio.drqi.bsm.service.BmsOrderDetailService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +28,21 @@ public class BmsOrderDetailController {
 
     @PostMapping("listPage")
     @WebLog(desc = "采购订单明细管理-分页查询")
+    @RequirePermissions("bms:order:listPage")
     public ResponseResult<PageInfo<BmsOrderDetailListPageRspDTO>> listPage(@RequestBody BmsOrderDetailListPageReqDTO bmsOrderDetailListPageReqDTO) {
         return ResponseResult.getSuccess(bmsOrderDetailService.listPage(bmsOrderDetailListPageReqDTO));
     }
 
-
+    /**
+     * 采购订单管理-详情
+     * @return
+     */
+    @GetMapping("/detail")
+    @WebLog(desc = "采购订单明细管理-详情")
+    @RequirePermissions("bms:orderDetail:detail")
+    public ResponseResult<BmsOrderDtlDetailRspDTO> detail(@RequestParam Integer id) {
+        return ResponseResult.getSuccess(bmsOrderDetailService.detail(id));
+    }
     /**
      * 采购订单明细管理-订单号查询
      *
@@ -40,5 +53,56 @@ public class BmsOrderDetailController {
     public ResponseResult<List<BmsOrderDetailQueryByOrderNumRspDTO>> queryByOrderNum(@RequestParam String orderNum) {
 
         return ResponseResult.getSuccess(bmsOrderDetailService.queryByOrderNum(orderNum));
+    }
+
+
+    /**
+     * 上传合同
+     * @return
+     */
+    @WebLog(desc = "采购订单管理-上传合同")
+    @PostMapping("/uploadContract")
+    @RequirePermissions("bms:orderDetail:edit")
+    public ResponseResult<String> uploadContract(@RequestBody BmsOrderDetailUploadContractReqDTO bmsOrderDetailUploadContractReqDTO){
+        bmsOrderDetailService.uploadContract(bmsOrderDetailUploadContractReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 上传发票
+     * @return
+     */
+    @PostMapping("/uploadInvoice")
+    @WebLog(desc = "采购订单管理-上传发票")
+    @RequirePermissions("bms:orderDetail:edit")
+    public ResponseResult<String> uploadInvoice(@RequestBody BmsOrderDetailUploadInvoiceReqDTO bmsOrderDetailUploadInvoiceReqDTO){
+        bmsOrderDetailService.uploadInvoice(bmsOrderDetailUploadInvoiceReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 订单报账结算
+     * @return
+     */
+
+    @WebLog(desc = "采购订单管理-订单报账结算")
+    @PostMapping("/reportAccount")
+    @RequirePermissions("bms:orderDetail:edit")
+    public ResponseResult<String> reportAccount(@RequestBody BmsOrderDetailReportAccountReqDTO bmsOrderDetailReportAccountReqDTO){
+        bmsOrderDetailService.reportAccount(bmsOrderDetailReportAccountReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 上传结算凭证
+     * @return
+     */
+
+    @WebLog(desc = "采购订单管理-上传结算凭证")
+    @PostMapping("/uploadPaymentVoucher")
+    @RequirePermissions("bms:orderDetail:edit")
+    public ResponseResult<String> uploadPaymentVoucher(@RequestBody BmsOrderDetailUploadPaymentVoucherReqDTO bmsOrderDetailUploadPaymentVoucherReqDTO){
+        bmsOrderDetailService.uploadPaymentVoucher(bmsOrderDetailUploadPaymentVoucherReqDTO);
+        return ResponseResult.getSuccess("ok");
     }
 }

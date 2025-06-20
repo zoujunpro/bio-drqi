@@ -54,50 +54,5 @@ public class BmsOrderServiceImpl implements BmsOrderService {
         return BeanUtils.copyProperties(bmsOrderTb, BmsOrderDetailRspDTO.class);
     }
 
-    @Override
-    public void uploadContract(BmsOrderUploadContractReqDTO bmsOrderUploadContractReqDTO) {
-        BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderUploadContractReqDTO.getOrderNum());
-        if (bmsOrderTb == null) {
-            log.error("订单不存在，orderNum={}", bmsOrderUploadContractReqDTO.getOrderNum());
-            throw new BusinessException("订单不存在");
-        }
-        bmsOrderTb.setContractNumber(bmsOrderUploadContractReqDTO.getContractNumber());
-        bmsOrderTb.setContractUrls(bmsOrderUploadContractReqDTO.getContractUrls());
-        bmsOrderTbMapper.updateById(bmsOrderTb);
-    }
 
-    @Override
-    public void uploadInvoice(BmsOrderUploadInvoiceReqDTO bmsOrderUploadInvoiceReqDTO) {
-        BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderUploadInvoiceReqDTO.getOrderNum());
-        if (bmsOrderTb == null) {
-            log.error("订单不存在，orderNum={}", bmsOrderUploadInvoiceReqDTO.getOrderNum());
-            throw new BusinessException("订单不存在");
-        }
-        bmsOrderTb.setInvoiceUrls(bmsOrderUploadInvoiceReqDTO.getInvoiceUrls());
-        bmsOrderTbMapper.updateById(bmsOrderTb);
-    }
-
-    @Override
-    public void reportAccount(BmsOrderReportAccountReqDTO bmsOrderReportAccountReqDTO) {
-        BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderReportAccountReqDTO.getOrderNum());
-        if (bmsOrderTb == null) {
-            log.error("订单不存在，orderNum={}", bmsOrderReportAccountReqDTO.getOrderNum());
-            throw new BusinessException("订单不存在");
-        }
-        bmsOrderTb.setReportAccountTime(bmsOrderReportAccountReqDTO.getAccountTime());
-
-        bmsOrderTbMapper.updateById(bmsOrderTb);
-    }
-
-    @Override
-    public void uploadPaymentVoucher(BmsOrderUploadPaymentVoucherReqDTO bmsOrderUploadPaymentVoucherReqDTO) {
-        BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderUploadPaymentVoucherReqDTO.getOrderNum());
-        if (bmsOrderTb == null) {
-            log.error("订单不存在，orderNum={}", bmsOrderUploadPaymentVoucherReqDTO.getOrderNum());
-            throw new BusinessException("订单不存在");
-        }
-        bmsOrderTb.setPaymentVoucherUrls(bmsOrderUploadPaymentVoucherReqDTO.getPaymentVoucherUrls());
-
-        bmsOrderTbMapper.updateById(bmsOrderTb);
-    }
 }

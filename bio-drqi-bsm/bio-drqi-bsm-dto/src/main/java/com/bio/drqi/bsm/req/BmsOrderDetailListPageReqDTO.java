@@ -36,4 +36,5 @@ public class BmsOrderDetailListPageReqDTO extends PageDTO {
      * 申请单位
      */
     private String applyUnitCode;
+
 }

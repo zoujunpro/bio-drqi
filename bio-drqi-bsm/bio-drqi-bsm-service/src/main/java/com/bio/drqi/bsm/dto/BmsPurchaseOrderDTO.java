@@ -157,6 +157,9 @@ public class BmsPurchaseOrderDTO {
         private String pictureUrls;
 
 
+        private String expectedDeliveryTime;
+
+
     }
 
 

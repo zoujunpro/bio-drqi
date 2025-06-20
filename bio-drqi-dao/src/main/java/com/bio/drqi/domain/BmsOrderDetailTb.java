@@ -175,6 +175,13 @@ public class BmsOrderDetailTb implements Serializable {
      */
     private String reportAccountTime;
 
+
+    private String demandRequireTime;
+
+    private String demandUsageTime;
+
+    private String expectedDeliveryTime;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

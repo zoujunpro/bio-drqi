@@ -42,6 +42,9 @@
             <result property="paymentVoucherUrls" column="payment_voucher_urls" jdbcType="VARCHAR"/>
             <result property="invoiceUrls" column="invoice_urls" jdbcType="VARCHAR"/>
             <result property="reportAccountTime" column="report_account_time" jdbcType="VARCHAR"/>
+            <result property="demandRequireTime" column="demand_require_time" jdbcType="VARCHAR"/>
+            <result property="demandUsageTime" column="demand_usage_time" jdbcType="VARCHAR"/>
+            <result property="expectedDeliveryTime" column="expected_delivery_time" jdbcType="VARCHAR"/>
 
     </resultMap>
 
@@ -55,7 +58,8 @@
         product_category_name,create_time,apply_user_id,
         apply_user_name,task_num,product_type_code,product_type_name,picture_urls,
         purchase_date,apply_unit_code,apply_unit_name,purchase_department,receive_number,
-        payment_voucher_urls,contract_number,invoice_urls,report_account_time,contract_urls
+        payment_voucher_urls,contract_number,invoice_urls,report_account_time,contract_urls,
+        demand_require_time,demand_usage_time,expected_delivery_time
     </sql>
     <select id="selectAllByOrderNum" resultMap="BaseResultMap">
         select

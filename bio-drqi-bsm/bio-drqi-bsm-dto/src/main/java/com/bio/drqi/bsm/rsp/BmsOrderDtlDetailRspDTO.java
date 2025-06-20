@@ -160,5 +160,11 @@ public class BmsOrderDtlDetailRspDTO {
      */
     private String reportAccountTime;
 
+    private String demandRequireTime;
+
+    private String demandUsageTime;
+
+    private String expectedDeliveryTime;
+
 
 }

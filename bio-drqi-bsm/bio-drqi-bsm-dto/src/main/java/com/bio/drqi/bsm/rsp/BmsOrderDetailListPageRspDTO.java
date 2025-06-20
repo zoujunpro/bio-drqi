@@ -156,4 +156,12 @@ public class BmsOrderDetailListPageRspDTO {
      * 报账日期
      */
     private String reportAccountTime;
+
+
+    private String demandRequireTime;
+
+    private String demandUsageTime;
+
+    private String expectedDeliveryTime;
+
 }

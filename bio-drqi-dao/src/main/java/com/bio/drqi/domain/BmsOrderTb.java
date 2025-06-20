@@ -68,10 +68,6 @@ public class BmsOrderTb implements Serializable {
      */
     private String applyUnitName;
 
-    /**
-     * 合同地址
-     */
-    private String contractUrls;
 
     /**
      * 采购日期
@@ -103,10 +99,7 @@ public class BmsOrderTb implements Serializable {
      */
     private String demandUsageTime;
 
-    /**
-     * 发票信息
-     */
-    private String invoiceUrls;
+
 
     /**
      * 附件地址
@@ -123,16 +116,10 @@ public class BmsOrderTb implements Serializable {
      */
     private String taskNum;
 
-    /**
-     * 报账日期
-     */
-    private String reportAccountTime;
+
 
     private String overFlag;
 
-    private String contractNumber;
-
-    private String paymentVoucherUrls;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

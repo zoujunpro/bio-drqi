@@ -14,20 +14,15 @@
             <result property="applyTime" column="apply_time" jdbcType="VARCHAR"/>
             <result property="applyUnitCode" column="apply_unit_code" jdbcType="VARCHAR"/>
             <result property="applyUnitName" column="apply_unit_name" jdbcType="VARCHAR"/>
-            <result property="contractUrls" column="contract_urls" jdbcType="VARCHAR"/>
-            <result property="contractNumber" column="contract_number" jdbcType="VARCHAR"/>
-            <result property="paymentVoucherUrls" column="payment_voucher_urls" jdbcType="VARCHAR"/>
             <result property="purchaseDate" column="purchase_date" jdbcType="VARCHAR"/>
             <result property="purchaseTypeCode" column="purchase_type_code" jdbcType="VARCHAR"/>
             <result property="purchaseTypeName" column="purchase_type_name" jdbcType="VARCHAR"/>
             <result property="purchaseReasonRemark" column="purchase_reason_remark" jdbcType="VARCHAR"/>
             <result property="demandRequireTime" column="demand_require_time" jdbcType="VARCHAR"/>
             <result property="demandUsageTime" column="demand_usage_time" jdbcType="VARCHAR"/>
-            <result property="invoiceUrls" column="invoice_urls" jdbcType="VARCHAR"/>
             <result property="attachmentUrls" column="attachment_urls" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
-            <result property="reportAccountTime" column="report_account_time" jdbcType="VARCHAR"/>
             <result property="overFlag" column="over_flag" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -36,9 +31,8 @@
         apply_user_name,apply_user_department,purchase_department,
         apply_unit_code,apply_unit_name,contract_urls,
         purchase_date,purchase_type_code,purchase_type_name,
-        purchase_reason_remark,demand_require_time,demand_usage_time,
-        invoice_urls,attachment_urls,create_time,
-        task_num,report_account_time,over_flag,payment_voucher_urls,contract_number
+        purchase_reason_remark,demand_require_time,demand_usage_time,create_time,
+        task_num,over_flag,
     </sql>
     <select id="selectOneByTaskNum" resultMap="BaseResultMap">
         select
@@ -66,7 +60,6 @@
             <if test="purchaseDepartment != null and purchaseDepartment!=''">and  purchase_department=#{purchaseDepartment,jdbcType=VARCHAR}</if>
             <if test="applyUnitCode != null and applyUnitCode!=''">and  apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
             <if test="applyUnitName != null and applyUnitName!=''">and  apply_unit_name=#{applyUnitName,jdbcType=VARCHAR}</if>
-            <if test="contractUrls != null">and  contract_urls=#{contractUrls,jdbcType=VARCHAR}</if>
             <if test="purchaseDate != null and purchaseDate!=''">and  purchase_date=#{purchaseDate,jdbcType=VARCHAR}</if>
             <if test="purchaseTypeCode != null">and  purchase_type_code=#{purchaseTypeCode,jdbcType=VARCHAR}</if>
             <if test="purchaseTypeName != null">and  purchase_type_name=#{purchaseTypeName,jdbcType=VARCHAR}</if>
@@ -74,11 +67,8 @@
             </if>
             <if test="demandRequireTime != null">and  demand_require_time=#{demandRequireTime,jdbcType=VARCHAR}</if>
             <if test="demandUsageTime != null">and  demand_usage_time=#{demandUsageTime,jdbcType=VARCHAR}</if>
-            <if test="invoiceUrls != null">and  invoice_urls=#{invoiceUrls,jdbcType=VARCHAR}</if>
-            <if test="attachmentUrls != null">and  attachment_urls=#{attachmentUrls,jdbcType=VARCHAR}</if>
             <if test="createTime != null">and  create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="taskNum != null and taskNum!=''">and  task_num=#{taskNum,jdbcType=VARCHAR}</if>
-            <if test="reportAccountTime != null and reportAccountTime!=''">and  report_account_time=#{reportAccountTime,jdbcType=VARCHAR}</if>
             <if test="overFlag != null and overFlag!=''">and  over_flag=#{overFlag,jdbcType=VARCHAR}</if>
 
         </where>

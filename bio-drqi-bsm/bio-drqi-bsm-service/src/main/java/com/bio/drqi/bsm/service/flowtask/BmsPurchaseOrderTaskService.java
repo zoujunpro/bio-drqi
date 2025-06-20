@@ -151,6 +151,11 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setApplyUnitName(bmsOrderTb.getApplyUnitName());
                 bmsOrderDetailTb.setPurchaseDepartment(bmsOrderTb.getPurchaseDepartment());
                 bmsOrderDetailTb.setReceiveNumber(0);
+                bmsOrderDetailTb.setInvoiceUrls(null);
+                bmsOrderDetailTb.setContractUrls(null);
+                bmsOrderDetailTb.setReportAccountTime(null);
+                bmsOrderDetailTb.setContractNumber(null);
+                bmsOrderDetailTb.setPaymentVoucherUrls(null);
                 bmsOrderDetailTbMapper.insert(bmsOrderDetailTb);
             }
         }
@@ -170,18 +175,15 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
         bmsOrderTb.setPurchaseDepartment(bmsPurchaseOrderDTO.getPurchaseDepartment());
         bmsOrderTb.setApplyUnitCode(bmsPurchaseOrderDTO.getUnitCode());
         bmsOrderTb.setApplyUnitName(bmsPurchaseOrderDTO.getUnitName());
-        bmsOrderTb.setContractUrls(null);
         bmsOrderTb.setPurchaseDate(null);
         bmsOrderTb.setPurchaseTypeCode(bmsPurchaseOrderDTO.getPurchaseTypeCode());
         bmsOrderTb.setPurchaseTypeName(PurchaseTypeEnum.getNameByCode(bmsPurchaseOrderDTO.getPurchaseTypeCode()));
         bmsOrderTb.setPurchaseReasonRemark(bmsPurchaseOrderDTO.getPurchaseReasonRemark());
         bmsOrderTb.setDemandRequireTime(bmsPurchaseOrderDTO.getDemandRequireTime());
         bmsOrderTb.setDemandUsageTime(bmsPurchaseOrderDTO.getDemandUsageTime());
-        bmsOrderTb.setInvoiceUrls(null);
         bmsOrderTb.setAttachmentUrls(bmsPurchaseOrderDTO.getAttachmentUrls());
         bmsOrderTb.setCreateTime(new Date());
         bmsOrderTb.setTaskNum(bioTaskDtlTb.getTaskNum());
-        bmsOrderTb.setReportAccountTime(null);
         bmsOrderTb.setOverFlag(BioBsmContents.N);
         bmsOrderTbMapper.insert(bmsOrderTb);
         return bmsOrderTb;

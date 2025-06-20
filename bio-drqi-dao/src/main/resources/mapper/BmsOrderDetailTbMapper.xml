@@ -37,6 +37,11 @@
             <result property="applyUnitCode" column="apply_unit_code" jdbcType="VARCHAR"/>
             <result property="applyUnitName" column="apply_unit_name" jdbcType="VARCHAR"/>
             <result property="purchaseDepartment" column="purchase_department" jdbcType="VARCHAR"/>
+            <result property="contractUrls" column="contract_urls" jdbcType="VARCHAR"/>
+            <result property="contractNumber" column="contract_number" jdbcType="VARCHAR"/>
+            <result property="paymentVoucherUrls" column="payment_voucher_urls" jdbcType="VARCHAR"/>
+            <result property="invoiceUrls" column="invoice_urls" jdbcType="VARCHAR"/>
+            <result property="reportAccountTime" column="report_account_time" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -48,7 +53,8 @@
         purchase_number,pay_amount,product_category_code,
         product_category_name,create_time,apply_user_id,
         apply_user_name,task_num,product_type_code,product_type_name,picture_urls,
-        purchase_date,apply_unit_code,apply_unit_name,purchase_department,receive_number
+        purchase_date,apply_unit_code,apply_unit_name,purchase_department,receive_number,
+        payment_voucher_urls,contract_number,invoice_urls,attachment_urls,report_account_time
     </sql>
     <select id="selectAllByOrderNum" resultMap="BaseResultMap">
         select
@@ -68,8 +74,7 @@
             <if test="projectName != null and projectName!=''">and project_name=#{projectName,jdbcType=VARCHAR}</if>
             <if test="supplierName != null and supplierName !=''">and supplier_name=#{supplierName,jdbcType=VARCHAR}</if>
             <if test="supplierCode != null and supplierCode!=''">and supplier_code=#{supplierCode,jdbcType=VARCHAR}</if>
-            <if test="contactUserTelephone != null">and contact_user_telephone=#{contactUserTelephone,jdbcType=VARCHAR}
-            </if>
+            <if test="contactUserTelephone != null">and contact_user_telephone=#{contactUserTelephone,jdbcType=VARCHAR}</if>
             <if test="contactUserName != null">and contact_user_name=#{contactUserName,jdbcType=VARCHAR}</if>
             <if test="brandCode != null and brandCode!=''">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
             <if test="brandName != null and brandName!=''">and brand_name=#{brandName,jdbcType=VARCHAR}</if>
@@ -91,6 +96,10 @@
             <if test="applyUnitCode != null and applyUnitCode!=''">and apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
             <if test="applyUnitName != null and applyUnitName!=''">and apply_unit_name=#{applyUnitName,jdbcType=VARCHAR}</if>
             <if test="purchaseDepartment != null and purchaseDepartment!=''">and purchase_department=#{purchaseDepartment,jdbcType=VARCHAR}</if>
+            <if test="reportAccountTime != null and reportAccountTime!=''">and  report_account_time=#{reportAccountTime,jdbcType=VARCHAR}</if>
+            <if test="invoiceUrls != null">and  invoice_urls=#{invoiceUrls,jdbcType=VARCHAR}</if>
+            <if test="attachmentUrls != null">and  attachment_urls=#{attachmentUrls,jdbcType=VARCHAR}</if>
+            <if test="contractUrls != null">and  contract_urls=#{contractUrls,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

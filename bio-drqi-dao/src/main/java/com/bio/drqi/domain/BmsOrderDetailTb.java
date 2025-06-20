@@ -157,6 +157,24 @@ public class BmsOrderDetailTb implements Serializable {
 
     private Integer receiveNumber;
 
+
+    private String contractNumber;
+
+    private String paymentVoucherUrls;
+
+    /**
+     * 合同地址
+     */
+    private String contractUrls;
+    /**
+     * 发票信息
+     */
+    private String invoiceUrls;
+    /**
+     * 报账日期
+     */
+    private String reportAccountTime;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

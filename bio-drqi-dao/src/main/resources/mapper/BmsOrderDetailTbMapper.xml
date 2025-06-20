@@ -42,6 +42,7 @@
             <result property="paymentVoucherUrls" column="payment_voucher_urls" jdbcType="VARCHAR"/>
             <result property="invoiceUrls" column="invoice_urls" jdbcType="VARCHAR"/>
             <result property="reportAccountTime" column="report_account_time" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -54,7 +55,7 @@
         product_category_name,create_time,apply_user_id,
         apply_user_name,task_num,product_type_code,product_type_name,picture_urls,
         purchase_date,apply_unit_code,apply_unit_name,purchase_department,receive_number,
-        payment_voucher_urls,contract_number,invoice_urls,attachment_urls,report_account_time
+        payment_voucher_urls,contract_number,invoice_urls,report_account_time,contract_urls
     </sql>
     <select id="selectAllByOrderNum" resultMap="BaseResultMap">
         select
@@ -98,7 +99,6 @@
             <if test="purchaseDepartment != null and purchaseDepartment!=''">and purchase_department=#{purchaseDepartment,jdbcType=VARCHAR}</if>
             <if test="reportAccountTime != null and reportAccountTime!=''">and  report_account_time=#{reportAccountTime,jdbcType=VARCHAR}</if>
             <if test="invoiceUrls != null">and  invoice_urls=#{invoiceUrls,jdbcType=VARCHAR}</if>
-            <if test="attachmentUrls != null">and  attachment_urls=#{attachmentUrls,jdbcType=VARCHAR}</if>
             <if test="contractUrls != null">and  contract_urls=#{contractUrls,jdbcType=VARCHAR}</if>
         </where>
         order by id desc

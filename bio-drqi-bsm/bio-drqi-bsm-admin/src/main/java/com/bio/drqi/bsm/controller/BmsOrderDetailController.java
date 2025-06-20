@@ -28,7 +28,7 @@ public class BmsOrderDetailController {
 
     @PostMapping("listPage")
     @WebLog(desc = "采购订单明细管理-分页查询")
-    @RequirePermissions("bms:order:listPage")
+    @RequirePermissions("bms:orderDetail:listPage")
     public ResponseResult<PageInfo<BmsOrderDetailListPageRspDTO>> listPage(@RequestBody BmsOrderDetailListPageReqDTO bmsOrderDetailListPageReqDTO) {
         return ResponseResult.getSuccess(bmsOrderDetailService.listPage(bmsOrderDetailListPageReqDTO));
     }

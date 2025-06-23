@@ -105,4 +105,11 @@ public class BmsOrderDetailController {
         bmsOrderDetailService.uploadPaymentVoucher(bmsOrderDetailUploadPaymentVoucherReqDTO);
         return ResponseResult.getSuccess("ok");
     }
+
+    /**
+     * 导出工单信息
+     */
+    public void  exportExcel(BmsOrderDetailExportExcelDTO bmsOrderDetailExportExcelDTO){
+
+    }
 }

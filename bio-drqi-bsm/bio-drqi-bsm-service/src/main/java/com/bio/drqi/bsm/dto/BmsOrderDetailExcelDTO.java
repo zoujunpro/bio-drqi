@@ -109,8 +109,6 @@ public class BmsOrderDetailExcelDTO {
     @ExcelProperty("申请人")
     private String applyUserName;
 
-    @ExcelProperty("材料类别")
-    private String productTypeName;
 
     @ExcelProperty("采购单位")
     private String applyUnitName;

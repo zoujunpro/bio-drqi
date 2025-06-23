@@ -104,7 +104,7 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
 
     @Override
     public void exportExcel(BmsOrderDetailExportExcelReqDTO bmsOrderDetailExportExcelReqDTO, HttpServletResponse httpServletResponse) {
-        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectSelective(BeanUtils.copyProperties(bmsOrderDetailExportExcelReqDTO, BmsOrderDetailTb.class));
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailExportExcelReqDTO.getIdList());
         List<BmsOrderDetailExcelDTO> bmsOrderDetailExcelDTOList = BeanUtils.copyListProperties(bmsOrderDetailTbList, BmsOrderDetailExcelDTO.class);
         ExcelUtil.writeExcel("订单明细" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xlsx", "sheet", bmsOrderDetailExcelDTOList, BmsOrderDetailExcelDTO.class, httpServletResponse);
     }

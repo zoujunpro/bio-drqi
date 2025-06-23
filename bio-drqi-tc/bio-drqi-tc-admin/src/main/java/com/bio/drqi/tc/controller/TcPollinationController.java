@@ -9,6 +9,7 @@ import com.bio.common.oss.service.OssService;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcPollinationCreatePollinationExcelReqDTO;
+import com.bio.drqi.tc.req.TcPollinationExportPollinationExcelReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageReqDTO;
 import com.bio.drqi.tc.rsp.TcPollinationCreatePollinationExcelRspDTO;
@@ -81,11 +82,23 @@ public class TcPollinationController {
     @WebLog(desc = "授粉管理-生成授粉excel")
     @Transactional(rollbackFor = Exception.class)
     @RequirePermissions("tc:tcPollination:createPollinationExcel")
-    public ResponseResult<List<TcPollinationExcelDTO>> createPollinationExcel(@RequestBody @Validated TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
-            return ResponseResult.getSuccess(tcPollinationService.createPollinationExcel(tcPollinationCreatePollinationExcelReqDTO,httpServletResponse));
+    public ResponseResult<List<TcPollinationExcelDTO>> createPollinationExcel(@RequestBody @Validated TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO) {
+            return ResponseResult.getSuccess(tcPollinationService.createPollinationExcel(tcPollinationCreatePollinationExcelReqDTO));
     }
 
 
+
+
+    /**
+     * 授粉管理-生成最终授粉excel
+     */
+    @PostMapping("/exportPollinationExcel")
+    @WebLog(desc = "授粉管理-生成授粉excel")
+    @Transactional(rollbackFor = Exception.class)
+    @RequirePermissions("tc:tcPollination:createPollinationExcel")
+    public void exportPollinationExcel(@RequestBody @Validated TcPollinationExportPollinationExcelReqDTO tcPollinationExportPollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
+        tcPollinationService.exportPollinationExcel(tcPollinationExportPollinationExcelReqDTO,httpServletResponse);
+    }
 
 
 
@@ -104,35 +117,5 @@ public class TcPollinationController {
         }
     }
 
-
-    public static void main(String[] args) {
-
-        List<TcPollinationExcelDTO> tcPollinationOneExcelDTOList=new ArrayList<>();
-        TcPollinationExcelDTO tcPollinationExcelDTO=new TcPollinationExcelDTO();
-        tcPollinationExcelDTO.setMotherRegionNum("1");
-        tcPollinationExcelDTO.setMotherSeedNum("1");
-        tcPollinationExcelDTO.setMotherSampleCode("1");
-        tcPollinationExcelDTO.setMotherBreedName("1");
-        tcPollinationExcelDTO.setMotherVectorTaskCode("1");
-        tcPollinationExcelDTO.setMotherGenerationName("1");
-        tcPollinationExcelDTO.setMotherTcGene("1");
-        tcPollinationExcelDTO.setFatherBreedName("1");
-        tcPollinationExcelDTO.setFatherSeedNum("1");
-        tcPollinationExcelDTO.setFatherSampleCode("1");
-        tcPollinationExcelDTO.setFatherBreedName("1");
-        tcPollinationExcelDTO.setFatherVectorTaskCode("1");
-        tcPollinationExcelDTO.setFatherGenerationName("1");
-        tcPollinationExcelDTO.setFatherTcGene("1");
-        tcPollinationExcelDTO.setPollinationDate("1");
-        tcPollinationExcelDTO.setHarvestTypeName("1");
-        tcPollinationExcelDTO.setRemark("1");
-        tcPollinationOneExcelDTOList.add(tcPollinationExcelDTO);
-        //ExcelUtil.fillExcel("D:/2025test.xlsx","C:\\Users\\zou'jun\\Desktop\\田测\\田测授粉数据表单模板V2.0.xlsx", tcPollinationOneExcelDTOList, TcPollinationExcelDTO.class);
-     List<TcPollinationExcelDTO> result=   ExcelUtil.readExcel("D:/2025test.xlsx",TcPollinationExcelDTO.class);
-     for (TcPollinationExcelDTO tcPollinationExcelDTO1:result){
-         System.out.println(JSONUtil.toJsonStr(tcPollinationExcelDTO1));
-     }
-
-    }
 
 }

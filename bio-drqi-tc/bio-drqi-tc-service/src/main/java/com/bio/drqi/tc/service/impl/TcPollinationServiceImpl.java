@@ -16,6 +16,7 @@ import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.enums.PollinationParentFlagEnum;
 import com.bio.drqi.tc.enums.SampleTestCheckResultEnum;
 import com.bio.drqi.tc.req.TcPollinationCreatePollinationExcelReqDTO;
+import com.bio.drqi.tc.req.TcPollinationExportPollinationExcelReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageReqDTO;
 import com.bio.drqi.tc.rsp.TcPollinationCreatePollinationExcelRspDTO;
@@ -104,8 +105,9 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         return BeanUtils.copyPageInfoProperties(srcPageInfo, TcPollinationListPageDetailRspDTO.class);
     }
 
+
     @Override
-    public List<TcPollinationExcelDTO> createPollinationExcel(TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
+    public List<TcPollinationExcelDTO> createPollinationExcel(TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO) {
         List<TcPollinationExcelDTO> matherList = new ArrayList<TcPollinationExcelDTO>();
         List<TcPollinationExcelDTO> fatherList = new ArrayList<TcPollinationExcelDTO>();
         List<TcPollinationSingleNumTb> currentTcPollinationSingleNumTbList = new ArrayList<TcPollinationSingleNumTb>();
@@ -182,7 +184,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                         tcPollinationSingleNumTb.setSingleNumber(sampleCode);
                         tcPollinationSingleNumTb.setCreateTime(new Date());
                         tcPollinationSingleNumTb.setCreateUserName(SecurityContextHolder.getNickName());
-                        tcPollinationSingleNumTb.setTcSingleNumber(tcPollinationSingleNumTb.getRegionNum()+tcPollinationSingleNumTb.getSingleNumber().substring(3));
+                        tcPollinationSingleNumTb.setTcSingleNumber(tcPollinationSingleNumTb.getRegionNum() + tcPollinationSingleNumTb.getSingleNumber().substring(3));
                         currentTcPollinationSingleNumTbList.add(tcPollinationSingleNumTb);
                     }
                     if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {
@@ -229,4 +231,49 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         //  ExcelUtil.fillExcel(templateDir, matherList, TcPollinationExcelDTO.class, httpServletResponse);
     }
 
+
+    @Override
+    public void exportPollinationExcel(TcPollinationExportPollinationExcelReqDTO tcPollinationExportPollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcPollinationExportPollinationExcelReqDTO.getExperimentNum());
+        if (tcExperimentTb == null) {
+            throw new BusinessException("试验方案不存在");
+        }
+
+        List<TcPollinationExcelDTO> tcPollinationExcelDTOList=new ArrayList<>();
+        for (TcPollinationExportPollinationExcelReqDTO.Content content : tcPollinationExportPollinationExcelReqDTO.getContentList()) {
+            TcPollinationExcelDTO tcPollinationExcelDTO=new TcPollinationExcelDTO();
+            tcPollinationExcelDTO.setMotherRegionNum(content.getMotherRegionNum());
+            tcPollinationExcelDTO.setMotherSeedNum(content.getMotherSeedNum());
+            tcPollinationExcelDTO.setMotherSampleCode(content.getMotherSampleCode());
+            tcPollinationExcelDTO.setMotherTcSampleCode(content.getMotherTcSampleCode());
+            tcPollinationExcelDTO.setMotherBreedName(content.getMotherBreedName());
+            tcPollinationExcelDTO.setMotherVectorTaskCode(content.getMotherVectorTaskCode());
+            tcPollinationExcelDTO.setMotherGenerationName(content.getMotherGenerationName());
+            tcPollinationExcelDTO.setMotherTcGene(content.getMotherTcGene());
+            tcPollinationExcelDTO.setFatherRegionNum(content.getFatherRegionNum());
+            tcPollinationExcelDTO.setFatherSeedNum(content.getFatherSeedNum());
+            tcPollinationExcelDTO.setFatherTcSampleCode(content.getFatherTcSampleCode());
+            tcPollinationExcelDTO.setFatherSampleCode(content.getFatherSampleCode());
+            tcPollinationExcelDTO.setFatherBreedName(content.getFatherBreedName());
+            tcPollinationExcelDTO.setFatherVectorTaskCode(content.getFatherVectorTaskCode());
+            tcPollinationExcelDTO.setFatherGenerationName(content.getFatherGenerationName());
+            tcPollinationExcelDTO.setFatherTcGene(content.getFatherTcGene());
+            tcPollinationExcelDTO.setPollinationDate(null);
+            tcPollinationExcelDTO.setHarvestTypeName(null);
+            tcPollinationExcelDTO.setHarvestTypeCode(null);
+            tcPollinationExcelDTO.setRemark(null);
+            tcPollinationExcelDTOList.add(tcPollinationExcelDTO);
+        }
+
+        //先下载授粉表格，校验授粉模板是否存在
+        String excelTemplateName = "田测授粉结果表单模板V1.0.xlsx";
+        String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
+        try {
+            ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
+        } catch (Exception e) {
+            log.error("模板下载失败，", e);
+            throw new BusinessException("模板下载失败，请联系管理员检测模板配置");
+        }
+        ExcelUtil.fillExcel(templateDir, tcPollinationExcelDTOList, TcPollinationExcelDTO.class, httpServletResponse);
+    }
 }

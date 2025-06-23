@@ -1,6 +1,7 @@
 package com.bio.drqi.tc.service;
 
 import com.bio.drqi.tc.req.TcPollinationCreatePollinationExcelReqDTO;
+import com.bio.drqi.tc.req.TcPollinationExportPollinationExcelReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcPollinationListPageReqDTO;
 import com.bio.drqi.tc.rsp.TcPollinationCreatePollinationExcelRspDTO;
@@ -9,6 +10,8 @@ import com.bio.drqi.tc.rsp.TcPollinationListPageRspDTO;
 import com.bio.drqi.tc.rsp.TcPollinationListPollinationApplyNumNotHarvestRspDTO;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -35,7 +38,10 @@ public interface TcPollinationService {
     /**
      * 授粉管理-生成授粉excel
      */
-    List<TcPollinationExcelDTO> createPollinationExcel(TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO, HttpServletResponse httpServletResponse);
+    List<TcPollinationExcelDTO> createPollinationExcel(TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO );
+
+
+  void   exportPollinationExcel(TcPollinationExportPollinationExcelReqDTO tcPollinationExportPollinationExcelReqDTO, HttpServletResponse httpServletResponse);
 
 
 }

@@ -9,6 +9,7 @@ import com.bio.drqi.bsm.rsp.BmsOrderDetailQueryByOrderNumRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDtlDetailRspDTO;
 import com.bio.drqi.bsm.service.BmsOrderDetailService;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -112,7 +113,7 @@ public class BmsOrderDetailController {
     @WebLog(desc = "采购订单管理-导出")
     @PostMapping("/exportExcel")
     @RequirePermissions("bms:orderDetail:exportExcel")
-    public void exportExcel(@RequestBody BmsOrderDetailExportExcelReqDTO bmsOrderDetailExportExcelReqDTO, HttpServletResponse httpServletResponse){
+    public void exportExcel(@RequestBody @Validated BmsOrderDetailExportExcelReqDTO bmsOrderDetailExportExcelReqDTO, HttpServletResponse httpServletResponse){
         bmsOrderDetailService.exportExcel(bmsOrderDetailExportExcelReqDTO,httpServletResponse);
     }
 }

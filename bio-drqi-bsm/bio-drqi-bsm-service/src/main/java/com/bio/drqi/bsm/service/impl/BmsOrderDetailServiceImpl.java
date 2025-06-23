@@ -1,8 +1,11 @@
 package com.bio.drqi.bsm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
+import com.bio.drqi.bsm.dto.BmsOrderDetailExcelDTO;
 import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailQueryByOrderNumRspDTO;
@@ -16,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -39,8 +44,8 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
 
     @Override
     public BmsOrderDtlDetailRspDTO detail(Integer id) {
-        BmsOrderDetailTb bmsOrderDetailTb=   bmsOrderDetailTbMapper.selectById(id);
-        return BeanUtils.copyProperties(bmsOrderDetailTb,BmsOrderDtlDetailRspDTO.class);
+        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(id);
+        return BeanUtils.copyProperties(bmsOrderDetailTb, BmsOrderDtlDetailRspDTO.class);
     }
 
     @Override
@@ -95,5 +100,12 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
         bmsOrderDetailTb.setPaymentVoucherUrls(bmsOrderDetailUploadPaymentVoucherReqDTO.getPaymentVoucherUrls());
 
         bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+    }
+
+    @Override
+    public void exportExcel(BmsOrderDetailExportExcelReqDTO bmsOrderDetailExportExcelReqDTO, HttpServletResponse httpServletResponse) {
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectSelective(BeanUtils.copyProperties(bmsOrderDetailExportExcelReqDTO, BmsOrderDetailTb.class));
+        List<BmsOrderDetailExcelDTO> bmsOrderDetailExcelDTOList = BeanUtils.copyListProperties(bmsOrderDetailTbList, BmsOrderDetailExcelDTO.class);
+        ExcelUtil.writeExcel("订单明细" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xlsx", "sheet", bmsOrderDetailExcelDTOList, BmsOrderDetailExcelDTO.class, httpServletResponse);
     }
 }

@@ -1,24 +1,22 @@
 package com.bio.drqi.bsm.service;
 
 
-import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailQueryByOrderNumRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDtlDetailRspDTO;
 import com.github.pagehelper.PageInfo;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface BmsOrderDetailService {
 
-    PageInfo<BmsOrderDetailListPageRspDTO> listPage( BmsOrderDetailListPageReqDTO bmsOrderDetailListPageReqDTO);
+    PageInfo<BmsOrderDetailListPageRspDTO> listPage(BmsOrderDetailListPageReqDTO bmsOrderDetailListPageReqDTO);
 
-    BmsOrderDtlDetailRspDTO detail( Integer id);
+    BmsOrderDtlDetailRspDTO detail(Integer id);
 
     List<BmsOrderDetailQueryByOrderNumRspDTO> queryByOrderNum(String orderNum);
-
 
 
     /**
@@ -44,4 +42,7 @@ public interface BmsOrderDetailService {
     void reportAccount(BmsOrderDetailReportAccountReqDTO bmsOrderDetailReportAccountReqDTO);
 
     void uploadPaymentVoucher(BmsOrderDetailUploadPaymentVoucherReqDTO bmsOrderDetailUploadPaymentVoucherReqDTO);
+
+
+    void exportExcel(BmsOrderDetailExportExcelReqDTO bmsOrderDetailExportExcelReqDTO, HttpServletResponse httpServletResponse);
 }

@@ -112,7 +112,7 @@ public class BmsOrderDetailController {
     @WebLog(desc = "采购订单管理-导出")
     @PostMapping("/exportExcel")
     @RequirePermissions("bms:orderDetail:exportExcel")
-    public void  exportExcel(BmsOrderDetailExportExcelReqDTO bmsOrderDetailExportExcelReqDTO, HttpServletResponse httpServletResponse){
+    public void exportExcel(BmsOrderDetailExportExcelReqDTO bmsOrderDetailExportExcelReqDTO, HttpServletResponse httpServletResponse){
         bmsOrderDetailService.exportExcel(bmsOrderDetailExportExcelReqDTO,httpServletResponse);
     }
 }

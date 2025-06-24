@@ -10,6 +10,7 @@ public class SampleUnitDTO {
     private String regionNum;
     private String seedNum;
     private String sampleCode;
+    private String tcSampleCode;
     private String uniqueId;
     private String identifyPrimer;
 
@@ -24,6 +25,7 @@ public class SampleUnitDTO {
         this.identifyPrimer = identifyPrimer;
         this.regionNum=regionNum;
         this.seedNum=seedNum;
+        tcSampleCode=regionNum+sampleCode.substring(3);
         return this;
     }
     public SampleUnitDTO(String vectorTaskCode, String experimentNum,String regionNum,String seedNum, String sampleCode, String identifyPrimer) {
@@ -34,6 +36,7 @@ public class SampleUnitDTO {
         this.sampleCode = sampleCode;
         this.uniqueId = vectorTaskCode + sampleCode;
         this.identifyPrimer = identifyPrimer;
+        tcSampleCode=regionNum+sampleCode.substring(3);
     }
 
     public SampleUnitDTO() {

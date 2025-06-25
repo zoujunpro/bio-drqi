@@ -94,4 +94,7 @@ public class TcExperimentListPageRspDTO {
 
     private String pollinationFlag;
 
+
+    private String experimentType;
+
 }

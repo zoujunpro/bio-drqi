@@ -50,7 +50,7 @@ public class TcPollinationListPageRspDTO {
 
     private String pollinationExcelUrl;
 
-    private String experimentType;
+
 
 
 

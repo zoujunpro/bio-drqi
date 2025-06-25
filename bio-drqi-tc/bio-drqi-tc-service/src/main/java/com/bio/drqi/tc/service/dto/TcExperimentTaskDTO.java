@@ -18,6 +18,8 @@ public class TcExperimentTaskDTO {
     private String experimentGoal;
 
     private String experimentAddress;
+
+    private String experimentType;
     /**
      * 实验方案附件
      */

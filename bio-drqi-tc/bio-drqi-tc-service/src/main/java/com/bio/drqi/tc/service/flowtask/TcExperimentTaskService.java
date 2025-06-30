@@ -173,7 +173,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
     private String createSampleCode() {
         String maxSampleCodePrefix = tcExperimentTbMapper.selectMaxSampleCodePerfix();
         if (StringUtils.isEmpty(maxSampleCodePrefix)) {
-            return "AA";
+            return "TAA";
         } else {
             return SampleGroupPergixEnum.T.name() + LetterUtil.nextLetterForInstantVerify(maxSampleCodePrefix.substring(1));
         }

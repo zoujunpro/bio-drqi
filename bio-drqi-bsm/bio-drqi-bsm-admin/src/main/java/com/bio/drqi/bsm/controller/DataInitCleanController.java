@@ -10,10 +10,15 @@ import com.bio.common.core.uuid.IdUtils;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.enums.CooperateFormEnum;
+import com.bio.drqi.bsm.kd.dto.BmsSaveKdModel;
+import com.bio.drqi.bsm.kd.dto.base.KdApiBaseSaveRequestDTO;
+import com.bio.drqi.bsm.kd.enums.FormIdEnum;
+import com.bio.drqi.bsm.kd.properties.KdProperties;
 import com.bio.drqi.bsm.req.BmsProductAddReqDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
+import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +65,28 @@ public class DataInitCleanController {
     @Resource
     private BmsProductTbMapper bmsProductTbMapper;
 
+    @Resource
+    private KdProperties kdProperties;
+
+    @GetMapping("/kdDemo")
+    public ResponseResult<String> testKd() {
+        KdApiBaseSaveRequestDTO kdApiBaseSaveRequestDTO = new KdApiBaseSaveRequestDTO();
+        BmsSaveKdModel bmsSaveKdModel = new BmsSaveKdModel();
+        bmsSaveKdModel.setFnumber("9e775bec9c83405b9588afde7ba15b69");
+        bmsSaveKdModel.setFname("金沙生物");
+        bmsSaveKdModel.setFdescription(null);
+        kdApiBaseSaveRequestDTO.setModel(bmsSaveKdModel.build("1002"));
+        System.out.println(JSONUtil.toJsonStr(kdApiBaseSaveRequestDTO));
+        K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
+        try {
+            String result = k3CloudApi.save(FormIdEnum.CMK_BD_Brand.name(), JSONUtil.toJsonStr(kdApiBaseSaveRequestDTO));
+            return ResponseResult.getSuccess(result);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 
     @GetMapping("/cleanStockDate")
     public ResponseResult<String> cleanStockDate() {
@@ -71,16 +98,16 @@ public class DataInitCleanController {
             if (StringUtils.isNotEmpty(expirationDate)) {
                 if (expirationDate.contains("/")) {
                     String[] s = expirationDate.split("/");
-                    bmsProductStockTb.setExpirationDate(s[0]+"-"+StringUtils.padl(s[1],2,'0')+"-"+StringUtils.padl(s[2],2,'0'));
-                    System.out.println("更改后日期expirationDate="+bmsProductStockTb.getExpirationDate());
+                    bmsProductStockTb.setExpirationDate(s[0] + "-" + StringUtils.padl(s[1], 2, '0') + "-" + StringUtils.padl(s[2], 2, '0'));
+                    System.out.println("更改后日期expirationDate=" + bmsProductStockTb.getExpirationDate());
                     editFlag = true;
                 }
             }
             if (StringUtils.isNotEmpty(produceDate)) {
                 if (produceDate.contains("/")) {
                     String[] s = produceDate.split("/");
-                    bmsProductStockTb.setProduceDate(s[0]+"-"+StringUtils.padl(s[1],2,'0')+"-"+StringUtils.padl(s[2],2,'0'));
-                    System.out.println("更改后日期produceDate="+bmsProductStockTb.getProduceDate());
+                    bmsProductStockTb.setProduceDate(s[0] + "-" + StringUtils.padl(s[1], 2, '0') + "-" + StringUtils.padl(s[2], 2, '0'));
+                    System.out.println("更改后日期produceDate=" + bmsProductStockTb.getProduceDate());
                     editFlag = true;
                 }
             }

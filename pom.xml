@@ -26,6 +26,7 @@
         <module>bio-drqi-admin</module>
         <module>bio-drqi-feishu</module>
         <module>bio-drqi-tc</module>
+        <module>bio-drqi-bsm/bio-drqi-bms-kd</module>
     </modules>
 
     <properties>

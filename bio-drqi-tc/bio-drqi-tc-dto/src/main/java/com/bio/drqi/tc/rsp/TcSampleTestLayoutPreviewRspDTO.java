@@ -21,8 +21,8 @@ public class TcSampleTestLayoutPreviewRspDTO {
     private List<List<List<SampleUnitDTO>>> ninetySixList = new ArrayList<>();
 
 
-    public void fillSampleToSingleList(String vectorTaskCode, String experimentNum,String regionNum,String seedNum, String sampleCode, String identifyPrimer) {
-        singleList.add( new SampleUnitDTO(vectorTaskCode,experimentNum,regionNum,seedNum,sampleCode,identifyPrimer));
+    public void fillSampleToSingleList(String vectorTaskCode, String experimentNum,String regionNum,String seedNum, String sampleCode, String identifyPrimer,String tcSampleCode) {
+        singleList.add( new SampleUnitDTO(vectorTaskCode,experimentNum,regionNum,seedNum,sampleCode,identifyPrimer,tcSampleCode));
     }
 
 

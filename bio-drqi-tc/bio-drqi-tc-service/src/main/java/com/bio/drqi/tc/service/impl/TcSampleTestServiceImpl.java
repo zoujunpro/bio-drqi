@@ -594,7 +594,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         List<TcSampleTestTb> noIdentifyPrimerList = tcSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isEmpty(cerSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(noIdentifyPrimerList)) {
             noIdentifyPrimerList.forEach(tcSampleTestTb -> {
-                tcSampleTestLayoutConfirmReqDTO.fillSampleToSingleList(tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentNum(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(), tcSampleTestTb.getSampleCode(), tcSampleTestTb.getIdentifyPrimer());
+                tcSampleTestLayoutConfirmReqDTO.fillSampleToSingleList(tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentNum(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(), tcSampleTestTb.getSampleCode(), tcSampleTestTb.getIdentifyPrimer(),tcSampleTestTb.getTcSampleCode());
             });
         }
         //96孔板
@@ -616,7 +616,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         List<TcSampleTestTb> noIdentifyPrimerList = tcSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isEmpty(cerSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(noIdentifyPrimerList)) {
             noIdentifyPrimerList.forEach(tcSampleTestTb -> {
-                tcSampleTestLayoutPreviewRspDTO.fillSampleToSingleList(tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentNum(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(), tcSampleTestTb.getSampleCode(), tcSampleTestTb.getIdentifyPrimer());
+                tcSampleTestLayoutPreviewRspDTO.fillSampleToSingleList(tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentNum(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(), tcSampleTestTb.getSampleCode(), tcSampleTestTb.getIdentifyPrimer(),tcSampleTestTb.getTcSampleCode());
             });
         }
         //96孔板

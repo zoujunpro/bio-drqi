@@ -51,9 +51,7 @@ public class KdApiServiceImpl implements KdApiService {
      */
     private String bmsSave(KdModel kdModel, String FNumber) {
         BmsSaveKdModel bmsSaveKdModel = (BmsSaveKdModel) kdModel;
-        KdApiBaseSaveRequestDTO kdApiBaseSaveRequestDTO = new KdApiBaseSaveRequestDTO();
-        kdApiBaseSaveRequestDTO.setModel(bmsSaveKdModel.build(FNumber));
-        return KdRequestUtil.save(FormIdEnum.CMK_BD_Brand, kdApiBaseSaveRequestDTO);
+        return KdRequestUtil.save(FormIdEnum.CMK_BD_Brand, KdApiBaseSaveRequestDTO.buildOfSave(bmsSaveKdModel,FNumber));
     }
 
     /**
@@ -65,9 +63,7 @@ public class KdApiServiceImpl implements KdApiService {
      */
     private String materialSave(KdModel kdModel, String FNumber) {
         MaterialSaveModel materialSaveModel = (MaterialSaveModel) kdModel;
-        KdApiBaseSaveRequestDTO kdApiBaseSaveRequestDTO = new KdApiBaseSaveRequestDTO();
-        kdApiBaseSaveRequestDTO.setModel(materialSaveModel.build(FNumber));
-        return KdRequestUtil.save(FormIdEnum.BD_MATERIAL, kdApiBaseSaveRequestDTO);
+        return KdRequestUtil.save(FormIdEnum.BD_MATERIAL, KdApiBaseSaveRequestDTO.buildOfSave(materialSaveModel,FNumber));
     }
 
     /**

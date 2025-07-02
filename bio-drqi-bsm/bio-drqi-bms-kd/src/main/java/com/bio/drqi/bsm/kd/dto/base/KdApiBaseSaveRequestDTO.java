@@ -19,4 +19,23 @@ public class KdApiBaseSaveRequestDTO<T extends KdModel> {
     private T Model;
 
 
+    public static KdApiBaseSaveRequestDTO buildOfSave( KdModel kdModel,String FNumber ) {
+        KdApiBaseSaveRequestDTO kdApiBaseSaveRequestDTO = new KdApiBaseSaveRequestDTO();
+        kdApiBaseSaveRequestDTO.setNeedUpDateFields(null);
+        kdApiBaseSaveRequestDTO.setNeedReturnFields(null);
+        kdApiBaseSaveRequestDTO.setIsDeleteEntry("true");
+        kdApiBaseSaveRequestDTO.setSubSystemId(null);
+        kdApiBaseSaveRequestDTO.setIsVerifyBaseDataFiel("false");
+        kdApiBaseSaveRequestDTO.setIsEntryBatchFil("true");
+        kdApiBaseSaveRequestDTO.setValidateFlag("true");
+        kdApiBaseSaveRequestDTO.setNumberSearch("true");
+        kdApiBaseSaveRequestDTO.setIsAutoAdjustField("false");
+        kdApiBaseSaveRequestDTO.setIsAutoSubmitAndAudit("true");
+        kdApiBaseSaveRequestDTO.setInterationFlags(null);
+        kdApiBaseSaveRequestDTO.setIgnoreInterationFlag(null);
+        kdApiBaseSaveRequestDTO.setModel(kdModel.build(FNumber));
+        return kdApiBaseSaveRequestDTO;
+    }
+
+
 }

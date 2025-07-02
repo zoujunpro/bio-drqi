@@ -28,7 +28,7 @@ public class LayoutUtil {
                 List<List<SampleUnitDTO>> lastNinetySixList = ninetySixList.get(ninetySixList.size() - 1);
                 lastNinetySixList.add(new ArrayList<SampleUnitDTO>());
                 vectorTaskCerSampleTestTbList.stream().sorted(Comparator.comparing(TcSampleTestTb::getId)).forEach(tcSampleTestTb -> {
-                    fillSampleToNinetySixList(ninetySixList, tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentNum(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(),tcSampleTestTb.getSampleCode(),tcSampleTestTb.getIdentifyPrimer());
+                    fillSampleToNinetySixList(ninetySixList, tcSampleTestTb.getVectorTaskCode(), tcSampleTestTb.getExperimentNum(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum(),tcSampleTestTb.getSampleCode(),tcSampleTestTb.getIdentifyPrimer(),tcSampleTestTb.getTcSampleCode());
                 });
             });
         });
@@ -36,20 +36,20 @@ public class LayoutUtil {
         return ninetySixList;
     }
 
-    private static void fillSampleToNinetySixList(List<List<List<SampleUnitDTO>>> ninetySixList, String vectorTaskCode, String experimentCode,String regionNum,String seedNum, String sampleCode, String identifyPrimer) {
+    private static void fillSampleToNinetySixList(List<List<List<SampleUnitDTO>>> ninetySixList, String vectorTaskCode, String experimentCode,String regionNum,String seedNum, String sampleCode, String identifyPrimer,String tcSampleCode) {
         //找到最新的一个孔板
         List<List<SampleUnitDTO>> lastNinetySixList = ninetySixList.get(ninetySixList.size() - 1);
         //找到最新的一行
         List<SampleUnitDTO> lastRow = lastNinetySixList.get(lastNinetySixList.size() - 1);
         if (lastRow.size() < 12&&lastNinetySixList.size()<8) {
-            lastRow.add(new SampleUnitDTO(vectorTaskCode, experimentCode,regionNum,seedNum, sampleCode, identifyPrimer));
+            lastRow.add(new SampleUnitDTO(vectorTaskCode, experimentCode,regionNum,seedNum, sampleCode, identifyPrimer,tcSampleCode));
         } else if(lastRow.size() < 8&&lastNinetySixList.size()==8){
-            lastRow.add(new SampleUnitDTO(vectorTaskCode, experimentCode,regionNum,seedNum, sampleCode, identifyPrimer));
+            lastRow.add(new SampleUnitDTO(vectorTaskCode, experimentCode,regionNum,seedNum, sampleCode, identifyPrimer,tcSampleCode));
         }else {
             //如果已经满行，则判断是否满孔板
              if (lastNinetySixList.size() < 8) {
                 List<SampleUnitDTO> sampleUnitDTOList = new ArrayList<>();
-                sampleUnitDTOList.add(new SampleUnitDTO(vectorTaskCode, experimentCode,regionNum,seedNum, sampleCode, identifyPrimer));
+                sampleUnitDTOList.add(new SampleUnitDTO(vectorTaskCode, experimentCode,regionNum,seedNum, sampleCode, identifyPrimer,tcSampleCode));
                 lastNinetySixList.add(sampleUnitDTOList);
             } else {
                 //如果满盘则新增一个孔板
@@ -57,7 +57,7 @@ public class LayoutUtil {
                 layout.add(new ArrayList<SampleUnitDTO>());
                 ninetySixList.add(layout);
                 //再次进行数据插入
-                fillSampleToNinetySixList(ninetySixList, vectorTaskCode, experimentCode,regionNum,seedNum, sampleCode, identifyPrimer);
+                fillSampleToNinetySixList(ninetySixList, vectorTaskCode, experimentCode,regionNum,seedNum, sampleCode, identifyPrimer,tcSampleCode);
             }
         }
     }

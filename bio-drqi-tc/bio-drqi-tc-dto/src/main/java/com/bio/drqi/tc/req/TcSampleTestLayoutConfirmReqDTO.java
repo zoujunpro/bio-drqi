@@ -22,7 +22,7 @@ public class TcSampleTestLayoutConfirmReqDTO {
      */
     private List<List<List<SampleUnitDTO>>> ninetySixList = new ArrayList<List<List<SampleUnitDTO>>>();
 
-    public void fillSampleToSingleList(String vectorTaskCode, String experimentCode, String regionNum, String seedNum, String sampleCode, String identifyPrimer) {
-        singleList.add(new SampleUnitDTO(vectorTaskCode, experimentCode, regionNum, seedNum, sampleCode, identifyPrimer));
+    public void fillSampleToSingleList(String vectorTaskCode, String experimentCode, String regionNum, String seedNum, String sampleCode, String identifyPrimer,String tcSampleCode) {
+        singleList.add(new SampleUnitDTO(vectorTaskCode, experimentCode, regionNum, seedNum, sampleCode, identifyPrimer,tcSampleCode));
     }
 }

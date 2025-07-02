@@ -17,7 +17,7 @@ public class SampleUnitDTO {
     public boolean ifNull() {
         return StringUtils.isEmpty(this.vectorTaskCode) && StringUtils.isEmpty(this.seedNum) && StringUtils.isEmpty(this.sampleCode)&&StringUtils.isEmpty(this.regionNum)&&StringUtils.isEmpty(this.experimentNum);
     }
-    public SampleUnitDTO fillData(String vectorTaskCode, String experimentNum,String regionNum,String seedNum, String sampleCode, String identifyPrimer) {
+    public SampleUnitDTO fillData(String vectorTaskCode, String experimentNum,String regionNum,String seedNum, String sampleCode, String identifyPrimer,String tcSampleCode) {
         this.vectorTaskCode = vectorTaskCode;
         this.experimentNum = experimentNum;
         this.sampleCode = sampleCode;
@@ -25,10 +25,10 @@ public class SampleUnitDTO {
         this.identifyPrimer = identifyPrimer;
         this.regionNum=regionNum;
         this.seedNum=seedNum;
-        tcSampleCode=regionNum+sampleCode.substring(3);
+        this.tcSampleCode=tcSampleCode;
         return this;
     }
-    public SampleUnitDTO(String vectorTaskCode, String experimentNum,String regionNum,String seedNum, String sampleCode, String identifyPrimer) {
+    public SampleUnitDTO(String vectorTaskCode, String experimentNum,String regionNum,String seedNum, String sampleCode, String identifyPrimer,String tcSampleCode) {
         this.vectorTaskCode = vectorTaskCode;
         this.experimentNum = experimentNum;
         this.regionNum=regionNum;
@@ -36,7 +36,7 @@ public class SampleUnitDTO {
         this.sampleCode = sampleCode;
         this.uniqueId = vectorTaskCode + sampleCode;
         this.identifyPrimer = identifyPrimer;
-        tcSampleCode=regionNum+sampleCode.substring(3);
+        this.tcSampleCode=tcSampleCode;
     }
 
     public SampleUnitDTO() {

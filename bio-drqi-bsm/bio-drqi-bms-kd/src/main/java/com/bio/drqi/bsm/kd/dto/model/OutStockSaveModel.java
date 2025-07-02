@@ -1,6 +1,5 @@
-package com.bio.drqi.bsm.kd;
+package com.bio.drqi.bsm.kd.dto.model;
 
-import com.bio.drqi.bsm.kd.dto.base.KdModel;
 import lombok.Data;
 
 /**

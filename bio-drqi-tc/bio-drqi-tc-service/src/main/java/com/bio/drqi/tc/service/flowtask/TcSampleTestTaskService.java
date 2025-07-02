@@ -18,10 +18,8 @@ import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("tc_sample_test_task_apply")
 public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
@@ -54,7 +52,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         }
 
         TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcSampleTestTaskDTO.getExperimentNum());
-        if(tcExperimentTb==null){
+        if (tcExperimentTb == null) {
             throw new BusinessException("不存在此试验");
         }
 
@@ -93,11 +91,14 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         List<TcSampleTestTb> batchList = new ArrayList<TcSampleTestTb>();
         //首次取样
         if (CollectionUtil.isNotEmpty(tcSampleTestTaskDTO.getFirstSampleApplyList())) {
+            Map<String, Integer> reginofMaxSampleCodeMap = queryReginOfSampleCode(experimentNum);
             TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(experimentNum);
             Integer nextSampleNumber = tcExperimentTb.getNextSampleNumber();
             for (int i = 0; i < tcSampleTestTaskDTO.getFirstSampleApplyList().size(); i++) {
                 TcSampleTestTaskDTO.FirstSampleApply firstSampleApply = tcSampleTestTaskDTO.getFirstSampleApplyList().get(i);
                 for (int j = 1; j <= firstSampleApply.getSampleNum(); j++) {
+                    Integer nextTcSampleCodeNumber = reginofMaxSampleCodeMap.get(firstSampleApply.getRegionNum()) == null ? 1 : reginofMaxSampleCodeMap.get(firstSampleApply.getRegionNum()) + 1;
+                    reginofMaxSampleCodeMap.put(firstSampleApply.getRegionNum(), nextTcSampleCodeNumber);
                     TcSampleTestTb tcSampleTestTb = new TcSampleTestTb();
                     tcSampleTestTb.setExperimentNum(tcSampleTestApplyTb.getExperimentNum());
                     tcSampleTestTb.setRegionNum(firstSampleApply.getRegionNum());
@@ -115,7 +116,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                     tcSampleTestTb.setTaskNum(tcSampleTestApplyTb.getTaskNum());
                     tcSampleTestTb.setApplyType(tcSampleTestApplyTb.getApplyType());
                     tcSampleTestTb.setUniqueCode(tcSampleTestTb.getSampleCode());
-                    tcSampleTestTb.setTcSampleCode(firstSampleApply.getRegionNum() + tcSampleTestTb.getSampleCode().substring(3));
+                    tcSampleTestTb.setTcSampleCode(firstSampleApply.getRegionNum() + StringUtils.padl(nextTcSampleCodeNumber.toString(), 3, '0'));
                     batchList.add(tcSampleTestTb);
 
                     //算出下次取样编号
@@ -129,6 +130,10 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         //重复取样
         if (CollectionUtil.isNotEmpty(tcSampleTestTaskDTO.getRepeatSampleApplyList())) {
             for (TcSampleTestTaskDTO.RepeatSampleApply repeatSampleApply : tcSampleTestTaskDTO.getRepeatSampleApplyList()) {
+                TcSampleTestTb orgTcSampleTestTb = tcSampleTestTbMapper.selectOneByUniqueCode(repeatSampleApply.getSampleCode());
+                if (orgTcSampleTestTb == null) {
+                    throw new BusinessException("没找到历史取样信息" + repeatSampleApply.getSampleCode());
+                }
                 TcSampleTestTb tcSampleTestTb = new TcSampleTestTb();
                 tcSampleTestTb.setExperimentNum(tcSampleTestApplyTb.getExperimentNum());
                 tcSampleTestTb.setRegionNum(repeatSampleApply.getRegionNum());
@@ -145,11 +150,23 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                 tcSampleTestTb.setTaskNum(tcSampleTestApplyTb.getTaskNum());
                 tcSampleTestTb.setApplyType(tcSampleTestApplyTb.getApplyType());
                 tcSampleTestTb.setSampleTime(repeatSampleApply.getSampleTime());
-                tcSampleTestTb.setTcSampleCode(repeatSampleApply.getRegionNum() + tcSampleTestTb.getSampleCode().substring(3));
+                tcSampleTestTb.setTcSampleCode(orgTcSampleTestTb.getTcSampleCode());
                 batchList.add(tcSampleTestTb);
             }
         }
         tcSampleTestTbMapper.insertBatch(batchList);
+    }
+
+    private Map<String, Integer> queryReginOfSampleCode(String experimentNum) {
+        Map<String, Integer> reginofMaxSampleCodeMap = new HashMap<>();
+        List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllByExperimentNum(experimentNum);
+        if (CollectionUtil.isNotEmpty(tcSampleTestTbList)) {
+            Map<String, List<TcSampleTestTb>> mapList = tcSampleTestTbList.stream().collect(Collectors.groupingBy(TcSampleTestTb::getRegionNum));
+            mapList.forEach((reginNum, sampletestList) -> {
+                reginofMaxSampleCodeMap.put(reginNum, sampletestList.stream().map(tcSampleTestTb -> Integer.valueOf(tcSampleTestTb.getTcSampleCode().substring(reginNum.length()))).max(Integer::compare).get());
+            });
+        }
+        return reginofMaxSampleCodeMap;
     }
 
     @Override

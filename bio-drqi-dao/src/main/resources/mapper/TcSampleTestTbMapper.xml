@@ -256,6 +256,19 @@
         sample_apply_num = #{sampleApplyNum,jdbcType=VARCHAR}
         AND sample_code = #{sampleCode,jdbcType=VARCHAR}
     </select>
-
+    <select id="selectOneByUniqueCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_sample_test_tb
+        where
+        unique_code = #{uniqueCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByExperimentNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_sample_test_tb
+        where
+        experiment_num = #{experimentNum,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

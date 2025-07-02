@@ -159,8 +159,8 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         }
         Map<String, List<ExperimentDesignExcelDTO>> listMap = experimentDesignExcelDTOList.stream().collect(Collectors.groupingBy(ExperimentDesignExcelDTO::getRegionNum));
         listMap.forEach((regionNun,list)->{
-            if(list.size()!=list.stream().map(ExperimentDesignExcelDTO::getSeedNum).distinct().collect(Collectors.toList()).size()){
-                throw new BusinessException("小区："+regionNun+" 有重复种子编号");
+            if(list.size()>1){
+                throw new BusinessException("试验设计不符合规范，小区编号出现多次");
             }
         });
 

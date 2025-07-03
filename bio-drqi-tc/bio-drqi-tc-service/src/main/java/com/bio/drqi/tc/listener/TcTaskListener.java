@@ -108,10 +108,10 @@ public class TcTaskListener extends DefaultDuplicateCopyHandler implements FlowT
 
     @Override
     public void doHandle(List<FlowActor> flowActorList, Long instanceId) {
-        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
+        BioTaskDtlTb bioTaskDtlTb = findBioTaskDtlTb(instanceId);
         if (Objects.nonNull(bioTaskDtlTb)) {
             String title = bioTaskDtlTb.getTaskTypeName() + "抄送通知";
-            sendMessage(bioTaskDtlTb, title, flowActorList.stream().map(flowActor -> Integer.valueOf(flowActor.getCreateId())).collect(Collectors.toList()));
+            sendMessage(bioTaskDtlTb, title, flowActorList.stream().map(flowActor -> Integer.valueOf(flowActor.getCreateId())).distinct().collect(Collectors.toList()));
         }
     }
 }

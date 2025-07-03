@@ -57,6 +57,8 @@ public class BmsStockLocationDict implements Serializable {
      */
     private Date createTime;
 
+    private Integer kdNumber;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

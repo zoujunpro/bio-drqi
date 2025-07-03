@@ -4,7 +4,10 @@ import com.bio.common.core.dto.BusinessException;
 
 public enum OrgEnum {
     DEV_BEIJING_ORG("dev", "beijing", "10001"),
-    DEV_TIANJIN_ORG("dev", "tianjin", "10001");
+    DEV_TIANJIN_ORG("dev", "tianjin", "10001"),
+    LOCAL_BEIJING_ORG("local", "beijing", "10001"),
+    LOCAL_TIANJIN_ORG("local", "tianjin", "10001"),
+    ;
 
     public String active;
     public String unitCode;

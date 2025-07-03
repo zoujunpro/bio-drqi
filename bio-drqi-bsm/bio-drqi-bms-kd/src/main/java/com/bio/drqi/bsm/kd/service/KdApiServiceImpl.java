@@ -24,7 +24,6 @@ public class KdApiServiceImpl implements KdApiService {
 
     @Override
     public String execute(OperateEnum operateEnum, Object obj, String unitCode) {
-
         switch (operateEnum) {
             case bmsSave:
                 return executeBmsSave(obj, unitCode);

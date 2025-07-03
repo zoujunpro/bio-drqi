@@ -13,7 +13,9 @@ import com.bio.drqi.bsm.enums.CooperateFormEnum;
 import com.bio.drqi.bsm.kd.dto.model.BrandKdModel;
 import com.bio.drqi.bsm.kd.dto.KdApiBaseSaveRequestDTO;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
+import com.bio.drqi.bsm.kd.enums.OperateEnum;
 import com.bio.drqi.bsm.kd.properties.KdProperties;
+import com.bio.drqi.bsm.kd.service.KdApiService;
 import com.bio.drqi.bsm.req.BmsProductAddReqDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
 import com.bio.drqi.domain.*;
@@ -44,6 +46,9 @@ public class DataInitCleanController {
     private BmsSupplierTbMapper bmsSupplierTbMapper;
 
     @Resource
+    private BmsStockLocationDictMapper bmsStockLocationDictMapper;
+
+    @Resource
     private SystemUserTbMapper systemUserTbMapper;
 
     @Resource
@@ -66,25 +71,16 @@ public class DataInitCleanController {
     private BmsProductTbMapper bmsProductTbMapper;
 
     @Resource
-    private KdProperties kdProperties;
+    private KdApiService kdApiService;
 
     @GetMapping("/kdDemo")
     public ResponseResult<String> testKd() {
-        KdApiBaseSaveRequestDTO kdApiBaseSaveRequestDTO = new KdApiBaseSaveRequestDTO();
-        BrandKdModel brandKdModel = new BrandKdModel();
-        brandKdModel.setFnumber("9e775bec9c83405b9588afde7ba15b69");
-        brandKdModel.setFname("金沙生物");
-        brandKdModel.setFdescription(null);
-        kdApiBaseSaveRequestDTO.setModel(brandKdModel.build("1002"));
-        System.out.println(JSONUtil.toJsonStr(kdApiBaseSaveRequestDTO));
-        K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
-        try {
-            String result = k3CloudApi.save(FormIdEnum.CMK_BD_Brand.name(), JSONUtil.toJsonStr(kdApiBaseSaveRequestDTO));
-            return ResponseResult.getSuccess(result);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
+        List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectList(null);
+        Map<String, List<BmsStockLocationDict>> listMap = bmsStockLocationDictList.stream().collect(Collectors.groupingBy(BmsStockLocationDict::getStockCode));
+        listMap.forEach((stockCode,list)->{
+            kdApiService.execute(OperateEnum.fixValueSave,list.get(0),list.get(0).getUnitCode());
+        });
+        return ResponseResult.getSuccess("OK");
     }
 
 

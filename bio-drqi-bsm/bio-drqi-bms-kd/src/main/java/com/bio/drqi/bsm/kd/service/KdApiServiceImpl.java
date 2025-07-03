@@ -9,6 +9,7 @@ import com.bio.drqi.bsm.kd.enums.OperateEnum;
 import com.bio.drqi.bsm.kd.enums.OrgEnum;
 import com.bio.drqi.bsm.kd.util.KdRequestUtil;
 import com.bio.drqi.domain.BmsBrandTb;
+import com.bio.drqi.domain.BmsProductTb;
 import com.bio.drqi.domain.BmsProjectDict;
 import com.bio.drqi.domain.BmsStockLocationDict;
 import lombok.extern.slf4j.Slf4j;
@@ -38,11 +39,11 @@ public class KdApiServiceImpl implements KdApiService {
             case projectDisable:
                 return executeProjectDisable(obj);
             case stockSave:
-                return executeStockSave(obj,unitCode);
+                return executeStockSave(obj, unitCode);
             case stockModify:
-                return  executeStockModify(obj);
+                return executeStockModify(obj);
             case stockDisable:
-                return  executeStockDisable(obj);
+                return executeStockDisable(obj);
             case materialSave:
                 return executeMaterialSave(obj, unitCode);
             case materialModify:
@@ -147,13 +148,14 @@ public class KdApiServiceImpl implements KdApiService {
 
     /**
      * 仓库保存
+     *
      * @param obj
      * @param unitCode
      * @return
      */
     private String executeStockSave(Object obj, String unitCode) {
-        BmsStockLocationDict bmsStockLocationDict= (BmsStockLocationDict) obj;
-        StockModel stockModel =new StockModel();
+        BmsStockLocationDict bmsStockLocationDict = (BmsStockLocationDict) obj;
+        StockModel stockModel = new StockModel();
         stockModel.setFStockId(0);
         stockModel.setFnumber(bmsStockLocationDict.getLocationNumber());
         stockModel.setFname(bmsStockLocationDict.getStockName());
@@ -164,12 +166,13 @@ public class KdApiServiceImpl implements KdApiService {
 
     /**
      * 仓库修改
+     *
      * @param obj
      * @return
      */
-    private String executeStockModify(Object obj){
-        BmsStockLocationDict bmsStockLocationDict= (BmsStockLocationDict) obj;
-        StockModel stockModel =new StockModel();
+    private String executeStockModify(Object obj) {
+        BmsStockLocationDict bmsStockLocationDict = (BmsStockLocationDict) obj;
+        StockModel stockModel = new StockModel();
         stockModel.setFStockId(bmsStockLocationDict.getKdNumber());
         stockModel.setFnumber(bmsStockLocationDict.getLocationNumber());
         stockModel.setFname(bmsStockLocationDict.getStockName());
@@ -179,11 +182,12 @@ public class KdApiServiceImpl implements KdApiService {
 
     /**
      * 仓库禁用
+     *
      * @param obj
      * @return
      */
-    private String executeStockDisable(Object obj){
-        BmsStockLocationDict bmsStockLocationDict= (BmsStockLocationDict) obj;
+    private String executeStockDisable(Object obj) {
+        BmsStockLocationDict bmsStockLocationDict = (BmsStockLocationDict) obj;
         KdApiBaseDisableRequestDTO kdApiBaseDisableRequestDTO = new KdApiBaseDisableRequestDTO();
         kdApiBaseDisableRequestDTO.setIds(bmsStockLocationDict.getKdNumber());
         return KdRequestUtil.disable(FormIdEnum.BD_STOCK, kdApiBaseDisableRequestDTO);
@@ -191,6 +195,7 @@ public class KdApiServiceImpl implements KdApiService {
     }
 
     private String executeMaterialSave(Object obj, String unitCode) {
+        BmsProductTb bmsProductTb = (BmsProductTb) obj;
         return null;
     }
 

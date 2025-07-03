@@ -19,6 +19,8 @@ public interface BioTaskDtlTbMapper extends BaseMapper<BioTaskDtlTb> {
 
     BioTaskDtlTb selectOneByInstanceId(@Param("instanceId") Long instanceId);
 
+    List<BioTaskDtlTb> selectAllByApplyUserIdAndInstanceIdIsNull(@Param("applyUserId") Integer applyUserId);
+
     List<BioTaskDtlTb> selectForPendingApproval(@Param("actorUserId") String actorUserId,
                                                 @Param("taskNum") String taskNum,
                                                 @Param("taskTypeCode") String taskTypeCode,

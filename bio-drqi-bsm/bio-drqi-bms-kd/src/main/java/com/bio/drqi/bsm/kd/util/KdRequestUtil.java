@@ -25,7 +25,7 @@ public class KdRequestUtil {
         K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
         try {
             Long start = System.currentTimeMillis();
-            log.info("调用金蝶接口开始, fordId={},参数={}", formIdEnum, JSONUtil.toJsonStr(kdApiBaseSaveRequestDTO));
+            log.info("调用金蝶接口开始, formid={},参数={}", formIdEnum, JSONUtil.toJsonStr(kdApiBaseSaveRequestDTO));
             String result = k3CloudApi.save(formIdEnum.name(), JSONUtil.toJsonStr(kdApiBaseSaveRequestDTO));
             log.info("调用金蝶接口结束，返回={},耗时={}ms", result, (System.currentTimeMillis() - start));
             Gson gson = new Gson();
@@ -45,7 +45,7 @@ public class KdRequestUtil {
         K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
         try {
             Long start = System.currentTimeMillis();
-            log.info("调用金蝶禁用接口开始, fordId={},参数={}", formIdEnum, JSONUtil.toJsonStr(kdApiBaseDisableRequestDTO));
+            log.info("调用金蝶禁用接口开始, formid={},参数={}", formIdEnum, JSONUtil.toJsonStr(kdApiBaseDisableRequestDTO));
             String result = k3CloudApi.excuteOperation(formIdEnum.name(), "Forbid",JSONUtil.toJsonStr(kdApiBaseDisableRequestDTO));
             log.info("调用金蝶禁用接口结束，返回={},耗时={}ms", result, (System.currentTimeMillis() - start));
             Gson gson = new Gson();

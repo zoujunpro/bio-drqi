@@ -48,6 +48,7 @@ public class DataInitCleanController {
     @Resource
     private BmsStockLocationDictMapper bmsStockLocationDictMapper;
 
+
     @Resource
     private SystemUserTbMapper systemUserTbMapper;
 
@@ -73,13 +74,34 @@ public class DataInitCleanController {
     @Resource
     private KdApiService kdApiService;
 
-    @GetMapping("/kdDemo")
-    public ResponseResult<String> testKd() {
+
+    @GetMapping("/synStockLocationSave")
+    public ResponseResult<String> synKdStockLocation() {
         List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectList(null);
         Map<String, List<BmsStockLocationDict>> listMap = bmsStockLocationDictList.stream().collect(Collectors.groupingBy(BmsStockLocationDict::getStockCode));
         listMap.forEach((stockCode,list)->{
             kdApiService.execute(OperateEnum.fixValueSave,list.get(0),list.get(0).getUnitCode());
         });
+        return ResponseResult.getSuccess("OK");
+    }
+    @GetMapping("/synBrandSave")
+    public ResponseResult<String> synKdBrand() {
+        List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectList(null);
+        bmsBrandTbList.forEach(bmsBrandTb -> {
+            String s=  kdApiService.execute(OperateEnum.bmsSave,bmsBrandTb,"beijing");
+
+        });
+
+        return ResponseResult.getSuccess("OK");
+    }
+    @GetMapping("/synProjectSave")
+    public ResponseResult<String> synProjectSave() {
+        List<BmsProjectDict> bmsProjectDictList = bmsProjectDictMapper.selectList(null);
+        bmsProjectDictList.forEach(bmsProjectDict -> {
+            kdApiService.execute(OperateEnum.projectSave,bmsProjectDict,"beijing");
+
+        });
+
         return ResponseResult.getSuccess("OK");
     }
 

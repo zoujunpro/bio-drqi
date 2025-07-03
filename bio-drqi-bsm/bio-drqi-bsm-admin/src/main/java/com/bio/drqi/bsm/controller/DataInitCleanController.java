@@ -89,6 +89,7 @@ public class DataInitCleanController {
         List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectList(null);
         bmsBrandTbList.forEach(bmsBrandTb -> {
             String s=  kdApiService.execute(OperateEnum.bmsSave,bmsBrandTb,"beijing");
+            System.out.println("***********************="+s);
 
         });
 

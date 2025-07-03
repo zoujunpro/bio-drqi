@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class FixValueModel extends KdModel {
+public class StockModel extends KdModel {
     private Integer FStockId;
     private String Fnumber;
     private String Fname;

@@ -38,11 +38,11 @@ public class KdApiServiceImpl implements KdApiService {
             case projectDisable:
                 return executeProjectDisable(obj);
             case fixValueSave:
-                return executeFixValueSave(obj,unitCode);
+                return executeStockSave(obj,unitCode);
             case fixValueModify:
-                return  executeFixValueModify(obj);
+                return  executeStockModify(obj);
             case fixValueDisable:
-                return  executeFixValueDisable(obj);
+                return  executeStockDisable(obj);
             case materialSave:
                 return executeMaterialSave(obj, unitCode);
             case materialModify:
@@ -151,15 +151,15 @@ public class KdApiServiceImpl implements KdApiService {
      * @param unitCode
      * @return
      */
-    private String executeFixValueSave(Object obj, String unitCode) {
+    private String executeStockSave(Object obj, String unitCode) {
         BmsStockLocationDict bmsStockLocationDict= (BmsStockLocationDict) obj;
-        FixValueModel fixValueModel=new FixValueModel();
-        fixValueModel.setFStockId(0);
-        fixValueModel.setFnumber(bmsStockLocationDict.getLocationNumber());
-        fixValueModel.setFname(bmsStockLocationDict.getStockName());
-        fixValueModel.setFStockProperty("1");
-        fixValueModel.setFStockStatusType("0,1,2,3,4,5,6,7,8");
-        return KdRequestUtil.save(FormIdEnum.BD_FLEXVALUES, KdApiBaseSaveRequestDTO.buildOfSave(fixValueModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+        StockModel stockModel =new StockModel();
+        stockModel.setFStockId(0);
+        stockModel.setFnumber(bmsStockLocationDict.getLocationNumber());
+        stockModel.setFname(bmsStockLocationDict.getStockName());
+        stockModel.setFStockProperty("1");
+        stockModel.setFStockStatusType("0,1,2,3,4,5,6,7,8");
+        return KdRequestUtil.save(FormIdEnum.BD_STOCK, KdApiBaseSaveRequestDTO.buildOfSave(stockModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
     }
 
     /**
@@ -167,13 +167,13 @@ public class KdApiServiceImpl implements KdApiService {
      * @param obj
      * @return
      */
-    private String executeFixValueModify(Object obj){
+    private String executeStockModify(Object obj){
         BmsStockLocationDict bmsStockLocationDict= (BmsStockLocationDict) obj;
-        FixValueModel fixValueModel=new FixValueModel();
-        fixValueModel.setFStockId(bmsStockLocationDict.getKdNumber());
-        fixValueModel.setFnumber(bmsStockLocationDict.getLocationNumber());
-        fixValueModel.setFname(bmsStockLocationDict.getStockName());
-        return KdRequestUtil.save(FormIdEnum.BD_FLEXVALUES, KdApiBaseSaveRequestDTO.buildOfModify(fixValueModel));
+        StockModel stockModel =new StockModel();
+        stockModel.setFStockId(bmsStockLocationDict.getKdNumber());
+        stockModel.setFnumber(bmsStockLocationDict.getLocationNumber());
+        stockModel.setFname(bmsStockLocationDict.getStockName());
+        return KdRequestUtil.save(FormIdEnum.BD_STOCK, KdApiBaseSaveRequestDTO.buildOfModify(stockModel));
 
     }
 
@@ -182,11 +182,11 @@ public class KdApiServiceImpl implements KdApiService {
      * @param obj
      * @return
      */
-    private String executeFixValueDisable(Object obj){
+    private String executeStockDisable(Object obj){
         BmsStockLocationDict bmsStockLocationDict= (BmsStockLocationDict) obj;
         KdApiBaseDisableRequestDTO kdApiBaseDisableRequestDTO = new KdApiBaseDisableRequestDTO();
         kdApiBaseDisableRequestDTO.setIds(bmsStockLocationDict.getKdNumber());
-        return KdRequestUtil.disable(FormIdEnum.BD_FLEXVALUES, kdApiBaseDisableRequestDTO);
+        return KdRequestUtil.disable(FormIdEnum.BD_STOCK, kdApiBaseDisableRequestDTO);
 
     }
 

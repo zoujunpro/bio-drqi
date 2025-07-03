@@ -2,8 +2,10 @@ package com.bio.drqi.bsm.kd.dto.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
-public class KdModel {
+public abstract class KdModel {
 
     private FCreateOrgIdModel FCreateOrgId;
 
@@ -15,5 +17,6 @@ public class KdModel {
         return this;
     }
 
+    public abstract List<String> buildModifyFields();
 
 }

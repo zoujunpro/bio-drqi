@@ -10,7 +10,7 @@ import com.bio.common.core.uuid.IdUtils;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.enums.CooperateFormEnum;
-import com.bio.drqi.bsm.kd.dto.model.BrandSaveKdModel;
+import com.bio.drqi.bsm.kd.dto.model.BrandKdModel;
 import com.bio.drqi.bsm.kd.dto.KdApiBaseSaveRequestDTO;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
 import com.bio.drqi.bsm.kd.properties.KdProperties;
@@ -71,11 +71,11 @@ public class DataInitCleanController {
     @GetMapping("/kdDemo")
     public ResponseResult<String> testKd() {
         KdApiBaseSaveRequestDTO kdApiBaseSaveRequestDTO = new KdApiBaseSaveRequestDTO();
-        BrandSaveKdModel brandSaveKdModel = new BrandSaveKdModel();
-        brandSaveKdModel.setFnumber("9e775bec9c83405b9588afde7ba15b69");
-        brandSaveKdModel.setFname("金沙生物");
-        brandSaveKdModel.setFdescription(null);
-        kdApiBaseSaveRequestDTO.setModel(brandSaveKdModel.build("1002"));
+        BrandKdModel brandKdModel = new BrandKdModel();
+        brandKdModel.setFnumber("9e775bec9c83405b9588afde7ba15b69");
+        brandKdModel.setFname("金沙生物");
+        brandKdModel.setFdescription(null);
+        kdApiBaseSaveRequestDTO.setModel(brandKdModel.build("1002"));
         System.out.println(JSONUtil.toJsonStr(kdApiBaseSaveRequestDTO));
         K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
         try {

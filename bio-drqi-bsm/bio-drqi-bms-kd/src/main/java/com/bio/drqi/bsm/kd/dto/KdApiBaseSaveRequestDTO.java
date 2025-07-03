@@ -3,10 +3,12 @@ package com.bio.drqi.bsm.kd.dto;
 import com.bio.drqi.bsm.kd.dto.model.KdModel;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class KdApiBaseSaveRequestDTO<T extends KdModel> {
-    private Object[] NeedUpDateFields;
-    private Object[] NeedReturnFields;
+    private List<String> NeedUpDateFields;
+    private List<String> NeedReturnFields;
     private String IsDeleteEntry = "true";
     private String SubSystemId;
     private String IsVerifyBaseDataFiel = "false";
@@ -35,6 +37,12 @@ public class KdApiBaseSaveRequestDTO<T extends KdModel> {
         kdApiBaseSaveRequestDTO.setInterationFlags(null);
         kdApiBaseSaveRequestDTO.setIgnoreInterationFlag(null);
         kdApiBaseSaveRequestDTO.setModel(kdModel.build(FNumber));
+        return kdApiBaseSaveRequestDTO;
+    }
+    public static KdApiBaseSaveRequestDTO buildOfModify( KdModel kdModel ) {
+        KdApiBaseSaveRequestDTO kdApiBaseSaveRequestDTO = new KdApiBaseSaveRequestDTO();
+        kdApiBaseSaveRequestDTO.setModel(kdModel);
+        kdApiBaseSaveRequestDTO.setNeedUpDateFields(kdModel.buildModifyFields());
         return kdApiBaseSaveRequestDTO;
     }
 

@@ -3,6 +3,7 @@ package com.bio.drqi.bsm.kd.dto;
 import com.bio.drqi.bsm.kd.dto.model.KdModel;
 import lombok.Data;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -24,7 +25,7 @@ public class KdApiBaseSaveRequestDTO<T extends KdModel> {
 
     public static KdApiBaseSaveRequestDTO buildOfSave( KdModel kdModel,String FNumber ) {
         KdApiBaseSaveRequestDTO kdApiBaseSaveRequestDTO = new KdApiBaseSaveRequestDTO();
-        kdApiBaseSaveRequestDTO.setNeedUpDateFields(null);
+        kdApiBaseSaveRequestDTO.setNeedUpDateFields(Arrays.asList("Id"));
         kdApiBaseSaveRequestDTO.setNeedReturnFields(null);
         kdApiBaseSaveRequestDTO.setIsDeleteEntry("true");
         kdApiBaseSaveRequestDTO.setSubSystemId(null);

@@ -37,11 +37,11 @@ public class KdApiServiceImpl implements KdApiService {
                 return executeProjectModify(obj);
             case projectDisable:
                 return executeProjectDisable(obj);
-            case fixValueSave:
+            case stockSave:
                 return executeStockSave(obj,unitCode);
-            case fixValueModify:
+            case stockModify:
                 return  executeStockModify(obj);
-            case fixValueDisable:
+            case stockDisable:
                 return  executeStockDisable(obj);
             case materialSave:
                 return executeMaterialSave(obj, unitCode);

@@ -80,7 +80,7 @@ public class DataInitCleanController {
         List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectList(null);
         Map<String, List<BmsStockLocationDict>> listMap = bmsStockLocationDictList.stream().collect(Collectors.groupingBy(BmsStockLocationDict::getStockCode));
         listMap.forEach((stockCode,list)->{
-            kdApiService.execute(OperateEnum.fixValueSave,list.get(0),list.get(0).getUnitCode());
+            kdApiService.execute(OperateEnum.stockSave,list.get(0),list.get(0).getUnitCode());
         });
         return ResponseResult.getSuccess("OK");
     }

@@ -3,6 +3,8 @@ package com.bio.drqi.bsm.kd.dto.model;
 import cn.hutool.json.JSONUtil;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 物料
  */
@@ -23,21 +25,10 @@ public class MaterialSaveModel extends KdModel {
      */
     private String Fname;
 
-    public static void main(String[] args) {
-        MaterialSaveModel materialSaveModel=new MaterialSaveModel();
-        materialSaveModel.setFMATERIALID(1);
-        materialSaveModel.setFnumber("2");
-        materialSaveModel.setFname("3");
-        materialSaveModel.setFCreateOrgId(null);
-        materialSaveModel.setFUseOrgId(null);
-        test(materialSaveModel);
 
+
+    @Override
+    public List<String> buildModifyFields() {
+        return null;
     }
-
-    public static void test(KdModel model){
-        System.out.println(JSONUtil.toJsonStr(model));
-    }
-
-
-
 }

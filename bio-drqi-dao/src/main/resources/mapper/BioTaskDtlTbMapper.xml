@@ -168,4 +168,14 @@
         </where>
 
     </select>
+    <select id="selectAllByApplyUserIdAndInstanceIdIsNullOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_task_dtl_tb
+        where
+        apply_user_id = #{applyUserId,jdbcType=NUMERIC}
+        AND instance_id is null
+        order by id desc
+    </select>
+
 </mapper>

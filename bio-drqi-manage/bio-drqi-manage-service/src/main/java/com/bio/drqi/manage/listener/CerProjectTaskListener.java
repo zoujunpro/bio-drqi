@@ -6,6 +6,7 @@ import cn.hutool.core.date.DateUtil;
 import com.bio.base.api.RemoteUserService;
 import com.bio.base.user.req.QueryUserByIdListReqDTO;
 import com.bio.base.user.rsp.UserBaseInfoRspDTO;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.StringUtils;
@@ -15,6 +16,7 @@ import com.bio.drqi.feishu.MessageTypeEnum;
 import com.bio.drqi.feishu.dto.Message;
 import com.bio.drqi.feishu.dto.NoticeUserDTO;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
+import com.bio.flow.enums.BioTaskCategoryEnum;
 import com.bio.flow.enums.EventType;
 import com.bio.flow.hander.DefaultDuplicateCopyHandler;
 import com.bio.flow.service.FlowTaskListener;
@@ -93,7 +95,7 @@ public class CerProjectTaskListener extends DefaultDuplicateCopyHandler implemen
             List<FlowTaskActorTb> flowTaskActorTbList = flowEngineService.getQueryService().getActiveTaskActorByInstanceId(bioTaskDtlTb.getInstanceId());
             String title = "你有一个" + bioTaskDtlTb.getTaskTypeName() + "待审批";
             sendMessage(bioTaskDtlTb, title, flowTaskActorTbList.stream().map(flowTaskActorTb -> Integer.valueOf(flowTaskActorTb.getActorId())).collect(Collectors.toList()));
-        }else if (EventType.back == eventType) {
+        } else if (EventType.back == eventType) {
             List<FlowTaskActorTb> flowTaskActorTbList = flowEngineService.getQueryService().getActiveTaskActorByInstanceId(bioTaskDtlTb.getInstanceId());
             String title = "你有一个回退" + bioTaskDtlTb.getTaskTypeName() + "待审批";
             sendMessage(bioTaskDtlTb, title, flowTaskActorTbList.stream().map(flowTaskActorTb -> Integer.valueOf(flowTaskActorTb.getActorId())).collect(Collectors.toList()));
@@ -111,7 +113,7 @@ public class CerProjectTaskListener extends DefaultDuplicateCopyHandler implemen
         if (CollectionUtil.isEmpty(rspDTOList)) {
             return;
         }
-        List<NoticeUserDTO> noticeUserDTOList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(userBaseInfoRspDTO->new NoticeUserDTO(userBaseInfoRspDTO.getNickName(),userBaseInfoRspDTO.getFeiShuUserId())).collect(Collectors.toList());
+        List<NoticeUserDTO> noticeUserDTOList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(userBaseInfoRspDTO -> new NoticeUserDTO(userBaseInfoRspDTO.getNickName(), userBaseInfoRspDTO.getFeiShuUserId())).collect(Collectors.toList());
         String content = "**任务描述：**" + bioTaskDtlTb.getTaskDesc() + "\n" + "**申  请 人：**" + bioTaskDtlTb.getApplyUserName() + "\n" + "**申请时间：**" + DateUtil.format(bioTaskDtlTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         Message message = new Message();
         message.setTitle(title);
@@ -121,9 +123,14 @@ public class CerProjectTaskListener extends DefaultDuplicateCopyHandler implemen
     }
 
     @Override
-    public void doHandle(List<FlowActor> flowActorList, Long instanceId) {
-        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
-        if (Objects.nonNull(bioTaskDtlTb)) {
+    public void doHandle(List<FlowActor> flowActorList, Long instanceId, String businessId) {
+        BioTaskDtlTb bioTaskDtlTb = null;
+        if (StringUtils.isNotEmpty(businessId)) {
+            bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(businessId);
+        } else {
+            bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
+        }
+        if (Objects.nonNull(bioTaskDtlTb) && BioTaskCategoryEnum.project.name().equals(bioTaskDtlTb.getTaskCategory())) {
             String title = bioTaskDtlTb.getTaskTypeName() + "抄送通知";
             sendMessage(bioTaskDtlTb, title, flowActorList.stream().map(flowActor -> Integer.valueOf(flowActor.getCreateId())).collect(Collectors.toList()));
         }

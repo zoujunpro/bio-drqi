@@ -49,12 +49,12 @@ public class FlowServiceImpl implements FlowService {
 
 
     @Override
-    public FlowHisInstanceTb start(String userName, Integer userId, Long processId, Map<String, Object> args, String remarks, List<SelfFlowActor> selfFlowActorList, String instanceName) {
+    public FlowHisInstanceTb start(String userName, Integer userId, Long processId, Map<String, Object> args, String remarks, List<SelfFlowActor> selfFlowActorList, String instanceName,String businessKey) {
         FlowActor flowActor = FlowActor.of(tenantId, String.valueOf(userId), userName);
         if (processId == null) {
             throw new BusinessException("流程未配置");
         }
-        Optional<FlowInstanceTb> flowInstanceTbOptional = flowEngineService.startInstanceByProcessId(processId, flowActor, args, () -> selfFlowActorList, instanceName);
+        Optional<FlowInstanceTb> flowInstanceTbOptional = flowEngineService.startInstanceByProcessId(processId, flowActor, args, () -> selfFlowActorList, instanceName,businessKey);
         if (!flowInstanceTbOptional.isPresent()) {
             throw new BusinessException("启动流程失败");
         }

@@ -15,6 +15,7 @@ import com.bio.drqi.feishu.MessageTypeEnum;
 import com.bio.drqi.feishu.dto.Message;
 import com.bio.drqi.feishu.dto.NoticeUserDTO;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
+import com.bio.flow.enums.BioTaskCategoryEnum;
 import com.bio.flow.enums.EventType;
 import com.bio.flow.hander.DefaultDuplicateCopyHandler;
 import com.bio.flow.service.FlowTaskListener;
@@ -61,7 +62,7 @@ public class TcTaskListener extends DefaultDuplicateCopyHandler implements FlowT
         vieMap.put("tc_sample_test_task_apply", "fieldSample");
         vieMap.put("tc_pollination_task_apply", "fieldPollination");
         vieMap.put("tc_harvest_task_apply", "fieldHarvest");
-        vieMap.put("tc_test_task_apply","fieldTrial");
+        vieMap.put("tc_test_task_apply", "fieldTrial");
     }
 
     @Override
@@ -97,21 +98,26 @@ public class TcTaskListener extends DefaultDuplicateCopyHandler implements FlowT
         if (CollectionUtil.isEmpty(rspDTOList)) {
             return;
         }
-        List<NoticeUserDTO> noticeUserDTOList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(userBaseInfoRspDTO->new NoticeUserDTO(userBaseInfoRspDTO.getNickName(),userBaseInfoRspDTO.getFeiShuUserId())).collect(Collectors.toList());
+        List<NoticeUserDTO> noticeUserDTOList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(userBaseInfoRspDTO -> new NoticeUserDTO(userBaseInfoRspDTO.getNickName(), userBaseInfoRspDTO.getFeiShuUserId())).collect(Collectors.toList());
         String content = "**任务描述：**" + bioTaskDtlTb.getTaskDesc() + "\n" + "**申  请 人：**" + bioTaskDtlTb.getApplyUserName() + "\n" + "**申请时间：**" + DateUtil.format(bioTaskDtlTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         Message message = new Message();
         message.setTitle(title);
         message.setContent(content);
         message.setUrl(String.format(feiShuTcJumpUrl, vieMap.get(bioTaskDtlTb.getTaskTypeCode()), bioTaskDtlTb.getId()));
-        feiShuService.sendCardMessage(noticeUserDTOList, message,MessageTypeEnum.drqi);
+        feiShuService.sendCardMessage(noticeUserDTOList, message, MessageTypeEnum.drqi);
     }
 
     @Override
-    public void doHandle(List<FlowActor> flowActorList, Long instanceId) {
-        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
-        if (Objects.nonNull(bioTaskDtlTb)) {
+    public void doHandle(List<FlowActor> flowActorList, Long instanceId, String businessId) {
+        BioTaskDtlTb bioTaskDtlTb=null;
+        if(StringUtils.isNotEmpty(businessId)){
+            bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(businessId);
+        }else {
+            bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
+        }
+        if (Objects.nonNull(bioTaskDtlTb)&& BioTaskCategoryEnum.tc.name().equals(bioTaskDtlTb.getTaskCategory())) {
             String title = bioTaskDtlTb.getTaskTypeName() + "抄送通知";
-            sendMessage(bioTaskDtlTb, title, flowActorList.stream().map(flowActor -> Integer.valueOf(flowActor.getCreateId())).collect(Collectors.toList()));
+            sendMessage(bioTaskDtlTb, title, flowActorList.stream().map(flowActor -> Integer.valueOf(flowActor.getCreateId())).distinct().collect(Collectors.toList()));
         }
     }
 }

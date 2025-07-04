@@ -75,7 +75,7 @@ public class BioTaskServiceImpl implements BioTaskService {
         /**
          * 执行工作流
          */
-        FlowHisInstanceTb flowHisInstanceTb = flowService.start(SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), bioTaskConf.getProcessId(), flowService.getArgs(bioTaskStartReqDTO.getFormObject(), bioTaskStartReqDTO.getTaskType()), null, bioTaskStartReqDTO.getSelfFlowActorList(), bioTaskConf.getTaskTypeName());
+        FlowHisInstanceTb flowHisInstanceTb = flowService.start(SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), bioTaskConf.getProcessId(), flowService.getArgs(bioTaskStartReqDTO.getFormObject(), bioTaskStartReqDTO.getTaskType()), null, bioTaskStartReqDTO.getSelfFlowActorList(), bioTaskConf.getTaskTypeName(),bioTaskDtlTb.getTaskNum());
 
         /**
          * 填补数据
@@ -121,7 +121,7 @@ public class BioTaskServiceImpl implements BioTaskService {
         /**
          * 执行工作流
          */
-        FlowHisInstanceTb flowHisInstanceTb = flowService.start(SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), bioTaskConf.getProcessId(), flowService.getArgs(bioReStartTaskReqDTO.getFormObject(), bioTaskDtlTb.getTaskTypeCode()), null, bioReStartTaskReqDTO.getSelfFlowActorList(), bioTaskConf.getTaskTypeName());
+        FlowHisInstanceTb flowHisInstanceTb = flowService.start(SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), bioTaskConf.getProcessId(), flowService.getArgs(bioReStartTaskReqDTO.getFormObject(), bioTaskDtlTb.getTaskTypeCode()), null, bioReStartTaskReqDTO.getSelfFlowActorList(), bioTaskConf.getTaskTypeName(),bioTaskDtlTb.getTaskNum());
 
         /**
          * 填补数据

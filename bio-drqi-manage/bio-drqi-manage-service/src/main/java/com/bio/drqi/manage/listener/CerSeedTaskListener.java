@@ -19,6 +19,7 @@ import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.StringUtils;
+import com.bio.flow.enums.BioTaskCategoryEnum;
 import com.bio.flow.enums.EventType;
 import com.bio.flow.hander.DefaultDuplicateCopyHandler;
 import com.bio.flow.service.FlowTaskListener;
@@ -110,9 +111,14 @@ public class CerSeedTaskListener extends DefaultDuplicateCopyHandler implements 
     }
 
     @Override
-    public void doHandle(List<FlowActor> flowActorList, Long instanceId) {
-        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
-        if (Objects.nonNull(bioTaskDtlTb)) {
+    public void doHandle(List<FlowActor> flowActorList, Long instanceId,String businessId) {
+        BioTaskDtlTb bioTaskDtlTb=null;
+        if(StringUtils.isNotEmpty(businessId)){
+            bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(businessId);
+        }else {
+            bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
+        }
+        if (Objects.nonNull(bioTaskDtlTb)&& BioTaskCategoryEnum.seed.name().equals(bioTaskDtlTb.getTaskCategory())) {
             if (SeedTaskTypeEnum.seed_store_apply.name().equals(bioTaskDtlTb.getTaskTypeCode())) {
                 SeedInStoreDTO seedInStoreDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedInStoreDTO.class);
                 List<SeedInStoreDTO.ExecuteFormContent> executeFormContentList = seedInStoreDTO.getExecuteForm().getExecuteFormContentList().stream().filter(executeFormContent -> CerProjectContents.N.equals(executeFormContent.getStoreFlag())).collect(Collectors.toList());

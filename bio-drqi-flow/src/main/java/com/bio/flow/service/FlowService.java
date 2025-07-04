@@ -11,7 +11,7 @@ import java.util.Map;
 
 public interface FlowService {
 
-    FlowHisInstanceTb start(String userName, Integer userId, Long processId, Map<String, Object> args, String remarks, List<SelfFlowActor> selfFlowActorList,String instanceName);
+    FlowHisInstanceTb start(String userName, Integer userId, Long processId, Map<String, Object> args, String remarks, List<SelfFlowActor> selfFlowActorList,String instanceName,String businessKey);
 
     FlowHisInstanceTb execute(String userName, Integer userId, Long instanceId, Map<String, Object> args, String remarks);
 

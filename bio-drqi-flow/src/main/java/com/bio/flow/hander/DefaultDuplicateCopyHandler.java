@@ -12,20 +12,8 @@ import java.util.Map;
 
 public abstract class DefaultDuplicateCopyHandler {
 
-    @Resource
-    private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
-    public abstract void doHandle(List<FlowActor> flowActorList, Long instanceId);
+    public abstract void doHandle(List<FlowActor> flowActorList, Long instanceId,String businessId);
 
-    public BioTaskDtlTb findBioTaskDtlTb(Long instanceId) {
-        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
-        if (bioTaskDtlTb == null) {
-            //发起直接执行完毕，此时未回填数据，需要找出当前人发起的最新的任务
-            List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByApplyUserIdAndInstanceIdIsNullOrderByIdDesc(SecurityContextHolder.getUserId());
-            if (CollectionUtil.isNotEmpty(bioTaskDtlTbList) ) {
-                bioTaskDtlTb = bioTaskDtlTbList.get(0);
-            }
-        }
-        return bioTaskDtlTb;
-    }
+
 }

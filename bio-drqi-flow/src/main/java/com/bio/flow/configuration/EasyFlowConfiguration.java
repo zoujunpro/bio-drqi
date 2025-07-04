@@ -47,10 +47,10 @@ public class EasyFlowConfiguration {
     public DuplicateCopyHandler getDuplicateCopyHandler() {
         return new DuplicateCopyHandler() {
             @Override
-            public void handle(List<FlowActor> flowActorList, Long instanceId) {
+            public void handle(List<FlowActor> flowActorList, Long instanceId,String businessId) {
                 Map<String, DefaultDuplicateCopyHandler> map = SpringUtil.getBeansOfType(DefaultDuplicateCopyHandler.class);
                 map.values().forEach(duplicateCopyHandler -> {
-                    duplicateCopyHandler.doHandle(flowActorList, instanceId);
+                    duplicateCopyHandler.doHandle(flowActorList, instanceId,businessId);
                 });
             }
         };

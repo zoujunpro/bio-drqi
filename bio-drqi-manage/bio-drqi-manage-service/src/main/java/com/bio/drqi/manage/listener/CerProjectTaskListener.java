@@ -122,8 +122,8 @@ public class CerProjectTaskListener extends DefaultDuplicateCopyHandler implemen
     }
 
     @Override
-    public void doHandle(List<FlowActor> flowActorList, Long instanceId) {
-        BioTaskDtlTb bioTaskDtlTb = findBioTaskDtlTb(instanceId);
+    public void doHandle(List<FlowActor> flowActorList, Long instanceId,String businessId) {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(businessId);
         if (Objects.nonNull(bioTaskDtlTb)) {
             String title = bioTaskDtlTb.getTaskTypeName() + "抄送通知";
             sendMessage(bioTaskDtlTb, title, flowActorList.stream().map(flowActor -> Integer.valueOf(flowActor.getCreateId())).collect(Collectors.toList()));

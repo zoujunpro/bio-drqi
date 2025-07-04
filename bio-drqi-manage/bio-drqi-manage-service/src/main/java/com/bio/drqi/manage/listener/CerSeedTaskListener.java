@@ -118,7 +118,7 @@ public class CerSeedTaskListener extends DefaultDuplicateCopyHandler implements 
         }else {
             bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
         }
-        if (Objects.nonNull(bioTaskDtlTb)&& BioTaskCategoryEnum.seed.equals(bioTaskDtlTb.getTaskCategory())) {
+        if (Objects.nonNull(bioTaskDtlTb)&& BioTaskCategoryEnum.seed.name().equals(bioTaskDtlTb.getTaskCategory())) {
             if (SeedTaskTypeEnum.seed_store_apply.name().equals(bioTaskDtlTb.getTaskTypeCode())) {
                 SeedInStoreDTO seedInStoreDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedInStoreDTO.class);
                 List<SeedInStoreDTO.ExecuteFormContent> executeFormContentList = seedInStoreDTO.getExecuteForm().getExecuteFormContentList().stream().filter(executeFormContent -> CerProjectContents.N.equals(executeFormContent.getStoreFlag())).collect(Collectors.toList());

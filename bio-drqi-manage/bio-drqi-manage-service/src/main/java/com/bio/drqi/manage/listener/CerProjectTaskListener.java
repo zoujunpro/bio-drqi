@@ -130,7 +130,7 @@ public class CerProjectTaskListener extends DefaultDuplicateCopyHandler implemen
         } else {
             bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
         }
-        if (Objects.nonNull(bioTaskDtlTb) && BioTaskCategoryEnum.project.equals(bioTaskDtlTb.getTaskCategory())) {
+        if (Objects.nonNull(bioTaskDtlTb) && BioTaskCategoryEnum.project.name().equals(bioTaskDtlTb.getTaskCategory())) {
             String title = bioTaskDtlTb.getTaskTypeName() + "抄送通知";
             sendMessage(bioTaskDtlTb, title, flowActorList.stream().map(flowActor -> Integer.valueOf(flowActor.getCreateId())).collect(Collectors.toList()));
         }

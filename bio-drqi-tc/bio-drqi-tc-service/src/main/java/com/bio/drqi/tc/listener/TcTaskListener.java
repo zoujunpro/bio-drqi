@@ -115,7 +115,7 @@ public class TcTaskListener extends DefaultDuplicateCopyHandler implements FlowT
         }else {
             bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
         }
-        if (Objects.nonNull(bioTaskDtlTb)&& BioTaskCategoryEnum.tc.equals(bioTaskDtlTb.getTaskCategory())) {
+        if (Objects.nonNull(bioTaskDtlTb)&& BioTaskCategoryEnum.tc.name().equals(bioTaskDtlTb.getTaskCategory())) {
             String title = bioTaskDtlTb.getTaskTypeName() + "抄送通知";
             sendMessage(bioTaskDtlTb, title, flowActorList.stream().map(flowActor -> Integer.valueOf(flowActor.getCreateId())).distinct().collect(Collectors.toList()));
         }

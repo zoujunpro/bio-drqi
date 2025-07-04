@@ -15,6 +15,7 @@ import com.bio.drqi.feishu.MessageTypeEnum;
 import com.bio.drqi.feishu.dto.Message;
 import com.bio.drqi.feishu.dto.NoticeUserDTO;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
+import com.bio.flow.enums.BioTaskCategoryEnum;
 import com.bio.flow.enums.EventType;
 import com.bio.flow.hander.DefaultDuplicateCopyHandler;
 import com.bio.flow.service.FlowTaskListener;
@@ -95,19 +96,19 @@ public class BmsTaskListener extends DefaultDuplicateCopyHandler implements Flow
         if (CollectionUtil.isEmpty(rspDTOList)) {
             return;
         }
-        List<NoticeUserDTO> noticeUserDTOList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(userBaseInfoRspDTO->new NoticeUserDTO(userBaseInfoRspDTO.getNickName(),userBaseInfoRspDTO.getFeiShuUserId())).collect(Collectors.toList());
+        List<NoticeUserDTO> noticeUserDTOList = rspDTOList.stream().filter(userBaseInfoRspDTO -> StringUtils.isNotEmpty(userBaseInfoRspDTO.getFeiShuUserId())).map(userBaseInfoRspDTO -> new NoticeUserDTO(userBaseInfoRspDTO.getNickName(), userBaseInfoRspDTO.getFeiShuUserId())).collect(Collectors.toList());
         String content = "**任务描述：**" + bioTaskDtlTb.getTaskDesc() + "\n" + "**申  请 人：**" + bioTaskDtlTb.getApplyUserName() + "\n" + "**申请时间：**" + DateUtil.format(bioTaskDtlTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         Message message = new Message();
         message.setTitle(title);
         message.setContent(content);
         message.setUrl(String.format(feiShuBmsJumpUrl, vieMap.get(bioTaskDtlTb.getTaskTypeCode()), bioTaskDtlTb.getId()));
-        feiShuService.sendCardMessage(noticeUserDTOList, message,MessageTypeEnum.drqi);
+        feiShuService.sendCardMessage(noticeUserDTOList, message, MessageTypeEnum.drqi);
     }
 
     @Override
-    public void doHandle(List<FlowActor> flowActorList, Long instanceId,String businessId) {
+    public void doHandle(List<FlowActor> flowActorList, Long instanceId, String businessId) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(businessId);
-        if (Objects.nonNull(bioTaskDtlTb)) {
+        if (Objects.nonNull(bioTaskDtlTb) && BioTaskCategoryEnum.bms.equals(bioTaskDtlTb.getTaskCategory())) {
             String title = bioTaskDtlTb.getTaskTypeName() + "抄送通知";
             sendMessage(bioTaskDtlTb, title, flowActorList.stream().map(flowActor -> Integer.valueOf(flowActor.getCreateId())).collect(Collectors.toList()));
         }

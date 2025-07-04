@@ -107,7 +107,12 @@ public class BmsTaskListener extends DefaultDuplicateCopyHandler implements Flow
 
     @Override
     public void doHandle(List<FlowActor> flowActorList, Long instanceId, String businessId) {
-        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(businessId);
+        BioTaskDtlTb bioTaskDtlTb=null;
+        if(StringUtils.isNotEmpty(businessId)){
+             bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(businessId);
+        }else {
+            bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
+        }
         if (Objects.nonNull(bioTaskDtlTb) && BioTaskCategoryEnum.bms.equals(bioTaskDtlTb.getTaskCategory())) {
             String title = bioTaskDtlTb.getTaskTypeName() + "抄送通知";
             sendMessage(bioTaskDtlTb, title, flowActorList.stream().map(flowActor -> Integer.valueOf(flowActor.getCreateId())).collect(Collectors.toList()));

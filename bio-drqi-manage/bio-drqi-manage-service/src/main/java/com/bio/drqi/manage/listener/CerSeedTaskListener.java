@@ -112,7 +112,12 @@ public class CerSeedTaskListener extends DefaultDuplicateCopyHandler implements 
 
     @Override
     public void doHandle(List<FlowActor> flowActorList, Long instanceId,String businessId) {
-        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(businessId);
+        BioTaskDtlTb bioTaskDtlTb=null;
+        if(StringUtils.isNotEmpty(businessId)){
+            bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(businessId);
+        }else {
+            bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
+        }
         if (Objects.nonNull(bioTaskDtlTb)&& BioTaskCategoryEnum.seed.equals(bioTaskDtlTb.getTaskCategory())) {
             if (SeedTaskTypeEnum.seed_store_apply.name().equals(bioTaskDtlTb.getTaskTypeCode())) {
                 SeedInStoreDTO seedInStoreDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedInStoreDTO.class);

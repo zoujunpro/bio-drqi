@@ -45,4 +45,11 @@
         </where>
         order by id desc
     </select>
+    <select id="selectOneByProductCategoryCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_category_tb
+        where
+        product_category_code = #{productCategoryCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

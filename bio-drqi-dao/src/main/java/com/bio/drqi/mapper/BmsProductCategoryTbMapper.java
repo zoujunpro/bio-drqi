@@ -18,6 +18,8 @@ public interface BmsProductCategoryTbMapper extends BaseMapper<BmsProductCategor
 
     List<BmsProductCategoryTb> selectSelective(BmsProductCategoryTb bmsProductCategoryTb);
 
+    BmsProductCategoryTb selectOneByProductCategoryCode(@Param("productCategoryCode") String productCategoryCode);
+
 }
 
 

@@ -35,24 +35,29 @@ public class MaterialSaveModel extends KdModel {
     /**
      * 物料分组
      */
-    private Object FMaterialGroup;
+    private FMaterialGroupModel FMaterialGroup;
 
 
     private SubHeadEntityModel SubHeadEntity;
 
 
     @Data
-    public static class SubHeadEntityModel {
+    private class FMaterialGroupModel {
+        private String FNumber;
+    }
+
+    @Data
+    private class SubHeadEntityModel {
         /**
          * 物料属性
          */
-        private String FErpClsID="1";
+        private String FErpClsID = "1";
 
 
         /**
          * 特征子项
          */
-        private String FFeatureItem="1";
+        private String FFeatureItem = "1";
 
 
         /**
@@ -63,7 +68,7 @@ public class MaterialSaveModel extends KdModel {
         /**
          * 基本单位
          */
-        private FBaseUnitIdModel FBaseUnitId=new FBaseUnitIdModel();
+        private FBaseUnitIdModel FBaseUnitId = new FBaseUnitIdModel();
 
         /**
          * 是否允许采购
@@ -104,21 +109,47 @@ public class MaterialSaveModel extends KdModel {
 
 
     @Data
-    public static class FCategoryIDModel {
+    private class FCategoryIDModel {
         private String FNumber;
+
+        public FCategoryIDModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 
 
     @Data
-    public static class FBaseUnitIdModel {
-        private String FNumber="Pcs";
+    private class FBaseUnitIdModel {
+        private String FNumber = "Pcs";
     }
 
     @Override
     public List<String> buildModifyFields() {
-        List<String> list=new ArrayList<>();
+        List<String> list = new ArrayList<>();
         list.add("Fnumber");
         list.add("FSpecification");
         return list;
+    }
+
+    public MaterialSaveModel buildFMaterialGroup(String fMaterialGroup) {
+        FMaterialGroupModel fMaterialGroupModel = new FMaterialGroupModel();
+        fMaterialGroupModel.setFNumber(fMaterialGroup);
+        this.FMaterialGroup = fMaterialGroupModel;
+        return this;
+    }
+
+    public MaterialSaveModel buildSubHeadEntity(String fCategoryID) {
+        SubHeadEntityModel subHeadEntityModel = new SubHeadEntityModel();
+        subHeadEntityModel.setFCategoryID(new FCategoryIDModel(fCategoryID));
+        this.SubHeadEntity = subHeadEntityModel;
+        return this;
+
+    }
+
+    public MaterialSaveModel(Integer FMATERIALID, String fnumber, String fname, String fspecification) {
+        this.FMATERIALID = FMATERIALID;
+        Fnumber = fnumber;
+        Fname = fname;
+        Fspecification = fspecification;
     }
 }

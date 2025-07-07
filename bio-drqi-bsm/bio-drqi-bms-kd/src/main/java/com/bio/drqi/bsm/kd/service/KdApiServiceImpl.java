@@ -10,9 +10,12 @@ import com.bio.drqi.bsm.kd.enums.OperateEnum;
 import com.bio.drqi.bsm.kd.enums.OrgEnum;
 import com.bio.drqi.bsm.kd.util.KdRequestUtil;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.BmsProductCategoryTbMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 @Service
 @Slf4j
@@ -20,6 +23,9 @@ public class KdApiServiceImpl implements KdApiService {
 
     @Value("${spring.profiles.active}")
     private String active;
+
+    @Resource
+    private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
 
     @Override
     public String execute(OperateEnum operateEnum, Object obj, String unitCode) {
@@ -206,14 +212,19 @@ public class KdApiServiceImpl implements KdApiService {
 
     private String executeMaterialSave(Object obj, String unitCode) {
         BmsProductTb bmsProductTb = (BmsProductTb) obj;
-        MaterialSaveModel materialSaveModel=new MaterialSaveModel();
-        materialSaveModel.setFMATERIALID(0);
-        materialSaveModel.setFnumber(bmsProductTb.getProductInnerCode());
-        materialSaveModel.setFname(bmsProductTb.getProductName());
-        materialSaveModel.setFMaterialGroup(null);
-        materialSaveModel.setSubHeadEntity(null);
+
+        BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsProductTb.getProductCategoryCode());
+        if(bmsProductCategoryTb==null){
+            throw new BusinessException("找不到货品类别：当前货品:"+bmsProductTb.getProductInnerCode());
+        }
+        if(bmsProductCategoryTb.getKdNumber()==null){
+            throw new BusinessException("材料分组未同步");
+        }
+        MaterialSaveModel materialSaveModel = new MaterialSaveModel(0, bmsProductTb.getProductInnerCode(), bmsProductTb.getProductName(), null);
+        materialSaveModel = materialSaveModel.buildFMaterialGroup(bmsProductCategoryTb.getProductCategoryCode()).buildSubHeadEntity(bmsProductCategoryTb.getKdCategoryCode());
         return KdRequestUtil.save(FormIdEnum.BD_MATERIAL, KdApiBaseSaveRequestDTO.buildOfSave(materialSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
     }
+
     private String executeMaterialModify(Object obj) {
         return null;
     }

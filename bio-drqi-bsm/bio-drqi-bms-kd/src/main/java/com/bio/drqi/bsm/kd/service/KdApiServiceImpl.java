@@ -4,7 +4,7 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.bsm.kd.dto.GroupSaveDTO;
 import com.bio.drqi.bsm.kd.dto.KdApiBaseDisableRequestDTO;
 import com.bio.drqi.bsm.kd.dto.model.*;
-import com.bio.drqi.bsm.kd.dto.KdApiBaseRequestDTO;
+import com.bio.drqi.bsm.kd.dto.KdApiBaseSaveRequestDTO;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
 import com.bio.drqi.bsm.kd.enums.OperateEnum;
 import com.bio.drqi.bsm.kd.enums.OrgEnum;
@@ -69,7 +69,7 @@ public class KdApiServiceImpl implements KdApiService {
         brandKdModel.setFID(0);
         brandKdModel.setFnumber(bmsBrandTb.getBrandCode());
         brandKdModel.setFname(bmsBrandTb.getBrandName());
-        return KdRequestUtil.save(FormIdEnum.CMK_BD_Brand, KdApiBaseRequestDTO.buildOfSave(brandKdModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+        return KdRequestUtil.save(FormIdEnum.CMK_BD_Brand, KdApiBaseSaveRequestDTO.buildOfSave(brandKdModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
     }
 
     /**
@@ -84,7 +84,7 @@ public class KdApiServiceImpl implements KdApiService {
         brandKdModel.setFID(bmsBrandTb.getKdNumber());
         brandKdModel.setFnumber(bmsBrandTb.getBrandCode());
         brandKdModel.setFname(bmsBrandTb.getBrandName());
-        return KdRequestUtil.save(FormIdEnum.CMK_BD_Brand, KdApiBaseRequestDTO.buildOfModify(brandKdModel));
+        return KdRequestUtil.save(FormIdEnum.CMK_BD_Brand, KdApiBaseSaveRequestDTO.buildOfModify(brandKdModel));
     }
 
     /**
@@ -113,7 +113,7 @@ public class KdApiServiceImpl implements KdApiService {
         projectModel.setFMATERIALID(0);
         projectModel.setFnumber(bmsProjectDict.getProjectCode());
         projectModel.setFname(bmsProjectDict.getProjectName());
-        return KdRequestUtil.save(FormIdEnum.k62a1e2f33daa4a738462728197b95678, KdApiBaseRequestDTO.buildOfSave(projectModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+        return KdRequestUtil.save(FormIdEnum.k62a1e2f33daa4a738462728197b95678, KdApiBaseSaveRequestDTO.buildOfSave(projectModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
     }
 
 
@@ -129,7 +129,7 @@ public class KdApiServiceImpl implements KdApiService {
         projectModel.setFMATERIALID(bmsProjectDict.getKdNumber());
         projectModel.setFnumber(bmsProjectDict.getProjectCode());
         projectModel.setFname(bmsProjectDict.getProjectName());
-        return KdRequestUtil.save(FormIdEnum.k62a1e2f33daa4a738462728197b95678, KdApiBaseRequestDTO.buildOfModify(projectModel));
+        return KdRequestUtil.save(FormIdEnum.k62a1e2f33daa4a738462728197b95678, KdApiBaseSaveRequestDTO.buildOfModify(projectModel));
     }
 
     /**
@@ -161,7 +161,7 @@ public class KdApiServiceImpl implements KdApiService {
         stockModel.setFname(bmsStockLocationDict.getStockName());
         stockModel.setFStockProperty("1");
         stockModel.setFStockStatusType("0,1,2,3,4,5,6,7,8");
-        return KdRequestUtil.save(FormIdEnum.BD_STOCK, KdApiBaseRequestDTO.buildOfSave(stockModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+        return KdRequestUtil.save(FormIdEnum.BD_STOCK, KdApiBaseSaveRequestDTO.buildOfSave(stockModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
     }
 
     /**
@@ -176,7 +176,7 @@ public class KdApiServiceImpl implements KdApiService {
         stockModel.setFStockId(bmsStockLocationDict.getKdNumber());
         stockModel.setFnumber(bmsStockLocationDict.getLocationNumber());
         stockModel.setFname(bmsStockLocationDict.getStockName());
-        return KdRequestUtil.save(FormIdEnum.BD_STOCK, KdApiBaseRequestDTO.buildOfModify(stockModel));
+        return KdRequestUtil.save(FormIdEnum.BD_STOCK, KdApiBaseSaveRequestDTO.buildOfModify(stockModel));
 
     }
 
@@ -194,10 +194,6 @@ public class KdApiServiceImpl implements KdApiService {
 
     }
 
-    private String executeMaterialSave(Object obj, String unitCode) {
-        BmsProductTb bmsProductTb = (BmsProductTb) obj;
-        return null;
-    }
 
     private String groupSave(Object obj) {
         BmsProductCategoryTb bmsProductCategoryTb = (BmsProductCategoryTb) obj;
@@ -208,6 +204,16 @@ public class KdApiServiceImpl implements KdApiService {
         return KdRequestUtil.groupSave(FormIdEnum.BD_MATERIAL, groupSaveDTO);
     }
 
+    private String executeMaterialSave(Object obj, String unitCode) {
+        BmsProductTb bmsProductTb = (BmsProductTb) obj;
+        MaterialSaveModel materialSaveModel=new MaterialSaveModel();
+        materialSaveModel.setFMATERIALID(0);
+        materialSaveModel.setFnumber(bmsProductTb.getProductInnerCode());
+        materialSaveModel.setFname(bmsProductTb.getProductName());
+        materialSaveModel.setFMaterialGroup(null);
+        materialSaveModel.setSubHeadEntity(null);
+        return KdRequestUtil.save(FormIdEnum.BD_MATERIAL, KdApiBaseSaveRequestDTO.buildOfSave(materialSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+    }
     private String executeMaterialModify(Object obj) {
         return null;
     }

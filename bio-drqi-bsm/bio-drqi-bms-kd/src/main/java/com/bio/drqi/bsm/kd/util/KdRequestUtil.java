@@ -5,7 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.bsm.kd.dto.GroupSaveDTO;
 import com.bio.drqi.bsm.kd.dto.KdApiBaseDisableRequestDTO;
-import com.bio.drqi.bsm.kd.dto.KdApiBaseRequestDTO;
+import com.bio.drqi.bsm.kd.dto.KdApiBaseSaveRequestDTO;
 import com.bio.drqi.bsm.kd.dto.QuerySupplierDTO;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
 import com.bio.drqi.bsm.kd.properties.KdProperties;
@@ -29,12 +29,12 @@ public class KdRequestUtil {
         KdRequestUtil.kdProperties = kdProperties;
     }
 
-    public static String save(FormIdEnum formIdEnum, KdApiBaseRequestDTO kdApiBaseRequestDTO) {
+    public static String save(FormIdEnum formIdEnum, KdApiBaseSaveRequestDTO kdApiBaseSaveRequestDTO) {
         K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
         try {
             Long start = System.currentTimeMillis();
-            log.info("调用金蝶接口开始, formid={},参数={}", formIdEnum, JSONUtil.toJsonStr(kdApiBaseRequestDTO));
-            String result = k3CloudApi.save(formIdEnum.name(), JSONUtil.toJsonStr(kdApiBaseRequestDTO));
+            log.info("调用金蝶接口开始, formid={},参数={}", formIdEnum, JSONUtil.toJsonStr(kdApiBaseSaveRequestDTO));
+            String result = k3CloudApi.save(formIdEnum.name(), JSONUtil.toJsonStr(kdApiBaseSaveRequestDTO));
             log.info("调用金蝶接口结束，返回={},耗时={}ms", result, (System.currentTimeMillis() - start));
             Gson gson = new Gson();
             RepoRet sRet = gson.fromJson(result, RepoRet.class);

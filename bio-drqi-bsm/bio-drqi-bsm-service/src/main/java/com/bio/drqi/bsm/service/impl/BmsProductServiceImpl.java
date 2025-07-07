@@ -135,7 +135,8 @@ public class BmsProductServiceImpl implements BmsProductService {
         BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(bmsProductAddReqDTO.getProductName(), bmsProductAddReqDTO.getBrandCode(), bmsProductAddReqDTO.getProductSpecs());
         if (bmsProductTb != null) {
             if (BioDrQiContents.N.equals(bmsProductTb.getDeleteFlag())) {
-                throw new BusinessException("重复添加商品");
+                //商品已经存在不做处理
+                //throw new BusinessException("重复添加商品");
             } else {
                 bmsProductTb.setCreateTime(new Date());
                 bmsProductTb.setCreateUserId(SecurityContextHolder.getUserId());

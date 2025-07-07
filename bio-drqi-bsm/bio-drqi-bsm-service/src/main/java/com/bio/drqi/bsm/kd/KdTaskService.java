@@ -1,0 +1,48 @@
+package com.bio.drqi.bsm.kd;
+
+public interface KdTaskService {
+
+     /**
+      * 同步项目
+      */
+    void synProjectTask();
+     /**
+      * 同步品牌
+      */
+    void synBrandTask();
+
+     /**
+      * 同步库房
+      */
+    void synStockTask();
+     /**
+      * 同步材料类别
+      */
+    void synMaterialGroupTask();
+
+     /**
+      * 同步供应商
+      */
+    void synSupplierTask();
+
+     /**
+      * 同步材料
+      */
+    void synMaterialTask();
+
+
+     /**
+      * 同步入库
+      */
+    void synInStockTask();
+
+
+     /**
+      * 同步出库
+      */
+     void synOutStockTask();
+
+
+
+
+}

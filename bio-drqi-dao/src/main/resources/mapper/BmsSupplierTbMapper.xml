@@ -26,6 +26,7 @@
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
         <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
         <result property="deleteFlag" column="delete_flag" jdbcType="VARCHAR"/>
+        <result property="kdNumber" column="kd_number" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -36,7 +37,7 @@
         framework_agreement_number,framework_agreement_annex,expiration_date,
         contact_user_name,contact_user_telephone,leader_user_name,
         leader_user_id,remark,create_time,
-        create_user_name,create_user_id,delete_flag
+        create_user_name,create_user_id,delete_flag,kd_number
     </sql>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsSupplierTb">
         select

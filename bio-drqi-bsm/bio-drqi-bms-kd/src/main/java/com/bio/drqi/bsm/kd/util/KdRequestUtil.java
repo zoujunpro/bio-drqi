@@ -80,8 +80,8 @@ public class KdRequestUtil {
             if (CollectionUtil.isNotEmpty(result)) {
                 result.forEach(list -> {
                     QuerySupplierDTO querySupplierDTO = new QuerySupplierDTO();
-                    querySupplierDTO.setName(list.get(0).toString());
-                    querySupplierDTO.setCode(list.get(1).toString());
+                    querySupplierDTO.setFName(list.get(0).toString());
+                    querySupplierDTO.setFNumber(Integer.valueOf(list.get(1).toString()));
                     resultList.add(querySupplierDTO);
                 });
             }

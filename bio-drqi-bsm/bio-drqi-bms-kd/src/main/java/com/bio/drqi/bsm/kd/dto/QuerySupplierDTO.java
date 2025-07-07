@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class QuerySupplierDTO {
-    private String name;
-    private String code;
+    private String fName;
+    private Integer fNumber;
 }

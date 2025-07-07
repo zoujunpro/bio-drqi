@@ -23,7 +23,7 @@ public class KdApiBaseSaveRequestDTO<T extends KdModel> {
     private T Model;
 
 
-    public static KdApiBaseSaveRequestDTO buildOfSave( KdModel kdModel,String FNumber ) {
+    public static KdApiBaseSaveRequestDTO buildOfSave(KdModel kdModel, String FNumber ) {
         KdApiBaseSaveRequestDTO kdApiBaseSaveRequestDTO = new KdApiBaseSaveRequestDTO();
         kdApiBaseSaveRequestDTO.setNeedUpDateFields(Arrays.asList("Id"));
         kdApiBaseSaveRequestDTO.setNeedReturnFields(null);
@@ -40,7 +40,7 @@ public class KdApiBaseSaveRequestDTO<T extends KdModel> {
         kdApiBaseSaveRequestDTO.setModel(kdModel.build(FNumber));
         return kdApiBaseSaveRequestDTO;
     }
-    public static KdApiBaseSaveRequestDTO buildOfModify( KdModel kdModel ) {
+    public static KdApiBaseSaveRequestDTO buildOfModify(KdModel kdModel ) {
         KdApiBaseSaveRequestDTO kdApiBaseSaveRequestDTO = new KdApiBaseSaveRequestDTO();
         kdApiBaseSaveRequestDTO.setModel(kdModel);
         kdApiBaseSaveRequestDTO.setNeedUpDateFields(kdModel.buildModifyFields());

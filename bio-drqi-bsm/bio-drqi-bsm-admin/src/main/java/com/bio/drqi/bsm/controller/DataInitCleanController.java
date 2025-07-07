@@ -10,17 +10,13 @@ import com.bio.common.core.uuid.IdUtils;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.enums.CooperateFormEnum;
-import com.bio.drqi.bsm.kd.dto.model.BrandKdModel;
-import com.bio.drqi.bsm.kd.dto.KdApiBaseSaveRequestDTO;
-import com.bio.drqi.bsm.kd.enums.FormIdEnum;
+import com.bio.drqi.bsm.kd.KdTaskService;
 import com.bio.drqi.bsm.kd.enums.OperateEnum;
-import com.bio.drqi.bsm.kd.properties.KdProperties;
 import com.bio.drqi.bsm.kd.service.KdApiService;
 import com.bio.drqi.bsm.req.BmsProductAddReqDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
-import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,39 +68,35 @@ public class DataInitCleanController {
     private BmsProductTbMapper bmsProductTbMapper;
 
     @Resource
-    private KdApiService kdApiService;
+    private KdTaskService kdTaskService;
 
 
     @GetMapping("/synStockLocationSave")
     public ResponseResult<String> synKdStockLocation() {
-        List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectList(null);
-        Map<String, List<BmsStockLocationDict>> listMap = bmsStockLocationDictList.stream().collect(Collectors.groupingBy(BmsStockLocationDict::getStockCode));
-        listMap.forEach((stockCode,list)->{
-            kdApiService.execute(OperateEnum.stockSave,list.get(0),list.get(0).getUnitCode());
-        });
+        kdTaskService.synStockTask();
         return ResponseResult.getSuccess("OK");
     }
+
     @GetMapping("/synBrandSave")
     public ResponseResult<String> synKdBrand() {
-        List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectList(null);
-        bmsBrandTbList.forEach(bmsBrandTb -> {
-            String s=  kdApiService.execute(OperateEnum.bmsSave,bmsBrandTb,"beijing");
-            System.out.println("***********************="+s);
-
-        });
+        kdTaskService.synBrandTask();
 
         return ResponseResult.getSuccess("OK");
     }
+
     @GetMapping("/synProjectSave")
     public ResponseResult<String> synProjectSave() {
-        List<BmsProjectDict> bmsProjectDictList = bmsProjectDictMapper.selectList(null);
-        bmsProjectDictList.forEach(bmsProjectDict -> {
-            kdApiService.execute(OperateEnum.projectSave,bmsProjectDict,"beijing");
-
-        });
+        kdTaskService.synProjectTask();
 
         return ResponseResult.getSuccess("OK");
     }
+
+    @GetMapping("/materialGroup")
+    public ResponseResult<String> synGroup() {
+        kdTaskService.synMaterialGroupTask();
+        return ResponseResult.getSuccess("OK");
+    }
+
 
 
     @GetMapping("/cleanStockDate")

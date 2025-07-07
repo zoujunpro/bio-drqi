@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.kd.service;
 
 import com.bio.common.core.dto.BusinessException;
+import com.bio.drqi.bsm.kd.dto.GroupSaveDTO;
 import com.bio.drqi.bsm.kd.dto.KdApiBaseDisableRequestDTO;
 import com.bio.drqi.bsm.kd.dto.model.*;
 import com.bio.drqi.bsm.kd.dto.KdApiBaseSaveRequestDTO;
@@ -8,10 +9,7 @@ import com.bio.drqi.bsm.kd.enums.FormIdEnum;
 import com.bio.drqi.bsm.kd.enums.OperateEnum;
 import com.bio.drqi.bsm.kd.enums.OrgEnum;
 import com.bio.drqi.bsm.kd.util.KdRequestUtil;
-import com.bio.drqi.domain.BmsBrandTb;
-import com.bio.drqi.domain.BmsProductTb;
-import com.bio.drqi.domain.BmsProjectDict;
-import com.bio.drqi.domain.BmsStockLocationDict;
+import com.bio.drqi.domain.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -50,6 +48,8 @@ public class KdApiServiceImpl implements KdApiService {
                 return executeMaterialModify(obj);
             case materialDisable:
                 return executeMaterialDisable(obj, unitCode);
+            case groupSave:
+                return groupSave(obj);
             default:
                 throw new BusinessException("数据异常，请检查金蝶配置");
         }
@@ -194,11 +194,26 @@ public class KdApiServiceImpl implements KdApiService {
 
     }
 
-    private String executeMaterialSave(Object obj, String unitCode) {
-        BmsProductTb bmsProductTb = (BmsProductTb) obj;
-        return null;
+
+    private String groupSave(Object obj) {
+        BmsProductCategoryTb bmsProductCategoryTb = (BmsProductCategoryTb) obj;
+        GroupSaveDTO groupSaveDTO = new GroupSaveDTO();
+        groupSaveDTO.setFParentId(bmsProductCategoryTb.getKdParentId());
+        groupSaveDTO.setFNumber(bmsProductCategoryTb.getProductCategoryCode());
+        groupSaveDTO.setFName(bmsProductCategoryTb.getProductCategoryName());
+        return KdRequestUtil.groupSave(FormIdEnum.BD_MATERIAL, groupSaveDTO);
     }
 
+    private String executeMaterialSave(Object obj, String unitCode) {
+        BmsProductTb bmsProductTb = (BmsProductTb) obj;
+        MaterialSaveModel materialSaveModel=new MaterialSaveModel();
+        materialSaveModel.setFMATERIALID(0);
+        materialSaveModel.setFnumber(bmsProductTb.getProductInnerCode());
+        materialSaveModel.setFname(bmsProductTb.getProductName());
+        materialSaveModel.setFMaterialGroup(null);
+        materialSaveModel.setSubHeadEntity(null);
+        return KdRequestUtil.save(FormIdEnum.BD_MATERIAL, KdApiBaseSaveRequestDTO.buildOfSave(materialSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+    }
     private String executeMaterialModify(Object obj) {
         return null;
     }

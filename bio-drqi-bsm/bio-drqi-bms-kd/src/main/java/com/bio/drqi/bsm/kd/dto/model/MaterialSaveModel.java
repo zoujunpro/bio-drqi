@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.kd.dto.model;
 
 import cn.hutool.json.JSONUtil;
+import com.bio.drqi.bsm.kd.enums.KdFCategoryIDEnum;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -45,13 +46,13 @@ public class MaterialSaveModel extends KdModel {
         /**
          * 物料属性
          */
-        private Object FErpClsID;
+        private String FErpClsID="1";
 
 
         /**
          * 特征子项
          */
-        private String FFeatureItem;
+        private String FFeatureItem="1";
 
 
         /**
@@ -62,7 +63,7 @@ public class MaterialSaveModel extends KdModel {
         /**
          * 基本单位
          */
-        private FBaseUnitIdModel FBaseUnitId;
+        private FBaseUnitIdModel FBaseUnitId=new FBaseUnitIdModel();
 
         /**
          * 是否允许采购

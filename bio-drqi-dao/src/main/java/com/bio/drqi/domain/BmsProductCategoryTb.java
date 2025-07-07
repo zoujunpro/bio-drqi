@@ -59,6 +59,8 @@ public class BmsProductCategoryTb implements Serializable {
 
     private Integer kdNumber;
 
+    private String kdCategoryCode;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

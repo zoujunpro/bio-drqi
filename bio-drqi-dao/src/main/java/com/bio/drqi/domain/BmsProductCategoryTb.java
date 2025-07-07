@@ -53,6 +53,12 @@ public class BmsProductCategoryTb implements Serializable {
      */
     private String createUserName;
 
+    private String kdParentId;
+
+    private String kdParentName;
+
+    private Integer kdNumber;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

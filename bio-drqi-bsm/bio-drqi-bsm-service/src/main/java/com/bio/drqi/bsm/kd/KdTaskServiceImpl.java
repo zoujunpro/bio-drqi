@@ -6,10 +6,7 @@ import com.bio.drqi.bsm.kd.dto.QuerySupplierDTO;
 import com.bio.drqi.bsm.kd.enums.OperateEnum;
 import com.bio.drqi.bsm.kd.service.KdApiService;
 import com.bio.drqi.bsm.kd.util.KdRequestUtil;
-import com.bio.drqi.domain.BmsBrandTb;
-import com.bio.drqi.domain.BmsProjectDict;
-import com.bio.drqi.domain.BmsStockLocationDict;
-import com.bio.drqi.domain.BmsSupplierTb;
+import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -103,6 +100,19 @@ public class KdTaskServiceImpl implements KdTaskService {
 
     @Override
     public void synMaterialGroupTask() {
+        Long startTime = System.currentTimeMillis();
+        log.info("*****************分组同步开始**************************");
+        List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectList(null);
+        for (BmsProductCategoryTb bmsProductCategoryTb : bmsProductCategoryTbList) {
+            if(bmsProductCategoryTb.getKdNumber()>0){
+                String idStr = kdApiService.execute(OperateEnum.groupSave, bmsProductCategoryTb, "beijing");
+                bmsProductCategoryTb.setKdNumber(Integer.valueOf(idStr));
+                bmsProductCategoryTbMapper.updateById(bmsProductCategoryTb);
+            }
+
+        }
+        log.info("*****************分组同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
+
 
     }
 
@@ -113,7 +123,7 @@ public class KdTaskServiceImpl implements KdTaskService {
         List<QuerySupplierDTO> querySupplierDTOList = KdRequestUtil.executeQuerySupplier();
         for (QuerySupplierDTO querySupplierDTO : querySupplierDTOList) {
             BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierName(querySupplierDTO.getFName());
-            if(bmsSupplierTb!=null){
+            if (bmsSupplierTb != null) {
                 bmsSupplierTb.setKdNumber(Integer.valueOf(querySupplierDTO.getFNumber()));
                 bmsSupplierTbMapper.updateById(bmsSupplierTb);
             }

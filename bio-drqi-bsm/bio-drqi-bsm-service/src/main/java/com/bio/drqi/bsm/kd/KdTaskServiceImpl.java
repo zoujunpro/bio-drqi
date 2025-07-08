@@ -52,8 +52,8 @@ public class KdTaskServiceImpl implements KdTaskService {
         log.info("*****************项目同步开始**************************");
         List<BmsProjectDict> bmsProjectDictList = bmsProjectDictMapper.selectList(null);
         bmsProjectDictList.forEach(bmsProjectDict -> {
-            if (bmsProjectDict.getKdNumber() == null) {
-                String kdNumber  = kdApiService.execute(OperateEnum.projectSave, bmsProjectDict, "beijing");
+            if (StringUtils.isEmpty(bmsProjectDict.getKdNumber())) {
+                String kdNumber = kdApiService.execute(OperateEnum.projectSave, bmsProjectDict, "beijing");
                 bmsProjectDict.setKdNumber(kdNumber);
                 bmsProjectDictMapper.updateById(bmsProjectDict);
             } else {
@@ -73,7 +73,7 @@ public class KdTaskServiceImpl implements KdTaskService {
         bmsBrandTbList.forEach(bmsBrandTb -> {
             log.info("正在同步品牌{}", bmsBrandTb.getBrandName());
             if (BioBsmContents.N.equals(bmsBrandTb.getDeleteFlag())) {
-                if (bmsBrandTb.getKdNumber() > 0) {
+                if (bmsBrandTb.getKdNumber() != null && bmsBrandTb.getKdNumber() > 0) {
                     kdApiService.execute(OperateEnum.bmsModify, bmsBrandTb, "beijing");
                 } else {
                     String kdNumber = kdApiService.execute(OperateEnum.bmsSave, bmsBrandTb, "beijing");
@@ -92,11 +92,11 @@ public class KdTaskServiceImpl implements KdTaskService {
         Long startTime = System.currentTimeMillis();
         log.info("*****************仓库同步开始**************************");
         List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
-        for (BmsStockDict bmsStockDict:bmsStockDictList){
-            if (bmsStockDict.getKdNumber()>0) {
-                kdApiService.execute(OperateEnum.bmsModify, bmsStockDict, bmsStockDict.getUnitCode());
+        for (BmsStockDict bmsStockDict : bmsStockDictList) {
+            if (bmsStockDict.getKdNumber() != null && bmsStockDict.getKdNumber() > 0) {
+                kdApiService.execute(OperateEnum.stockModify, bmsStockDict, bmsStockDict.getUnitCode());
             } else {
-                String kdNumber = kdApiService.execute(OperateEnum.bmsSave, bmsStockDict,  bmsStockDict.getUnitCode());
+                String kdNumber = kdApiService.execute(OperateEnum.stockSave, bmsStockDict, bmsStockDict.getUnitCode());
                 bmsStockDict.setKdNumber(Integer.valueOf(kdNumber));
                 bmsStockDictMapper.updateById(bmsStockDict);
             }
@@ -112,7 +112,7 @@ public class KdTaskServiceImpl implements KdTaskService {
         log.info("*****************分组同步开始**************************");
         List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectList(null);
         for (BmsProductCategoryTb bmsProductCategoryTb : bmsProductCategoryTbList) {
-            if (bmsProductCategoryTb.getKdNumber() > 0) {
+            if (bmsProductCategoryTb.getKdNumber() != null && bmsProductCategoryTb.getKdNumber() > 0) {
                 String idStr = kdApiService.execute(OperateEnum.groupSave, bmsProductCategoryTb, "beijing");
                 bmsProductCategoryTb.setKdNumber(Integer.valueOf(idStr));
                 bmsProductCategoryTbMapper.updateById(bmsProductCategoryTb);

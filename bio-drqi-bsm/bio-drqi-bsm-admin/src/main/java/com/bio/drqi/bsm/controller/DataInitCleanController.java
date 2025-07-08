@@ -11,10 +11,14 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.enums.CooperateFormEnum;
 import com.bio.drqi.bsm.kd.KdTaskService;
+import com.bio.drqi.bsm.kd.enums.FormIdEnum;
+import com.bio.drqi.bsm.kd.properties.KdProperties;
+import com.bio.drqi.bsm.kd.util.KdRequestUtil;
 import com.bio.drqi.bsm.req.BmsProductAddReqDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
+import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,6 +75,9 @@ public class DataInitCleanController {
     @Resource
     private BmsStockDictMapper bmsStockDictMapper;
 
+    @Resource
+    private KdProperties kdProperties;
+
 
     @GetMapping("/synStockLocationSave")
     public ResponseResult<String> synKdStockLocation() {
@@ -98,6 +105,18 @@ public class DataInitCleanController {
         return ResponseResult.getSuccess("OK");
     }
 
+    @GetMapping("/testKd")
+    public ResponseResult testKd() {
+        String json = "{\"NeedReturnFields\":[],\"IsDeleteEntry\":\"true\",\"IsVerifyBaseDataFiel\":\"false\",\"IsEntryBatchFil\":\"true\",\"ValidateFlag\":\"true\",\"NumberSearch\":\"true\",\"IsAutoAdjustField\":\"false\",\"IsAutoSubmitAndAudit\":\"true\",\"Model\":{\"FEntryID\":\"0\",\"Fnumber\":\"ET\",\"FDataValue\":\"番茄基因编辑\",\"FId\":{\"FNumber\":\"XM\"},\"FCreateOrgId\":{\"FNumber\":\"1001\"},\"fUseOrgId\":{\"FNumber\":\"1001\"}}}";
+        K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
+        try {
+            String s = k3CloudApi.save(FormIdEnum.BOS_ASSISTANTDATA_DETAIL.name(), json);
+            System.out.println(s);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseResult.getSuccess("ok");
+    }
 
     @GetMapping("/cleanStock")
     @Transactional(rollbackFor = Exception.class)

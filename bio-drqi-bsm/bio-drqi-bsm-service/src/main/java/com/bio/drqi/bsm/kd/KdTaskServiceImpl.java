@@ -93,11 +93,11 @@ public class KdTaskServiceImpl implements KdTaskService {
         log.info("*****************仓库同步开始**************************");
         List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
         for (BmsStockDict bmsStockDict:bmsStockDictList){
-            if (StringUtils.isNotEmpty(bmsStockDict.getKdNumber())) {
+            if (bmsStockDict.getKdNumber()>0) {
                 kdApiService.execute(OperateEnum.bmsModify, bmsStockDict, bmsStockDict.getUnitCode());
             } else {
                 String kdNumber = kdApiService.execute(OperateEnum.bmsSave, bmsStockDict,  bmsStockDict.getUnitCode());
-                bmsStockDict.setKdNumber(kdNumber);
+                bmsStockDict.setKdNumber(Integer.valueOf(kdNumber));
                 bmsStockDictMapper.updateById(bmsStockDict);
             }
         }

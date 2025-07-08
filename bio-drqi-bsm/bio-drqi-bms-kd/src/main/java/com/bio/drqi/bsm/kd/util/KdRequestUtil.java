@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.kd.util;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.bsm.kd.dto.GroupSaveDTO;
@@ -41,12 +42,35 @@ public class KdRequestUtil {
             if (sRet.isSuccessfully()) {
                 return sRet.getResult().getId();
             } else {
-                throw new BusinessException("同步数据到金蝶失败: " + gson.toJson(sRet.getResult()));
+                String idStr = getIdFromNeedReturnData(formIdEnum, result);
+                if (idStr != null) {
+                    return idStr;
+                } else {
+                    throw new BusinessException("同步数据到金蝶失败: " + gson.toJson(sRet.getResult()));
+                }
             }
         } catch (Exception e) {
             log.error("金蝶接口调用失败:{}", e);
             throw new BusinessException("金蝶接口调用失败");
         }
+    }
+
+
+    private static String getIdFromNeedReturnData(FormIdEnum formIdEnum, String result) {
+        JSON json = JSONUtil.parse(result);
+        switch (formIdEnum) {
+            case BD_STOCK:
+                Object fStockId = json.getByPath("Result.NeedReturnData[0].FStockId");
+                return fStockId == null ? null : fStockId.toString();
+            case BOS_ASSISTANTDATA_DETAIL:
+                Object fEntryID = json.getByPath("Result.NeedReturnData[0].FEntryID");
+                return fEntryID == null ? null : fEntryID.toString();
+            default:
+                return null;
+
+        }
+
+
     }
 
     public static String disable(FormIdEnum formIdEnum, KdApiBaseDisableRequestDTO kdApiBaseDisableRequestDTO) {

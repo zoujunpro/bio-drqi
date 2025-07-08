@@ -47,7 +47,7 @@ public class BmsProjectDict implements Serializable {
      */
     private String createUserName;
 
-    private Integer kdNumber;
+    private String kdNumber;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

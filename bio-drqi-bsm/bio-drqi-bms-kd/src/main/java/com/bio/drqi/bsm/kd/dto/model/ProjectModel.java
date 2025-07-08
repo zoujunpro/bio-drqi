@@ -13,7 +13,7 @@ public class ProjectModel extends KdModel {
     /**
      * 实体主键
      */
-    private Integer FMATERIALID=0;
+    private String FEntryID="0";
 
     /**
      * 编码
@@ -23,14 +23,21 @@ public class ProjectModel extends KdModel {
     /**
      * 名称
      */
-    private String Fname;
+    private String FDataValue;
+
+    private FIdModel FId=new FIdModel();
 
 
     @Override
     public List<String> buildModifyFields() {
         List<String> list=new ArrayList<>();
+        list.add("FDataValue");
         list.add("Fnumber");
-        list.add("Fname");
         return list;
+    }
+
+    @Data
+    private class FIdModel{
+       private String FNumber="XM";
     }
 }

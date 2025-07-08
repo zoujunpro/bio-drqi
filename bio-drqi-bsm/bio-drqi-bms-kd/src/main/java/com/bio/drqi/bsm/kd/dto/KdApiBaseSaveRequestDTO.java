@@ -10,14 +10,14 @@ import java.util.List;
 public class KdApiBaseSaveRequestDTO<T extends KdModel> {
     private List<String> NeedUpDateFields;
     private List<String> NeedReturnFields;
-    private String IsDeleteEntry = "true";
+    private String IsDeleteEntry ;
     private String SubSystemId;
-    private String IsVerifyBaseDataFiel = "false";
-    private String IsEntryBatchFil = "true";
-    private String ValidateFlag = "true";
-    private String NumberSearch = "true";
-    private String IsAutoAdjustField = "false";
-    private String IsAutoSubmitAndAudit = "true";
+    private String IsVerifyBaseDataFiel ;
+    private String IsEntryBatchFil ;
+    private String ValidateFlag ;
+    private String NumberSearch ;
+    private String IsAutoAdjustField ;
+    private String IsAutoSubmitAndAudit ;
     private String InterationFlags;
     private String IgnoreInterationFlag;
     private T Model;
@@ -25,8 +25,8 @@ public class KdApiBaseSaveRequestDTO<T extends KdModel> {
 
     public static KdApiBaseSaveRequestDTO buildOfSave(KdModel kdModel, String FNumber ) {
         KdApiBaseSaveRequestDTO kdApiBaseSaveRequestDTO = new KdApiBaseSaveRequestDTO();
-        kdApiBaseSaveRequestDTO.setNeedUpDateFields(Arrays.asList("Id"));
-        kdApiBaseSaveRequestDTO.setNeedReturnFields(null);
+        kdApiBaseSaveRequestDTO.setNeedUpDateFields(null);
+        kdApiBaseSaveRequestDTO.setNeedReturnFields(Arrays.asList("ID"));
         kdApiBaseSaveRequestDTO.setIsDeleteEntry("true");
         kdApiBaseSaveRequestDTO.setSubSystemId(null);
         kdApiBaseSaveRequestDTO.setIsVerifyBaseDataFiel("false");

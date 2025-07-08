@@ -59,4 +59,12 @@
         where
         stock_name = #{stockName,jdbcType=VARCHAR}
     </select>
+    <select id="selectOneByStockCodeAndLocationNumber" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_stock_location_dict
+        where
+        stock_code = #{stockCode,jdbcType=VARCHAR}
+        AND location_number = #{locationNumber,jdbcType=VARCHAR}
+    </select>
 </mapper>

@@ -116,10 +116,10 @@ public class KdApiServiceImpl implements KdApiService {
     private String executeProjectSave(Object obj, String unitCode) {
         BmsProjectDict bmsProjectDict = (BmsProjectDict) obj;
         ProjectModel projectModel = new ProjectModel();
-        projectModel.setFMATERIALID(0);
+        projectModel.setFEntryID("0");
         projectModel.setFnumber(bmsProjectDict.getProjectCode());
-        projectModel.setFname(bmsProjectDict.getProjectName());
-        return KdRequestUtil.save(FormIdEnum.k62a1e2f33daa4a738462728197b95678, KdApiBaseSaveRequestDTO.buildOfSave(projectModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+        projectModel.setFDataValue(bmsProjectDict.getProjectName());
+        return KdRequestUtil.save(FormIdEnum.BOS_ASSISTANTDATA_DETAIL, KdApiBaseSaveRequestDTO.buildOfSave(projectModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
     }
 
 
@@ -132,10 +132,10 @@ public class KdApiServiceImpl implements KdApiService {
     private String executeProjectModify(Object obj) {
         BmsProjectDict bmsProjectDict = (BmsProjectDict) obj;
         ProjectModel projectModel = new ProjectModel();
-        projectModel.setFMATERIALID(bmsProjectDict.getKdNumber());
+        projectModel.setFEntryID(bmsProjectDict.getKdNumber());
         projectModel.setFnumber(bmsProjectDict.getProjectCode());
-        projectModel.setFname(bmsProjectDict.getProjectName());
-        return KdRequestUtil.save(FormIdEnum.k62a1e2f33daa4a738462728197b95678, KdApiBaseSaveRequestDTO.buildOfModify(projectModel));
+        projectModel.setFDataValue(bmsProjectDict.getProjectName());
+        return KdRequestUtil.save(FormIdEnum.BOS_ASSISTANTDATA_DETAIL, KdApiBaseSaveRequestDTO.buildOfModify(projectModel));
     }
 
     /**
@@ -148,7 +148,7 @@ public class KdApiServiceImpl implements KdApiService {
         BmsProjectDict bmsProjectDict = (BmsProjectDict) obj;
         KdApiBaseDisableRequestDTO kdApiBaseDisableRequestDTO = new KdApiBaseDisableRequestDTO();
         kdApiBaseDisableRequestDTO.setIds(bmsProjectDict.getKdNumber());
-        return KdRequestUtil.disable(FormIdEnum.k62a1e2f33daa4a738462728197b95678, kdApiBaseDisableRequestDTO);
+        return KdRequestUtil.disable(FormIdEnum.BOS_ASSISTANTDATA_DETAIL, kdApiBaseDisableRequestDTO);
     }
 
 

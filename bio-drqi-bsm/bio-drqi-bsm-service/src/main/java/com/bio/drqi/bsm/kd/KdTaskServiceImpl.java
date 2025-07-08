@@ -53,7 +53,9 @@ public class KdTaskServiceImpl implements KdTaskService {
         List<BmsProjectDict> bmsProjectDictList = bmsProjectDictMapper.selectList(null);
         bmsProjectDictList.forEach(bmsProjectDict -> {
             if (bmsProjectDict.getKdNumber() == null) {
-                kdApiService.execute(OperateEnum.projectSave, bmsProjectDict, "beijing");
+                String kdNumber  = kdApiService.execute(OperateEnum.projectSave, bmsProjectDict, "beijing");
+                bmsProjectDict.setKdNumber(kdNumber);
+                bmsProjectDictMapper.updateById(bmsProjectDict);
             } else {
                 kdApiService.execute(OperateEnum.projectModify, bmsProjectDict, "beijing");
             }
@@ -104,7 +106,7 @@ public class KdTaskServiceImpl implements KdTaskService {
         log.info("*****************分组同步开始**************************");
         List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectList(null);
         for (BmsProductCategoryTb bmsProductCategoryTb : bmsProductCategoryTbList) {
-            if(bmsProductCategoryTb.getKdNumber()>0){
+            if (bmsProductCategoryTb.getKdNumber() > 0) {
                 String idStr = kdApiService.execute(OperateEnum.groupSave, bmsProductCategoryTb, "beijing");
                 bmsProductCategoryTb.setKdNumber(Integer.valueOf(idStr));
                 bmsProductCategoryTbMapper.updateById(bmsProductCategoryTb);

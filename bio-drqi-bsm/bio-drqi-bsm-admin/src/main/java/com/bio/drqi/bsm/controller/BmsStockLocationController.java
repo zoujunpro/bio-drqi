@@ -28,6 +28,18 @@ public class BmsStockLocationController {
     private BmsStockLocationService bmsStockLocationService;
 
 
+    /**
+     * 库房管理-根据单位查询库位信息
+     *
+     * @param unitCode
+     * @return
+     */
+    @GetMapping("queryByUnit")
+    @WebLog(desc = "库存管理-根据单位查询库位信息")
+    public ResponseResult<List<BmsStockLocationQueryByUnitRspDTO>> queryByUnit(@RequestParam String unitCode) {
+        return ResponseResult.getSuccess(bmsStockLocationService.queryByUnit(unitCode));
+
+    }
 
 
 

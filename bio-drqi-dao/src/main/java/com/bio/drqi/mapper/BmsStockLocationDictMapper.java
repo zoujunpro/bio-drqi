@@ -18,6 +18,10 @@ public interface BmsStockLocationDictMapper extends BaseMapper<BmsStockLocationD
 
     List<BmsStockLocationDict> selectAllByStockName(@Param("stockName") String stockName);
 
+
+    List<BmsStockLocationDict> selectAllByUnitCode(@Param("unitCode") String unitCode);
+
+
     List<BmsStockLocationDict> selectAllByStockCode(@Param("stockCode") String stockCode);
 
     BmsStockLocationDict selectOneByStockCodeAndLocationNumber(@Param("stockCode") String stockCode, @Param("locationNumber") String locationNumber);

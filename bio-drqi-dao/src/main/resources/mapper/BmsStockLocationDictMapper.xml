@@ -67,4 +67,11 @@
         where
         stock_code = #{stockCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByUnitCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_stock_location_dict
+        where
+        unit_code = #{unitCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

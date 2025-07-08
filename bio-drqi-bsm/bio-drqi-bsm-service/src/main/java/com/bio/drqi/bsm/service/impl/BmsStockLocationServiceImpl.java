@@ -41,6 +41,27 @@ public class BmsStockLocationServiceImpl implements BmsStockLocationService {
     private BmsProductStockTbMapper bmsProductStockTbMapper;
 
 
+
+
+    @Override
+    public List<BmsStockLocationQueryByUnitRspDTO> queryByUnit(String unitCode) {
+        List<BmsStockLocationQueryByUnitRspDTO> bmsStockLocationQueryByUnitRspDTOList = new ArrayList<>();
+        List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectAllByUnitCode(unitCode);
+        if (CollectionUtil.isNotEmpty(bmsStockLocationDictList)) {
+            Map<String, List<BmsStockLocationDict>> bmsStockLocationDictMap = bmsStockLocationDictList.stream().collect(Collectors.groupingBy(BmsStockLocationDict::getStockCode));
+            bmsStockLocationDictMap.forEach((stockCode, list) -> {
+                BmsStockLocationQueryByUnitRspDTO bmsStockLocationQueryByUnitRspDTO = new BmsStockLocationQueryByUnitRspDTO();
+                bmsStockLocationQueryByUnitRspDTO.setStockName(list.get(0).getStockName());
+                bmsStockLocationQueryByUnitRspDTO.setStockCode(stockCode);
+                bmsStockLocationQueryByUnitRspDTO.setStockLocationNumber(list.stream().map(BmsStockLocationDict::getLocationNumber).collect(Collectors.toList()));
+                bmsStockLocationQueryByUnitRspDTOList.add(bmsStockLocationQueryByUnitRspDTO);
+            });
+
+
+        }
+        return bmsStockLocationQueryByUnitRspDTOList;
+    }
+
     @Override
     public PageInfo<BmsStockLocationListPageRspDTO> listPage(BmsStockLocationListPageReqDTO bmsStockLocationListPageReqDTO) {
         PageHelper.startPage(bmsStockLocationListPageReqDTO.getPageNum(), bmsStockLocationListPageReqDTO.getPageSize());

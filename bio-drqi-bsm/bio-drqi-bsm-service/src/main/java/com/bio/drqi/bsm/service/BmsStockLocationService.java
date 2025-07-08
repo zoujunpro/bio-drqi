@@ -14,6 +14,10 @@ public interface BmsStockLocationService {
 
 
 
+    List<BmsStockLocationQueryByUnitRspDTO> queryByUnit(String unitCode);
+
+
+
     /**
      * 库房管理-分页查询
      *

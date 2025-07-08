@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 库房管理
+ * 库位管理
  */
 @RestController
 @RequestMapping("/bmsStockLocation")
@@ -32,7 +32,7 @@ public class BmsStockLocationController {
 
 
     /**
-     * 库房管理-分页查询
+     * 库位管理-分页查询
      *
      * @param bmsStockLocationListPageReqDTO
      * @return
@@ -45,7 +45,7 @@ public class BmsStockLocationController {
     }
 
     /**
-     * 库房管理-新增
+     * 库位管理-新增
      *
      * @param bmsStockLocationAddReqDTO
      * @return
@@ -60,7 +60,7 @@ public class BmsStockLocationController {
     }
 
     /**
-     * 库房管理-删除
+     * 库位管理-删除
      *
      * @param id
      * @return
@@ -76,7 +76,7 @@ public class BmsStockLocationController {
     }
 
     /**
-     * 库房管理-编辑(暂时不做)
+     * 库位管理-编辑(暂时不做)
      *
      * @param bmsStockLocationEditReqDTO
      * @return
@@ -90,7 +90,7 @@ public class BmsStockLocationController {
     }
 
     /**
-     * 库房管理-查询所有库房
+     * 库位管理-查询所有库房
      *
      * @return
      */

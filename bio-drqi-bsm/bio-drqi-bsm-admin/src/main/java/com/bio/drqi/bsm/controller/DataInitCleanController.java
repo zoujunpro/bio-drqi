@@ -11,8 +11,6 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.enums.CooperateFormEnum;
 import com.bio.drqi.bsm.kd.KdTaskService;
-import com.bio.drqi.bsm.kd.enums.OperateEnum;
-import com.bio.drqi.bsm.kd.service.KdApiService;
 import com.bio.drqi.bsm.req.BmsProductAddReqDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
 import com.bio.drqi.domain.*;
@@ -70,6 +68,9 @@ public class DataInitCleanController {
     @Resource
     private KdTaskService kdTaskService;
 
+    @Resource
+    private BmsStockDictMapper bmsStockDictMapper;
+
 
     @GetMapping("/synStockLocationSave")
     public ResponseResult<String> synKdStockLocation() {
@@ -97,6 +98,25 @@ public class DataInitCleanController {
         return ResponseResult.getSuccess("OK");
     }
 
+
+    @GetMapping("/cleanStock")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanStock() {
+        List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectList(null);
+        Map<String, List<BmsStockLocationDict>> listMap = bmsStockLocationDictList.stream().collect(Collectors.groupingBy(BmsStockLocationDict::getStockCode));
+        listMap.forEach((stockCode, list) -> {
+            BmsStockDict bmsStockDict = new BmsStockDict();
+            bmsStockDict.setStockName(list.get(0).getStockName());
+            bmsStockDict.setStockCode(stockCode);
+            bmsStockDict.setUnitCode(list.get(0).getUnitCode());
+            bmsStockDict.setKdNumber(null);
+            bmsStockDict.setCreateTime(new Date());
+            bmsStockDict.setCreateUserId(list.get(0).getCreateUserId());
+            bmsStockDict.setCreateUserName(list.get(0).getCreateUserName());
+            bmsStockDictMapper.insert(bmsStockDict);
+        });
+        return ResponseResult.getSuccess("ok");
+    }
 
 
     @GetMapping("/cleanStockDate")

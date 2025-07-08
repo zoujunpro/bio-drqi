@@ -160,11 +160,11 @@ public class KdApiServiceImpl implements KdApiService {
      * @return
      */
     private String executeStockSave(Object obj, String unitCode) {
-        BmsStockLocationDict bmsStockLocationDict = (BmsStockLocationDict) obj;
+        BmsStockDict bmsStockDict = (BmsStockDict) obj;
         StockModel stockModel = new StockModel();
         stockModel.setFStockId(0);
-        stockModel.setFnumber(bmsStockLocationDict.getLocationNumber());
-        stockModel.setFname(bmsStockLocationDict.getStockName());
+        stockModel.setFnumber(bmsStockDict.getStockCode());
+        stockModel.setFname(bmsStockDict.getStockName());
         stockModel.setFStockProperty("1");
         stockModel.setFStockStatusType("0,1,2,3,4,5,6,7,8");
         return KdRequestUtil.save(FormIdEnum.BD_STOCK, KdApiBaseSaveRequestDTO.buildOfSave(stockModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
@@ -177,11 +177,11 @@ public class KdApiServiceImpl implements KdApiService {
      * @return
      */
     private String executeStockModify(Object obj) {
-        BmsStockLocationDict bmsStockLocationDict = (BmsStockLocationDict) obj;
+        BmsStockDict bmsStockDict = (BmsStockDict) obj;
         StockModel stockModel = new StockModel();
-        stockModel.setFStockId(bmsStockLocationDict.getKdNumber());
-        stockModel.setFnumber(bmsStockLocationDict.getLocationNumber());
-        stockModel.setFname(bmsStockLocationDict.getStockName());
+        stockModel.setFStockId(bmsStockDict.getKdNumber());
+        stockModel.setFnumber(bmsStockDict.getStockCode());
+        stockModel.setFname(bmsStockDict.getStockName());
         return KdRequestUtil.save(FormIdEnum.BD_STOCK, KdApiBaseSaveRequestDTO.buildOfModify(stockModel));
 
     }
@@ -193,9 +193,9 @@ public class KdApiServiceImpl implements KdApiService {
      * @return
      */
     private String executeStockDisable(Object obj) {
-        BmsStockLocationDict bmsStockLocationDict = (BmsStockLocationDict) obj;
+        BmsStockDict bmsStockDict = (BmsStockDict) obj;
         KdApiBaseDisableRequestDTO kdApiBaseDisableRequestDTO = new KdApiBaseDisableRequestDTO();
-        kdApiBaseDisableRequestDTO.setIds(bmsStockLocationDict.getKdNumber());
+        kdApiBaseDisableRequestDTO.setIds(bmsStockDict.getKdNumber());
         return KdRequestUtil.disable(FormIdEnum.BD_STOCK, kdApiBaseDisableRequestDTO);
 
     }

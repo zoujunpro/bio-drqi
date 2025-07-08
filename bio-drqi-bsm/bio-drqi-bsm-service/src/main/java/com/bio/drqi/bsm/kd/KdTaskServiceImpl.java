@@ -33,7 +33,7 @@ public class KdTaskServiceImpl implements KdTaskService {
     private BmsSupplierTbMapper bmsSupplierTbMapper;
 
     @Resource
-    private BmsStockLocationDictMapper bmsStockLocationDictMapper;
+    private BmsStockDictMapper bmsStockDictMapper;
 
     @Resource
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
@@ -78,6 +78,7 @@ public class KdTaskServiceImpl implements KdTaskService {
                 } else {
                     String kdNumber = kdApiService.execute(OperateEnum.bmsSave, bmsBrandTb, "beijing");
                     bmsBrandTb.setKdNumber(Integer.valueOf(kdNumber));
+                    bmsBrandTbMapper.updateById(bmsBrandTb);
                 }
             } else {
                 kdApiService.execute(OperateEnum.bmsDisable, bmsBrandTb, "beijing");
@@ -90,11 +91,16 @@ public class KdTaskServiceImpl implements KdTaskService {
     public void synStockTask() {
         Long startTime = System.currentTimeMillis();
         log.info("*****************仓库同步开始**************************");
-        List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectList(null);
-        Map<String, List<BmsStockLocationDict>> listMap = bmsStockLocationDictList.stream().collect(Collectors.groupingBy(BmsStockLocationDict::getStockCode));
-        listMap.forEach((stockCode, list) -> {
-            kdApiService.execute(OperateEnum.stockSave, list.get(0), list.get(0).getUnitCode());
-        });
+        List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
+        for (BmsStockDict bmsStockDict:bmsStockDictList){
+            if (StringUtils.isNotEmpty(bmsStockDict.getKdNumber())) {
+                kdApiService.execute(OperateEnum.bmsModify, bmsStockDict, bmsStockDict.getUnitCode());
+            } else {
+                String kdNumber = kdApiService.execute(OperateEnum.bmsSave, bmsStockDict,  bmsStockDict.getUnitCode());
+                bmsStockDict.setKdNumber(kdNumber);
+                bmsStockDictMapper.updateById(bmsStockDict);
+            }
+        }
         log.info("*****************仓库同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
 
 

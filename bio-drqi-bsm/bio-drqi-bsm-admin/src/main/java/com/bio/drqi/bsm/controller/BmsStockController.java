@@ -5,6 +5,7 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsStockQueryByUnitRspDTO;
 import com.bio.drqi.bsm.service.BmsStockService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -40,7 +41,7 @@ public class BmsStockController {
      */
     @PostMapping("/add")
     @WebLog(desc = "库房管理-新增库房")
-    public ResponseResult<String> add(@RequestBody BmsStockAddReqDTO bmsStockAddReqDTO) {
+    public ResponseResult<String> add(@RequestBody @Validated BmsStockAddReqDTO bmsStockAddReqDTO) {
         bmsStockService.add(bmsStockAddReqDTO);
         return ResponseResult.getSuccess("ok");
 

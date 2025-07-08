@@ -27,4 +27,27 @@
         where
         stock_name = #{stockName,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByUnitCodeOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_stock_dict
+        where
+        unit_code = #{unitCode,jdbcType=VARCHAR}
+        order by id desc
+    </select>
+    <select id="selectOneByStockNameAndUnitCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_stock_dict
+        where
+        stock_name = #{stockName,jdbcType=VARCHAR}
+        AND unit_code = #{unitCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneByStockCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_stock_dict
+        where
+        stock_code = #{stockCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

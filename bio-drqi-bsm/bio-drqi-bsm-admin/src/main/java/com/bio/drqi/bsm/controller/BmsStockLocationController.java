@@ -8,7 +8,6 @@ import com.bio.drqi.bsm.req.BmsStockLocationEditReqDTO;
 import com.bio.drqi.bsm.req.BmsStockLocationListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationListAllStockRspDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationListPageRspDTO;
-import com.bio.drqi.bsm.rsp.BmsStockLocationQueryByUnitRspDTO;
 import com.bio.drqi.bsm.service.BmsStockLocationService;
 import com.bio.drqi.common.aspect.RequestLog;
 import com.github.pagehelper.PageInfo;
@@ -28,18 +27,8 @@ public class BmsStockLocationController {
     @Resource
     private BmsStockLocationService bmsStockLocationService;
 
-    /**
-     * 库房管理-根据单位查询库位信息
-     *
-     * @param unitCode
-     * @return
-     */
-    @GetMapping("queryByUnit")
-    @WebLog(desc = "库存管理-根据单位查询库位信息")
-    public ResponseResult<List<BmsStockLocationQueryByUnitRspDTO>> queryByUnit(@RequestParam String unitCode) {
-        return ResponseResult.getSuccess(bmsStockLocationService.queryByUnit(unitCode));
 
-    }
+
 
 
     /**

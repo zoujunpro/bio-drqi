@@ -10,7 +10,6 @@
             <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
             <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
             <result property="stockName" column="stock_name" jdbcType="VARCHAR"/>
-            <result property="kdNumber" column="kd_number" jdbcType="INTEGER"/>
             <result property="locationNumber" column="location_number" jdbcType="VARCHAR"/>
             <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
             <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
@@ -18,17 +17,11 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,unit_code,stock_code,kd_number,
+        id,unit_code,stock_code,
         stock_name,location_number,create_user_id,
         create_user_name,create_time
     </sql>
-    <select id="selectAllByUnitCode" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from bms_stock_location_dict
-        where
-        unit_code = #{unitCode,jdbcType=VARCHAR}
-    </select>
+
     <select id="selectOneByUnitCodeAndLocationNumber" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -66,5 +59,12 @@
         where
         stock_code = #{stockCode,jdbcType=VARCHAR}
         AND location_number = #{locationNumber,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByStockCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_stock_location_dict
+        where
+        stock_code = #{stockCode,jdbcType=VARCHAR}
     </select>
 </mapper>

@@ -80,5 +80,15 @@
         AND unit_code = #{unitCode,jdbcType=VARCHAR}
         AND batch_no = #{batchNo,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByStockLocationNumberIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_tb
+        where
+        stock_location_number in
+        <foreach collection="stockLocationNumberList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 
 </mapper>

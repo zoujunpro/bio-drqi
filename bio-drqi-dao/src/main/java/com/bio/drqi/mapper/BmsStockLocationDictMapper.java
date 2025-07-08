@@ -14,11 +14,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @Entity com.bio.drqi.domain.BmsStockLocationDict
  */
 public interface BmsStockLocationDictMapper extends BaseMapper<BmsStockLocationDict> {
-    List<BmsStockLocationDict> selectAllByUnitCode(@Param("unitCode") String unitCode);
-
     List<BmsStockLocationDict> selectSelective(BmsStockLocationDict bmsStockLocationDict);
 
     List<BmsStockLocationDict> selectAllByStockName(@Param("stockName") String stockName);
+
+    List<BmsStockLocationDict> selectAllByStockCode(@Param("stockCode") String stockCode);
 
     BmsStockLocationDict selectOneByStockCodeAndLocationNumber(@Param("stockCode") String stockCode, @Param("locationNumber") String locationNumber);
 

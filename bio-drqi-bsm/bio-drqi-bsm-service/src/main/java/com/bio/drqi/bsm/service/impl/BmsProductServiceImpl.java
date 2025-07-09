@@ -89,9 +89,6 @@ public class BmsProductServiceImpl implements BmsProductService {
 
         List<BmsProductQueryListRspDTO> result = BeanUtils.copyListProperties(bmsProductTbLit, BmsProductQueryListRspDTO.class);
         if (CollectionUtil.isNotEmpty(result)) {
-            //类性
-            List<BmsProductTypeTb> bmsProductTypeTbList = bmsProductTypeTbMapper.selectSelective(null);
-            Map<String, String> bmsProductTypeTbMap = bmsProductTypeTbList.stream().collect(Collectors.toMap(BmsProductTypeTb::getProductTypeCode, BmsProductTypeTb::getProductTypeName));
 
             //类别
             List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
@@ -99,7 +96,6 @@ public class BmsProductServiceImpl implements BmsProductService {
 
             result.forEach(bmsProductQueryListRspDTO -> {
                 bmsProductQueryListRspDTO.setProductCategoryName(bmsProductCategoryMap.get(bmsProductQueryListRspDTO.getProductCategoryCode()));
-                bmsProductQueryListRspDTO.setProductTypeName(bmsProductTypeTbMap.get(bmsProductQueryListRspDTO.getProductTypeCode()));
             });
         }
         return result;

@@ -65,7 +65,7 @@ public class BmsStockController {
      * @param id
      * @return
      */
-    @PostMapping("/delete")
+    @GetMapping("/delete")
     @WebLog(desc = "库房管理-删除库房")
     public ResponseResult<String> delete(@RequestParam Integer id) {
         bmsStockService.delete(id);

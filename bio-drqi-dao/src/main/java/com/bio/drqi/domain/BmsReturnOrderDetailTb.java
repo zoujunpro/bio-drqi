@@ -133,6 +133,8 @@ public class BmsReturnOrderDetailTb implements Serializable {
      */
     private String taxRate;
 
+    private Integer inStockId;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

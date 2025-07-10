@@ -10,14 +10,8 @@ import com.bio.drqi.bsm.rsp.BmsProductStockInLogDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogQueryByTaskNumRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockInService;
-import com.bio.drqi.domain.BmsOrderDetailTb;
-import com.bio.drqi.domain.BmsOrderTb;
-import com.bio.drqi.domain.BmsProductStockInLog;
-import com.bio.drqi.domain.BmsReturnOrderDetailTb;
-import com.bio.drqi.mapper.BmsOrderDetailTbMapper;
-import com.bio.drqi.mapper.BmsOrderTbMapper;
-import com.bio.drqi.mapper.BmsProductStockInLogMapper;
-import com.bio.drqi.mapper.BmsReturnOrderDetailTbMapper;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +39,9 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
 
     @Resource
     private BmsOrderTbMapper bmsOrderTbMapper;
+
+    @Resource
+    private BmsProductStockTbMapper bmsProductStockTbMapper;
 
     @Override
     public PageInfo<BmsProductStockInLogListPageRspDTO> listPage(BmsProductStockInLogListPageReqDTO bmsProductStockInLogListPageReqDTO) {
@@ -81,7 +78,13 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
         if (bmsProductStockInLog.getStoreNumber() < bmsProductStockInLogReturnStockReqDTO.getReturnNumber()) {
             throw new BusinessException("退货数量过多，最多可退货：" + bmsProductStockInLog.getStoreNumber());
         }
-
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo());
+        if(bmsProductStockTb==null){
+            throw new BusinessException("库存中不存在此耗材");
+        }
+        if(bmsProductStockTb.getCurrentStockNumber()<bmsProductStockInLogReturnStockReqDTO.getReturnNumber()){
+            throw new BusinessException("库存台账异常，库存中此耗材数量不足,当前剩余库存："+bmsProductStockTb.getCurrentStockNumber());
+        }
         //更新入库记录退货数量
         if (bmsProductStockInLog.getReturnNumber() == null) {
             bmsProductStockInLog.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
@@ -105,8 +108,19 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
             bmsOrderTb.setOverFlag(BioBsmContents.Y);
             bmsOrderTbMapper.updateById(bmsOrderTb);
         }
+        //更新库存数量
+        bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber()-bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
+        if(bmsProductStockTb.getReturnNumber()==null){
+            bmsProductStockTb.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
+        }else {
+            bmsProductStockTb.setReturnNumber(bmsProductStockTb.getReturnNumber()+bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
+        }
+        bmsProductStockTbMapper.updateById(bmsProductStockTb);
+
+
+
         //记录退货日志
-        BmsReturnOrderDetailTb bmsReturnOrderDetailTb=new BmsReturnOrderDetailTb();
+        BmsReturnOrderDetailTb bmsReturnOrderDetailTb = new BmsReturnOrderDetailTb();
         bmsReturnOrderDetailTb.setOrderDetailNum(bmsProductStockInLog.getOrderDetailNum());
         bmsReturnOrderDetailTb.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
         bmsReturnOrderDetailTb.setReturnAmount(new BigDecimal(bmsProductStockInLogReturnStockReqDTO.getReturnNumber()).multiply(bmsProductStockInLog.getProductPrice()));

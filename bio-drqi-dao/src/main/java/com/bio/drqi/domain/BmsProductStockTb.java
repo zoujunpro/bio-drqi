@@ -108,6 +108,8 @@ public class BmsProductStockTb implements Serializable {
 
     private String expirationDate;
 
+    private Integer returnNumber;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

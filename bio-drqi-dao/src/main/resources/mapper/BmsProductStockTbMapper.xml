@@ -15,6 +15,7 @@
         <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
         <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
         <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
+        <result property="returnNumber" column="return_number" jdbcType="INTEGER"/>
         <result property="totalStoreNumber" column="total_store_number" jdbcType="INTEGER"/>
         <result property="currentStockNumber" column="current_stock_number" jdbcType="INTEGER"/>
         <result property="totalOutNumber" column="total_out_number" jdbcType="INTEGER"/>
@@ -31,7 +32,7 @@
         id
         ,product_name,product_out_code,
         product_category_code,product_type_code,brand_code,
-        brand_name,product_specs,batch_no,
+        brand_name,product_specs,batch_no,return_number,
         total_store_number,current_stock_number,total_out_number,
         unit_code,stock_location_number,product_inner_code,supplier_code,supplier_name,unique_code,produce_date,expiration_date
     </sql>

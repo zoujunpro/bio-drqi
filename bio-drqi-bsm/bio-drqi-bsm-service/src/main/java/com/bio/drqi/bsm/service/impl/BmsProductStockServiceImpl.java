@@ -11,7 +11,9 @@ import com.bio.drqi.bsm.rsp.BmsProductStockListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockService;
 import com.bio.drqi.domain.BmsProductStockTb;
+import com.bio.drqi.domain.BmsStockDict;
 import com.bio.drqi.mapper.BmsProductStockTbMapper;
+import com.bio.drqi.mapper.BmsStockDictMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,13 +31,24 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
     @Resource
     private BmsProductStockTbMapper bmsProductStockTbMapper;
 
+
+    @Resource
+    private BmsStockDictMapper bmsStockDictMapper;
+
     @Override
     public PageInfo<BmsProductStockListPageRspDTO> listPage(BmsProductStockListPageReqDTO bmsProductStockListPageReqDTO) {
         PageHelper.startPage(bmsProductStockListPageReqDTO.getPageNum(), bmsProductStockListPageReqDTO.getPageSize());
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(BeanUtils.copyProperties(bmsProductStockListPageReqDTO, BmsProductStockTb.class));
         PageInfo<BmsProductStockTb> srcPageInfo = new PageInfo<>(bmsProductStockTbList);
-
-        return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsProductStockListPageRspDTO.class);
+        PageInfo<BmsProductStockListPageRspDTO> targetPage = BeanUtils.copyPageInfoProperties(srcPageInfo, BmsProductStockListPageRspDTO.class);
+        if (CollectionUtil.isNotEmpty(targetPage.getList())) {
+            List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
+            Map<String, String> bmsStockDictMap = bmsStockDictList.stream().collect(Collectors.toMap(BmsStockDict::getStockCode, BmsStockDict::getStockName));
+            targetPage.getList().forEach(bmsProductStockListPageRspDTO -> {
+                bmsProductStockListPageRspDTO.setStockName(bmsStockDictMap.get(bmsProductStockListPageRspDTO.getStockCode()));
+            });
+        }
+        return targetPage;
     }
 
     @Override
@@ -43,7 +57,10 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         if (bmsProductStockTb == null) {
             throw new BusinessException("数据找不到");
         }
-        return BeanUtils.copyProperties(bmsProductStockTb, BmsProductStockDetailRspDTO.class);
+        BmsProductStockDetailRspDTO bmsProductStockDetailRspDTO = BeanUtils.copyProperties(bmsProductStockTb, BmsProductStockDetailRspDTO.class);
+        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsProductStockDetailRspDTO.getStockCode());
+        bmsProductStockDetailRspDTO.setStockName(bmsStockDict != null ? bmsStockDict.getStockName() : null);
+        return bmsProductStockDetailRspDTO;
     }
 
     @Override
@@ -64,7 +81,7 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
     @Override
     public void editDate(BmsProductStockEditDateReqDTO bmsProductStockEditDateReqDTO) {
         BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectById(bmsProductStockEditDateReqDTO.getId());
-        if(bmsProductStockTb==null){
+        if (bmsProductStockTb == null) {
             throw new BusinessException("不存在此库存");
         }
         bmsProductStockTb.setExpirationDate(bmsProductStockEditDateReqDTO.getExpirationDate());

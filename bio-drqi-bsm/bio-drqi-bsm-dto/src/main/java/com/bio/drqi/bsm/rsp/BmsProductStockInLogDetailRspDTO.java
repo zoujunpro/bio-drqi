@@ -119,4 +119,6 @@ public class BmsProductStockInLogDetailRspDTO {
 
     private String stockCode;
 
+    private String stockName;
+
 }

@@ -15,4 +15,6 @@ public interface BmsStockService {
     void edit(BmsStockEditReqDTO bmsStockEditReqDTO);
 
     void delete(Integer id);
+
+
 }

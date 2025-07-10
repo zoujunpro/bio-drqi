@@ -114,4 +114,6 @@ public class BmsProductStockOutLogDetailRspDTO {
 
     private String stockCode;
 
+    private String stockName;
+
 }

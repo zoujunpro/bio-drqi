@@ -1,5 +1,6 @@
 package com.bio.drqi.bsm.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
@@ -9,6 +10,7 @@ import com.bio.drqi.bsm.req.BmsProductStockInLogReturnStockReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogQueryByTaskNumRspDTO;
+import com.bio.drqi.bsm.rsp.BmsProductStockOutLogDetailRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockInService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
@@ -22,6 +24,8 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -43,18 +47,32 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
     @Resource
     private BmsProductStockTbMapper bmsProductStockTbMapper;
 
+    @Resource
+    private BmsStockDictMapper bmsStockDictMapper;
+
     @Override
     public PageInfo<BmsProductStockInLogListPageRspDTO> listPage(BmsProductStockInLogListPageReqDTO bmsProductStockInLogListPageReqDTO) {
         PageHelper.startPage(bmsProductStockInLogListPageReqDTO.getPageNum(), bmsProductStockInLogListPageReqDTO.getPageSize());
         List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BeanUtils.copyProperties(bmsProductStockInLogListPageReqDTO, BmsProductStockInLog.class));
         PageInfo<BmsProductStockInLog> srcPageInfo = new PageInfo<>(bmsProductStockInLogList);
-        return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsProductStockInLogListPageRspDTO.class);
+        PageInfo<BmsProductStockInLogListPageRspDTO> targetPage= BeanUtils.copyPageInfoProperties(srcPageInfo, BmsProductStockInLogListPageRspDTO.class);
+        if (CollectionUtil.isNotEmpty(targetPage.getList())) {
+            List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
+            Map<String, String> bmsStockDictMap = bmsStockDictList.stream().collect(Collectors.toMap(BmsStockDict::getStockCode, BmsStockDict::getStockName));
+            targetPage.getList().forEach(bmsProductStockInLogListPageRspDTO -> {
+                bmsProductStockInLogListPageRspDTO.setStockName(bmsStockDictMap.get(bmsProductStockInLogListPageRspDTO.getStockCode()));
+            });
+        }
+        return targetPage;
     }
 
     @Override
     public BmsProductStockInLogDetailRspDTO detail(Integer id) {
         BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectById(id);
-        return BeanUtils.copyProperties(bmsProductStockInLog, BmsProductStockInLogDetailRspDTO.class);
+        BmsProductStockInLogDetailRspDTO bmsProductStockOutLogDetailRspDTO= BeanUtils.copyProperties(bmsProductStockInLog, BmsProductStockInLogDetailRspDTO.class);
+        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsProductStockInLog.getStockCode());
+        bmsProductStockOutLogDetailRspDTO.setStockName(bmsStockDict != null ? bmsStockDict.getStockName() : null);
+        return bmsProductStockOutLogDetailRspDTO;
     }
 
     @Override

@@ -39,6 +39,7 @@ public class BmsStockServiceImpl implements BmsStockService {
     @Resource
     private BmsProductStockTbMapper bmsProductStockTbMapper;
 
+
     @Override
     public List<BmsStockQueryByUnitRspDTO> queryStockByUnit(String unitCode) {
         List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectAllByUnitCodeOrderByIdDesc(unitCode);

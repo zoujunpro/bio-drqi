@@ -90,4 +90,5 @@ public class BmsProductStockDetailRspDTO {
 
     private String stockCode;
 
+    private String stockName;
 }

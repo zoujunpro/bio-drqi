@@ -133,6 +133,8 @@ public class BmsProductStockOutLog implements Serializable {
 
     private String expirationDate;
 
+    private String stockCode;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -27,6 +27,8 @@
             <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
             <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
             <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
+            <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -36,7 +38,7 @@
         batch_no,out_number,apply_user_id,
         apply_user_name,create_time,task_num,
         remark,out_type,unit_code,
-        supplier_name,supplier_code,unique_code,produce_date,expiration_date
+        supplier_name,supplier_code,unique_code,produce_date,expiration_date,stock_code
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsProductStockOutLog" resultMap="BaseResultMap">
         select
@@ -65,6 +67,8 @@
             <if test="uniqueCode != null and uniqueCode!=''">and unique_code=#{uniqueCode,jdbcType=VARCHAR}</if>
             <if test="produceDate != null"> and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
             <if test="expirationDate != null"> and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
+            <if test="stockCode != null and stockCode!=''"> and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
+
         </where>
         order by id desc
     </select>

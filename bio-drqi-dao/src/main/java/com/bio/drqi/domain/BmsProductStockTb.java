@@ -110,6 +110,8 @@ public class BmsProductStockTb implements Serializable {
 
     private Integer returnNumber;
 
+    private String stockCode;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

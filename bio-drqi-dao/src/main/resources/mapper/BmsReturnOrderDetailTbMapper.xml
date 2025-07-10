@@ -29,6 +29,7 @@
         <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
         <result property="taxRate" column="tax_rate" jdbcType="VARCHAR"/>
         <result property="inStockId" column="in_stock_id" jdbcType="VARCHAR"/>
+        <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
 
     </resultMap>
 
@@ -41,7 +42,7 @@
         brand_code,brand_name,batch_no,
         unit_code,supplier_name,supplier_code,
         product_inner_code,expiration_date,produce_date,
-        product_out_code,tax_rate,in_stock_id
+        product_out_code,tax_rate,in_stock_id,stock_code
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsReturnOrderDetailTb" resultMap="BaseResultMap">
         select
@@ -70,6 +71,8 @@
             <if test="produceDate != null"> and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
             <if test="productOutCode != null and productOutCode!=''"> and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
             <if test="taxRate != null"> and tax_rate=#{taxRate,jdbcType=VARCHAR}</if>
+            <if test="stockCode != null and stockCode!=''"> and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
+
         </where>
         order by id desc
     </select>

@@ -78,7 +78,7 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
         if (bmsProductStockInLog.getStoreNumber() < bmsProductStockInLogReturnStockReqDTO.getReturnNumber()) {
             throw new BusinessException("退货数量过多，最多可退货：" + bmsProductStockInLog.getStoreNumber());
         }
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo());
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCode(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo(),bmsProductStockInLog.getStockCode());
         if(bmsProductStockTb==null){
             throw new BusinessException("库存中不存在此耗材");
         }
@@ -144,6 +144,7 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
         bmsReturnOrderDetailTb.setProductOutCode(bmsProductStockInLog.getProductOutCode());
         bmsReturnOrderDetailTb.setTaxRate(bmsProductStockInLog.getTaxRate());
         bmsReturnOrderDetailTb.setInStockId(bmsProductStockInLog.getId());
+        bmsReturnOrderDetailTb.setStockCode(bmsProductStockInLog.getStockCode());
         bmsReturnOrderDetailTbMapper.insert(bmsReturnOrderDetailTb);
 
 

@@ -29,6 +29,9 @@ public class BmsProductOutDTO {
     @NotNull(message = "参数缺失：出库数量")
     private Integer number;
 
+    @NotNull(message = "参数缺失：所在库房")
+    private String stockCode;
+
     /**
      * 备注
      */

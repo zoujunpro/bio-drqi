@@ -61,7 +61,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         if (BioBsmContents.Y.equals(bmsOrderTb.getOverFlag())) {
             throw new BusinessException("该订单已经完成");
         }
-        if(CollectionUtil.isEmpty(bmsProductInputDTO.getOrderDetailList())){
+        if (CollectionUtil.isEmpty(bmsProductInputDTO.getOrderDetailList())) {
             throw new BusinessException("没有入库数据");
         }
 
@@ -110,6 +110,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             BmsProductInputDTO bmsProductInputDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsProductInputDTO.class);
             for (BmsProductInputDTO.OrderDetail inputOrderDetail : bmsProductInputDTO.getOrderDetailList()) {
+                ValidatorUtil.validator(inputOrderDetail);
                 BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectOneByOrderDetailNum(inputOrderDetail.getOrderDetailNum());
                 String batchNo = StringUtils.isEmpty(inputOrderDetail.getBatchNo()) ? "N/A" : inputOrderDetail.getBatchNo();
                 // 入库库存updateOrInsertBmsProductStock
@@ -148,7 +149,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
 
 
     private BmsProductStockTb updateOrInsertBmsProductStock(BmsProductInputDTO.OrderDetail inputOrderDetail, BmsOrderDetailTb bmsOrderDetailTb, String batchNo) {
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsOrderDetailTb.getProductInnerCode(), bmsOrderDetailTb.getApplyUnitCode(), batchNo);
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCode(bmsOrderDetailTb.getProductInnerCode(), bmsOrderDetailTb.getApplyUnitCode(), batchNo, inputOrderDetail.getStockCode());
         if (bmsProductStockTb == null) {
             bmsProductStockTb = new BmsProductStockTb();
             bmsProductStockTb.setProductName(bmsOrderDetailTb.getProductName());
@@ -171,6 +172,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
             bmsProductStockTb.setUniqueCode(IdUtils.simpleUUID());
             bmsProductStockTb.setProduceDate(inputOrderDetail.getProduceDate());
             bmsProductStockTb.setExpirationDate(inputOrderDetail.getExpirationDate());
+            bmsProductStockTb.setStockCode(inputOrderDetail.getStockCode());
             bmsProductStockTbMapper.insert(bmsProductStockTb);
         } else {
             bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() + inputOrderDetail.getNumber());
@@ -218,6 +220,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockInLog.setProduceDate(inputOrderDetail.getProduceDate());
         bmsProductStockInLog.setExpirationDate(inputOrderDetail.getExpirationDate());
         bmsProductStockInLog.setTaxRate(bmsOrderDetailTb.getTaxRate());
+        bmsProductStockInLog.setStockCode(inputOrderDetail.getStockCode());
         bmsProductStockInLogMapper.insert(bmsProductStockInLog);
     }
 

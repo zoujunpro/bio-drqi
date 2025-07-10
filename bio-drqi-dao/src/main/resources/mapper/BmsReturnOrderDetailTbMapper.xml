@@ -15,12 +15,29 @@
             <result property="productPrice" column="product_price" jdbcType="DECIMAL"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="orderNum" column="order_num" jdbcType="VARCHAR"/>
+            <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
+            <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
+            <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
+            <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
+            <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
+            <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
+            <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
+            <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
+            <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
+            <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
+            <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
+            <result property="taxRate" column="tax_rate" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,order_detail_num,return_number,
         return_amount,apply_user_id,apply_user_name,
         product_name,product_price,remark,
-        create_time
+        create_time,order_num,product_specs,
+        brand_code,brand_name,batch_no,
+        unit_code,supplier_name,supplier_code,
+        product_inner_code,expiration_date,produce_date,
+        product_out_code,tax_rate
     </sql>
 </mapper>

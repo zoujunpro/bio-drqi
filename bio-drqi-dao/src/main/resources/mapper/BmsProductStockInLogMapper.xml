@@ -32,6 +32,7 @@
             <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
             <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
             <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
+            <result property="taxRate" column="tax_rate" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -43,7 +44,7 @@
         apply_user_id,apply_user_name,create_time,
         task_num,order_num,stock_location_number,
         unit_code,supplier_name,supplier_code,
-        unique_code,produce_date,expiration_date
+        unique_code,produce_date,expiration_date,tax_rate
     </sql>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsProductStockInLog">
         select
@@ -90,6 +91,13 @@
         task_num = #{taskNum,jdbcType=VARCHAR}
         AND product_inner_code = #{productInnerCode,jdbcType=VARCHAR}
         AND batch_no = #{batchNo,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneByOrderDetailNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_in_log
+        where
+        order_detail_num = #{orderDetailNum,jdbcType=VARCHAR}
     </select>
 
 </mapper>

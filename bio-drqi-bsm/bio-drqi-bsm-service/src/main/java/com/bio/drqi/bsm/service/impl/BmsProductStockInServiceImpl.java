@@ -1,13 +1,17 @@
 package com.bio.drqi.bsm.service.impl;
 
+import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.bsm.req.BmsProductStockInLogListPageReqDTO;
+import com.bio.drqi.bsm.req.BmsProductStockInLogReturnStockReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogQueryByTaskNumRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockInService;
 import com.bio.drqi.domain.BmsProductStockInLog;
+import com.bio.drqi.domain.BmsReturnOrderDetailTb;
 import com.bio.drqi.mapper.BmsProductStockInLogMapper;
+import com.bio.drqi.mapper.BmsReturnOrderDetailTbMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +27,9 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
 
     @Resource
     private BmsProductStockInLogMapper bmsProductStockInLogMapper;
+
+    @Resource
+    private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
 
     @Override
     public PageInfo<BmsProductStockInLogListPageRspDTO> listPage(BmsProductStockInLogListPageReqDTO bmsProductStockInLogListPageReqDTO) {
@@ -42,5 +49,13 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
     public List<BmsProductStockInLogQueryByTaskNumRspDTO> queryByTaskNum(String taskNum) {
         List<BmsProductStockInLog> bmsProductStockInLogList =  bmsProductStockInLogMapper.selectAllByTaskNum(taskNum);
         return BeanUtils.copyListProperties(bmsProductStockInLogList, BmsProductStockInLogQueryByTaskNumRspDTO.class);
+    }
+
+    @Override
+    public void returnStock(BmsProductStockInLogReturnStockReqDTO bmsProductStockInLogReturnStockReqDTO) {
+       BmsProductStockInLog bmsProductStockInLog= bmsProductStockInLogMapper.selectOneByOrderDetailNum(bmsProductStockInLogReturnStockReqDTO.getOrderDetailNum());
+       if(bmsProductStockInLog==null){
+           throw new BusinessException("不存在此商品");
+       }
     }
 }

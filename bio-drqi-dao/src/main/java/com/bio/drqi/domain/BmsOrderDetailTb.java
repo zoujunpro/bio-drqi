@@ -182,6 +182,8 @@ public class BmsOrderDetailTb implements Serializable {
 
     private String expectedDeliveryTime;
 
+    private String taxRate;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

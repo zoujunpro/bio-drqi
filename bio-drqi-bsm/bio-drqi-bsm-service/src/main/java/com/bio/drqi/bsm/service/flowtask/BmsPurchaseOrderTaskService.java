@@ -152,7 +152,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setApplyUnitCode(bmsOrderTb.getApplyUnitCode());
                 bmsOrderDetailTb.setApplyUnitName(bmsOrderTb.getApplyUnitName());
                 bmsOrderDetailTb.setPurchaseDepartment(bmsOrderTb.getPurchaseDepartment());
-
+                bmsOrderDetailTb.setTaxRate(product.getTaxRate());
                 bmsOrderDetailTb.setExpectedDeliveryTime(product.getExpectedDeliveryTime());
                 bmsOrderDetailTb.setDemandUsageTime(bmsOrderTb.getDemandUsageTime());
                 bmsOrderDetailTb.setDemandRequireTime(bmsOrderTb.getDemandRequireTime());

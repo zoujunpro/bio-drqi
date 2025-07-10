@@ -1,10 +1,14 @@
 package com.bio.drqi.bsm.service;
 
+import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.bsm.req.BmsProductStockInLogListPageReqDTO;
+import com.bio.drqi.bsm.req.BmsProductStockInLogReturnStockReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogQueryByTaskNumRspDTO;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -21,5 +25,8 @@ public interface BmsProductStockInService {
     BmsProductStockInLogDetailRspDTO detail(Integer id);
 
     List<BmsProductStockInLogQueryByTaskNumRspDTO> queryByTaskNum(String taskNum);
+
+
+    void returnStock(BmsProductStockInLogReturnStockReqDTO bmsProductStockInLogReturnStockReqDTO);
 
 }

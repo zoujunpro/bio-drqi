@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
 * @author zou'jun
 * @description 针对表【bms_return_order_detail_tb(退货订单明细表)】的数据库操作Mapper
-* @createDate 2025-02-27 10:16:10
+* @createDate 2025-07-10 13:50:32
 * @Entity com.bio.drqi.domain.BmsReturnOrderDetailTb
 */
 public interface BmsReturnOrderDetailTbMapper extends BaseMapper<BmsReturnOrderDetailTb> {

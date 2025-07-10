@@ -74,6 +74,8 @@ public class BmsProjectServiceImpl implements BmsProjectService {
             throw new BusinessException("找不到此项目信息");
         }
         bmsProjectDict.setProjectName(bmsProjectEditReqDTO.getProjectName());
+        bmsProjectDict.setKdProjectName(bmsProjectEditReqDTO.getKdProjectName());
+        bmsProjectDict.setKdProjectCode(bmsProjectEditReqDTO.getKdProjectCode());
         try {
             bmsProjectDictMapper.updateById(bmsProjectDict);
         } catch (DuplicateKeyException e) {

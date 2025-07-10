@@ -217,6 +217,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockInLog.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
         bmsProductStockInLog.setProduceDate(inputOrderDetail.getProduceDate());
         bmsProductStockInLog.setExpirationDate(inputOrderDetail.getExpirationDate());
+        bmsProductStockInLog.setTaxRate(bmsOrderDetailTb.getTaxRate());
         bmsProductStockInLogMapper.insert(bmsProductStockInLog);
     }
 

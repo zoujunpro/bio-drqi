@@ -166,5 +166,7 @@ public class BmsOrderDetailListPageRspDTO {
 
     private String taxRate;
 
+    private Integer returnNumber;
+
 
 }

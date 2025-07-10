@@ -155,6 +155,8 @@ public class BmsProductStockInLog implements Serializable {
 
     private String taxRate;
 
+    private Integer returnNumber;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

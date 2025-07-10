@@ -7,7 +7,8 @@ public class BmsProductStockInLogReturnStockReqDTO {
 
     private String  orderDetailNum;
 
-    private Integer num;
 
-    private String returnNumber;
+    private Integer returnNumber;
+
+    private String remark;
 }

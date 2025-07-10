@@ -33,6 +33,7 @@
             <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
             <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
             <result property="taxRate" column="tax_rate" jdbcType="VARCHAR"/>
+            <result property="returnNumber" column="return_number" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -44,7 +45,7 @@
         apply_user_id,apply_user_name,create_time,
         task_num,order_num,stock_location_number,
         unit_code,supplier_name,supplier_code,
-        unique_code,produce_date,expiration_date,tax_rate
+        unique_code,produce_date,expiration_date,tax_rate,return_number
     </sql>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsProductStockInLog">
         select

@@ -1,7 +1,10 @@
 package com.bio.drqi.mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.BmsReturnOrderDetailTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
 * @author zou'jun
@@ -10,6 +13,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.drqi.domain.BmsReturnOrderDetailTb
 */
 public interface BmsReturnOrderDetailTbMapper extends BaseMapper<BmsReturnOrderDetailTb> {
+
+    List<BmsReturnOrderDetailTb> selectSelective(BmsReturnOrderDetailTb bmsReturnOrderDetailTb);
+
+    List<BmsReturnOrderDetailTb> selectAllByOrderDetailNum(@Param("orderDetailNum") String orderDetailNum);
 
 }
 

@@ -114,4 +114,7 @@ public class BmsProductStockInLogDetailRspDTO {
     private String expirationDate;
 
     private String taxRate;
+
+    private Integer returnNumber;
+
 }

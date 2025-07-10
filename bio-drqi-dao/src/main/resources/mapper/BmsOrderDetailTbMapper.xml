@@ -46,6 +46,8 @@
             <result property="demandUsageTime" column="demand_usage_time" jdbcType="VARCHAR"/>
             <result property="expectedDeliveryTime" column="expected_delivery_time" jdbcType="VARCHAR"/>
             <result property="taxRate" column="tax_rate" jdbcType="VARCHAR"/>
+            <result property="returnNumber" column="return_number" jdbcType="INTEGER"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -59,7 +61,7 @@
         apply_user_name,task_num,product_type_code,product_type_name,picture_urls,
         purchase_date,apply_unit_code,apply_unit_name,purchase_department,receive_number,
         payment_voucher_urls,contract_number,invoice_urls,report_account_time,contract_urls,
-        demand_require_time,demand_usage_time,expected_delivery_time,tax_rate
+        demand_require_time,demand_usage_time,expected_delivery_time,tax_rate,return_number
     </sql>
     <select id="selectAllByOrderNum" resultMap="BaseResultMap">
         select

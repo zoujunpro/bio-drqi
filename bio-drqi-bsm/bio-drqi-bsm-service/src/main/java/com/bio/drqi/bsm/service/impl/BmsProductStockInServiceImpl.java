@@ -1,23 +1,32 @@
 package com.bio.drqi.bsm.service.impl;
 
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.req.BmsProductStockInLogListPageReqDTO;
 import com.bio.drqi.bsm.req.BmsProductStockInLogReturnStockReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogQueryByTaskNumRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockInService;
+import com.bio.drqi.domain.BmsOrderDetailTb;
+import com.bio.drqi.domain.BmsOrderTb;
 import com.bio.drqi.domain.BmsProductStockInLog;
 import com.bio.drqi.domain.BmsReturnOrderDetailTb;
+import com.bio.drqi.mapper.BmsOrderDetailTbMapper;
+import com.bio.drqi.mapper.BmsOrderTbMapper;
 import com.bio.drqi.mapper.BmsProductStockInLogMapper;
 import com.bio.drqi.mapper.BmsReturnOrderDetailTbMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 
@@ -31,6 +40,12 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
     @Resource
     private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
 
+    @Resource
+    private BmsOrderDetailTbMapper bmsOrderDetailTbMapper;
+
+    @Resource
+    private BmsOrderTbMapper bmsOrderTbMapper;
+
     @Override
     public PageInfo<BmsProductStockInLogListPageRspDTO> listPage(BmsProductStockInLogListPageReqDTO bmsProductStockInLogListPageReqDTO) {
         PageHelper.startPage(bmsProductStockInLogListPageReqDTO.getPageNum(), bmsProductStockInLogListPageReqDTO.getPageSize());
@@ -42,20 +57,80 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
     @Override
     public BmsProductStockInLogDetailRspDTO detail(Integer id) {
         BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectById(id);
-        return BeanUtils.copyProperties(bmsProductStockInLog,BmsProductStockInLogDetailRspDTO.class);
+        return BeanUtils.copyProperties(bmsProductStockInLog, BmsProductStockInLogDetailRspDTO.class);
     }
 
     @Override
     public List<BmsProductStockInLogQueryByTaskNumRspDTO> queryByTaskNum(String taskNum) {
-        List<BmsProductStockInLog> bmsProductStockInLogList =  bmsProductStockInLogMapper.selectAllByTaskNum(taskNum);
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectAllByTaskNum(taskNum);
         return BeanUtils.copyListProperties(bmsProductStockInLogList, BmsProductStockInLogQueryByTaskNumRspDTO.class);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void returnStock(BmsProductStockInLogReturnStockReqDTO bmsProductStockInLogReturnStockReqDTO) {
-       BmsProductStockInLog bmsProductStockInLog= bmsProductStockInLogMapper.selectOneByOrderDetailNum(bmsProductStockInLogReturnStockReqDTO.getOrderDetailNum());
-       if(bmsProductStockInLog==null){
-           throw new BusinessException("不存在此商品");
-       }
+        BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectOneByOrderDetailNum(bmsProductStockInLogReturnStockReqDTO.getOrderDetailNum());
+        if (bmsProductStockInLog == null) {
+            throw new BusinessException("不存在此商品");
+        }
+        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectOneByOrderDetailNum(bmsProductStockInLog.getOrderDetailNum());
+        if (bmsOrderDetailTb == null) {
+            throw new BusinessException("数据异常，找不到此订单明细");
+        }
+
+        if (bmsProductStockInLog.getStoreNumber() < bmsProductStockInLogReturnStockReqDTO.getReturnNumber()) {
+            throw new BusinessException("退货数量过多，最多可退货：" + bmsProductStockInLog.getStoreNumber());
+        }
+
+        //更新入库记录退货数量
+        if (bmsProductStockInLog.getReturnNumber() == null) {
+            bmsProductStockInLog.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
+        } else {
+            bmsProductStockInLog.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber() + bmsProductStockInLog.getReturnNumber());
+        }
+        bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
+
+        //更新订单明细退货数量
+        if (bmsOrderDetailTb.getReturnNumber() == null) {
+            bmsOrderDetailTb.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
+        } else {
+            bmsOrderDetailTb.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber() + bmsOrderDetailTb.getReturnNumber());
+        }
+        bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+
+        //判断订单是否已经结束，如果已经结束则更新状态;
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectAllByOrderNum(bmsProductStockInLog.getOrderNum());
+        if (bmsOrderDetailTbList.stream().filter(orderDetailTb -> orderDetailTb.getPurchaseNumber().intValue() != orderDetailTb.getReceiveNumber() + (orderDetailTb.getReturnNumber() == null ? 0 : orderDetailTb.getReturnNumber().intValue())).count() == 0) {
+            BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsProductStockInLog.getOrderNum());
+            bmsOrderTb.setOverFlag(BioBsmContents.Y);
+            bmsOrderTbMapper.updateById(bmsOrderTb);
+        }
+        //记录退货日志
+        BmsReturnOrderDetailTb bmsReturnOrderDetailTb=new BmsReturnOrderDetailTb();
+        bmsReturnOrderDetailTb.setOrderDetailNum(bmsProductStockInLog.getOrderDetailNum());
+        bmsReturnOrderDetailTb.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
+        bmsReturnOrderDetailTb.setReturnAmount(new BigDecimal(bmsProductStockInLogReturnStockReqDTO.getReturnNumber()).multiply(bmsProductStockInLog.getProductPrice()));
+        bmsReturnOrderDetailTb.setApplyUserId(SecurityContextHolder.getUserId());
+        bmsReturnOrderDetailTb.setApplyUserName(SecurityContextHolder.getNickName());
+        bmsReturnOrderDetailTb.setProductName(bmsProductStockInLog.getProductName());
+        bmsReturnOrderDetailTb.setProductPrice(bmsProductStockInLog.getProductPrice());
+        bmsReturnOrderDetailTb.setRemark(bmsProductStockInLogReturnStockReqDTO.getRemark());
+        bmsReturnOrderDetailTb.setCreateTime(new Date());
+        bmsReturnOrderDetailTb.setOrderNum(bmsProductStockInLog.getOrderNum());
+        bmsReturnOrderDetailTb.setProductSpecs(bmsProductStockInLog.getProductSpecs());
+        bmsReturnOrderDetailTb.setBrandCode(bmsProductStockInLog.getBrandCode());
+        bmsReturnOrderDetailTb.setBrandName(bmsProductStockInLog.getBrandName());
+        bmsReturnOrderDetailTb.setBatchNo(bmsProductStockInLog.getBatchNo());
+        bmsReturnOrderDetailTb.setUnitCode(bmsProductStockInLog.getUnitCode());
+        bmsReturnOrderDetailTb.setSupplierName(bmsProductStockInLog.getSupplierName());
+        bmsReturnOrderDetailTb.setSupplierCode(bmsProductStockInLog.getSupplierCode());
+        bmsReturnOrderDetailTb.setProductInnerCode(bmsProductStockInLog.getProductInnerCode());
+        bmsReturnOrderDetailTb.setExpirationDate(bmsProductStockInLog.getExpirationDate());
+        bmsReturnOrderDetailTb.setProduceDate(bmsProductStockInLog.getProduceDate());
+        bmsReturnOrderDetailTb.setProductOutCode(bmsProductStockInLog.getProductOutCode());
+        bmsReturnOrderDetailTb.setTaxRate(bmsProductStockInLog.getTaxRate());
+        bmsReturnOrderDetailTbMapper.insert(bmsReturnOrderDetailTb);
+
+
     }
 }

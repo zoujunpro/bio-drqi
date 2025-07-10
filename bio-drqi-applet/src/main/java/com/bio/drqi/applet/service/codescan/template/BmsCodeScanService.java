@@ -29,17 +29,21 @@ public class BmsCodeScanService extends AbstractBaseCodeScanService<BmsUniqueCod
     @Override
     public BmsUniqueCodeDTO parseUniqueCode(String uniqueCode) {
         String[] uniqueCodeArr = uniqueCode.split("\\|");
+        if(uniqueCodeArr.length!=4){
+            throw new BusinessException("旧二维码已经废弃，请重新打印");
+        }
         BmsUniqueCodeDTO bmsUniqueCodeDTO = new BmsUniqueCodeDTO();
         bmsUniqueCodeDTO.setProductInnerCode(uniqueCodeArr[0]);
         bmsUniqueCodeDTO.setBatchNo(uniqueCodeArr[1]);
         bmsUniqueCodeDTO.setUnitCode(uniqueCodeArr[2]);
+        bmsUniqueCodeDTO.setStockCode(uniqueCodeArr[3]);
         return bmsUniqueCodeDTO;
     }
 
 
     @Override
     public ScanCodeBmsRspDTO dealCodeContent(BmsUniqueCodeDTO bmsUniqueCodeDTO) {
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNo(bmsUniqueCodeDTO.getProductInnerCode(), bmsUniqueCodeDTO.getUnitCode(), bmsUniqueCodeDTO.getBatchNo());
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCode(bmsUniqueCodeDTO.getProductInnerCode(), bmsUniqueCodeDTO.getUnitCode(), bmsUniqueCodeDTO.getBatchNo(),bmsUniqueCodeDTO.getStockCode());
         if (bmsProductStockTb == null) {
             log.error("扫码失败，找不到库存数据，{}", JSONUtil.toJsonStr(bmsUniqueCodeDTO));
             throw new BusinessException("扫码失败，找不到库存数据:" + " 商品编号:" + bmsUniqueCodeDTO.getProductInnerCode()+"批次号："+bmsUniqueCodeDTO.getBatchNo()+"单位："+bmsUniqueCodeDTO.getUnitCode());

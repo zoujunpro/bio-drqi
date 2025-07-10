@@ -11,4 +11,6 @@ public class BmsUniqueCodeDTO {
 
     private String unitCode;
 
+    private String stockCode;
+
 }

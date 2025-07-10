@@ -44,5 +44,10 @@
         </where>
         order by id desc
     </select>
+    <update id="updateKdNumberByKdProjectCode">
+        update bms_project_dict
+        set kd_number = #{kdNumber,jdbcType=VARCHAR}
+        where kd_project_code = #{kdProjectCode,jdbcType=VARCHAR}
+    </update>
 
 </mapper>

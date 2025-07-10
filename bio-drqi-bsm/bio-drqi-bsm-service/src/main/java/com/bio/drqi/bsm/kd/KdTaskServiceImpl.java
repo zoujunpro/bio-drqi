@@ -51,11 +51,12 @@ public class KdTaskServiceImpl implements KdTaskService {
         Long startTime = System.currentTimeMillis();
         log.info("*****************项目同步开始**************************");
         List<BmsProjectDict> bmsProjectDictList = bmsProjectDictMapper.selectList(null);
-        bmsProjectDictList.forEach(bmsProjectDict -> {
+        Map<String, List<BmsProjectDict>> mapList = bmsProjectDictList.stream().collect(Collectors.groupingBy(BmsProjectDict::getKdProjectCode));
+        mapList.forEach((kdProjectCode, list) -> {
+            BmsProjectDict bmsProjectDict = list.get(0);
             if (StringUtils.isEmpty(bmsProjectDict.getKdNumber())) {
                 String kdNumber = kdApiService.execute(OperateEnum.projectSave, bmsProjectDict, "beijing");
-                bmsProjectDict.setKdNumber(kdNumber);
-                bmsProjectDictMapper.updateById(bmsProjectDict);
+                bmsProjectDictMapper.updateKdNumberByKdProjectCode(kdNumber, kdProjectCode);
             } else {
                 kdApiService.execute(OperateEnum.projectModify, bmsProjectDict, "beijing");
             }

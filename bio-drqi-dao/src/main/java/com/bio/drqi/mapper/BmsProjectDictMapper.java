@@ -19,6 +19,8 @@ public interface BmsProjectDictMapper extends BaseMapper<BmsProjectDict> {
 
 
     List<BmsProjectDict> selectSelective(BmsProjectDict bmsProjectDict);
+
+    int updateKdNumberByKdProjectCode(@Param("kdNumber") String kdNumber, @Param("kdProjectCode") String kdProjectCode);
 }
 
 

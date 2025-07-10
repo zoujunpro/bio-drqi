@@ -88,4 +88,6 @@ public class BmsProductStockDetailRspDTO {
 
     private Integer returnNumber;
 
+    private String stockCode;
+
 }

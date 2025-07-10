@@ -117,4 +117,6 @@ public class BmsProductStockInLogDetailRspDTO {
 
     private Integer returnNumber;
 
+    private String stockCode;
+
 }

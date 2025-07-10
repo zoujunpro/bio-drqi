@@ -112,4 +112,6 @@ public class BmsProductStockOutLogListPageRspDTO {
     private String produceDate;
 
     private String expirationDate;
+
+    private String stockCode;
 }

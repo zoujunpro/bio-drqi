@@ -118,4 +118,6 @@ public class BmsReturnOrderDetailQueryByOrderDetailNumRspDTO {
      * 税率
      */
     private String taxRate;
+
+    private String stockCode;
 }

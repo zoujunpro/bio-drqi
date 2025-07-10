@@ -87,4 +87,6 @@ public class BmsProductStockListPageRspDTO {
     private String expirationDate;
 
     private Integer returnNumber;
+
+    private String stockCode;
 }

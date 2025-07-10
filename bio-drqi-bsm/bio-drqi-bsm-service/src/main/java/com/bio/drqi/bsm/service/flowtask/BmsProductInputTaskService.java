@@ -130,7 +130,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
                 }
                 //判断订单是否已经结束，如果已经结束则更新状态;
                 List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectAllByOrderNum(bmsOrderDetailTb.getOrderNum());
-                if (bmsOrderDetailTbList.stream().filter(orderDetailTb -> orderDetailTb.getPurchaseNumber().intValue() != orderDetailTb.getReceiveNumber()+(orderDetailTb.getReturnNumber()==null?0:orderDetailTb.getReturnNumber().intValue())).count() == 0) {
+                if (bmsOrderDetailTbList.stream().filter(orderDetailTb -> orderDetailTb.getPurchaseNumber().intValue() != orderDetailTb.getReceiveNumber().intValue()).count() == 0) {
                     BmsOrderTb bmsOrderTb = bmsOrderTbMapper.selectOneByOrderNum(bmsOrderDetailTb.getOrderNum());
                     bmsOrderTb.setOverFlag(BioBsmContents.Y);
                     bmsOrderTbMapper.updateById(bmsOrderTb);

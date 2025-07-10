@@ -53,6 +53,8 @@ public class BmsProjectServiceImpl implements BmsProjectService {
         BmsProjectDict bmsProjectDict = new BmsProjectDict();
         bmsProjectDict.setProjectCode(bmsProjectAddReqDTO.getProjectCode());
         bmsProjectDict.setProjectName(bmsProjectAddReqDTO.getProjectName());
+        bmsProjectDict.setKdProjectCode(bmsProjectAddReqDTO.getKdProjectCode());
+        bmsProjectDict.setKdProjectName(bmsProjectAddReqDTO.getKdProjectName());
         bmsProjectDict.setCreateTime(new Date());
         bmsProjectDict.setCreateUserId(SecurityContextHolder.getUserId());
         bmsProjectDict.setCreateUserName(SecurityContextHolder.getNickName());

@@ -9,13 +9,16 @@
             <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
             <result property="projectName" column="project_name" jdbcType="VARCHAR"/>
             <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
+            <result property="kdProjectCode" column="kd_project_code" jdbcType="VARCHAR"/>
+            <result property="kdProjectName" column="kd_project_name" jdbcType="VARCHAR"/>
+            <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
             <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,project_code,project_name,kd_number,
+        id,project_code,project_name,kd_number,kd_project_code,kd_project_name,
         create_time,create_user_id,create_user_name
     </sql>
     <select id="selectAllOrderByIdDesc" resultMap="BaseResultMap">

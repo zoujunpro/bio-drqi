@@ -31,6 +31,15 @@ public class BmsProjectDict implements Serializable {
      * 项目编号
      */
     private String projectName;
+    /**
+     * 金蝶项目名称
+     */
+    private String kdProjectCode;
+
+    /**
+     * 金蝶项目编号
+     */
+    private String kdProjectName;
 
     /**
      * 创建时间

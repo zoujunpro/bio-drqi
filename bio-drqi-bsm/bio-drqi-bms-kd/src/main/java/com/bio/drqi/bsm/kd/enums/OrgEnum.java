@@ -9,7 +9,7 @@ public enum OrgEnum {
     LOCAL_TIANJIN_ORG("local", "tianjin", "1001"),
     PROD_TIANJIN_ORG("prod", "tianjin", ""),
     PROD_BEIJING_ORG("prod", "beijing", ""),
-    PROD_DEFAULT_ORG("prod", "default", ""),
+    PROD_DEFAULT_ORG("prod", "default_", ""),
     ;
 
     public String active;

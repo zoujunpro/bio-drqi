@@ -5,8 +5,7 @@ import lombok.Data;
 @Data
 public class BmsProductStockInLogReturnStockReqDTO {
 
-    private String  orderDetailNum;
-
+    private Integer  id;
 
     private Integer returnNumber;
 

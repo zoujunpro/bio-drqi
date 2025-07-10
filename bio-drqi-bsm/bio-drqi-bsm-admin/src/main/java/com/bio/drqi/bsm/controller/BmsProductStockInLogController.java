@@ -67,6 +67,11 @@ public class BmsProductStockInLogController {
 
     }
 
+    /**
+     * 入库存明细管理-退货
+     * @param bmsProductStockInLogReturnStockReqDTO
+     * @return
+     */
     @PostMapping("returnStock")
     @WebLog(desc = "入库存明细管理-退货")
     public ResponseResult<String> returnStock(@RequestBody @Validated BmsProductStockInLogReturnStockReqDTO bmsProductStockInLogReturnStockReqDTO) {

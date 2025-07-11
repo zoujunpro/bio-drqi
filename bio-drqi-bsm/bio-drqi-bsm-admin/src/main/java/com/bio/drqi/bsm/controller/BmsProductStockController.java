@@ -5,12 +5,14 @@ import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsProductStockEditDateReqDTO;
 import com.bio.drqi.bsm.req.BmsProductStockListPageReqDTO;
+import com.bio.drqi.bsm.req.BmsProductStockMoveStockReqDTO;
 import com.bio.drqi.bsm.req.BmsProductStockQueryListReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockService;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -81,6 +83,7 @@ public class BmsProductStockController {
 
     /**
      * 库存明细管理-更新日期
+     *
      * @param bmsProductStockEditDateReqDTO
      * @return
      */
@@ -90,6 +93,21 @@ public class BmsProductStockController {
     public ResponseResult<String> editDate(@RequestBody BmsProductStockEditDateReqDTO bmsProductStockEditDateReqDTO) {
         bmsProductStockService.editDate(bmsProductStockEditDateReqDTO);
         return ResponseResult.getSuccess(null);
+    }
+
+
+    /**
+     * 库存明细管理-调拨
+     *
+     * @param bmsProductStockMoveStockReqDTO
+     * @return
+     */
+    @PostMapping("/moveStock")
+    @WebLog(desc = "库存明细管理-调拨")
+    public ResponseResult<String> moveStock(@RequestBody @Validated BmsProductStockMoveStockReqDTO bmsProductStockMoveStockReqDTO) {
+        bmsProductStockService.moveStock(bmsProductStockMoveStockReqDTO);
+        return ResponseResult.getSuccess("ok");
+
     }
 
 }

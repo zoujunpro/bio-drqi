@@ -17,11 +17,16 @@ public interface BmsProductStockTbMapper extends BaseMapper<BmsProductStockTb> {
     List<BmsProductStockTb> selectSelective(BmsProductStockTb bmsProductStockTb);
 
     BmsProductStockTb selectOneByUniqueCode(@Param("uniqueCode") String uniqueCode);
+    List<BmsProductStockTb> selectAllByProductInnerCodeAndUnitCodeAndBatchNo(@Param("productInnerCode") String productInnerCode, @Param("unitCode") String unitCode, @Param("batchNo") String batchNo);
 
     BmsProductStockTb selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCode(@Param("productInnerCode") String productInnerCode, @Param("unitCode") String unitCode, @Param("batchNo") String batchNo, @Param("stockCode") String stockCode);
     List<String> selectProductNameByUnitCode(@Param("unitCode") String unitCode);
 
+    List<BmsProductStockTb> selectAllByStockCode(@Param("stockCode") String stockCode);
+
     List<BmsProductStockTb> selectAllByStockLocationNumberIn(@Param("stockLocationNumberList") Collection<String> stockLocationNumberList);
+
+
 }
 
 

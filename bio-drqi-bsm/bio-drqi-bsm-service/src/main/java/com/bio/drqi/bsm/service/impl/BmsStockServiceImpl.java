@@ -86,12 +86,9 @@ public class BmsStockServiceImpl implements BmsStockService {
     @Override
     public void delete(Integer id) {
         BmsStockDict bmsStockDict = bmsStockDictMapper.selectById(id);
-        List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectAllByStockCode(bmsStockDict.getStockCode());
-        if (CollectionUtil.isNotEmpty(bmsStockLocationDictList)) {
-            List<BmsProductStockTb> list = bmsProductStockTbMapper.selectAllByStockLocationNumberIn(bmsStockLocationDictList.stream().map(BmsStockLocationDict::getLocationNumber).collect(Collectors.toList()));
-            if (CollectionUtil.isNotEmpty(list)) {
-                throw new BusinessException("该库房已经使用，无法删除");
-            }
+        List<BmsProductStockTb> list = bmsProductStockTbMapper.selectAllByStockCode(bmsStockDict.getStockCode());
+        if (CollectionUtil.isNotEmpty(list)) {
+            throw new BusinessException("该库房已经使用，无法删除");
         }
         bmsStockDictMapper.deleteById(id);
 

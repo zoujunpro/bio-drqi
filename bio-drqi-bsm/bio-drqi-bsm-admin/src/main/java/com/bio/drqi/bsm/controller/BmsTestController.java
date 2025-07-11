@@ -1,5 +1,6 @@
 package com.bio.drqi.bsm.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.bio.common.core.dto.BusinessException;
@@ -13,7 +14,6 @@ import com.bio.drqi.bsm.enums.CooperateFormEnum;
 import com.bio.drqi.bsm.kd.KdTaskService;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
 import com.bio.drqi.bsm.kd.properties.KdProperties;
-import com.bio.drqi.bsm.kd.util.KdRequestUtil;
 import com.bio.drqi.bsm.req.BmsProductAddReqDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
 import com.bio.drqi.domain.*;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/bmsDataClean")
 @Slf4j
-public class DataInitCleanController {
+public class BmsTestController {
 
     @Resource
     private BmsSupplierTbMapper bmsSupplierTbMapper;
@@ -77,6 +77,18 @@ public class DataInitCleanController {
 
     @Resource
     private KdProperties kdProperties;
+
+
+    @Resource
+    private BmsProductStockInLogMapper bmsProductStockInLogMapper;
+
+
+    @Resource
+    private BmsProductStockOutLogMapper bmsProductStockOutLogMapper;
+
+
+    @Resource
+    private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
 
 
     @GetMapping("/synStockLocationSave")
@@ -118,22 +130,93 @@ public class DataInitCleanController {
         return ResponseResult.getSuccess("ok");
     }
 
+    /**
+     * 清洗库位
+     *
+     * @return
+     */
     @GetMapping("/cleanStock")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanStock() {
+        log.info("数据清洗开始");
+        /**
+         *清洗库存
+         */
         List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectList(null);
-        Map<String, List<BmsStockLocationDict>> listMap = bmsStockLocationDictList.stream().collect(Collectors.groupingBy(BmsStockLocationDict::getStockCode));
-        listMap.forEach((stockCode, list) -> {
-            BmsStockDict bmsStockDict = new BmsStockDict();
-            bmsStockDict.setStockName(list.get(0).getStockName());
-            bmsStockDict.setStockCode(stockCode);
-            bmsStockDict.setUnitCode(list.get(0).getUnitCode());
-            bmsStockDict.setKdNumber(null);
-            bmsStockDict.setCreateTime(new Date());
-            bmsStockDict.setCreateUserId(list.get(0).getCreateUserId());
-            bmsStockDict.setCreateUserName(list.get(0).getCreateUserName());
-            bmsStockDictMapper.insert(bmsStockDict);
+        Map<String, List<BmsStockLocationDict>> bmsStockLocationDictListMap = bmsStockLocationDictList.stream().collect(Collectors.groupingBy(BmsStockLocationDict::getStockCode));
+        bmsStockLocationDictListMap.forEach((stockCode, list) -> {
+            BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(stockCode);
+            if (bmsStockDict == null) {
+                bmsStockDict = new BmsStockDict();
+                bmsStockDict.setStockName(list.get(0).getStockName());
+                bmsStockDict.setStockCode(stockCode);
+                bmsStockDict.setUnitCode(list.get(0).getUnitCode());
+                bmsStockDict.setKdNumber(null);
+                bmsStockDict.setCreateTime(new Date());
+                bmsStockDict.setCreateUserId(list.get(0).getCreateUserId());
+                bmsStockDict.setCreateUserName(list.get(0).getCreateUserName());
+                bmsStockDictMapper.insert(bmsStockDict);
+            }
         });
+        log.info("库存清洗结束");
+        /**
+         * 退货数量清洗
+         */
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectList(null);
+        bmsProductStockInLogList.forEach(bmsProductStockInLog -> {
+            bmsProductStockInLog.setReturnNumber(0);
+            bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
+        });
+        bmsProductStockTbMapper.selectList(null).forEach(bmsProductStockTb -> {
+            bmsProductStockTb.setReturnNumber(0);
+            bmsProductStockTbMapper.updateById(bmsProductStockTb);
+        });
+        log.info("库存数量returnNumber赋值结束");
+
+        /**
+         * 库存位置赋值
+         */
+        Map<String, BmsStockLocationDict> bmsStockLocationDictMap = bmsStockLocationDictList.stream().collect(Collectors.toMap(BmsStockLocationDict::getLocationNumber, bmsStockLocationDict -> bmsStockLocationDict));
+        bmsProductStockTbMapper.selectList(null).forEach(bmsProductStockTb -> {
+            if (StringUtils.isEmpty(bmsProductStockTb.getStockCode())) {
+                String location = null;
+                String b = bmsProductStockTb.getStockLocationNumber();
+                if (b.contains("[")) {
+                    List<String> locationList = JSONUtil.toList(b, String.class);
+                    if (CollectionUtil.isNotEmpty(locationList)) {
+                        location = locationList.get(0);
+                    }
+                } else {
+                    location = b;
+                }
+
+                BmsStockLocationDict bmsStockLocationDict = bmsStockLocationDictMap.get(location);
+                if (bmsStockLocationDict != null) {
+                    bmsProductStockTb.setStockCode(bmsStockLocationDict.getStockCode());
+                    bmsProductStockTbMapper.updateById(bmsProductStockTb);
+                }
+            }
+        });
+        log.info("库存明细清洗库房");
+        List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectList(null);
+        bmsProductStockOutLogList.forEach(bmsProductStockOutLog -> {
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductStockOutLog.getUniqueCode());
+            if (bmsProductStockTb != null && StringUtils.isNotEmpty(bmsProductStockTb.getStockCode())) {
+                bmsProductStockOutLog.setStockCode(bmsProductStockTb.getStockCode());
+                bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
+            }
+        });
+        log.info("出库记录清洗库房编码");
+        bmsProductStockInLogList.forEach(bmsProductStockInLog -> {
+            List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectAllByProductInnerCodeAndUnitCodeAndBatchNo(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo());
+            if(CollectionUtil.isNotEmpty(bmsProductStockTbList)){
+                bmsProductStockInLog.setStockCode(bmsProductStockOutLogList.get(0).getStockCode());
+                bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
+            }
+        });
+        log.info("入库明细清洗库房");
+
+
         return ResponseResult.getSuccess("ok");
     }
 

@@ -110,12 +110,22 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
 
     @Override
     public void moveStock(BmsProductStockMoveStockReqDTO bmsProductStockMoveStockReqDTO) {
+        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsProductStockMoveStockReqDTO.getNewStockCode());
+        if(bmsStockDict==null){
+            throw new BusinessException("库房不存在");
+        }
         BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectById(bmsProductStockMoveStockReqDTO.getId());
         if (bmsProductStockTb == null) {
             throw new BusinessException("库存中不存在此耗材");
         }
         if (bmsProductStockTb.getCurrentStockNumber() < bmsProductStockMoveStockReqDTO.getMoveNumber()) {
             throw new BusinessException("当前库存数量不足");
+        }
+        if (bmsProductStockTb.getStockCode().equals(bmsProductStockMoveStockReqDTO.getNewStockCode())) {
+            throw new BusinessException("库房无变化");
+        }
+        if(bmsStockDict.getUnitCode().equals(bmsProductStockTb.getUnitCode())){
+            throw new BusinessException("不能跨单位调拨");
         }
         // 移除库存扣减
         bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductStockMoveStockReqDTO.getMoveNumber());

@@ -154,13 +154,11 @@ public class BmsProductInputDTO {
         /**
          * 过期时间
          */
-        @NotBlank(message = "入库参数缺少：过期时间")
         private String expirationDate;
 
         /**
          * 生产时间
          */
-        @NotBlank(message = "入库参数缺少：生产时间")
         private String produceDate;
 
 

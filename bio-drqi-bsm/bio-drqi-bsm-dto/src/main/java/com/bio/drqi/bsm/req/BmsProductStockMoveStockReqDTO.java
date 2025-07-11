@@ -16,6 +16,9 @@ public class BmsProductStockMoveStockReqDTO {
     @NotBlank(message = "新库存必填")
     private String newStockCode;
 
+    @NotBlank(message = "旧库存必填")
+    private List<String> oldStockLocationList;
+
     @NotEmpty(message = "新库位必填")
     private List<String> newStockLocationList;
 

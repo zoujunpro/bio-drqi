@@ -129,7 +129,8 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         }
         // 移除库存扣减
         bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductStockMoveStockReqDTO.getMoveNumber());
-        bmsProductStockTb.setTotalStoreNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductStockMoveStockReqDTO.getMoveNumber());
+        bmsProductStockTb.setTotalStoreNumber(bmsProductStockTb.getTotalStoreNumber() - bmsProductStockMoveStockReqDTO.getMoveNumber());
+        bmsProductStockTb.setStockLocationNumber(JSONUtil.toJsonStr(bmsProductStockMoveStockReqDTO.getOldStockLocationList()));
         bmsProductStockTbMapper.updateById(bmsProductStockTb);
 
         //移入库存添加
@@ -137,6 +138,9 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         if (newBmsProductStockTb != null) {
             newBmsProductStockTb.setCurrentStockNumber(newBmsProductStockTb.getCurrentStockNumber() + bmsProductStockMoveStockReqDTO.getMoveNumber());
             newBmsProductStockTb.setTotalStoreNumber(newBmsProductStockTb.getTotalStoreNumber() + bmsProductStockMoveStockReqDTO.getMoveNumber());
+            List<String> currentStockLoationList=JSONUtil.toList(newBmsProductStockTb.getStockLocationNumber(),String.class);
+            currentStockLoationList.addAll(bmsProductStockMoveStockReqDTO.getNewStockLocationList());
+            newBmsProductStockTb.setStockLocationNumber(JSONUtil.toJsonStr(currentStockLoationList.stream().distinct().collect(Collectors.toList())));
             bmsProductStockTbMapper.updateById(newBmsProductStockTb);
         } else {
             newBmsProductStockTb = new BmsProductStockTb();

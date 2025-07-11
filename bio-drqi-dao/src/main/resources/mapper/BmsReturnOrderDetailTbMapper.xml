@@ -64,8 +64,8 @@
             <if test="brandName != null and brandName!=''"> and brand_name=#{brandName,jdbcType=VARCHAR}</if>
             <if test="batchNo != null"> and batch_no=#{batchNo,jdbcType=VARCHAR}</if>
             <if test="unitCode != null and unitCode!=''"> and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
-            <if test="supplierName != null"> and supplier_name=#{supplierName,jdbcType=VARCHAR}</if>
-            <if test="supplierCode != null"> and supplier_code=#{supplierCode,jdbcType=VARCHAR}</if>
+            <if test="supplierName != null and supplierName!=''"> and supplier_name=#{supplierName,jdbcType=VARCHAR}</if>
+            <if test="supplierCode != null and supplierCode!=''"> and supplier_code=#{supplierCode,jdbcType=VARCHAR}</if>
             <if test="productInnerCode != null and productInnerCode!=''"> and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}</if>
             <if test="expirationDate != null"> and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
             <if test="produceDate != null"> and produce_date=#{produceDate,jdbcType=VARCHAR}</if>

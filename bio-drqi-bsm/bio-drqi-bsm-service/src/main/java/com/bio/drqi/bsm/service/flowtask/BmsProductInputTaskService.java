@@ -173,6 +173,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
             bmsProductStockTb.setProduceDate(inputOrderDetail.getProduceDate());
             bmsProductStockTb.setExpirationDate(inputOrderDetail.getExpirationDate());
             bmsProductStockTb.setStockCode(inputOrderDetail.getStockCode());
+            bmsProductStockTb.setReturnNumber(0);
             bmsProductStockTbMapper.insert(bmsProductStockTb);
         } else {
             bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() + inputOrderDetail.getNumber());

@@ -164,6 +164,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setReportAccountTime(null);
                 bmsOrderDetailTb.setContractNumber(null);
                 bmsOrderDetailTb.setPaymentVoucherUrls(null);
+                bmsOrderDetailTb.setReturnNumber(0);
                 bmsOrderDetailTbMapper.insert(bmsOrderDetailTb);
             }
         }

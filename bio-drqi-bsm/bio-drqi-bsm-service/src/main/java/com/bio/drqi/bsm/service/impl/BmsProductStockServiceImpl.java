@@ -124,7 +124,7 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         if (bmsProductStockTb.getStockCode().equals(bmsProductStockMoveStockReqDTO.getNewStockCode())) {
             throw new BusinessException("库房无变化");
         }
-        if(bmsStockDict.getUnitCode().equals(bmsProductStockTb.getUnitCode())){
+        if(!bmsStockDict.getUnitCode().equals(bmsProductStockTb.getUnitCode())){
             throw new BusinessException("不能跨单位调拨");
         }
         // 移除库存扣减

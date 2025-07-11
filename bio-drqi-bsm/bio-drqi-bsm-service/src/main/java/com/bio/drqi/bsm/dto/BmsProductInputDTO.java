@@ -132,7 +132,7 @@ public class BmsProductInputDTO {
         /**
          * 到货数量
          */
-        @NotBlank(message = "入库参数缺少：到货数量")
+        @NotNull(message = "入库参数缺少：到货数量")
         private Integer receiveNumber;
 
 

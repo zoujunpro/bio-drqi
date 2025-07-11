@@ -190,14 +190,30 @@ public class BmsTestController {
                     location = b;
                 }
 
-                BmsStockLocationDict bmsStockLocationDict = bmsStockLocationDictMap.get(location);
-                if (bmsStockLocationDict != null) {
-                    bmsProductStockTb.setStockCode(bmsStockLocationDict.getStockCode());
+                if (StringUtils.isNotEmpty(location)) {
+                    BmsStockLocationDict bmsStockLocationDict = bmsStockLocationDictMap.get(location);
+                    if (bmsStockLocationDict != null) {
+                        bmsProductStockTb.setStockCode(bmsStockLocationDict.getStockCode());
+                        bmsProductStockTbMapper.updateById(bmsProductStockTb);
+                    }
+                }
+
+                if (StringUtils.isEmpty(bmsProductStockTb.getStockCode())) {
+                    String stockCode = null;
+                    if ("beijing".equals(bmsProductStockTb.getUnitCode())) {
+                        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockName("一号库");
+                        stockCode = bmsStockDict.getStockCode();
+                    } else {
+                        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockName("16楼库");
+                        stockCode = bmsStockDict.getStockCode();
+                    }
+                    bmsProductStockTb.setStockCode(stockCode);
                     bmsProductStockTbMapper.updateById(bmsProductStockTb);
                 }
+
             }
         });
-        log.info("库存明细清洗库房");
+        log.info("库存明细清洗结束");
         List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectList(null);
         bmsProductStockOutLogList.forEach(bmsProductStockOutLog -> {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductStockOutLog.getUniqueCode());
@@ -205,18 +221,44 @@ public class BmsTestController {
                 bmsProductStockOutLog.setStockCode(bmsProductStockTb.getStockCode());
                 bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
             }
+
+            if (StringUtils.isEmpty(bmsProductStockOutLog.getStockCode())) {
+                String stockCode = null;
+                if ("beijing".equals(bmsProductStockOutLog.getUnitCode())) {
+                    BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockName("一号库");
+                    stockCode = bmsStockDict.getStockCode();
+                } else {
+                    BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockName("16楼库");
+                    stockCode = bmsStockDict.getStockCode();
+                }
+                bmsProductStockOutLog.setStockCode(stockCode);
+                bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
+            }
+
         });
-        log.info("出库记录清洗库房编码");
+        log.info("出库记录清洗库房编码结束");
         bmsProductStockInLogList.forEach(bmsProductStockInLog -> {
             List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectAllByProductInnerCodeAndUnitCodeAndBatchNo(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo());
-            if(CollectionUtil.isNotEmpty(bmsProductStockTbList)){
-                bmsProductStockInLog.setStockCode(bmsProductStockOutLogList.get(0).getStockCode());
+            if (CollectionUtil.isNotEmpty(bmsProductStockTbList)) {
+                bmsProductStockInLog.setStockCode(bmsProductStockTbList.get(0).getStockCode());
+                bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
+            }
+            if (StringUtils.isEmpty(bmsProductStockInLog.getStockCode())) {
+                String stockCode = null;
+                if ("beijing".equals(bmsProductStockInLog.getUnitCode())) {
+                    BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockName("一号库");
+                    stockCode = bmsStockDict.getStockCode();
+                } else {
+                    BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockName("16楼库");
+                    stockCode = bmsStockDict.getStockCode();
+                }
+                bmsProductStockInLog.setStockCode(stockCode);
                 bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
             }
         });
-        log.info("入库明细清洗库房");
+        log.info("入库明细清洗库房结束");
 
-
+        log.info("数据清洗结束");
         return ResponseResult.getSuccess("ok");
     }
 

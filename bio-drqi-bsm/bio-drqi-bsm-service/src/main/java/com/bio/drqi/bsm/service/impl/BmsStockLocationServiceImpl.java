@@ -10,6 +10,7 @@ import com.bio.drqi.bsm.req.BmsStockLocationEditReqDTO;
 import com.bio.drqi.bsm.req.BmsStockLocationListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationListAllStockRspDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsStockLocationQueryByStockCodeRspDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationQueryByUnitRspDTO;
 import com.bio.drqi.bsm.service.BmsStockLocationService;
 import com.bio.drqi.domain.BmsProductStockTb;
@@ -42,8 +43,6 @@ public class BmsStockLocationServiceImpl implements BmsStockLocationService {
     private BmsProductStockTbMapper bmsProductStockTbMapper;
 
 
-
-
     @Override
     public List<BmsStockLocationQueryByUnitRspDTO> queryByUnit(String unitCode) {
         List<BmsStockLocationQueryByUnitRspDTO> bmsStockLocationQueryByUnitRspDTOList = new ArrayList<>();
@@ -61,6 +60,16 @@ public class BmsStockLocationServiceImpl implements BmsStockLocationService {
 
         }
         return bmsStockLocationQueryByUnitRspDTOList;
+    }
+
+    @Override
+    public List<BmsStockLocationQueryByStockCodeRspDTO> queryByStockCode(String stockCode) {
+        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(stockCode);
+        if (bmsStockDict == null) {
+            throw new BusinessException("库房不存在");
+        }
+        List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectAllByStockCode(stockCode);
+        return BeanUtils.copyListProperties(bmsStockLocationDictList, BmsStockLocationQueryByStockCodeRspDTO.class);
     }
 
     @Override
@@ -101,7 +110,7 @@ public class BmsStockLocationServiceImpl implements BmsStockLocationService {
         }
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectAllByStockLocationNumberIn(Arrays.asList(bmsStockLocationDict.getLocationNumber()));
 
-        if(CollectionUtil.isNotEmpty(bmsProductStockTbList)){
+        if (CollectionUtil.isNotEmpty(bmsProductStockTbList)) {
             throw new BusinessException("该库位已经使用无法更改");
         }
         bmsStockLocationDictMapper.deleteById(id);

@@ -5,9 +5,11 @@ import com.bio.drqi.bsm.req.BmsStockLocationEditReqDTO;
 import com.bio.drqi.bsm.req.BmsStockLocationListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationListAllStockRspDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsStockLocationQueryByStockCodeRspDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationQueryByUnitRspDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -16,6 +18,9 @@ public interface BmsStockLocationService {
 
 
     List<BmsStockLocationQueryByUnitRspDTO> queryByUnit(String unitCode);
+
+
+    List<BmsStockLocationQueryByStockCodeRspDTO> queryByStockCode(@RequestParam String stockCode);
 
 
 

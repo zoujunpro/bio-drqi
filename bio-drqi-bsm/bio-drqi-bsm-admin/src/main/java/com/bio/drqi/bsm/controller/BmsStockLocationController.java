@@ -8,6 +8,7 @@ import com.bio.drqi.bsm.req.BmsStockLocationEditReqDTO;
 import com.bio.drqi.bsm.req.BmsStockLocationListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationListAllStockRspDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsStockLocationQueryByStockCodeRspDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationQueryByUnitRspDTO;
 import com.bio.drqi.bsm.service.BmsStockLocationService;
 import com.bio.drqi.common.aspect.RequestLog;
@@ -42,6 +43,16 @@ public class BmsStockLocationController {
 
     }
 
+    /**
+     * 库存管理-根据库房查询库位
+     * @param stockCode
+     * @return
+     */
+    @GetMapping("queryByStockCode")
+    @WebLog(desc = "库存管理-根据库房查询库位")
+    public ResponseResult<List<BmsStockLocationQueryByStockCodeRspDTO>> queryByStockCode(@RequestParam String stockCode) {
+        return ResponseResult.getSuccess(bmsStockLocationService.queryByStockCode(stockCode));
+    }
 
 
     /**

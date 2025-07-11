@@ -75,7 +75,15 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
     @Override
     public List<BmsProductStockQueryListRspDTO> queryList(BmsProductStockQueryListReqDTO bmsProductStockQueryListReqDTO) {
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(BeanUtils.copyProperties(bmsProductStockQueryListReqDTO, BmsProductStockTb.class));
-        return BeanUtils.copyListProperties(bmsProductStockTbList, BmsProductStockQueryListRspDTO.class);
+        List<BmsProductStockQueryListRspDTO> bmsProductStockQueryListRspDTOList= BeanUtils.copyListProperties(bmsProductStockTbList, BmsProductStockQueryListRspDTO.class);
+        if (CollectionUtil.isNotEmpty(bmsProductStockQueryListRspDTOList)) {
+            List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
+            Map<String, String> bmsStockDictMap = bmsStockDictList.stream().collect(Collectors.toMap(BmsStockDict::getStockCode, BmsStockDict::getStockName));
+            bmsProductStockQueryListRspDTOList.forEach(bmsProductStockQueryListRspDTO -> {
+                bmsProductStockQueryListRspDTO.setStockName(bmsStockDictMap.get(bmsProductStockQueryListRspDTO.getStockCode()));
+            });
+        }
+        return bmsProductStockQueryListRspDTOList;
     }
 
     @Override

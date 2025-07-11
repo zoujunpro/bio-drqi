@@ -44,4 +44,6 @@ public class BmsProductStockQueryListRspDTO {
     private String expirationDate;
 
     private String stockCode;
+
+    private String stockName;
 }

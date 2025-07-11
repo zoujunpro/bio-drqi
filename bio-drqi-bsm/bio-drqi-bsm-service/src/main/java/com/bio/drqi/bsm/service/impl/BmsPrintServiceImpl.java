@@ -51,6 +51,7 @@ public class BmsPrintServiceImpl implements BmsPrintService {
             bmsLabelPrintDTO.setExpirationDate(bmsProductStockTb.getExpirationDate());
             bmsLabelPrintDTO.setUnitCode(content.getUnitCode());
             bmsLabelPrintDTO.setProduceDate(bmsProductStockTb.getProduceDate());
+            bmsLabelPrintDTO.setStockCode(bmsProductStockTb.getStockCode());
             bmsLabelPrintDTOList.add(bmsLabelPrintDTO);
         }
         if (CollectionUtil.isNotEmpty(bmsLabelPrintDTOList)) {

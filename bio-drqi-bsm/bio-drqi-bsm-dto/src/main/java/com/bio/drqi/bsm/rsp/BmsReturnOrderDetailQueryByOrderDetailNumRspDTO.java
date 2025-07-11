@@ -120,4 +120,6 @@ public class BmsReturnOrderDetailQueryByOrderDetailNumRspDTO {
     private String taxRate;
 
     private String stockCode;
+
+    private String stockName;
 }

@@ -128,7 +128,7 @@ public class BmsSupplierTb implements Serializable {
      */
     private String deleteFlag;
 
-    private String kdNumber;
+    private Integer kdNumber;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

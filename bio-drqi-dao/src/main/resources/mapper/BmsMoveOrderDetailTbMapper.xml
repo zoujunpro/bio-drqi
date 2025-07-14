@@ -28,6 +28,8 @@
         <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -39,7 +41,7 @@
         product_inner_code,produce_date,expiration_date,
         from_stock_code,from_stock_location_number,to_stock_code,
         to_stock_location_number,move_number,create_user_id,
-        create_user_name,create_time
+        create_user_name,create_time,unique_code
     </sql>
     <select id="selectAllByUnitCode" resultMap="BaseResultMap">
         select

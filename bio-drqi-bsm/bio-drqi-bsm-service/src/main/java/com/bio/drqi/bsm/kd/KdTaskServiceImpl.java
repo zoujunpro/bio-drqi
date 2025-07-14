@@ -135,14 +135,15 @@ public class KdTaskServiceImpl implements KdTaskService {
     public void synSupplierTask() {
         Long startTime = System.currentTimeMillis();
         log.info("*****************供应商同步开始**************************");
-        List<QuerySupplierDTO> querySupplierDTOList = KdRequestUtil.executeQuerySupplier();
-        for (QuerySupplierDTO querySupplierDTO : querySupplierDTOList) {
-            BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierName(querySupplierDTO.getFName());
-            if (bmsSupplierTb != null) {
-                bmsSupplierTb.setKdNumber(Integer.valueOf(querySupplierDTO.getFNumber()));
-                bmsSupplierTbMapper.updateById(bmsSupplierTb);
+        List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
+        for (BmsStockDict bmsStockDict : bmsStockDictList) {
+            if (bmsStockDict.getKdNumber() != null && bmsStockDict.getKdNumber() > 0) {
+                kdApiService.execute(OperateEnum.stockModify, bmsStockDict, bmsStockDict.getUnitCode());
+            } else {
+                String kdNumber = kdApiService.execute(OperateEnum.stockSave, bmsStockDict, bmsStockDict.getUnitCode());
+                bmsStockDict.setKdNumber(Integer.valueOf(kdNumber));
+                bmsStockDictMapper.updateById(bmsStockDict);
             }
-
         }
         log.info("*****************供应商同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
 
@@ -151,7 +152,18 @@ public class KdTaskServiceImpl implements KdTaskService {
 
     @Override
     public void synMaterialTask() {
+        Long startTime = System.currentTimeMillis();
+        log.info("*****************材料同步开始**************************");
+        List<QuerySupplierDTO> querySupplierDTOList = KdRequestUtil.executeQuerySupplier();
+        for (QuerySupplierDTO querySupplierDTO : querySupplierDTOList) {
+            BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierName(querySupplierDTO.getFName());
+            if (bmsSupplierTb != null) {
+                bmsSupplierTb.setKdNumber(querySupplierDTO.getFNumber());
+                bmsSupplierTbMapper.updateById(bmsSupplierTb);
+            }
 
+        }
+        log.info("*****************材料同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
     }
 
     @Override

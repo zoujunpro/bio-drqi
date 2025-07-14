@@ -137,6 +137,8 @@ public class BmsReturnOrderDetailTb implements Serializable {
 
     private String stockCode;
 
+    private String uniqueCode;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

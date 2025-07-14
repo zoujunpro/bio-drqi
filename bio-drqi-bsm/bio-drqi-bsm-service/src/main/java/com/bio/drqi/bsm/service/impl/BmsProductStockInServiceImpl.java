@@ -163,6 +163,7 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
         bmsReturnOrderDetailTb.setTaxRate(bmsProductStockInLog.getTaxRate());
         bmsReturnOrderDetailTb.setInStockId(bmsProductStockInLog.getId());
         bmsReturnOrderDetailTb.setStockCode(bmsProductStockInLog.getStockCode());
+        bmsReturnOrderDetailTb.setUniqueCode(bmsProductStockInLog.getUniqueCode());
         bmsReturnOrderDetailTbMapper.insert(bmsReturnOrderDetailTb);
 
 

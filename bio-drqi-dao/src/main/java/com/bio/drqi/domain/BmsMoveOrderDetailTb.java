@@ -132,6 +132,8 @@ public class BmsMoveOrderDetailTb implements Serializable {
      */
     private Date createTime;
 
+    private String uniqueCode;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

@@ -5,8 +5,9 @@ import com.bio.common.core.dto.BusinessException;
 public enum KdFBillTypeIDEnum {
     TYPE_1("RKD01_SYS", "标准采购入库"),
     TYPE_2("RKD_FWFY", "服务费用入库单"),
-    TYPE_3("RKD_WF", "危费入库单"),
-    TYPE_4("RKD_WX", "维修入库单"),
+    TYPE_3("RKD_WX", "维修入库单"),
+    TYPE_4("RKD_WF", "危费入库单"),
+
     ;
     public String name;
     public String code;

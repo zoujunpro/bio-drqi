@@ -42,12 +42,7 @@ public class KdRequestUtil {
             if (sRet.isSuccessfully()) {
                 return sRet.getResult().getId();
             } else {
-                String idStr = getIdFromNeedReturnData(formIdEnum, result);
-                if (idStr != null) {
-                    return idStr;
-                } else {
-                    throw new BusinessException("同步数据到金蝶失败: " + gson.toJson(sRet.getResult()));
-                }
+                throw new BusinessException("同步数据到金蝶失败: " + gson.toJson(sRet.getResult()));
             }
         } catch (Exception e) {
             log.error("金蝶接口调用失败:{}", e);

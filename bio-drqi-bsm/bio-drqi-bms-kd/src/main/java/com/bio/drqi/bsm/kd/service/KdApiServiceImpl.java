@@ -244,7 +244,7 @@ public class KdApiServiceImpl implements KdApiService {
         if (bmsProductCategoryTb.getKdNumber() == null) {
             throw new BusinessException("材料分组未同步");
         }
-        MaterialSaveModel materialSaveModel = new MaterialSaveModel(0, bmsProductTb.getProductInnerCode(), bmsProductTb.getProductName(), null);
+        MaterialSaveModel materialSaveModel = new MaterialSaveModel(0, bmsProductTb.getProductInnerCode(), bmsProductTb.getProductName(), null, bmsProductTb.getBrandName());
         materialSaveModel = materialSaveModel.buildFMaterialGroup(bmsProductCategoryTb.getProductCategoryCode()).buildSubHeadEntity(bmsProductCategoryTb.getKdCategoryCode());
         return KdRequestUtil.save(FormIdEnum.BD_MATERIAL, KdApiBaseSaveRequestDTO.buildOfSave(materialSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
     }
@@ -315,11 +315,11 @@ public class KdApiServiceImpl implements KdApiService {
             throw new BusinessException("耗材还未同步到金蝶" + bmsProductStockOutLog.getProductInnerCode());
         }
         BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsProductStockOutLog.getStockCode());
-        if(bmsStockDict==null){
-            throw new BusinessException("库房异常，找不到此库房"+bmsProductStockOutLog.getStockCode());
+        if (bmsStockDict == null) {
+            throw new BusinessException("库房异常，找不到此库房" + bmsProductStockOutLog.getStockCode());
         }
-        if(bmsStockDict.getKdNumber()==null){
-            throw new BusinessException("库房未同步到金蝶"+bmsStockDict.getKdNumber());
+        if (bmsStockDict.getKdNumber() == null) {
+            throw new BusinessException("库房未同步到金蝶" + bmsStockDict.getKdNumber());
         }
 
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);

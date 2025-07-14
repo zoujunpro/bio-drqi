@@ -33,6 +33,11 @@ public class MaterialSaveModel extends KdModel {
     private String Fspecification;
 
     /**
+     * 品牌
+     */
+    private String F_WAUJ_PP;
+
+    /**
      * 物料分组
      */
     private FMaterialGroupModel FMaterialGroup;
@@ -146,10 +151,12 @@ public class MaterialSaveModel extends KdModel {
 
     }
 
-    public MaterialSaveModel(Integer FMATERIALID, String fnumber, String fname, String fspecification) {
+    public MaterialSaveModel(Integer FMATERIALID, String fnumber, String fname, String fspecification,String brandName) {
         this.FMATERIALID = FMATERIALID;
-        Fnumber = fnumber;
-        Fname = fname;
-        Fspecification = fspecification;
+        this.Fnumber = fnumber;
+        this.Fname = fname;
+        this.Fspecification = fspecification;
+        this.F_WAUJ_PP=brandName;
+
     }
 }

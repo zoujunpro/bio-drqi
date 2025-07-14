@@ -97,12 +97,6 @@ public class BmsTestController {
         return ResponseResult.getSuccess("OK");
     }
 
-    @GetMapping("/synBrandSave")
-    public ResponseResult<String> synKdBrand() {
-        kdTaskService.synBrandTask();
-
-        return ResponseResult.getSuccess("OK");
-    }
 
     @GetMapping("/synProjectSave")
     public ResponseResult<String> synProjectSave() {

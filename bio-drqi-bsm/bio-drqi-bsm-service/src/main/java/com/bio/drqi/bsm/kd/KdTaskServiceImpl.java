@@ -1,5 +1,6 @@
 package com.bio.drqi.bsm.kd;
 
+import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.enums.PurchaseUnitEnum;
@@ -55,7 +56,7 @@ public class KdTaskServiceImpl implements KdTaskService {
         List<BmsProjectDict> bmsProjectDictList = bmsProjectDictMapper.selectList(null);
         Map<String, List<BmsProjectDict>> mapList = bmsProjectDictList.stream().collect(Collectors.groupingBy(BmsProjectDict::getKdProjectCode));
         mapList.forEach((kdProjectCode, list) -> {
-            if(StringUtils.isNotEmpty(kdProjectCode)){
+            if (StringUtils.isNotEmpty(kdProjectCode)) {
                 BmsProjectDict bmsProjectDict = list.get(0);
                 if (StringUtils.isEmpty(bmsProjectDict.getKdNumber())) {
                     String kdNumber = kdApiService.execute(OperateEnum.projectSave, bmsProjectDict, PurchaseUnitEnum.default_.name());
@@ -120,7 +121,14 @@ public class KdTaskServiceImpl implements KdTaskService {
         log.info("*****************分组同步开始**************************");
         List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectList(null);
         for (BmsProductCategoryTb bmsProductCategoryTb : bmsProductCategoryTbList) {
-            if (bmsProductCategoryTb.getKdNumber() != null && bmsProductCategoryTb.getKdNumber() > 0) {
+            if (bmsProductCategoryTb.getKdParentId() == null) {
+                throw new BusinessException("未给材料类别分配金蝶的分组");
+            }
+            if (StringUtils.isEmpty(bmsProductCategoryTb.getProductCategoryCode())) {
+                throw new BusinessException("未给材料类别配置金蝶存货类别");
+            }
+
+            if (bmsProductCategoryTb.getKdNumber() == null) {
                 String idStr = kdApiService.execute(OperateEnum.groupSave, bmsProductCategoryTb, PurchaseUnitEnum.default_.name());
                 bmsProductCategoryTb.setKdNumber(Integer.valueOf(idStr));
                 bmsProductCategoryTbMapper.updateById(bmsProductCategoryTb);
@@ -154,14 +162,15 @@ public class KdTaskServiceImpl implements KdTaskService {
     public void synMaterialTask() {
         Long startTime = System.currentTimeMillis();
         log.info("*****************材料同步开始**************************");
-        List<QuerySupplierDTO> querySupplierDTOList = KdRequestUtil.executeQuerySupplier();
-        for (QuerySupplierDTO querySupplierDTO : querySupplierDTOList) {
-            BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierName(querySupplierDTO.getFName());
-            if (bmsSupplierTb != null) {
-                bmsSupplierTb.setKdNumber(querySupplierDTO.getFNumber());
-                bmsSupplierTbMapper.updateById(bmsSupplierTb);
+        List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectList(null);
+        for (BmsProductTb bmsProductTb : bmsProductTbList) {
+            if (bmsProductTb.getKdNumber() != null && bmsProductTb.getKdNumber() > 0) {
+                kdApiService.execute(OperateEnum.materialModify, bmsProductTb, PurchaseUnitEnum.default_.name());
+            } else {
+                String kdNumber = kdApiService.execute(OperateEnum.materialSave, bmsProductTb, PurchaseUnitEnum.default_.name());
+                bmsProductTb.setKdNumber(Integer.valueOf(kdNumber));
+                bmsProductTbMapper.updateById(bmsProductTb);
             }
-
         }
         log.info("*****************材料同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
     }

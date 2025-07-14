@@ -1,7 +1,12 @@
 package com.bio.drqi.bsm.kd.dto.model;
 
+import com.bio.common.core.dto.BusinessException;
+import com.bio.drqi.bsm.kd.contents.KdContents;
+import com.bio.drqi.bsm.kd.enums.KdFBillTypeIDEnum;
+import com.bio.drqi.bsm.kd.enums.KdParentGroupEnum;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -14,7 +19,7 @@ public class InStockSaveModel extends KdModel {
     /**
      * 实体主键
      */
-    private String FID;
+    private Integer FID = 0;
 
     /**
      * 单据编号
@@ -59,9 +64,17 @@ public class InStockSaveModel extends KdModel {
     private FInStockEntryModel FInStockEntry;
 
 
-
-
-
+    public InStockSaveModel(String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdSupplierId, String kdMaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty) {
+        this.FID = 0;
+        this.FBillNo = null;
+        this.FDate = FDate;
+        this.FBillTypeID = new FBillTypeIDModel(KdFBillTypeIDEnum.ofKdParentGroupEnum(kdParentGroupEnum).code);
+        this.FOwnerTypeIdHead = KdContents.OWNER;
+        this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
+        this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
+        this.FSupplierId = new FSupplierIdModel(kdSupplierId);
+        this.FInStockEntry = new FInStockEntryModel(kdMaterialId, fTaxPrice, reqlQty, orgCode);
+    }
 
     @Override
     public List<String> buildModifyFields() {
@@ -70,51 +83,88 @@ public class InStockSaveModel extends KdModel {
 
 
     @Data
-    private class FBillTypeIDModel{
-        private String FNUMBER;
-    }
-
-    @Data
-    private class  FOwnerIdHeadModel{
-        private String FNumber;
-    }
-
-    @Data
-    private class FPurchaseOrgIdModel{
-        private String FNumber;
-    }
-
-    @Data
-    private class FSupplierIdModel{
-        private String FNumber;
-    }
-
-
-    @Data
-    private class FOWNERIDModel{
-        private String FNumber;
-    }
-
-    @Data
-    private class FInStockEntryModel{
+    private class FInStockEntryModel {
         /**
          * 物料编码
          */
-        private String FMaterialId;
+        private FMaterialIdModel FMaterialId;
 
         /**
          * 含税单价
          */
-        private String FTaxPrice;
+        private BigDecimal FTaxPrice;
 
         /**
          * 收获数量
          */
-        private String FRealQty;
+        private BigDecimal FRealQty;
 
         private String FOWNERTYPEID;
 
         private FOWNERIDModel FOWNERID;
 
+        public FInStockEntryModel(String MaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty, String orgCode) {
+            this.setFMaterialId(new FMaterialIdModel(MaterialId));
+            this.setFTaxPrice(fTaxPrice);
+            this.setFRealQty(reqlQty);
+            this.setFOWNERTYPEID(KdContents.OWNER);
+            this.setFOWNERID(new FOWNERIDModel(orgCode));
+        }
+    }
+
+
+    @Data
+    private class FBillTypeIDModel {
+        private String FNUMBER;
+
+        public FBillTypeIDModel(String FNUMBER) {
+            this.FNUMBER = FNUMBER;
+        }
+    }
+
+    @Data
+    private class FOwnerIdHeadModel {
+        private String FNumber;
+
+        public FOwnerIdHeadModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
+    }
+
+    @Data
+    private class FPurchaseOrgIdModel {
+        private String FNumber;
+
+        public FPurchaseOrgIdModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
+    }
+
+    @Data
+    private class FSupplierIdModel {
+        private String FNumber;
+
+        public FSupplierIdModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
+    }
+
+
+    @Data
+    private class FOWNERIDModel {
+        private String FNumber;
+
+        public FOWNERIDModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
+    }
+
+    @Data
+    private class FMaterialIdModel {
+        private String FNumber;
+
+        public FMaterialIdModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 }

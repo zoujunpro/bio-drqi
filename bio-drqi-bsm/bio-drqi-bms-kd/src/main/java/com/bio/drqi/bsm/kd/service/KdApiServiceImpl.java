@@ -1,21 +1,27 @@
 package com.bio.drqi.bsm.kd.service;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.bsm.kd.dto.GroupSaveDTO;
 import com.bio.drqi.bsm.kd.dto.KdApiBaseDisableRequestDTO;
 import com.bio.drqi.bsm.kd.dto.model.*;
 import com.bio.drqi.bsm.kd.dto.KdApiBaseSaveRequestDTO;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
+import com.bio.drqi.bsm.kd.enums.KdParentGroupEnum;
 import com.bio.drqi.bsm.kd.enums.OperateEnum;
 import com.bio.drqi.bsm.kd.enums.OrgEnum;
 import com.bio.drqi.bsm.kd.util.KdRequestUtil;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.BmsProductCategoryTbMapper;
+import com.bio.drqi.mapper.BmsProductTbMapper;
+import com.bio.drqi.mapper.BmsSupplierTbMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 @Service
 @Slf4j
@@ -26,6 +32,12 @@ public class KdApiServiceImpl implements KdApiService {
 
     @Resource
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
+
+    @Resource
+    private BmsSupplierTbMapper bmsSupplierTbMapper;
+
+    @Resource
+    private BmsProductTbMapper bmsProductTbMapper;
 
     @Override
     public String execute(OperateEnum operateEnum, Object obj, String unitCode) {
@@ -56,6 +68,14 @@ public class KdApiServiceImpl implements KdApiService {
                 return executeMaterialDisable(obj, unitCode);
             case groupSave:
                 return groupSave(obj);
+            case inStockSave:
+                return inStockSave(obj, unitCode);
+            case outStockSave:
+                return outStockSave(obj, unitCode);
+            case moveStockSave:
+                return moveStockSave(obj, unitCode);
+            case returnStockSave:
+                return returnStockSave(obj, unitCode);
             default:
                 throw new BusinessException("数据异常，请检查金蝶配置");
         }
@@ -214,15 +234,89 @@ public class KdApiServiceImpl implements KdApiService {
         BmsProductTb bmsProductTb = (BmsProductTb) obj;
 
         BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsProductTb.getProductCategoryCode());
-        if(bmsProductCategoryTb==null){
-            throw new BusinessException("找不到货品类别：当前货品:"+bmsProductTb.getProductInnerCode());
+        if (bmsProductCategoryTb == null) {
+            throw new BusinessException("找不到货品类别：当前货品:" + bmsProductTb.getProductInnerCode());
         }
-        if(bmsProductCategoryTb.getKdNumber()==null){
+        if (bmsProductCategoryTb.getKdNumber() == null) {
             throw new BusinessException("材料分组未同步");
         }
         MaterialSaveModel materialSaveModel = new MaterialSaveModel(0, bmsProductTb.getProductInnerCode(), bmsProductTb.getProductName(), null);
         materialSaveModel = materialSaveModel.buildFMaterialGroup(bmsProductCategoryTb.getProductCategoryCode()).buildSubHeadEntity(bmsProductCategoryTb.getKdCategoryCode());
         return KdRequestUtil.save(FormIdEnum.BD_MATERIAL, KdApiBaseSaveRequestDTO.buildOfSave(materialSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+    }
+
+    /**
+     * 入库
+     *
+     * @param obj
+     * @param unitCode
+     * @return
+     */
+    private String inStockSave(Object obj, String unitCode) {
+        BmsProductStockInLog bmsProductStockInLog = (BmsProductStockInLog) obj;
+        String outDate = DateUtil.format(bmsProductStockInLog.getCreateTime(), DatePattern.PURE_DATETIME_PATTERN);
+        BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsProductStockInLog.getProductCategoryCode());
+        if (bmsProductCategoryTb == null) {
+            throw new BusinessException("找不到货品类别：当前货品:" + bmsProductStockInLog.getProductInnerCode());
+        }
+        if (bmsProductCategoryTb.getKdNumber() == null) {
+            throw new BusinessException("材料分组未同步");
+        }
+        BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(bmsProductStockInLog.getSupplierCode());
+        if (bmsSupplierTb == null) {
+            throw new BusinessException("供应商不存在" + bmsProductStockInLog.getSupplierCode());
+        }
+        if (bmsSupplierTb.getKdNumber() == null) {
+            throw new BusinessException("供应商未同步金蝶" + bmsProductStockInLog.getSupplierCode());
+        }
+        BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsProductStockInLog.getProductInnerCode());
+        if (bmsProductTb == null) {
+            throw new BusinessException("耗材库中不存在此耗材：" + bmsProductStockInLog.getProductInnerCode());
+        }
+        if (bmsProductTb.getKdNumber() == null) {
+            throw new BusinessException("耗材还未同步到金蝶" + bmsProductStockInLog.getProductInnerCode());
+        }
+        String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
+        KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId());
+
+        InStockSaveModel inStockSaveModel = new InStockSaveModel(outDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber(), bmsProductTb.getKdNumber(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()));
+
+        return KdRequestUtil.save(FormIdEnum.STK_InStock, KdApiBaseSaveRequestDTO.buildOfSave(inStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+
+    }
+
+
+    /**
+     * 出库
+     *
+     * @param obj
+     * @param unitCode
+     * @return
+     */
+    private String outStockSave(Object obj, String unitCode) {
+        return null;
+    }
+
+    /**
+     * 退货
+     *
+     * @param obj
+     * @param unitCode
+     * @return
+     */
+    private String returnStockSave(Object obj, String unitCode) {
+        return null;
+    }
+
+    /**
+     * 移库
+     *
+     * @param obj
+     * @param unitCode
+     * @return
+     */
+    private String moveStockSave(Object obj, String unitCode) {
+        return null;
     }
 
     private String executeMaterialModify(Object obj) {

@@ -8,6 +8,7 @@ public enum FormIdEnum {
     BOS_ASSISTANTDATA_DETAIL,
     STK_InStock,
     STK_MisDelivery,
+    PUR_MRB,
     ;
 
 }

@@ -1,5 +1,7 @@
 package com.bio.drqi.bsm.kd;
 
+import java.util.Date;
+
 public interface KdTaskService {
 
      /**
@@ -34,13 +36,13 @@ public interface KdTaskService {
      /**
       * 同步入库
       */
-    void synInStockTask();
+    void synInStockTask(String startDate, String endDate);
 
 
      /**
       * 同步出库
       */
-     void synOutStockTask();
+     void synOutStockTask(String startDate,String endDate);
 
 
 

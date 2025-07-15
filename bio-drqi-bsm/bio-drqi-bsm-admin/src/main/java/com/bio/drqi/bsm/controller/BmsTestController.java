@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.bio.common.core.dto.BusinessException;
@@ -124,6 +125,11 @@ public class BmsTestController {
         return ResponseResult.getSuccess("OK");
     }
 
+    @GetMapping("/synInStock")
+    public ResponseResult<String> synInStock() {
+        kdTaskService.synInStockTask("2025-07-11","2025-07-15");
+        return ResponseResult.getSuccess("OK");
+    }
     @GetMapping("/testKd")
     public ResponseResult testKd() {
         String json = "{\"NeedReturnFields\":[],\"IsDeleteEntry\":\"true\",\"IsVerifyBaseDataFiel\":\"false\",\"IsEntryBatchFil\":\"true\",\"ValidateFlag\":\"true\",\"NumberSearch\":\"true\",\"IsAutoAdjustField\":\"false\",\"IsAutoSubmitAndAudit\":\"true\",\"Model\":{\"FEntryID\":\"0\",\"Fnumber\":\"ET\",\"FDataValue\":\"番茄基因编辑\",\"FId\":{\"FNumber\":\"XM\"},\"FCreateOrgId\":{\"FNumber\":\"1001\"},\"fUseOrgId\":{\"FNumber\":\"1001\"}}}";

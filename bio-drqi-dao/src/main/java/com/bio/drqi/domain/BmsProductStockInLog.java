@@ -160,6 +160,13 @@ public class BmsProductStockInLog implements Serializable {
     private String stockCode;
 
 
+    private String startDate;
+
+    private String endDate;
+
+    private Integer kdNumber;
+
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

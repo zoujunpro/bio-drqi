@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -157,8 +159,8 @@ public class KdTaskServiceImpl implements KdTaskService {
             if (CollectionUtil.isNotEmpty(querySupplierDTOS)) {
                 bmsSupplierTb.setKdNumber(querySupplierDTOS.get(0).getFNumber());
                 bmsSupplierTbMapper.updateById(bmsSupplierTb);
-            }else {
-                log.error("供应商同步,供应商{}没有同步到金蝶数据",bmsSupplierTb.getSupplierName());
+            } else {
+                log.error("供应商同步,供应商{}没有同步到金蝶数据", bmsSupplierTb.getSupplierName());
             }
         }
         log.info("*****************供应商同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
@@ -184,12 +186,31 @@ public class KdTaskServiceImpl implements KdTaskService {
     }
 
     @Override
-    public void synInStockTask() {
+    public void synInStockTask(String startDate, String endDate) {
+        Long startTime = System.currentTimeMillis();
+        log.info("*****************入库数据同步开始**************************");
+        BmsProductStockInLog selectBmsProductStockInLog = new BmsProductStockInLog();
+        selectBmsProductStockInLog.setStartDate(startDate);
+        selectBmsProductStockInLog.setEndDate(endDate);
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(selectBmsProductStockInLog);
+        if (CollectionUtil.isNotEmpty(bmsProductStockInLogList)) {
+            bmsProductStockInLogList = bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductStockInLog.getKdNumber() == null).sorted(Comparator.comparing(BmsProductStockInLog::getId)).collect(Collectors.toList());
+            if (CollectionUtil.isEmpty(bmsProductStockInLogList)) {
+                log.info("数据已经同步完毕，无需再次同步");
+                return;
+            }
+            for (BmsProductStockInLog bmsProductStockInLog : bmsProductStockInLogList) {
+                String kdNumber = kdApiService.execute(OperateEnum.inStockSave, bmsProductStockInLog, bmsProductStockInLog.getUnitCode());
+                bmsProductStockInLog.setKdNumber(Integer.valueOf(kdNumber));
+                bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
+            }
+        }
+        log.info("*****************入库数据同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
 
     }
 
     @Override
-    public void synOutStockTask() {
+    public void synOutStockTask(String startDate, String endDate) {
 
     }
 }

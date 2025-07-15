@@ -119,11 +119,12 @@ public class KdRequestUtil {
         query.put("FilterString", "FDocumentStatus='C' and FForbidStatus='A'");
         try {
             List<List<Object>> result = k3CloudApi.executeBillQuery(JSONUtil.toJsonStr(query));
+            log.info("金蝶供应商拉去结果={}",JSONUtil.toJsonStr(result));
             if (CollectionUtil.isNotEmpty(result)) {
                 result.forEach(list -> {
                     QuerySupplierDTO querySupplierDTO = new QuerySupplierDTO();
-                    querySupplierDTO.setFName(list.get(0).toString());
-                    querySupplierDTO.setFNumber(Integer.valueOf(list.get(1).toString()));
+                    querySupplierDTO.setFNumber(Integer.valueOf(list.get(0).toString()));
+                    querySupplierDTO.setFName(list.get(1).toString());
                     resultList.add(querySupplierDTO);
                 });
             }

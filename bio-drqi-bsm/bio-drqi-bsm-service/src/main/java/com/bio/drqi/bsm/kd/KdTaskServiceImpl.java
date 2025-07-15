@@ -1,5 +1,6 @@
 package com.bio.drqi.bsm.kd;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.contents.BioBsmContents;
@@ -143,14 +144,21 @@ public class KdTaskServiceImpl implements KdTaskService {
     public void synSupplierTask() {
         Long startTime = System.currentTimeMillis();
         log.info("*****************供应商同步开始**************************");
-        List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
-        for (BmsStockDict bmsStockDict : bmsStockDictList) {
-            if (bmsStockDict.getKdNumber() != null && bmsStockDict.getKdNumber() > 0) {
-                kdApiService.execute(OperateEnum.stockModify, bmsStockDict, bmsStockDict.getUnitCode());
-            } else {
-                String kdNumber = kdApiService.execute(OperateEnum.stockSave, bmsStockDict, bmsStockDict.getUnitCode());
-                bmsStockDict.setKdNumber(Integer.valueOf(kdNumber));
-                bmsStockDictMapper.updateById(bmsStockDict);
+        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectSelective(null);
+        bmsSupplierTbList = bmsSupplierTbList.stream().filter(bmsSupplierTb -> bmsSupplierTb.getKdNumber() == null).collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(bmsSupplierTbList)) {
+            log.info("无新增供应商数据需要同步");
+            return;
+        }
+        List<QuerySupplierDTO> querySupplierDTOList = kdApiService.querySupplier();
+        Map<String, List<QuerySupplierDTO>> querySupplierDTOMap = querySupplierDTOList.stream().collect(Collectors.groupingBy(QuerySupplierDTO::getFName));
+        for (BmsSupplierTb bmsSupplierTb : bmsSupplierTbList) {
+            List<QuerySupplierDTO> querySupplierDTOS = querySupplierDTOMap.get(bmsSupplierTb.getSupplierName());
+            if (CollectionUtil.isNotEmpty(querySupplierDTOS)) {
+                bmsSupplierTb.setKdNumber(querySupplierDTOS.get(0).getFNumber());
+                bmsSupplierTbMapper.updateById(bmsSupplierTb);
+            }else {
+                log.error("供应商同步,供应商{}没有同步到金蝶数据",bmsSupplierTb.getSupplierName());
             }
         }
         log.info("*****************供应商同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);

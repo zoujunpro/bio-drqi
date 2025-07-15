@@ -111,12 +111,18 @@ public class BmsTestController {
         return ResponseResult.getSuccess("OK");
     }
 
-    @GetMapping("/material")
-    public ResponseResult<String> material() {
+    @GetMapping("/synMaterial")
+    public ResponseResult<String> synMaterial() {
         kdTaskService.synMaterialTask();
         return ResponseResult.getSuccess("OK");
     }
 
+
+    @GetMapping("/synSupplier")
+    public ResponseResult<String> synSupplier() {
+        kdTaskService.synSupplierTask();
+        return ResponseResult.getSuccess("OK");
+    }
 
     @GetMapping("/testKd")
     public ResponseResult testKd() {

@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.bsm.kd.dto.GroupSaveDTO;
 import com.bio.drqi.bsm.kd.dto.KdApiBaseDisableRequestDTO;
+import com.bio.drqi.bsm.kd.dto.QuerySupplierDTO;
 import com.bio.drqi.bsm.kd.dto.model.*;
 import com.bio.drqi.bsm.kd.dto.KdApiBaseSaveRequestDTO;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -83,6 +85,11 @@ public class KdApiServiceImpl implements KdApiService {
             default:
                 throw new BusinessException("数据异常，请检查金蝶配置");
         }
+    }
+
+    @Override
+    public List<QuerySupplierDTO> querySupplier() {
+        return KdRequestUtil.executeQuerySupplier();
     }
 
 
@@ -244,7 +251,7 @@ public class KdApiServiceImpl implements KdApiService {
         if (bmsProductCategoryTb.getKdNumber() == null) {
             throw new BusinessException("材料分组未同步");
         }
-        MaterialSaveModel materialSaveModel = new MaterialSaveModel(bmsProductTb.getProductInnerCode(),  bmsProductTb.getProductName(),null, bmsProductTb.getBrandName(), bmsProductCategoryTb.getProductCategoryCode(), bmsProductCategoryTb.getKdCategoryCode());
+        MaterialSaveModel materialSaveModel = new MaterialSaveModel(bmsProductTb.getProductInnerCode(), bmsProductTb.getProductName(), bmsProductTb.getProductSpecs(), bmsProductTb.getBrandName(), bmsProductCategoryTb.getProductCategoryCode(), bmsProductCategoryTb.getKdCategoryCode());
         return KdRequestUtil.save(FormIdEnum.BD_MATERIAL, KdApiBaseSaveRequestDTO.buildOfSave(materialSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
     }
 
@@ -280,7 +287,7 @@ public class KdApiServiceImpl implements KdApiService {
             throw new BusinessException("耗材还未同步到金蝶" + bmsProductStockInLog.getProductInnerCode());
         }
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
-        KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(),active);
+        KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
 
         InStockSaveModel inStockSaveModel = new InStockSaveModel(inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber().toString(), bmsProductTb.getKdNumber().toString(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()));
 
@@ -322,7 +329,7 @@ public class KdApiServiceImpl implements KdApiService {
         }
 
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
-        KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(),active);
+        KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
         OutStockSaveModel outStockSaveModel = new OutStockSaveModel(outDate, kdParentGroupEnum, orgCode, bmsProductTb.getKdNumber().toString(), new BigDecimal(bmsProductStockOutLog.getOutNumber()), bmsStockDict.getKdNumber().toString());
 
         return KdRequestUtil.save(FormIdEnum.STK_MisDelivery, KdApiBaseSaveRequestDTO.buildOfSave(outStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
@@ -356,6 +363,7 @@ public class KdApiServiceImpl implements KdApiService {
         MaterialSaveModel materialSaveModel = new MaterialSaveModel();
         materialSaveModel.setFMATERIALID(bmsProductTb.getKdNumber());
         materialSaveModel.setFname(bmsProductTb.getProductName());
+        materialSaveModel.setFspecification(bmsProductTb.getProductSpecs());
         return KdRequestUtil.save(FormIdEnum.BD_MATERIAL, KdApiBaseSaveRequestDTO.buildOfModify(materialSaveModel));
     }
 

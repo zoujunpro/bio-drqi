@@ -1,5 +1,7 @@
 package com.bio.drqi.bsm.kd.enums;
 
+import com.bio.common.core.dto.BusinessException;
+
 public enum KdFCategoryIDEnum {
     CHLB01_SYS("原材料"),
     CHLB02_SYS("辅料"),
@@ -12,7 +14,19 @@ public enum KdFCategoryIDEnum {
 
     public String desc;
 
+    public static KdFCategoryIDEnum valueOfName(String code) {
+        for (KdFCategoryIDEnum kdFCategoryIDEnum : KdFCategoryIDEnum.values()) {
+            if (kdFCategoryIDEnum.name().equals(code)) {
+                return kdFCategoryIDEnum;
+            }
+        }
+        throw new BusinessException("存货类别配置错误");
+    }
+
+
     KdFCategoryIDEnum(String desc) {
         this.desc = desc;
     }
+
+
 }

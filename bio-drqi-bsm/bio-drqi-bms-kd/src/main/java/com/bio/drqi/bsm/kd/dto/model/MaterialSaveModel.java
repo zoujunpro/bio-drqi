@@ -15,7 +15,7 @@ public class MaterialSaveModel extends KdModel {
     /**
      * 实体主键
      */
-    private Integer FMATERIALID = 0;
+    private Integer FMATERIALID;
 
     /**
      * 编码
@@ -45,10 +45,39 @@ public class MaterialSaveModel extends KdModel {
 
     private SubHeadEntityModel SubHeadEntity;
 
+    private SubHeadEntity1Model SubHeadEntity1;
+
+
+    public MaterialSaveModel() {
+    }
+
+    public MaterialSaveModel(String fnumber, String fname, String fspecification, String f_WAUJ_PP, String kdMaterialGroupId, String kdCategoryCode) {
+        this.FMATERIALID = 0;
+        Fnumber = fnumber;
+        Fname = fname;
+        Fspecification = fspecification;
+        F_WAUJ_PP = f_WAUJ_PP;
+        this.FMaterialGroup = new FMaterialGroupModel(kdMaterialGroupId);
+        SubHeadEntity = new SubHeadEntityModel(kdCategoryCode);
+        SubHeadEntity1 = new SubHeadEntity1Model(true);
+    }
+
+    @Data
+    private class SubHeadEntity1Model {
+        boolean FIsBatchManage;
+
+        public SubHeadEntity1Model(boolean FIsBatchManage) {
+            this.FIsBatchManage = FIsBatchManage;
+        }
+    }
 
     @Data
     private class FMaterialGroupModel {
         private String FNumber;
+
+        public FMaterialGroupModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 
     @Data
@@ -73,43 +102,51 @@ public class MaterialSaveModel extends KdModel {
         /**
          * 基本单位
          */
-        private FBaseUnitIdModel FBaseUnitId = new FBaseUnitIdModel();
+        private FBaseUnitIdModel FBaseUnitId;
 
         /**
          * 是否允许采购
          */
-        private boolean FIsPurchase = true;
+        private boolean FIsPurchase;
 
         /**
          * 是否允许库存
          */
-        private boolean FIsInventory = true;
+        private boolean FIsInventory;
 
         /**
          * 允许委外
          */
-        private boolean FIsSubContract = true;
+        private boolean FIsSubContract;
 
         /**
          * 允许销售
          */
-        private boolean FIsSale = true;
+        private boolean FIsSale;
 
 
         /**
          * 允许生产
          */
-        private boolean FIsProduce = true;
+        private boolean FIsProduce;
 
         /**
          * 允许资产
          */
-        private boolean FIsAsset = true;
+        private boolean FIsAsset;
 
-
-        private boolean FIsBatchManage = true;
-
-
+        private SubHeadEntityModel(String kdCategoryCode) {
+            this.FErpClsID = "1";
+            this.FFeatureItem = "1";
+            this.FCategoryID = new FCategoryIDModel(kdCategoryCode);
+            this.FBaseUnitId = new FBaseUnitIdModel("Pcs");
+            this.FIsPurchase = true;
+            this.FIsInventory = true;
+            this.FIsSubContract = true;
+            this.FIsSale = true;
+            this.FIsProduce = true;
+            this.FIsAsset = true;
+        }
     }
 
 
@@ -125,7 +162,11 @@ public class MaterialSaveModel extends KdModel {
 
     @Data
     private class FBaseUnitIdModel {
-        private String FNumber = "Pcs";
+        private String FNumber;
+
+        public FBaseUnitIdModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 
     @Override
@@ -136,27 +177,4 @@ public class MaterialSaveModel extends KdModel {
         return list;
     }
 
-    public MaterialSaveModel buildFMaterialGroup(String fMaterialGroup) {
-        FMaterialGroupModel fMaterialGroupModel = new FMaterialGroupModel();
-        fMaterialGroupModel.setFNumber(fMaterialGroup);
-        this.FMaterialGroup = fMaterialGroupModel;
-        return this;
-    }
-
-    public MaterialSaveModel buildSubHeadEntity(String fCategoryID) {
-        SubHeadEntityModel subHeadEntityModel = new SubHeadEntityModel();
-        subHeadEntityModel.setFCategoryID(new FCategoryIDModel(fCategoryID));
-        this.SubHeadEntity = subHeadEntityModel;
-        return this;
-
-    }
-
-    public MaterialSaveModel(Integer FMATERIALID, String fnumber, String fname, String fspecification,String brandName) {
-        this.FMATERIALID = FMATERIALID;
-        this.Fnumber = fnumber;
-        this.Fname = fname;
-        this.Fspecification = fspecification;
-        this.F_WAUJ_PP=brandName;
-
-    }
 }

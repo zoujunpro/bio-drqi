@@ -41,6 +41,7 @@ public class KdRequestUtil {
             RepoRet sRet = gson.fromJson(result, RepoRet.class);
             if (sRet.isSuccessfully()) {
                 return sRet.getResult().getId();
+
             } else {
                 throw new BusinessException("同步数据到金蝶失败: " + gson.toJson(sRet.getResult()));
             }
@@ -98,7 +99,7 @@ public class KdRequestUtil {
             Gson gson = new Gson();
             RepoRet sRet = gson.fromJson(result, RepoRet.class);
             if (sRet.isSuccessfully()) {
-                return sRet.getResult().getId();
+                return sRet.getResult().getResponseStatus().getSuccessEntitys().get(0).getId();
             } else {
                 throw new BusinessException("金蝶分组接口调用失败: " + gson.toJson(sRet.getResult()));
             }

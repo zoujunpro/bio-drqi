@@ -244,8 +244,7 @@ public class KdApiServiceImpl implements KdApiService {
         if (bmsProductCategoryTb.getKdNumber() == null) {
             throw new BusinessException("材料分组未同步");
         }
-        MaterialSaveModel materialSaveModel = new MaterialSaveModel(0, bmsProductTb.getProductInnerCode(), bmsProductTb.getProductName(), null, bmsProductTb.getBrandName());
-        materialSaveModel = materialSaveModel.buildFMaterialGroup(bmsProductCategoryTb.getProductCategoryCode()).buildSubHeadEntity(bmsProductCategoryTb.getKdCategoryCode());
+        MaterialSaveModel materialSaveModel = new MaterialSaveModel(bmsProductTb.getProductInnerCode(),  bmsProductTb.getProductName(),null, bmsProductTb.getBrandName(), bmsProductCategoryTb.getProductCategoryCode(), bmsProductCategoryTb.getKdCategoryCode());
         return KdRequestUtil.save(FormIdEnum.BD_MATERIAL, KdApiBaseSaveRequestDTO.buildOfSave(materialSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
     }
 
@@ -353,7 +352,11 @@ public class KdApiServiceImpl implements KdApiService {
     }
 
     private String executeMaterialModify(Object obj) {
-        return null;
+        BmsProductTb bmsProductTb = (BmsProductTb) obj;
+        MaterialSaveModel materialSaveModel = new MaterialSaveModel();
+        materialSaveModel.setFMATERIALID(bmsProductTb.getKdNumber());
+        materialSaveModel.setFname(bmsProductTb.getProductName());
+        return KdRequestUtil.save(FormIdEnum.BD_MATERIAL, KdApiBaseSaveRequestDTO.buildOfModify(materialSaveModel));
     }
 
     private String executeMaterialDisable(Object obj, String unitCode) {

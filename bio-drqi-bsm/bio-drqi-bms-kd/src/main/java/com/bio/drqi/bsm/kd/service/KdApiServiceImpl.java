@@ -281,7 +281,7 @@ public class KdApiServiceImpl implements KdApiService {
             throw new BusinessException("耗材还未同步到金蝶" + bmsProductStockInLog.getProductInnerCode());
         }
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
-        KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId());
+        KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(),active);
 
         InStockSaveModel inStockSaveModel = new InStockSaveModel(inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber().toString(), bmsProductTb.getKdNumber().toString(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()));
 
@@ -323,7 +323,7 @@ public class KdApiServiceImpl implements KdApiService {
         }
 
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
-        KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId());
+        KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(),active);
         OutStockSaveModel outStockSaveModel = new OutStockSaveModel(outDate, kdParentGroupEnum, orgCode, bmsProductTb.getKdNumber().toString(), new BigDecimal(bmsProductStockOutLog.getOutNumber()), bmsStockDict.getKdNumber().toString());
 
         return KdRequestUtil.save(FormIdEnum.STK_MisDelivery, KdApiBaseSaveRequestDTO.buildOfSave(outStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));

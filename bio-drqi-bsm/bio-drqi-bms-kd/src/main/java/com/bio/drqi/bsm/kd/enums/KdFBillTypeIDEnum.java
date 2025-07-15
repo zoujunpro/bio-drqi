@@ -18,17 +18,29 @@ public enum KdFBillTypeIDEnum {
     }
 
     public static KdFBillTypeIDEnum ofKdParentGroupEnum(KdParentGroupEnum kdParentGroupEnum) {
-        switch (kdParentGroupEnum) {
-            case CODE_1:
-                return KdFBillTypeIDEnum.TYPE_1;
-            case CODE_2:
-                return KdFBillTypeIDEnum.TYPE_2;
-            case CODE_3:
-                return KdFBillTypeIDEnum.TYPE_3;
-            case CODE_4:
-                return KdFBillTypeIDEnum.TYPE_4;
-            default:
-                throw new BusinessException("单据类型转换异常");
+        if (KdParentGroupEnum.DEV_CODE_1.equals(kdParentGroupEnum)
+                || KdParentGroupEnum.TEST_CODE_1.equals(kdParentGroupEnum)
+                || KdParentGroupEnum.LOCAL_CODE_1.equals(kdParentGroupEnum)
+                || KdParentGroupEnum.PROD_CODE_1.equals(kdParentGroupEnum)) {
+            return KdFBillTypeIDEnum.TYPE_1;
+        } else if (KdParentGroupEnum.DEV_CODE_2.equals(kdParentGroupEnum)
+                || KdParentGroupEnum.TEST_CODE_2.equals(kdParentGroupEnum)
+                || KdParentGroupEnum.LOCAL_CODE_2.equals(kdParentGroupEnum)
+                || KdParentGroupEnum.PROD_CODE_2.equals(kdParentGroupEnum)) {
+            return KdFBillTypeIDEnum.TYPE_2;
+        } else if (KdParentGroupEnum.DEV_CODE_3.equals(kdParentGroupEnum)
+                || KdParentGroupEnum.TEST_CODE_3.equals(kdParentGroupEnum)
+                || KdParentGroupEnum.LOCAL_CODE_3.equals(kdParentGroupEnum)
+                || KdParentGroupEnum.PROD_CODE_3.equals(kdParentGroupEnum)) {
+            return KdFBillTypeIDEnum.TYPE_3;
+        } else if (KdParentGroupEnum.DEV_CODE_4.equals(kdParentGroupEnum)
+                || KdParentGroupEnum.TEST_CODE_4.equals(kdParentGroupEnum)
+                || KdParentGroupEnum.LOCAL_CODE_4.equals(kdParentGroupEnum)
+                || KdParentGroupEnum.PROD_CODE_4.equals(kdParentGroupEnum)) {
+            return KdFBillTypeIDEnum.TYPE_4;
+        } else {
+            throw new BusinessException("单据类型转换异常");
         }
+
     }
 }

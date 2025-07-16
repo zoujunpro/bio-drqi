@@ -63,8 +63,12 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             if (StringUtils.isNotEmpty(kdProjectCode)) {
                 BmsProjectDict bmsProjectDict = list.get(0);
                 if (StringUtils.isEmpty(bmsProjectDict.getKdNumber())) {
-                    String kdNumber = kdApiService.execute(OperateEnum.projectSave, bmsProjectDict, PurchaseUnitEnum.default_.name());
-                    bmsProjectDictMapper.updateKdNumberByKdProjectCode(kdNumber, kdProjectCode);
+                    try {
+                        String kdNumber = kdApiService.execute(OperateEnum.projectSave, bmsProjectDict, PurchaseUnitEnum.default_.name());
+                        bmsProjectDictMapper.updateKdNumberByKdProjectCode(kdNumber, kdProjectCode);
+                    } catch (Exception e) {
+
+                    }
                 } else {
                     kdApiService.execute(OperateEnum.projectModify, bmsProjectDict, PurchaseUnitEnum.default_.name());
                 }
@@ -247,7 +251,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             synReturnStockTask(beginDate, endDate);
             synOutStockTask(beginDate, endDate);
         } catch (Exception e) {
-            log.error("*********************************最终异常",e.getMessage());
+            log.error("*********************************最终异常",e);
             throw new RuntimeException(e);
         }
     }

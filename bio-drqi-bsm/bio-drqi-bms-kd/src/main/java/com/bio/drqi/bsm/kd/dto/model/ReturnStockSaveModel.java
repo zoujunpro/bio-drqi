@@ -1,8 +1,6 @@
 package com.bio.drqi.bsm.kd.dto.model;
 
 import com.bio.drqi.bsm.kd.contents.KdContents;
-import com.bio.drqi.bsm.kd.enums.KdFBillTypeIDEnum;
-import com.bio.drqi.bsm.kd.enums.KdParentGroupEnum;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,7 +9,7 @@ import java.util.List;
 
 
 @Data
-public class ReturnStockModel extends KdModel {
+public class ReturnStockSaveModel extends KdModel {
 
     /**
      * 退料类型
@@ -69,7 +67,7 @@ public class ReturnStockModel extends KdModel {
     private List<FPURMRBENTRYModel> FPURMRBENTRY;
 
 
-    public ReturnStockModel(String orgCode, String FDate,String kdSupplierId, String materialId, BigDecimal returnNumber, String stockCode,String projectCode) {
+    public ReturnStockSaveModel(String orgCode, String FDate, String kdSupplierId, String materialId, BigDecimal returnNumber, String stockCode, String projectCode,BigDecimal taxRate) {
         this.FMRTYPE = "B";
         this.FMRMODE = "A";
         this.FStockOrgId = new FStockOrgIdModel(orgCode);
@@ -80,7 +78,7 @@ public class ReturnStockModel extends KdModel {
         this.FSupplierID = new FSupplierIDModel(kdSupplierId);
         this.FOwnerTypeIdHead = KdContents.OWNER;
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
-        this.FPURMRBENTRY = Arrays.asList(new FPURMRBENTRYModel(materialId, returnNumber, stockCode, orgCode,projectCode));
+        this.FPURMRBENTRY = Arrays.asList(new FPURMRBENTRYModel(materialId, returnNumber, stockCode, orgCode,projectCode,taxRate));
     }
 
     @Data
@@ -113,13 +111,16 @@ public class ReturnStockModel extends KdModel {
 
         private FLotModel FLot;
 
-        public FPURMRBENTRYModel(String materialId, BigDecimal FRMREALQTY, String stockCode, String orgCode,String projectCode) {
+        private BigDecimal FEntryTaxRate;
+
+        public FPURMRBENTRYModel(String materialId, BigDecimal FRMREALQTY, String stockCode, String orgCode,String projectCode,BigDecimal taxRate) {
             this.FMaterialId = new FMaterialIdModel(materialId);
             this.FRMREALQTY = FRMREALQTY;
             this.FSTOCKID = new FSTOCKIDModel(stockCode);
             this.FOWNERTYPEID = KdContents.OWNER;
             this.FOWNERID = new FOWNERIDModel(orgCode);
             this.FLot=new FLotModel(projectCode);
+            this.FEntryTaxRate=taxRate;
         }
     }
 

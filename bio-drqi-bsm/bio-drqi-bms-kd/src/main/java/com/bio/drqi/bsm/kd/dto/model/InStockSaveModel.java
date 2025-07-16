@@ -110,7 +110,7 @@ public class InStockSaveModel extends KdModel {
 
         private FStockIdModel FStockId;
 
-        private FEntryTaxRateModel FEntryTaxRate;
+        private BigDecimal FEntryTaxRate;
 
         public FInStockEntryModel(String MaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty, String orgCode,String projectCode,String stockCode,BigDecimal taxRate) {
             this.setFMaterialId(new FMaterialIdModel(MaterialId));
@@ -120,20 +120,13 @@ public class InStockSaveModel extends KdModel {
             this.setFOWNERID(new FOWNERIDModel(orgCode));
             this.FLot=new FLotModel(projectCode);
             this.FStockId=new FStockIdModel(stockCode);
-            this.FEntryTaxRate=new FEntryTaxRateModel(taxRate);
+            this.FEntryTaxRate=taxRate;
         }
     }
 
 
 
-    @Data
-    private  class FEntryTaxRateModel {
-        private BigDecimal FNumber;
 
-        public FEntryTaxRateModel(BigDecimal FNumber) {
-            this.FNumber = FNumber;
-        }
-    }
 
     @Data
     private class FStockIdModel{

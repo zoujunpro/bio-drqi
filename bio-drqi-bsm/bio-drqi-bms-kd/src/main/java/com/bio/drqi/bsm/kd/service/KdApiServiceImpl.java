@@ -358,8 +358,8 @@ public class KdApiServiceImpl implements KdApiService {
         }
         String returnDate = DateUtil.format(bmsReturnOrderDetailTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
-        ReturnStockModel returnStockModel = new ReturnStockModel( orgCode, returnDate,  bmsSupplierTb.getKdNumber().toString(), bmsReturnOrderDetailTb.getProductInnerCode(),  new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber()), bmsReturnOrderDetailTb.getStockCode(), bmsReturnOrderDetailTb.getProjectCode());
-        return KdRequestUtil.save(FormIdEnum.PUR_MRB, KdApiBaseSaveRequestDTO.buildOfSave(returnStockModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+        ReturnStockSaveModel returnStockSaveModel = new ReturnStockSaveModel( orgCode, returnDate,  bmsSupplierTb.getKdNumber().toString(), bmsReturnOrderDetailTb.getProductInnerCode(),  new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber()), bmsReturnOrderDetailTb.getStockCode(), bmsReturnOrderDetailTb.getProjectCode(),new BigDecimal(bmsReturnOrderDetailTb.getTaxRate()));
+        return KdRequestUtil.save(FormIdEnum.PUR_MRB, KdApiBaseSaveRequestDTO.buildOfSave(returnStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 
     }
 

@@ -9,6 +9,7 @@ public enum FormIdEnum {
     STK_InStock,
     STK_MisDelivery,
     PUR_MRB,
+    STK_TransferDirect,
     ;
 
 }

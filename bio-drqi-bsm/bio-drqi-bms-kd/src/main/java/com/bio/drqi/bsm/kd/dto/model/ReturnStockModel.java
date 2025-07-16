@@ -6,6 +6,7 @@ import com.bio.drqi.bsm.kd.enums.KdParentGroupEnum;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -65,21 +66,21 @@ public class ReturnStockModel extends KdModel {
     private FOwnerIdHeadModel FOwnerIdHead;
 
 
-    private FPURMRBENTRYModel FPURMRBENTRY;
+    private List<FPURMRBENTRYModel> FPURMRBENTRY;
 
 
-    public ReturnStockModel(String orgCode, String FDate, KdParentGroupEnum kdParentGroupEnum, String kdSupplierId, String materialId, BigDecimal returnNumber, String stockCode,String projectCode) {
+    public ReturnStockModel(String orgCode, String FDate,String kdSupplierId, String materialId, BigDecimal returnNumber, String stockCode,String projectCode) {
         this.FMRTYPE = "B";
         this.FMRMODE = "A";
         this.FStockOrgId = new FStockOrgIdModel(orgCode);
         this.FDate = FDate;
-        this.FBillTypeID = new FBillTypeIDModel(KdFBillTypeIDEnum.ofKdParentGroupEnum(kdParentGroupEnum).code);
+        this.FBillTypeID = new FBillTypeIDModel("TLD01_SYS");
         this.FRequireOrgId = new FRequireOrgIdModel(orgCode);
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
         this.FSupplierID = new FSupplierIDModel(kdSupplierId);
         this.FOwnerTypeIdHead = KdContents.OWNER;
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
-        this.FPURMRBENTRY = new FPURMRBENTRYModel(materialId, returnNumber, stockCode, orgCode,projectCode);
+        this.FPURMRBENTRY = Arrays.asList(new FPURMRBENTRYModel(materialId, returnNumber, stockCode, orgCode,projectCode));
     }
 
     @Data

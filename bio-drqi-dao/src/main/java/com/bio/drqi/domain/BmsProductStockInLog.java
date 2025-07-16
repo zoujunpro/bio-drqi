@@ -160,10 +160,10 @@ public class BmsProductStockInLog implements Serializable {
 
     private String stockCode;
 
-    @Ignore
+    @TableField(exist = false)
     private String startDate;
 
-    @Ignore
+    @TableField(exist = false)
     private String endDate;
 
     private Integer kdNumber;

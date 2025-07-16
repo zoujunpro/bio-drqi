@@ -47,6 +47,9 @@ public class OutStockSaveModel extends KdModel {
     private FPurchaseOrgIdModel FPurchaseOrgId;
 
 
+    private FDeptIdModel FDeptId;
+
+
     private List<FEntityModel> FEntity;
 
 
@@ -58,8 +61,18 @@ public class OutStockSaveModel extends KdModel {
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
         this.FEntity = Arrays.asList(new FEntityModel(kdMaterialId, FQty, stockId, orgCode));
+        this.FDeptId=new FDeptIdModel("BM000008");
     }
 
+
+    @Data
+    private class FDeptIdModel{
+        private String FNumber;
+
+        public FDeptIdModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
+    }
     @Data
     private class FEntityModel {
 

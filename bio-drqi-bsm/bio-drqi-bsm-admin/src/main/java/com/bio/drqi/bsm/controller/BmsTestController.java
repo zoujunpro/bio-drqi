@@ -127,7 +127,7 @@ public class BmsTestController {
 
     @GetMapping("/synInStock")
     public ResponseResult<String> synInStock() {
-        kdTaskService.synInStockTask("2025-07-11","2025-07-15");
+        kdTaskService.synInStockTask("2025-07-16","2025-07-16");
         return ResponseResult.getSuccess("OK");
     }
 

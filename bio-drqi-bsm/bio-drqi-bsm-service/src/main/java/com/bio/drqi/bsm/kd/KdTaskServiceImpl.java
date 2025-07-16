@@ -24,16 +24,13 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class KdTaskServiceImpl implements KdTaskService {
+public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
 
     @Resource
     private BmsProductTbMapper bmsProductTbMapper;
 
     @Resource
     private BmsProjectDictMapper bmsProjectDictMapper;
-
-    @Resource
-    private BmsBrandTbMapper bmsBrandTbMapper;
 
     @Resource
     private BmsSupplierTbMapper bmsSupplierTbMapper;
@@ -77,31 +74,7 @@ public class KdTaskServiceImpl implements KdTaskService {
 
     }
 
-    /**
-     * 不用实现
-     */
-    @Override
-    @Deprecated
-    public void synBrandTask() {
-        Long startTime = System.currentTimeMillis();
-        log.info("*****************品牌同步开始**************************");
-     /*   List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectList(null);
-        bmsBrandTbList.forEach(bmsBrandTb -> {
-            log.info("正在同步品牌{}", bmsBrandTb.getBrandName());
-            if (BioBsmContents.N.equals(bmsBrandTb.getDeleteFlag())) {
-                if (bmsBrandTb.getKdNumber() != null && bmsBrandTb.getKdNumber() > 0) {
-                    kdApiService.execute(OperateEnum.bmsModify, bmsBrandTb, PurchaseUnitEnum.default_.name());
-                } else {
-                    String kdNumber = kdApiService.execute(OperateEnum.bmsSave, bmsBrandTb, PurchaseUnitEnum.default_.name());
-                    bmsBrandTb.setKdNumber(Integer.valueOf(kdNumber));
-                    bmsBrandTbMapper.updateById(bmsBrandTb);
-                }
-            } else {
-                kdApiService.execute(OperateEnum.bmsDisable, bmsBrandTb, "beijing");
-            }
-        });*/
-        log.info("*****************品牌同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
-    }
+
 
     @Override
     public void synStockTask() {
@@ -246,7 +219,7 @@ public class KdTaskServiceImpl implements KdTaskService {
         selectBmsReturnOrderDetailTb.setStartDate(startDate);
         selectBmsReturnOrderDetailTb.setEndDate(endDate);
         List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectSelective(selectBmsReturnOrderDetailTb);
-        if(CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)){
+        if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)) {
             bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsReturnOrderDetailTb.getKdNumber() == null).sorted(Comparator.comparing(BmsReturnOrderDetailTb::getId)).collect(Collectors.toList());
             if (CollectionUtil.isEmpty(bmsReturnOrderDetailTbList)) {
                 log.info("退货数据已经同步完毕，无需再次同步");
@@ -260,5 +233,22 @@ public class KdTaskServiceImpl implements KdTaskService {
         }
         log.info("*****************退货数据同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
 
+    }
+
+    @Override
+    public void executeSynKd(String beginDate, String endDate) {
+        try {
+            synStockTask();
+            synMaterialGroupTask();
+            synSupplierTask();
+            synMaterialTask();
+            synProjectTask();
+            synInStockTask(beginDate, endDate);
+            synReturnStockTask(beginDate, endDate);
+            synOutStockTask(beginDate, endDate);
+        } catch (Exception e) {
+            log.error("*********************************最终异常",e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 }

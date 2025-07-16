@@ -8,10 +8,6 @@ public interface KdTaskService {
       * 同步项目
       */
     void synProjectTask();
-     /**
-      * 同步品牌
-      */
-    void synBrandTask();
 
      /**
       * 同步库房

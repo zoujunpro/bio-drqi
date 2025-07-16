@@ -5,8 +5,11 @@ import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.uuid.IdUtils;
+import com.bio.drqi.bsm.kd.KdTaskExecuteService;
+import com.bio.drqi.bsm.kd.KdTaskService;
 import com.bio.drqi.bsm.req.BmsStockAddReqDTO;
 import com.bio.drqi.bsm.req.BmsStockEditReqDTO;
+import com.bio.drqi.bsm.req.BmsStockSynKdReqDTO;
 import com.bio.drqi.bsm.rsp.BmsStockQueryByUnitRspDTO;
 import com.bio.drqi.bsm.service.BmsStockService;
 import com.bio.drqi.domain.BmsProductStockTb;
@@ -38,6 +41,9 @@ public class BmsStockServiceImpl implements BmsStockService {
 
     @Resource
     private BmsProductStockTbMapper bmsProductStockTbMapper;
+
+    @Resource
+    private KdTaskExecuteService kdTaskExecuteService;
 
 
     @Override
@@ -92,5 +98,10 @@ public class BmsStockServiceImpl implements BmsStockService {
         }
         bmsStockDictMapper.deleteById(id);
 
+    }
+
+    @Override
+    public void synKd(BmsStockSynKdReqDTO bmsStockSynKdReqDTO) {
+        kdTaskExecuteService.executeSynKd(bmsStockSynKdReqDTO.getBeginDate(), bmsStockSynKdReqDTO.getEndDate());
     }
 }

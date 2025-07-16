@@ -41,7 +41,6 @@ public class KdRequestUtil {
             RepoRet sRet = gson.fromJson(result, RepoRet.class);
             if (sRet.isSuccessfully()) {
                 return sRet.getResult().getId();
-
             } else {
                 throw new BusinessException("同步数据到金蝶失败: " + gson.toJson(sRet.getResult()));
             }

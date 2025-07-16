@@ -24,6 +24,7 @@ public class BmsStockController {
 
     /**
      * 库房管理-根据单位查询
+     *
      * @param unitCode
      * @return
      */
@@ -35,6 +36,7 @@ public class BmsStockController {
 
     /**
      * 库房管理-新增库房
+     *
      * @param bmsStockAddReqDTO
      * @return
      */
@@ -49,6 +51,7 @@ public class BmsStockController {
 
     /**
      * 库房管理-编辑库房
+     *
      * @param bmsStockEditReqDTO
      * @return
      */
@@ -62,6 +65,7 @@ public class BmsStockController {
 
     /**
      * 库房管理-删除库房
+     *
      * @param id
      * @return
      */
@@ -69,6 +73,13 @@ public class BmsStockController {
     @WebLog(desc = "库房管理-删除库房")
     public ResponseResult<String> delete(@RequestParam Integer id) {
         bmsStockService.delete(id);
+        return ResponseResult.getSuccess("ok");
+    }
+
+
+    @PostMapping("synKd")
+    public ResponseResult<String> synKd(@Validated @RequestBody BmsStockSynKdReqDTO bmsStockSynKdReqDTO) {
+        bmsStockService.synKd(bmsStockSynKdReqDTO);
         return ResponseResult.getSuccess("ok");
     }
 }

@@ -7,6 +7,7 @@ import com.bio.drqi.bsm.kd.enums.KdParentGroupEnum;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -61,10 +62,10 @@ public class InStockSaveModel extends KdModel {
     private FSupplierIdModel FSupplierId;
 
 
-    private FInStockEntryModel FInStockEntry;
+    private List<FInStockEntryModel> FInStockEntry;
 
 
-    public InStockSaveModel(String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdSupplierId, String kdMaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty) {
+    public InStockSaveModel(String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdSupplierId, String kdMaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty,String projectCode,String stockCode) {
         this.FID = 0;
         this.FBillNo = null;
         this.FDate = FDate;
@@ -73,7 +74,7 @@ public class InStockSaveModel extends KdModel {
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
         this.FSupplierId = new FSupplierIdModel(kdSupplierId);
-        this.FInStockEntry = new FInStockEntryModel(kdMaterialId, fTaxPrice, reqlQty, orgCode);
+        this.FInStockEntry = Arrays.asList(new FInStockEntryModel(kdMaterialId, fTaxPrice, reqlQty, orgCode,projectCode,stockCode));
     }
 
     @Override
@@ -103,15 +104,44 @@ public class InStockSaveModel extends KdModel {
 
         private FOWNERIDModel FOWNERID;
 
-        public FInStockEntryModel(String MaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty, String orgCode) {
+
+        private FLotModel FLot;
+
+
+        private FStockIdModel FStockId;
+
+        public FInStockEntryModel(String MaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty, String orgCode,String projectCode,String stockCode) {
             this.setFMaterialId(new FMaterialIdModel(MaterialId));
             this.setFTaxPrice(fTaxPrice);
             this.setFRealQty(reqlQty);
             this.setFOWNERTYPEID(KdContents.OWNER);
             this.setFOWNERID(new FOWNERIDModel(orgCode));
+            this.FLot=new FLotModel(projectCode);
+            this.FStockId=new FStockIdModel(stockCode);
         }
     }
 
+
+    @Data
+    private class FStockIdModel{
+        private String FNumber;
+
+        public FStockIdModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
+    }
+
+    /**
+     * 批号（项目号）
+     */
+    @Data
+    private class  FLotModel{
+        private String FNumber;
+
+        public FLotModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
+    }
 
     @Data
     private class FBillTypeIDModel {

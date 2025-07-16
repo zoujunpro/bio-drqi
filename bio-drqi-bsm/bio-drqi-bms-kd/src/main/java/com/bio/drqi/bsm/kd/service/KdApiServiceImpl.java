@@ -264,7 +264,7 @@ public class KdApiServiceImpl implements KdApiService {
      */
     private String inStockSave(Object obj, String unitCode) {
         BmsProductStockInLog bmsProductStockInLog = (BmsProductStockInLog) obj;
-        String inDate = DateUtil.format(bmsProductStockInLog.getCreateTime(), DatePattern.PURE_DATETIME_PATTERN);
+        String inDate = DateUtil.format(bmsProductStockInLog.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsProductStockInLog.getProductCategoryCode());
         if (bmsProductCategoryTb == null) {
             throw new BusinessException("找不到货品类别：当前货品:" + bmsProductStockInLog.getProductInnerCode());
@@ -289,7 +289,7 @@ public class KdApiServiceImpl implements KdApiService {
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
 
-        InStockSaveModel inStockSaveModel = new InStockSaveModel(inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber().toString(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()));
+        InStockSaveModel inStockSaveModel = new InStockSaveModel(inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber().toString(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()),bmsProductStockInLog.getProjectCode(),bmsProductStockInLog.getStockCode());
 
         return KdRequestUtil.save(FormIdEnum.STK_InStock, KdApiBaseSaveRequestDTO.buildOfSave(inStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 

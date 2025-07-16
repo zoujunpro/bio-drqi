@@ -1,5 +1,8 @@
 package com.bio.drqi.bsm.kd.dto.model;
 
+import com.bio.drqi.bsm.kd.contents.KdContents;
+import com.bio.drqi.bsm.kd.enums.KdFBillTypeIDEnum;
+import com.bio.drqi.bsm.kd.enums.KdParentGroupEnum;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -61,8 +64,24 @@ public class ReturnStockModel extends KdModel {
      */
     private FOwnerIdHeadModel FOwnerIdHead;
 
+
     private FPURMRBENTRYModel FPURMRBENTRY;
 
+
+    public ReturnStockModel(String orgCode, String FDate, KdParentGroupEnum kdParentGroupEnum, String kdSupplierId, String materialId, BigDecimal returnNumber, String stockCode) {
+        this.FMRTYPE = null;
+        this.FMRMODE = null;
+        this.FStockOrgId = new FStockOrgIdModel(orgCode);
+        this.FDate = FDate;
+        this.FBillTypeID = new FBillTypeIDModel(KdFBillTypeIDEnum.ofKdParentGroupEnum(kdParentGroupEnum).code);
+        ;
+        this.FRequireOrgId = new FRequireOrgIdModel(orgCode);
+        this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
+        this.FSupplierID = new FSupplierIDModel(kdSupplierId);
+        this.FOwnerTypeIdHead = KdContents.OWNER;
+        this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
+        this.FPURMRBENTRY = new FPURMRBENTRYModel(materialId, returnNumber, stockCode, orgCode);
+    }
 
     @Data
     private class FPURMRBENTRYModel {
@@ -91,41 +110,78 @@ public class ReturnStockModel extends KdModel {
          * 货主
          */
         private FOWNERIDModel FOWNERID;
+
+        public FPURMRBENTRYModel(String materialId, BigDecimal FRMREALQTY, String stockCode, String orgCode) {
+            this.FMaterialId = new FMaterialIdModel(materialId);
+            this.FRMREALQTY = FRMREALQTY;
+            this.FSTOCKID = new FSTOCKIDModel(stockCode);
+            this.FOWNERTYPEID = KdContents.OWNER;
+            this.FOWNERID = new FOWNERIDModel(orgCode);
+        }
     }
 
 
     @Data
-    private class FOWNERIDModel{
+    private class FOWNERIDModel {
         private String FNumber;
+
+        public FOWNERIDModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 
     @Data
-    private class FSTOCKIDModel{
+    private class FSTOCKIDModel {
         private String FNumber;
+
+        public FSTOCKIDModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
+
     @Data
     private class FRequireOrgIdModel {
         private String FNumber;
+
+        public FRequireOrgIdModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 
     @Data
     private class FPurchaseOrgIdModel {
         private String FNumber;
+
+        public FPurchaseOrgIdModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 
     @Data
     private class FSupplierIDModel {
         private String FNumber;
+
+        public FSupplierIDModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 
     @Data
     private class FOwnerIdHeadModel {
         private String FNumber;
+
+        public FOwnerIdHeadModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 
     @Data
     private class FMaterialIdModel {
         private String FNumber;
+
+        public FMaterialIdModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 
     @Override
@@ -137,10 +193,18 @@ public class ReturnStockModel extends KdModel {
     @Data
     private class FBillTypeIDModel {
         private String FNumber;
+
+        public FBillTypeIDModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 
     @Data
     private class FStockOrgIdModel {
         private String FNumber;
+
+        public FStockOrgIdModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 }

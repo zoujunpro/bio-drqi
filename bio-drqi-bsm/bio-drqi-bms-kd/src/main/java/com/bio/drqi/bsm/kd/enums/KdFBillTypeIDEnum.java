@@ -12,7 +12,7 @@ public enum KdFBillTypeIDEnum {
     public String name;
     public String code;
 
-    KdFBillTypeIDEnum(String name, String code) {
+    KdFBillTypeIDEnum(String code, String name) {
         this.name = name;
         this.code = code;
     }

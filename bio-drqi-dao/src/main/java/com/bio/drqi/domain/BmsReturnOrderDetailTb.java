@@ -142,6 +142,17 @@ public class BmsReturnOrderDetailTb implements Serializable {
     private String projectCode;
 
 
+    @TableField(exist = false)
+    private String startDate;
+
+    @TableField(exist = false)
+    private String endDate;
+
+    private Integer kdNumber;
+
+    private String productCategoryCode;
+
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

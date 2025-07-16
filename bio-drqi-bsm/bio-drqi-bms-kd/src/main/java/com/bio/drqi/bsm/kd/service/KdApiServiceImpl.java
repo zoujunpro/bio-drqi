@@ -14,10 +14,7 @@ import com.bio.drqi.bsm.kd.enums.OperateEnum;
 import com.bio.drqi.bsm.kd.enums.OrgEnum;
 import com.bio.drqi.bsm.kd.util.KdRequestUtil;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.mapper.BmsProductCategoryTbMapper;
-import com.bio.drqi.mapper.BmsProductTbMapper;
-import com.bio.drqi.mapper.BmsStockDictMapper;
-import com.bio.drqi.mapper.BmsSupplierTbMapper;
+import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -44,6 +41,7 @@ public class KdApiServiceImpl implements KdApiService {
 
     @Resource
     private BmsStockDictMapper bmsStockDictMapper;
+
 
     @Override
     public String execute(OperateEnum operateEnum, Object obj, String unitCode) {
@@ -289,7 +287,7 @@ public class KdApiServiceImpl implements KdApiService {
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
 
-        InStockSaveModel inStockSaveModel = new InStockSaveModel(inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber().toString(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()),bmsProductStockInLog.getProjectCode(),bmsProductStockInLog.getStockCode(),new BigDecimal(bmsProductStockInLog.getTaxRate()));
+        InStockSaveModel inStockSaveModel = new InStockSaveModel(inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber().toString(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()), bmsProductStockInLog.getProjectCode(), bmsProductStockInLog.getStockCode(), new BigDecimal(bmsProductStockInLog.getTaxRate()));
 
         return KdRequestUtil.save(FormIdEnum.STK_InStock, KdApiBaseSaveRequestDTO.buildOfSave(inStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 
@@ -343,7 +341,28 @@ public class KdApiServiceImpl implements KdApiService {
      * @return
      */
     private String returnStockSave(Object obj, String unitCode) {
-        return null;
+        BmsReturnOrderDetailTb bmsReturnOrderDetailTb = (BmsReturnOrderDetailTb) obj;
+        BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsReturnOrderDetailTb.getProductCategoryCode());
+        if (bmsProductCategoryTb == null) {
+            throw new BusinessException("找不到货品类别：当前货品:" + bmsReturnOrderDetailTb.getProductInnerCode());
+        }
+        if (bmsProductCategoryTb.getKdNumber() == null) {
+            throw new BusinessException("材料分组未同步");
+        }
+        BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(bmsReturnOrderDetailTb.getSupplierCode());
+        if (bmsSupplierTb == null) {
+            throw new BusinessException("供应商不存在" + bmsReturnOrderDetailTb.getSupplierCode());
+        }
+        if (bmsSupplierTb.getKdNumber() == null) {
+            throw new BusinessException("供应商未同步金蝶" + bmsReturnOrderDetailTb.getSupplierCode());
+        }
+        String returnDate = DateUtil.format(bmsReturnOrderDetailTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
+        String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
+        KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
+
+        ReturnStockModel returnStockModel = new ReturnStockModel( orgCode, returnDate,  kdParentGroupEnum,  bmsSupplierTb.getKdNumber().toString(), bmsReturnOrderDetailTb.getProductInnerCode(),  new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber()), bmsReturnOrderDetailTb.getStockCode(), bmsReturnOrderDetailTb.getProjectCode());
+        return KdRequestUtil.save(FormIdEnum.PUR_MRB, KdApiBaseSaveRequestDTO.buildOfSave(returnStockModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+
     }
 
     /**
@@ -354,6 +373,7 @@ public class KdApiServiceImpl implements KdApiService {
      * @return
      */
     private String moveStockSave(Object obj, String unitCode) {
+
         return null;
     }
 

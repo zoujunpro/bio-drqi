@@ -68,19 +68,18 @@ public class ReturnStockModel extends KdModel {
     private FPURMRBENTRYModel FPURMRBENTRY;
 
 
-    public ReturnStockModel(String orgCode, String FDate, KdParentGroupEnum kdParentGroupEnum, String kdSupplierId, String materialId, BigDecimal returnNumber, String stockCode) {
-        this.FMRTYPE = null;
-        this.FMRMODE = null;
+    public ReturnStockModel(String orgCode, String FDate, KdParentGroupEnum kdParentGroupEnum, String kdSupplierId, String materialId, BigDecimal returnNumber, String stockCode,String projectCode) {
+        this.FMRTYPE = "B";
+        this.FMRMODE = "A";
         this.FStockOrgId = new FStockOrgIdModel(orgCode);
         this.FDate = FDate;
         this.FBillTypeID = new FBillTypeIDModel(KdFBillTypeIDEnum.ofKdParentGroupEnum(kdParentGroupEnum).code);
-        ;
         this.FRequireOrgId = new FRequireOrgIdModel(orgCode);
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
         this.FSupplierID = new FSupplierIDModel(kdSupplierId);
         this.FOwnerTypeIdHead = KdContents.OWNER;
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
-        this.FPURMRBENTRY = new FPURMRBENTRYModel(materialId, returnNumber, stockCode, orgCode);
+        this.FPURMRBENTRY = new FPURMRBENTRYModel(materialId, returnNumber, stockCode, orgCode,projectCode);
     }
 
     @Data
@@ -111,16 +110,27 @@ public class ReturnStockModel extends KdModel {
          */
         private FOWNERIDModel FOWNERID;
 
-        public FPURMRBENTRYModel(String materialId, BigDecimal FRMREALQTY, String stockCode, String orgCode) {
+        private FLotModel FLot;
+
+        public FPURMRBENTRYModel(String materialId, BigDecimal FRMREALQTY, String stockCode, String orgCode,String projectCode) {
             this.FMaterialId = new FMaterialIdModel(materialId);
             this.FRMREALQTY = FRMREALQTY;
             this.FSTOCKID = new FSTOCKIDModel(stockCode);
             this.FOWNERTYPEID = KdContents.OWNER;
             this.FOWNERID = new FOWNERIDModel(orgCode);
+            this.FLot=new FLotModel(projectCode);
         }
     }
 
 
+    @Data
+    private class FLotModel{
+        private String FNumber;
+
+        public FLotModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
+    }
     @Data
     private class FOWNERIDModel {
         private String FNumber;

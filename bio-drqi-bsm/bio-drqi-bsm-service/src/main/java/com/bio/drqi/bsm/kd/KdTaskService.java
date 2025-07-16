@@ -45,6 +45,11 @@ public interface KdTaskService {
      void synOutStockTask(String startDate,String endDate);
 
 
+    /**
+     * 同步退货
+     */
+    void synReturnStockTask(String startDate,String endDate);
+
 
 
 }

@@ -53,6 +53,10 @@ public class KdTaskServiceImpl implements KdTaskService {
     @Resource
     private KdApiService kdApiService;
 
+    @Resource
+    private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
+
+
     public void synProjectTask() {
         Long startTime = System.currentTimeMillis();
         log.info("*****************项目同步开始**************************");
@@ -217,8 +221,8 @@ public class KdTaskServiceImpl implements KdTaskService {
         selectBmsProductStockOutLog.setStartDate(startDate);
         selectBmsProductStockOutLog.setEndDate(endDate);
         List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectSelective(selectBmsProductStockOutLog);
-        if(CollectionUtil.isNotEmpty(bmsProductStockOutLogList)){
-            bmsProductStockOutLogList = bmsProductStockOutLogList.stream().filter(bmsProductStockOutLog -> bmsProductStockOutLog.getKdNumber()==null).sorted(Comparator.comparing(BmsProductStockOutLog::getId)).collect(Collectors.toList());
+        if (CollectionUtil.isNotEmpty(bmsProductStockOutLogList)) {
+            bmsProductStockOutLogList = bmsProductStockOutLogList.stream().filter(bmsProductStockOutLog -> bmsProductStockOutLog.getKdNumber() == null).sorted(Comparator.comparing(BmsProductStockOutLog::getId)).collect(Collectors.toList());
             if (CollectionUtil.isEmpty(bmsProductStockOutLogList)) {
                 log.info("出库数据已经同步完毕，无需再次同步");
                 return;
@@ -231,6 +235,30 @@ public class KdTaskServiceImpl implements KdTaskService {
 
         }
         log.info("*****************出库数据同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
+
+    }
+
+    @Override
+    public void synReturnStockTask(String startDate, String endDate) {
+        Long startTime = System.currentTimeMillis();
+        log.info("*****************退货数据同步开始**************************");
+        BmsReturnOrderDetailTb selectBmsReturnOrderDetailTb = new BmsReturnOrderDetailTb();
+        selectBmsReturnOrderDetailTb.setStartDate(startDate);
+        selectBmsReturnOrderDetailTb.setEndDate(endDate);
+        List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectSelective(selectBmsReturnOrderDetailTb);
+        if(CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)){
+            bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsReturnOrderDetailTb.getKdNumber() == null).sorted(Comparator.comparing(BmsReturnOrderDetailTb::getId)).collect(Collectors.toList());
+            if (CollectionUtil.isEmpty(bmsReturnOrderDetailTbList)) {
+                log.info("退货数据已经同步完毕，无需再次同步");
+                return;
+            }
+            for (BmsReturnOrderDetailTb bmsReturnOrderDetailTb : bmsReturnOrderDetailTbList) {
+                String kdNumber = kdApiService.execute(OperateEnum.returnStockSave, bmsReturnOrderDetailTb, bmsReturnOrderDetailTb.getUnitCode());
+                bmsReturnOrderDetailTb.setKdNumber(Integer.valueOf(kdNumber));
+                bmsReturnOrderDetailTbMapper.updateById(bmsReturnOrderDetailTb);
+            }
+        }
+        log.info("*****************退货数据同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
 
     }
 }

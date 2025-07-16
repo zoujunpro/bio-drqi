@@ -122,4 +122,6 @@ public class BmsReturnOrderDetailListPageRspDTO {
     private String stockCode;
 
     private String stockName;
+
+    private String projectCode;
 }

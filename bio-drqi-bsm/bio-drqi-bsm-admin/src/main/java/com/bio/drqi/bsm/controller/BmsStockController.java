@@ -33,7 +33,6 @@ public class BmsStockController {
         return ResponseResult.getSuccess(bmsStockService.queryStockByUnit(unitCode));
     }
 
-
     /**
      * 库房管理-新增库房
      * @param bmsStockAddReqDTO
@@ -46,6 +45,7 @@ public class BmsStockController {
         return ResponseResult.getSuccess("ok");
 
     }
+
 
     /**
      * 库房管理-编辑库房

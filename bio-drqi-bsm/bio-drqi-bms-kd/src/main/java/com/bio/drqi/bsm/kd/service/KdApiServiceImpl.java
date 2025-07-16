@@ -305,7 +305,7 @@ public class KdApiServiceImpl implements KdApiService {
      */
     private String outStockSave(Object obj, String unitCode) {
         BmsProductStockOutLog bmsProductStockOutLog = (BmsProductStockOutLog) obj;
-        String outDate = DateUtil.format(bmsProductStockOutLog.getCreateTime(), DatePattern.PURE_DATETIME_PATTERN);
+        String outDate = DateUtil.format(bmsProductStockOutLog.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsProductStockOutLog.getProductCategoryCode());
         if (bmsProductCategoryTb == null) {
             throw new BusinessException("找不到货品类别：当前货品:" + bmsProductStockOutLog.getProductInnerCode());
@@ -330,8 +330,7 @@ public class KdApiServiceImpl implements KdApiService {
 
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
-        OutStockSaveModel outStockSaveModel = new OutStockSaveModel(outDate, kdParentGroupEnum, orgCode, bmsProductTb.getKdNumber().toString(), new BigDecimal(bmsProductStockOutLog.getOutNumber()), bmsStockDict.getKdNumber().toString());
-
+        OutStockSaveModel outStockSaveModel = new OutStockSaveModel(outDate, kdParentGroupEnum, orgCode, bmsProductTb.getProductInnerCode(), new BigDecimal(bmsProductStockOutLog.getOutNumber()), bmsStockDict.getStockCode());
         return KdRequestUtil.save(FormIdEnum.STK_MisDelivery, KdApiBaseSaveRequestDTO.buildOfSave(outStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 
     }

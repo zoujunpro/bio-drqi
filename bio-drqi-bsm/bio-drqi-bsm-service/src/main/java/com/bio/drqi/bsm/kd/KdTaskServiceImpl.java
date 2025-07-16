@@ -196,7 +196,7 @@ public class KdTaskServiceImpl implements KdTaskService {
         if (CollectionUtil.isNotEmpty(bmsProductStockInLogList)) {
             bmsProductStockInLogList = bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductStockInLog.getKdNumber() == null).sorted(Comparator.comparing(BmsProductStockInLog::getId)).collect(Collectors.toList());
             if (CollectionUtil.isEmpty(bmsProductStockInLogList)) {
-                log.info("数据已经同步完毕，无需再次同步");
+                log.info("入库数据已经同步完毕，无需再次同步");
                 return;
             }
             for (BmsProductStockInLog bmsProductStockInLog : bmsProductStockInLogList) {
@@ -211,6 +211,26 @@ public class KdTaskServiceImpl implements KdTaskService {
 
     @Override
     public void synOutStockTask(String startDate, String endDate) {
+        Long startTime = System.currentTimeMillis();
+        log.info("*****************出库数据同步开始**************************");
+        BmsProductStockOutLog selectBmsProductStockOutLog = new BmsProductStockOutLog();
+        selectBmsProductStockOutLog.setStartDate(startDate);
+        selectBmsProductStockOutLog.setEndDate(endDate);
+        List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectSelective(selectBmsProductStockOutLog);
+        if(CollectionUtil.isNotEmpty(bmsProductStockOutLogList)){
+            bmsProductStockOutLogList = bmsProductStockOutLogList.stream().filter(bmsProductStockOutLog -> bmsProductStockOutLog.getKdNumber()==null).sorted(Comparator.comparing(BmsProductStockOutLog::getId)).collect(Collectors.toList());
+            if (CollectionUtil.isEmpty(bmsProductStockOutLogList)) {
+                log.info("出库数据已经同步完毕，无需再次同步");
+                return;
+            }
+            for (BmsProductStockOutLog bmsProductStockOutLog : bmsProductStockOutLogList) {
+                String kdNumber = kdApiService.execute(OperateEnum.outStockSave, bmsProductStockOutLog, bmsProductStockOutLog.getUnitCode());
+                bmsProductStockOutLog.setKdNumber(Integer.valueOf(kdNumber));
+                bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
+            }
+
+        }
+        log.info("*****************出库数据同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
 
     }
 }

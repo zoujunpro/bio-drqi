@@ -6,6 +6,7 @@ import com.bio.drqi.bsm.kd.enums.KdParentGroupEnum;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class OutStockSaveModel extends KdModel {
     private FPurchaseOrgIdModel FPurchaseOrgId;
 
 
-    private FEntityModel FEntity;
+    private List<FEntityModel> FEntity;
 
 
     public OutStockSaveModel(String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdMaterialId, BigDecimal FQty, String stockId) {
@@ -56,7 +57,7 @@ public class OutStockSaveModel extends KdModel {
         this.FOwnerTypeIdHead = KdContents.OWNER;
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
-        this.FEntity = new FEntityModel(kdMaterialId, FQty, stockId, orgCode);
+        this.FEntity = Arrays.asList(new FEntityModel(kdMaterialId, FQty, stockId, orgCode));
     }
 
     @Data

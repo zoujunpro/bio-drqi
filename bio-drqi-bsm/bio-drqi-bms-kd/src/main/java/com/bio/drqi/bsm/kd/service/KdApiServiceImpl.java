@@ -289,7 +289,7 @@ public class KdApiServiceImpl implements KdApiService {
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
 
-        InStockSaveModel inStockSaveModel = new InStockSaveModel(inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber().toString(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()),bmsProductStockInLog.getProjectCode(),bmsProductStockInLog.getStockCode());
+        InStockSaveModel inStockSaveModel = new InStockSaveModel(inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber().toString(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()),bmsProductStockInLog.getProjectCode(),bmsProductStockInLog.getStockCode(),new BigDecimal(bmsProductStockInLog.getTaxRate()));
 
         return KdRequestUtil.save(FormIdEnum.STK_InStock, KdApiBaseSaveRequestDTO.buildOfSave(inStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 

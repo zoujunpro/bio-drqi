@@ -65,7 +65,7 @@ public class InStockSaveModel extends KdModel {
     private List<FInStockEntryModel> FInStockEntry;
 
 
-    public InStockSaveModel(String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdSupplierId, String kdMaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty,String projectCode,String stockCode) {
+    public InStockSaveModel(String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdSupplierId, String kdMaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty,String projectCode,String stockCode,BigDecimal taxRate) {
         this.FID = 0;
         this.FBillNo = null;
         this.FDate = FDate;
@@ -74,7 +74,7 @@ public class InStockSaveModel extends KdModel {
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
         this.FSupplierId = new FSupplierIdModel(kdSupplierId);
-        this.FInStockEntry = Arrays.asList(new FInStockEntryModel(kdMaterialId, fTaxPrice, reqlQty, orgCode,projectCode,stockCode));
+        this.FInStockEntry = Arrays.asList(new FInStockEntryModel(kdMaterialId, fTaxPrice, reqlQty, orgCode,projectCode,stockCode,taxRate));
     }
 
     @Override
@@ -110,7 +110,9 @@ public class InStockSaveModel extends KdModel {
 
         private FStockIdModel FStockId;
 
-        public FInStockEntryModel(String MaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty, String orgCode,String projectCode,String stockCode) {
+        private FEntryTaxRateModel FEntryTaxRate;
+
+        public FInStockEntryModel(String MaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty, String orgCode,String projectCode,String stockCode,BigDecimal taxRate) {
             this.setFMaterialId(new FMaterialIdModel(MaterialId));
             this.setFTaxPrice(fTaxPrice);
             this.setFRealQty(reqlQty);
@@ -118,9 +120,20 @@ public class InStockSaveModel extends KdModel {
             this.setFOWNERID(new FOWNERIDModel(orgCode));
             this.FLot=new FLotModel(projectCode);
             this.FStockId=new FStockIdModel(stockCode);
+            this.FEntryTaxRate=new FEntryTaxRateModel(taxRate);
         }
     }
 
+
+
+    @Data
+    private  class FEntryTaxRateModel {
+        private BigDecimal FNumber;
+
+        public FEntryTaxRateModel(BigDecimal FNumber) {
+            this.FNumber = FNumber;
+        }
+    }
 
     @Data
     private class FStockIdModel{

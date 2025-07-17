@@ -104,6 +104,7 @@ public class BmsProductStockController {
      */
     @PostMapping("/moveStock")
     @WebLog(desc = "库存明细管理-调拨")
+    @RequirePermissions("bms:productStock:moveStock")
     public ResponseResult<String> moveStock(@RequestBody @Validated BmsProductStockMoveStockReqDTO bmsProductStockMoveStockReqDTO) {
         bmsProductStockService.moveStock(bmsProductStockMoveStockReqDTO);
         return ResponseResult.getSuccess("ok");

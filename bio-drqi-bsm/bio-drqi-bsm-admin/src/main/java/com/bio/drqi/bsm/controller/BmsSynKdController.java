@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.drqi.bsm.req.BmsSynKdExecuteReqDTO;
 import com.bio.drqi.bsm.req.BmsSynKdListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsSynKdListPageRspDTO;
@@ -31,6 +32,7 @@ public class BmsSynKdController {
      * @return
      */
     @PostMapping("/listPage")
+    @RequirePermissions("bms:bmsSynKd:listPage")
     public ResponseResult<PageInfo<BmsSynKdListPageRspDTO>> listPage(@RequestBody @Validated BmsSynKdListPageReqDTO bmsSynKdListPageReqDTO) {
         return ResponseResult.getSuccess(bmsSynKdService.listPage(bmsSynKdListPageReqDTO));
     }
@@ -41,6 +43,7 @@ public class BmsSynKdController {
      * @return
      */
     @PostMapping("execute")
+    @RequirePermissions("bms:bmsSynKd:execute")
     public ResponseResult<String> execute(@Validated @RequestBody BmsSynKdExecuteReqDTO bmsSynKdExecuteReqDTO) {
         bmsSynKdService.execute(bmsSynKdExecuteReqDTO);
         return ResponseResult.getSuccess("ok");

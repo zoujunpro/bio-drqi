@@ -251,6 +251,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             synReturnStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
             synOutStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
         } catch (Exception e) {
+            log.error("执行同步金蝶数据失败",e);
             bmsSynKdTaskLog.setSynStatus(BmsKdSynStatusEnum.fail.name());
             bmsSynKdTaskLog.setFailReason(JSONUtil.toJsonStr(e));
             bmsSynKdTaskLogMapper.updateById(bmsSynKdTaskLog);

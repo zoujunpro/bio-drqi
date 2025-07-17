@@ -6,7 +6,4 @@ import lombok.Data;
 @Data
 public class BmsSynKdListPageReqDTO extends PageDTO {
 
-    private String beginDate;
-
-    private String endDate;
 }

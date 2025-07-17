@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BmsSynKdTaskLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BmsSynKdTaskLog">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+        <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+        <result property="synStatus" column="syn_status" jdbcType="VARCHAR"/>
+        <result property="failReason" column="fail_reason" jdbcType="VARCHAR"/>
+        <result property="beginDate" column="begin_date" jdbcType="VARCHAR"/>
+        <result property="endDate" column="end_date" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,create_time,create_user_id,
+        create_user_name,syn_status,fail_reason,
+        begin_date,end_date
+    </sql>
+    <select id="selectAllBySynStatus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_syn_kd_task_log
+        where
+        syn_status = #{synStatus,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsSynKdTaskLog" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_syn_kd_task_log
+        <where>
+            <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="createUserId != null">create_user_id=#{createUserId,jdbcType=NUMERIC},</if>
+            <if test="createUserName != null">create_user_name=#{createUserName,jdbcType=VARCHAR},</if>
+            <if test="synStatus != null">syn_status=#{synStatus,jdbcType=VARCHAR},</if>
+            <if test="failReason != null">fail_reason=#{failReason,jdbcType=VARCHAR},</if>
+            <if test="beginDate != null">begin_date=#{beginDate,jdbcType=VARCHAR},</if>
+            <if test="endDate != null">end_date=#{endDate,jdbcType=VARCHAR},</if>
+        </where>
+        order by id desc
+    </select>
+</mapper>

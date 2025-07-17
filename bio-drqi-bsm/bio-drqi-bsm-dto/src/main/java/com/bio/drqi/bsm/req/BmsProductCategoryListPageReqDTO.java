@@ -7,4 +7,8 @@ import lombok.Data;
 public class BmsProductCategoryListPageReqDTO extends PageDTO {
 
     private String productCategoryName;
+
+    private String kdParentId;
+
+    private String kdCategoryCode;
 }

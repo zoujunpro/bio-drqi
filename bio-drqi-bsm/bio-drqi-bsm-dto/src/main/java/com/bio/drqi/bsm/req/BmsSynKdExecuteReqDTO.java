@@ -3,7 +3,7 @@ package com.bio.drqi.bsm.req;
 import lombok.Data;
 
 @Data
-public class BmsStockSynKdReqDTO {
+public class BmsSynKdExecuteReqDTO {
     private String beginDate;
     private String endDate;
 }

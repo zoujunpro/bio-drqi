@@ -80,4 +80,6 @@ public class BmsProductListPageRspDTO {
     private String productCategoryName;
 
     private String productTypeName;
+
+    private Integer kdNumber;
 }

@@ -147,4 +147,6 @@ public class BmsProductStockInLogListPageRspDTO {
     private String stockCode;
 
     private String stockName;
+
+    private Integer kdNumber;
 }

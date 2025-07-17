@@ -1,9 +1,11 @@
 package com.bio.drqi.bsm.kd;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.contents.BioBsmContents;
+import com.bio.drqi.bsm.enums.BmsKdSynStatusEnum;
 import com.bio.drqi.bsm.enums.PurchaseUnitEnum;
 import com.bio.drqi.bsm.kd.dto.QuerySupplierDTO;
 import com.bio.drqi.bsm.kd.enums.OperateEnum;
@@ -53,6 +55,9 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
     @Resource
     private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
 
+    @Resource
+    private BmsSynKdTaskLogMapper bmsSynKdTaskLogMapper;
+
 
     public void synProjectTask() {
         Long startTime = System.currentTimeMillis();
@@ -63,12 +68,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             if (StringUtils.isNotEmpty(kdProjectCode)) {
                 BmsProjectDict bmsProjectDict = list.get(0);
                 if (StringUtils.isEmpty(bmsProjectDict.getKdNumber())) {
-                    try {
-                        String kdNumber = kdApiService.execute(OperateEnum.projectSave, bmsProjectDict, PurchaseUnitEnum.default_.name());
-                        bmsProjectDictMapper.updateKdNumberByKdProjectCode(kdNumber, kdProjectCode);
-                    } catch (Exception e) {
-
-                    }
+                    String kdNumber = kdApiService.execute(OperateEnum.projectSave, bmsProjectDict, PurchaseUnitEnum.default_.name());
+                    bmsProjectDictMapper.updateKdNumberByKdProjectCode(kdNumber, kdProjectCode);
                 } else {
                     kdApiService.execute(OperateEnum.projectModify, bmsProjectDict, PurchaseUnitEnum.default_.name());
                 }
@@ -77,7 +78,6 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         log.info("*****************项目同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
 
     }
-
 
 
     @Override
@@ -240,19 +240,22 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
     }
 
     @Override
-    public void executeSynKd(String beginDate, String endDate) {
+    public void executeSynKd(BmsSynKdTaskLog bmsSynKdTaskLog) {
         try {
             synStockTask();
             synMaterialGroupTask();
             synSupplierTask();
             synMaterialTask();
             synProjectTask();
-            synInStockTask(beginDate, endDate);
-            synReturnStockTask(beginDate, endDate);
-            synOutStockTask(beginDate, endDate);
+            synInStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
+            synReturnStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
+            synOutStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
         } catch (Exception e) {
-            log.error("*********************************最终异常",e);
-            throw new RuntimeException(e);
+            bmsSynKdTaskLog.setSynStatus(BmsKdSynStatusEnum.fail.name());
+            bmsSynKdTaskLog.setFailReason(JSONUtil.toJsonStr(e));
+            bmsSynKdTaskLogMapper.updateById(bmsSynKdTaskLog);
         }
+        bmsSynKdTaskLog.setSynStatus(BmsKdSynStatusEnum.success.name());
+        bmsSynKdTaskLogMapper.updateById(bmsSynKdTaskLog);
     }
 }

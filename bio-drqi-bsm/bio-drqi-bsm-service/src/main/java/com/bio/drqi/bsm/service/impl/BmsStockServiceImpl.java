@@ -6,16 +6,12 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.bsm.kd.KdTaskExecuteService;
-import com.bio.drqi.bsm.kd.KdTaskService;
 import com.bio.drqi.bsm.req.BmsStockAddReqDTO;
 import com.bio.drqi.bsm.req.BmsStockEditReqDTO;
-import com.bio.drqi.bsm.req.BmsStockSynKdReqDTO;
 import com.bio.drqi.bsm.rsp.BmsStockQueryByUnitRspDTO;
 import com.bio.drqi.bsm.service.BmsStockService;
 import com.bio.drqi.domain.BmsProductStockTb;
-import com.bio.drqi.domain.BmsProductTb;
 import com.bio.drqi.domain.BmsStockDict;
-import com.bio.drqi.domain.BmsStockLocationDict;
 import com.bio.drqi.mapper.BmsProductStockTbMapper;
 import com.bio.drqi.mapper.BmsStockDictMapper;
 import com.bio.drqi.mapper.BmsStockLocationDictMapper;
@@ -24,10 +20,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Data
@@ -100,8 +94,4 @@ public class BmsStockServiceImpl implements BmsStockService {
 
     }
 
-    @Override
-    public void synKd(BmsStockSynKdReqDTO bmsStockSynKdReqDTO) {
-        kdTaskExecuteService.executeSynKd(bmsStockSynKdReqDTO.getBeginDate(), bmsStockSynKdReqDTO.getEndDate());
-    }
 }

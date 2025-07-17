@@ -2,7 +2,8 @@ package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.bsm.req.*;
+import com.bio.drqi.bsm.req.BmsStockAddReqDTO;
+import com.bio.drqi.bsm.req.BmsStockEditReqDTO;
 import com.bio.drqi.bsm.rsp.BmsStockQueryByUnitRspDTO;
 import com.bio.drqi.bsm.service.BmsStockService;
 import org.springframework.validation.annotation.Validated;
@@ -76,10 +77,4 @@ public class BmsStockController {
         return ResponseResult.getSuccess("ok");
     }
 
-
-    @PostMapping("synKd")
-    public ResponseResult<String> synKd(@Validated @RequestBody BmsStockSynKdReqDTO bmsStockSynKdReqDTO) {
-        bmsStockService.synKd(bmsStockSynKdReqDTO);
-        return ResponseResult.getSuccess("ok");
-    }
 }

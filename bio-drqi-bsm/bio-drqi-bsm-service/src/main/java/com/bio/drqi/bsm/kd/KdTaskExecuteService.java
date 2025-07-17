@@ -1,5 +1,7 @@
 package com.bio.drqi.bsm.kd;
 
+import com.bio.drqi.domain.BmsSynKdTaskLog;
+
 public interface KdTaskExecuteService {
-    void  executeSynKd(String beginDate,String endDate);
+    void executeSynKd(BmsSynKdTaskLog bmsSynKdTaskLog);
 }

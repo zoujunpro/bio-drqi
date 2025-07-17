@@ -44,6 +44,8 @@
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="kdCategoryCode != null">and kd_category_code=#{kdCategoryCode,jdbcType=VARCHAR}</if>
+            <if test="kdParentId != null">and kd_parent_id=#{kdParentId,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

@@ -67,7 +67,12 @@ public class BmsSynKdServiceImpl implements BmsSynKdService {
     public String findLastSuccessTime() {
         List<BmsSynKdTaskLog> list = bmsSynKdTaskLogMapper.selectAllBySynStatusOrderByIdDesc(BmsKdSynStatusEnum.success.name());
         if(CollectionUtil.isNotEmpty(list)){
-            return DateUtil.format(list.get(0).getCreateTime(), DatePattern.NORM_DATE_PATTERN);
+            BmsSynKdTaskLog bmsSynKdTaskLog=list.get(0);
+            if(bmsSynKdTaskLog.getEndDate()==null){
+                return DateUtil.format(bmsSynKdTaskLog.getCreateTime(), DatePattern.NORM_DATE_PATTERN);
+            }else {
+                return bmsSynKdTaskLog.getEndDate();
+            }
         }
         return null;
     }

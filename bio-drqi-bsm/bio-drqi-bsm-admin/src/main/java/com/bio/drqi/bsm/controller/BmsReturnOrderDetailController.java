@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsProductStockInLogReturnStockReqDTO;
 import com.bio.drqi.bsm.req.BmsReturnOrderDetailListPageReqDTO;
@@ -33,6 +34,7 @@ public class BmsReturnOrderDetailController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "退回订单管理-分页查询")
+    @RequirePermissions("bms:returnOrderDetail:listPage")
     public ResponseResult<PageInfo<BmsReturnOrderDetailListPageRspDTO>> listPage(@RequestBody BmsReturnOrderDetailListPageReqDTO bmsReturnOrderDetailListPageReqDTO) {
         return ResponseResult.getSuccess(bmsReturnOrderDetailService.listPage(bmsReturnOrderDetailListPageReqDTO));
     }

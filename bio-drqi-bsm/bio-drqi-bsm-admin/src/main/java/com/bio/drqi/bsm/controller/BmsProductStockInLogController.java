@@ -74,6 +74,7 @@ public class BmsProductStockInLogController {
      */
     @PostMapping("returnStock")
     @WebLog(desc = "入库存明细管理-退货")
+    @RequirePermissions("bms:productStockInLog:returnStock")
     public ResponseResult<String> returnStock(@RequestBody @Validated BmsProductStockInLogReturnStockReqDTO bmsProductStockInLogReturnStockReqDTO) {
         bmsProductStockInService.returnStock(bmsProductStockInLogReturnStockReqDTO);
         return ResponseResult.getSuccess("ok");

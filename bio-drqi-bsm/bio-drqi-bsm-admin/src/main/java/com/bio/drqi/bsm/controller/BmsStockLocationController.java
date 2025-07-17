@@ -63,7 +63,7 @@ public class BmsStockLocationController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "库房管理-分页查询")
-    @RequirePermissions("bms:bmsStockLocation:listPage")
+    @RequirePermissions("bms:stock:listPage")
     public ResponseResult<PageInfo<BmsStockLocationListPageRspDTO>> listPage(@RequestBody BmsStockLocationListPageReqDTO bmsStockLocationListPageReqDTO) {
         return ResponseResult.getSuccess(bmsStockLocationService.listPage(bmsStockLocationListPageReqDTO));
     }
@@ -76,7 +76,7 @@ public class BmsStockLocationController {
      */
     @PostMapping("/add")
     @WebLog(desc = "库房管理-新增")
-    @RequirePermissions("bms:bmsStockLocation:add")
+    @RequirePermissions("bms:stock:add")
     @RequestLog("库房管理-新增")
     public ResponseResult<String> add(@RequestBody @Validated BmsStockLocationAddReqDTO bmsStockLocationAddReqDTO) {
         bmsStockLocationService.add(bmsStockLocationAddReqDTO);
@@ -92,7 +92,7 @@ public class BmsStockLocationController {
     @GetMapping("/delete")
     @WebLog(desc = "库房管理-删除")
     @RequestLog("库房管理-删除")
-    @RequirePermissions("bms:bmsStockLocation:delete")
+    @RequirePermissions("bms:stock:delete")
     public ResponseResult<String> delete(Integer id) {
         bmsStockLocationService.delete(id);
         return ResponseResult.getSuccess("ok");
@@ -107,7 +107,7 @@ public class BmsStockLocationController {
      */
     @PostMapping("/edit")
     @WebLog(desc = "库房管理-编辑")
-    @RequirePermissions("bms:bmsStockLocation:edit")
+    @RequirePermissions("bms:stock:edit")
     @RequestLog("库房管理-编辑")
     public ResponseResult edit(@RequestBody BmsStockLocationEditReqDTO bmsStockLocationEditReqDTO) {
         return ResponseResult.getSuccess("ok");

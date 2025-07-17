@@ -2,6 +2,7 @@ package com.bio.drqi.bsm.controller;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsMoveOrderDetailListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsMoveOrderDetailListPageRspDTO;
@@ -32,6 +33,7 @@ public class BmsMoveOrderDetailController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "库存调拨-分页查询")
+    @RequirePermissions("bms:moveStock:listPage")
     public ResponseResult<PageInfo<BmsMoveOrderDetailListPageRspDTO>> listPage(@RequestBody @Validated BmsMoveOrderDetailListPageReqDTO bmsMoveOrderDetailListPageReqDTO){
         return ResponseResult.getSuccess(bmsMoveOrderDetailService.listPage(bmsMoveOrderDetailListPageReqDTO));
     }

@@ -13,9 +13,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface BmsSynKdTaskLogMapper extends BaseMapper<BmsSynKdTaskLog> {
 
-    List<BmsSynKdTaskLog> selectAllBySynStatus(@Param("synStatus") String synStatus);
+    List<BmsSynKdTaskLog> selectAllBySynStatusOrderByIdDesc(@Param("synStatus") String synStatus);
 
     List<BmsSynKdTaskLog> selectSelective(BmsSynKdTaskLog bmsSynKdTaskLog);
+
+
 
 }
 

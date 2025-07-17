@@ -1,6 +1,8 @@
 package com.bio.drqi.bsm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
@@ -41,7 +43,7 @@ public class BmsSynKdServiceImpl implements BmsSynKdService {
 
     @Override
     public void execute(BmsSynKdExecuteReqDTO bmsSynKdExecuteReqDTO) {
-        List<BmsSynKdTaskLog> list = bmsSynKdTaskLogMapper.selectAllBySynStatus(BmsKdSynStatusEnum.syn.name());
+        List<BmsSynKdTaskLog> list = bmsSynKdTaskLogMapper.selectAllBySynStatusOrderByIdDesc(BmsKdSynStatusEnum.syn.name());
         if (CollectionUtil.isNotEmpty(list)) {
             throw new BusinessException("已经有在进行中的任务，请等待执行完毕后再进行金蝶数据同步");
         }
@@ -59,5 +61,14 @@ public class BmsSynKdServiceImpl implements BmsSynKdService {
             kdTaskExecuteService.executeSynKd(bmsSynKdTaskLog);
         }).start();
 
+    }
+
+    @Override
+    public String findLastSuccessTime() {
+        List<BmsSynKdTaskLog> list = bmsSynKdTaskLogMapper.selectAllBySynStatusOrderByIdDesc(BmsKdSynStatusEnum.success.name());
+        if(CollectionUtil.isNotEmpty(list)){
+            return DateUtil.format(list.get(0).getCreateTime(), DatePattern.NORM_DATE_PATTERN);
+        }
+        return null;
     }
 }

@@ -11,4 +11,6 @@ public interface BmsSynKdService {
 
 
     void execute(BmsSynKdExecuteReqDTO bmsSynKdExecuteReqDTO);
+
+    String findLastSuccessTime();
 }

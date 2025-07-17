@@ -21,13 +21,7 @@
         create_user_name,syn_status,fail_reason,
         begin_date,end_date
     </sql>
-    <select id="selectAllBySynStatus" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from bms_syn_kd_task_log
-        where
-        syn_status = #{synStatus,jdbcType=VARCHAR}
-    </select>
+
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsSynKdTaskLog" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -41,6 +35,14 @@
             <if test="beginDate != null">and begin_date=#{beginDate,jdbcType=VARCHAR}</if>
             <if test="endDate != null">and end_date=#{endDate,jdbcType=VARCHAR}</if>
         </where>
+        order by id desc
+    </select>
+    <select id="selectAllBySynStatusOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_syn_kd_task_log
+        where
+        syn_status = #{synStatus,jdbcType=VARCHAR}
         order by id desc
     </select>
 </mapper>

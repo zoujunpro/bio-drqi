@@ -1,5 +1,8 @@
 package com.bio.drqi.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -11,6 +14,7 @@ public class BioAppletLoginTb implements Serializable {
     /**
      *                                                                                                                                                                                                                                                                                            
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**

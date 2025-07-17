@@ -1,5 +1,6 @@
 package com.bio.drqi.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -15,7 +16,7 @@ public class SystemPostTb implements Serializable {
     /**
      * 主键ID
      */
-    @TableId
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**

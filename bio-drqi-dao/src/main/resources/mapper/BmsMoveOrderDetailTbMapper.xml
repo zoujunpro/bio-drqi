@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BmsMoveOrderDetailTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BmsMoveOrderDetailTb">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+        <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
+        <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
+        <result property="productTypeCode" column="product_type_code" jdbcType="VARCHAR"/>
+        <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
+        <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
+        <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
+        <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
+        <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
+        <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
+        <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
+        <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
+        <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
+        <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
+        <result property="fromStockCode" column="from_stock_code" jdbcType="VARCHAR"/>
+        <result property="fromStockLocationNumber" column="from_stock_location_number" jdbcType="VARCHAR"/>
+        <result property="toStockCode" column="to_stock_code" jdbcType="VARCHAR"/>
+        <result property="toStockLocationNumber" column="to_stock_location_number" jdbcType="VARCHAR"/>
+        <result property="moveNumber" column="move_number" jdbcType="INTEGER"/>
+        <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+        <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,product_name,product_out_code,
+        product_category_code,product_type_code,brand_code,
+        brand_name,product_specs,batch_no,
+        unit_code,supplier_name,supplier_code,
+        product_inner_code,produce_date,expiration_date,
+        from_stock_code,from_stock_location_number,to_stock_code,
+        to_stock_location_number,move_number,create_user_id,
+        create_user_name,create_time,unique_code
+    </sql>
+    <select id="selectAllByUnitCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_move_order_detail_tb
+        where
+        unit_code = #{unitCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsMoveOrderDetailTb">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_move_order_detail_tb
+        <where>
+            <if test="productName != null and productName!=''">and product_name=#{productName,jdbcType=VARCHAR}</if>
+            <if test="productOutCode != null and productOutCode!=''">and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
+            <if test="productCategoryCode != null">and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
+            </if>
+            <if test="productTypeCode != null">and product_type_code=#{productTypeCode,jdbcType=VARCHAR}</if>
+            <if test="brandCode != null">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
+            <if test="brandName != null">and brand_name=#{brandName,jdbcType=VARCHAR}</if>
+            <if test="productSpecs != null">and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>
+            <if test="batchNo != null">and batch_no=#{batchNo,jdbcType=VARCHAR}</if>
+            <if test="unitCode != null">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
+            <if test="supplierName != null">and supplier_name=#{supplierName,jdbcType=VARCHAR}</if>
+            <if test="supplierCode != null">and supplier_code=#{supplierCode,jdbcType=VARCHAR}</if>
+            <if test="productInnerCode != null and productInnerCode!=''">and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}</if>
+            <if test="produceDate != null">and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
+            <if test="expirationDate != null">and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
+            <if test="fromStockCode != null">and from_stock_code=#{fromStockCode,jdbcType=VARCHAR}</if>
+            <if test="fromStockLocationNumber != null">
+                and from_stock_location_number=#{fromStockLocationNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="toStockCode != null">and to_stock_code=#{toStockCode,jdbcType=VARCHAR}</if>
+            <if test="toStockLocationNumber != null">
+                and to_stock_location_number=#{toStockLocationNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="moveNumber != null">and move_number=#{moveNumber,jdbcType=NUMERIC}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+        </where>
+        order by id desc
+    </select>
+</mapper>

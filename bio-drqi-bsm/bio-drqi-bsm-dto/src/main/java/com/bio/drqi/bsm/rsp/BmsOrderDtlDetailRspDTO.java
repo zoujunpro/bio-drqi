@@ -166,5 +166,7 @@ public class BmsOrderDtlDetailRspDTO {
 
     private String expectedDeliveryTime;
 
+    private String taxRate;
+
 
 }

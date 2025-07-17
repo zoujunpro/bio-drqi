@@ -8,6 +8,7 @@ import com.bio.drqi.bsm.req.BmsStockLocationEditReqDTO;
 import com.bio.drqi.bsm.req.BmsStockLocationListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationListAllStockRspDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsStockLocationQueryByStockCodeRspDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationQueryByUnitRspDTO;
 import com.bio.drqi.bsm.service.BmsStockLocationService;
 import com.bio.drqi.common.aspect.RequestLog;
@@ -19,7 +20,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 库房管理
+ * 库位管理
  */
 @RestController
 @RequestMapping("/bmsStockLocation")
@@ -27,6 +28,7 @@ public class BmsStockLocationController {
 
     @Resource
     private BmsStockLocationService bmsStockLocationService;
+
 
     /**
      * 库房管理-根据单位查询库位信息
@@ -41,9 +43,20 @@ public class BmsStockLocationController {
 
     }
 
+    /**
+     * 库存管理-根据库房查询库位
+     * @param stockCode
+     * @return
+     */
+    @GetMapping("queryByStockCode")
+    @WebLog(desc = "库存管理-根据库房查询库位")
+    public ResponseResult<List<BmsStockLocationQueryByStockCodeRspDTO>> queryByStockCode(@RequestParam String stockCode) {
+        return ResponseResult.getSuccess(bmsStockLocationService.queryByStockCode(stockCode));
+    }
+
 
     /**
-     * 库房管理-分页查询
+     * 库位管理-分页查询
      *
      * @param bmsStockLocationListPageReqDTO
      * @return
@@ -56,7 +69,7 @@ public class BmsStockLocationController {
     }
 
     /**
-     * 库房管理-新增
+     * 库位管理-新增
      *
      * @param bmsStockLocationAddReqDTO
      * @return
@@ -71,7 +84,7 @@ public class BmsStockLocationController {
     }
 
     /**
-     * 库房管理-删除
+     * 库位管理-删除
      *
      * @param id
      * @return
@@ -87,7 +100,7 @@ public class BmsStockLocationController {
     }
 
     /**
-     * 库房管理-编辑(暂时不做)
+     * 库位管理-编辑(暂时不做)
      *
      * @param bmsStockLocationEditReqDTO
      * @return
@@ -101,7 +114,7 @@ public class BmsStockLocationController {
     }
 
     /**
-     * 库房管理-查询所有库房
+     * 库位管理-查询所有库房
      *
      * @return
      */

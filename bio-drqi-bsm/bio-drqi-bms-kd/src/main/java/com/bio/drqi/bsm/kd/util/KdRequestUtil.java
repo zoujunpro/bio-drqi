@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.kd.util;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.bsm.kd.dto.GroupSaveDTO;
@@ -49,6 +50,24 @@ public class KdRequestUtil {
         }
     }
 
+
+    private static String getIdFromNeedReturnData(FormIdEnum formIdEnum, String result) {
+        JSON json = JSONUtil.parse(result);
+        switch (formIdEnum) {
+            case BD_STOCK:
+                Object fStockId = json.getByPath("Result.NeedReturnData[0].FStockId");
+                return fStockId == null ? null : fStockId.toString();
+            case BOS_ASSISTANTDATA_DETAIL:
+                Object fEntryID = json.getByPath("Result.NeedReturnData[0].FEntryID");
+                return fEntryID == null ? null : fEntryID.toString();
+            default:
+                return null;
+
+        }
+
+
+    }
+
     public static String disable(FormIdEnum formIdEnum, KdApiBaseDisableRequestDTO kdApiBaseDisableRequestDTO) {
         K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
         try {
@@ -79,7 +98,7 @@ public class KdRequestUtil {
             Gson gson = new Gson();
             RepoRet sRet = gson.fromJson(result, RepoRet.class);
             if (sRet.isSuccessfully()) {
-                return sRet.getResult().getId();
+                return sRet.getResult().getResponseStatus().getSuccessEntitys().get(0).getId();
             } else {
                 throw new BusinessException("金蝶分组接口调用失败: " + gson.toJson(sRet.getResult()));
             }
@@ -99,11 +118,12 @@ public class KdRequestUtil {
         query.put("FilterString", "FDocumentStatus='C' and FForbidStatus='A'");
         try {
             List<List<Object>> result = k3CloudApi.executeBillQuery(JSONUtil.toJsonStr(query));
+            log.info("金蝶供应商拉去结果={}",JSONUtil.toJsonStr(result));
             if (CollectionUtil.isNotEmpty(result)) {
                 result.forEach(list -> {
                     QuerySupplierDTO querySupplierDTO = new QuerySupplierDTO();
-                    querySupplierDTO.setFName(list.get(0).toString());
-                    querySupplierDTO.setFNumber(Integer.valueOf(list.get(1).toString()));
+                    querySupplierDTO.setFNumber(Integer.valueOf(list.get(0).toString()));
+                    querySupplierDTO.setFName(list.get(1).toString());
                     resultList.add(querySupplierDTO);
                 });
             }

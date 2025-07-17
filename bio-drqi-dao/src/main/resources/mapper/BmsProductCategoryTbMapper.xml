@@ -12,6 +12,8 @@
         <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
         <result property="kdParentId" column="kd_parent_id" jdbcType="VARCHAR"/>
+        <result property="kdCategoryCode" column="kd_category_code" jdbcType="VARCHAR"/>
+        <result property="kdCategoryName" column="kd_category_name" jdbcType="VARCHAR"/>
         <result property="kdParentName" column="kd_parent_name" jdbcType="VARCHAR"/>
         <result property="kdNumber" column="kd_number" jdbcType="INTEGER"/>
 
@@ -19,7 +21,7 @@
 
     <sql id="Base_Column_List">
         id
-        ,product_category_name,product_category_code,
+        ,product_category_name,product_category_code,kd_category_code,kd_category_name,
         create_time,create_user_id,create_user_name,kd_parent_id,kd_parent_name,kd_number
     </sql>
     <select id="selectOneByProductCategoryName" resultMap="BaseResultMap">
@@ -42,7 +44,16 @@
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="kdCategoryCode != null">and kd_category_code=#{kdCategoryCode,jdbcType=VARCHAR}</if>
+            <if test="kdParentId != null">and kd_parent_id=#{kdParentId,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
+    </select>
+    <select id="selectOneByProductCategoryCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_category_tb
+        where
+        product_category_code = #{productCategoryCode,jdbcType=VARCHAR}
     </select>
 </mapper>

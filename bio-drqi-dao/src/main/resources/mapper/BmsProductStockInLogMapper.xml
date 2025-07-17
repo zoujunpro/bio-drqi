@@ -32,6 +32,10 @@
             <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
             <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
             <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
+            <result property="taxRate" column="tax_rate" jdbcType="VARCHAR"/>
+            <result property="returnNumber" column="return_number" jdbcType="INTEGER"/>
+            <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
+            <result property="kdNumber" column="kd_number" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -43,7 +47,7 @@
         apply_user_id,apply_user_name,create_time,
         task_num,order_num,stock_location_number,
         unit_code,supplier_name,supplier_code,
-        unique_code,produce_date,expiration_date
+        unique_code,produce_date,expiration_date,tax_rate,return_number,stock_code,kd_number
     </sql>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsProductStockInLog">
         select
@@ -65,13 +69,20 @@
             <if test="storeAmount != null">and store_amount=#{storeAmount,jdbcType=DECIMAL}</if>
             <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
             <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
-            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="startDate != null and startDate != ''">
+                and date_format(create_time,'%Y-%m-%d') &gt;= #{startDate,jdbcType=VARCHAR}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and date_format(create_time,'%Y-%m-%d') &lt;= #{endDate,jdbcType=VARCHAR}
+            </if>
             <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="orderNum != null and orderNum!=''">and order_num=#{orderNum,jdbcType=VARCHAR}</if>
             <if test="stockLocationNumber != null and stockLocationNumber!=''">and stock_location_number=#{stockLocationNumber,jdbcType=VARCHAR}</if>
             <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
             <if test="produceDate != null"> and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
             <if test="expirationDate != null"> and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
+            <if test="stockCode != null and stockCode!=''"> and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
+
         </where>
         order by id desc
     </select>
@@ -90,6 +101,13 @@
         task_num = #{taskNum,jdbcType=VARCHAR}
         AND product_inner_code = #{productInnerCode,jdbcType=VARCHAR}
         AND batch_no = #{batchNo,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneByOrderDetailNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_in_log
+        where
+        order_detail_num = #{orderDetailNum,jdbcType=VARCHAR}
     </select>
 
 </mapper>

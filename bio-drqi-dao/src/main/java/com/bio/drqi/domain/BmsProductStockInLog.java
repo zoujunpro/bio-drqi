@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -152,6 +153,20 @@ public class BmsProductStockInLog implements Serializable {
     private String produceDate;
 
     private String expirationDate;
+
+    private String taxRate;
+
+    private Integer returnNumber;
+
+    private String stockCode;
+
+    @TableField(exist = false)
+    private String startDate;
+
+    @TableField(exist = false)
+    private String endDate;
+
+    private Integer kdNumber;
 
 
     @TableField(exist = false)

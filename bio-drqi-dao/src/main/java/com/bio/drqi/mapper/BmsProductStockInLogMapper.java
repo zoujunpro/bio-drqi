@@ -17,6 +17,8 @@ List<BmsProductStockInLog> selectSelective(BmsProductStockInLog bmsProductStockI
 
     List<BmsProductStockInLog> selectAllByTaskNum(@Param("taskNum") String taskNum);
 
+    BmsProductStockInLog selectOneByOrderDetailNum(@Param("orderDetailNum") String orderDetailNum);
+
     BmsProductStockInLog selectOneByTaskNumAndProductInnerCodeAndBatchNo(@Param("taskNum") String taskNum, @Param("productInnerCode") String productInnerCode, @Param("batchNo") String batchNo);
 
     ;

@@ -14,4 +14,8 @@ public enum OperateEnum {
     materialModify,
     materialDisable,
     groupSave,
+    inStockSave,
+    outStockSave,
+    returnStockSave,
+    moveStockSave,
 }

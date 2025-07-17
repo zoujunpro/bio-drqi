@@ -2,11 +2,13 @@ package com.bio.drqi.bsm.service;
 
 import com.bio.drqi.bsm.req.BmsProductStockEditDateReqDTO;
 import com.bio.drqi.bsm.req.BmsProductStockListPageReqDTO;
+import com.bio.drqi.bsm.req.BmsProductStockMoveStockReqDTO;
 import com.bio.drqi.bsm.req.BmsProductStockQueryListReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockQueryListRspDTO;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -32,9 +34,12 @@ public interface BmsProductStockService {
     BmsProductStockDetailRspDTO detail(Integer id);
 
 
-    List<String> queryStockByUnitCode( String unitCode);
+    List<String> queryStockByUnitCode(String unitCode);
 
-    List<BmsProductStockQueryListRspDTO> queryList(@RequestBody BmsProductStockQueryListReqDTO bmsProductStockQueryListReqDTO);
+    List<BmsProductStockQueryListRspDTO> queryList(BmsProductStockQueryListReqDTO bmsProductStockQueryListReqDTO);
 
-    void editDate( BmsProductStockEditDateReqDTO bmsProductStockEditDateReqDTO);
+    void editDate(BmsProductStockEditDateReqDTO bmsProductStockEditDateReqDTO);
+
+
+    void moveStock(BmsProductStockMoveStockReqDTO bmsProductStockMoveStockReqDTO);
 }

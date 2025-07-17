@@ -53,6 +53,8 @@ public class BmsProjectServiceImpl implements BmsProjectService {
         BmsProjectDict bmsProjectDict = new BmsProjectDict();
         bmsProjectDict.setProjectCode(bmsProjectAddReqDTO.getProjectCode());
         bmsProjectDict.setProjectName(bmsProjectAddReqDTO.getProjectName());
+        bmsProjectDict.setKdProjectCode(bmsProjectAddReqDTO.getKdProjectCode());
+        bmsProjectDict.setKdProjectName(bmsProjectAddReqDTO.getKdProjectName());
         bmsProjectDict.setCreateTime(new Date());
         bmsProjectDict.setCreateUserId(SecurityContextHolder.getUserId());
         bmsProjectDict.setCreateUserName(SecurityContextHolder.getNickName());
@@ -72,6 +74,8 @@ public class BmsProjectServiceImpl implements BmsProjectService {
             throw new BusinessException("找不到此项目信息");
         }
         bmsProjectDict.setProjectName(bmsProjectEditReqDTO.getProjectName());
+        bmsProjectDict.setKdProjectName(bmsProjectEditReqDTO.getKdProjectName());
+        bmsProjectDict.setKdProjectCode(bmsProjectEditReqDTO.getKdProjectCode());
         try {
             bmsProjectDictMapper.updateById(bmsProjectDict);
         } catch (DuplicateKeyException e) {

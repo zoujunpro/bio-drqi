@@ -2,7 +2,9 @@ package com.bio.drqi.bsm.dto;
 
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
@@ -44,7 +46,7 @@ public class BmsProductInputDTO {
     @NotBlank(message = "单位信息缺失")
     private String applyUnitName;
 
-
+    @NotEmpty(message = "入库明细缺失")
     private List<OrderDetail> orderDetailList;
 
 
@@ -55,6 +57,7 @@ public class BmsProductInputDTO {
 
 
     @Data
+    @Valid
     public static class OrderDetail {
 
         /**
@@ -129,7 +132,7 @@ public class BmsProductInputDTO {
         /**
          * 到货数量
          */
-        @NotBlank(message = "入库参数缺少：到货数量")
+        @NotNull(message = "入库参数缺少：到货数量")
         private Integer receiveNumber;
 
 
@@ -151,19 +154,20 @@ public class BmsProductInputDTO {
         /**
          * 过期时间
          */
-        @NotBlank(message = "入库参数缺少：过期时间")
         private String expirationDate;
 
         /**
          * 生产时间
          */
-        @NotBlank(message = "入库参数缺少：生产时间")
         private String produceDate;
 
 
         private String productInnerCode;
 
         private String supplierCode;
+
+        @NotBlank(message = "入库参数缺少：库房必填")
+        private String stockCode;
 
         /**
          * 库存位置号

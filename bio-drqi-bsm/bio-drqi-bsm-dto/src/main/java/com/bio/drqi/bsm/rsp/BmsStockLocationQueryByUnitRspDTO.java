@@ -6,12 +6,9 @@ import java.util.List;
 
 @Data
 public class BmsStockLocationQueryByUnitRspDTO {
-
     private String stockName;
 
     private String stockCode;
 
     private List<String> stockLocationNumber;
-
-
 }

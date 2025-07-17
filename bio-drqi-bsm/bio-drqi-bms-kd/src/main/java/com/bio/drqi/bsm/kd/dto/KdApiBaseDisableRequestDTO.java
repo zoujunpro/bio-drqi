@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class KdApiBaseDisableRequestDTO{
 
-    private Integer Ids;
+    private Object Ids;
 
 
 

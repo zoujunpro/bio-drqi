@@ -5,9 +5,11 @@ public enum FormIdEnum {
     BD_MATERIAL,
     BD_STOCK,
     BD_Supplier,
-    k62a1e2f33daa4a738462728197b95678,
+    BOS_ASSISTANTDATA_DETAIL,
     STK_InStock,
     STK_MisDelivery,
+    PUR_MRB,
+    STK_TransferDirect,
     ;
 
 }

@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.kd.dto.model;
 
 import cn.hutool.json.JSONUtil;
+import com.bio.drqi.bsm.kd.enums.KdFCategoryIDEnum;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class MaterialSaveModel extends KdModel {
     /**
      * 实体主键
      */
-    private Integer FMATERIALID = 0;
+    private Integer FMATERIALID;
 
     /**
      * 编码
@@ -32,26 +33,65 @@ public class MaterialSaveModel extends KdModel {
     private String Fspecification;
 
     /**
+     * 品牌
+     */
+    private String F_WAUJ_PP;
+
+    /**
      * 物料分组
      */
-    private Object FMaterialGroup;
+    private FMaterialGroupModel FMaterialGroup;
 
 
     private SubHeadEntityModel SubHeadEntity;
 
+    private SubHeadEntity1Model SubHeadEntity1;
+
+
+    public MaterialSaveModel() {
+    }
+
+    public MaterialSaveModel(String fnumber, String fname, String fspecification, String f_WAUJ_PP, String kdMaterialGroupId, String kdCategoryCode) {
+        this.FMATERIALID = 0;
+        Fnumber = fnumber;
+        Fname = fname;
+        Fspecification = fspecification;
+        F_WAUJ_PP = f_WAUJ_PP;
+        this.FMaterialGroup = new FMaterialGroupModel(kdMaterialGroupId);
+        SubHeadEntity = new SubHeadEntityModel(kdCategoryCode);
+        SubHeadEntity1 = new SubHeadEntity1Model(true);
+    }
 
     @Data
-    public static class SubHeadEntityModel {
+    private class SubHeadEntity1Model {
+        boolean FIsBatchManage;
+
+        public SubHeadEntity1Model(boolean FIsBatchManage) {
+            this.FIsBatchManage = FIsBatchManage;
+        }
+    }
+
+    @Data
+    private class FMaterialGroupModel {
+        private String FNumber;
+
+        public FMaterialGroupModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
+    }
+
+    @Data
+    private class SubHeadEntityModel {
         /**
          * 物料属性
          */
-        private Object FErpClsID;
+        private String FErpClsID = "1";
 
 
         /**
          * 特征子项
          */
-        private String FFeatureItem;
+        private String FFeatureItem = "1";
 
 
         /**
@@ -67,57 +107,74 @@ public class MaterialSaveModel extends KdModel {
         /**
          * 是否允许采购
          */
-        private boolean FIsPurchase = true;
+        private boolean FIsPurchase;
 
         /**
          * 是否允许库存
          */
-        private boolean FIsInventory = true;
+        private boolean FIsInventory;
 
         /**
          * 允许委外
          */
-        private boolean FIsSubContract = true;
+        private boolean FIsSubContract;
 
         /**
          * 允许销售
          */
-        private boolean FIsSale = true;
+        private boolean FIsSale;
 
 
         /**
          * 允许生产
          */
-        private boolean FIsProduce = true;
+        private boolean FIsProduce;
 
         /**
          * 允许资产
          */
-        private boolean FIsAsset = true;
+        private boolean FIsAsset;
 
-
-        private boolean FIsBatchManage = true;
-
-
+        private SubHeadEntityModel(String kdCategoryCode) {
+            this.FErpClsID = "1";
+            this.FFeatureItem = "1";
+            this.FCategoryID = new FCategoryIDModel(kdCategoryCode);
+            this.FBaseUnitId = new FBaseUnitIdModel("Pcs");
+            this.FIsPurchase = true;
+            this.FIsInventory = true;
+            this.FIsSubContract = true;
+            this.FIsSale = true;
+            this.FIsProduce = true;
+            this.FIsAsset = true;
+        }
     }
 
 
     @Data
-    public static class FCategoryIDModel {
+    private class FCategoryIDModel {
         private String FNumber;
+
+        public FCategoryIDModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 
 
     @Data
-    public static class FBaseUnitIdModel {
-        private String FNumber="Pcs";
+    private class FBaseUnitIdModel {
+        private String FNumber;
+
+        public FBaseUnitIdModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
     }
 
     @Override
     public List<String> buildModifyFields() {
-        List<String> list=new ArrayList<>();
+        List<String> list = new ArrayList<>();
         list.add("Fnumber");
         list.add("FSpecification");
         return list;
     }
+
 }

@@ -92,6 +92,8 @@ public class BmsProductTb implements Serializable {
      */
     private String pictureUrls;
 
+    private Integer kdNumber;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

@@ -27,6 +27,8 @@
             <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
             <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
             <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
+            <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
+            <result property="kdNumber" column="kd_number" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -35,8 +37,8 @@
         brand_code,brand_name,product_specs,
         batch_no,out_number,apply_user_id,
         apply_user_name,create_time,task_num,
-        remark,out_type,unit_code,
-        supplier_name,supplier_code,unique_code,produce_date,expiration_date
+        remark,out_type,unit_code,kd_number,
+        supplier_name,supplier_code,unique_code,produce_date,expiration_date,stock_code
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsProductStockOutLog" resultMap="BaseResultMap">
         select
@@ -55,7 +57,12 @@
             <if test="outNumber != null">and out_number=#{outNumber,jdbcType=NUMERIC}</if>
             <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
             <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
-            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="startDate != null and startDate != ''">
+                and date_format(create_time,'%Y-%m-%d') &gt;= #{startDate,jdbcType=VARCHAR}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and date_format(create_time,'%Y-%m-%d') &lt;= #{endDate,jdbcType=VARCHAR}
+            </if>
             <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
             <if test="outType != null and outType!=''">and out_type=#{outType,jdbcType=VARCHAR}</if>
@@ -65,6 +72,7 @@
             <if test="uniqueCode != null and uniqueCode!=''">and unique_code=#{uniqueCode,jdbcType=VARCHAR}</if>
             <if test="produceDate != null"> and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
             <if test="expirationDate != null"> and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
+            <if test="stockCode != null and stockCode!=''"> and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

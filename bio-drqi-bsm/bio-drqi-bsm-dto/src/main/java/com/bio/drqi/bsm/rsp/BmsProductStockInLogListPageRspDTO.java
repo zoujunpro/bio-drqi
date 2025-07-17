@@ -139,4 +139,14 @@ public class BmsProductStockInLogListPageRspDTO {
     private String produceDate;
 
     private String expirationDate;
+
+    private String taxRate;
+
+    private Integer returnNumber;
+
+    private String stockCode;
+
+    private String stockName;
+
+    private Integer kdNumber;
 }

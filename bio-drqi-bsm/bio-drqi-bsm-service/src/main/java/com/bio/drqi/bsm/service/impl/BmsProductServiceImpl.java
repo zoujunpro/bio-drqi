@@ -89,9 +89,6 @@ public class BmsProductServiceImpl implements BmsProductService {
 
         List<BmsProductQueryListRspDTO> result = BeanUtils.copyListProperties(bmsProductTbLit, BmsProductQueryListRspDTO.class);
         if (CollectionUtil.isNotEmpty(result)) {
-            //类性
-            List<BmsProductTypeTb> bmsProductTypeTbList = bmsProductTypeTbMapper.selectSelective(null);
-            Map<String, String> bmsProductTypeTbMap = bmsProductTypeTbList.stream().collect(Collectors.toMap(BmsProductTypeTb::getProductTypeCode, BmsProductTypeTb::getProductTypeName));
 
             //类别
             List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
@@ -99,7 +96,6 @@ public class BmsProductServiceImpl implements BmsProductService {
 
             result.forEach(bmsProductQueryListRspDTO -> {
                 bmsProductQueryListRspDTO.setProductCategoryName(bmsProductCategoryMap.get(bmsProductQueryListRspDTO.getProductCategoryCode()));
-                bmsProductQueryListRspDTO.setProductTypeName(bmsProductTypeTbMap.get(bmsProductQueryListRspDTO.getProductTypeCode()));
             });
         }
         return result;
@@ -135,8 +131,7 @@ public class BmsProductServiceImpl implements BmsProductService {
         BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(bmsProductAddReqDTO.getProductName(), bmsProductAddReqDTO.getBrandCode(), bmsProductAddReqDTO.getProductSpecs());
         if (bmsProductTb != null) {
             if (BioDrQiContents.N.equals(bmsProductTb.getDeleteFlag())) {
-                //商品已经存在不做处理
-                //throw new BusinessException("重复添加商品");
+                throw new BusinessException("重复添加商品");
             } else {
                 bmsProductTb.setCreateTime(new Date());
                 bmsProductTb.setCreateUserId(SecurityContextHolder.getUserId());

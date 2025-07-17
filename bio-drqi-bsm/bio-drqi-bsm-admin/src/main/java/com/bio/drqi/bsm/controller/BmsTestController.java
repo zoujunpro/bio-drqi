@@ -1,5 +1,7 @@
 package com.bio.drqi.bsm.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.bio.common.core.dto.BusinessException;
@@ -11,12 +13,13 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.enums.CooperateFormEnum;
 import com.bio.drqi.bsm.kd.KdTaskService;
-import com.bio.drqi.bsm.kd.enums.OperateEnum;
-import com.bio.drqi.bsm.kd.service.KdApiService;
+import com.bio.drqi.bsm.kd.enums.FormIdEnum;
+import com.bio.drqi.bsm.kd.properties.KdProperties;
 import com.bio.drqi.bsm.req.BmsProductAddReqDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
+import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +39,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/bmsDataClean")
 @Slf4j
-public class DataInitCleanController {
+public class BmsTestController {
 
     @Resource
     private BmsSupplierTbMapper bmsSupplierTbMapper;
@@ -70,6 +73,24 @@ public class DataInitCleanController {
     @Resource
     private KdTaskService kdTaskService;
 
+    @Resource
+    private BmsStockDictMapper bmsStockDictMapper;
+
+    @Resource
+    private KdProperties kdProperties;
+
+
+    @Resource
+    private BmsProductStockInLogMapper bmsProductStockInLogMapper;
+
+
+    @Resource
+    private BmsProductStockOutLogMapper bmsProductStockOutLogMapper;
+
+
+    @Resource
+    private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
+
 
     @GetMapping("/synStockLocationSave")
     public ResponseResult<String> synKdStockLocation() {
@@ -77,12 +98,6 @@ public class DataInitCleanController {
         return ResponseResult.getSuccess("OK");
     }
 
-    @GetMapping("/synBrandSave")
-    public ResponseResult<String> synKdBrand() {
-        kdTaskService.synBrandTask();
-
-        return ResponseResult.getSuccess("OK");
-    }
 
     @GetMapping("/synProjectSave")
     public ResponseResult<String> synProjectSave() {
@@ -97,6 +112,184 @@ public class DataInitCleanController {
         return ResponseResult.getSuccess("OK");
     }
 
+    @GetMapping("/synMaterial")
+    public ResponseResult<String> synMaterial() {
+        kdTaskService.synMaterialTask();
+        return ResponseResult.getSuccess("OK");
+    }
+
+
+    @GetMapping("/synSupplier")
+    public ResponseResult<String> synSupplier() {
+        kdTaskService.synSupplierTask();
+        return ResponseResult.getSuccess("OK");
+    }
+
+    @GetMapping("/synInStock")
+    public ResponseResult<String> synInStock() {
+        kdTaskService.synInStockTask("2025-07-16","2025-07-16");
+        return ResponseResult.getSuccess("OK");
+    }
+
+    @GetMapping("/synOutStock")
+    public ResponseResult<String> synOutStock() {
+        kdTaskService.synOutStockTask("2025-07-16","2025-07-16");
+        return ResponseResult.getSuccess("OK");
+    }
+
+
+
+    @GetMapping("/synReturnStock")
+    public ResponseResult<String> synReturnStock() {
+        kdTaskService.synReturnStockTask("2025-07-16","2025-07-16");
+        return ResponseResult.getSuccess("OK");
+    }
+
+
+    @GetMapping("/testKd")
+    public ResponseResult testKd() {
+        String json = "{\"NeedReturnFields\":[],\"IsDeleteEntry\":\"true\",\"IsVerifyBaseDataFiel\":\"false\",\"IsEntryBatchFil\":\"true\",\"ValidateFlag\":\"true\",\"NumberSearch\":\"true\",\"IsAutoAdjustField\":\"false\",\"IsAutoSubmitAndAudit\":\"true\",\"Model\":{\"FEntryID\":\"0\",\"Fnumber\":\"ET\",\"FDataValue\":\"番茄基因编辑\",\"FId\":{\"FNumber\":\"XM\"},\"FCreateOrgId\":{\"FNumber\":\"1001\"},\"fUseOrgId\":{\"FNumber\":\"1001\"}}}";
+        K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
+        try {
+            String s = k3CloudApi.save(FormIdEnum.BOS_ASSISTANTDATA_DETAIL.name(), json);
+            System.out.println(s);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 清洗库位
+     *
+     * @return
+     */
+    @GetMapping("/cleanStock")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanStock() {
+        log.info("数据清洗开始");
+        /**
+         *清洗库存
+         */
+        List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectList(null);
+        Map<String, List<BmsStockLocationDict>> bmsStockLocationDictListMap = bmsStockLocationDictList.stream().collect(Collectors.groupingBy(BmsStockLocationDict::getStockCode));
+        bmsStockLocationDictListMap.forEach((stockCode, list) -> {
+            BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(stockCode);
+            if (bmsStockDict == null) {
+                bmsStockDict = new BmsStockDict();
+                bmsStockDict.setStockName(list.get(0).getStockName());
+                bmsStockDict.setStockCode(stockCode);
+                bmsStockDict.setUnitCode(list.get(0).getUnitCode());
+                bmsStockDict.setKdNumber(null);
+                bmsStockDict.setCreateTime(new Date());
+                bmsStockDict.setCreateUserId(list.get(0).getCreateUserId());
+                bmsStockDict.setCreateUserName(list.get(0).getCreateUserName());
+                bmsStockDictMapper.insert(bmsStockDict);
+            }
+        });
+        log.info("库存清洗结束");
+        /**
+         * 退货数量清洗
+         */
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectList(null);
+        bmsProductStockInLogList.forEach(bmsProductStockInLog -> {
+            bmsProductStockInLog.setReturnNumber(0);
+            bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
+        });
+        bmsProductStockTbMapper.selectList(null).forEach(bmsProductStockTb -> {
+            bmsProductStockTb.setReturnNumber(0);
+            bmsProductStockTbMapper.updateById(bmsProductStockTb);
+        });
+        log.info("库存数量returnNumber赋值结束");
+
+        /**
+         * 库存位置赋值
+         */
+        Map<String, BmsStockLocationDict> bmsStockLocationDictMap = bmsStockLocationDictList.stream().collect(Collectors.toMap(BmsStockLocationDict::getLocationNumber, bmsStockLocationDict -> bmsStockLocationDict));
+        bmsProductStockTbMapper.selectList(null).forEach(bmsProductStockTb -> {
+            if (StringUtils.isEmpty(bmsProductStockTb.getStockCode())) {
+                String location = null;
+                String b = bmsProductStockTb.getStockLocationNumber();
+                if (b.contains("[")) {
+                    List<String> locationList = JSONUtil.toList(b, String.class);
+                    if (CollectionUtil.isNotEmpty(locationList)) {
+                        location = locationList.get(0);
+                    }
+                } else {
+                    location = b;
+                }
+
+                if (StringUtils.isNotEmpty(location)) {
+                    BmsStockLocationDict bmsStockLocationDict = bmsStockLocationDictMap.get(location);
+                    if (bmsStockLocationDict != null) {
+                        bmsProductStockTb.setStockCode(bmsStockLocationDict.getStockCode());
+                        bmsProductStockTbMapper.updateById(bmsProductStockTb);
+                    }
+                }
+
+                if (StringUtils.isEmpty(bmsProductStockTb.getStockCode())) {
+                    String stockCode = null;
+                    if ("beijing".equals(bmsProductStockTb.getUnitCode())) {
+                        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockName("一号库");
+                        stockCode = bmsStockDict.getStockCode();
+                    } else {
+                        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockName("16楼库");
+                        stockCode = bmsStockDict.getStockCode();
+                    }
+                    bmsProductStockTb.setStockCode(stockCode);
+                    bmsProductStockTbMapper.updateById(bmsProductStockTb);
+                }
+
+            }
+        });
+        log.info("库存明细清洗结束");
+        List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectList(null);
+        bmsProductStockOutLogList.forEach(bmsProductStockOutLog -> {
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductStockOutLog.getUniqueCode());
+            if (bmsProductStockTb != null && StringUtils.isNotEmpty(bmsProductStockTb.getStockCode())) {
+                bmsProductStockOutLog.setStockCode(bmsProductStockTb.getStockCode());
+                bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
+            }
+
+            if (StringUtils.isEmpty(bmsProductStockOutLog.getStockCode())) {
+                String stockCode = null;
+                if ("beijing".equals(bmsProductStockOutLog.getUnitCode())) {
+                    BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockName("一号库");
+                    stockCode = bmsStockDict.getStockCode();
+                } else {
+                    BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockName("16楼库");
+                    stockCode = bmsStockDict.getStockCode();
+                }
+                bmsProductStockOutLog.setStockCode(stockCode);
+                bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
+            }
+
+        });
+        log.info("出库记录清洗库房编码结束");
+        bmsProductStockInLogList.forEach(bmsProductStockInLog -> {
+            List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectAllByProductInnerCodeAndUnitCodeAndBatchNo(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo());
+            if (CollectionUtil.isNotEmpty(bmsProductStockTbList)) {
+                bmsProductStockInLog.setStockCode(bmsProductStockTbList.get(0).getStockCode());
+                bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
+            }
+            if (StringUtils.isEmpty(bmsProductStockInLog.getStockCode())) {
+                String stockCode = null;
+                if ("beijing".equals(bmsProductStockInLog.getUnitCode())) {
+                    BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockName("一号库");
+                    stockCode = bmsStockDict.getStockCode();
+                } else {
+                    BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockName("16楼库");
+                    stockCode = bmsStockDict.getStockCode();
+                }
+                bmsProductStockInLog.setStockCode(stockCode);
+                bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
+            }
+        });
+        log.info("入库明细清洗库房结束");
+
+        log.info("数据清洗结束");
+        return ResponseResult.getSuccess("ok");
+    }
 
 
     @GetMapping("/cleanStockDate")

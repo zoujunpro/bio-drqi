@@ -7,4 +7,10 @@ public class BmsProductCategoryEditReqDTO {
     private Integer id;
 
     private String productCategoryName;
+
+
+    private String kdCategoryCode;
+
+
+    private String kdParentId;
 }

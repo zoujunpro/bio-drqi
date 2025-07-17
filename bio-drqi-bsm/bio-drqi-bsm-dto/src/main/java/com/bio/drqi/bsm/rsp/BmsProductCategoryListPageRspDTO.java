@@ -32,4 +32,18 @@ public class BmsProductCategoryListPageRspDTO {
      * 创建人名称
      */
     private String createUserName;
+
+
+    private String kdParentId;
+
+    private String kdParentName;
+
+    private Integer kdNumber;
+
+    private String kdCategoryCode;
+
+    private String kdCategoryName;
+
+
+
 }

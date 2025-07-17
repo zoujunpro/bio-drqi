@@ -2,6 +2,7 @@ package com.bio.drqi.bsm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.context.SecurityContextHolder;
+import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.bsm.req.BmsStockLocationAddReqDTO;
@@ -9,11 +10,14 @@ import com.bio.drqi.bsm.req.BmsStockLocationEditReqDTO;
 import com.bio.drqi.bsm.req.BmsStockLocationListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationListAllStockRspDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationListPageRspDTO;
+import com.bio.drqi.bsm.rsp.BmsStockLocationQueryByStockCodeRspDTO;
 import com.bio.drqi.bsm.rsp.BmsStockLocationQueryByUnitRspDTO;
 import com.bio.drqi.bsm.service.BmsStockLocationService;
-import com.bio.drqi.domain.BmsProductStockOutLog;
+import com.bio.drqi.domain.BmsProductStockTb;
+import com.bio.drqi.domain.BmsStockDict;
 import com.bio.drqi.domain.BmsStockLocationDict;
 import com.bio.drqi.mapper.BmsProductStockTbMapper;
+import com.bio.drqi.mapper.BmsStockDictMapper;
 import com.bio.drqi.mapper.BmsStockLocationDictMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -22,10 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +35,13 @@ public class BmsStockLocationServiceImpl implements BmsStockLocationService {
 
     @Resource
     private BmsStockLocationDictMapper bmsStockLocationDictMapper;
+
+    @Resource
+    private BmsStockDictMapper bmsStockDictMapper;
+
+    @Resource
+    private BmsProductStockTbMapper bmsProductStockTbMapper;
+
 
     @Override
     public List<BmsStockLocationQueryByUnitRspDTO> queryByUnit(String unitCode) {
@@ -55,6 +63,16 @@ public class BmsStockLocationServiceImpl implements BmsStockLocationService {
     }
 
     @Override
+    public List<BmsStockLocationQueryByStockCodeRspDTO> queryByStockCode(String stockCode) {
+        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(stockCode);
+        if (bmsStockDict == null) {
+            throw new BusinessException("库房不存在");
+        }
+        List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectAllByStockCode(stockCode);
+        return BeanUtils.copyListProperties(bmsStockLocationDictList, BmsStockLocationQueryByStockCodeRspDTO.class);
+    }
+
+    @Override
     public PageInfo<BmsStockLocationListPageRspDTO> listPage(BmsStockLocationListPageReqDTO bmsStockLocationListPageReqDTO) {
         PageHelper.startPage(bmsStockLocationListPageReqDTO.getPageNum(), bmsStockLocationListPageReqDTO.getPageSize());
         List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectSelective(BeanUtils.copyProperties(bmsStockLocationListPageReqDTO, BmsStockLocationDict.class));
@@ -65,15 +83,18 @@ public class BmsStockLocationServiceImpl implements BmsStockLocationService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(BmsStockLocationAddReqDTO bmsStockLocationAddReqDTO) {
-        List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectAllByStockName(bmsStockLocationAddReqDTO.getStockName().trim());
-        BmsStockLocationDict bmsStockLocationDict = new BmsStockLocationDict();
-        bmsStockLocationDict.setUnitCode(bmsStockLocationAddReqDTO.getUnitCode());
-        if (CollectionUtil.isNotEmpty(bmsStockLocationDictList)) {
-            bmsStockLocationDict.setStockCode(bmsStockLocationDictList.get(0).getStockCode());
-        } else {
-            bmsStockLocationDict.setStockCode(IdUtils.simpleUUID());
+        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsStockLocationAddReqDTO.getStockCode().trim());
+        if (bmsStockDict == null) {
+            throw new BusinessException("库房不存在");
         }
-        bmsStockLocationDict.setStockName(bmsStockLocationAddReqDTO.getStockName());
+        BmsStockLocationDict bmsStockLocationDict = bmsStockLocationDictMapper.selectOneByStockCodeAndLocationNumber(bmsStockDict.getStockCode(), bmsStockLocationAddReqDTO.getLocationNumber());
+        if (bmsStockLocationDict != null) {
+            throw new BusinessException("请不到重复添加库存");
+        }
+        bmsStockLocationDict = new BmsStockLocationDict();
+        bmsStockLocationDict.setUnitCode(bmsStockDict.getUnitCode());
+        bmsStockLocationDict.setStockCode(bmsStockDict.getStockCode());
+        bmsStockLocationDict.setStockName(bmsStockDict.getStockName());
         bmsStockLocationDict.setLocationNumber(bmsStockLocationAddReqDTO.getLocationNumber());
         bmsStockLocationDict.setCreateUserId(SecurityContextHolder.getUserId());
         bmsStockLocationDict.setCreateUserName(SecurityContextHolder.getNickName());
@@ -83,8 +104,16 @@ public class BmsStockLocationServiceImpl implements BmsStockLocationService {
 
     @Override
     public void delete(Integer id) {
-        bmsStockLocationDictMapper.deleteById(id);
+        BmsStockLocationDict bmsStockLocationDict = bmsStockLocationDictMapper.selectById(id);
+        if (bmsStockLocationDict == null) {
+            throw new BusinessException("不存在此库位");
+        }
+        List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectAllByStockLocationNumberIn(Arrays.asList(bmsStockLocationDict.getLocationNumber()));
 
+        if (CollectionUtil.isNotEmpty(bmsProductStockTbList)) {
+            throw new BusinessException("该库位已经使用无法更改");
+        }
+        bmsStockLocationDictMapper.deleteById(id);
     }
 
     @Override
@@ -95,12 +124,12 @@ public class BmsStockLocationServiceImpl implements BmsStockLocationService {
 
     @Override
     public List<BmsStockLocationListAllStockRspDTO> listAllStock() {
-        List<BmsStockLocationListAllStockRspDTO> result=new ArrayList<>();
+        List<BmsStockLocationListAllStockRspDTO> result = new ArrayList<>();
         List<BmsStockLocationDict> bmsStockLocationDictList = bmsStockLocationDictMapper.selectSelective(null);
-        if(CollectionUtil.isNotEmpty(bmsStockLocationDictList)){
+        if (CollectionUtil.isNotEmpty(bmsStockLocationDictList)) {
             Map<String, List<BmsStockLocationDict>> stockMap = bmsStockLocationDictList.stream().collect(Collectors.groupingBy(BmsStockLocationDict::getStockCode));
-            stockMap.forEach((stockCode,list)->{
-                BmsStockLocationListAllStockRspDTO bmsStockLocationListAllStockRspDTO=new BmsStockLocationListAllStockRspDTO();
+            stockMap.forEach((stockCode, list) -> {
+                BmsStockLocationListAllStockRspDTO bmsStockLocationListAllStockRspDTO = new BmsStockLocationListAllStockRspDTO();
                 bmsStockLocationListAllStockRspDTO.setStockCode(stockCode);
                 bmsStockLocationListAllStockRspDTO.setStockName(list.get(0).getStockName());
                 result.add(bmsStockLocationListAllStockRspDTO);

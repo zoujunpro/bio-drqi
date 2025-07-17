@@ -4,11 +4,13 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsProductStockInLogListPageReqDTO;
+import com.bio.drqi.bsm.req.BmsProductStockInLogReturnStockReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogQueryByTaskNumRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockInService;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -63,5 +65,17 @@ public class BmsProductStockInLogController {
     public ResponseResult<List<BmsProductStockInLogQueryByTaskNumRspDTO>> queryByTaskNum(@RequestParam String taskNum) {
         return ResponseResult.getSuccess(bmsProductStockInService.queryByTaskNum(taskNum));
 
+    }
+
+    /**
+     * 入库存明细管理-退货
+     * @param bmsProductStockInLogReturnStockReqDTO
+     * @return
+     */
+    @PostMapping("returnStock")
+    @WebLog(desc = "入库存明细管理-退货")
+    public ResponseResult<String> returnStock(@RequestBody @Validated BmsProductStockInLogReturnStockReqDTO bmsProductStockInLogReturnStockReqDTO) {
+        bmsProductStockInService.returnStock(bmsProductStockInLogReturnStockReqDTO);
+        return ResponseResult.getSuccess("ok");
     }
 }

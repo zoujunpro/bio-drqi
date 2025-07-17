@@ -59,6 +59,6 @@ public class BmsSynKdController {
     @GetMapping("findLastSuccessTime")
     @WebLog(desc = "星空云数据同步-查询上次同步成功时间")
     public ResponseResult<String> findLastSuccessTime() {
-        return ResponseResult.getSuccess(findLastSuccessTime());
+        return ResponseResult.getSuccess(bmsSynKdService.findLastSuccessTime());
     }
 }

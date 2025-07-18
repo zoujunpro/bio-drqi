@@ -151,8 +151,6 @@ public class BmsPurchaseOrderDTO {
         @NotBlank(message = "参数缺失：商品类别名称")
         private String productCategoryName;
 
-        private String taxRate;
-
         /**
          * 商品图片
          */

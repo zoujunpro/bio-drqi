@@ -110,11 +110,14 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
 
     @Override
     public void taxRate(BmsOrderDetailTaxRateReqDTO bmsOrderDetailTaxRateReqDTO) {
-        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailTaxRateReqDTO.getId());
         try {
-            Double.valueOf(bmsOrderDetailTb.getTaxRate());
+            Double.valueOf(bmsOrderDetailTaxRateReqDTO.getTaxRate());
         } catch (NumberFormatException e) {
             throw new BusinessException("税率格式异常");
+        }
+        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailTaxRateReqDTO.getId());
+        if(bmsOrderDetailTb==null){
+            throw new BusinessException("找不到此订单");
         }
         BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectOneByOrderDetailNum(bmsOrderDetailTb.getOrderNum());
         if (bmsProductStockInLog == null) {

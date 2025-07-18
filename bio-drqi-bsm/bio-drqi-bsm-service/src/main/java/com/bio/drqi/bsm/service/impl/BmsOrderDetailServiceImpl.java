@@ -116,13 +116,13 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
             throw new BusinessException("税率格式异常");
         }
         BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailTaxRateReqDTO.getId());
-        if(bmsOrderDetailTb==null){
+        if (bmsOrderDetailTb == null) {
             throw new BusinessException("找不到此订单");
         }
-        BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectOneByOrderDetailNum(bmsOrderDetailTb.getOrderNum());
-        if (bmsProductStockInLog == null) {
-            throw new BusinessException("耗材还未入库");
+        if (bmsOrderDetailTb.getReceiveNumber() != bmsOrderDetailTb.getPurchaseNumber()) {
+            throw new BusinessException("耗材未全部到货");
         }
+
         bmsOrderDetailTb.setTaxRate(bmsOrderDetailTb.getTaxRate());
         bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
 

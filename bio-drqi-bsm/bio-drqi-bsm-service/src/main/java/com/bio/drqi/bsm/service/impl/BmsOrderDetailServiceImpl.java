@@ -123,14 +123,14 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
             throw new BusinessException("耗材未全部到货");
         }
 
-        bmsOrderDetailTb.setTaxRate(bmsOrderDetailTb.getTaxRate());
+        bmsOrderDetailTb.setTaxRate(bmsOrderDetailTaxRateReqDTO.getTaxRate());
         bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
 
         List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectAllByOrderDetailNum(bmsOrderDetailTb.getOrderDetailNum());
         if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)) {
             bmsReturnOrderDetailTbList.forEach(bmsReturnOrderDetailTb -> {
-                bmsReturnOrderDetailTb.setTaxRate(bmsOrderDetailTb.getTaxRate());
-                bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+                bmsReturnOrderDetailTb.setTaxRate(bmsOrderDetailTaxRateReqDTO.getTaxRate());
+                bmsReturnOrderDetailTbMapper.updateById(bmsReturnOrderDetailTb);
             });
         }
 

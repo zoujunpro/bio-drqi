@@ -92,6 +92,10 @@ public class BmsTestController {
     private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
 
 
+    @Resource
+    private BioPrintLabelInfoTbMapper bioPrintLabelInfoTbMapper;
+
+
     @GetMapping("/synStockLocationSave")
     public ResponseResult<String> synKdStockLocation() {
         kdTaskService.synStockTask();
@@ -127,21 +131,20 @@ public class BmsTestController {
 
     @GetMapping("/synInStock")
     public ResponseResult<String> synInStock() {
-        kdTaskService.synInStockTask("2025-07-16","2025-07-16");
+        kdTaskService.synInStockTask("2025-07-16", "2025-07-16");
         return ResponseResult.getSuccess("OK");
     }
 
     @GetMapping("/synOutStock")
     public ResponseResult<String> synOutStock() {
-        kdTaskService.synOutStockTask("2025-07-16","2025-07-16");
+        kdTaskService.synOutStockTask("2025-07-16", "2025-07-16");
         return ResponseResult.getSuccess("OK");
     }
 
 
-
     @GetMapping("/synReturnStock")
     public ResponseResult<String> synReturnStock() {
-        kdTaskService.synReturnStockTask("2025-07-16","2025-07-16");
+        kdTaskService.synReturnStockTask("2025-07-16", "2025-07-16");
         return ResponseResult.getSuccess("OK");
     }
 
@@ -155,6 +158,27 @@ public class BmsTestController {
             System.out.println(s);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
+
+    @GetMapping("/cleanLabel")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanLabel() {
+        List<BioPrintLabelInfoTb> bioPrintLabelInfoTbList = bioPrintLabelInfoTbMapper.searchAllByLabelType("bms_label_print");
+        for (BioPrintLabelInfoTb bioPrintLabelInfoTb : bioPrintLabelInfoTbList) {
+            String[] uniqueCodeArr = bioPrintLabelInfoTb.getUniqueCode().split("\\|");
+            if (uniqueCodeArr.length == 3) {
+                String productInnerCode = uniqueCodeArr[0];
+                String batchNo = uniqueCodeArr[1];
+                String unitCode = uniqueCodeArr[2];
+                List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectAllByProductInnerCodeAndUnitCodeAndBatchNo(productInnerCode, unitCode, batchNo);
+                if (bmsProductStockTbList.size() == 1) {
+                    bioPrintLabelInfoTb.setUniqueCode(bioPrintLabelInfoTb.getUniqueCode() + "|" + bmsProductStockTbList.get(0).getStockCode());
+                    bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
+                }
+            }
         }
         return ResponseResult.getSuccess("ok");
     }

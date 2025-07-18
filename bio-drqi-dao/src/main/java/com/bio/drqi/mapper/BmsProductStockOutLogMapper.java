@@ -17,6 +17,8 @@ public interface BmsProductStockOutLogMapper extends BaseMapper<BmsProductStockO
 
 
     List<BmsProductStockOutLog> selectSelective(BmsProductStockOutLog bmsProductStockOutLog);
+
+    List<BmsProductStockOutLog> selectAllByUniqueCode(@Param("uniqueCode") String uniqueCode);
 }
 
 

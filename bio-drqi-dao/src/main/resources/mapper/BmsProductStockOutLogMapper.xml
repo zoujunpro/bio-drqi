@@ -76,4 +76,11 @@
         </where>
         order by id desc
     </select>
+    <select id="selectAllByUniqueCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_out_log
+        where
+        unique_code = #{uniqueCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

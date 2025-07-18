@@ -11,8 +11,8 @@ import com.bio.drqi.bsm.rsp.BmsOrderDetailListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailQueryByOrderNumRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDtlDetailRspDTO;
 import com.bio.drqi.bsm.service.BmsOrderDetailService;
-import com.bio.drqi.domain.BmsOrderDetailTb;
-import com.bio.drqi.mapper.BmsOrderDetailTbMapper;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +29,12 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
 
     @Resource
     private BmsOrderDetailTbMapper bmsOrderDetailTbMapper;
+
+    @Resource
+    private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
+
+    @Resource
+    private BmsProductStockInLogMapper bmsProductStockInLogMapper;
 
     @Override
     public PageInfo<BmsOrderDetailListPageRspDTO> listPage(BmsOrderDetailListPageReqDTO bmsOrderDetailListPageReqDTO) {
@@ -100,6 +106,31 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
         bmsOrderDetailTb.setPaymentVoucherUrls(bmsOrderDetailUploadPaymentVoucherReqDTO.getPaymentVoucherUrls());
 
         bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+    }
+
+    @Override
+    public void taxRate(BmsOrderDetailTaxRateReqDTO bmsOrderDetailTaxRateReqDTO) {
+        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailTaxRateReqDTO.getId());
+        try {
+            Double.valueOf(bmsOrderDetailTb.getTaxRate());
+        } catch (NumberFormatException e) {
+            throw new BusinessException("税率格式异常");
+        }
+        BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectOneByOrderDetailNum(bmsOrderDetailTb.getOrderNum());
+        if (bmsProductStockInLog == null) {
+            throw new BusinessException("耗材还未入库");
+        }
+        bmsOrderDetailTb.setTaxRate(bmsOrderDetailTb.getTaxRate());
+        bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+
+        List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectAllByOrderDetailNum(bmsOrderDetailTb.getOrderDetailNum());
+        if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)) {
+            bmsReturnOrderDetailTbList.forEach(bmsReturnOrderDetailTb -> {
+                bmsReturnOrderDetailTb.setTaxRate(bmsOrderDetailTb.getTaxRate());
+                bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+            });
+        }
+
     }
 
     @Override

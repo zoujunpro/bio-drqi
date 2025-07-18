@@ -89,7 +89,7 @@ public class BmsOrderDetailController {
     @WebLog(desc = "采购订单管理-订单报账结算")
     @PostMapping("/reportAccount")
     @RequirePermissions("bms:orderDetail:edit")
-    public ResponseResult<String> reportAccount(@RequestBody BmsOrderDetailReportAccountReqDTO bmsOrderDetailReportAccountReqDTO){
+    public ResponseResult<String> reportAccount(@RequestBody @Validated BmsOrderDetailReportAccountReqDTO bmsOrderDetailReportAccountReqDTO){
         bmsOrderDetailService.reportAccount(bmsOrderDetailReportAccountReqDTO);
         return ResponseResult.getSuccess("ok");
     }
@@ -102,8 +102,21 @@ public class BmsOrderDetailController {
     @WebLog(desc = "采购订单管理-上传结算凭证")
     @PostMapping("/uploadPaymentVoucher")
     @RequirePermissions("bms:orderDetail:edit")
-    public ResponseResult<String> uploadPaymentVoucher(@RequestBody BmsOrderDetailUploadPaymentVoucherReqDTO bmsOrderDetailUploadPaymentVoucherReqDTO){
+    public ResponseResult<String> uploadPaymentVoucher(@RequestBody @Validated BmsOrderDetailUploadPaymentVoucherReqDTO bmsOrderDetailUploadPaymentVoucherReqDTO){
         bmsOrderDetailService.uploadPaymentVoucher(bmsOrderDetailUploadPaymentVoucherReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 采购订单管理-税率
+     * @return
+     */
+
+    @WebLog(desc = "采购订单管理-税率")
+    @PostMapping("/taxRate")
+    @RequirePermissions("bms:orderDetail:edit")
+    public ResponseResult<String> taxRate(@RequestBody @Validated BmsOrderDetailTaxRateReqDTO bmsOrderDetailTaxRateReqDTO){
+        bmsOrderDetailService.taxRate(bmsOrderDetailTaxRateReqDTO);
         return ResponseResult.getSuccess("ok");
     }
 

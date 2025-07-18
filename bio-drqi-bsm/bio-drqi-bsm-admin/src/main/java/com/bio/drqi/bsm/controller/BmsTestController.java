@@ -174,7 +174,7 @@ public class BmsTestController {
                 String batchNo = uniqueCodeArr[1];
                 String unitCode = uniqueCodeArr[2];
                 List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectAllByProductInnerCodeAndUnitCodeAndBatchNo(productInnerCode, unitCode, batchNo);
-                if (bioPrintLabelInfoTbList.size() == 1) {
+                if (bmsProductStockTbList.size() == 1) {
                     bioPrintLabelInfoTb.setUniqueCode(bioPrintLabelInfoTb.getUniqueCode() + "|" + bmsProductStockTbList.get(0).getStockCode());
                     bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
                 }

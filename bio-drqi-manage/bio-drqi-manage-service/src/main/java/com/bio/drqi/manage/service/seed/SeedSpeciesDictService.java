@@ -1,9 +1,9 @@
 package com.bio.drqi.manage.service.seed;
 
-import com.bio.base.base.PageDTO;
-import com.bio.base.bio.req.SpeciesAddReqDTO;
-import com.bio.base.bio.req.SpeciesEditDTO;
-import com.bio.base.bio.rsp.SpeciesListRspDTO;
+import com.bio.drqi.common.dto.PageDTO;
+import com.bio.drqi.manage.seed.SpeciesAddReqDTO;
+import com.bio.drqi.manage.seed.SpeciesEditDTO;
+import com.bio.drqi.manage.seed.SpeciesListRspDTO;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;

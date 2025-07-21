@@ -1,15 +1,16 @@
 package com.bio.drqi.manage.service.seed.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.bio.base.base.PageDTO;
-import com.bio.base.bio.req.SpeciesAddReqDTO;
-import com.bio.base.bio.req.SpeciesEditDTO;
-import com.bio.base.bio.rsp.SpeciesListRspDTO;
 
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.dto.PageDTO;
 import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.CerSpeciesConf;
+import com.bio.drqi.manage.seed.SpeciesAddReqDTO;
+import com.bio.drqi.manage.seed.SpeciesEditDTO;
+import com.bio.drqi.manage.seed.SpeciesListRspDTO;
 import com.bio.drqi.manage.service.seed.SeedSpeciesDictService;
 import com.bio.drqi.mapper.CerBreedDictMapper;
 import com.bio.drqi.mapper.CerSpeciesConfMapper;
@@ -50,6 +51,7 @@ public class SeedSpeciesDictServiceImpl implements SeedSpeciesDictService {
         cerSpeciesConf.setSpeciesName(speciesAddReqDTO.getSpeciesName());
         cerSpeciesConf.setSpeciesCode(speciesAddReqDTO.getSpeciesCode());
         cerSpeciesConf.setNumPrefix(speciesAddReqDTO.getNumPrefix());
+        cerSpeciesConf.setLatinName(speciesAddReqDTO.getLatinName());
         try {
             cerSpeciesConfMapper.insert(cerSpeciesConf);
         } catch (DuplicateKeyException e) {
@@ -72,6 +74,12 @@ public class SeedSpeciesDictServiceImpl implements SeedSpeciesDictService {
     @Override
     public void edit(SpeciesEditDTO speciesEditDTO) {
         CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectById(speciesEditDTO.getId());
+        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAllBySpeciesCode(cerSpeciesConf.getSpeciesCode());
+        if (CollectionUtil.isNotEmpty(cerBreedDictList)&& StringUtils.isNotEmpty(speciesEditDTO.getSpeciesCode())) {
+            if (!cerSpeciesConf.getSpeciesCode().equals(speciesEditDTO.getSpeciesCode())) {
+                throw new BusinessException("物种下已经创建品种，编码无法修改");
+            }
+        }
         cerSpeciesConf.setSpeciesName(speciesEditDTO.getSpeciesName());
         cerSpeciesConf.setSpeciesCode(speciesEditDTO.getSpeciesCode());
         cerSpeciesConf.setNumPrefix(speciesEditDTO.getNumPrefix());

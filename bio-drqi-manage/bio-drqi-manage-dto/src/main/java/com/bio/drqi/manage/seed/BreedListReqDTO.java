@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.seed;
 
-import com.bio.base.base.PageDTO;
+import com.bio.drqi.common.dto.PageDTO;
 import lombok.Data;
 
 @Data

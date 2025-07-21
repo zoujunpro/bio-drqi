@@ -38,4 +38,10 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_species_conf
+        order by  id desc
+    </select>
 </mapper>

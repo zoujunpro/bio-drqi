@@ -1,18 +1,21 @@
 package com.bio.drqi.manage.service.seed.impl;
 
 
-import com.bio.base.bio.req.BreedAddReqDTO;
-import com.bio.base.bio.req.BreedEditReqDTO;
-import com.bio.base.bio.req.BreedListReqDTO;
-import com.bio.base.bio.rsp.BreedListRspDTO;
-
+import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.CerSpeciesConf;
+import com.bio.drqi.domain.SeedStockTb;
+import com.bio.drqi.manage.seed.BreedAddReqDTO;
+import com.bio.drqi.manage.seed.BreedEditReqDTO;
+import com.bio.drqi.manage.seed.BreedListReqDTO;
+import com.bio.drqi.manage.seed.BreedListRspDTO;
 import com.bio.drqi.manage.service.seed.SeedBreedDictService;
 import com.bio.drqi.mapper.CerBreedDictMapper;
 import com.bio.drqi.mapper.CerSpeciesConfMapper;
+import com.bio.drqi.mapper.SeedStockTbMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.dao.DuplicateKeyException;
@@ -31,12 +34,15 @@ public class SeedBreedDictServiceImpl implements SeedBreedDictService {
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
 
+    @Resource
+    private SeedStockTbMapper seedStockTbMapper;
+
     @Override
     public PageInfo<BreedListRspDTO> listPage(BreedListReqDTO breedListReqDTO) {
         CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectById(breedListReqDTO.getSpeciesId());
-        PageHelper.startPage(breedListReqDTO.getPageNum(),breedListReqDTO.getPageSize());
+        PageHelper.startPage(breedListReqDTO.getPageNum(), breedListReqDTO.getPageSize());
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAllBySpeciesCode(cerSpeciesConf.getSpeciesCode());
-        PageInfo<CerBreedDict> srcPageInfo=new PageInfo<>(cerBreedDictList);
+        PageInfo<CerBreedDict> srcPageInfo = new PageInfo<>(cerBreedDictList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, BreedListRspDTO.class);
     }
 
@@ -52,7 +58,7 @@ public class SeedBreedDictServiceImpl implements SeedBreedDictService {
         CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectById(breedAddReqDTO.getSpeciesId());
         Assert.notNull(cerSpeciesConf, "物种不存在");
         CerBreedDict cerBreedDict = new CerBreedDict();
-        cerBreedDict.setBreedCode(breedAddReqDTO.getBreedCode());
+        cerBreedDict.setBreedCode(IdUtils.simpleUUID());
         cerBreedDict.setBreedName(breedAddReqDTO.getBreedName());
         cerBreedDict.setSpeciesCode(cerSpeciesConf.getSpeciesCode());
         try {
@@ -65,13 +71,17 @@ public class SeedBreedDictServiceImpl implements SeedBreedDictService {
 
     @Override
     public void delete(Integer id) {
+        CerBreedDict cerBreedDict = cerBreedDictMapper.selectById(id);
+        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectAllByBreedCode(cerBreedDict.getBreedCode());
+        if (CollectionUtil.isNotEmpty(seedStockTbList)) {
+            throw new BusinessException("已经使用的物种无法删除");
+        }
         cerBreedDictMapper.deleteById(id);
     }
 
     @Override
     public void edit(BreedEditReqDTO breedEditReqDTO) {
         CerBreedDict cerBreedDict = cerBreedDictMapper.selectById(breedEditReqDTO.getId());
-        cerBreedDict.setBreedCode(breedEditReqDTO.getBreedCode());
         cerBreedDict.setBreedName(breedEditReqDTO.getBreedName());
         cerBreedDictMapper.updateById(cerBreedDict);
     }

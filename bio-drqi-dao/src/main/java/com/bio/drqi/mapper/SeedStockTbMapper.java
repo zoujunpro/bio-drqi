@@ -31,6 +31,8 @@ public interface SeedStockTbMapper extends BaseMapper<SeedStockTb> {
 
     int deleteBySeedNumIn(@Param("seedNumList") Collection<String> seedNumList);
 
+    List<SeedStockTb> selectAllByBreedCode(@Param("breedCode") String breedCode);
+
 }
 
 

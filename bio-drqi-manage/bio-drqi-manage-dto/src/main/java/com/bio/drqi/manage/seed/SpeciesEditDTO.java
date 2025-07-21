@@ -20,4 +20,6 @@ public class SpeciesEditDTO {
      * 种子编号前缀
      */
     private String numPrefix;
+
+    private String latinName;
 }

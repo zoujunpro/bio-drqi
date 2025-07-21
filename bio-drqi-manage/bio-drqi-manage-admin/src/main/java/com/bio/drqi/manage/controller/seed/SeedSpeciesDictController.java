@@ -1,12 +1,13 @@
 package com.bio.drqi.manage.controller.seed;
 
-import com.bio.base.base.PageDTO;
-import com.bio.base.bio.req.SpeciesAddReqDTO;
-import com.bio.base.bio.req.SpeciesEditDTO;
-import com.bio.base.bio.rsp.SpeciesListRspDTO;
+
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.common.dto.PageDTO;
+import com.bio.drqi.manage.seed.SpeciesAddReqDTO;
+import com.bio.drqi.manage.seed.SpeciesEditDTO;
+import com.bio.drqi.manage.seed.SpeciesListRspDTO;
 import com.bio.drqi.manage.service.seed.SeedSpeciesDictService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;

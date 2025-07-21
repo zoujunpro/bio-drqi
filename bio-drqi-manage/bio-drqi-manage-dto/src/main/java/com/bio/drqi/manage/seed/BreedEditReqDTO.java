@@ -9,11 +9,6 @@ public class BreedEditReqDTO {
     /**
      *
      */
-    private String breedCode;
-
-    /**
-     *
-     */
     private String breedName;
 
 }

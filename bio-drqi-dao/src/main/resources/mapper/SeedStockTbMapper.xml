@@ -194,6 +194,13 @@
         set remarks = #{remarks,jdbcType=VARCHAR}
         where id = #{id,jdbcType=NUMERIC}
     </update>
+    <select id="selectAllByBreedCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_tb
+        where
+        breed_code = #{breedCode,jdbcType=VARCHAR}
+    </select>
 
 
 </mapper>

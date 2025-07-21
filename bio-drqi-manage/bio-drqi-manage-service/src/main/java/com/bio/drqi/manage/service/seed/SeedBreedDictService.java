@@ -1,9 +1,10 @@
 package com.bio.drqi.manage.service.seed;
 
-import com.bio.base.bio.req.BreedAddReqDTO;
-import com.bio.base.bio.req.BreedEditReqDTO;
-import com.bio.base.bio.req.BreedListReqDTO;
-import com.bio.base.bio.rsp.BreedListRspDTO;
+
+import com.bio.drqi.manage.seed.BreedAddReqDTO;
+import com.bio.drqi.manage.seed.BreedEditReqDTO;
+import com.bio.drqi.manage.seed.BreedListReqDTO;
+import com.bio.drqi.manage.seed.BreedListRspDTO;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;

@@ -4,10 +4,6 @@ import lombok.Data;
 
 @Data
 public class BreedAddReqDTO {
-    /**
-     *
-     */
-    private String breedCode;
 
     /**
      *

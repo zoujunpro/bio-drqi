@@ -1,12 +1,13 @@
 package com.bio.drqi.manage.controller.seed;
 
-import com.bio.base.bio.req.BreedAddReqDTO;
-import com.bio.base.bio.req.BreedEditReqDTO;
-import com.bio.base.bio.req.BreedListReqDTO;
-import com.bio.base.bio.rsp.BreedListRspDTO;
+
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.manage.seed.BreedAddReqDTO;
+import com.bio.drqi.manage.seed.BreedEditReqDTO;
+import com.bio.drqi.manage.seed.BreedListReqDTO;
+import com.bio.drqi.manage.seed.BreedListRspDTO;
 import com.bio.drqi.manage.service.seed.SeedBreedDictService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,7 @@ public class SeedBreedDictController {
      */
     @PostMapping("listPage")
     @WebLog(desc = "分页查询")
-    @RequirePermissions("system:breed")
+    @RequirePermissions("seed:breed:listPage")
     public ResponseResult<PageInfo<BreedListRspDTO>> listPage(@RequestBody BreedListReqDTO breedListReqDTO){
         return ResponseResult.getSuccess(seedBreedDictService.listPage(breedListReqDTO));
     }
@@ -56,7 +57,7 @@ public class SeedBreedDictController {
      */
     @PostMapping("add")
     @WebLog(desc = "新增品种")
-    @RequirePermissions("system:breed:add")
+    @RequirePermissions("seed:breed:add")
     public ResponseResult add(@RequestBody BreedAddReqDTO breedAddReqDTO){
         seedBreedDictService.add(breedAddReqDTO);
         return ResponseResult.getSuccess("成功");
@@ -69,7 +70,7 @@ public class SeedBreedDictController {
      */
     @GetMapping("delete")
     @WebLog(desc = "删除品种")
-    @RequirePermissions("system:breed:delete")
+    @RequirePermissions("seed:breed:delete")
     public ResponseResult delete(@RequestParam Integer id){
         seedBreedDictService.delete(id);
         return ResponseResult.getSuccess("成功");
@@ -82,7 +83,7 @@ public class SeedBreedDictController {
      */
     @PostMapping("edit")
     @WebLog(desc = "更新品种")
-    @RequirePermissions("system:breed:edit")
+    @RequirePermissions("seed:breed:edit")
     public ResponseResult edit(@RequestBody BreedEditReqDTO breedEditReqDTO){
         seedBreedDictService.edit(breedEditReqDTO);
         return ResponseResult.getSuccess("成功");

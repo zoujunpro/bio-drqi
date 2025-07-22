@@ -69,12 +69,12 @@ public class TcPollinationTb implements Serializable {
     /**
      * 父本品种
      */
-    private String fBreedName;
+    private String fBreedCode;
 
     /**
      * 母本品种
      */
-    private String mBreedName;
+    private String mBreedCode;
 
     /**
      * 母本实施方案编号

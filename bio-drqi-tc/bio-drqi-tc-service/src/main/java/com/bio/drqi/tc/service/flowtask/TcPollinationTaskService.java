@@ -156,6 +156,9 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
             if (tcPollinationTb != null) {
                 throw new BusinessException("小区编号：" + tcPollinationExcelDTO.getMotherRegionNum() + " 种子编号：" + tcPollinationExcelDTO.getMotherSeedNum() + (StringUtils.isNotEmpty(tcPollinationExcelDTO.getMotherSampleCode()) ? "取样编号:" + tcPollinationExcelDTO.getMotherSampleCode() : "") + "的母本已经受过粉");
             }
+
+            tcPollinationExcelDTO.setFatherBreedCode(father.getBreedCode());
+            tcPollinationExcelDTO.setMotherBreedCode(mather.getBreedCode());
         }
 
         tcPollinationTaskDTO.setTcPollinationExcelDTOList(tcPollinationExcelDTOList);
@@ -193,8 +196,8 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                 tcPollinationTb.setFSampleCode(tcPollinationExcelDTO.getFatherSampleCode());
                 tcPollinationTb.setMSeedNum(tcPollinationExcelDTO.getMotherSeedNum());
                 tcPollinationTb.setFSeedNum(tcPollinationExcelDTO.getFatherSeedNum());
-                tcPollinationTb.setFBreedName(tcPollinationExcelDTO.getFatherBreedName());
-                tcPollinationTb.setMBreedName(tcPollinationExcelDTO.getMotherBreedName());
+                tcPollinationTb.setFBreedCode(tcPollinationExcelDTO.getFatherBreedCode());
+                tcPollinationTb.setMBreedCode(tcPollinationExcelDTO.getMotherBreedCode());
                 tcPollinationTb.setMVectorTaskCode(tcPollinationExcelDTO.getMotherVectorTaskCode());
                 tcPollinationTb.setFVectorTaskCode(tcPollinationExcelDTO.getFatherVectorTaskCode());
                 tcPollinationTb.setMGenerationCode(tcPollinationExcelDTO.getMotherGenerationName());

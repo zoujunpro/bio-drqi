@@ -77,15 +77,11 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setFartherInfo(seedStockTb.getFartherInfo());
             seed.setMatherInfo(seedStockTb.getMatherInfo());
             seed.setGeneration(GenerationEnum.getGenerationDesc(seedStockTb.getGeneration()));
-            seed.setSpeciesCode(seedStockTb.getSpecies());
-            seed.setSpeciesName(cerSpeciesConfMap.get(seedStockTb.getSpecies()).getSpeciesName());
+            seed.setSpeciesCode(seedStockTb.getSpeciesCode());
+            seed.setSpeciesName(cerSpeciesConfMap.get(seedStockTb.getSpeciesCode()).getSpeciesName());
             seed.setBreedCode(seedStockTb.getBreedCode());
             seed.setBreedName(cerBreedDictMap.get(seed.getSpeciesCode()+":"+seedStockTb.getBreedCode()).getBreedName());
             seed.setPollinationMethod(seedStockTb.getPollinationMethod());
-            seed.setSeedType(seedStockTb.getSeedType());
-            if (StringUtils.isNotEmpty(seed.getSeedType())) {
-                seed.setSeedTypeName(bioDictMap.get(BioDictTypeEnum.SEED_TYPE.name() + ":" + seedStockTb.getSeedType()).getDictValueName());
-            }
             seed.setHarvestType(seedStockTb.getHarvestType());
             if (StringUtils.isNotEmpty(seed.getHarvestType())) {
                 seed.setHarvestName(bioDictMap.get(BioDictTypeEnum.HARVEST_TYPE.name() + ":" + seedStockTb.getHarvestType()).getDictValueName());
@@ -97,7 +93,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             if (StringUtils.isNotEmpty(seed.getSourceType())) {
                 seed.setSourceTypeName(bioDictMap.get(BioDictTypeEnum.SOURCE_CHANNEL.name() + ":" + seedStockTb.getSourceType()).getDictValueName());
             }
-            seed.setProductionLocationName(seedStockTb.getProductionLocationName());
+          //  seed.setProductionLocationName(seedStockTb.getProductionLocationName());
             seed.setStockLocationNum(seedStockTb.getStockLocationNum());
             seed.setSubmitUserId(seedStockTb.getSubmitUserId());
             seed.setSubmitUserName(seedStockTb.getSubmitUserName());
@@ -105,7 +101,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setUpdateTime(seedStockTb.getUpdateTime());
             seed.setRemarks(seedStockTb.getRemarks());
             seed.setTotalNumber(seedStockTb.getTotalNumber());
-            seed.setGeneticCharacter(seedStockTb.getGeneticCharacter());
+            seed.setGeneticCharacter(seedStockTb.getTargetCharacter());
             seed.setAliasName(seedStockTb.getAliasName());
             seed.setGeneType(seedStockTb.getGeneType());
              if(seedStockTb.getMaterialType()!=null){

@@ -72,6 +72,9 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
     @Resource
     private BioInfoClientApi bioInfoClientApi;
 
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
+
 
     private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(50, 50, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(10000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
 
@@ -94,21 +97,26 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         if (CollectionUtil.isEmpty(tcSampleTestTbList)) {
             return new PageInfo<TcSampleTestListPageDetailRspDTO>();
         }
+
         PageInfo<TcSampleTestTb> srcPageInfo = new PageInfo<>(tcSampleTestTbList);
         PageInfo<TcSampleTestListPageDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, TcSampleTestListPageDetailRspDTO.class);
         List<String> sameCodeList = tcSampleTestTbList.stream().map(TcSampleTestTb::getSampleCode).collect(Collectors.toList());
         List<TcSampleTestBioInfoResultTb> tcSampleTestBioInfoResultTbList = tcSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCodeIn(tcSampleTestListPageDetailReqDTO.getSampleApplyNum(), sameCodeList);
+        List<CerBreedDict> breedDictList = cerBreedDictMapper.selectAll();
+        Map<String, String> breedNameCodeMap = breedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode()+":"+cerBreedDict.getBreedCode(), CerBreedDict::getBreedName));
         if (CollectionUtil.isNotEmpty(tcSampleTestBioInfoResultTbList)) {
             Map<String, List<TcSampleTestBioInfoResultTb>> listMap = tcSampleTestBioInfoResultTbList.stream().collect(Collectors.groupingBy(TcSampleTestBioInfoResultTb::getSampleCode));
             targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
                 List<TcSampleTestBioInfoResultTb> list = listMap.get(sampleTestListDetailRspDTO.getSampleCode());
                 sampleTestListDetailRspDTO.setMatchNum(list == null ? 0 : list.size());
                 sampleTestListDetailRspDTO.setGenerationName(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getGenerationCode()));
+                sampleTestListDetailRspDTO.setBreedName(breedNameCodeMap.get(sampleTestListDetailRspDTO.getSpeciesCode()+":"+sampleTestListDetailRspDTO.getBreedCode()));
             });
         } else {
             targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
                 sampleTestListDetailRspDTO.setMatchNum(0);
                 sampleTestListDetailRspDTO.setGenerationName(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getGenerationCode()));
+                sampleTestListDetailRspDTO.setBreedName(breedNameCodeMap.get(sampleTestListDetailRspDTO.getSpeciesCode()+":"+sampleTestListDetailRspDTO.getBreedCode()));
             });
         }
         return targetPageInfo;

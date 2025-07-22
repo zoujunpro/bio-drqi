@@ -97,6 +97,11 @@ public class TcSampleTestTaskDTO {
          * 品种
          */
         private String breedName;
+
+        /**
+         * 品种
+         */
+        private String breedCode;
         /**
          * 代次编号
          */
@@ -146,6 +151,11 @@ public class TcSampleTestTaskDTO {
          * 物种编号
          */
         private String speciesCode;
+        /**
+         * 品种code
+         */
+        private String breedCode;
+
         /**
          * 品种
          */

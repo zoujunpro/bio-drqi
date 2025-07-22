@@ -54,7 +54,7 @@ public class TcSampleTestTb implements Serializable {
     /**
      * 品种
      */
-    private String breedName;
+    private String breedCode;
     /**
      * 目标性状
      */

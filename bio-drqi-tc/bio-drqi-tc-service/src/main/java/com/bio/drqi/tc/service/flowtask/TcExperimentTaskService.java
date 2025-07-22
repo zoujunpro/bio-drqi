@@ -12,8 +12,10 @@ import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.SampleGroupPergixEnum;
 import com.bio.drqi.common.util.LetterUtil;
 import com.bio.drqi.domain.BioTaskDtlTb;
+import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.TcExperimentDesignTb;
 import com.bio.drqi.domain.TcExperimentTb;
+import com.bio.drqi.mapper.CerBreedDictMapper;
 import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
 import com.bio.drqi.mapper.TcExperimentTbMapper;
 import com.bio.drqi.tc.enums.ExperimentStatusEnum;
@@ -41,6 +43,8 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
     @Resource
     private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
 
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
 
     @Resource
     private OssService ossService;
@@ -98,7 +102,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
                 tcExperimentDesignTb.setProjectCode(experimentDesignExcelDTO.getProjectCode());
                 tcExperimentDesignTb.setVectorTaskCode(experimentDesignExcelDTO.getVectorTaskCode());
                 tcExperimentDesignTb.setSpeciesCode(tcExperimentTb.getSpeciesCode());
-                tcExperimentDesignTb.setBreedName(experimentDesignExcelDTO.getBreedName());
+                tcExperimentDesignTb.setBreedCode(experimentDesignExcelDTO.getBreedCode());
                 tcExperimentDesignTb.setTargetCharacter(experimentDesignExcelDTO.getTargetCharacter());
                 tcExperimentDesignTb.setGenerationCode(experimentDesignExcelDTO.getGenerationCode());
                 tcExperimentDesignTb.setTcGene(experimentDesignExcelDTO.getTcGene());
@@ -145,6 +149,11 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         if (CollectionUtil.isEmpty(experimentDesignExcelDTOList)) {
             throw new BusinessException("大田试验田间设计没有具体内容");
         }
+        List<CerBreedDict> breedDictList = cerBreedDictMapper.selectAllBySpeciesCode(tcExperimentTaskDTO.getSpeciesCode());
+        if (CollectionUtil.isEmpty(breedDictList)) {
+            throw new BusinessException("该物种下无品种配置项");
+        }
+        Map<String, String> breedNameCodeMap = breedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedName, CerBreedDict::getBreedCode));
         for (ExperimentDesignExcelDTO experimentDesignExcelDTO : experimentDesignExcelDTOList) {
             ValidatorUtil.validator(experimentDesignExcelDTO);
             if (!tcExperimentTaskDTO.getProjectCodeList().contains(experimentDesignExcelDTO.getProjectCode())) {
@@ -156,14 +165,19 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             if (!experimentDesignExcelDTO.getVectorTaskCode().startsWith(experimentDesignExcelDTO.getProjectCode())) {
                 throw new BusinessException("实施方案:" + experimentDesignExcelDTO.getVectorTaskCode() + "不属于此项目:" + experimentDesignExcelDTO.getProjectCode());
             }
+            if(breedNameCodeMap.get(experimentDesignExcelDTO.getBreedName())==null){
+                throw new BusinessException("物种下无此品种配置"+experimentDesignExcelDTO.getBreedName());
+            }else {
+                experimentDesignExcelDTO.setBreedCode(breedNameCodeMap.get(experimentDesignExcelDTO.getBreedName()));
+            }
+
         }
         Map<String, List<ExperimentDesignExcelDTO>> listMap = experimentDesignExcelDTOList.stream().collect(Collectors.groupingBy(ExperimentDesignExcelDTO::getRegionNum));
-        listMap.forEach((regionNun,list)->{
-            if(list.size()>1){
+        listMap.forEach((regionNun, list) -> {
+            if (list.size() > 1) {
                 throw new BusinessException("试验设计不符合规范，小区编号出现多次");
             }
         });
-
 
 
         return experimentDesignExcelDTOList;

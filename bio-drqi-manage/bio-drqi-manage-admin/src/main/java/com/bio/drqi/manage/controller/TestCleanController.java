@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 //@RestController
 //@RequestMapping("test")
 @Slf4j
+@Deprecated
 public class TestCleanController {
 
     @Resource

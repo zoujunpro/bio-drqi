@@ -12,7 +12,7 @@
             <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
             <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
             <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
-            <result property="breedName" column="breed_name" jdbcType="VARCHAR"/>
+            <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
             <result property="targetCharacter" column="target_character" jdbcType="VARCHAR"/>
             <result property="generationCode" column="generation_code" jdbcType="VARCHAR"/>
             <result property="tcGene" column="tc_gene" jdbcType="VARCHAR"/>
@@ -48,7 +48,7 @@
     <sql id="Base_Column_List">
         id,experiment_num,region_num,
         seed_num,project_code,vector_task_code,
-        species_code,breed_name,target_character,generation_code,
+        species_code,breed_code,target_character,generation_code,
         tc_gene,sample_code,sample_time,sample_apply_num,
         task_num,test_identify_primer,test_method,
         test_edit_type,test_org_result,test_no_trans_identity_primer,
@@ -69,7 +69,7 @@
                 <if test="item.projectCode != null">project_code=#{item.projectCode,jdbcType=VARCHAR},</if>
                 <if test="item.vectorTaskCode != null">vector_task_code=#{item.vectorTaskCode,jdbcType=VARCHAR},</if>
                 <if test="item.speciesCode != null">species_code=#{item.speciesCode,jdbcType=VARCHAR},</if>
-                <if test="item.breedName != null">breed_name=#{item.breedName,jdbcType=VARCHAR},</if>
+                <if test="item.breedCode != null">breed_code=#{item.breedCode,jdbcType=VARCHAR},</if>
                 <if test="item.targetCharacter != null">target_character=#{item.targetCharacter,jdbcType=VARCHAR},</if>
                 <if test="item.generationCode != null">generation_code=#{item.generationCode,jdbcType=VARCHAR},</if>
                 <if test="item.tcGene != null">tc_gene=#{item.tcGene,jdbcType=VARCHAR},</if>
@@ -114,7 +114,7 @@
     <insert id="insertBatch">
         insert into tc_sample_test_tb(id,experiment_num,region_num,
         seed_num,project_code,vector_task_code,
-        species_code,breed_name,target_character,generation_code,
+        species_code,breed_code,target_character,generation_code,
         tc_gene,sample_code,sample_time,
         sample_apply_num,task_num,test_identify_primer,
         test_method,test_edit_type,test_org_result,
@@ -128,7 +128,7 @@
         <foreach collection="tcSampleTestTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},
             #{item.seedNum,jdbcType=VARCHAR},#{item.projectCode,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},
-            #{item.speciesCode,jdbcType=VARCHAR},#{item.breedName,jdbcType=VARCHAR},#{item.targetCharacter,jdbcType=VARCHAR},#{item.generationCode,jdbcType=VARCHAR},
+            #{item.speciesCode,jdbcType=VARCHAR},#{item.breedCode,jdbcType=VARCHAR},#{item.targetCharacter,jdbcType=VARCHAR},#{item.generationCode,jdbcType=VARCHAR},
             #{item.tcGene,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},#{item.sampleTime,jdbcType=VARCHAR},
             #{item.sampleApplyNum,jdbcType=VARCHAR},#{item.taskNum,jdbcType=VARCHAR},#{item.testIdentifyPrimer,jdbcType=VARCHAR},
             #{item.testMethod,jdbcType=VARCHAR},#{item.testEditType,jdbcType=VARCHAR},#{item.testOrgResult,jdbcType=VARCHAR},
@@ -177,7 +177,7 @@
             <if test="projectCode != null and projectCode!=''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
             <if test="vectorTaskCode != null and vectorTaskCode!=''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
             <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
-            <if test="breedName != null and breedName!=''">and breed_name=#{breedName,jdbcType=VARCHAR}</if>
+            <if test="breedCode != null and breedCode!=''">and breed_code=#{breedCode,jdbcType=VARCHAR}</if>
             <if test="targetCharacter != null and targetCharacter!=''">and target_character=#{targetCharacter,jdbcType=VARCHAR}</if>
             <if test="generationCode != null and generationCode!=''">and generation_code=#{generationCode,jdbcType=VARCHAR}</if>
             <if test="tcGene != null and tcGene!=''">and tc_gene=#{tcGene,jdbcType=VARCHAR}</if>

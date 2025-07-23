@@ -62,7 +62,7 @@
     <update id="updatePollinationApplyNumIsNullByPollinationApplyNum">
         update tc_pollination_single_num_tb
         set pollination_apply_num =null
-        where pollination_apply_num = #{oldPollinationApplyNum,jdbcType=VARCHAR}
+        where pollination_apply_num = #{pollinationApplyNum,jdbcType=VARCHAR}
     </update>
     <select id="selectAllByExperimentNumOrderByIdDesc" resultMap="BaseResultMap">
         select

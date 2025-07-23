@@ -34,7 +34,7 @@ public class SeedSpeciesDictController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "物种分页查询")
-    @RequirePermissions("breed:species:listPage")
+    @RequirePermissions("seed:species:listPage")
     public ResponseResult<PageInfo<SpeciesListRspDTO>> listPage(@RequestBody PageDTO pageDTO) {
         return ResponseResult.getSuccess(seedSpeciesDictService.listPage(pageDTO));
     }
@@ -66,7 +66,7 @@ public class SeedSpeciesDictController {
      */
     @PostMapping("/add")
     @WebLog(desc = "新增物种")
-    @RequirePermissions("breed:species:add")
+    @RequirePermissions("seed:species:add")
     public ResponseResult<String> add(@RequestBody SpeciesAddReqDTO speciesAddReqDTO) {
         seedSpeciesDictService.add(speciesAddReqDTO);
         return ResponseResult.getSuccess("成功");
@@ -79,7 +79,7 @@ public class SeedSpeciesDictController {
      */
     @GetMapping("/delete")
     @WebLog(desc = "删除物种")
-    @RequirePermissions("breed:species:delete")
+    @RequirePermissions("seed:species:delete")
     public ResponseResult<String> delete(@RequestParam Integer id) {
         seedSpeciesDictService.delete(id);
         return ResponseResult.getSuccess("成功");
@@ -92,7 +92,7 @@ public class SeedSpeciesDictController {
      */
     @PostMapping("/edit")
     @WebLog(desc = "更新物种")
-    @RequirePermissions("breed:species:edit")
+    @RequirePermissions("seed:species:edit")
     public ResponseResult<String> edit(@RequestBody SpeciesEditDTO speciesEditDTO) {
         seedSpeciesDictService.edit(speciesEditDTO);
         return ResponseResult.getSuccess("成功");

@@ -5,8 +5,10 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.TcHarvestSeedApplyTb;
 import com.bio.drqi.domain.TcPollinationTb;
+import com.bio.drqi.mapper.CerBreedDictMapper;
 import com.bio.drqi.mapper.TcHarvestSeedApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
 import com.bio.drqi.tc.req.TcHarvestCreateHarvestExcelReqDTO;
@@ -28,6 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -46,6 +50,9 @@ public class TcHarvestServiceImpl implements TcHarvestService {
 
     @Resource
     private OssService ossService;
+
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
 
     @Override
     public PageInfo<TcHarvestListPageRspDTO> listPage(TcHarvestListPageReqDTO tcHarvestListPageReqDTO) {
@@ -69,6 +76,8 @@ public class TcHarvestServiceImpl implements TcHarvestService {
         if (CollectionUtil.isEmpty(tcPollinationTbList)) {
             throw new BusinessException("无授粉数据");
         }
+        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
+        Map<String, String> codeOfNameMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
 
         List<TcHarvestExcelDTO> tcHarvestExcelDTOList = new ArrayList<>();
         for (TcPollinationTb tcPollinationTb : tcPollinationTbList) {
@@ -76,14 +85,18 @@ public class TcHarvestServiceImpl implements TcHarvestService {
             tcHarvestExcelDTO.setMotherRegionNum(tcPollinationTb.getMRegionNum());
             tcHarvestExcelDTO.setMotherSeedNum(tcPollinationTb.getMSeedNum());
             tcHarvestExcelDTO.setMotherSampleCode(tcPollinationTb.getMSampleCode());
-            tcHarvestExcelDTO.setMotherBreedName(tcPollinationTb.getMBreedName());
+            if(tcPollinationTb.getMBreedCode()!=null){
+                tcHarvestExcelDTO.setMotherBreedName(codeOfNameMap.get(tcPollinationTb.getMBreedCode()));
+            }
+            if(tcPollinationTb.getFBreedCode()!=null){
+                tcHarvestExcelDTO.setFatherBreedName(codeOfNameMap.get(tcPollinationTb.getFBreedCode()));
+            }
             tcHarvestExcelDTO.setMotherVectorTaskCode(tcPollinationTb.getMVectorTaskCode());
             tcHarvestExcelDTO.setMotherGenerationName(tcPollinationTb.getMGenerationCode());
             tcHarvestExcelDTO.setMotherTcGene(tcPollinationTb.getMTcGene());
             tcHarvestExcelDTO.setFatherRegionNum(tcPollinationTb.getFRegionNum());
             tcHarvestExcelDTO.setFatherSeedNum(tcPollinationTb.getFSeedNum());
             tcHarvestExcelDTO.setFatherSampleCode(tcPollinationTb.getFSampleCode());
-            tcHarvestExcelDTO.setFatherBreedName(tcPollinationTb.getFBreedName());
             tcHarvestExcelDTO.setFatherVectorTaskCode(tcPollinationTb.getFVectorTaskCode());
             tcHarvestExcelDTO.setFatherGenerationName(tcPollinationTb.getFGenerationCode());
             tcHarvestExcelDTO.setFatherTcGene(tcPollinationTb.getFTcGene());

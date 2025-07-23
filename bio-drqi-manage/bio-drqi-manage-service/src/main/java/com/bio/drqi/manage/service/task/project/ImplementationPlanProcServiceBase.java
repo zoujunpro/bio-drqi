@@ -78,7 +78,7 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
         if (CollectionUtil.isEmpty(vectorTaskAddDTO.getVectorGroupList())) {
             throw new BusinessException("转化信息缺失");
         }
-        CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCodeAndSpeciesCode(vectorTaskAddDTO.getSpeciesCode(), vectorTaskAddDTO.getAcceptorMaterial());
+        CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(vectorTaskAddDTO.getAcceptorMaterial());
         if(cerBreedDict==null){
             throw new BusinessException("受体材料填写错误,找不到此受体材料");
         }

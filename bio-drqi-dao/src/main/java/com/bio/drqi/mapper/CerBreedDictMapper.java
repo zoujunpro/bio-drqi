@@ -13,9 +13,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface CerBreedDictMapper extends BaseMapper<CerBreedDict> {
 
-    List<CerBreedDict> selectAllBySpeciesCode(@Param("speciesCode") String speciesCode);
 
-    CerBreedDict selectOneByBreedCodeAndSpeciesCode(@Param("breedCode") String breedCode, @Param("speciesCode") String speciesCode);
+    CerBreedDict selectOneByBreedCode(@Param("breedCode") String breedCode);
+
+    List<CerBreedDict> selectAllBySpeciesCode(@Param("speciesCode") String speciesCode);
 
     CerBreedDict selectOneByBreedNameAndSpeciesCode(@Param("breedName") String breedName, @Param("speciesCode") String speciesCode);
 

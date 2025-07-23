@@ -15,8 +15,8 @@
         <result property="fSampleCode" column="f_sample_code" jdbcType="VARCHAR"/>
         <result property="mSeedNum" column="m_seed_num" jdbcType="VARCHAR"/>
         <result property="fSeedNum" column="f_seed_num" jdbcType="VARCHAR"/>
-        <result property="mBreedName" column="m_breed_name" jdbcType="VARCHAR"/>
-        <result property="fBreedName" column="f_breed_name" jdbcType="VARCHAR"/>
+        <result property="mBreedCode" column="m_breed_code" jdbcType="VARCHAR"/>
+        <result property="fBreedCode" column="f_breed_code" jdbcType="VARCHAR"/>
         <result property="mVectorTaskCode" column="m_vector_task_code" jdbcType="VARCHAR"/>
         <result property="fVectorTaskCode" column="f_vector_task_code" jdbcType="VARCHAR"/>
         <result property="mGenerationCode" column="m_generation_code" jdbcType="VARCHAR"/>
@@ -40,7 +40,7 @@
         ,experiment_num,sample_apply_num,pollination_apply_num,
         m_region_num,f_region_num,m_sample_code,
         f_sample_code,m_seed_num,f_seed_num,
-        m_breed_name,f_breed_name,m_vector_task_code,f_vector_task_code,
+        m_breed_code,f_breed_code,m_vector_task_code,f_vector_task_code,
         m_generation_code,f_generation_code,m_tc_gene,
         f_tc_gene,pollination_date,pollination_method_code,
         pollination_method_name,harvest_type_code,harvest_type_name,
@@ -68,8 +68,8 @@
             <if test="fSampleCode != null and fSampleCode!=''">and f_sample_code=#{fSampleCode,jdbcType=VARCHAR}</if>
             <if test="mSeedNum != null and mSeedNum!=''">and m_seed_num=#{mSeedNum,jdbcType=VARCHAR}</if>
             <if test="fSeedNum != null and fSeedNum!=''">and f_seed_num=#{fSeedNum,jdbcType=VARCHAR}</if>
-            <if test="fBreedName != null and fBreedName!=''">and f_breed_name=#{fBreedName,jdbcType=VARCHAR}</if>
-            <if test="mBreedName != null and mBreedName!=''">and m_breed_name=#{mBreedName,jdbcType=VARCHAR}</if>
+            <if test="fBreedCode != null and fBreedCode!=''">and f_breed_code=#{fBreedCode,jdbcType=VARCHAR}</if>
+            <if test="mBreedCode != null and mBreedCode!=''">and m_breed_code=#{mBreedCode,jdbcType=VARCHAR}</if>
             <if test="mVectorTaskCode != null and mVectorTaskCode!=''">and m_vector_task_code=#{mVectorTaskCode,jdbcType=VARCHAR}</if>
             <if test="fVectorTaskCode != null and fVectorTaskCode!=''">and f_vector_task_code=#{fVectorTaskCode,jdbcType=VARCHAR}</if>
             <if test="mGenerationCode != null and mGenerationCode!=''">and m_generation_code=#{mGenerationCode,jdbcType=VARCHAR}</if>
@@ -95,7 +95,7 @@
         insert into tc_pollination_tb(id,experiment_num,sample_apply_num,
         pollination_apply_num,m_region_num,f_region_num,
         m_sample_code,f_sample_code,m_seed_num,
-        f_seed_num,f_breed_name,m_breed_name,
+        f_seed_num,f_breed_code,m_breed_code,
         m_vector_task_code,f_vector_task_code,m_generation_code,
         f_generation_code,m_tc_gene,f_tc_gene,
         pollination_date,pollination_method_code,pollination_method_name,
@@ -105,7 +105,7 @@
             (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.sampleApplyNum,jdbcType=VARCHAR},
             #{item.pollinationApplyNum,jdbcType=VARCHAR},#{item.mRegionNum,jdbcType=VARCHAR},#{item.fRegionNum,jdbcType=VARCHAR},
             #{item.mSampleCode,jdbcType=VARCHAR},#{item.fSampleCode,jdbcType=VARCHAR},#{item.mSeedNum,jdbcType=VARCHAR},
-            #{item.fSeedNum,jdbcType=VARCHAR},#{item.fBreedName,jdbcType=VARCHAR},#{item.mBreedName,jdbcType=VARCHAR},
+            #{item.fSeedNum,jdbcType=VARCHAR},#{item.fBreedCode,jdbcType=VARCHAR},#{item.mBreedCode,jdbcType=VARCHAR},
             #{item.mVectorTaskCode,jdbcType=VARCHAR},#{item.fVectorTaskCode,jdbcType=VARCHAR},#{item.mGenerationCode,jdbcType=VARCHAR},
             #{item.fGenerationCode,jdbcType=VARCHAR},#{item.mTcGene,jdbcType=VARCHAR},#{item.fTcGene,jdbcType=VARCHAR},
             #{item.pollinationDate,jdbcType=VARCHAR},#{item.pollinationMethodCode,jdbcType=VARCHAR},#{item.pollinationMethodName,jdbcType=VARCHAR},

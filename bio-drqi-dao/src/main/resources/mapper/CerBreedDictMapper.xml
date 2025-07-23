@@ -29,14 +29,6 @@
         </where>
 
     </select>
-    <select id="selectOneByBreedCodeAndSpeciesCode" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from cer_breed_dict
-        where
-        breed_code = #{breedCode,jdbcType=VARCHAR}
-        AND species_code = #{speciesCode,jdbcType=VARCHAR}
-    </select>
     <select id="selectOneByBreedNameAndSpeciesCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -50,5 +42,12 @@
         <include refid="Base_Column_List"/>
         from cer_breed_dict
         order by id desc
+    </select>
+    <select id="selectOneByBreedCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_breed_dict
+        where
+        breed_code = #{breedCode,jdbcType=VARCHAR}
     </select>
 </mapper>

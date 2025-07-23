@@ -96,10 +96,9 @@ public class Clean20250721Controller {
         for (TcExperimentTb tcExperimentTb : tcExperimentTbList) {
             log.info("田测申请品种:"+JSONUtil.toJsonStr(tcExperimentTb));
             List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcExperimentTb.getExperimentNum());
-            List<CerBreedDict> breedDictList = cerBreedDictMapper.selectAllBySpeciesCode(tcExperimentTb.getSpeciesCode());
             for (TcExperimentDesignTb tcExperimentDesignTb : tcExperimentDesignTbList) {
-                String breedCode = breedNameMap.get(tcExperimentTb.getSpeciesCode() + ":" + tcExperimentDesignTb.getBreedCode());
-                if (StringUtils.isEmpty(breedNameMap)) {
+                String breedCode = breedRemarkMap.get(tcExperimentTb.getSpeciesCode() + ":" + tcExperimentDesignTb.getBreedCode());
+                if (StringUtils.isEmpty(breedCode)) {
                     throw new BusinessException("找不到品种：" + tcExperimentDesignTb.getBreedCode());
                 } else {
                     tcExperimentDesignTb.setBreedCode(breedCode);
@@ -215,6 +214,30 @@ public class Clean20250721Controller {
 
     }
 
+
+    @GetMapping("/cleanTcDesign")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult cleanTcDesign(){
+        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
+        Map<String, String> breedRemarkMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode() + ":" + cerBreedDict.getRemark(), cerBreedDict -> cerBreedDict.getBreedCode()));
+        log.info("田测申请品种开始");
+        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectList(null);
+        for (TcExperimentTb tcExperimentTb : tcExperimentTbList) {
+            log.info("田测申请品种:"+JSONUtil.toJsonStr(tcExperimentTb));
+            List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcExperimentTb.getExperimentNum());
+            for (TcExperimentDesignTb tcExperimentDesignTb : tcExperimentDesignTbList) {
+                String breedCode = breedRemarkMap.get(tcExperimentTb.getSpeciesCode() + ":" + tcExperimentDesignTb.getBreedCode());
+                if (StringUtils.isEmpty(breedCode)) {
+                    throw new BusinessException("找不到品种：" + tcExperimentDesignTb.getBreedCode());
+                } else {
+                    tcExperimentDesignTb.setBreedCode(breedCode);
+                }
+                tcExperimentDesignTbMapper.updateById(tcExperimentDesignTb);
+            }
+        }
+        log.info("田测申请品种结束");
+        return ResponseResult.getSuccess("ok");
+    }
 
     public ResponseResult cleanVectorSeed(){
         List<BioTaskDtlTb> implementation_planList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("implementation_plan");

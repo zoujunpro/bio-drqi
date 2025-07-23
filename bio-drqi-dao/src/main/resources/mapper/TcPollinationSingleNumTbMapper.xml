@@ -53,4 +53,24 @@
         where
         single_number = #{singleNumber,jdbcType=VARCHAR}
     </select>
+    <update id="updatePollinationApplyNumByExperimentNumAndPollinationApplyNumIsNull">
+        update tc_pollination_single_num_tb
+        set pollination_apply_num = #{pollinationApplyNum,jdbcType=VARCHAR}
+        where experiment_num = #{experimentNum,jdbcType=VARCHAR}
+          AND pollination_apply_num is null
+    </update>
+    <update id="updatePollinationApplyNumIsNullByPollinationApplyNum">
+        update tc_pollination_single_num_tb
+        set pollination_apply_num =null
+        where pollination_apply_num = #{oldPollinationApplyNum,jdbcType=VARCHAR}
+    </update>
+    <select id="selectAllByExperimentNumOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_pollination_single_num_tb
+        where
+        experiment_num = #{experimentNum,jdbcType=VARCHAR}
+        order by id desc
+    </select>
+
 </mapper>

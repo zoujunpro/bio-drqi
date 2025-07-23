@@ -164,6 +164,11 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
         tcPollinationTaskDTO.setTcPollinationExcelDTOList(tcPollinationExcelDTOList);
         tcPollinationTaskDTO.setPollinationTypeName(bioDict.getDictValueName());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcPollinationTaskDTO));
+
+        //更新授粉单株编号
+        tcPollinationSingleNumTbMapper.updatePollinationApplyNumByExperimentNumAndPollinationApplyNumIsNull(bioTaskDtlTb.getTaskNum(), tcPollinationTaskDTO.getExperimentNum());
+
+
     }
 
     @Override
@@ -215,7 +220,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
             try {
                 tcPollinationTbMapper.insertBatch(tcPollinationTbList);
             } catch (DuplicateKeyException e) {
-                log.error("重复授粉：",e);
+                log.error("重复授粉：", e);
                 throw new BusinessException("有重复授粉数据");
 
             }
@@ -224,6 +229,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
 
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
+        tcPollinationSingleNumTbMapper.updatePollinationApplyNumIsNullByPollinationApplyNum(bioTaskDtlTb.getTaskNum());
 
     }
 }

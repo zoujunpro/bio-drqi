@@ -30,9 +30,19 @@ public class TcExperimentQueryListExperimentDesignRspDTO {
     private String speciesCode;
 
     /**
+     * 物种
+     */
+    private String speciesName;
+
+    /**
      * 品种
      */
     private String breedName;
+
+    /**
+     * 品种
+     */
+    private String breedCode;
 
     /**
      * 目标性状

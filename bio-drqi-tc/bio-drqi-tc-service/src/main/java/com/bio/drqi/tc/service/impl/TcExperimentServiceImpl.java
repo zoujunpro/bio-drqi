@@ -51,6 +51,9 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     @Resource
     private CerBreedDictMapper cerBreedDictMapper;
 
+    @Resource
+    private CerSpeciesConfMapper cerSpeciesConfMapper;
+
 
     @Override
     public PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
@@ -91,12 +94,18 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     @Override
     public List<TcExperimentQueryListExperimentDesignRspDTO> queryListExperimentDesign(TcExperimentQueryListExperimentDesignReqDTO tcExperimentQueryListExperimentDesignReqDTO) {
         List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcExperimentQueryListExperimentDesignReqDTO.getExperimentNum());
+        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
+        List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectAll();
+        Map<String, String> breedCodeOfNameMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+        Map<String, String> speciesCodeOfNameMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
         if (CollectionUtil.isNotEmpty(tcExperimentDesignTbList)) {
             List<TcExperimentQueryListExperimentDesignRspDTO> result = BeanUtils.copyListProperties(tcExperimentDesignTbList, TcExperimentQueryListExperimentDesignRspDTO.class);
             if (StringUtils.isNotEmpty(tcExperimentQueryListExperimentDesignReqDTO.getSampleApplyNum())) {
                 result.forEach(obj -> {
                     List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNumAndSeedNumAndRegionNumAndCheckResult(tcExperimentQueryListExperimentDesignReqDTO.getSampleApplyNum(), obj.getSeedNum(), obj.getRegionNum(), SampleTestCheckResultEnum.stay.name());
                     obj.setStayNumber(StringUtils.isNotEmpty(tcSampleTestTbList) ? tcSampleTestTbList.size() : 0);
+                    obj.setSpeciesName(speciesCodeOfNameMap.get(obj.getSpeciesCode()));
+                    obj.setBreedName(breedCodeOfNameMap.get(obj.getBreedCode()));
                 });
             }
             return result;
@@ -113,6 +122,7 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(experimentNum);
         List<TcExperimentListDetailRspDTO> rspDTOList = BeanUtils.copyListProperties(tcExperimentDesignTbList, TcExperimentListDetailRspDTO.class);
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAllBySpeciesCode(tcExperimentTb.getSpeciesCode());
+
         Map<String, String> codeNameMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         rspDTOList.forEach(tcExperimentListDetailRspDTO -> {
             tcExperimentListDetailRspDTO.setBreedName(codeNameMap.get(tcExperimentListDetailRspDTO.getBreedCode()));

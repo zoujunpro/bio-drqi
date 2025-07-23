@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.service.seed;
 
 import com.bio.drqi.common.dto.PageDTO;
+import com.bio.drqi.manage.conf.SpeciesBreedListRspDTO;
 import com.bio.drqi.manage.seed.SpeciesAddReqDTO;
 import com.bio.drqi.manage.seed.SpeciesEditDTO;
 import com.bio.drqi.manage.seed.SpeciesListRspDTO;
@@ -40,4 +41,6 @@ public interface SeedSpeciesDictService {
      * @return
      */
     void edit(SpeciesEditDTO speciesEditDTO);
+
+    List<SpeciesBreedListRspDTO> speciesBreedList();
 }

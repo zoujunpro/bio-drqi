@@ -5,6 +5,7 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.common.dto.PageDTO;
+import com.bio.drqi.manage.conf.SpeciesBreedListRspDTO;
 import com.bio.drqi.manage.seed.SpeciesAddReqDTO;
 import com.bio.drqi.manage.seed.SpeciesEditDTO;
 import com.bio.drqi.manage.seed.SpeciesListRspDTO;
@@ -46,6 +47,16 @@ public class SeedSpeciesDictController {
     @GetMapping("/list")
     public ResponseResult<List<SpeciesListRspDTO>> list() {
         return ResponseResult.getSuccess(seedSpeciesDictService.list());
+    }
+
+    /**
+     * 获取品种物种
+     *
+     * @return
+     */
+    @GetMapping("speciesBreedList")
+    public ResponseResult<List<SpeciesBreedListRspDTO>> speciesBreedList() {
+        return ResponseResult.getSuccess(seedSpeciesDictService.speciesBreedList());
     }
 
     /**

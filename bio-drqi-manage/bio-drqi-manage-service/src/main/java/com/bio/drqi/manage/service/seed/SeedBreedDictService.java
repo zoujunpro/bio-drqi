@@ -19,7 +19,7 @@ public interface SeedBreedDictService {
      * @param speciesId
      * @return
      */
-    List<BreedListRspDTO> list(Integer speciesId);
+    List<BreedListRspDTO> list(String speciesCode);
 
     /**
      * 新增品种

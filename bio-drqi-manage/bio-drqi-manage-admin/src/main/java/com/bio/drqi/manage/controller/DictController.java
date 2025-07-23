@@ -50,15 +50,6 @@ public class  DictController {
         return ResponseResult.getSuccess(dictService.seedProduceAddressList());
     }
 
-    /**
-     * 获取物种下材料
-     *
-     * @return
-     */
-    @GetMapping("acceptorMaterialList")
-    public ResponseResult<List<AcceptorMaterialListRspDTO>> acceptorMaterialList(@RequestParam @Validated @NotBlank(message = "参数缺失：speciesCode") String speciesCode) {
-        return ResponseResult.getSuccess(dictService.acceptorMaterialList(speciesCode));
-    }
 
     /**
      * 获取品种

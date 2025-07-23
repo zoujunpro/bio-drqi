@@ -47,8 +47,8 @@ public class SeedBreedDictServiceImpl implements SeedBreedDictService {
     }
 
     @Override
-    public List<BreedListRspDTO> list(Integer speciesId) {
-        CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectById(speciesId);
+    public List<BreedListRspDTO> list(String speciesCode) {
+        CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(speciesCode);
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAllBySpeciesCode(cerSpeciesConf.getSpeciesCode());
         return BeanUtils.copyListProperties(cerBreedDictList, BreedListRspDTO.class);
     }

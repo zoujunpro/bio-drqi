@@ -8,6 +8,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.dto.PageDTO;
 import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.CerSpeciesConf;
+import com.bio.drqi.manage.conf.SpeciesBreedListRspDTO;
 import com.bio.drqi.manage.seed.SpeciesAddReqDTO;
 import com.bio.drqi.manage.seed.SpeciesEditDTO;
 import com.bio.drqi.manage.seed.SpeciesListRspDTO;
@@ -20,6 +21,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -89,4 +91,27 @@ public class SeedSpeciesDictServiceImpl implements SeedSpeciesDictService {
             throw new BusinessException("此物种数据和已有数据冲突");
         }
     }
+
+
+
+    @Override
+    public List<SpeciesBreedListRspDTO> speciesBreedList() {
+        List<SpeciesBreedListRspDTO> result = new ArrayList<>();
+        List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectList(null);
+        for (CerSpeciesConf cerSpeciesConf : cerSpeciesConfList) {
+            SpeciesBreedListRspDTO speciesBreedListRspDTO = new SpeciesBreedListRspDTO();
+            speciesBreedListRspDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
+            speciesBreedListRspDTO.setSpeciesCode(cerSpeciesConf.getSpeciesCode());
+            List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAllBySpeciesCode(cerSpeciesConf.getSpeciesCode());
+            cerBreedDictList.forEach(cerBreedDict -> {
+                SpeciesBreedListRspDTO.Breed breed = new SpeciesBreedListRspDTO.Breed();
+                breed.setBreedCode(cerBreedDict.getBreedCode());
+                breed.setBreedName(cerBreedDict.getBreedName());
+                speciesBreedListRspDTO.getBreedList().add(breed);
+            });
+            result.add(speciesBreedListRspDTO);
+        }
+        return result;
+    }
+
 }

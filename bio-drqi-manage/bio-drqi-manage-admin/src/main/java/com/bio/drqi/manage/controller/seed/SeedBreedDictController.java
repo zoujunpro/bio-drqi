@@ -39,16 +39,22 @@ public class SeedBreedDictController {
     }
 
 
+
+
+
     /**
      * 品种列表
-     * @param speciesId
+     * @param speciesCode
      * @return
      */
     @GetMapping("list")
     @WebLog(desc = "品种列表")
-    public ResponseResult<List<BreedListRspDTO>> list(@RequestParam Integer speciesId){
-        return ResponseResult.getSuccess(seedBreedDictService.list(speciesId));
+    public ResponseResult<List<BreedListRspDTO>> list(@RequestParam String speciesCode){
+        return ResponseResult.getSuccess(seedBreedDictService.list(speciesCode));
     }
+
+
+
 
     /**
      * 新增品种

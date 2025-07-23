@@ -18,7 +18,6 @@ public interface DictService {
      *
      * @return
      */
-    List<AcceptorMaterialListRspDTO> acceptorMaterialList(String speciesCode);
 
     List<BreedListRspDTO> breedList(String speciesCode);
 

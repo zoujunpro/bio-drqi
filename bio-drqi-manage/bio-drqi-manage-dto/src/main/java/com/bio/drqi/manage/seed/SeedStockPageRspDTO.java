@@ -53,7 +53,12 @@ public class SeedStockPageRspDTO {
     /**
      * 项目物种
      */
-    private String species;
+    private String speciesCode;
+
+    /**
+     * 项目物种
+     */
+    private String speciesName;
 
     /**
      * 品种

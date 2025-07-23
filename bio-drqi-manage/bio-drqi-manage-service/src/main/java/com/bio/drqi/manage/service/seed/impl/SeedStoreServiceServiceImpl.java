@@ -45,6 +45,9 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
     private CerBreedDictMapper cerBreedDictMapper;
 
     @Resource
+    private CerSpeciesConfMapper cerSpeciesConfMapper;
+
+    @Resource
     private RemoteUserService remoteUserService;
 
     @Resource
@@ -168,10 +171,10 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
     @Override
     public void remark(SeedStockRemarkReqDTO seedStockRemarkReqDTO) {
         SeedStockTb seedStockTb = seedStockTbMapper.selectById(seedStockRemarkReqDTO.getId());
-        if(seedStockTb==null){
+        if (seedStockTb == null) {
             throw new BusinessException("参数异常，不存在此种子");
         }
-        seedStockTbMapper.updateRemarksById(seedStockRemarkReqDTO.getRemarks(),seedStockTb.getId());
+        seedStockTbMapper.updateRemarksById(seedStockRemarkReqDTO.getRemarks(), seedStockTb.getId());
 
     }
 
@@ -184,7 +187,9 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         }
         List<UserDetailRspDTO.DataPermissionConfig> dataPermissionList = responseResult.getData().getDataPermissionConfigList();
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
-        Map<String, CerBreedDict> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode() + ":" + cerBreedDict.getBreedCode(), cerBreedDict -> cerBreedDict));
+        List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectAll();
+        Map<String, String> speciesMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
+        Map<String, String> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         dataPermissionList = dataPermissionList.stream().filter(dataPermission -> dataPermission.getPermissionType().equals(DataPermissionTypeEnum.SEED_STORE.name())).collect(Collectors.toList());
         SeedStockTb seedStockTb = new SeedStockTb();
         seedStockTb.setSeedNum(seedStockPageReqDTO.getSeedNum());
@@ -228,8 +233,8 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         PageInfo<SeedStockTb> srcPageInfo = new PageInfo<>(seedStockTbList);
         PageInfo<SeedStockPageRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, SeedStockPageRspDTO.class);
         targetPageInfo.getList().forEach(seedStockPageRspDTO -> {
-            CerBreedDict cerBreedDict = cerBreedDictMap.get(seedStockPageRspDTO.getSpecies() + ":" + seedStockPageRspDTO.getBreedCode());
-            seedStockPageRspDTO.setBreedName(Objects.nonNull(cerBreedDict) ? cerBreedDict.getBreedName() : null);
+            seedStockPageRspDTO.setBreedName(cerBreedDictMap.get(seedStockPageRspDTO.getBreedCode()));
+            seedStockPageRspDTO.setSpeciesName(speciesMap.get(seedStockPageRspDTO.getSpeciesCode()));
         });
         return targetPageInfo;
     }

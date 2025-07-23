@@ -53,12 +53,23 @@ public class SeedDetailRspDTO {
     /**
      * 项目物种
      */
-    private String species;
+    private String speciesCode;
+
+    /**
+     * 项目物种
+     */
+    private String speciesName;
 
     /**
      * 品种
      */
     private String breedCode;
+
+    /**
+     * 品种
+     */
+    private String breedName;
+
 
     /**
      * 授粉方式

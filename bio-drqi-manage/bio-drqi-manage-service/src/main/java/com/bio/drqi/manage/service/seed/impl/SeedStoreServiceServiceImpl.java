@@ -66,6 +66,14 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
             throw new BusinessException("不存在此种子信息");
         }
         SeedDetailRspDTO seedDetailRspDTO = BeanUtils.copyProperties(seedStockTb, SeedDetailRspDTO.class);
+        CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(seedDetailRspDTO.getBreedCode());
+        if (cerBreedDict != null) {
+            seedDetailRspDTO.setBreedName(cerBreedDict.getBreedName());
+        }
+        CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(seedDetailRspDTO.getSpeciesCode());
+        if(cerSpeciesConf!=null){
+            seedDetailRspDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
+        }
         return seedDetailRspDTO;
     }
 

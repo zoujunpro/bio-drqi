@@ -90,7 +90,6 @@
             <if test="pollinationMethod != null and pollinationMethod!=''">and
                 pollination_method=#{pollinationMethod,jdbcType=VARCHAR}
             </if>
-            <if test="seedType != null and seedType!=''">and seed_type=#{seedType,jdbcType=VARCHAR}</if>
             <if test="harvestType != null and harvestType!=''">and harvest_type=#{harvestType,jdbcType=VARCHAR}</if>
             <if test="harvestTime != null and harvestTime!=''">and harvest_time=#{harvestTime,jdbcType=VARCHAR}</if>
             <if test="seedNumber != null">and seed_number=#{seedNumber,jdbcType=DECIMAL}</if>

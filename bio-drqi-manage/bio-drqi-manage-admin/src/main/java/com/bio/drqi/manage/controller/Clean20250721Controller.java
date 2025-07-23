@@ -224,7 +224,6 @@ public class Clean20250721Controller {
             CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(vectorTaskAddDTO.getAcceptorMaterial(), vectorTaskAddDTO.getSpeciesCode());
             if (cerBreedDict != null) {
                 vectorTaskAddDTO.setAcceptorMaterial(cerBreedDict.getBreedCode());
-                vectorTaskAddDTO.setAcceptorMaterialName(cerBreedDict.getBreedName());
                 bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(vectorTaskAddDTO));
                 bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
             }
@@ -240,7 +239,6 @@ public class Clean20250721Controller {
                 CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(content.getAcceptorMaterial(), cerVectorTaskTb.getSpeciesCode());
                 if (cerBreedDict != null) {
                     content.setAcceptorMaterial(cerBreedDict.getBreedCode());
-                    content.setAcceptorMaterialName(cerBreedDict.getBreedName());
                 }
             });
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(transformDTO));

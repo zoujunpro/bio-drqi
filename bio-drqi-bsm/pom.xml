@@ -17,6 +17,7 @@
         <module>bio-drqi-bsm-admin</module>
         <module>bio-drqi-bsm-dto</module>
         <module>bio-drqi-bsm-common</module>
+        <module>bio-drqi-bms-kd</module>
     </modules>
 
 </project>

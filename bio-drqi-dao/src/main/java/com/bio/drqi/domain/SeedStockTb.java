@@ -62,7 +62,7 @@ public class SeedStockTb implements Serializable {
     /**
      * 项目物种
      */
-    private String species;
+    private String speciesCode;
 
     /**
      * 品种
@@ -75,12 +75,7 @@ public class SeedStockTb implements Serializable {
     private String pollinationMethod;
 
     /**
-     * 种子类型  自交/杂交
-     */
-    private String seedType;
-
-    /**
-     * 收获方式，单珠和混珠
+     * 收获方式
      */
     private String harvestType;
 
@@ -95,7 +90,7 @@ public class SeedStockTb implements Serializable {
     private BigDecimal seedNumber;
 
     /**
-     * 计量单位g/kg/粒
+     * 计量单位g/kg/粒ml
      */
     private String unit;
 
@@ -104,11 +99,10 @@ public class SeedStockTb implements Serializable {
      */
     private String sourceType;
 
-
     /**
      * 生产地点（天津/海南/新乡）
      */
-    private String productionLocationName;
+    private String productionLocationCode;
 
     /**
      * 库位编号
@@ -135,25 +129,80 @@ public class SeedStockTb implements Serializable {
      */
     private Date updateTime;
 
-
     /**
      * 备注
      */
     private String remarks;
 
+    /**
+     * 入库时数量
+     */
     private BigDecimal totalNumber;
 
-    private String geneticCharacter;
+    /**
+     * 目标性状
+     */
+    private String targetCharacter;
 
+    /**
+     * 别名
+     */
     private String aliasName;
 
+    /**
+     * 基因型
+     */
     private String geneType;
 
+    /**
+     * 检测结果
+     */
     private String checkResult;
 
+    /**
+     * 取样编号
+     */
     private String sampleCode;
 
+    /**
+     * 材料类型
+     */
     private String materialType;
+
+    /**
+     * 母本种子编号
+     */
+    private String matherSeedNum;
+
+    /**
+     * 父本种子编号
+     */
+    private String fatherSeedNum;
+
+    /**
+     * 小区编号
+     */
+    private String regionNum;
+
+    /**
+     * 系谱
+     */
+    private String genealogy;
+
+    /**
+     * 是否基因分离
+     */
+    private String geneSeparateFlag;
+
+    /**
+     * 是否转基因
+     */
+    private String transFlag;
+
+    /**
+     * 实施方案编号
+     */
+    private String vectorTaskCode;
 
 
 

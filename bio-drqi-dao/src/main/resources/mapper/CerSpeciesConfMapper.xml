@@ -8,11 +8,13 @@
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="speciesName" column="species_name" jdbcType="VARCHAR"/>
             <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
-             <result property="numPrefix" column="num_prefix" jdbcType="VARCHAR"/>
+            <result property="numPrefix" column="num_prefix" jdbcType="VARCHAR"/>
+            <result property="latinName" column="latin_name" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,species_name,species_code,num_prefix
+        id,species_name,species_code,num_prefix,latin_name
     </sql>
     <select id="selectOneBySpeciesCode" resultMap="BaseResultMap">
         select
@@ -37,5 +39,11 @@
         <foreach collection="speciesCodeList" item="item" open="(" close=")" separator=",">
             #{item,jdbcType=VARCHAR}
         </foreach>
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_species_conf
+        order by  id desc
     </select>
 </mapper>

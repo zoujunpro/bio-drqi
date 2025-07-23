@@ -68,10 +68,23 @@ public class TcPollinationListPageDetailRspDTO {
     private String fBreedName;
 
     /**
+     * 父本品种
+     */
+    @JsonProperty("fBreedCode")
+    private String fBreedCode;
+
+    /**
      * 母本品种
      */
     @JsonProperty("mBreedName")
     private String mBreedName;
+
+    /**
+     * 母本品种
+     */
+    @JsonProperty("mBreedCode")
+    private String mBreedCode;
+
 
     /**
      * 母本实施方案编号

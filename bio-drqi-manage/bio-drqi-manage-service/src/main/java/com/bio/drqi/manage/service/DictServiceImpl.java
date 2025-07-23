@@ -58,18 +58,7 @@ public class DictServiceImpl implements DictService, DictInnerService {
         return list;
     }
 
-    @Override
-    public List<AcceptorMaterialListRspDTO> acceptorMaterialList(String speciesCode) {
-        List<AcceptorMaterialListRspDTO> list = new ArrayList<>();
-        List<CerAcceptorMaterialDict> cerAcceptorMaterialDictList = cerAcceptorMaterialDictMapper.selectAllBySpeciesCode(speciesCode);
-        for (CerAcceptorMaterialDict cerAcceptorMaterialDict : cerAcceptorMaterialDictList) {
-            AcceptorMaterialListRspDTO acceptorMaterialListRspDTO = new AcceptorMaterialListRspDTO();
-            acceptorMaterialListRspDTO.setAcceptorMaterialName(cerAcceptorMaterialDict.getAcceptorMaterialName());
-            acceptorMaterialListRspDTO.setAcceptorMaterialCode(cerAcceptorMaterialDict.getAcceptorMaterialCode());
-            list.add(acceptorMaterialListRspDTO);
-        }
-        return list;
-    }
+
 
     @Override
     public List<BreedListRspDTO> breedList(String speciesCode) {

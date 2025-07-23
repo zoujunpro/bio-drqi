@@ -47,7 +47,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
         SeedInStoreDTO seedInStoreDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedInStoreDTO.class);
         List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectList(null);
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
-        Map<String, CerBreedDict> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode() + ":" + cerBreedDict.getBreedCode(), cerBreedDict -> cerBreedDict));
+        Map<String, CerBreedDict> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict ->cerBreedDict.getBreedCode(), cerBreedDict -> cerBreedDict));
         Map<String, CerSpeciesConf> cerSpeciesConfMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, cerSpeciesConf -> cerSpeciesConf));
 
         for (SeedInStoreDTO.ExecuteFormContent executeFormContent : seedInStoreDTO.getExecuteForm().getExecuteFormContentList()) {
@@ -65,7 +65,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 throw new BusinessException("不支持此物种入库:" + executeFormContent.getSpeciesCode());
             }
 
-            CerBreedDict cerBreedDict = cerBreedDictMap.get(executeFormContent.getSpeciesCode() + ":" + executeFormContent.getBreedCode());
+            CerBreedDict cerBreedDict = cerBreedDictMap.get(executeFormContent.getBreedCode());
             if (cerBreedDict == null) {
                 throw new BusinessException("不支持此品种入库：" + executeFormContent.getBreedCode());
             }

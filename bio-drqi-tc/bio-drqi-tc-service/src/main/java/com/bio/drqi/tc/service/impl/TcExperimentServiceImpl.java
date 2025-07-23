@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +47,9 @@ public class TcExperimentServiceImpl implements TcExperimentService {
 
     @Resource
     private TcPollinationApplyTbMapper tcPollinationApplyTbMapper;
+
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
 
 
     @Override
@@ -105,8 +109,15 @@ public class TcExperimentServiceImpl implements TcExperimentService {
 
     @Override
     public List<TcExperimentListDetailRspDTO> listDetail(String experimentNum) {
+        TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(experimentNum);
         List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(experimentNum);
-        return BeanUtils.copyListProperties(tcExperimentDesignTbList, TcExperimentListDetailRspDTO.class);
+        List<TcExperimentListDetailRspDTO> rspDTOList = BeanUtils.copyListProperties(tcExperimentDesignTbList, TcExperimentListDetailRspDTO.class);
+        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAllBySpeciesCode(tcExperimentTb.getSpeciesCode());
+        Map<String, String> codeNameMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+        rspDTOList.forEach(tcExperimentListDetailRspDTO -> {
+            tcExperimentListDetailRspDTO.setBreedName(codeNameMap.get(tcExperimentListDetailRspDTO.getBreedCode()));
+        });
+        return rspDTOList;
     }
 
     @Override

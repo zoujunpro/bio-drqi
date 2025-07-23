@@ -33,6 +33,7 @@ public class CerSpeciesConf implements Serializable {
 
     private String numPrefix;
 
+    private String latinName;
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

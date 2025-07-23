@@ -45,6 +45,11 @@ public class TcExperimentListDetailRspDTO {
     private String breedName;
 
     /**
+     * 品种
+     */
+    private String breedCode;
+
+    /**
      * 目标性状
      */
     private String targetCharacter;

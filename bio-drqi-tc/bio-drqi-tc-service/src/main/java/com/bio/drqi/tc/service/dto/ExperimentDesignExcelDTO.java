@@ -23,6 +23,11 @@ public class ExperimentDesignExcelDTO {
     @NotBlank(message = "种子编号必填")
     private String seedNum;
 
+
+    private String breedCode;
+    /**
+     * 品种
+     */
     /**
      * 品种
      */

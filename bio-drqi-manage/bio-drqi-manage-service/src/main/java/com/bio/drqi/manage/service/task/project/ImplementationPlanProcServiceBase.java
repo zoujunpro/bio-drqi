@@ -47,6 +47,9 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
     @Resource
     private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
 
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
+
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         log.info("【任务工单】实施方案构建校验开始");
@@ -75,6 +78,10 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
         if (CollectionUtil.isEmpty(vectorTaskAddDTO.getVectorGroupList())) {
             throw new BusinessException("转化信息缺失");
         }
+        CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(vectorTaskAddDTO.getAcceptorMaterial());
+        if(cerBreedDict==null){
+            throw new BusinessException("受体材料填写错误,找不到此受体材料");
+        }
         synchronized (this) {
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(bioTaskDtlTb.getTaskNum());
             if (cerVectorTaskTb == null) {
@@ -84,7 +91,7 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                     cerVectorTaskTb.setVectorTaskType(vectorTaskAddDTO.getVectorTaskType());
                     cerVectorTaskTb.setVectorTaskName(vectorTaskAddDTO.getVectorTaskName());
                     cerVectorTaskTb.setDeliveryMethod(vectorTaskAddDTO.getDeliveryMethod());
-                    cerVectorTaskTb.setAcceptorMaterial(vectorTaskAddDTO.getAcceptorMaterial());
+                    cerVectorTaskTb.setAcceptorMaterial(cerBreedDict.getBreedCode());
                     cerVectorTaskTb.setEditTools(vectorTaskAddDTO.getEditTools());
                     cerVectorTaskTb.setEditToolsType(vectorTaskAddDTO.getEditToolsType());
                     cerVectorTaskTb.setVectorTaskTarget(vectorTaskAddDTO.getVectorTaskTarget());
@@ -115,7 +122,7 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                     CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
                     if (cerSampleCodePrefixTb == null) {
                         //生成sampleCodePrefix
-                         cerSampleCodePrefixTb = new CerSampleCodePrefixTb();
+                        cerSampleCodePrefixTb = new CerSampleCodePrefixTb();
                         cerSampleCodePrefixTb.setSampleCodePrefix(createSampleCode());
                         cerSampleCodePrefixTb.setVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
                         cerSampleCodePrefixTb.setCreateTime(new Date());

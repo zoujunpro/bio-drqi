@@ -13,16 +13,15 @@
         <result property="fartherInfo" column="farther_info" jdbcType="VARCHAR"/>
         <result property="matherInfo" column="mather_info" jdbcType="VARCHAR"/>
         <result property="generation" column="generation" jdbcType="VARCHAR"/>
-        <result property="species" column="species" jdbcType="VARCHAR"/>
+        <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
         <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
         <result property="pollinationMethod" column="pollination_method" jdbcType="VARCHAR"/>
-        <result property="seedType" column="seed_type" jdbcType="VARCHAR"/>
         <result property="harvestType" column="harvest_type" jdbcType="VARCHAR"/>
         <result property="harvestTime" column="harvest_time" jdbcType="VARCHAR"/>
         <result property="seedNumber" column="seed_number" jdbcType="DECIMAL"/>
         <result property="unit" column="unit" jdbcType="VARCHAR"/>
         <result property="sourceType" column="source_type" jdbcType="VARCHAR"/>
-        <result property="productionLocationName" column="production_location_name" jdbcType="VARCHAR"/>
+        <result property="productionLocationCode" column="production_location_code" jdbcType="VARCHAR"/>
         <result property="stockLocationNum" column="stock_location_num" jdbcType="VARCHAR"/>
         <result property="submitUserId" column="submit_user_id" jdbcType="INTEGER"/>
         <result property="submitUserName" column="submit_user_name" jdbcType="VARCHAR"/>
@@ -30,25 +29,35 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
         <result property="totalNumber" column="total_number" jdbcType="DECIMAL"/>
-        <result property="geneticCharacter" column="genetic_character" jdbcType="VARCHAR"/>
+        <result property="targetCharacter" column="target_character" jdbcType="VARCHAR"/>
         <result property="aliasName" column="alias_name" jdbcType="VARCHAR"/>
         <result property="geneType" column="gene_type" jdbcType="VARCHAR"/>
-        <result property="checkResult" column="check_result" jdbcType="VARCHAR"/>
+        <result property="checkResult" column="check_result" jdbcType="OTHER"/>
         <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
         <result property="materialType" column="material_type" jdbcType="VARCHAR"/>
+        <result property="matherSeedNum" column="mather_seed_num" jdbcType="VARCHAR"/>
+        <result property="fatherSeedNum" column="father_seed_num" jdbcType="VARCHAR"/>
+        <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
+        <result property="genealogy" column="genealogy" jdbcType="VARCHAR"/>
+        <result property="geneSeparateFlag" column="gene_separate_flag" jdbcType="VARCHAR"/>
+        <result property="transFlag" column="trans_flag" jdbcType="VARCHAR"/>
+        <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id
-        ,plant_num,seed_num,
+        id,plant_num,seed_num,
         project_code,parent_num,farther_info,
-        mather_info,generation,species,
-        breed_code,pollination_method,seed_type,
-        harvest_type,harvest_time,seed_number,
-        unit,source_type,
-        production_location_name,stock_location_num,
+        mather_info,generation,species_code,
+        breed_code,pollination_method,harvest_type,
+        harvest_time,seed_number,unit,
+        source_type,production_location_code,stock_location_num,
         submit_user_id,submit_user_name,create_time,
-        update_time,remarks,total_number,genetic_character,alias_name,gene_type,check_result,sample_code,material_type
+        update_time,remarks,total_number,
+        target_character,alias_name,gene_type,
+        check_result,sample_code,material_type,
+        mather_seed_num,father_seed_num,region_num,
+        genealogy,gene_separate_flag,trans_flag,
+        vector_task_code
     </sql>
     <select id="selectOneBySeedNum" resultMap="BaseResultMap">
         select
@@ -75,10 +84,8 @@
             <if test="seedNum != null and seedNum != ''">and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
             <if test="projectCode != null and projectCode != ''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
             <if test="parentNum != null and parentNum!='' ">and parent_num=#{parentNum,jdbcType=VARCHAR}</if>
-            <if test="fartherInfo != null">and farther_info=#{fartherInfo,jdbcType=VARCHAR}</if>
-            <if test="matherInfo != null">and mather_info=#{matherInfo,jdbcType=VARCHAR}</if>
             <if test="generation != null and generation!=''">and generation=#{generation,jdbcType=VARCHAR}</if>
-            <if test="species != null and species!=''">and species=#{species,jdbcType=VARCHAR}</if>
+            <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
             <if test="breedCode != null and breedCode!=''">and breed_code=#{breedCode,jdbcType=VARCHAR}</if>
             <if test="pollinationMethod != null and pollinationMethod!=''">and
                 pollination_method=#{pollinationMethod,jdbcType=VARCHAR}
@@ -89,8 +96,8 @@
             <if test="seedNumber != null">and seed_number=#{seedNumber,jdbcType=DECIMAL}</if>
             <if test="unit != null">and unit=#{unit,jdbcType=VARCHAR}</if>
             <if test="sourceType != null and sourceType!=''">and source_type=#{sourceType,jdbcType=VARCHAR}</if>
-            <if test="productionLocationName != null and productionLocationName!=''">
-                and production_location_name=#{productionLocationName,jdbcType=VARCHAR}
+            <if test="productionLocationCode != null and productionLocationCode!=''">
+                and production_location_code=#{productionLocationCode,jdbcType=VARCHAR}
             </if>
             <if test="stockLocationNum != null and stockLocationNum!=''">and
                 stock_location_num LIKE  CONCAT('%',#{stockLocationNum,jdbcType=VARCHAR},'%')
@@ -101,7 +108,6 @@
             <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
             <if test="remarks != null">and remarks=#{remarks,jdbcType=VARCHAR}</if>
             <if test="totalNumber != null and totalNumber!=''">and total_number=#{totalNumber,jdbcType=DECIMAL}</if>
-            <if test="geneticCharacter != null and geneticCharacter!=''">and genetic_character LIKE  CONCAT('%',#{geneticCharacter,jdbcType=VARCHAR},'%')</if>
             <if test="aliasName != null and aliasName!=''"> and alias_name LIKE   CONCAT('%',#{aliasName,jdbcType=VARCHAR},'%')  </if>
             <if test="geneType != null and geneType!=''">and gene_type LIKE CONCAT('%',#{geneType,jdbcType=VARCHAR},'%') </if>
             <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
@@ -136,29 +142,6 @@
 
     </select>
 
-    <insert id="insertBatch">
-        insert into seed_stock_tb(id,plant_num,seed_num,
-        project_code,parent_num,farther_info,
-        mather_info,generation,species,
-        breed_code,pollination_method,seed_type,
-        harvest_type,harvest_time,seed_number,
-        unit,source_type,
-        production_location_name,stock_location_num,submit_user_id,
-        submit_user_name,create_time,update_time,
-        remarks,total_number,genetic_character,alias_name,gene_type,sample_code,material_type)
-        values
-        <foreach collection="seedStockTbCollection" item="item" separator=",">
-            (#{item.id,jdbcType=NUMERIC},#{item.plantNum,jdbcType=VARCHAR},#{item.seedNum,jdbcType=VARCHAR},
-            #{item.projectCode,jdbcType=VARCHAR},#{item.parentNum,jdbcType=VARCHAR},#{item.fartherInfo,jdbcType=VARCHAR},
-            #{item.matherInfo,jdbcType=VARCHAR},#{item.generation,jdbcType=VARCHAR},#{item.species,jdbcType=VARCHAR},
-            #{item.breedCode,jdbcType=VARCHAR},#{item.pollinationMethod,jdbcType=VARCHAR},#{item.seedType,jdbcType=VARCHAR},
-            #{item.harvestType,jdbcType=VARCHAR},#{item.harvestTime,jdbcType=VARCHAR},#{item.seedNumber,jdbcType=DECIMAL},
-            #{item.unit,jdbcType=VARCHAR},#{item.sourceType,jdbcType=VARCHAR},
-            #{item.productionLocationName,jdbcType=VARCHAR},#{item.stockLocationNum,jdbcType=VARCHAR},#{item.submitUserId,jdbcType=NUMERIC},
-            #{item.submitUserName,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP},
-            #{item.remarks,jdbcType=VARCHAR},#{item.totalNumber,jdbcType=DECIMAL},#{item.sampleCode,jdbcType=VARCHAR},#{item.materialType,jdbcType=VARCHAR})
-        </foreach>
-    </insert>
     <update id="updateParentNumById">
         update seed_stock_tb
         set parent_num = #{parentNum,jdbcType=VARCHAR}
@@ -194,6 +177,13 @@
         set remarks = #{remarks,jdbcType=VARCHAR}
         where id = #{id,jdbcType=NUMERIC}
     </update>
+    <select id="selectAllByBreedCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_tb
+        where
+        breed_code = #{breedCode,jdbcType=VARCHAR}
+    </select>
 
 
 </mapper>

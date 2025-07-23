@@ -5,9 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>bio.drqi</groupId>
-        <artifactId>bio-drqi</artifactId>
+        <artifactId>bio-drqi-bsm</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>bio-drqi-bms-kd</artifactId>

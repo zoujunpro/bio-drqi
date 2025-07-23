@@ -111,7 +111,6 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
             tcHarvestSeedApplyTb.setHarvestFileUrl(tcHarvestTaskDTO.getHarvestFileUrl());
             tcHarvestSeedApplyTbMapper.insert(tcHarvestSeedApplyTb);
 
-
             for (TcHarvestExcelDTO tcHarvestExcelDTO : tcHarvestTaskDTO.getTcHarvestExcelDTOList()) {
                 TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode
                         (tcExperimentTb.getExperimentNum(),

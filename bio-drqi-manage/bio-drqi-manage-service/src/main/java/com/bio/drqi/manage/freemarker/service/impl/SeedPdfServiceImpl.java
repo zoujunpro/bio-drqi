@@ -115,7 +115,7 @@ public class SeedPdfServiceImpl implements SeedPdfService {
 
     private void translateSeedInStoreDTO(SeedInStoreDTO seedInStoreDTO) {
         for (SeedInStoreDTO.ExecuteFormContent executeFormContent : seedInStoreDTO.getExecuteForm().getExecuteFormContentList()) {
-            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCodeAndSpeciesCode(executeFormContent.getBreedCode(),executeFormContent.getSpeciesCode());
+            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(executeFormContent.getBreedCode());
             if (cerBreedDict != null) {
                 executeFormContent.setBreedCode(cerBreedDict.getBreedName());
             }

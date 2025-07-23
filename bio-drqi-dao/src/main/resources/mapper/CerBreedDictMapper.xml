@@ -9,12 +9,14 @@
         <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
         <result property="breedName" column="breed_name" jdbcType="VARCHAR"/>
         <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
         id
         ,breed_code,breed_name,
-        species_code
+        species_code,remark
     </sql>
     <select id="selectAllBySpeciesCode" resultMap="BaseResultMap">
         select
@@ -26,14 +28,6 @@
             </if>
         </where>
 
-    </select>
-    <select id="selectOneByBreedCodeAndSpeciesCode" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from cer_breed_dict
-        where
-        breed_code = #{breedCode,jdbcType=VARCHAR}
-        AND species_code = #{speciesCode,jdbcType=VARCHAR}
     </select>
     <select id="selectOneByBreedNameAndSpeciesCode" resultMap="BaseResultMap">
         select
@@ -47,5 +41,13 @@
         select
         <include refid="Base_Column_List"/>
         from cer_breed_dict
+        order by id desc
+    </select>
+    <select id="selectOneByBreedCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_breed_dict
+        where
+        breed_code = #{breedCode,jdbcType=VARCHAR}
     </select>
 </mapper>

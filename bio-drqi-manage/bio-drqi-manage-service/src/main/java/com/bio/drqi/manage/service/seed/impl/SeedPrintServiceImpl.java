@@ -64,8 +64,8 @@ public class SeedPrintServiceImpl implements SeedPrintService {
         List<SeedOutPrintReqDTO.Content> contentList = seedOutPrintReqDTO.getContentList();
         for (SeedOutPrintReqDTO.Content content : contentList) {
             SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(content.getSeedNum());
-            CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(seedStockTb.getSpecies());
-            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCodeAndSpeciesCode(seedStockTb.getBreedCode(), seedStockTb.getSpecies());
+            CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(seedStockTb.getSpeciesCode());
+            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(seedStockTb.getBreedCode());
             SeedOutLabelPrintDTO seedOutLabelPrintDTO = new SeedOutLabelPrintDTO();
             seedOutLabelPrintDTO.setPrintNum(content.getPrintNum());
             seedOutLabelPrintDTO.setSeedNum(seedStockTb.getSeedNum());
@@ -137,8 +137,8 @@ public class SeedPrintServiceImpl implements SeedPrintService {
             }
 
             SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedStockInLog.getSeedNum());
-            CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(seedStockTb.getSpecies());
-            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCodeAndSpeciesCode(seedStockTb.getBreedCode(), seedStockTb.getSpecies());
+            CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(seedStockTb.getSpeciesCode());
+            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(seedStockTb.getBreedCode());
             SeedInLabelPrintDTO seedInLabelPrintDTO = new SeedInLabelPrintDTO();
             seedInLabelPrintDTO.setPrintNum(content.getPrintNum());
             seedInLabelPrintDTO.setSeedNum(seedStockTb.getSeedNum());
@@ -155,7 +155,7 @@ public class SeedPrintServiceImpl implements SeedPrintService {
                 seedInLabelPrintDTO.setSourceTypeName(dictInnerService.findByDictTypeAndDictValueCode(BioDictTypeEnum.SOURCE_CHANNEL, seedStockTb.getSourceType()).getDictValueName());
             }
             seedInLabelPrintDTO.setHarvestTime(StringUtils.isEmpty(seedStockTb.getHarvestTime()) ? "N/A" : seedStockTb.getHarvestTime());
-            seedInLabelPrintDTO.setProductionLocationName(seedStockTb.getProductionLocationName());
+            seedInLabelPrintDTO.setProductionLocationName(seedStockTb.getProductionLocationCode());
             if (SeedMaterialTypeEnum.getSeedMaterialTypeEnumByType(seedStockTb.getMaterialType()).equals(SeedMaterialTypeEnum.TYPE_1)) {
                 yellowSeedInLabelPrintDTOList.add(seedInLabelPrintDTO);
             } else if (SeedMaterialTypeEnum.getSeedMaterialTypeEnumByType(seedStockTb.getMaterialType()).equals(SeedMaterialTypeEnum.TYPE_2)) {

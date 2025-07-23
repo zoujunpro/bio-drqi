@@ -85,6 +85,7 @@ public class SeedSpeciesDictServiceImpl implements SeedSpeciesDictService {
         cerSpeciesConf.setSpeciesName(speciesEditDTO.getSpeciesName());
         cerSpeciesConf.setSpeciesCode(speciesEditDTO.getSpeciesCode());
         cerSpeciesConf.setNumPrefix(speciesEditDTO.getNumPrefix());
+        cerSpeciesConf.setLatinName(speciesEditDTO.getLatinName());
         try {
             cerSpeciesConfMapper.updateById(cerSpeciesConf);
         } catch (DuplicateKeyException e) {

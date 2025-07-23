@@ -103,20 +103,20 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         List<String> sameCodeList = tcSampleTestTbList.stream().map(TcSampleTestTb::getSampleCode).collect(Collectors.toList());
         List<TcSampleTestBioInfoResultTb> tcSampleTestBioInfoResultTbList = tcSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCodeIn(tcSampleTestListPageDetailReqDTO.getSampleApplyNum(), sameCodeList);
         List<CerBreedDict> breedDictList = cerBreedDictMapper.selectAll();
-        Map<String, String> breedNameCodeMap = breedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode()+":"+cerBreedDict.getBreedCode(), CerBreedDict::getBreedName));
+        Map<String, String> breedCodeOfNameMap = breedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         if (CollectionUtil.isNotEmpty(tcSampleTestBioInfoResultTbList)) {
             Map<String, List<TcSampleTestBioInfoResultTb>> listMap = tcSampleTestBioInfoResultTbList.stream().collect(Collectors.groupingBy(TcSampleTestBioInfoResultTb::getSampleCode));
             targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
                 List<TcSampleTestBioInfoResultTb> list = listMap.get(sampleTestListDetailRspDTO.getSampleCode());
                 sampleTestListDetailRspDTO.setMatchNum(list == null ? 0 : list.size());
                 sampleTestListDetailRspDTO.setGenerationName(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getGenerationCode()));
-                sampleTestListDetailRspDTO.setBreedName(breedNameCodeMap.get(sampleTestListDetailRspDTO.getSpeciesCode()+":"+sampleTestListDetailRspDTO.getBreedCode()));
+                sampleTestListDetailRspDTO.setBreedName(breedCodeOfNameMap.get(sampleTestListDetailRspDTO.getBreedCode()));
             });
         } else {
             targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
                 sampleTestListDetailRspDTO.setMatchNum(0);
                 sampleTestListDetailRspDTO.setGenerationName(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getGenerationCode()));
-                sampleTestListDetailRspDTO.setBreedName(breedNameCodeMap.get(sampleTestListDetailRspDTO.getSpeciesCode()+":"+sampleTestListDetailRspDTO.getBreedCode()));
+                sampleTestListDetailRspDTO.setBreedName(breedCodeOfNameMap.get(sampleTestListDetailRspDTO.getBreedCode()));
             });
         }
         return targetPageInfo;

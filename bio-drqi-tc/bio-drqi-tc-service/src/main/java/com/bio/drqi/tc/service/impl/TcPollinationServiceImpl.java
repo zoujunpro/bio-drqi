@@ -113,7 +113,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         PageInfo<TcPollinationTb> srcPageInfo = new PageInfo<>(tcPollinationTbList);
         PageInfo<TcPollinationListPageDetailRspDTO> resultPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, TcPollinationListPageDetailRspDTO.class);
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
-        Map<String, String> codeNameCerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getSpeciesCode, CerBreedDict::getBreedName));
+        Map<String, String> codeNameCerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         if (CollectionUtil.isNotEmpty(resultPageInfo.getList())) {
             resultPageInfo.getList().forEach(tcPollinationListPageDetailRspDTO -> {
                 tcPollinationListPageDetailRspDTO.setFBreedName(codeNameCerBreedDictMap.get(tcPollinationListPageDetailRspDTO.getFBreedCode()));

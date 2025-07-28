@@ -113,14 +113,14 @@ public class TcPollinationListPageDetailRspDTO {
     /**
      * 母本基因类型
      */
-    @JsonProperty("mGeneType")
-    private String mGeneType;
+    @JsonProperty("mTcGene")
+    private String mTcGene;
 
     /**
      * 父本基因类型
      */
-    @JsonProperty("fGeneType")
-    private String fGeneType;
+    @JsonProperty("fTcGene")
+    private String fTcGene;
 
     /**
      * 授粉时间

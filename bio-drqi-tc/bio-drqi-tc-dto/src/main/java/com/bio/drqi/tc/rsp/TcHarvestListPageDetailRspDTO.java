@@ -74,6 +74,19 @@ public class TcHarvestListPageDetailRspDTO {
     private String mBreedName;
 
     /**
+     * 父本品种
+     */
+    @JsonProperty("fBreedCode")
+    private String fBreedCode;
+
+    /**
+     * 母本品种
+     */
+    @JsonProperty("mBreedCode")
+    private String mBreedCode;
+
+
+    /**
      * 母本实施方案编号
      */
     @JsonProperty("mVectorTaskCode")
@@ -100,14 +113,14 @@ public class TcHarvestListPageDetailRspDTO {
     /**
      * 母本基因类型
      */
-    @JsonProperty("mGeneType")
-    private String mGeneType;
+    @JsonProperty("mTcGene")
+    private String mTcGene;
 
     /**
      * 父本基因类型
      */
-    @JsonProperty("fGeneType")
-    private String fGeneType;
+    @JsonProperty("fTcGene")
+    private String fTcGene;
 
     /**
      * 授粉时间

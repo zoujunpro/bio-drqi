@@ -67,7 +67,16 @@ public class TcHarvestServiceImpl implements TcHarvestService {
         PageHelper.startPage(tcHarvestListPageDetailReqDTO.getPageNum(), tcHarvestListPageDetailReqDTO.getPageSize());
         List<TcPollinationTb> tcPollinationTbList = tcPollinationTbMapper.selectSelective(BeanUtils.copyProperties(tcHarvestListPageDetailReqDTO, TcPollinationTb.class));
         PageInfo<TcPollinationTb> srcPageInfo = new PageInfo<>(tcPollinationTbList);
-        return BeanUtils.copyPageInfoProperties(srcPageInfo, TcHarvestListPageDetailRspDTO.class);
+        PageInfo<TcHarvestListPageDetailRspDTO> resultPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, TcHarvestListPageDetailRspDTO.class);
+        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
+        Map<String, String> codeNameCerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+        if (CollectionUtil.isNotEmpty(resultPageInfo.getList())) {
+            resultPageInfo.getList().forEach(tcPollinationListPageDetailRspDTO -> {
+                tcPollinationListPageDetailRspDTO.setFBreedName(codeNameCerBreedDictMap.get(tcPollinationListPageDetailRspDTO.getFBreedCode()));
+                tcPollinationListPageDetailRspDTO.setMBreedName(codeNameCerBreedDictMap.get(tcPollinationListPageDetailRspDTO.getFBreedCode()));
+            });
+        }
+        return resultPageInfo;
     }
 
     @Override
@@ -85,10 +94,10 @@ public class TcHarvestServiceImpl implements TcHarvestService {
             tcHarvestExcelDTO.setMotherRegionNum(tcPollinationTb.getMRegionNum());
             tcHarvestExcelDTO.setMotherSeedNum(tcPollinationTb.getMSeedNum());
             tcHarvestExcelDTO.setMotherSampleCode(tcPollinationTb.getMSampleCode());
-            if(tcPollinationTb.getMBreedCode()!=null){
+            if (tcPollinationTb.getMBreedCode() != null) {
                 tcHarvestExcelDTO.setMotherBreedName(codeOfNameMap.get(tcPollinationTb.getMBreedCode()));
             }
-            if(tcPollinationTb.getFBreedCode()!=null){
+            if (tcPollinationTb.getFBreedCode() != null) {
                 tcHarvestExcelDTO.setFatherBreedName(codeOfNameMap.get(tcPollinationTb.getFBreedCode()));
             }
             tcHarvestExcelDTO.setMotherVectorTaskCode(tcPollinationTb.getMVectorTaskCode());

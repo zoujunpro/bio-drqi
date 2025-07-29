@@ -90,4 +90,6 @@ public class ScanCodeBmsRspDTO {
 
     private String expirationDate;
 
+    private String stockCode;
+
 }

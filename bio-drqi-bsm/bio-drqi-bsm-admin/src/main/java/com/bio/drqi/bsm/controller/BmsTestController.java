@@ -19,6 +19,7 @@ import com.bio.drqi.bsm.req.BmsProductAddReqDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
+import com.bio.print.rsp.BmsLabelPrintDTO;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -163,22 +164,26 @@ public class BmsTestController {
     }
 
 
+
     @GetMapping("/cleanLabel")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanLabel() {
         List<BioPrintLabelInfoTb> bioPrintLabelInfoTbList = bioPrintLabelInfoTbMapper.searchAllByLabelType("bms_label_print");
         for (BioPrintLabelInfoTb bioPrintLabelInfoTb : bioPrintLabelInfoTbList) {
+            log.info("bioPrintLabelInfoTb={}",JSONUtil.toJsonStr(bioPrintLabelInfoTb));
             String[] uniqueCodeArr = bioPrintLabelInfoTb.getUniqueCode().split("\\|");
-            if (uniqueCodeArr.length == 3) {
-                String productInnerCode = uniqueCodeArr[0];
-                String batchNo = uniqueCodeArr[1];
-                String unitCode = uniqueCodeArr[2];
-                List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectAllByProductInnerCodeAndUnitCodeAndBatchNo(productInnerCode, unitCode, batchNo);
-                if (bmsProductStockTbList.size() == 1) {
-                    bioPrintLabelInfoTb.setUniqueCode(bioPrintLabelInfoTb.getUniqueCode() + "|" + bmsProductStockTbList.get(0).getStockCode());
-                    bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
-                }
+            if(uniqueCodeArr.length!=4){
+
+                throw new BusinessException("标签异常");
             }
+            String stockCode=uniqueCodeArr[3];
+            BmsLabelPrintDTO bmsLabelPrintDTO=JSONUtil.toBean(bioPrintLabelInfoTb.getLabelText(),BmsLabelPrintDTO.class);
+            bmsLabelPrintDTO.setStockCode(stockCode);
+            bmsLabelPrintDTO.setUniqueCode(bioPrintLabelInfoTb.getUniqueCode());
+            bmsLabelPrintDTO.setUnitCode(uniqueCodeArr[2]);
+            bioPrintLabelInfoTb.setLabelText(JSONUtil.toJsonStr(bmsLabelPrintDTO));
+            bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
+
         }
         return ResponseResult.getSuccess("ok");
     }

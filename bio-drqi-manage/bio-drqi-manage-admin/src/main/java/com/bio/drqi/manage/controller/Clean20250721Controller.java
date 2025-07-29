@@ -241,6 +241,11 @@ public class Clean20250721Controller {
         return ResponseResult.getSuccess("ok");
     }
 
+    /**
+     * 测试环境清洗
+     *
+     * @return
+     */
     @GetMapping("/cleanVectorTaskBreed")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult cleanVectorTaskBreed() {
@@ -274,6 +279,49 @@ public class Clean20250721Controller {
             cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
         }
         return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 测试清洗
+     * @return
+     */
+    @GetMapping("/cleanVectorTask")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanVectorTask() {
+        List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("implementation_plan");
+        for (BioTaskDtlTb bioTaskDtlTb : bioTaskDtlTbList) {
+            log.info("bioTaskDtlTb={}", bioTaskDtlTb);
+            VectorTaskAddDTO vectorTaskAddDTO = null;
+            try {
+                vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
+            } catch (Exception e) {
+                bioTaskDtlTbMapper.deleteById(bioTaskDtlTb.getId());
+                continue;
+            }
+            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByTaskNum(bioTaskDtlTb.getTaskNum());
+            if(cerVectorTaskTb==null){
+              List<CerBreedDict> cerBreedDictList=  cerBreedDictMapper.selectAllBySpeciesCode(vectorTaskAddDTO.getSpeciesCode());
+                vectorTaskAddDTO.setAcceptorMaterial(cerBreedDictList.get(0).getBreedCode());
+                vectorTaskAddDTO.setAcceptorMaterialName(cerBreedDictList.get(0).getBreedName());
+            }else {
+                vectorTaskAddDTO.setAcceptorMaterial(cerVectorTaskTb.getAcceptorMaterial());
+                String acceptorMaterials = vectorTaskAddDTO.getAcceptorMaterial();
+                String[] acceptorMaterialArr = acceptorMaterials.split("\\|");
+                StringBuffer acceptorMaterialNames=new StringBuffer("");
+                for (String acceptorMaterial : acceptorMaterialArr) {
+                    CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(acceptorMaterial);
+                    if (cerBreedDict == null) {
+                        throw new BusinessException("受体材料填写错误");
+                    }
+                    acceptorMaterialNames.append(cerBreedDict.getBreedName()).append("|");
+                }
+                vectorTaskAddDTO.setAcceptorMaterialName(acceptorMaterialNames.substring(0,acceptorMaterialNames.length()-1));
+            }
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(vectorTaskAddDTO));
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        }
+        return ResponseResult.getSuccess("ok");
+
     }
 
 

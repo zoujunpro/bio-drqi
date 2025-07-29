@@ -88,7 +88,7 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
             }
             acceptorMaterialNames.append(cerBreedDict.getBreedName()).append("|");
         }
-        vectorTaskAddDTO.setAcceptorMaterialName(acceptorMaterialNames.substring(0,acceptorMaterials.length()-1));
+        vectorTaskAddDTO.setAcceptorMaterialName(acceptorMaterialNames.substring(0,acceptorMaterialNames.length()-1));
 
         synchronized (this) {
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(bioTaskDtlTb.getTaskNum());

@@ -81,8 +81,13 @@ public class VectorTaskAddDTO {
     /**
      * 受体材料
      */
+    @NotBlank(message = "受体材料必填")
     private String acceptorMaterial;
 
+    /**
+     * 受体材料
+     */
+    private String acceptorMaterialName;
     /**
      * 建议编辑工具
      */

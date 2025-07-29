@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,6 +59,8 @@ public class Clean20250721Controller {
     @Resource
     private CerTransformTbMapper cerTransformTbMapper;
 
+    @Resource
+    private CerSpeciesConfMapper cerSpeciesConfMapper;
 
 
     @GetMapping("cleanBreed")
@@ -69,7 +72,7 @@ public class Clean20250721Controller {
         log.info("清洗品种字典开始");
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
         for (CerBreedDict cerBreedDict : cerBreedDictList) {
-            log.info("清洗品种字典:"+JSONUtil.toJsonStr(cerBreedDict));
+            log.info("清洗品种字典:" + JSONUtil.toJsonStr(cerBreedDict));
             cerBreedDict.setRemark(cerBreedDict.getBreedCode());
             cerBreedDict.setBreedCode(IdUtils.simpleUUID());
             cerBreedDictMapper.updateById(cerBreedDict);
@@ -81,7 +84,7 @@ public class Clean20250721Controller {
 
         List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectList(null);
         for (SeedStockTb seedStockTb : seedStockTbList) {
-            log.info("清洗种子库品种:"+JSONUtil.toJsonStr(seedStockTb));
+            log.info("清洗种子库品种:" + JSONUtil.toJsonStr(seedStockTb));
             String breedCode = breedRemarkMap.get(seedStockTb.getSpeciesCode() + ":" + seedStockTb.getBreedCode());
             if (StringUtils.isEmpty(breedCode)) {
                 throw new BusinessException("找不到品种");
@@ -94,7 +97,7 @@ public class Clean20250721Controller {
         log.info("田测申请品种开始");
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectList(null);
         for (TcExperimentTb tcExperimentTb : tcExperimentTbList) {
-            log.info("田测申请品种:"+JSONUtil.toJsonStr(tcExperimentTb));
+            log.info("田测申请品种:" + JSONUtil.toJsonStr(tcExperimentTb));
             List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcExperimentTb.getExperimentNum());
             for (TcExperimentDesignTb tcExperimentDesignTb : tcExperimentDesignTbList) {
                 String breedCode = breedRemarkMap.get(tcExperimentTb.getSpeciesCode() + ":" + tcExperimentDesignTb.getBreedCode());
@@ -110,7 +113,7 @@ public class Clean20250721Controller {
         log.info("田测取样检测品种清洗开始");
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectList(null);
         for (TcSampleTestTb tcSampleTestTb : tcSampleTestTbList) {
-            log.info("田测取样检测品种:"+JSONUtil.toJsonStr(tcSampleTestTb));
+            log.info("田测取样检测品种:" + JSONUtil.toJsonStr(tcSampleTestTb));
             TcExperimentDesignTb tcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcSampleTestTb.getExperimentNum(), tcSampleTestTb.getRegionNum(), tcSampleTestTb.getSeedNum());
             if (tcExperimentDesignTb != null) {
                 tcExperimentDesignTb.setBreedCode(tcExperimentDesignTb.getBreedCode());
@@ -121,7 +124,7 @@ public class Clean20250721Controller {
 
         List<TcPollinationTb> tcPollinationTbList = tcPollinationTbMapper.selectSelective(null);
         for (TcPollinationTb tcPollinationTb : tcPollinationTbList) {
-            log.info("田测取样检测品种清洗:"+JSONUtil.toJsonStr(tcPollinationTb));
+            log.info("田测取样检测品种清洗:" + JSONUtil.toJsonStr(tcPollinationTb));
             if (tcPollinationTb.getFRegionNum() != null && tcPollinationTb.getFSeedNum() != null) {
                 TcExperimentDesignTb fatherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationTb.getExperimentNum(), tcPollinationTb.getFRegionNum(), tcPollinationTb.getFSeedNum());
                 if (fatherTcExperimentDesignTb != null) {
@@ -146,9 +149,9 @@ public class Clean20250721Controller {
         List<BioTaskDtlTb> tc_pollination_task_applyList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("tc_pollination_task_apply");
         if (CollectionUtil.isNotEmpty(tc_pollination_task_applyList)) {
             tc_pollination_task_applyList.forEach(bioTaskDtlTb -> {
-                log.info("tc_pollination_task_apply:"+JSONUtil.toJsonStr(bioTaskDtlTb));
+                log.info("tc_pollination_task_apply:" + JSONUtil.toJsonStr(bioTaskDtlTb));
                 TcPollinationTaskDTO tcPollinationTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcPollinationTaskDTO.class);
-                if(CollectionUtil.isNotEmpty(tcPollinationTaskDTO.getTcPollinationExcelDTOList())){
+                if (CollectionUtil.isNotEmpty(tcPollinationTaskDTO.getTcPollinationExcelDTOList())) {
                     tcPollinationTaskDTO.getTcPollinationExcelDTOList().forEach(pollinationExcelDTO -> {
                         if (pollinationExcelDTO.getFatherRegionNum() != null && pollinationExcelDTO.getFatherSeedNum() != null) {
                             TcExperimentDesignTb fatherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationTaskDTO.getExperimentNum(), pollinationExcelDTO.getFatherRegionNum(), pollinationExcelDTO.getFatherSeedNum());
@@ -177,7 +180,7 @@ public class Clean20250721Controller {
         }
         List<BioTaskDtlTb> tc_sample_test_task_apply_applyList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("tc_sample_test_task_apply");
         for (BioTaskDtlTb bioTaskDtlTb : tc_sample_test_task_apply_applyList) {
-            log.info("tc_sample_test_task_apply:"+JSONUtil.toJsonStr(bioTaskDtlTb));
+            log.info("tc_sample_test_task_apply:" + JSONUtil.toJsonStr(bioTaskDtlTb));
             TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
             if (CollectionUtil.isNotEmpty(tcSampleTestTaskDTO.getRepeatSampleApplyList())) {
                 tcSampleTestTaskDTO.getRepeatSampleApplyList().forEach(repeatSampleApply -> {
@@ -207,7 +210,6 @@ public class Clean20250721Controller {
         log.info("工单清洗结束");
 
 
-
         log.info("整体洗结束，不可重复清洗");
 
         return ResponseResult.getSuccess("ok");
@@ -217,13 +219,13 @@ public class Clean20250721Controller {
 
     @GetMapping("/cleanTcDesign")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseResult cleanTcDesign(){
+    public ResponseResult cleanTcDesign() {
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
         Map<String, String> breedRemarkMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode() + ":" + cerBreedDict.getRemark(), cerBreedDict -> cerBreedDict.getBreedCode()));
         log.info("田测申请品种开始");
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectList(null);
         for (TcExperimentTb tcExperimentTb : tcExperimentTbList) {
-            log.info("田测申请品种:"+JSONUtil.toJsonStr(tcExperimentTb));
+            log.info("田测申请品种:" + JSONUtil.toJsonStr(tcExperimentTb));
             List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcExperimentTb.getExperimentNum());
             for (TcExperimentDesignTb tcExperimentDesignTb : tcExperimentDesignTbList) {
                 String breedCode = breedRemarkMap.get(tcExperimentTb.getSpeciesCode() + ":" + tcExperimentDesignTb.getBreedCode());
@@ -239,10 +241,46 @@ public class Clean20250721Controller {
         return ResponseResult.getSuccess("ok");
     }
 
-    public ResponseResult cleanVectorSeed(){
+    @GetMapping("/cleanVectorTaskBreed")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult cleanVectorTaskBreed() {
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectList(null);
+        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
+        Map<String, CerBreedDict> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode() + "|" + cerBreedDict.getBreedName(), cerBreedDict -> cerBreedDict));
+        for (CerVectorTaskTb cerVectorTaskTb : cerVectorTaskTbList) {
+            log.info("cerVectorTaskTb={}", JSONUtil.toJsonStr(cerVectorTaskTb));
+            CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(cerVectorTaskTb.getSpeciesCode());
+            if (cerSpeciesConf == null) {
+                throw new BusinessException("物种不存在");
+            }
+            List<CerBreedDict> currentCerBreedDictList = cerBreedDictMapper.selectAllBySpeciesCode(cerSpeciesConf.getSpeciesCode());
+            if (StringUtils.isEmpty(cerVectorTaskTb.getAcceptorMaterial())) {
+                cerVectorTaskTb.setAcceptorMaterial(currentCerBreedDictList.get(0).getBreedCode());
+            } else {
+                String[] acceptorMaterialNameArr = cerVectorTaskTb.getAcceptorMaterial().split("\\|");
+                StringBuffer acceptorMaterialCodeBuf = new StringBuffer("");
+                for (String acceptorMaterialName : acceptorMaterialNameArr) {
+                    CerBreedDict currentCerBreedDict = cerBreedDictMap.get(cerSpeciesConf.getSpeciesCode() + "|" + acceptorMaterialName);
+                    if (currentCerBreedDict != null) {
+                        acceptorMaterialCodeBuf.append(acceptorMaterialName).append("|");
+                    }
+                }
+                if (StringUtils.isEmpty(acceptorMaterialCodeBuf)) {
+                    cerVectorTaskTb.setAcceptorMaterial(currentCerBreedDictList.get(0).getBreedCode());
+                } else {
+                    cerVectorTaskTb.setAcceptorMaterial(acceptorMaterialCodeBuf.substring(0, acceptorMaterialCodeBuf.length() - 1));
+                }
+            }
+            cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
+
+    public ResponseResult cleanVectorSeed() {
         List<BioTaskDtlTb> implementation_planList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("implementation_plan");
         for (BioTaskDtlTb bioTaskDtlTb : implementation_planList) {
-            log.info("implementation_plan:"+JSONUtil.toJsonStr(bioTaskDtlTb));
+            log.info("implementation_plan:" + JSONUtil.toJsonStr(bioTaskDtlTb));
             VectorTaskAddDTO vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
             CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(vectorTaskAddDTO.getAcceptorMaterial(), vectorTaskAddDTO.getSpeciesCode());
             if (cerBreedDict != null) {
@@ -255,7 +293,7 @@ public class Clean20250721Controller {
 
         List<BioTaskDtlTb> transformList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("transform");
         for (BioTaskDtlTb bioTaskDtlTb : transformList) {
-            log.info("transform:"+JSONUtil.toJsonStr(bioTaskDtlTb));
+            log.info("transform:" + JSONUtil.toJsonStr(bioTaskDtlTb));
             TransformDTO transformDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TransformDTO.class);
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(transformDTO.getVectorTaskCode());
             transformDTO.getContentList().forEach(content -> {
@@ -269,11 +307,10 @@ public class Clean20250721Controller {
         }
 
 
-
         log.info("实施方案转化品种清洗开始");
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectList(null);
         for (CerVectorTaskTb cerVectorTaskTb : cerVectorTaskTbList) {
-            log.info("实施方案转化品种清洗:"+JSONUtil.toJsonStr(cerVectorTaskTb));
+            log.info("实施方案转化品种清洗:" + JSONUtil.toJsonStr(cerVectorTaskTb));
             CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(cerVectorTaskTb.getAcceptorMaterial(), cerVectorTaskTb.getSpeciesCode());
             if (cerBreedDict != null) {
                 cerVectorTaskTb.setAcceptorMaterial(cerBreedDict.getBreedCode());

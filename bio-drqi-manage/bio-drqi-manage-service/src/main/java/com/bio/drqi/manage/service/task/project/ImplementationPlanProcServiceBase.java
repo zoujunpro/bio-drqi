@@ -78,10 +78,18 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
         if (CollectionUtil.isEmpty(vectorTaskAddDTO.getVectorGroupList())) {
             throw new BusinessException("转化信息缺失");
         }
-        CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(vectorTaskAddDTO.getAcceptorMaterial());
-        if(cerBreedDict==null){
-            throw new BusinessException("受体材料填写错误,找不到此受体材料");
+        String acceptorMaterials = vectorTaskAddDTO.getAcceptorMaterial();
+        String[] acceptorMaterialArr = acceptorMaterials.split("\\|");
+        StringBuffer acceptorMaterialNames=new StringBuffer("");
+        for (String acceptorMaterial : acceptorMaterialArr) {
+            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(acceptorMaterial);
+            if (cerBreedDict == null) {
+                throw new BusinessException("受体材料填写错误");
+            }
+            acceptorMaterialNames.append(cerBreedDict.getBreedName()).append("|");
         }
+        vectorTaskAddDTO.setAcceptorMaterialName(acceptorMaterialNames.substring(0,acceptorMaterials.length()-1));
+
         synchronized (this) {
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(bioTaskDtlTb.getTaskNum());
             if (cerVectorTaskTb == null) {
@@ -91,7 +99,7 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                     cerVectorTaskTb.setVectorTaskType(vectorTaskAddDTO.getVectorTaskType());
                     cerVectorTaskTb.setVectorTaskName(vectorTaskAddDTO.getVectorTaskName());
                     cerVectorTaskTb.setDeliveryMethod(vectorTaskAddDTO.getDeliveryMethod());
-                    cerVectorTaskTb.setAcceptorMaterial(cerBreedDict.getBreedCode());
+                    cerVectorTaskTb.setAcceptorMaterial(vectorTaskAddDTO.getAcceptorMaterial());
                     cerVectorTaskTb.setEditTools(vectorTaskAddDTO.getEditTools());
                     cerVectorTaskTb.setEditToolsType(vectorTaskAddDTO.getEditToolsType());
                     cerVectorTaskTb.setVectorTaskTarget(vectorTaskAddDTO.getVectorTaskTarget());

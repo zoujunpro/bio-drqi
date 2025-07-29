@@ -3,6 +3,7 @@ package com.bio.drqi.manage.vector.rsp;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +38,8 @@ public class VectorListPageRspDTO {
      * 受体材料
      */
     private String acceptorMaterial;
+
+    private List<AcceptorMaterialModel> acceptorMaterialModelList = new ArrayList<>();
 
     /**
      * 建议编辑工具
@@ -129,7 +132,7 @@ public class VectorListPageRspDTO {
 
 
     @Data
-    public static class VectorGroup{
+    public static class VectorGroup {
 
         private String groupName;
 
@@ -138,16 +141,16 @@ public class VectorListPageRspDTO {
         private String remark;
         private Integer repeatNum;
 
-        public VectorGroup(String groupName, String plasmidNames,String remark,Integer repeatNum) {
+        public VectorGroup(String groupName, String plasmidNames, String remark, Integer repeatNum) {
             this.groupName = groupName;
             this.plasmidNames = plasmidNames;
-            this.repeatNum=repeatNum;
-            this.remark=remark;
+            this.repeatNum = repeatNum;
+            this.remark = remark;
         }
     }
 
     @Data
-    public static  class Vector{
+    public static class Vector {
         /**
          * 主键ID
          */
@@ -245,6 +248,21 @@ public class VectorListPageRspDTO {
          * 载体大小
          */
         private String vectorSize;
+    }
+
+    @Data
+    private class AcceptorMaterialModel {
+        private String acceptorMaterialName;
+        private String acceptorMaterialCode;
+
+    }
+
+    public void buildAcceptorMaterialModel(String acceptorMaterialCode, String acceptorMaterialName) {
+        AcceptorMaterialModel acceptorMaterialModel = new AcceptorMaterialModel();
+        acceptorMaterialModel.setAcceptorMaterialName(acceptorMaterialCode);
+        acceptorMaterialModel.setAcceptorMaterialCode(acceptorMaterialName);
+        this.acceptorMaterialModelList.add(acceptorMaterialModel);
+
     }
 
 }

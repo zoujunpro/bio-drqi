@@ -30,6 +30,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,6 +67,9 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     @Resource
     private CerInstantVerifyTaskTbMapper cerInstantVerifyTaskTbMapper;
 
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
+
 
     @Override
     public PageInfo<VectorListPageRspDTO> ListPage(QueryPageVectorReqDTO queryPageVectorReqDTO) {
@@ -73,11 +77,22 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByProjectIdOrderById(queryPageVectorReqDTO.getProjectId());
         PageInfo<CerVectorTaskTb> srcPage = new PageInfo<>(cerVectorTaskTbList);
         PageInfo<VectorListPageRspDTO> vectorBaseInfoRspDTOPageInfo = BeanUtils.copyPageInfoProperties(srcPage, VectorListPageRspDTO.class);
+        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
+        Map<String, String> breedCodeOfNameMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         vectorBaseInfoRspDTOPageInfo.getList().forEach(vectorListPageRspDTO -> {
             List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectAllByVectorTaskId(vectorListPageRspDTO.getId());
             List<CerVectorGroupTb> cerVectorGroupTbList = cerVectorGroupTbMapper.selectAllByVectorTaskId(vectorListPageRspDTO.getId());
             vectorListPageRspDTO.setChildren(BeanUtils.copyToList(cerVectorTbList, VectorListPageRspDTO.Vector.class));
             vectorListPageRspDTO.setVectorGroupList(cerVectorGroupTbList.stream().map(cerVectorGroupTb -> new VectorListPageRspDTO.VectorGroup(cerVectorGroupTb.getGroupName(), cerVectorGroupTb.getPlasmidNames(), cerVectorGroupTb.getRemark(), cerVectorGroupTb.getRepeatNum())).collect(Collectors.toList()));
+            if (StringUtils.isNotEmpty(vectorListPageRspDTO.getAcceptorMaterial())) {
+                String[] acceptorMaterialArr = vectorListPageRspDTO.getAcceptorMaterial().split("\\|");
+                for (String acceptorMaterial : acceptorMaterialArr) {
+                    if(breedCodeOfNameMap.get(acceptorMaterial)!=null){
+                        vectorListPageRspDTO.buildAcceptorMaterialModel(acceptorMaterial,breedCodeOfNameMap.get(acceptorMaterial));
+                    }
+                }
+            }
+
         });
         return vectorBaseInfoRspDTOPageInfo;
     }
@@ -201,7 +216,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     @Override
     public VectorTaskAddDTO detailByCode(String vectorTaskCode) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-        if(cerVectorTaskTb==null){
+        if (cerVectorTaskTb == null) {
             return null;
         }
         return detail(cerVectorTaskTb.getId());

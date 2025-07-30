@@ -1,6 +1,8 @@
 package com.bio.drqi.manage.service.project.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.manage.transform.req.ApprovePassTransformQueryReqDTO;
 import com.bio.drqi.manage.transform.req.TransformListByVectorTaskReqDTO;
 import com.bio.drqi.manage.transform.req.TransformListByVectorTaskRspDTO;
@@ -10,6 +12,8 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.domain.CerTransformTb;
 import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.manage.service.project.TransformService;
+import com.bio.drqi.mapper.CerBreedDictMapper;
+import com.bio.drqi.mapper.CerSpeciesConfMapper;
 import com.bio.drqi.mapper.CerTransformTbMapper;
 import com.bio.drqi.mapper.CerVectorTaskTbMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -30,11 +34,23 @@ public class TransformServiceImpl implements TransformService {
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
+
 
     @Override
     public List<TransformListByVectorTaskRspDTO> listByVectorTask(TransformListByVectorTaskReqDTO transformListByVectorTaskReqDTO) {
         List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllByVectorTaskId(transformListByVectorTaskReqDTO.getVectorTaskId());
-        return BeanUtils.copyListProperties(cerTransformTbList, TransformListByVectorTaskRspDTO.class);
+        List<TransformListByVectorTaskRspDTO> result = BeanUtils.copyListProperties(cerTransformTbList, TransformListByVectorTaskRspDTO.class);
+        if (CollectionUtil.isNotEmpty(result)) {
+            result.forEach(transformListByVectorTaskRspDTO -> {
+                CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(transformListByVectorTaskRspDTO.getAcceptorMaterial());
+                if (cerBreedDict != null) {
+                    transformListByVectorTaskRspDTO.setAcceptorMaterialName(cerBreedDict.getBreedName());
+                }
+            });
+        }
+        return result;
     }
 
     @Override
@@ -47,6 +63,11 @@ public class TransformServiceImpl implements TransformService {
                 throw new BusinessException("数据异常,转化匹配不到任务信息");
             }
             ApprovePassTransformQueryRspDTO approvePassTransformQueryRspDTO = new ApprovePassTransformQueryRspDTO();
+
+            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(cerTransformTb.getAcceptorMaterial());
+            if (cerBreedDict != null) {
+                approvePassTransformQueryRspDTO.setAcceptorMaterialName(cerBreedDict.getBreedName());
+            }
             approvePassTransformQueryRspDTO.setVectorTaskCode(cerTransformTb.getVectorTaskCode());
             approvePassTransformQueryRspDTO.setSubProjectCode(cerTransformTb.getSubProjectCode());
             approvePassTransformQueryRspDTO.setTransformCode(cerTransformTb.getTransformCode());

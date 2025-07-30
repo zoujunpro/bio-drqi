@@ -81,6 +81,8 @@ public class TransformDTO {
         @NotBlank(message = "受体材料必填")
         private String acceptorMaterial;
 
+        private String acceptorMaterialName;
+
         /***/
         private String groupName;
     }

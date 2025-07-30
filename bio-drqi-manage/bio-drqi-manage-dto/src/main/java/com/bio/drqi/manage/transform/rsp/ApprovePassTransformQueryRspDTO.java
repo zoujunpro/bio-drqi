@@ -15,6 +15,8 @@ public class ApprovePassTransformQueryRspDTO {
     /**受体材料*/
     private String acceptorMaterial;
 
+    private String acceptorMaterialName;
+
 
 
 

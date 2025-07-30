@@ -39,9 +39,11 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
-
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
+
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
 
 
     @Override
@@ -90,6 +92,11 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
                     throw new BusinessException("不存在此载体信息 vectorGroupId:" + content.getVectorGroupId());
                 }
             }
+            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(content.getAcceptorMaterial());
+            if (cerBreedDict == null) {
+                throw new BusinessException("品种字典中不存在此受体材料");
+            }
+            content.setAcceptorMaterialName(cerBreedDict.getBreedName());
         }
         //补充form表单
         transformDTO.setProjectCode(cerProjectTb.getProjectCode());
@@ -134,7 +141,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
                 cerTransformTb.setInfectNumber(content.getInfectNumber());
                 cerTransformTb.setInfectDate(content.getInfectDate());
                 cerTransformTb.setDeliveryMethod(content.getDeliveryMethod());
-                cerTransformTb.setTransformCode(getTransFormCode(cerVectorTaskTb.getVectorTaskCode(),content.getInfectDate()));
+                cerTransformTb.setTransformCode(getTransFormCode(cerVectorTaskTb.getVectorTaskCode(), content.getInfectDate()));
                 cerTransformTb.setAcceptorMaterial(content.getAcceptorMaterial());
                 cerTransformTb.setCreateTime(new Date());
                 cerTransformTb.setUpdateTime(new Date());
@@ -154,7 +161,6 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
             }
 
 
-
             updateVectorTaskTimePlan(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.transform);
 
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(transformDTO));
@@ -164,11 +170,11 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
 
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
-        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(),ImplementationPlanTypeEnum.transform.name());
+        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.transform.name());
     }
 
 
-    private String getTransFormCode(String vectorTaskCode,String infectDate) {
+    private String getTransFormCode(String vectorTaskCode, String infectDate) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
         List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllBySpeciesCodeAndVectorTaskTypeAndCreateTime(cerVectorTaskTb.getSpeciesCode(), cerVectorTaskTb.getVectorTaskType(), DateUtil.format(new Date(), "yyyyMMdd"));
         cerTransformTbList = cerTransformTbList.stream().filter(cerTransformTb -> cerTransformTb.getTransformCode().matches("^[A-Z]{3}[0-9]{6}$")).collect(Collectors.toList());
@@ -179,7 +185,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
             nextNumber = StringUtils.padl(String.valueOf(Integer.parseInt(cerTransformTbList.get(0).getTransformCode().substring(7)) + 1), 2, '0');
         }
         CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(cerVectorTaskTb.getSpeciesCode());
-        return cerSpeciesConf.getNumPrefix().substring(2) + VectorTaskTypeEnum.getMethodEnumByType(cerVectorTaskTb.getVectorTaskType()) + infectDate.replace("-","").substring(4) + nextNumber;
+        return cerSpeciesConf.getNumPrefix().substring(2) + VectorTaskTypeEnum.getMethodEnumByType(cerVectorTaskTb.getVectorTaskType()) + infectDate.replace("-", "").substring(4) + nextNumber;
     }
 
 }

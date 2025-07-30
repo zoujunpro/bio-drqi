@@ -66,6 +66,11 @@ public class TransformListByVectorTaskRspDTO extends PageDTO {
     private String acceptorMaterial;
 
     /**
+     * 受体材料
+     */
+    private String acceptorMaterialName;
+
+    /**
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd")

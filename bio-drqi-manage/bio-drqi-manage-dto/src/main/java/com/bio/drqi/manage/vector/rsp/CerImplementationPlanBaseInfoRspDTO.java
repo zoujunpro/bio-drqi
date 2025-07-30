@@ -147,8 +147,8 @@ public class CerImplementationPlanBaseInfoRspDTO {
 
     public void buildAcceptorMaterialModel(String acceptorMaterialCode, String acceptorMaterialName) {
         AcceptorMaterialModel acceptorMaterialModel = new AcceptorMaterialModel();
-        acceptorMaterialModel.setAcceptorMaterialName(acceptorMaterialCode);
-        acceptorMaterialModel.setAcceptorMaterialCode(acceptorMaterialName);
+        acceptorMaterialModel.setAcceptorMaterialName(acceptorMaterialName);
+        acceptorMaterialModel.setAcceptorMaterialCode(acceptorMaterialCode);
         this.acceptorMaterialModelList.add(acceptorMaterialModel);
     }
 }

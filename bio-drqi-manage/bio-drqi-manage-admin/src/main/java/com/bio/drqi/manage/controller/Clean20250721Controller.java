@@ -246,6 +246,7 @@ public class Clean20250721Controller {
 
 
     @GetMapping("cleanVectorTaskBreedStep1")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseResult modifyVectorTaskBreed() {
         List<VectorTaskExcel> vectorTaskExcelList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\受体品种确认-new(1)LWR.xlsx", VectorTaskExcel.class);
 
@@ -255,7 +256,8 @@ public class Clean20250721Controller {
             if (cerVectorTaskTb == null) {
                 throw new BusinessException("实施方案错误");
             }
-            vectorTaskExcel.setVectorTaskCode(vectorTaskExcel.getNewBreedName());
+            cerVectorTaskTb.setAcceptorMaterial(vectorTaskExcel.getNewBreedName());
+            cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
 
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerVectorTaskTb.getTaskNum());
             if (bioTaskDtlTb == null) {
@@ -269,8 +271,8 @@ public class Clean20250721Controller {
             String[] strArr = vectorTaskExcel.newBreedName.split("\\|");
             for (String breedName : strArr) {
                 CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(breedName, cerVectorTaskTb.getSpeciesCode());
-                if(cerBreedDict==null){
-                    cerBreedDict=new CerBreedDict();
+                if (cerBreedDict == null) {
+                    cerBreedDict = new CerBreedDict();
                     cerBreedDict.setBreedCode(IdUtils.simpleUUID());
                     cerBreedDict.setBreedName(breedName);
                     cerBreedDict.setSpeciesCode(cerVectorTaskTb.getSpeciesCode());
@@ -306,9 +308,14 @@ public class Clean20250721Controller {
             String[] acceptorMaterialNameArr = cerVectorTaskTb.getAcceptorMaterial().split("\\|");
             StringBuffer acceptorMaterialCodeBuf = new StringBuffer("");
             for (String acceptorMaterialName : acceptorMaterialNameArr) {
+                if(acceptorMaterialName.length()==32){
+                    continue;
+                }
                 CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(acceptorMaterialName, cerSpeciesConf.getSpeciesCode());
                 if (cerBreedDict != null) {
-                    acceptorMaterialCodeBuf.append(acceptorMaterialName).append("|");
+                    acceptorMaterialCodeBuf.append(cerBreedDict.getBreedCode()).append("|");
+                }else {
+                    throw new BusinessException("找不到品种："+acceptorMaterialName);
                 }
             }
             if (StringUtils.isEmpty(acceptorMaterialCodeBuf)) {
@@ -331,7 +338,7 @@ public class Clean20250721Controller {
     public ResponseResult<String> cleanVectorTask() {
         List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("implementation_plan");
         for (BioTaskDtlTb bioTaskDtlTb : bioTaskDtlTbList) {
-            if("3".equals(bioTaskDtlTb.getTaskStatus())||"4".equals(bioTaskDtlTb.getTaskStatus())){
+            if ("3".equals(bioTaskDtlTb.getTaskStatus()) || "4".equals(bioTaskDtlTb.getTaskStatus())) {
                 continue;
             }
             log.info("bioTaskDtlTb={}", bioTaskDtlTb);
@@ -348,7 +355,7 @@ public class Clean20250721Controller {
             for (String acceptorMaterialName : acceptorMaterialNameArr) {
                 CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(acceptorMaterialName, vectorTaskAddDTO.getSpeciesCode());
                 if (cerBreedDict == null) {
-                   log.info("vectorTaskAddDTO.getSpeciesCode() + \"|\" + acceptorMaterialName={},{}",vectorTaskAddDTO.getSpeciesCode(),acceptorMaterialName);
+                    log.info("vectorTaskAddDTO.getSpeciesCode() + \"|\" + acceptorMaterialName={},{}", vectorTaskAddDTO.getSpeciesCode(), acceptorMaterialName);
                     throw new BusinessException("找不到品种信息");
                 }
                 acceptorMaterialNameBuf.append(cerBreedDict.getBreedName()).append("|");
@@ -358,6 +365,55 @@ public class Clean20250721Controller {
             vectorTaskAddDTO.setAcceptorMaterialName(acceptorMaterialNameBuf.substring(0, acceptorMaterialNameBuf.length() - 1));
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(vectorTaskAddDTO));
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        }
+        return ResponseResult.getSuccess("ok");
+
+    }
+
+
+    @GetMapping("cleanTransForm")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult cleanTransForm() {
+        List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectList(null);
+        for (CerTransformTb cerTransformTb : cerTransformTbList) {
+            log.info("清洗cerTransformTb={}",JSONUtil.toJsonStr(cerTransformTb));
+            if (cerTransformTb.getAcceptorMaterial() == null || cerTransformTb.getAcceptorMaterial().length() == 32) {
+                continue;
+            }
+            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerTransformTb.getVectorTaskCode());
+            if (cerVectorTaskTb == null) {
+                throw new BusinessException("找不到实施方案");
+            }
+
+
+            String acceptorMaterials = cerVectorTaskTb.getAcceptorMaterial();
+            String[] acceptorMaterialArr = acceptorMaterials.split("\\|");
+            if (acceptorMaterialArr.length == 1) {
+                cerTransformTb.setAcceptorMaterial(acceptorMaterialArr[0]);
+            } else {
+                CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(cerTransformTb.getAcceptorMaterial(), cerVectorTaskTb.getSpeciesCode());
+                if (cerBreedDict != null) {
+                    cerTransformTb.setAcceptorMaterial(cerBreedDict.getBreedCode());
+                } else {
+                    continue;
+                }
+            }
+            cerTransformTbMapper.updateById(cerTransformTb);
+
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerTransformTb.getTaskNum());
+            TransformDTO transformDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TransformDTO.class);
+            if(transformDTO.getContentList()!=null){
+                transformDTO.getContentList().forEach(content -> {
+                    content.setAcceptorMaterial(cerTransformTb.getAcceptorMaterial());
+                    CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(cerTransformTb.getAcceptorMaterial());
+                    content.setAcceptorMaterialName(cerBreedDict.getBreedName());
+
+                });
+            }
+
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(transformDTO));
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+
         }
         return ResponseResult.getSuccess("ok");
 
@@ -435,4 +491,5 @@ public class Clean20250721Controller {
         private String speciesCode;
 
     }
+
 }

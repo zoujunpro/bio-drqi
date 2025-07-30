@@ -262,7 +262,6 @@ public class VectorListPageRspDTO {
         acceptorMaterialModel.setAcceptorMaterialName(acceptorMaterialCode);
         acceptorMaterialModel.setAcceptorMaterialCode(acceptorMaterialName);
         this.acceptorMaterialModelList.add(acceptorMaterialModel);
-
     }
 
 }

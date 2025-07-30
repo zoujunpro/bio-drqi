@@ -3,7 +3,9 @@ package com.bio.drqi.manage.vector.rsp;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class CerImplementationPlanBaseInfoRspDTO {
@@ -36,6 +38,11 @@ public class CerImplementationPlanBaseInfoRspDTO {
      * 受体材料
      */
     private String acceptorMaterial;
+
+    /**
+     * 受体材料
+     */
+    private String acceptorMaterialName;
 
     /**
      * 建议编辑工具
@@ -126,4 +133,22 @@ public class CerImplementationPlanBaseInfoRspDTO {
      * 是否已经载体构建 Y N
      */
     private String vectorBuildFlag;
+
+
+    private List<AcceptorMaterialModel> acceptorMaterialModelList=new ArrayList<>();
+
+
+    @Data
+    private class AcceptorMaterialModel {
+        private String acceptorMaterialName;
+        private String acceptorMaterialCode;
+
+    }
+
+    public void buildAcceptorMaterialModel(String acceptorMaterialCode, String acceptorMaterialName) {
+        AcceptorMaterialModel acceptorMaterialModel = new AcceptorMaterialModel();
+        acceptorMaterialModel.setAcceptorMaterialName(acceptorMaterialCode);
+        acceptorMaterialModel.setAcceptorMaterialCode(acceptorMaterialName);
+        this.acceptorMaterialModelList.add(acceptorMaterialModel);
+    }
 }

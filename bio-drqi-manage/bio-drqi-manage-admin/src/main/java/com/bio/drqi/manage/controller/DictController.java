@@ -51,24 +51,5 @@ public class  DictController {
     }
 
 
-    /**
-     * 获取品种
-     *
-     * @return
-     */
-    @GetMapping("breedList")
-    public ResponseResult<List<BreedListRspDTO>> breedList(@RequestParam String speciesCode) {
-        return ResponseResult.getSuccess(dictService.breedList(speciesCode));
-    }
-
-    /**
-     * 获取品种物种
-     *
-     * @return
-     */
-    @GetMapping("speciesBreedList")
-    public ResponseResult<List<SpeciesBreedListRspDTO>> speciesBreedList() {
-        return ResponseResult.getSuccess(dictService.speciesBreedList());
-    }
 
 }

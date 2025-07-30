@@ -13,15 +13,7 @@ public interface DictService {
 
     List<SeedProduceAddressListRsp> seedProduceAddressList();
 
-    /**
-     * 获取物种下材料
-     *
-     * @return
-     */
 
-    List<BreedListRspDTO> breedList(String speciesCode);
-
-    List<SpeciesBreedListRspDTO> speciesBreedList();
 
 
 }

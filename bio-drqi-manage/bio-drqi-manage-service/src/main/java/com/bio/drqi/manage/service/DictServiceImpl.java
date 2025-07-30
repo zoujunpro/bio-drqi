@@ -58,42 +58,6 @@ public class DictServiceImpl implements DictService, DictInnerService {
         return list;
     }
 
-
-
-    @Override
-    public List<BreedListRspDTO> breedList(String speciesCode) {
-        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAllBySpeciesCode(speciesCode);
-        List<BreedListRspDTO> list = new ArrayList<>();
-        for (CerBreedDict cerBreedDict : cerBreedDictList) {
-            BreedListRspDTO breedListRspDTO = new BreedListRspDTO();
-            breedListRspDTO.setBreedCode(cerBreedDict.getBreedCode());
-            breedListRspDTO.setBreedName(cerBreedDict.getBreedName());
-            list.add(breedListRspDTO);
-        }
-        return list;
-    }
-
-    @Override
-    public List<SpeciesBreedListRspDTO> speciesBreedList() {
-        List<SpeciesBreedListRspDTO> result = new ArrayList<>();
-        List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectList(null);
-        for (CerSpeciesConf cerSpeciesConf : cerSpeciesConfList) {
-            SpeciesBreedListRspDTO speciesBreedListRspDTO = new SpeciesBreedListRspDTO();
-            speciesBreedListRspDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
-            speciesBreedListRspDTO.setSpeciesCode(cerSpeciesConf.getSpeciesCode());
-            List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAllBySpeciesCode(cerSpeciesConf.getSpeciesCode());
-            cerBreedDictList.forEach(cerBreedDict -> {
-                SpeciesBreedListRspDTO.Breed breed = new SpeciesBreedListRspDTO.Breed();
-                breed.setBreedCode(cerBreedDict.getBreedCode());
-                breed.setBreedName(cerBreedDict.getBreedName());
-                speciesBreedListRspDTO.getBreedList().add(breed);
-            });
-            result.add(speciesBreedListRspDTO);
-        }
-        return result;
-    }
-
-
     @Override
     public BioDict findByDictTypeAndDictValueName(BioDictTypeEnum bioDictTypeEnum, String dictValueName) {
         if (dictValueName == null) {

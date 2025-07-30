@@ -14,6 +14,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface BioDictMapper extends BaseMapper<BioDict> {
     List<BioDict> selectAll();
 
+    List<BioDict> selectAllByDictType(@Param("dictType") String dictType);
+
     BioDict selectOneByDictTypeAndDictValueCode(@Param("dictType") String dictType, @Param("dictValueCode") String dictValueCode);
 
 

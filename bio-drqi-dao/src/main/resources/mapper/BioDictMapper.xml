@@ -38,6 +38,14 @@
         dict_type = #{dictType,jdbcType=VARCHAR}
         AND dict_value_name = #{dictValueName,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByDictType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_dict
+        where
+        dict_type = #{dictType,jdbcType=VARCHAR}
+        order by id desc
+    </select>
 
 
 </mapper>

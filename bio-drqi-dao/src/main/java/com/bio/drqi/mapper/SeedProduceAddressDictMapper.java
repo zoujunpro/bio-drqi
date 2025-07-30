@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.List;
 import com.bio.drqi.domain.SeedProduceAddressDict;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,6 +14,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface SeedProduceAddressDictMapper extends BaseMapper<SeedProduceAddressDict> {
 
     SeedProduceAddressDict selectOneByAddressName(@Param("addressName") String addressName);
+
+    List<SeedProduceAddressDict> selectAll();
 }
 
 

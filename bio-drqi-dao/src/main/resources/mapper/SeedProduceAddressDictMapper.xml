@@ -5,14 +5,15 @@
 <mapper namespace="com.bio.drqi.mapper.SeedProduceAddressDictMapper">
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.SeedProduceAddressDict">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="addressName" column="address_name" jdbcType="VARCHAR"/>
-            <result property="longitude" column="longitude" jdbcType="VARCHAR"/>
-            <result property="latitude" column="latitude" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="addressName" column="address_name" jdbcType="VARCHAR"/>
+        <result property="longitude" column="longitude" jdbcType="VARCHAR"/>
+        <result property="latitude" column="latitude" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,address_name,
+        id
+        ,address_name,
         longitude,latitude
     </sql>
     <select id="selectOneByAddressName" resultMap="BaseResultMap">
@@ -21,5 +22,11 @@
         from seed_produce_address_dict
         where
         address_name = #{addressName,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_produce_address_dict
+        order by id desc
     </select>
 </mapper>

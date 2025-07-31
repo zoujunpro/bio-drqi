@@ -146,6 +146,12 @@ public class SeedInStoreDTO extends SeedProcDTO {
          */
         private String productionLocationName;
 
+
+        /**
+         * 生产地点（天津/海南/新乡）
+         */
+        private String productionLocationCode;
+
         /**
          * 基因型性状
          */

@@ -90,7 +90,7 @@ public class ParseSeedInExcelRspDTO {
     private String speciesCode;
 
 
-
+    private String productionLocationCode;
     private String storeFlag;
 
     private String uniqueCode;

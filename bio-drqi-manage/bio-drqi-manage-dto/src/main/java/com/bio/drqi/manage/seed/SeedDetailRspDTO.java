@@ -116,6 +116,10 @@ public class SeedDetailRspDTO {
      * 生产地点（天津/海南/新乡）
      */
     private String productionLocationName;
+    /**
+     * 生产地点（天津/海南/新乡）
+     */
+    private String productionLocationCode;
 
 
     /**

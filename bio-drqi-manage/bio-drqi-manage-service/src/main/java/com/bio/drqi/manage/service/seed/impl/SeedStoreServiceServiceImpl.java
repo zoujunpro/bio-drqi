@@ -59,6 +59,9 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
+    @Resource
+    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
+
     @Override
     public SeedDetailRspDTO querySeedByNum(String seedNum) {
         SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum);
@@ -71,9 +74,14 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
             seedDetailRspDTO.setBreedName(cerBreedDict.getBreedName());
         }
         CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(seedDetailRspDTO.getSpeciesCode());
-        if(cerSpeciesConf!=null){
+        if (cerSpeciesConf != null) {
             seedDetailRspDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
         }
+        if (StringUtils.isNotEmpty(seedStockTb.getProductionLocationCode())) {
+            SeedProduceAddressDict seedProduceAddressDict = seedProduceAddressDictMapper.selectOneByAddressCode(seedStockTb.getProductionLocationCode());
+            seedDetailRspDTO.setProductionLocationName(seedProduceAddressDict==null?null:seedProduceAddressDict.getAddressName());
+        }
+
         return seedDetailRspDTO;
     }
 
@@ -196,6 +204,9 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         List<UserDetailRspDTO.DataPermissionConfig> dataPermissionList = responseResult.getData().getDataPermissionConfigList();
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
         List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectAll();
+        List<SeedProduceAddressDict> seedProduceAddressDictList = seedProduceAddressDictMapper.selectAll();
+        Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictList.stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
+
         Map<String, String> speciesMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
         Map<String, String> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         dataPermissionList = dataPermissionList.stream().filter(dataPermission -> dataPermission.getPermissionType().equals(DataPermissionTypeEnum.SEED_STORE.name())).collect(Collectors.toList());
@@ -243,6 +254,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         targetPageInfo.getList().forEach(seedStockPageRspDTO -> {
             seedStockPageRspDTO.setBreedName(cerBreedDictMap.get(seedStockPageRspDTO.getBreedCode()));
             seedStockPageRspDTO.setSpeciesName(speciesMap.get(seedStockPageRspDTO.getSpeciesCode()));
+            seedStockPageRspDTO.setProductionLocationName(seedProduceAddressDictMap.get(seedStockPageRspDTO.getProductionLocationCode()));
         });
         return targetPageInfo;
     }

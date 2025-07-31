@@ -66,6 +66,9 @@ public class SeedStockInServiceImpl implements SeedStockInService {
     @Resource
     private RemoteUserService remoteUserService;
 
+    @Resource
+    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
+
 
     @Override
     public PageInfo<SeedStockInRspDTO> listPage(SeedStockInReqDTO seedStockInReqDTO) {
@@ -147,7 +150,7 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             seedStockTb.setTotalNumber(content.getSeedNumber());
             seedStockTb.setUnit(executeFormContent.getUnit());
             seedStockTb.setSourceType(executeFormContent.getSource());
-            seedStockTb.setProductionLocationCode(executeFormContent.getProductionLocationName());
+            seedStockTb.setProductionLocationCode(executeFormContent.getProductionLocationCode());
             seedStockTb.setSubmitUserId(bioTaskDtlTb.getApplyUserId());
             seedStockTb.setTargetCharacter(executeFormContent.getGeneticCharacter());
             seedStockTb.setSubmitUserName(bioTaskDtlTb.getApplyUserName());
@@ -196,6 +199,8 @@ public class SeedStockInServiceImpl implements SeedStockInService {
         List<BioDict> bioDictList = bioDictMapper.selectAll();
         List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectList(null);
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
+        List<SeedProduceAddressDict> seedProduceAddressDictList = seedProduceAddressDictMapper.selectAll();
+        Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictList.stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressName, SeedProduceAddressDict::getAddressCode));
         Map<String, CerBreedDict> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode() + ":" + cerBreedDict.getBreedName(), cerBreedDict -> cerBreedDict));
         Map<String, CerSpeciesConf> cerSpeciesConfMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesName, cerSpeciesConf -> cerSpeciesConf));
         Map<String, BioDict> bioDictMap = bioDictList.stream().collect(Collectors.toMap(bioDict -> bioDict.getDictType() + ":" + bioDict.getDictValueName(), bioDict -> bioDict));
@@ -252,6 +257,14 @@ public class SeedStockInServiceImpl implements SeedStockInService {
                 throw new BusinessException("代次填写错误：" + parseSeedInExcelRspDTO.getGeneration());
             }
             parseSeedInExcelRspDTO.setGeneration(generationEnum.code);
+
+            //校验生产地址
+            if (StringUtils.isNotEmpty(parseSeedInExcelRspDTO.getProductionLocationName())) {
+                if (seedProduceAddressDictMap.get(parseSeedInExcelRspDTO.getProductionLocationName()) == null) {
+                    throw new BusinessException("生产地址填写错误：" + parseSeedInExcelRspDTO.getProductionLocationName());
+                }
+                parseSeedInExcelRspDTO.setProductionLocationCode(seedProduceAddressDictMap.get(parseSeedInExcelRspDTO.getProductionLocationName()));
+            }
 
             parseSeedInExcelRspDTO.setStoreFlag(CerProjectContents.N);
             parseSeedInExcelRspDTO.setUniqueCode(UUID.fastUUID().toString().replace("-", ""));

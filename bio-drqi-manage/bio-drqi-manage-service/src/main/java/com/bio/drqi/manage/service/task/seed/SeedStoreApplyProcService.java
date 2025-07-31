@@ -41,13 +41,16 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
 
+    @Resource
+    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
+
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         SeedInStoreDTO seedInStoreDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedInStoreDTO.class);
         List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectList(null);
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
-        Map<String, CerBreedDict> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict ->cerBreedDict.getBreedCode(), cerBreedDict -> cerBreedDict));
+        Map<String, CerBreedDict> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getBreedCode(), cerBreedDict -> cerBreedDict));
         Map<String, CerSpeciesConf> cerSpeciesConfMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, cerSpeciesConf -> cerSpeciesConf));
 
         for (SeedInStoreDTO.ExecuteFormContent executeFormContent : seedInStoreDTO.getExecuteForm().getExecuteFormContentList()) {
@@ -96,6 +99,15 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 }
                 executeFormContent.setProjectCode(parentSeedStockTb.getProjectCode());
             }
+
+            if (StringUtils.isNotEmpty(executeFormContent.getProductionLocationName())) {
+                SeedProduceAddressDict seedProduceAddressDict = seedProduceAddressDictMapper.selectOneByAddressName(executeFormContent.getProductionLocationName());
+                if (seedProduceAddressDict == null) {
+                    throw new BusinessException("种子生产地点填写错误");
+                }
+                executeFormContent.setProductionLocationCode(seedProduceAddressDict.getAddressCode());
+            }
+
             executeFormContent.setBreedName(cerBreedDict.getBreedName());
             executeFormContent.setSpeciesName(cerSpeciesConf.getSpeciesName());
         }

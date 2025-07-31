@@ -112,6 +112,10 @@ public class SeedStockPageRspDTO {
      */
     private String productionLocationName;
 
+    /**
+     * 生产地点（天津/海南/新乡）
+     */
+    private String productionLocationCode;
 
     /**
      * 库位编号

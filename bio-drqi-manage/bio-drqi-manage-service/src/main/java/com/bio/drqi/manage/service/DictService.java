@@ -11,10 +11,6 @@ import java.util.List;
 public interface DictService {
     List<DictInfoRspDTO> list();
 
-    List<SeedProduceAddressListRsp> seedProduceAddressList();
-
-
-
 
 }
 

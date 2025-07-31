@@ -3,6 +3,7 @@ package com.bio.drqi.manage.service.seed.impl;
 import com.bio.base.base.PageDTO;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.domain.SeedProduceAddressDict;
+import com.bio.drqi.manage.conf.SeedProduceAddressListRsp;
 import com.bio.drqi.manage.seed.SeedProduceAddressDictAddDTO;
 import com.bio.drqi.manage.seed.SeedProduceAddressDictEditDTO;
 import com.bio.common.core.dto.BusinessException;
@@ -17,6 +18,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -65,6 +67,22 @@ public class SeedProduceAddressDictServiceImpl implements SeedProduceAddressDict
     @Override
     public void delete(Integer id) {
         seedProduceAddressDictMapper.deleteById(id);
+    }
+
+    @Override
+    public List<SeedProduceAddressListRsp> list() {
+        List<SeedProduceAddressListRsp> list = new ArrayList<>();
+        List<SeedProduceAddressDict> seedProduceAddressDictList = seedProduceAddressDictMapper.selectList(null);
+        for (SeedProduceAddressDict seedProduceAddressDict : seedProduceAddressDictList) {
+            SeedProduceAddressListRsp seedProduceAddressListRsp = new SeedProduceAddressListRsp();
+            seedProduceAddressListRsp.setProductionLocationName(seedProduceAddressDict.getAddressName());
+            seedProduceAddressListRsp.setProductionLocationCode(seedProduceAddressDict.getAddressCode());
+            seedProduceAddressListRsp.setLongitude(seedProduceAddressDict.getLongitude());
+            seedProduceAddressListRsp.setLatitude(seedProduceAddressDict.getLatitude());
+            list.add(seedProduceAddressListRsp);
+
+        }
+        return list;
     }
 
 

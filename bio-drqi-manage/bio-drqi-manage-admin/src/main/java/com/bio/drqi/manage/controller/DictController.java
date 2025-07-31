@@ -40,15 +40,6 @@ public class  DictController {
     }
 
 
-    /**
-     * 获取所有种子地址
-     *
-     * @return
-     */
-    @GetMapping("seedProduceAddressList")
-    public ResponseResult<List<SeedProduceAddressListRsp>> seedProduceAddressList() {
-        return ResponseResult.getSuccess(dictService.seedProduceAddressList());
-    }
 
 
 

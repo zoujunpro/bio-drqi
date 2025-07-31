@@ -11,11 +11,9 @@ import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.SampleGroupPergixEnum;
 import com.bio.drqi.common.util.LetterUtil;
-import com.bio.drqi.domain.BioTaskDtlTb;
-import com.bio.drqi.domain.CerBreedDict;
-import com.bio.drqi.domain.TcExperimentDesignTb;
-import com.bio.drqi.domain.TcExperimentTb;
+import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.CerBreedDictMapper;
+import com.bio.drqi.mapper.SeedProduceAddressDictMapper;
 import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
 import com.bio.drqi.mapper.TcExperimentTbMapper;
 import com.bio.drqi.tc.enums.ExperimentStatusEnum;
@@ -47,6 +45,9 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
     private CerBreedDictMapper cerBreedDictMapper;
 
     @Resource
+    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
+
+    @Resource
     private OssService ossService;
 
     @Override
@@ -66,7 +67,10 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         if (StringUtils.isNotEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {
             experimentDesignExcelDTOList = validatorExcel(tcExperimentTaskDTO);
         }
-
+        SeedProduceAddressDict seedProduceAddressDict = seedProduceAddressDictMapper.selectOneByAddressCode(tcExperimentTaskDTO.getExperimentAddressCode());
+        if (seedProduceAddressDict == null) {
+            throw new BusinessException("试验地点不正确");
+        }
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
 
             if (CollectionUtil.isEmpty(experimentDesignExcelDTOList)) {
@@ -80,7 +84,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             tcExperimentTb.setSpeciesName(tcExperimentTaskDTO.getSpeciesName());
             tcExperimentTb.setFileUrl(tcExperimentTaskDTO.getFileUrl());
             tcExperimentTb.setExperimentGoal(tcExperimentTaskDTO.getExperimentGoal());
-            tcExperimentTb.setExperimentAddress(tcExperimentTaskDTO.getExperimentAddress());
+            tcExperimentTb.setExperimentAddressCode(tcExperimentTaskDTO.getExperimentAddressCode());
             tcExperimentTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
             tcExperimentTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
             tcExperimentTb.setCreateTime(new Date());
@@ -165,9 +169,9 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             if (!experimentDesignExcelDTO.getVectorTaskCode().startsWith(experimentDesignExcelDTO.getProjectCode())) {
                 throw new BusinessException("实施方案:" + experimentDesignExcelDTO.getVectorTaskCode() + "不属于此项目:" + experimentDesignExcelDTO.getProjectCode());
             }
-            if(breedNameCodeMap.get(experimentDesignExcelDTO.getBreedName())==null){
-                throw new BusinessException("物种下无此品种配置"+experimentDesignExcelDTO.getBreedName());
-            }else {
+            if (breedNameCodeMap.get(experimentDesignExcelDTO.getBreedName()) == null) {
+                throw new BusinessException("物种下无此品种配置" + experimentDesignExcelDTO.getBreedName());
+            } else {
                 experimentDesignExcelDTO.setBreedCode(breedNameCodeMap.get(experimentDesignExcelDTO.getBreedName()));
             }
 

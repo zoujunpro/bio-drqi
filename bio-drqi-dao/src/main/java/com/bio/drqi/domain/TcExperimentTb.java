@@ -55,7 +55,7 @@ public class TcExperimentTb implements Serializable {
     /**
      * 实验地点
      */
-    private String experimentAddress;
+    private String experimentAddressCode;
 
     /**
      * 申请人

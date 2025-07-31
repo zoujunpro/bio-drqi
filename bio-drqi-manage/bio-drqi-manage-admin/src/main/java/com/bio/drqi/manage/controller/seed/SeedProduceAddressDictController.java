@@ -4,6 +4,7 @@ import com.bio.base.base.PageDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.manage.conf.SeedProduceAddressListRsp;
 import com.bio.drqi.manage.seed.SeedProduceAddressDictAddDTO;
 import com.bio.drqi.manage.seed.SeedProduceAddressDictEditDTO;
 import com.bio.drqi.manage.seed.SeedProduceAddressDictListRspDTO;
@@ -13,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 地址管理
@@ -65,5 +67,15 @@ public class SeedProduceAddressDictController {
         seedProduceAddressDictService.delete(id);
         return ResponseResult.getSuccess("成功");
     }
+    /**
+     * 获取所有种子地址
+     *
+     * @return
+     */
+    @GetMapping("list")
+    public ResponseResult<List<SeedProduceAddressListRsp>> list() {
+        return ResponseResult.getSuccess(seedProduceAddressDictService.list());
+    }
+
 
 }

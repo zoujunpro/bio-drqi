@@ -43,20 +43,7 @@ public class DictServiceImpl implements DictService, DictInnerService {
         return BeanUtils.copyListProperties(bioDictList, DictInfoRspDTO.class);
     }
 
-    @Override
-    public List<SeedProduceAddressListRsp> seedProduceAddressList() {
-        List<SeedProduceAddressListRsp> list = new ArrayList<>();
-        List<SeedProduceAddressDict> seedProduceAddressDictList = seedProduceAddressDictMapper.selectList(null);
-        for (SeedProduceAddressDict seedProduceAddressDict : seedProduceAddressDictList) {
-            SeedProduceAddressListRsp seedProduceAddressListRsp = new SeedProduceAddressListRsp();
-            seedProduceAddressListRsp.setProductionLocationName(seedProduceAddressDict.getAddressName());
-            seedProduceAddressListRsp.setLongitude(seedProduceAddressDict.getLongitude());
-            seedProduceAddressListRsp.setLatitude(seedProduceAddressDict.getLatitude());
-            list.add(seedProduceAddressListRsp);
 
-        }
-        return list;
-    }
 
     @Override
     public BioDict findByDictTypeAndDictValueName(BioDictTypeEnum bioDictTypeEnum, String dictValueName) {

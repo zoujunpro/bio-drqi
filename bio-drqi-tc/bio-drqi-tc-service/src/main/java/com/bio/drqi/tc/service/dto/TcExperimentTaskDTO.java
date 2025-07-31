@@ -17,7 +17,10 @@ public class TcExperimentTaskDTO {
 
     private String experimentGoal;
 
-    private String experimentAddress;
+    @NotEmpty(message = "参数缺失：试验地点")
+    private String experimentAddressCode;
+
+    private String experimentAddressName;
 
     private String experimentType;
     /**

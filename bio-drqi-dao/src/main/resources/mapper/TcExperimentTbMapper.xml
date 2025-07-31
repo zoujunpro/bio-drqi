@@ -12,7 +12,7 @@
             <result property="speciesName" column="species_name" jdbcType="VARCHAR"/>
             <result property="fileUrl" column="file_url" jdbcType="VARCHAR"/>
             <result property="experimentGoal" column="experiment_goal" jdbcType="VARCHAR"/>
-            <result property="experimentAddress" column="experiment_address" jdbcType="VARCHAR"/>
+            <result property="experimentAddressCode" column="experiment_address_code" jdbcType="VARCHAR"/>
             <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
             <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -30,7 +30,7 @@
     <sql id="Base_Column_List">
         id,project_codes,vector_task_codes,
         species_code,species_name,file_url,
-        experiment_goal,experiment_address,apply_user_name,
+        experiment_goal,experiment_address_code,apply_user_name,
         apply_user_id,create_time,experiment_num,
         task_num,design_url,sample_code_prefix,next_sample_number,experiment_status, harvest_apply_num,experiment_type
     </sql>
@@ -45,7 +45,7 @@
             <if test="speciesName != null and speciesName!='' ">and species_name=#{speciesName,jdbcType=VARCHAR}</if>
             <if test="fileUrl != null">file_url=#{fileUrl,jdbcType=VARCHAR}</if>
             <if test="experimentGoal != null">and experiment_goal=#{experimentGoal,jdbcType=VARCHAR}</if>
-            <if test="experimentAddress != null">and experiment_address=#{experimentAddress,jdbcType=VARCHAR}</if>
+            <if test="experimentAddressCode != null">and experiment_address_code=#{experimentAddressCode,jdbcType=VARCHAR}</if>
             <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
             <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>

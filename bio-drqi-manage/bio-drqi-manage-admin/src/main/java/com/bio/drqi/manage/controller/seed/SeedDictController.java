@@ -25,7 +25,7 @@ public class SeedDictController {
      * 种子库字典列表
      */
     @GetMapping("list")
-    @RequirePermissions("system:configManagement")
+    @RequirePermissions("seed:seedDict:list")
     public ResponseResult<List<SeedDictTreeListRspDTO>> list() {
         return ResponseResult.getSuccess(seedBioDictService.list());
     }
@@ -34,7 +34,7 @@ public class SeedDictController {
      * 种子库字典新增
      */
     @PostMapping("/add")
-    @RequirePermissions("system:configManagement:add")
+    @RequirePermissions("seed:seedDict:add")
     public ResponseResult<String> add(@RequestBody SeedDictAddReqDTO seedDictAddReqDTO) {
         seedBioDictService.add(seedDictAddReqDTO);
         return ResponseResult.getSuccess("成功");
@@ -44,7 +44,7 @@ public class SeedDictController {
      * 种子库字典删除
      */
     @GetMapping("/delete")
-    @RequirePermissions("system:configManagement:delete")
+    @RequirePermissions("seed:seedDict:delete")
     public ResponseResult delete(@RequestParam Integer id) {
         seedBioDictService.delete(id);
         return ResponseResult.getSuccess("成功");
@@ -54,7 +54,7 @@ public class SeedDictController {
      * 种子库字典编辑
      */
     @PostMapping("/edit")
-    @RequirePermissions("system:configManagement:edit")
+    @RequirePermissions("seed:seedDict:edit")
     public ResponseResult edit(@RequestBody SeedDictEditReqDTO seedDictEditReqDTO) {
         seedBioDictService.edit(seedDictEditReqDTO);
         return ResponseResult.getSuccess("成功");

@@ -1,72 +1,74 @@
 package com.bio.drqi.manage.controller.seed;
 
-import com.bio.common.core.dto.ResponseResult;
-import com.bio.common.security.annotation.RequirePermissions;
-import com.bio.drqi.common.dto.PageDTO;
-import com.bio.drqi.manage.seed.SeedQualityCheckAddReqDTO;
-import com.bio.drqi.manage.seed.SeedQualityCheckEditReqDTO;
-import com.bio.drqi.manage.seed.SeedQualityCheckRspDTO;
 import com.bio.drqi.manage.service.seed.SeedQualityCheckService;
+import com.bio.drqi.manage.seed.SeedQualityCheckReqDTO;
+import com.bio.common.core.dto.ResponseResult;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 每日质检考种
+ */
+@RestController
+@RequestMapping("/qualityCheck")
+public class SeedQualityCheckController {
+
+    @Resource
+    private SeedQualityCheckService seedQualityCheckService;
+
 
     /**
-     * 种子库考种配置信息
+     * 模板下载
+     * @param httpServletResponse
      */
-    @RestController
-    @RequestMapping("seedQualityCheck")
-    public class SeedQualityCheckController {
-
-        @Resource
-        private SeedQualityCheckService seedQualityCheckService;
-
-        /**
-         * 分页查询
-         * @param pageDTO
-         * @return
-         */
-        @PostMapping("/listPage")
-        @RequirePermissions("seed:seedQualityCheck:listPage")
-        public ResponseResult<PageInfo<SeedQualityCheckRspDTO>> listPage(@RequestBody PageDTO pageDTO) {
-        PageInfo<SeedQualityCheckRspDTO> resultList = seedQualityCheckService.listPage(pageDTO);
-        return ResponseResult.getSuccess(resultList);
+    @GetMapping("/downTemplate")
+    public void downTemplate(HttpServletResponse httpServletResponse) {
+        seedQualityCheckService.downTemplate(httpServletResponse);
     }
 
     /**
-     *添加
-     * @param seedQualityCheckAddReqDTO
+     * 字段信息
      * @return
      */
-    @PostMapping("/add")
-    @RequirePermissions("seed:seedQualityCheck:add")
-    public ResponseResult<String> add(@RequestBody SeedQualityCheckAddReqDTO seedQualityCheckAddReqDTO){
-        seedQualityCheckService.add(seedQualityCheckAddReqDTO);
-        return ResponseResult.getSuccess("添加成功");
+    @GetMapping("/fieldList")
+    public ResponseResult<List<Map<String, String>>> fieldList() {
+        return ResponseResult.getSuccess(seedQualityCheckService.fieldList());
     }
 
     /**
-     * 删除
-     * @param seedQualityCheckEditReqDTO
+     * 字段信息
      * @return
      */
-    @PostMapping("/edit")
-    @RequirePermissions("seed:seedQualityCheck:edit")
-    public ResponseResult<String> edit(@RequestBody SeedQualityCheckEditReqDTO seedQualityCheckEditReqDTO){
-        seedQualityCheckService.edit(seedQualityCheckEditReqDTO);
-        return ResponseResult.getSuccess("删除成功");
+    @GetMapping("/fieldListNotTimeAndSeedNum")
+    public ResponseResult<List<Map<String, String>>> fieldListNotTimeAndSeedNum() {
+        return ResponseResult.getSuccess(seedQualityCheckService.fieldListNotTimeAndSeedNum());
     }
 
     /**
-     * 删除
-     * @param id
+     * 上传数据
+     * @param file
      * @return
      */
-    @GetMapping("/delete")
-    @RequirePermissions("seed:seedQualityCheck:delete")
-    public ResponseResult<String> delete(@RequestParam Integer id){
-        seedQualityCheckService.delete(id);
-        return ResponseResult.getSuccess("删除成功");
+
+    @PostMapping("/updateLoadData")
+    public ResponseResult<String> updateLoadData(@RequestPart MultipartFile file) {
+        seedQualityCheckService.updateLoadData(file);
+        return ResponseResult.getSuccess("成功");
+    }
+
+    /**
+     * 分页查询
+     * @param seedQualityCheckReqDTO
+     * @return
+     */
+    @PostMapping("/listPage")
+    public ResponseResult<PageInfo<Map<String,String>>> listPage(@RequestBody SeedQualityCheckReqDTO seedQualityCheckReqDTO) {
+        return ResponseResult.getSuccess(seedQualityCheckService.listPage(seedQualityCheckReqDTO));
     }
 }

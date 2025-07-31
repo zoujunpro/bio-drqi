@@ -119,10 +119,7 @@ public class SeedInStoreDTO extends SeedProcDTO {
          * 授粉方式
          */
         private String pollinationMethod;
-        /**
-         * 种子类型
-         */
-        private String seedType;
+
         /**
          * 收获方式，单珠和混珠
          */
@@ -139,7 +136,7 @@ public class SeedInStoreDTO extends SeedProcDTO {
         /**
          * 计量单位g/kg/粒
          */
-        @EnumValue(strValues = {"g", "kg", "粒"}, message = "参数非法：unit")
+        @EnumValue(strValues = {"g", "kg", "粒","ml"}, message = "参数非法：unit")
         private String unit;
         /**
          * 生产地点（天津/海南/新乡）

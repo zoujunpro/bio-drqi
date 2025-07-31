@@ -15,6 +15,7 @@ import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.service.dto.TcExperimentTaskDTO;
 import com.bio.drqi.tc.service.dto.TcPollinationTaskDTO;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
+import com.lark.oapi.service.task.v1.enums.SourceEnum;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,6 +65,10 @@ public class Clean20250721Controller {
 
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
+
+
+    @Resource
+    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
 
 
     @GetMapping("cleanBreed")
@@ -308,14 +313,14 @@ public class Clean20250721Controller {
             String[] acceptorMaterialNameArr = cerVectorTaskTb.getAcceptorMaterial().split("\\|");
             StringBuffer acceptorMaterialCodeBuf = new StringBuffer("");
             for (String acceptorMaterialName : acceptorMaterialNameArr) {
-                if(acceptorMaterialName.length()==32){
+                if (acceptorMaterialName.length() == 32) {
                     continue;
                 }
                 CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(acceptorMaterialName, cerSpeciesConf.getSpeciesCode());
                 if (cerBreedDict != null) {
                     acceptorMaterialCodeBuf.append(cerBreedDict.getBreedCode()).append("|");
-                }else {
-                    throw new BusinessException("找不到品种："+acceptorMaterialName);
+                } else {
+                    throw new BusinessException("找不到品种：" + acceptorMaterialName);
                 }
             }
             if (StringUtils.isEmpty(acceptorMaterialCodeBuf)) {
@@ -376,7 +381,7 @@ public class Clean20250721Controller {
     public ResponseResult cleanTransForm() {
         List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectList(null);
         for (CerTransformTb cerTransformTb : cerTransformTbList) {
-            log.info("清洗cerTransformTb={}",JSONUtil.toJsonStr(cerTransformTb));
+            log.info("清洗cerTransformTb={}", JSONUtil.toJsonStr(cerTransformTb));
             if (cerTransformTb.getAcceptorMaterial() == null || cerTransformTb.getAcceptorMaterial().length() == 32) {
                 continue;
             }
@@ -402,7 +407,7 @@ public class Clean20250721Controller {
 
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerTransformTb.getTaskNum());
             TransformDTO transformDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TransformDTO.class);
-            if(transformDTO.getContentList()!=null){
+            if (transformDTO.getContentList() != null) {
                 transformDTO.getContentList().forEach(content -> {
                     content.setAcceptorMaterial(cerTransformTb.getAcceptorMaterial());
                     CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(cerTransformTb.getAcceptorMaterial());
@@ -419,59 +424,61 @@ public class Clean20250721Controller {
 
     }
 
-
-    public ResponseResult cleanVectorSeed() {
-        List<BioTaskDtlTb> implementation_planList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("implementation_plan");
-        for (BioTaskDtlTb bioTaskDtlTb : implementation_planList) {
-            log.info("implementation_plan:" + JSONUtil.toJsonStr(bioTaskDtlTb));
-            VectorTaskAddDTO vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
-            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(vectorTaskAddDTO.getAcceptorMaterial(), vectorTaskAddDTO.getSpeciesCode());
-            if (cerBreedDict != null) {
-                vectorTaskAddDTO.setAcceptorMaterial(cerBreedDict.getBreedCode());
-                bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(vectorTaskAddDTO));
-                bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+    @GetMapping("/cleanSeedStockAddress")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanSeedStockAddress() {
+        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectList(null);
+        Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressName, SeedProduceAddressDict::getAddressCode));
+        for (SeedStockTb seedStockTb : seedStockTbList) {
+            log.info("清洗seedStockTb={}", JSONUtil.toJsonStr(seedStockTb));
+            if (StringUtils.isEmpty(seedStockTb.getProductionLocationCode())) {
+                continue;
             }
-        }
+            if (seedStockTb.getProductionLocationCode().length() == 32) {
+                continue;
+            }
+            if ("未知".equals(seedStockTb.getProductionLocationCode())) {
+                seedStockTb.setProductionLocationCode(null);
+                seedStockTbMapper.updateById(seedStockTb);
+                continue;
+            }
 
-
-        List<BioTaskDtlTb> transformList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("transform");
-        for (BioTaskDtlTb bioTaskDtlTb : transformList) {
-            log.info("transform:" + JSONUtil.toJsonStr(bioTaskDtlTb));
-            TransformDTO transformDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TransformDTO.class);
-            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(transformDTO.getVectorTaskCode());
-            transformDTO.getContentList().forEach(content -> {
-                CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(content.getAcceptorMaterial(), cerVectorTaskTb.getSpeciesCode());
-                if (cerBreedDict != null) {
-                    content.setAcceptorMaterial(cerBreedDict.getBreedCode());
+            if ("平西府".equals(seedStockTb.getProductionLocationCode())) {
+                seedStockTb.setProductionLocationCode("武清CER");
+            } else if ("山西".equals(seedStockTb.getProductionLocationCode())) {
+                seedStockTb.setProductionLocationCode("武清CER");
+            } else if ("海南".equals(seedStockTb.getProductionLocationCode())) {
+                seedStockTb.setProductionLocationCode("武清CER");
+            } else if ("昌平".equals(seedStockTb.getProductionLocationCode())) {
+                seedStockTb.setProductionLocationCode("武清CER");
+            } else if ("武清农场".equals(seedStockTb.getProductionLocationCode())) {
+                seedStockTb.setProductionLocationCode("武清CER");
+            } else if ("长春".equals(seedStockTb.getProductionLocationCode())) {
+                seedStockTb.setProductionLocationCode("武清CER");
+            } else if ("武清".equals(seedStockTb.getProductionLocationCode())) {
+                //CER
+                if ("1".equals(seedStockTb.getSourceType())) {
+                    seedStockTb.setProductionLocationCode("武清CER");
+                } else if ("2".equals(seedStockTb.getSourceType())) {
+                    seedStockTb.setProductionLocationCode("武清玻璃温室");
+                } else if ("4".equals(seedStockTb.getSourceType())) {
+                    seedStockTb.setProductionLocationCode("武清大田");
                 }
-            });
-            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(transformDTO));
-            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
-        }
-
-
-        log.info("实施方案转化品种清洗开始");
-        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectList(null);
-        for (CerVectorTaskTb cerVectorTaskTb : cerVectorTaskTbList) {
-            log.info("实施方案转化品种清洗:" + JSONUtil.toJsonStr(cerVectorTaskTb));
-            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(cerVectorTaskTb.getAcceptorMaterial(), cerVectorTaskTb.getSpeciesCode());
-            if (cerBreedDict != null) {
-                cerVectorTaskTb.setAcceptorMaterial(cerBreedDict.getBreedCode());
-            } else {
-                throw new BusinessException("数据异常，请检查品种数据");
+            } else if ("CER".equals(seedStockTb.getProductionLocationCode())) {
+                seedStockTb.setProductionLocationCode("武清CER");
             }
-            cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
 
-            List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllByVectorTaskId(cerVectorTaskTb.getId());
-            cerTransformTbList.forEach(cerTransformTb -> {
-                cerTransformTb.setAcceptorMaterial(cerVectorTaskTb.getAcceptorMaterial());
-                cerTransformTbMapper.updateById(cerTransformTb);
-            });
+            SeedProduceAddressDict seedProduceAddressDict = seedProduceAddressDictMapper.selectOneByAddressName(seedStockTb.getProductionLocationCode());
+            if (seedProduceAddressDict == null) {
+                throw new BusinessException("找不到此生产地点：" + seedStockTb.getProductionLocationCode());
+            }
+            seedStockTb.setProductionLocationCode(seedProduceAddressDict.getAddressCode());
+            seedStockTbMapper.updateById(seedStockTb);
+
         }
-        log.info("实施方案转化品种清洗结束");
-
-        return ResponseResult.getSuccess("ok");
+        return null;
     }
+
 
     @Data
     public static class VectorTaskExcel {

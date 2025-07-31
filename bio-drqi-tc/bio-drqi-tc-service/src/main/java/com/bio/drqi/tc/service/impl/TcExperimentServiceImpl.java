@@ -54,12 +54,16 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
 
+    @Resource
+    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
+
 
     @Override
     public PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
         PageHelper.startPage(tcExperimentListPageReqDTO.getPageNum(), tcExperimentListPageReqDTO.getPageSize());
         List<TcHarvestSeedApplyTb> tcHarvestSeedApplyTbList = tcHarvestSeedApplyTbMapper.selectSelective(null);
         List<TcPollinationApplyTb> tcPollinationApplyTbList = tcPollinationApplyTbMapper.selectSelective(null);
+        Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
         TcExperimentTb tcExperimentTb = new TcExperimentTb();
         tcExperimentTb.setVectorTaskCodes(tcExperimentListPageReqDTO.getVectorTaskCode());
         tcExperimentTb.setProjectCodes(tcExperimentListPageReqDTO.getProjectCode());
@@ -74,6 +78,7 @@ public class TcExperimentServiceImpl implements TcExperimentService {
             resultPageInfo.getList().forEach(tcExperimentListPageRspDTO -> {
                 tcExperimentListPageRspDTO.setHarvestFlag(harvestExperimentNumList.contains(tcExperimentListPageRspDTO.getExperimentNum()) ? BioDrQiContents.Y : BioDrQiContents.N);
                 tcExperimentListPageRspDTO.setPollinationFlag(pollinationExperimentNumList.contains(tcExperimentListPageRspDTO.getExperimentNum()) ? BioDrQiContents.Y : BioDrQiContents.N);
+                tcExperimentListPageRspDTO.setExperimentAddressName(seedProduceAddressDictMap.get(tcExperimentListPageRspDTO.getExperimentAddressCode()));
             });
         }
         return resultPageInfo;

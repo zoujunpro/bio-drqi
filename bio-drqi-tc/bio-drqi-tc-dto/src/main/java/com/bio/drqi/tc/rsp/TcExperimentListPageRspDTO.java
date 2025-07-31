@@ -42,7 +42,11 @@ public class TcExperimentListPageRspDTO {
     /**
      * 实验地点
      */
-    private String experimentAddress;
+    private String experimentAddressCode;
+    /**
+     * 实验地点
+     */
+    private String experimentAddressName;
 
     /**
      * 申请人

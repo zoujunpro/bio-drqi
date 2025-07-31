@@ -28,7 +28,7 @@ import javax.annotation.Resource;
          * @return
          */
         @PostMapping("/listPage")
-        @RequirePermissions("system:examtypeManagement")
+        @RequirePermissions("seed:seedQualityCheck:listPage")
         public ResponseResult<PageInfo<SeedQualityCheckRspDTO>> listPage(@RequestBody PageDTO pageDTO) {
         PageInfo<SeedQualityCheckRspDTO> resultList = seedQualityCheckService.listPage(pageDTO);
         return ResponseResult.getSuccess(resultList);
@@ -40,7 +40,7 @@ import javax.annotation.Resource;
      * @return
      */
     @PostMapping("/add")
-    @RequirePermissions("system:examtypeManagement:add")
+    @RequirePermissions("seed:seedQualityCheck:add")
     public ResponseResult<String> add(@RequestBody SeedQualityCheckAddReqDTO seedQualityCheckAddReqDTO){
         seedQualityCheckService.add(seedQualityCheckAddReqDTO);
         return ResponseResult.getSuccess("添加成功");
@@ -52,7 +52,7 @@ import javax.annotation.Resource;
      * @return
      */
     @PostMapping("/edit")
-    @RequirePermissions("system:examtypeManagement:edit")
+    @RequirePermissions("seed:seedQualityCheck:edit")
     public ResponseResult<String> edit(@RequestBody SeedQualityCheckEditReqDTO seedQualityCheckEditReqDTO){
         seedQualityCheckService.edit(seedQualityCheckEditReqDTO);
         return ResponseResult.getSuccess("删除成功");
@@ -64,7 +64,7 @@ import javax.annotation.Resource;
      * @return
      */
     @GetMapping("/delete")
-    @RequirePermissions("system:examtypeManagement:delete")
+    @RequirePermissions("seed:seedQualityCheck:delete")
     public ResponseResult<String> delete(@RequestParam Integer id){
         seedQualityCheckService.delete(id);
         return ResponseResult.getSuccess("删除成功");

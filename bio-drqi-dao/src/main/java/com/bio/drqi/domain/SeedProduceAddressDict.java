@@ -36,6 +36,8 @@ public class SeedProduceAddressDict implements Serializable {
      */
     private String latitude;
 
+    private String addressCode;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

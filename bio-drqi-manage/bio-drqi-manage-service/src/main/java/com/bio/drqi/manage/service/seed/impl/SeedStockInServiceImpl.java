@@ -209,14 +209,6 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             }
             parseSeedInExcelRspDTO.setSource(sourceTypeBioDict.getDictValueCode());
 
-            //翻译种子类型
-            if (StringUtils.isNotEmpty(parseSeedInExcelRspDTO.getSeedType())) {
-                BioDict seedTypeBioDict = bioDictMap.get(BioDictTypeEnum.SEED_TYPE + ":" + parseSeedInExcelRspDTO.getSeedType());
-                if (seedTypeBioDict == null) {
-                    throw new BusinessException("种子类型填写错误：" + parseSeedInExcelRspDTO.getSeedType());
-                }
-                parseSeedInExcelRspDTO.setSeedType(seedTypeBioDict.getDictValueCode());
-            }
             //翻译收获方式
             if (StringUtils.isNotEmpty(parseSeedInExcelRspDTO.getHarvestType())) {
                 BioDict harvestTypeBioDict = bioDictMap.get(BioDictTypeEnum.HARVEST_TYPE + ":" + parseSeedInExcelRspDTO.getHarvestType());

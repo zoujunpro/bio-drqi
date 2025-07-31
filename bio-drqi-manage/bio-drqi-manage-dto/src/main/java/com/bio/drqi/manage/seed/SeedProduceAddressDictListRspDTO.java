@@ -12,6 +12,13 @@ public class SeedProduceAddressDictListRspDTO {
      */
     private String addressName;
 
+
+    /**
+     * 地点名称
+     */
+    private String addressCode;
+
+
     /**
      * 经度
      */

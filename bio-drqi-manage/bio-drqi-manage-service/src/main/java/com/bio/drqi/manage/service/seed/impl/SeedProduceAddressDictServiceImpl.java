@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.service.seed.impl;
 
 import com.bio.base.base.PageDTO;
+import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.domain.SeedProduceAddressDict;
 import com.bio.drqi.manage.seed.SeedProduceAddressDictAddDTO;
 import com.bio.drqi.manage.seed.SeedProduceAddressDictEditDTO;
@@ -51,6 +52,7 @@ public class SeedProduceAddressDictServiceImpl implements SeedProduceAddressDict
         SeedProduceAddressDict seedProduceAddressDict=new SeedProduceAddressDict();
         seedProduceAddressDict.setAddressName(seedProduceAddressDictAddDTO.getAddressName());
         seedProduceAddressDict.setLongitude(seedProduceAddressDictAddDTO.getLongitude());
+        seedProduceAddressDict.setAddressCode(IdUtils.simpleUUID());
         seedProduceAddressDict.setLatitude(seedProduceAddressDictAddDTO.getLatitude());
         try {
             seedProduceAddressDictMapper.insert(seedProduceAddressDict);
@@ -64,4 +66,6 @@ public class SeedProduceAddressDictServiceImpl implements SeedProduceAddressDict
     public void delete(Integer id) {
         seedProduceAddressDictMapper.deleteById(id);
     }
+
+
 }

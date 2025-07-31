@@ -16,6 +16,8 @@ public interface SeedProduceAddressDictMapper extends BaseMapper<SeedProduceAddr
     SeedProduceAddressDict selectOneByAddressName(@Param("addressName") String addressName);
 
     List<SeedProduceAddressDict> selectAll();
+
+    SeedProduceAddressDict selectOneByAddressCode(@Param("addressCode") String addressCode);
 }
 
 

@@ -72,9 +72,6 @@ public class ParseSeedInExcelRspDTO {
     @ExcelProperty(value = "授粉方式")
     private String pollinationMethod;
 
-    @ExcelProperty(value = "种子类型")
-    private String seedType;
-
 
     @ExcelProperty(value = "生产地点")
     private String productionLocationName;

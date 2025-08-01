@@ -74,6 +74,7 @@ public class Clean20250721Controller {
     @GetMapping("cleanBreed")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanBreed() {
+
         /**
          * 清晰品种
          */
@@ -108,6 +109,15 @@ public class Clean20250721Controller {
             log.info("田测申请品种:" + JSONUtil.toJsonStr(tcExperimentTb));
             List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcExperimentTb.getExperimentNum());
             for (TcExperimentDesignTb tcExperimentDesignTb : tcExperimentDesignTbList) {
+                if ("4CV".equals(tcExperimentDesignTb.getBreedCode())) {
+                    tcExperimentDesignTb.setBreedCode("XY335F");
+                }
+                if ("6WC".equals(tcExperimentDesignTb.getBreedCode())) {
+                    tcExperimentDesignTb.setBreedCode("XY335M");
+                }
+                if ("中黄13".equals(tcExperimentDesignTb.getBreedCode())) {
+                    tcExperimentDesignTb.setBreedCode("ZH13");
+                }
                 String breedCode = breedRemarkMap.get(tcExperimentTb.getSpeciesCode() + ":" + tcExperimentDesignTb.getBreedCode());
                 if (StringUtils.isEmpty(breedCode)) {
                     throw new BusinessException("找不到品种：" + tcExperimentDesignTb.getBreedCode());
@@ -228,19 +238,17 @@ public class Clean20250721Controller {
     @GetMapping("/cleanTcDesign")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult cleanTcDesign() {
-        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
-        Map<String, String> breedRemarkMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode() + ":" + cerBreedDict.getRemark(), cerBreedDict -> cerBreedDict.getBreedCode()));
         log.info("田测申请品种开始");
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectList(null);
         for (TcExperimentTb tcExperimentTb : tcExperimentTbList) {
             log.info("田测申请品种:" + JSONUtil.toJsonStr(tcExperimentTb));
             List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcExperimentTb.getExperimentNum());
             for (TcExperimentDesignTb tcExperimentDesignTb : tcExperimentDesignTbList) {
-                String breedCode = breedRemarkMap.get(tcExperimentTb.getSpeciesCode() + ":" + tcExperimentDesignTb.getBreedCode());
-                if (StringUtils.isEmpty(breedCode)) {
+                CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(tcExperimentDesignTb.getBreedCode());
+                if (cerBreedDict == null) {
                     throw new BusinessException("找不到品种：" + tcExperimentDesignTb.getBreedCode());
                 } else {
-                    tcExperimentDesignTb.setBreedCode(breedCode);
+                    tcExperimentDesignTb.setBreedCode(cerBreedDict.getBreedCode());
                 }
                 tcExperimentDesignTbMapper.updateById(tcExperimentDesignTb);
             }
@@ -442,8 +450,9 @@ public class Clean20250721Controller {
                 seedStockTbMapper.updateById(seedStockTb);
                 continue;
             }
-
-            if ("平西府".equals(seedStockTb.getProductionLocationCode())) {
+            if ("昌平中科院".equals(seedStockTb.getProductionLocationCode())) {
+                seedStockTb.setProductionLocationCode("北京昌平中科院");
+            } else if ("平西府".equals(seedStockTb.getProductionLocationCode())) {
                 seedStockTb.setProductionLocationCode("北京昌平中科院");
             } else if ("山西".equals(seedStockTb.getProductionLocationCode())) {
                 seedStockTb.setProductionLocationCode("山西运城");

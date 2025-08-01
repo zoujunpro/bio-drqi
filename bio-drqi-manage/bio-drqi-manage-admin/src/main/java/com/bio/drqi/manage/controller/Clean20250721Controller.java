@@ -444,15 +444,15 @@ public class Clean20250721Controller {
             }
 
             if ("平西府".equals(seedStockTb.getProductionLocationCode())) {
-                seedStockTb.setProductionLocationCode("武清CER");
+                seedStockTb.setProductionLocationCode("北京昌平中科院");
             } else if ("山西".equals(seedStockTb.getProductionLocationCode())) {
                 seedStockTb.setProductionLocationCode("武清CER");
             } else if ("海南".equals(seedStockTb.getProductionLocationCode())) {
                 seedStockTb.setProductionLocationCode("武清CER");
             } else if ("昌平".equals(seedStockTb.getProductionLocationCode())) {
-                seedStockTb.setProductionLocationCode("武清CER");
+                seedStockTb.setProductionLocationCode("北京昌平中科院");
             } else if ("武清农场".equals(seedStockTb.getProductionLocationCode())) {
-                seedStockTb.setProductionLocationCode("武清CER");
+                seedStockTb.setProductionLocationCode("武清大田");
             } else if ("长春".equals(seedStockTb.getProductionLocationCode())) {
                 seedStockTb.setProductionLocationCode("武清CER");
             } else if ("武清".equals(seedStockTb.getProductionLocationCode())) {
@@ -476,9 +476,8 @@ public class Clean20250721Controller {
             seedStockTbMapper.updateById(seedStockTb);
 
         }
-        return null;
+        return ResponseResult.getSuccess("ok");
     }
-
 
     @Data
     public static class VectorTaskExcel {

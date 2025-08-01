@@ -446,9 +446,9 @@ public class Clean20250721Controller {
             if ("平西府".equals(seedStockTb.getProductionLocationCode())) {
                 seedStockTb.setProductionLocationCode("北京昌平中科院");
             } else if ("山西".equals(seedStockTb.getProductionLocationCode())) {
-                seedStockTb.setProductionLocationCode("武清CER");
+                seedStockTb.setProductionLocationCode("山西运城");
             } else if ("海南".equals(seedStockTb.getProductionLocationCode())) {
-                seedStockTb.setProductionLocationCode("武清CER");
+                seedStockTb.setProductionLocationCode("海南中科院");
             } else if ("昌平".equals(seedStockTb.getProductionLocationCode())) {
                 seedStockTb.setProductionLocationCode("北京昌平中科院");
             } else if ("武清农场".equals(seedStockTb.getProductionLocationCode())) {

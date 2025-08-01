@@ -479,6 +479,30 @@ public class Clean20250721Controller {
         return ResponseResult.getSuccess("ok");
     }
 
+
+    @GetMapping("/cleanTc")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanTc() {
+        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectList(null);
+        for (TcExperimentTb tcExperimentTb : tcExperimentTbList) {
+            SeedProduceAddressDict seedProduceAddressDict = seedProduceAddressDictMapper.selectOneByAddressName(tcExperimentTb.getExperimentAddressCode());
+            if (seedProduceAddressDict == null) {
+                throw new BusinessException("系统不识别此地点，需要先在系统配置");
+            }
+            tcExperimentTb.setExperimentAddressCode(seedProduceAddressDict.getAddressCode());
+
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcExperimentTb.getExperimentNum());
+            TcExperimentTaskDTO tcExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcExperimentTaskDTO.class);
+            tcExperimentTaskDTO.setExperimentAddressCode(seedProduceAddressDict.getAddressCode());
+            tcExperimentTaskDTO.setExperimentAddressName(seedProduceAddressDict.getAddressName());
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcExperimentTaskDTO));
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+            tcExperimentTbMapper.updateById(tcExperimentTb);
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
+
     @Data
     public static class VectorTaskExcel {
 

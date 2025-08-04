@@ -110,15 +110,12 @@ public class BmsProductServiceImpl implements BmsProductService {
 
     @Override
     public BmsProductTb add(BmsProductAddReqDTO bmsProductAddReqDTO) {
-        BmsBrandTb bmsBrandTb = null;
-        if (StringUtils.isNotEmpty(bmsProductAddReqDTO.getBrandCode())) {
-            bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsProductAddReqDTO.getBrandCode());
-            if (bmsBrandTb == null) {
-                throw new BusinessException("无此品牌");
-            }
-            if (BioDrQiContents.Y.equals(bmsBrandTb.getDeleteFlag())) {
-                throw new BusinessException("此品牌已经删除");
-            }
+        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsProductAddReqDTO.getBrandCode());
+        if (bmsBrandTb == null) {
+            throw new BusinessException("无此品牌");
+        }
+        if (BioDrQiContents.Y.equals(bmsBrandTb.getDeleteFlag())) {
+            throw new BusinessException("此品牌已经删除");
         }
         String productInnerCode = null;
         String maxProductInnerCode = bmsProductTbMapper.selectMaxProductInnerCode();
@@ -145,12 +142,8 @@ public class BmsProductServiceImpl implements BmsProductService {
             bmsProductTb.setProductOutCode(bmsProductAddReqDTO.getProductOutCode());
             bmsProductTb.setProductInnerCode(productInnerCode);
             bmsProductTb.setProductCategoryCode(bmsProductAddReqDTO.getProductCategoryCode());
-            bmsProductTb.setProductTypeCode(bmsProductAddReqDTO.getProductTypeCode());
-            if (bmsBrandTb != null) {
-                bmsProductTb.setBrandName(bmsBrandTb.getBrandName());
-                bmsProductTb.setBrandCode(bmsProductAddReqDTO.getBrandCode());
-            }
-
+            bmsProductTb.setBrandName(bmsBrandTb.getBrandName());
+            bmsProductTb.setBrandCode(bmsBrandTb.getBrandCode());
             bmsProductTb.setProductSpecs(bmsProductAddReqDTO.getProductSpecs());
             bmsProductTb.setCreateTime(new Date());
             bmsProductTb.setCreateUserId(SecurityContextHolder.getUserId());

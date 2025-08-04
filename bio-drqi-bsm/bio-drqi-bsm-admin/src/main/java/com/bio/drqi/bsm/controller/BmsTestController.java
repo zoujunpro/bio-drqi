@@ -37,8 +37,6 @@ import java.util.stream.Collectors;
 /**
  * 数据初始化清洗
  */
-@RestController
-@RequestMapping("/bmsDataClean")
 @Slf4j
 public class BmsTestController {
 
@@ -558,7 +556,8 @@ public class BmsTestController {
     }
 
 
-    @GetMapping("/cleanBreed")
+    @GetMapping("/cleanBrand")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanBreed() {
         List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectSelective(null);
         for (BmsProductTb bmsProductTb : bmsProductTbList) {

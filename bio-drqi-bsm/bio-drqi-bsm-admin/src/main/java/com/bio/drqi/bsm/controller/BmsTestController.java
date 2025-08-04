@@ -451,7 +451,6 @@ public class BmsTestController {
                 bmsProductAddReqDTO.setProductName(productStockCleanDataExcel.productName);
                 bmsProductAddReqDTO.setProductOutCode(productStockCleanDataExcel.productOutCode);
                 bmsProductAddReqDTO.setProductCategoryCode(bmsProductCategoryTb.getProductCategoryCode());
-                bmsProductAddReqDTO.setProductTypeCode(null);
                 bmsProductAddReqDTO.setBrandCode(bmsBrandTb.getBrandCode());
                 bmsProductAddReqDTO.setProductSpecs(productStockCleanDataExcel.product_specs);
                 bmsProductTb = bmsProductService.add(bmsProductAddReqDTO);
@@ -525,7 +524,6 @@ public class BmsTestController {
                 bmsProductAddReqDTO.setProductName(productCleanDataExcel.productName);
                 bmsProductAddReqDTO.setProductOutCode(productCleanDataExcel.productCode);
                 bmsProductAddReqDTO.setProductCategoryCode(bmsProductCategoryTb.getProductCategoryCode());
-                bmsProductAddReqDTO.setProductTypeCode(null);
                 bmsProductAddReqDTO.setBrandCode(brandCode);
                 bmsProductAddReqDTO.setProductSpecs(productCleanDataExcel.product_specs);
                 bmsProductService.add(bmsProductAddReqDTO);

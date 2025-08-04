@@ -3,17 +3,11 @@ package com.bio.drqi.manage.service.project.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.base.PrintRspDTO;
-import com.bio.drqi.domain.CerPlantDtlTb;
-import com.bio.drqi.domain.CerSampleTestTb;
-import com.bio.drqi.domain.CerTransformTb;
-import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.enums.SeedMaterialTypeEnum;
 import com.bio.drqi.manage.service.project.ProjectPrintService;
-import com.bio.drqi.mapper.CerPlantDtlTbMapper;
-import com.bio.drqi.mapper.CerSampleTestTbMapper;
-import com.bio.drqi.mapper.CerTransformTbMapper;
-import com.bio.drqi.mapper.CerVectorTaskTbMapper;
+import com.bio.drqi.mapper.*;
 import com.bio.drqi.manage.projectPrint.*;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
@@ -47,6 +41,9 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
 
     @Resource
     private PrintApi printApi;
+
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
 
 
     @Override
@@ -110,9 +107,10 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
                 CerSampleTestTb cerSampleTestTb = cerSampleTestTbList.get(0);
                 CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
-                if(cerVectorTaskTb==null){
-                    throw new BusinessException("数据异常，找不到实施方案信息："+cerSampleTestTb.getVectorTaskCode());
+                if (cerVectorTaskTb == null) {
+                    throw new BusinessException("数据异常，找不到实施方案信息：" + cerSampleTestTb.getVectorTaskCode());
                 }
+
                 SamplePrintData samplePrintData = new SamplePrintData();
                 samplePrintData.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
                 samplePrintData.setPlasmidName(cerSampleTestTb.getPlasmidName());
@@ -153,15 +151,20 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         if (CollectionUtil.isNotEmpty(plantPrintReqDTO.getContentList())) {
             for (PlantPrintReqDTO.Content content : plantPrintReqDTO.getContentList()) {
                 CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(content.getPlantCode(), content.getVectorTaskCode());
-                if(cerPlantDtlTb==null){
-                    throw new BusinessException("取样苗"+content.getPlantCode()+"未形成种植编号");
+                if (cerPlantDtlTb == null) {
+                    throw new BusinessException("取样苗" + content.getPlantCode() + "未形成种植编号");
                 }
-                CerVectorTaskTb cerVectorTaskTb =cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
+                CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerPlantDtlTb.getTransformCode(), content.getVectorTaskCode());
+                if (cerTransformTb == null) {
+                    throw new BusinessException("转化信息不存在");
+                }
+
+                CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(cerTransformTb.getAcceptorMaterial());
                 PlantPrintData plantPrintData = new PlantPrintData();
                 plantPrintData.setVectorTaskCode(content.getVectorTaskCode());
                 plantPrintData.setTransformCode(cerPlantDtlTb.getTransformCode());
                 plantPrintData.setPlantCode(content.getPlantCode());
-                plantPrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
+                plantPrintData.setBreedName(cerBreedDict.getBreedName());
                 plantPrintData.setPrintNum(content.getPrintNum() == null ? 1 : content.getPrintNum());
                 plantPrintDataList.add(plantPrintData);
             }
@@ -180,19 +183,29 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         List<SamplePrintData> samplePrintDataList = new ArrayList<>();
         List<TransformTransPrintData> transformTransPrintDataList = new ArrayList<>();
         for (TransPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
-            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(content.getVectorTaskCode());
             if (StringUtils.isNotEmpty(content.getSampleCode())) {
+                List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByVectorTaskCodeAndSampleCode(content.getVectorTaskCode(), content.getSampleCode());
+                if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
+                    throw new BusinessException("取样编号找不到");
+                }
+                CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTbList.get(0).getTransformCode(), content.getVectorTaskCode());
+                CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(cerTransformTb.getAcceptorMaterial());
                 SamplePrintData samplePrintData = new SamplePrintData();
-                samplePrintData.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+                samplePrintData.setVectorTaskCode(content.getVectorTaskCode());
                 samplePrintData.setTransformCode(content.getTransformCode());
                 samplePrintData.setSampleCode(content.getSampleCode());
                 samplePrintData.setTaskNum(transPrintReqDTO.getTaskNum());
-                samplePrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
+                samplePrintData.setBreedName(cerBreedDict.getBreedName());
                 samplePrintDataList.add(samplePrintData);
             } else if (StringUtils.isNotEmpty(content.getTransformCode())) {
+                CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(content.getTransformCode(), content.getVectorTaskCode());
+                if (cerTransformTb == null) {
+                    throw new BusinessException("转化信息不存在");
+                }
+                CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(cerTransformTb.getAcceptorMaterial());
                 TransformTransPrintData transformTransPrintData = new TransformTransPrintData();
                 transformTransPrintData.setVectorTaskCode(content.getVectorTaskCode());
-                transformTransPrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
+                transformTransPrintData.setBreedName(cerBreedDict.getBreedName());
                 transformTransPrintData.setTransformCode(content.getTransformCode());
                 transformTransPrintData.setTaskNum(transPrintReqDTO.getTaskNum());
                 transformTransPrintData.setPrintNum(content.getPrintNum() == null ? 1 : content.getPrintNum());
@@ -205,7 +218,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
             printRspDTO.setPrintDataList(printDataSave("sample_large_label_print", samplePrintDataList));
             return printRspDTO;
-          //转化大签打印
+            //转化大签打印
         } else if (CollectionUtil.isNotEmpty(transformTransPrintDataList)) {
             PrintRspDTO printRspDTO = new PrintRspDTO();
             printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);

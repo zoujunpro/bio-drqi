@@ -152,7 +152,7 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             seedStockTb.setSourceType(executeFormContent.getSource());
             seedStockTb.setProductionLocationCode(executeFormContent.getProductionLocationCode());
             seedStockTb.setSubmitUserId(bioTaskDtlTb.getApplyUserId());
-            seedStockTb.setTargetCharacter(executeFormContent.getGeneticCharacter());
+            seedStockTb.setGeneticCharacter(executeFormContent.getGeneticCharacter());
             seedStockTb.setSubmitUserName(bioTaskDtlTb.getApplyUserName());
             seedStockTb.setCreateTime(new Date());
             seedStockTb.setUpdateTime(new Date());

@@ -142,7 +142,7 @@ public class SeedStockTb implements Serializable {
     /**
      * 目标性状
      */
-    private String targetCharacter;
+    private String geneticCharacter;
 
     /**
      * 别名

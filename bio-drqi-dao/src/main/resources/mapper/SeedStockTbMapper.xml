@@ -29,7 +29,7 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
         <result property="totalNumber" column="total_number" jdbcType="DECIMAL"/>
-        <result property="targetCharacter" column="target_character" jdbcType="VARCHAR"/>
+        <result property="geneticCharacter" column="genetic_character" jdbcType="VARCHAR"/>
         <result property="aliasName" column="alias_name" jdbcType="VARCHAR"/>
         <result property="geneType" column="gene_type" jdbcType="VARCHAR"/>
         <result property="checkResult" column="check_result" jdbcType="OTHER"/>
@@ -53,7 +53,7 @@
         source_type,production_location_code,stock_location_num,
         submit_user_id,submit_user_name,create_time,
         update_time,remarks,total_number,
-        target_character,alias_name,gene_type,
+        genetic_character,alias_name,gene_type,
         check_result,sample_code,material_type,
         mather_seed_num,father_seed_num,region_num,
         genealogy,gene_separate_flag,trans_flag,

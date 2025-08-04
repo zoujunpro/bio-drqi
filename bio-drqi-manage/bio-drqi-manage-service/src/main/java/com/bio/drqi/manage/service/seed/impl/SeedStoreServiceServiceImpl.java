@@ -226,7 +226,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         seedStockTb.setBeninHarvestTime(seedStockPageReqDTO.getBeninHarvestTime());
         seedStockTb.setEndHarvestTime(seedStockPageReqDTO.getEndHarvestTime());
         seedStockTb.setGeneType(seedStockPageReqDTO.getGeneType());
-        seedStockTb.setTargetCharacter(seedStockPageReqDTO.getGeneticCharacter());
+        seedStockTb.setGeneticCharacter(seedStockPageReqDTO.getGeneticCharacter());
         seedStockTb.setAliasName(seedStockPageReqDTO.getAliasName());
         seedStockTb.setMaterialType(seedStockPageReqDTO.getMaterialType());
         if (seedStockPageReqDTO.getOrder() != null) {

@@ -123,4 +123,11 @@
         where
         project_code = #{projectCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByProductInnerCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_order_detail_tb
+        where
+        product_inner_code = #{productInnerCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

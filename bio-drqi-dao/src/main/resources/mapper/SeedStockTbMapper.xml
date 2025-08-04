@@ -107,6 +107,7 @@
             <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
             <if test="remarks != null">and remarks=#{remarks,jdbcType=VARCHAR}</if>
             <if test="totalNumber != null and totalNumber!=''">and total_number=#{totalNumber,jdbcType=DECIMAL}</if>
+            <if test="geneticCharacter != null and geneticCharacter!=''"> and genetic_character LIKE   CONCAT('%',#{geneticCharacter,jdbcType=VARCHAR},'%')  </if>
             <if test="aliasName != null and aliasName!=''"> and alias_name LIKE   CONCAT('%',#{aliasName,jdbcType=VARCHAR},'%')  </if>
             <if test="geneType != null and geneType!=''">and gene_type LIKE CONCAT('%',#{geneType,jdbcType=VARCHAR},'%') </if>
             <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>

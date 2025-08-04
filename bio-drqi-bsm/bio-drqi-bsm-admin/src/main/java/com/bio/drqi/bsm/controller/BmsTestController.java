@@ -90,7 +90,7 @@ public class BmsTestController {
 
 
     @Resource
-    private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
+    private BmsOrderDetailTbMapper bmsOrderDetailTbMapper;
 
 
     @Resource
@@ -164,20 +164,19 @@ public class BmsTestController {
     }
 
 
-
     @GetMapping("/cleanLabel")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanLabel() {
         List<BioPrintLabelInfoTb> bioPrintLabelInfoTbList = bioPrintLabelInfoTbMapper.searchAllByLabelType("bms_label_print");
         for (BioPrintLabelInfoTb bioPrintLabelInfoTb : bioPrintLabelInfoTbList) {
-            log.info("bioPrintLabelInfoTb={}",JSONUtil.toJsonStr(bioPrintLabelInfoTb));
+            log.info("bioPrintLabelInfoTb={}", JSONUtil.toJsonStr(bioPrintLabelInfoTb));
             String[] uniqueCodeArr = bioPrintLabelInfoTb.getUniqueCode().split("\\|");
-            if(uniqueCodeArr.length!=4){
+            if (uniqueCodeArr.length != 4) {
 
                 throw new BusinessException("标签异常");
             }
-            String stockCode=uniqueCodeArr[3];
-            BmsLabelPrintDTO bmsLabelPrintDTO=JSONUtil.toBean(bioPrintLabelInfoTb.getLabelText(),BmsLabelPrintDTO.class);
+            String stockCode = uniqueCodeArr[3];
+            BmsLabelPrintDTO bmsLabelPrintDTO = JSONUtil.toBean(bioPrintLabelInfoTb.getLabelText(), BmsLabelPrintDTO.class);
             bmsLabelPrintDTO.setStockCode(stockCode);
             bmsLabelPrintDTO.setUniqueCode(bioPrintLabelInfoTb.getUniqueCode());
             bmsLabelPrintDTO.setUnitCode(uniqueCodeArr[2]);
@@ -557,6 +556,25 @@ public class BmsTestController {
         return ResponseResult.getSuccess("pk");
 
     }
+
+
+    @GetMapping("/cleanBreed")
+    public ResponseResult<String> cleanBreed() {
+        List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectSelective(null);
+        for (BmsProductTb bmsProductTb : bmsProductTbList) {
+            if (bmsProductTb.getBrandCode() == null) {
+                List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectAllByProductInnerCode(bmsProductTb.getProductInnerCode());
+                if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
+                    bmsProductTb.setBrandCode(bmsOrderDetailTbList.get(0).getBrandCode());
+                    bmsProductTb.setBrandName(bmsOrderDetailTbList.get(0).getBrandName());
+                    bmsProductTbMapper.updateById(bmsProductTb);
+                }
+            }
+
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
 
     @Data
     public static class CmsProjectDataExcel {

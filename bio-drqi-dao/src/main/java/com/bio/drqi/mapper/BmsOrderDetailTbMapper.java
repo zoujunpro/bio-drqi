@@ -21,6 +21,8 @@ public interface BmsOrderDetailTbMapper extends BaseMapper<BmsOrderDetailTb> {
 
     List<BmsOrderDetailTb> selectAllByProjectCode(@Param("projectCode") String projectCode);
 
+    List<BmsOrderDetailTb> selectAllByProductInnerCode(@Param("productInnerCode") String productInnerCode);
+
 }
 
 

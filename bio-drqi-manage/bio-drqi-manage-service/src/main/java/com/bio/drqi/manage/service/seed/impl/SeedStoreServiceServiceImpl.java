@@ -219,7 +219,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         seedStockTb.setHarvestType(seedStockPageReqDTO.getHarvestType());
         seedStockTb.setSourceType(seedStockPageReqDTO.getSourceType());
         seedStockTb.setStockLocationNum(seedStockPageReqDTO.getStockLocationNum());
-        seedStockTb.setProductionLocationCode(seedStockPageReqDTO.getProductionLocationName());
+        seedStockTb.setProductionLocationCode(seedStockPageReqDTO.getProductionLocationCode());
         seedStockTb.setParentNum(seedStockPageReqDTO.getParentNum());
         seedStockTb.setPollinationMethod(seedStockPageReqDTO.getPollinationMethod());
         seedStockTb.setPlantNum(seedStockPageReqDTO.getPlantNum());

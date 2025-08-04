@@ -31,7 +31,7 @@ public class SeedStockPageReqDTO extends PageDTO {
     /**
      * 生产地点
      */
-    private String productionLocationName;
+    private String productionLocationCode;
     /**
      * 收获方式，单珠和混珠
      */

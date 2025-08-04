@@ -101,7 +101,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setUpdateTime(seedStockTb.getUpdateTime());
             seed.setRemarks(seedStockTb.getRemarks());
             seed.setTotalNumber(seedStockTb.getTotalNumber());
-            seed.setGeneticCharacter(seedStockTb.getTargetCharacter());
+            seed.setGeneticCharacter(seedStockTb.getGeneticCharacter());
             seed.setAliasName(seedStockTb.getAliasName());
             seed.setGeneType(seedStockTb.getGeneType());
              if(seedStockTb.getMaterialType()!=null){

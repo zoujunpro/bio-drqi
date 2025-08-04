@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/testClean")
 @Slf4j
 public class Clean20250721Controller {
 

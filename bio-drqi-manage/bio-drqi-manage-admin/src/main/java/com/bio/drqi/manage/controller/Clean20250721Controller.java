@@ -9,6 +9,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
 import com.bio.drqi.manage.dto.project.TransformDTO;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.mapper.*;
@@ -31,6 +32,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
+@RestController
+@RequestMapping("/test")
 public class Clean20250721Controller {
 
     @Resource
@@ -67,6 +70,32 @@ public class Clean20250721Controller {
 
     @Resource
     private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
+
+    @GetMapping("cleanTransFormBreedCode")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanTransFormBreedCode() {
+        List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("sample_and_test");
+        for (BioTaskDtlTb bioTaskDtlTb : bioTaskDtlTbList) {
+            NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
+            if (StringUtils.isNotEmpty(newSampleTestDTO.getFirstSampleApplyList())) {
+                for (NewSampleTestDTO.FirstSampleApply firstSampleApplyList : newSampleTestDTO.getFirstSampleApplyList()) {
+                    if(firstSampleApplyList.getAcceptorMaterialName()!=null){
+                        continue;
+                    }
+                    CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(firstSampleApplyList.getTransformCode(), firstSampleApplyList.getVectorTaskCode());
+                    if (cerTransformTb != null) {
+                        firstSampleApplyList.setAcceptorMaterial(cerTransformTb.getAcceptorMaterial());
+                        CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(cerTransformTb.getAcceptorMaterial());
+                        firstSampleApplyList.setAcceptorMaterialName(cerBreedDict.getBreedName());
+                        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
+                        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+                    }
+                }
+            }
+
+        }
+       return ResponseResult.getSuccess("ok");
+    }
 
 
     @GetMapping("cleanBreed")

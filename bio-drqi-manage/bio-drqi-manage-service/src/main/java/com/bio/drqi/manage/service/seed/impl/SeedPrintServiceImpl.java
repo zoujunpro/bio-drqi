@@ -55,6 +55,9 @@ public class SeedPrintServiceImpl implements SeedPrintService {
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
+    @Resource
+    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
+
     @Override
     public List<PrintRspDTO> seedOutLabelPrint(SeedOutPrintReqDTO seedOutPrintReqDTO) {
         List<PrintRspDTO> printRspDTOList = new ArrayList<>();
@@ -155,7 +158,12 @@ public class SeedPrintServiceImpl implements SeedPrintService {
                 seedInLabelPrintDTO.setSourceTypeName(dictInnerService.findByDictTypeAndDictValueCode(BioDictTypeEnum.SOURCE_CHANNEL, seedStockTb.getSourceType()).getDictValueName());
             }
             seedInLabelPrintDTO.setHarvestTime(StringUtils.isEmpty(seedStockTb.getHarvestTime()) ? "N/A" : seedStockTb.getHarvestTime());
-            seedInLabelPrintDTO.setProductionLocationName(seedStockTb.getProductionLocationCode());
+            if (StringUtils.isNotEmpty(seedStockTb.getProductionLocationCode())) {
+                SeedProduceAddressDict seedProduceAddressDict = seedProduceAddressDictMapper.selectOneByAddressCode(seedStockTb.getProductionLocationCode());
+                if(seedProduceAddressDict!=null){
+                    seedInLabelPrintDTO.setProductionLocationName(seedProduceAddressDict.getAddressName());
+                }
+            }
             if (SeedMaterialTypeEnum.getSeedMaterialTypeEnumByType(seedStockTb.getMaterialType()).equals(SeedMaterialTypeEnum.TYPE_1)) {
                 yellowSeedInLabelPrintDTOList.add(seedInLabelPrintDTO);
             } else if (SeedMaterialTypeEnum.getSeedMaterialTypeEnumByType(seedStockTb.getMaterialType()).equals(SeedMaterialTypeEnum.TYPE_2)) {

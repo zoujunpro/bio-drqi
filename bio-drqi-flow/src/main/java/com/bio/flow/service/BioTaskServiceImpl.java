@@ -251,7 +251,9 @@ public class BioTaskServiceImpl implements BioTaskService {
         if(CollectionUtil.isNotEmpty(instanceIdList)){
             Map<Long, String> instanceTaskTypeMap = flowService.queryListFlowTaskByInstanceIds(instanceIdList);
             bioTaskListPageRspDTOList.forEach(bioTaskListPageRspDTO -> {
-                bioTaskListPageRspDTO.setNodeType(instanceTaskTypeMap.get(Long.valueOf(bioTaskListPageRspDTO.getInstanceId())));
+                if(bioTaskListPageRspDTO.getInstanceId()!=null){
+                    bioTaskListPageRspDTO.setNodeType(instanceTaskTypeMap.get(Long.valueOf(bioTaskListPageRspDTO.getInstanceId())));
+                }
             });
         }
         PageInfo<BioTaskListPageRspDTO> pageResult = new PageInfo<>();

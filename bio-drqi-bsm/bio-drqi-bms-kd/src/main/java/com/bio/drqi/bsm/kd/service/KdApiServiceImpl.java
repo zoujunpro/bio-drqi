@@ -1,13 +1,12 @@
 package com.bio.drqi.bsm.kd.service;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
-import com.bio.drqi.bsm.kd.dto.GroupSaveDTO;
-import com.bio.drqi.bsm.kd.dto.KdApiBaseDisableRequestDTO;
-import com.bio.drqi.bsm.kd.dto.QuerySupplierDTO;
+import com.bio.drqi.bsm.kd.dto.*;
 import com.bio.drqi.bsm.kd.dto.model.*;
-import com.bio.drqi.bsm.kd.dto.KdApiBaseSaveRequestDTO;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
 import com.bio.drqi.bsm.kd.enums.KdParentGroupEnum;
 import com.bio.drqi.bsm.kd.enums.OperateEnum;
@@ -16,6 +15,7 @@ import com.bio.drqi.bsm.kd.util.KdRequestUtil;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -46,12 +46,12 @@ public class KdApiServiceImpl implements KdApiService {
     @Override
     public String execute(OperateEnum operateEnum, Object obj, String unitCode) {
         switch (operateEnum) {
-            case bmsSave:
-                return executeBmsSave(obj, unitCode);
-            case bmsModify:
-                return executeBmsModify(obj);
-            case bmsDisable:
-                return executeBmsDisable(obj);
+            case brandSave:
+                return executeBrandSave(obj, unitCode);
+            case brandModify:
+                return executeBrandModify(obj);
+            case brandDisable:
+                return executeBrandDisable(obj);
             case projectSave:
                 return executeProjectSave(obj, unitCode);
             case projectModify:
@@ -60,6 +60,8 @@ public class KdApiServiceImpl implements KdApiService {
                 return executeProjectDisable(obj);
             case stockSave:
                 return executeStockSave(obj, unitCode);
+            case stockQuery:
+                return executeStockQuery(obj, unitCode);
             case stockModify:
                 return executeStockModify(obj);
             case stockDisable:
@@ -70,8 +72,12 @@ public class KdApiServiceImpl implements KdApiService {
                 return executeMaterialModify(obj);
             case materialDisable:
                 return executeMaterialDisable(obj, unitCode);
+            case materialQuery:
+                return materialQuery(obj, unitCode);
             case groupSave:
                 return groupSave(obj);
+            case groupQuery:
+                return groupQuery(obj);
             case inStockSave:
                 return inStockSave(obj, unitCode);
             case outStockSave:
@@ -83,6 +89,48 @@ public class KdApiServiceImpl implements KdApiService {
             default:
                 throw new BusinessException("数据异常，请检查金蝶配置");
         }
+    }
+
+
+    private String executeStockQuery(Object obj, String unitCode) {
+        BmsStockDict bmsStockDict = (BmsStockDict) obj;
+        ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
+        executeBillQueryModelDTO.setFormId(FormIdEnum.BD_STOCK.name());
+        executeBillQueryModelDTO.setFieldKeys("FNUMBER,FNAME,FDocumentStatus,FForbidStatus");
+        String filterString = "FNUMBER='%s' and CreateOrgId.FNumber ='%s' and  FUseOrgId.FNumber='%s' and  FDocumentStatus='C' and FForbidStatus='A'";
+        executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsStockDict.getStockCode(), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+        List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
+        if (CollectionUtil.isEmpty(result)) {
+            throw new BusinessException("查询不到数据");
+        }
+        return result.get(0).get(0).toString();
+    }
+
+    private String materialQuery(Object obj, String unitCode) {
+        BmsProductTb bmsProductTb = (BmsProductTb) obj;
+        ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
+        executeBillQueryModelDTO.setFormId(FormIdEnum.BD_MATERIAL.name());
+        executeBillQueryModelDTO.setFieldKeys("FMATERIALID,FNUMBER,FNAME,FDocumentStatus,FForbidStatus");
+        String filterString = "FNUMBER='%s' and FCreateOrgId.FNumber = '%s' and FUseOrgId.FNumber = '%s' and FDocumentStatus = 'C' and FForbidStatus = 'A' ";
+        executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsProductTb.getProductInnerCode(), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+        List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
+        if (CollectionUtil.isEmpty(result)) {
+            throw new BusinessException("查询不到数据");
+        }
+        return result.get(0).get(0).toString();
+    }
+
+    private String groupQuery(Object obj) {
+        BmsProductCategoryTb bmsProductCategoryTb = (BmsProductCategoryTb) obj;
+        ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
+        executeBillQueryModelDTO.setFormId(FormIdEnum.Sal_MATERIALGROUP.name());
+        executeBillQueryModelDTO.setFieldKeys("FID,FNUMBER,FNAME,FPARENTID");
+        executeBillQueryModelDTO.setFilterString(String.format("FNUMBER='%s'", bmsProductCategoryTb.getKdCategoryCode()));
+        List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
+        if (CollectionUtil.isEmpty(result)) {
+            throw new BusinessException("查询不到数据");
+        }
+        return result.get(0).get(0).toString();
     }
 
     @Override
@@ -98,7 +146,7 @@ public class KdApiServiceImpl implements KdApiService {
      * @param unitCode
      * @return
      */
-    private String executeBmsSave(Object obj, String unitCode) {
+    private String executeBrandSave(Object obj, String unitCode) {
         BmsBrandTb bmsBrandTb = (BmsBrandTb) obj;
         BrandKdModel brandKdModel = new BrandKdModel();
         brandKdModel.setFID(0);
@@ -113,7 +161,7 @@ public class KdApiServiceImpl implements KdApiService {
      * @param obj
      * @return
      */
-    private String executeBmsModify(Object obj) {
+    private String executeBrandModify(Object obj) {
         BmsBrandTb bmsBrandTb = (BmsBrandTb) obj;
         BrandKdModel brandKdModel = new BrandKdModel();
         brandKdModel.setFID(bmsBrandTb.getKdNumber());
@@ -128,7 +176,7 @@ public class KdApiServiceImpl implements KdApiService {
      * @param obj
      * @return
      */
-    private String executeBmsDisable(Object obj) {
+    private String executeBrandDisable(Object obj) {
         BmsBrandTb bmsBrandTb = (BmsBrandTb) obj;
         KdApiBaseDisableRequestDTO kdApiBaseDisableRequestDTO = new KdApiBaseDisableRequestDTO();
         kdApiBaseDisableRequestDTO.setIds(bmsBrandTb.getKdNumber());
@@ -230,7 +278,7 @@ public class KdApiServiceImpl implements KdApiService {
     }
 
 
-    private String groupSave(Object obj) {
+    public String groupSave(Object obj) {
         BmsProductCategoryTb bmsProductCategoryTb = (BmsProductCategoryTb) obj;
         GroupSaveDTO groupSaveDTO = new GroupSaveDTO();
         groupSaveDTO.setFParentId(bmsProductCategoryTb.getKdParentId());
@@ -358,7 +406,7 @@ public class KdApiServiceImpl implements KdApiService {
         }
         String returnDate = DateUtil.format(bmsReturnOrderDetailTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
-        ReturnStockSaveModel returnStockSaveModel = new ReturnStockSaveModel( orgCode, returnDate,  bmsSupplierTb.getKdNumber().toString(), bmsReturnOrderDetailTb.getProductInnerCode(),  new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber()), bmsReturnOrderDetailTb.getStockCode(), bmsReturnOrderDetailTb.getProjectCode(),new BigDecimal(bmsReturnOrderDetailTb.getTaxRate()));
+        ReturnStockSaveModel returnStockSaveModel = new ReturnStockSaveModel(orgCode, returnDate, bmsSupplierTb.getKdNumber().toString(), bmsReturnOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber()), bmsReturnOrderDetailTb.getStockCode(), bmsReturnOrderDetailTb.getProjectCode(), new BigDecimal(bmsReturnOrderDetailTb.getTaxRate()));
         return KdRequestUtil.save(FormIdEnum.PUR_MRB, KdApiBaseSaveRequestDTO.buildOfSave(returnStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 
     }
@@ -387,6 +435,5 @@ public class KdApiServiceImpl implements KdApiService {
     private String executeMaterialDisable(Object obj, String unitCode) {
         return null;
     }
-
 
 }

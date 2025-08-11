@@ -4,10 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
-import com.bio.drqi.bsm.kd.dto.GroupSaveDTO;
-import com.bio.drqi.bsm.kd.dto.KdApiBaseDisableRequestDTO;
-import com.bio.drqi.bsm.kd.dto.KdApiBaseSaveRequestDTO;
-import com.bio.drqi.bsm.kd.dto.QuerySupplierDTO;
+import com.bio.drqi.bsm.kd.dto.*;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
 import com.bio.drqi.bsm.kd.properties.KdProperties;
 import com.google.gson.Gson;
@@ -50,20 +47,14 @@ public class KdRequestUtil {
         }
     }
 
-    public static String qeury(FormIdEnum formIdEnum, KdApiBaseSaveRequestDTO kdApiBaseSaveRequestDTO) {
+    public static  List<List<Object>> query(ExecuteBillQueryModelDTO executeBillQueryModelDTO) {
         K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
         try {
             Long start = System.currentTimeMillis();
-            log.info("调用金蝶接口开始, formid={},参数={}", formIdEnum, JSONUtil.toJsonStr(kdApiBaseSaveRequestDTO));
-            String result = k3CloudApi.save(formIdEnum.name(), JSONUtil.toJsonStr(kdApiBaseSaveRequestDTO));
+            log.info("调用金蝶接口开始, formid={},参数={}", executeBillQueryModelDTO.getFormId(), JSONUtil.toJsonStr(executeBillQueryModelDTO));
+            List<List<Object>> result = k3CloudApi.executeBillQuery(JSONUtil.toJsonStr(executeBillQueryModelDTO));
             log.info("调用金蝶接口结束，返回={},耗时={}ms", result, (System.currentTimeMillis() - start));
-            Gson gson = new Gson();
-            RepoRet sRet = gson.fromJson(result, RepoRet.class);
-            if (sRet.isSuccessfully()) {
-                return sRet.getResult().getId();
-            } else {
-                throw new BusinessException("同步数据到金蝶失败: " + gson.toJson(sRet.getResult()));
-            }
+            return result;
         } catch (Exception e) {
             log.error("金蝶接口调用失败:{}", e);
             throw new BusinessException("金蝶接口调用失败");

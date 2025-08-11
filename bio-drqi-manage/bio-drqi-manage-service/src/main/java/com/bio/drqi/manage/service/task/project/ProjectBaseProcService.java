@@ -32,6 +32,11 @@ public class ProjectBaseProcService extends AbstractProjectBaseTaskService {
         ProjectAddDTO projectAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), ProjectAddDTO.class);
         ValidatorUtil.validator(projectAddDTO);
         BeanUtils.trimFiledSpace(projectAddDTO);
+
+        CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(projectAddDTO.getProjectCode());
+        if (cerProjectTb != null) {
+            throw new BusinessException("项目编号已经使用");
+        }
     }
 
     @Override
@@ -66,7 +71,7 @@ public class ProjectBaseProcService extends AbstractProjectBaseTaskService {
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByTaskNum(bioTaskDtlTb.getTaskNum());
-        if(cerProjectTb!=null){
+        if (cerProjectTb != null) {
             cerProjectTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
 
         }

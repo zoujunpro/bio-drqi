@@ -28,6 +28,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -54,9 +55,8 @@ public class BioTaskServiceImpl implements BioTaskService {
     @Resource
     private FlowService flowService;
 
-
     @Override
-    @Transactional(rollbackFor = Exception.class, timeout = 120000)
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW, timeout = 120000)
     public BioTaskDtlTb start(BioTaskStartReqDTO bioTaskStartReqDTO) {
         BioTaskConf bioTaskConf = bioTaskConfMapper.selectOneByTaskTypeCode(bioTaskStartReqDTO.getTaskType());
         if (bioTaskConf == null) {
@@ -75,7 +75,7 @@ public class BioTaskServiceImpl implements BioTaskService {
         /**
          * 执行工作流
          */
-        FlowHisInstanceTb flowHisInstanceTb = flowService.start(SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), bioTaskConf.getProcessId(), flowService.getArgs(bioTaskStartReqDTO.getFormObject(), bioTaskStartReqDTO.getTaskType()), null, bioTaskStartReqDTO.getSelfFlowActorList(), bioTaskConf.getTaskTypeName(),bioTaskDtlTb.getTaskNum());
+        FlowHisInstanceTb flowHisInstanceTb = flowService.start(SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), bioTaskConf.getProcessId(), flowService.getArgs(bioTaskStartReqDTO.getFormObject(), bioTaskStartReqDTO.getTaskType()), null, bioTaskStartReqDTO.getSelfFlowActorList(), bioTaskConf.getTaskTypeName(), bioTaskDtlTb.getTaskNum());
 
         /**
          * 填补数据
@@ -121,7 +121,7 @@ public class BioTaskServiceImpl implements BioTaskService {
         /**
          * 执行工作流
          */
-        FlowHisInstanceTb flowHisInstanceTb = flowService.start(SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), bioTaskConf.getProcessId(), flowService.getArgs(bioReStartTaskReqDTO.getFormObject(), bioTaskDtlTb.getTaskTypeCode()), null, bioReStartTaskReqDTO.getSelfFlowActorList(), bioTaskConf.getTaskTypeName(),bioTaskDtlTb.getTaskNum());
+        FlowHisInstanceTb flowHisInstanceTb = flowService.start(SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), bioTaskConf.getProcessId(), flowService.getArgs(bioReStartTaskReqDTO.getFormObject(), bioTaskDtlTb.getTaskTypeCode()), null, bioReStartTaskReqDTO.getSelfFlowActorList(), bioTaskConf.getTaskTypeName(), bioTaskDtlTb.getTaskNum());
 
         /**
          * 填补数据
@@ -412,8 +412,11 @@ public class BioTaskServiceImpl implements BioTaskService {
     @Override
 
     public void temporarySave(BioTaskTemporarySaveReqDTO bioTaskTemporarySaveReqDTO) {
-        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioTaskTemporarySaveReqDTO.getId());
-        if (bioTaskDtlTb != null) {
+        if (bioTaskTemporarySaveReqDTO.getId() != null) {
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioTaskTemporarySaveReqDTO.getId());
+            if (bioTaskDtlTb == null) {
+                throw new BusinessException("数据异常，保存失败，找不到工单信息ID="+bioTaskTemporarySaveReqDTO.getId());
+            }
             bioTaskDtlTb.setTaskForm(bioTaskTemporarySaveReqDTO.getFormObject());
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
         } else {

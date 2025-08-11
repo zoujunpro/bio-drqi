@@ -30,7 +30,19 @@ public class BioTaskController {
     @Resource
     private BioTaskService bioTaskService;
 
-
+    /**
+     * 任务临时保存
+     *
+     * @param bioTaskTemporarySaveReqDTO
+     * @return
+     */
+    @PostMapping("/temporarySave")
+    @WebLog(desc = "任务临时保存")
+    @RequestLog("临时保存任务")
+    public ResponseResult<String> temporarySave(@RequestBody @Validated BioTaskTemporarySaveReqDTO bioTaskTemporarySaveReqDTO) {
+        bioTaskService.temporarySave(bioTaskTemporarySaveReqDTO);
+        return ResponseResult.getSuccess(null);
+    }
     /**
      * 任务启动
      *
@@ -41,21 +53,23 @@ public class BioTaskController {
     @WebLog(desc = "任务启动")
     @RequestLog("任务启动")
     public ResponseResult<BioTaskDtlTb> start(@Validated @RequestBody BioTaskStartReqDTO bioTaskStartReqDTO) {
-        return ResponseResult.getSuccess(bioTaskService.start(bioTaskStartReqDTO));
+        BioTaskDtlTb bioTaskDtlTb = bioTaskService.start(bioTaskStartReqDTO);
+        return ResponseResult.getSuccess(bioTaskDtlTb);
     }
 
-    /**
+
+/*    *//**
      * 重新启动任务
      *
      * @param bioReStartTaskReqDTO
      * @return
-     */
+     *//*
     @PostMapping("/reStartTask")
     @WebLog(desc = "重新启动任务")
     @RequestLog("重新启动任务")
     public ResponseResult<BioTaskDtlTb> reStartTask(@RequestBody @Validated BioReStartTaskReqDTO bioReStartTaskReqDTO) {
         return ResponseResult.getSuccess(bioTaskService.reStartTask(bioReStartTaskReqDTO));
-    }
+    }*/
 
     /**
      * 执行任务
@@ -96,6 +110,7 @@ public class BioTaskController {
     public ResponseResult<BioTaskDtlTb> backTask(@RequestBody @Validated BioBackTaskReqDTO bioRejectTaskReqDTO) {
         return ResponseResult.getSuccess(bioTaskService.backTask(bioRejectTaskReqDTO));
     }
+
     /**
      * 撤销任务
      *
@@ -157,7 +172,7 @@ public class BioTaskController {
     @WebLog(desc = "分页查询-我发起的")
     @RequirePermissions("task:applyprocess")
     public ResponseResult<PageInfo<BioTaskListPageRspDTO>> listPageMyApply(@RequestBody BioTaskListPageReqDTO bioTaskListPageReqDTO) {
-        return ResponseResult.getSuccess(bioTaskService.listPage(bioTaskListPageReqDTO,QueryTypeEnum.TYPE_3));
+        return ResponseResult.getSuccess(bioTaskService.listPage(bioTaskListPageReqDTO, QueryTypeEnum.TYPE_3));
     }
 
 
@@ -185,81 +200,72 @@ public class BioTaskController {
     @WebLog(desc = "分页查询-已办理的")
     @RequirePermissions("task:handleprocess")
     public ResponseResult<PageInfo<BioTaskListPageRspDTO>> listPageMyDeal(@RequestBody BioTaskListPageReqDTO bioTaskListPageReqDTO) {
-        return ResponseResult.getSuccess(bioTaskService.listPage(bioTaskListPageReqDTO,QueryTypeEnum.TYPE_4));
+        return ResponseResult.getSuccess(bioTaskService.listPage(bioTaskListPageReqDTO, QueryTypeEnum.TYPE_4));
     }
 
 
     /**
      * 根据列表查询所有工单配置
+     *
      * @param category
      * @return
      */
     @GetMapping("listAllTaskType")
     @WebLog(desc = "查询所有工单类型")
-    public ResponseResult<List<BioTaskTypeListRspDTO>> listAllTaskType(@RequestParam  String category) {
+    public ResponseResult<List<BioTaskTypeListRspDTO>> listAllTaskType(@RequestParam String category) {
         return ResponseResult.getSuccess(bioTaskService.listAllTaskType(category));
     }
 
 
     /**
      * 根据任务类型查询某一个工单配置
+     *
      * @param taskTypeCode
      * @return
      */
     @GetMapping("listOneTaskType")
     @WebLog(desc = "查询所有工单类型")
-    public ResponseResult<BioTaskTypeListRspDTO> listOneTaskType(@RequestParam  String taskTypeCode) {
+    public ResponseResult<BioTaskTypeListRspDTO> listOneTaskType(@RequestParam String taskTypeCode) {
         return ResponseResult.getSuccess(bioTaskService.listOneTaskType(taskTypeCode));
     }
 
     /**
      * 工单条件查询(目前无调用)
+     *
      * @param queryListReqDTO
      * @return
      */
     @PostMapping("queryList")
     @WebLog(desc = "工单条件查询")
-    public ResponseResult<List<QueryListRspDTO>> queryList(@RequestBody @Validated QueryListReqDTO queryListReqDTO){
+    public ResponseResult<List<QueryListRspDTO>> queryList(@RequestBody @Validated QueryListReqDTO queryListReqDTO) {
         return ResponseResult.getSuccess(bioTaskService.queryList(queryListReqDTO));
     }
 
 
 
 
-
     /**
-     * 任务临时保存
-     * @param bioTaskTemporarySaveReqDTO
-     * @return
-     */
-    @PostMapping("/temporarySave")
-    @WebLog(desc = "任务临时保存")
-    @RequestLog("临时保存任务")
-    public ResponseResult<String> temporarySave(@RequestBody @Validated BioTaskTemporarySaveReqDTO bioTaskTemporarySaveReqDTO) {
-        bioTaskService.temporarySave(bioTaskTemporarySaveReqDTO);
-        return ResponseResult.getSuccess(null);
-    }
-
-    /**
-     *查询工单发起人员
+     * 查询工单发起人员
+     *
      * @param taskCategory
      * @return
      */
     @GetMapping("/queryAllTaskUser")
     @WebLog(desc = "查询工单发起人员")
-    public ResponseResult<List<BioQueryAllTaskUserRspDTO>>  queryAllTaskUser(@RequestParam String taskCategory){
+    public ResponseResult<List<BioQueryAllTaskUserRspDTO>> queryAllTaskUser(@RequestParam String taskCategory) {
         return ResponseResult.getSuccess(bioTaskService.queryAllTaskUser(taskCategory));
     }
 
     /**
-     *导出任务工单
+     * 导出任务工单
+     *
      * @param bioExportExcelReqDTO
      * @return
      */
     @PostMapping("/exportExcel")
     @WebLog(desc = "导出任务工单")
     @RequestLog("导出任务工单")
-    public void  exportExcel(@RequestBody @Validated BioExportExcelReqDTO bioExportExcelReqDTO, HttpServletResponse httpServletResponse){
-        bioTaskService.exportExcel(bioExportExcelReqDTO,httpServletResponse);
+    public void exportExcel(@RequestBody @Validated BioExportExcelReqDTO bioExportExcelReqDTO, HttpServletResponse httpServletResponse) {
+        bioTaskService.exportExcel(bioExportExcelReqDTO, httpServletResponse);
     }
 }

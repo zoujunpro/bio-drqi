@@ -8,6 +8,8 @@ import java.util.List;
 @Data
 public class MoveStockSaveModel extends KdModel {
 
+
+    private String F_WAUJ_UUID;
     /**
      * 单据类型
      */

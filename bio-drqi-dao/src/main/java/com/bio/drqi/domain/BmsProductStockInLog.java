@@ -35,6 +35,7 @@ public class BmsProductStockInLog implements Serializable {
      */
     private String orderDetailNum;
 
+
     /**
      * 商品名称
      */

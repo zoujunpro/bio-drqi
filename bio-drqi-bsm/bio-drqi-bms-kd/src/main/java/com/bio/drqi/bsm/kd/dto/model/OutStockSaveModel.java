@@ -15,6 +15,7 @@ import java.util.List;
 @Data
 public class OutStockSaveModel extends KdModel {
 
+    private String F_WAUJ_UUID;
 
     /**
      * 出库日期
@@ -53,7 +54,8 @@ public class OutStockSaveModel extends KdModel {
     private List<FEntityModel> FEntity;
 
 
-    public OutStockSaveModel(String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdMaterialId, BigDecimal FQty, String stockId) {
+    public OutStockSaveModel(String outDetailId, String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdMaterialId, BigDecimal FQty, String stockId) {
+        this.F_WAUJ_UUID = outDetailId;
         this.FDate = FDate;
         this.fFBillTypeID = new FBillTypeIDModel(KdFBillTypeIDEnum.ofKdParentGroupEnum(kdParentGroupEnum).code);
         this.FRequireOrgId = new FRequireOrgIdModel(orgCode);
@@ -61,18 +63,19 @@ public class OutStockSaveModel extends KdModel {
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
         this.FEntity = Arrays.asList(new FEntityModel(kdMaterialId, FQty, stockId, orgCode));
-        this.FDeptId=new FDeptIdModel("BM000008");
+        this.FDeptId = new FDeptIdModel("BM000008");
     }
 
 
     @Data
-    private class FDeptIdModel{
+    private class FDeptIdModel {
         private String FNumber;
 
         public FDeptIdModel(String FNumber) {
             this.FNumber = FNumber;
         }
     }
+
     @Data
     private class FEntityModel {
 

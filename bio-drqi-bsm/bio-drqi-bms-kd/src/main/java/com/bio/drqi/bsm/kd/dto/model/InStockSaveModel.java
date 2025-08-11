@@ -22,6 +22,8 @@ public class InStockSaveModel extends KdModel {
      */
     private Integer FID = 0;
 
+    private String F_WAUJ_UUID;
+
     /**
      * 单据编号
      */
@@ -65,12 +67,13 @@ public class InStockSaveModel extends KdModel {
     private List<FInStockEntryModel> FInStockEntry;
 
 
-    public InStockSaveModel(String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdSupplierId, String kdMaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty,String projectCode,String stockCode,BigDecimal taxRate) {
+    public InStockSaveModel(String orderDetailId,String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdSupplierId, String kdMaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty,String projectCode,String stockCode,BigDecimal taxRate) {
         this.FID = 0;
         this.FBillNo = null;
         this.FDate = FDate;
         this.FBillTypeID = new FBillTypeIDModel(KdFBillTypeIDEnum.ofKdParentGroupEnum(kdParentGroupEnum).code);
         this.FOwnerTypeIdHead = KdContents.OWNER;
+        this.F_WAUJ_UUID=orderDetailId;
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
         this.FSupplierId = new FSupplierIdModel(kdSupplierId);

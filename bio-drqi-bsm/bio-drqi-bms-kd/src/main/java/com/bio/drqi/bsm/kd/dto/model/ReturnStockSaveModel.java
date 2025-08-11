@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 public class ReturnStockSaveModel extends KdModel {
 
+    private String F_WAUJ_UUID;
     /**
      * 退料类型
      */
@@ -67,7 +68,8 @@ public class ReturnStockSaveModel extends KdModel {
     private List<FPURMRBENTRYModel> FPURMRBENTRY;
 
 
-    public ReturnStockSaveModel(String orgCode, String FDate, String kdSupplierId, String materialId, BigDecimal returnNumber, String stockCode, String projectCode,BigDecimal taxRate) {
+    public ReturnStockSaveModel(String returnOrderId,String orgCode, String FDate, String kdSupplierId, String materialId, BigDecimal returnNumber, String stockCode, String projectCode,BigDecimal taxRate) {
+        this.F_WAUJ_UUID=returnOrderId;
         this.FMRTYPE = "B";
         this.FMRMODE = "A";
         this.FStockOrgId = new FStockOrgIdModel(orgCode);

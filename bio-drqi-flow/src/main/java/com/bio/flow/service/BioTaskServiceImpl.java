@@ -422,6 +422,8 @@ public class BioTaskServiceImpl implements BioTaskService {
                 throw new BusinessException("数据异常，保存失败，找不到工单信息ID=" + bioTaskTemporarySaveReqDTO.getId());
             }
             bioTaskDtlTb.setTaskForm(bioTaskTemporarySaveReqDTO.getFormObject());
+            bioTaskDtlTb.setTaskDesc(bioTaskTemporarySaveReqDTO.getTaskDesc());
+            bioTaskDtlTb.setRefTaskNum(bioTaskTemporarySaveReqDTO.getRefTaskNum());
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
         } else {
             BioTaskConf bioTaskConf = bioTaskConfMapper.selectOneByTaskTypeCode(bioTaskTemporarySaveReqDTO.getTaskType());

@@ -247,14 +247,16 @@ public class BioTaskServiceImpl implements BioTaskService {
         }
         PageInfo<BioTaskDtlTb> pageInfo = new PageInfo<>(bioTaskDtlTbList);
         List<BioTaskListPageRspDTO> bioTaskListPageRspDTOList = getTaskListPageRspDTOS(bioTaskDtlTbList);
-        Map<Long, String> instanceTaskTypeMap = flowService.queryListFlowTaskByInstanceIds(bioTaskListPageRspDTOList.stream().map(bioTaskListPageRspDTO -> Long.valueOf(bioTaskListPageRspDTO.getInstanceId())).collect(Collectors.toList()));
-        bioTaskListPageRspDTOList.forEach(bioTaskListPageRspDTO -> {
-            bioTaskListPageRspDTO.setNodeType(instanceTaskTypeMap.get(Long.valueOf(bioTaskListPageRspDTO.getInstanceId())));
-        });
+        List<Long> instanceIdList = bioTaskListPageRspDTOList.stream().filter(bioTaskListPageRspDTO -> bioTaskListPageRspDTO.getInstanceId() != null).map(bioTaskListPageRspDTO -> Long.valueOf(bioTaskListPageRspDTO.getInstanceId())).collect(Collectors.toList());
+        if(CollectionUtil.isNotEmpty(instanceIdList)){
+            Map<Long, String> instanceTaskTypeMap = flowService.queryListFlowTaskByInstanceIds(instanceIdList);
+            bioTaskListPageRspDTOList.forEach(bioTaskListPageRspDTO -> {
+                bioTaskListPageRspDTO.setNodeType(instanceTaskTypeMap.get(Long.valueOf(bioTaskListPageRspDTO.getInstanceId())));
+            });
+        }
         PageInfo<BioTaskListPageRspDTO> pageResult = new PageInfo<>();
         pageResult.setTotal(pageInfo.getTotal());
         pageResult.setList(bioTaskListPageRspDTOList);
-
         return pageResult;
     }
 
@@ -277,7 +279,7 @@ public class BioTaskServiceImpl implements BioTaskService {
             bioTaskListPageRspDTO.setApplyTime(bioTaskDtlTb.getApplyTime());
             bioTaskListPageRspDTO.setProjectDesc(bioTaskDtlTb.getTaskDesc());
             bioTaskListPageRspDTO.setTaskForm(bioTaskDtlTb.getTaskForm());
-            bioTaskListPageRspDTO.setInstanceId(String.valueOf(bioTaskDtlTb.getInstanceId()));
+            bioTaskListPageRspDTO.setInstanceId(bioTaskDtlTb.getInstanceId() == null ? null : String.valueOf(bioTaskDtlTb.getInstanceId()));
             bioTaskListPageRspDTOList.add(bioTaskListPageRspDTO);
         }
         return bioTaskListPageRspDTOList;
@@ -415,7 +417,7 @@ public class BioTaskServiceImpl implements BioTaskService {
         if (bioTaskTemporarySaveReqDTO.getId() != null) {
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioTaskTemporarySaveReqDTO.getId());
             if (bioTaskDtlTb == null) {
-                throw new BusinessException("数据异常，保存失败，找不到工单信息ID="+bioTaskTemporarySaveReqDTO.getId());
+                throw new BusinessException("数据异常，保存失败，找不到工单信息ID=" + bioTaskTemporarySaveReqDTO.getId());
             }
             bioTaskDtlTb.setTaskForm(bioTaskTemporarySaveReqDTO.getFormObject());
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);

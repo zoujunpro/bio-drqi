@@ -55,7 +55,8 @@ public class VectorTaskAddDTO {
     @NotBlank(message = "物种必选")
     private String speciesCode;
 
-
+    @NotBlank(message = "品种必填")
+    private String breedCode;
     /**
      * 预计开始日期
      */
@@ -83,6 +84,8 @@ public class VectorTaskAddDTO {
      */
     @NotBlank(message = "受体材料必填")
     private String acceptorMaterial;
+
+
 
     /**
      * 受体材料

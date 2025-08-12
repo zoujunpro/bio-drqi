@@ -96,7 +96,6 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
             if (cerBreedDict == null) {
                 throw new BusinessException("品种字典中不存在此受体材料");
             }
-            content.setAcceptorMaterialName(cerBreedDict.getBreedName());
         }
         //补充form表单
         transformDTO.setProjectCode(cerProjectTb.getProjectCode());

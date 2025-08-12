@@ -39,8 +39,6 @@ public class VectorListPageRspDTO {
      */
     private String acceptorMaterial;
 
-    private List<AcceptorMaterialModel> acceptorMaterialModelList = new ArrayList<>();
-
     /**
      * 建议编辑工具
      */
@@ -48,6 +46,8 @@ public class VectorListPageRspDTO {
 
 
     private String speciesCode;
+
+    private String breedCode;
 
     private String wordUrl;
     /**
@@ -248,20 +248,6 @@ public class VectorListPageRspDTO {
          * 载体大小
          */
         private String vectorSize;
-    }
-
-    @Data
-    private class AcceptorMaterialModel {
-        private String acceptorMaterialName;
-        private String acceptorMaterialCode;
-
-    }
-
-    public void buildAcceptorMaterialModel(String acceptorMaterialCode, String acceptorMaterialName) {
-        AcceptorMaterialModel acceptorMaterialModel = new AcceptorMaterialModel();
-        acceptorMaterialModel.setAcceptorMaterialName(acceptorMaterialName);
-        acceptorMaterialModel.setAcceptorMaterialCode(acceptorMaterialCode);
-        this.acceptorMaterialModelList.add(acceptorMaterialModel);
     }
 
 }

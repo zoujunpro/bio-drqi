@@ -78,20 +78,11 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         PageInfo<CerVectorTaskTb> srcPage = new PageInfo<>(cerVectorTaskTbList);
         PageInfo<VectorListPageRspDTO> vectorBaseInfoRspDTOPageInfo = BeanUtils.copyPageInfoProperties(srcPage, VectorListPageRspDTO.class);
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
-        Map<String, String> breedCodeOfNameMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         vectorBaseInfoRspDTOPageInfo.getList().forEach(vectorListPageRspDTO -> {
             List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectAllByVectorTaskId(vectorListPageRspDTO.getId());
             List<CerVectorGroupTb> cerVectorGroupTbList = cerVectorGroupTbMapper.selectAllByVectorTaskId(vectorListPageRspDTO.getId());
             vectorListPageRspDTO.setChildren(BeanUtils.copyToList(cerVectorTbList, VectorListPageRspDTO.Vector.class));
             vectorListPageRspDTO.setVectorGroupList(cerVectorGroupTbList.stream().map(cerVectorGroupTb -> new VectorListPageRspDTO.VectorGroup(cerVectorGroupTb.getGroupName(), cerVectorGroupTb.getPlasmidNames(), cerVectorGroupTb.getRemark(), cerVectorGroupTb.getRepeatNum())).collect(Collectors.toList()));
-            if (StringUtils.isNotEmpty(vectorListPageRspDTO.getAcceptorMaterial())) {
-                String[] acceptorMaterialArr = vectorListPageRspDTO.getAcceptorMaterial().split("\\|");
-                for (String acceptorMaterial : acceptorMaterialArr) {
-                    if (breedCodeOfNameMap.get(acceptorMaterial) != null) {
-                        vectorListPageRspDTO.buildAcceptorMaterialModel(acceptorMaterial, breedCodeOfNameMap.get(acceptorMaterial));
-                    }
-                }
-            }
 
         });
         return vectorBaseInfoRspDTOPageInfo;
@@ -100,31 +91,27 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     @Override
     public List<CerImplementationPlanBaseInfoRspDTO> listBySubProject(Integer subProjectId) {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllBySubProjectId(subProjectId);
-        List<CerImplementationPlanBaseInfoRspDTO> result = BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
-        return  buildAcceptorMaterialModel(result);
+        return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
     }
 
     @Override
     public List<CerImplementationPlanBaseInfoRspDTO> listAll() {
 
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.listAllByQualityInspectionResult(QualityInspectionResultEnum.pass.name());
-        List<CerImplementationPlanBaseInfoRspDTO> result = BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
-        return  buildAcceptorMaterialModel(result);
+        return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
     }
 
 
     @Override
     public List<CerImplementationPlanBaseInfoRspDTO> listApproveAll(String speciesCode) {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByTaskStatusAndSpeciesCode(VectorTaskStatusEnum.TASK_STATUS_2.status, speciesCode);
-        List<CerImplementationPlanBaseInfoRspDTO> result= BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
-        return  buildAcceptorMaterialModel(result);
+        return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
     }
 
     @Override
     public List<CerImplementationPlanBaseInfoRspDTO> listForTransForm() {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.listForTransForm();
-        List<CerImplementationPlanBaseInfoRspDTO> result = BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
-        return  buildAcceptorMaterialModel(result);
+        return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
     }
 
 
@@ -158,21 +145,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         }
     }
 
-    private List<CerImplementationPlanBaseInfoRspDTO> buildAcceptorMaterialModel(List<CerImplementationPlanBaseInfoRspDTO> result) {
-        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
-        Map<String, String> breedCodeOfNameMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
-        result.forEach(cerImplementationPlanBaseInfoRspDTO -> {
-            if (StringUtils.isNotEmpty(cerImplementationPlanBaseInfoRspDTO.getAcceptorMaterial())) {
-                String[] acceptorMaterialArr = cerImplementationPlanBaseInfoRspDTO.getAcceptorMaterial().split("\\|");
-                for (String acceptorMaterial : acceptorMaterialArr) {
-                    if (breedCodeOfNameMap.get(acceptorMaterial) != null) {
-                        cerImplementationPlanBaseInfoRspDTO.buildAcceptorMaterialModel(acceptorMaterial, breedCodeOfNameMap.get(acceptorMaterial));
-                    }
-                }
-            }
-        });
-        return result;
-    }
+
 
 
     private Integer findMaxIndex(List<CerVectorTaskTb> cerVectorTaskTbList) {

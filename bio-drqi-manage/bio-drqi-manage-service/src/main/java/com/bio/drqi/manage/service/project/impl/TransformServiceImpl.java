@@ -42,14 +42,7 @@ public class TransformServiceImpl implements TransformService {
     public List<TransformListByVectorTaskRspDTO> listByVectorTask(TransformListByVectorTaskReqDTO transformListByVectorTaskReqDTO) {
         List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllByVectorTaskId(transformListByVectorTaskReqDTO.getVectorTaskId());
         List<TransformListByVectorTaskRspDTO> result = BeanUtils.copyListProperties(cerTransformTbList, TransformListByVectorTaskRspDTO.class);
-        if (CollectionUtil.isNotEmpty(result)) {
-            result.forEach(transformListByVectorTaskRspDTO -> {
-                CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(transformListByVectorTaskRspDTO.getAcceptorMaterial());
-                if (cerBreedDict != null) {
-                    transformListByVectorTaskRspDTO.setAcceptorMaterialName(cerBreedDict.getBreedName());
-                }
-            });
-        }
+
         return result;
     }
 

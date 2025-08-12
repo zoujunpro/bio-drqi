@@ -52,6 +52,8 @@ public class CerImplementationPlanBaseInfoRspDTO {
 
     private String speciesCode;
 
+    private String breedCode;
+
     private String wordUrl;
     /**
      * 工具类型
@@ -135,20 +137,4 @@ public class CerImplementationPlanBaseInfoRspDTO {
     private String vectorBuildFlag;
 
 
-    private List<AcceptorMaterialModel> acceptorMaterialModelList=new ArrayList<>();
-
-
-    @Data
-    private class AcceptorMaterialModel {
-        private String acceptorMaterialName;
-        private String acceptorMaterialCode;
-
-    }
-
-    public void buildAcceptorMaterialModel(String acceptorMaterialCode, String acceptorMaterialName) {
-        AcceptorMaterialModel acceptorMaterialModel = new AcceptorMaterialModel();
-        acceptorMaterialModel.setAcceptorMaterialName(acceptorMaterialName);
-        acceptorMaterialModel.setAcceptorMaterialCode(acceptorMaterialCode);
-        this.acceptorMaterialModelList.add(acceptorMaterialModel);
-    }
 }

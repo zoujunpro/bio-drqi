@@ -137,6 +137,8 @@ public class CerVectorTaskTb implements Serializable {
 
     private String speciesCode;
 
+    private String breedCode;
+
     private String currentStepCode;
 
     private String vectorBuildFlag;

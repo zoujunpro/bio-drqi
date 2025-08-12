@@ -78,17 +78,6 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
         if (CollectionUtil.isEmpty(vectorTaskAddDTO.getVectorGroupList())) {
             throw new BusinessException("转化信息缺失");
         }
-        String acceptorMaterials = vectorTaskAddDTO.getAcceptorMaterial();
-        String[] acceptorMaterialArr = acceptorMaterials.split("\\|");
-        StringBuffer acceptorMaterialNames=new StringBuffer("");
-        for (String acceptorMaterial : acceptorMaterialArr) {
-            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(acceptorMaterial);
-            if (cerBreedDict == null) {
-                throw new BusinessException("受体材料填写错误");
-            }
-            acceptorMaterialNames.append(cerBreedDict.getBreedName()).append("|");
-        }
-        vectorTaskAddDTO.setAcceptorMaterialName(acceptorMaterialNames.substring(0,acceptorMaterialNames.length()-1));
 
         synchronized (this) {
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(bioTaskDtlTb.getTaskNum());
@@ -118,6 +107,7 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                     cerVectorTaskTb.setTaskNum(bioTaskDtlTb.getTaskNum());
                     cerVectorTaskTb.setWordUrl(vectorTaskAddDTO.getWordUrl());
                     cerVectorTaskTb.setSpeciesCode(vectorTaskAddDTO.getSpeciesCode());
+                    cerVectorTaskTb.setBreedCode(vectorTaskAddDTO.getBreedCode());
                     cerVectorTaskTb.setExpectStartDate(vectorTaskAddDTO.getExpectStartDate());
                     cerVectorTaskTb.setExpectEndDate(vectorTaskAddDTO.getExpectEndDate());
                     cerVectorTaskTb.setQualityInspectionResult(QualityInspectionResultEnum.nocheck.name());

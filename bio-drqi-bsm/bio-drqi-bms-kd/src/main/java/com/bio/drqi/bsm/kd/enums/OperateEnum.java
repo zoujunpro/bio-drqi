@@ -19,7 +19,10 @@ public enum OperateEnum {
     groupSave,
     groupQuery,
     inStockSave,
+    inStockQuery,
     outStockSave,
+    outStockQuery,
     returnStockSave,
+    returnStockQuery,
     moveStockSave,
 }

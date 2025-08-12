@@ -43,6 +43,7 @@ public class BioTaskController {
         bioTaskService.temporarySave(bioTaskTemporarySaveReqDTO);
         return ResponseResult.getSuccess(null);
     }
+
     /**
      * 任务启动
      *
@@ -58,18 +59,18 @@ public class BioTaskController {
     }
 
 
-/*    *//**
+    /**
      * 重新启动任务
      *
      * @param bioReStartTaskReqDTO
      * @return
-     *//*
+     */
     @PostMapping("/reStartTask")
     @WebLog(desc = "重新启动任务")
     @RequestLog("重新启动任务")
     public ResponseResult<BioTaskDtlTb> reStartTask(@RequestBody @Validated BioReStartTaskReqDTO bioReStartTaskReqDTO) {
         return ResponseResult.getSuccess(bioTaskService.reStartTask(bioReStartTaskReqDTO));
-    }*/
+    }
 
     /**
      * 执行任务
@@ -240,8 +241,6 @@ public class BioTaskController {
     public ResponseResult<List<QueryListRspDTO>> queryList(@RequestBody @Validated QueryListReqDTO queryListReqDTO) {
         return ResponseResult.getSuccess(bioTaskService.queryList(queryListReqDTO));
     }
-
-
 
 
     /**

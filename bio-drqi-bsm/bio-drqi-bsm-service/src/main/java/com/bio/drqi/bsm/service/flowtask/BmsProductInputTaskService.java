@@ -13,6 +13,7 @@ import com.bio.drqi.bsm.dto.BmsProductOutDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.mapper.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,6 +28,7 @@ import java.util.Objects;
  */
 
 @Service("bms_product_input")
+@Slf4j
 public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
 
     @Resource
@@ -79,6 +81,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
                 orderDetail.getStockLocationNumberList().forEach(stockLocationNumber -> {
                     BmsStockLocationDict bmsStockLocationDict = bmsStockLocationDictMapper.selectOneByUnitCodeAndLocationNumber(bmsOrderDetailTb.getApplyUnitCode(), stockLocationNumber);
                     if (bmsStockLocationDict == null) {
+                        log.error("库存信息不存在 unitCode={},stockLocationNumber={}",bmsProductInputDTO.getApplyUnitCode(),stockLocationNumber );
                         throw new BusinessException("库存信息不存在");
                     }
                 });

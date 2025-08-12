@@ -68,7 +68,12 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             if (StringUtils.isNotEmpty(kdProjectCode)) {
                 BmsProjectDict bmsProjectDict = list.get(0);
                 if (StringUtils.isEmpty(bmsProjectDict.getKdNumber())) {
-                    String kdNumber = kdApiService.execute(OperateEnum.projectSave, bmsProjectDict, PurchaseUnitEnum.default_.name());
+                    String kdNumber = null;
+                    try {
+                        kdNumber = kdApiService.execute(OperateEnum.projectSave, bmsProjectDict, PurchaseUnitEnum.default_.name());
+                    } catch (Exception e) {
+                        kdNumber = kdApiService.execute(OperateEnum.projectQuery, bmsProjectDict, PurchaseUnitEnum.default_.name());
+                    }
                     bmsProjectDictMapper.updateKdNumberByKdProjectCode(kdNumber, kdProjectCode);
                 } else {
                     kdApiService.execute(OperateEnum.projectModify, bmsProjectDict, PurchaseUnitEnum.default_.name());

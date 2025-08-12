@@ -107,10 +107,10 @@ public class KdApiServiceImpl implements KdApiService {
         String filterString = "F_WAUJ_UUID='%s' and FBillTypeID.FNumber ='TLD01_SYS'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsReturnOrderDetailTb.getId().toString()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
-        if (CollectionUtil.isEmpty(result)) {
-            throw new BusinessException("查询不到数据");
+        if (CollectionUtil.isNotEmpty(result)&&CollectionUtil.isNotEmpty(result.get(0))) {
+            return result.get(0).get(0).toString();
         }
-        return result.get(0).get(0).toString();
+        return null;
     }
 
     private String outStockQuery(Object obj) {
@@ -121,10 +121,10 @@ public class KdApiServiceImpl implements KdApiService {
         String filterString = "F_WAUJ_UUID='%s' and FBillTypeID.FNumber ='QTCKD01_SYS'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsProductStockOutLog.getId().toString()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
-        if (CollectionUtil.isEmpty(result)) {
-            throw new BusinessException("查询不到数据");
+        if (CollectionUtil.isNotEmpty(result)&&CollectionUtil.isNotEmpty(result.get(0))) {
+            return result.get(0).get(0).toString();
         }
-        return result.get(0).get(0).toString();
+        return null;
     }
 
     private String inStockQuery(Object obj) {
@@ -135,10 +135,10 @@ public class KdApiServiceImpl implements KdApiService {
         String filterString = "F_WAUJ_UUID='%s' and FBillTypeID.FNumber ='RKD01_SYS'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsProductStockInLog.getId().toString()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
-        if (CollectionUtil.isEmpty(result)) {
-            throw new BusinessException("查询不到数据");
+        if (CollectionUtil.isNotEmpty(result)&&CollectionUtil.isNotEmpty(result.get(0))) {
+            return result.get(0).get(0).toString();
         }
-        return result.get(0).get(0).toString();
+        return null;
     }
 
     private String executeProjectQuery(Object obj) {
@@ -149,10 +149,10 @@ public class KdApiServiceImpl implements KdApiService {
         String filterString = "FId.FNUMBER='XM' and Fnumber='%s'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsProjectDict.getKdProjectCode()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
-        if (CollectionUtil.isEmpty(result)) {
-            throw new BusinessException("查询不到数据");
+        if (CollectionUtil.isNotEmpty(result)&&CollectionUtil.isNotEmpty(result.get(0))) {
+            return result.get(0).get(0).toString();
         }
-        return result.get(0).get(0).toString();
+        return null;
     }
 
 
@@ -164,10 +164,11 @@ public class KdApiServiceImpl implements KdApiService {
         String filterString = "FNUMBER='%s' and CreateOrgId.FNumber ='%s' and  FUseOrgId.FNumber='%s' and  FDocumentStatus='C' and FForbidStatus='A'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsStockDict.getStockCode(), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
-        if (CollectionUtil.isEmpty(result)) {
-            throw new BusinessException("查询不到数据");
+        if (CollectionUtil.isNotEmpty(result)&&CollectionUtil.isNotEmpty(result.get(0))) {
+            return result.get(0).get(0).toString();
         }
-        return result.get(0).get(0).toString();
+        return null;
+
     }
 
     private String materialQuery(Object obj, String unitCode) {
@@ -178,10 +179,10 @@ public class KdApiServiceImpl implements KdApiService {
         String filterString = "FNUMBER='%s' and FCreateOrgId.FNumber = '%s' and FUseOrgId.FNumber = '%s' and FDocumentStatus = 'C' and FForbidStatus = 'A' ";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsProductTb.getProductInnerCode(), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
-        if (CollectionUtil.isEmpty(result)) {
-            throw new BusinessException("查询不到数据");
+        if (CollectionUtil.isNotEmpty(result)&&CollectionUtil.isNotEmpty(result.get(0))) {
+            return result.get(0).get(0).toString();
         }
-        return result.get(0).get(0).toString();
+        return null;
     }
 
     private String groupQuery(Object obj) {
@@ -191,10 +192,10 @@ public class KdApiServiceImpl implements KdApiService {
         executeBillQueryModelDTO.setFieldKeys("FID,FNUMBER,FNAME,FPARENTID");
         executeBillQueryModelDTO.setFilterString(String.format("FNUMBER='%s'", bmsProductCategoryTb.getKdCategoryCode()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
-        if (CollectionUtil.isEmpty(result)) {
-            throw new BusinessException("查询不到数据");
+        if (CollectionUtil.isNotEmpty(result)&&CollectionUtil.isNotEmpty(result.get(0))) {
+            return result.get(0).get(0).toString();
         }
-        return result.get(0).get(0).toString();
+        return null;
     }
 
     @Override

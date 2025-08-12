@@ -73,6 +73,9 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                         kdNumber = kdApiService.execute(OperateEnum.projectSave, bmsProjectDict, PurchaseUnitEnum.default_.name());
                     } catch (Exception e) {
                         kdNumber = kdApiService.execute(OperateEnum.projectQuery, bmsProjectDict, PurchaseUnitEnum.default_.name());
+                        if (kdNumber == null) {
+                            throw new BusinessException(e.getMessage());
+                        }
                     }
                     bmsProjectDictMapper.updateKdNumberByKdProjectCode(kdNumber, kdProjectCode);
                 } else {
@@ -94,7 +97,15 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             if (bmsStockDict.getKdNumber() != null && bmsStockDict.getKdNumber() > 0) {
                 kdApiService.execute(OperateEnum.stockModify, bmsStockDict, bmsStockDict.getUnitCode());
             } else {
-                String kdNumber = kdApiService.execute(OperateEnum.stockSave, bmsStockDict, bmsStockDict.getUnitCode());
+                String kdNumber = null;
+                try {
+                    kdNumber = kdApiService.execute(OperateEnum.stockSave, bmsStockDict, bmsStockDict.getUnitCode());
+                } catch (Exception e) {
+                    kdNumber = kdApiService.execute(OperateEnum.stockQuery, bmsStockDict, bmsStockDict.getUnitCode());
+                    if(kdNumber==null){
+                        throw new BusinessException(e.getMessage());
+                    }
+                }
                 bmsStockDict.setKdNumber(Integer.valueOf(kdNumber));
                 bmsStockDictMapper.updateById(bmsStockDict);
             }
@@ -118,7 +129,16 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             }
 
             if (bmsProductCategoryTb.getKdNumber() == null) {
-                String idStr = kdApiService.execute(OperateEnum.groupSave, bmsProductCategoryTb, PurchaseUnitEnum.default_.name());
+                String idStr = null;
+                try {
+                    idStr = kdApiService.execute(OperateEnum.groupSave, bmsProductCategoryTb, PurchaseUnitEnum.default_.name());
+                } catch (Exception e) {
+                    idStr = kdApiService.execute(OperateEnum.groupQuery, bmsProductCategoryTb, PurchaseUnitEnum.default_.name());
+                    if(idStr==null){
+                        throw new BusinessException(e.getMessage());
+                    }
+
+                }
                 bmsProductCategoryTb.setKdNumber(Integer.valueOf(idStr));
                 bmsProductCategoryTbMapper.updateById(bmsProductCategoryTb);
             }
@@ -163,7 +183,15 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             if (bmsProductTb.getKdNumber() != null && bmsProductTb.getKdNumber() > 0) {
                 kdApiService.execute(OperateEnum.materialModify, bmsProductTb, PurchaseUnitEnum.default_.name());
             } else {
-                String kdNumber = kdApiService.execute(OperateEnum.materialSave, bmsProductTb, PurchaseUnitEnum.default_.name());
+                String kdNumber = null;
+                try {
+                    kdNumber = kdApiService.execute(OperateEnum.materialSave, bmsProductTb, PurchaseUnitEnum.default_.name());
+                } catch (Exception e) {
+                    kdNumber = kdApiService.execute(OperateEnum.materialQuery, bmsProductTb, PurchaseUnitEnum.default_.name());
+                    if(kdNumber==null){
+                        throw new BusinessException(e.getMessage());
+                    }
+                }
                 bmsProductTb.setKdNumber(Integer.valueOf(kdNumber));
                 bmsProductTbMapper.updateById(bmsProductTb);
             }
@@ -186,7 +214,15 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                 return;
             }
             for (BmsProductStockInLog bmsProductStockInLog : bmsProductStockInLogList) {
-                String kdNumber = kdApiService.execute(OperateEnum.inStockSave, bmsProductStockInLog, bmsProductStockInLog.getUnitCode());
+                String kdNumber = null;
+                try {
+                    kdNumber = kdApiService.execute(OperateEnum.inStockSave, bmsProductStockInLog, bmsProductStockInLog.getUnitCode());
+                } catch (Exception e) {
+                    kdNumber = kdApiService.execute(OperateEnum.inStockQuery, bmsProductStockInLog, bmsProductStockInLog.getUnitCode());
+                    if(kdNumber==null){
+                        throw new BusinessException(e.getMessage());
+                    }
+                }
                 bmsProductStockInLog.setKdNumber(Integer.valueOf(kdNumber));
                 bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
             }
@@ -210,7 +246,16 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                 return;
             }
             for (BmsProductStockOutLog bmsProductStockOutLog : bmsProductStockOutLogList) {
-                String kdNumber = kdApiService.execute(OperateEnum.outStockSave, bmsProductStockOutLog, bmsProductStockOutLog.getUnitCode());
+                String kdNumber = null;
+                try {
+                    kdNumber = kdApiService.execute(OperateEnum.outStockSave, bmsProductStockOutLog, bmsProductStockOutLog.getUnitCode());
+                } catch (Exception e) {
+                    kdNumber = kdApiService.execute(OperateEnum.outStockQuery, bmsProductStockOutLog, bmsProductStockOutLog.getUnitCode());
+                    if(kdNumber==null){
+                        throw new BusinessException(e.getMessage());
+                    }
+
+                }
                 bmsProductStockOutLog.setKdNumber(Integer.valueOf(kdNumber));
                 bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
             }
@@ -235,7 +280,15 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                 return;
             }
             for (BmsReturnOrderDetailTb bmsReturnOrderDetailTb : bmsReturnOrderDetailTbList) {
-                String kdNumber = kdApiService.execute(OperateEnum.returnStockSave, bmsReturnOrderDetailTb, bmsReturnOrderDetailTb.getUnitCode());
+                String kdNumber = null;
+                try {
+                    kdNumber = kdApiService.execute(OperateEnum.returnStockSave, bmsReturnOrderDetailTb, bmsReturnOrderDetailTb.getUnitCode());
+                } catch (Exception e) {
+                    kdNumber = kdApiService.execute(OperateEnum.returnStockSave, bmsReturnOrderDetailTb, bmsReturnOrderDetailTb.getUnitCode());
+                    if(kdNumber==null){
+                        throw new BusinessException(e.getMessage());
+                    }
+                }
                 bmsReturnOrderDetailTb.setKdNumber(Integer.valueOf(kdNumber));
                 bmsReturnOrderDetailTbMapper.updateById(bmsReturnOrderDetailTb);
             }
@@ -258,7 +311,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             bmsSynKdTaskLog.setSynStatus(BmsKdSynStatusEnum.success.name());
             bmsSynKdTaskLogMapper.updateById(bmsSynKdTaskLog);
         } catch (Exception e) {
-            log.error("执行同步金蝶数据失败",e);
+            log.error("执行同步金蝶数据失败", e);
             bmsSynKdTaskLog.setSynStatus(BmsKdSynStatusEnum.fail.name());
             bmsSynKdTaskLog.setFailReason(JSONUtil.toJsonStr(e));
             bmsSynKdTaskLogMapper.updateById(bmsSynKdTaskLog);

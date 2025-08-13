@@ -149,7 +149,7 @@ public class Clean20250721Controller {
         List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectList(null);
         for (CerTransformTb cerTransformTb : cerTransformTbList) {
             log.info("cerTransformTb={}", JSONUtil.toJsonStr(cerTransformTb));
-            if(cerTransformTb.getAcceptorMaterial().length()==34){
+            if(cerTransformTb.getAcceptorMaterial().length()==32){
                 CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(cerTransformTb.getAcceptorMaterial());
                 cerTransformTb.setAcceptorMaterial(cerBreedDict.getBreedName());
                 cerTransformTbMapper.updateById(cerTransformTb);
@@ -169,7 +169,7 @@ public class Clean20250721Controller {
             }
 
             for (TransformDTO.Content content : transformDTO.getContentList()) {
-                if(content.getAcceptorMaterial().length()==34){
+                if(content.getAcceptorMaterial().length()==32){
                     CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(content.getAcceptorMaterial());
                     if (cerBreedDict == null) {
                         throw new BusinessException("找不到品种");

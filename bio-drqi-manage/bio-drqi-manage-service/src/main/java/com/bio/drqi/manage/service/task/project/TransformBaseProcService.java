@@ -92,10 +92,6 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
                     throw new BusinessException("不存在此载体信息 vectorGroupId:" + content.getVectorGroupId());
                 }
             }
-            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(content.getAcceptorMaterial());
-            if (cerBreedDict == null) {
-                throw new BusinessException("品种字典中不存在此受体材料");
-            }
         }
         //补充form表单
         transformDTO.setProjectCode(cerProjectTb.getProjectCode());

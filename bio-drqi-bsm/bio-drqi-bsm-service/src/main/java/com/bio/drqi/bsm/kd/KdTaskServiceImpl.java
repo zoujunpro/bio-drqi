@@ -74,6 +74,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                     } catch (Exception e) {
                         kdNumber = kdApiService.execute(OperateEnum.projectQuery, bmsProjectDict, PurchaseUnitEnum.default_.name());
                         if (kdNumber == null) {
+                            log.error("项目同步失败,{}",e);
                             throw new BusinessException(e.getMessage());
                         }
                     }
@@ -103,6 +104,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                 } catch (Exception e) {
                     kdNumber = kdApiService.execute(OperateEnum.stockQuery, bmsStockDict, bmsStockDict.getUnitCode());
                     if(kdNumber==null){
+                        log.error("仓库同步失败,{}",e);
                         throw new BusinessException(e.getMessage());
                     }
                 }
@@ -135,6 +137,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                 } catch (Exception e) {
                     idStr = kdApiService.execute(OperateEnum.groupQuery, bmsProductCategoryTb, PurchaseUnitEnum.default_.name());
                     if(idStr==null){
+                        log.error("分组同步失败,{}",e);
                         throw new BusinessException(e.getMessage());
                     }
 
@@ -189,6 +192,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                 } catch (Exception e) {
                     kdNumber = kdApiService.execute(OperateEnum.materialQuery, bmsProductTb, PurchaseUnitEnum.default_.name());
                     if(kdNumber==null){
+                        log.error("材料同步失败{}",e);
                         throw new BusinessException(e.getMessage());
                     }
                 }
@@ -220,6 +224,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                 } catch (Exception e) {
                     kdNumber = kdApiService.execute(OperateEnum.inStockQuery, bmsProductStockInLog, bmsProductStockInLog.getUnitCode());
                     if(kdNumber==null){
+                        log.error("入库数据同步失败{}",e);
                         throw new BusinessException(e.getMessage());
                     }
                 }
@@ -252,6 +257,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                 } catch (Exception e) {
                     kdNumber = kdApiService.execute(OperateEnum.outStockQuery, bmsProductStockOutLog, bmsProductStockOutLog.getUnitCode());
                     if(kdNumber==null){
+                        log.error("出库数据同步失败{}",e);
                         throw new BusinessException(e.getMessage());
                     }
 
@@ -284,8 +290,9 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                 try {
                     kdNumber = kdApiService.execute(OperateEnum.returnStockSave, bmsReturnOrderDetailTb, bmsReturnOrderDetailTb.getUnitCode());
                 } catch (Exception e) {
-                    kdNumber = kdApiService.execute(OperateEnum.returnStockSave, bmsReturnOrderDetailTb, bmsReturnOrderDetailTb.getUnitCode());
+                    kdNumber = kdApiService.execute(OperateEnum.returnStockQuery, bmsReturnOrderDetailTb, bmsReturnOrderDetailTb.getUnitCode());
                     if(kdNumber==null){
+                        log.error("退货数据同步失败{}",e);
                         throw new BusinessException(e.getMessage());
                     }
                 }

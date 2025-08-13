@@ -38,6 +38,8 @@ import java.util.stream.Collectors;
  * 数据初始化清洗
  */
 @Slf4j
+@RestController
+@RequestMapping("/bmsTest")
 public class BmsTestController {
 
     @Resource
@@ -130,20 +132,20 @@ public class BmsTestController {
 
     @GetMapping("/synInStock")
     public ResponseResult<String> synInStock() {
-        kdTaskService.synInStockTask("2025-07-16", "2025-07-16");
+        kdTaskService.synInStockTask("2025-01-01", "2025-09-16");
         return ResponseResult.getSuccess("OK");
     }
 
     @GetMapping("/synOutStock")
     public ResponseResult<String> synOutStock() {
-        kdTaskService.synOutStockTask("2025-07-16", "2025-07-16");
+        kdTaskService.synOutStockTask("2025-01-01", "2025-09-16");
         return ResponseResult.getSuccess("OK");
     }
 
 
     @GetMapping("/synReturnStock")
     public ResponseResult<String> synReturnStock() {
-        kdTaskService.synReturnStockTask("2025-07-16", "2025-07-16");
+        kdTaskService.synReturnStockTask("2025-01-01", "2025-09-16");
         return ResponseResult.getSuccess("OK");
     }
 

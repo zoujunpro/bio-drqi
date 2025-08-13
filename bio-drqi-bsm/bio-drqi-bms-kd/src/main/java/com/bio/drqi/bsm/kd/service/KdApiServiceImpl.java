@@ -44,7 +44,7 @@ public class KdApiServiceImpl implements KdApiService {
 
 
     @Override
-    public String execute(OperateEnum operateEnum, Object obj, String unitCode) {
+    public String execute(OperateEnum operateEnum, Object obj, String unitCode)  {
         switch (operateEnum) {
             case brandSave:
                 return executeBrandSave(obj, unitCode);
@@ -160,8 +160,8 @@ public class KdApiServiceImpl implements KdApiService {
         BmsStockDict bmsStockDict = (BmsStockDict) obj;
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.BD_STOCK.name());
-        executeBillQueryModelDTO.setFieldKeys("FNUMBER,FNAME,FDocumentStatus,FForbidStatus");
-        String filterString = "FNUMBER='%s' and CreateOrgId.FNumber ='%s' and  FUseOrgId.FNumber='%s' and  FDocumentStatus='C' and FForbidStatus='A'";
+        executeBillQueryModelDTO.setFieldKeys("FSTOCKID,FNUMBER,FNAME,FDocumentStatus,FForbidStatus");
+        String filterString = "FNUMBER='%s' and FCreateOrgId.FNumber ='%s' and  FUseOrgId.FNumber='%s' and  FDocumentStatus='C' and FForbidStatus='A'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsStockDict.getStockCode(), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
         if (CollectionUtil.isNotEmpty(result)&&CollectionUtil.isNotEmpty(result.get(0))) {
@@ -190,7 +190,7 @@ public class KdApiServiceImpl implements KdApiService {
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.Sal_MATERIALGROUP.name());
         executeBillQueryModelDTO.setFieldKeys("FID,FNUMBER,FNAME,FPARENTID");
-        executeBillQueryModelDTO.setFilterString(String.format("FNUMBER='%s'", bmsProductCategoryTb.getKdCategoryCode()));
+        executeBillQueryModelDTO.setFilterString(String.format("FNUMBER='%s'", bmsProductCategoryTb.getProductCategoryCode()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
         if (CollectionUtil.isNotEmpty(result)&&CollectionUtil.isNotEmpty(result.get(0))) {
             return result.get(0).get(0).toString();
@@ -211,7 +211,7 @@ public class KdApiServiceImpl implements KdApiService {
      * @param unitCode
      * @return
      */
-    private String executeBrandSave(Object obj, String unitCode) {
+    private String executeBrandSave(Object obj, String unitCode)  {
         BmsBrandTb bmsBrandTb = (BmsBrandTb) obj;
         BrandKdModel brandKdModel = new BrandKdModel();
         brandKdModel.setFID(0);
@@ -226,7 +226,7 @@ public class KdApiServiceImpl implements KdApiService {
      * @param obj
      * @return
      */
-    private String executeBrandModify(Object obj) {
+    private String executeBrandModify(Object obj)  {
         BmsBrandTb bmsBrandTb = (BmsBrandTb) obj;
         BrandKdModel brandKdModel = new BrandKdModel();
         brandKdModel.setFID(bmsBrandTb.getKdNumber());
@@ -255,7 +255,7 @@ public class KdApiServiceImpl implements KdApiService {
      * @param unitCode
      * @return
      */
-    private String executeProjectSave(Object obj, String unitCode) {
+    private String executeProjectSave(Object obj, String unitCode)  {
         BmsProjectDict bmsProjectDict = (BmsProjectDict) obj;
         ProjectModel projectModel = new ProjectModel();
         projectModel.setFEntryID("0");
@@ -271,7 +271,7 @@ public class KdApiServiceImpl implements KdApiService {
      * @param obj
      * @return
      */
-    private String executeProjectModify(Object obj) {
+    private String executeProjectModify(Object obj)  {
         BmsProjectDict bmsProjectDict = (BmsProjectDict) obj;
         ProjectModel projectModel = new ProjectModel();
         projectModel.setFEntryID(bmsProjectDict.getKdNumber());
@@ -301,7 +301,7 @@ public class KdApiServiceImpl implements KdApiService {
      * @param unitCode
      * @return
      */
-    private String executeStockSave(Object obj, String unitCode) {
+    private String executeStockSave(Object obj, String unitCode)  {
         BmsStockDict bmsStockDict = (BmsStockDict) obj;
         StockModel stockModel = new StockModel();
         stockModel.setFStockId(0);
@@ -318,7 +318,7 @@ public class KdApiServiceImpl implements KdApiService {
      * @param obj
      * @return
      */
-    private String executeStockModify(Object obj) {
+    private String executeStockModify(Object obj)  {
         BmsStockDict bmsStockDict = (BmsStockDict) obj;
         StockModel stockModel = new StockModel();
         stockModel.setFStockId(bmsStockDict.getKdNumber());
@@ -343,7 +343,7 @@ public class KdApiServiceImpl implements KdApiService {
     }
 
 
-    public String groupSave(Object obj) {
+    public String groupSave(Object obj)  {
         BmsProductCategoryTb bmsProductCategoryTb = (BmsProductCategoryTb) obj;
         GroupSaveDTO groupSaveDTO = new GroupSaveDTO();
         groupSaveDTO.setFParentId(bmsProductCategoryTb.getKdParentId());
@@ -352,7 +352,7 @@ public class KdApiServiceImpl implements KdApiService {
         return KdRequestUtil.groupSave(FormIdEnum.BD_MATERIAL, groupSaveDTO);
     }
 
-    private String executeMaterialSave(Object obj, String unitCode) {
+    private String executeMaterialSave(Object obj, String unitCode)  {
         BmsProductTb bmsProductTb = (BmsProductTb) obj;
 
         BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsProductTb.getProductCategoryCode());
@@ -373,7 +373,7 @@ public class KdApiServiceImpl implements KdApiService {
      * @param unitCode
      * @return
      */
-    private String inStockSave(Object obj, String unitCode) {
+    private String inStockSave(Object obj, String unitCode)  {
         BmsProductStockInLog bmsProductStockInLog = (BmsProductStockInLog) obj;
         String inDate = DateUtil.format(bmsProductStockInLog.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsProductStockInLog.getProductCategoryCode());
@@ -400,7 +400,7 @@ public class KdApiServiceImpl implements KdApiService {
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
 
-        InStockSaveModel inStockSaveModel = new InStockSaveModel(bmsProductStockInLog.getId().toString(), inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber().toString(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()), bmsProductStockInLog.getProjectCode(), bmsProductStockInLog.getStockCode(), new BigDecimal(bmsProductStockInLog.getTaxRate()));
+        InStockSaveModel inStockSaveModel = new InStockSaveModel(bmsProductStockInLog.getId().toString(), inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber().toString(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()), bmsProductStockInLog.getProjectCode(), bmsProductStockInLog.getStockCode(), new BigDecimal(bmsProductStockInLog.getTaxRate()==null?"0":bmsProductStockInLog.getTaxRate()));
 
         return KdRequestUtil.save(FormIdEnum.STK_InStock, KdApiBaseSaveRequestDTO.buildOfSave(inStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 
@@ -414,7 +414,7 @@ public class KdApiServiceImpl implements KdApiService {
      * @param unitCode
      * @return
      */
-    private String outStockSave(Object obj, String unitCode) {
+    private String outStockSave(Object obj, String unitCode)  {
         BmsProductStockOutLog bmsProductStockOutLog = (BmsProductStockOutLog) obj;
         String outDate = DateUtil.format(bmsProductStockOutLog.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsProductStockOutLog.getProductCategoryCode());
@@ -453,7 +453,7 @@ public class KdApiServiceImpl implements KdApiService {
      * @param unitCode
      * @return
      */
-    private String returnStockSave(Object obj, String unitCode) {
+    private String returnStockSave(Object obj, String unitCode)  {
         BmsReturnOrderDetailTb bmsReturnOrderDetailTb = (BmsReturnOrderDetailTb) obj;
         BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsReturnOrderDetailTb.getProductCategoryCode());
         if (bmsProductCategoryTb == null) {
@@ -471,7 +471,7 @@ public class KdApiServiceImpl implements KdApiService {
         }
         String returnDate = DateUtil.format(bmsReturnOrderDetailTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
-        ReturnStockSaveModel returnStockSaveModel = new ReturnStockSaveModel(bmsReturnOrderDetailTb.getId().toString(), orgCode, returnDate, bmsSupplierTb.getKdNumber().toString(), bmsReturnOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber()), bmsReturnOrderDetailTb.getStockCode(), bmsReturnOrderDetailTb.getProjectCode(), new BigDecimal(bmsReturnOrderDetailTb.getTaxRate()));
+        ReturnStockSaveModel returnStockSaveModel = new ReturnStockSaveModel(bmsReturnOrderDetailTb.getId().toString(), orgCode, returnDate, bmsSupplierTb.getKdNumber().toString(), bmsReturnOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber()), bmsReturnOrderDetailTb.getStockCode(), bmsReturnOrderDetailTb.getProjectCode(), new BigDecimal(bmsReturnOrderDetailTb.getTaxRate()==null?"0":bmsReturnOrderDetailTb.getTaxRate()));
         return KdRequestUtil.save(FormIdEnum.PUR_MRB, KdApiBaseSaveRequestDTO.buildOfSave(returnStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 
     }
@@ -488,7 +488,7 @@ public class KdApiServiceImpl implements KdApiService {
         return null;
     }
 
-    private String executeMaterialModify(Object obj) {
+    private String executeMaterialModify(Object obj)  {
         BmsProductTb bmsProductTb = (BmsProductTb) obj;
         MaterialSaveModel materialSaveModel = new MaterialSaveModel();
         materialSaveModel.setFMATERIALID(bmsProductTb.getKdNumber());

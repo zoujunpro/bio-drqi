@@ -53,6 +53,8 @@ public class OutStockSaveModel extends KdModel {
 
     private List<FEntityModel> FEntity;
 
+    private String FNote;
+
 
     public OutStockSaveModel(String outDetailId, String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdMaterialId, BigDecimal FQty, String stockId) {
         this.F_WAUJ_UUID = outDetailId;
@@ -64,6 +66,7 @@ public class OutStockSaveModel extends KdModel {
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
         this.FEntity = Arrays.asList(new FEntityModel(kdMaterialId, FQty, stockId, orgCode));
         this.FDeptId = new FDeptIdModel("BM000008");
+        this.FNote=" ";
     }
 
 

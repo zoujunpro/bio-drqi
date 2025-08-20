@@ -211,6 +211,19 @@ public class BioTaskServiceImpl implements BioTaskService {
     }
 
     @Override
+    public void delete(Integer id) {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(id);
+        Assert.notNull(bioTaskDtlTb, "不存在此任务");
+        if (!BioTaskStatusEnum.TASK_STATUS_0.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            throw new BusinessException("草稿状态任务可以删除");
+        }
+        if(SecurityContextHolder.getUserId()!=Integer.valueOf(bioTaskDtlTb.getTaskStatus())){
+            throw new BusinessException("只有发起人自己人可以删除");
+        }
+        bioTaskDtlTbMapper.deleteById(id);
+    }
+
+    @Override
     public BioTaskDetailRspDTO detail(Integer id) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(id);
         BioTaskDetailRspDTO bioTaskDetailRspDTO = BeanUtil.copyProperties(bioTaskDtlTb, BioTaskDetailRspDTO.class);

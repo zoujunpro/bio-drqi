@@ -8,6 +8,7 @@ import com.bio.flow.enums.QueryTypeEnum;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -49,6 +50,8 @@ public interface BioTaskService {
      * @return
      */
     BioTaskDtlTb revokeTask(BioRevokeTaskReqDTO bioRevokeTaskReqDTO);
+
+    void delete(Integer id);
 
     BioTaskDetailRspDTO detail(Integer id);
 

@@ -24,9 +24,8 @@ public class ListBaseInfoRspDTO {
      */
     private String expectStartDate;
 
-    /**
-     * 项目预计结束日期
-     */
-    private String expectEndDate;
+
+
+    private String projectCategoryCode;
 
 }

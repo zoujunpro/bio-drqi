@@ -28,36 +28,10 @@ public class ProjectAddDTO {
     private String projectCode;
 
     /**
-     * 项目优先级
-     */
-
-    @EnumValue(strValues = {"P1", "P2", "P3"}, message = "项目优先级参数非法")
-    private String projectLevel;
-
-    /**
      * 项目类型 1常规项目 2自研项目
      */
     @EnumValue(strValues = {"1", "2"}, message = "项目类型参数非法")
     private String projectType;
-
-    /**
-     * 受体材料
-     */
-    @Size(max = 64,message = "受体材料最大长度64")
-    private String acceptorMaterial;
-
-    /**
-     * 项目物种
-     */
-    @NotEmpty(message = "项目物种缺失")
-    private List<String> speciesList;
-
-    /**
-     * 项目目标
-     */
-    @NotBlank(message = "项目目标缺失")
-    @Size(max = 255,message = "项目目标最大长度255")
-    private String projectTarget;
 
     /**
      * 编辑类型  1基因编辑 2转基因
@@ -71,11 +45,9 @@ public class ProjectAddDTO {
      */
     @NotBlank(message = "项目预计开始日期缺失")
     private String expectStartDate;
+    @EnumValue(strValues = {"1", "2","3"}, message = "项目类型参数非法")
+    private String projectCategoryCode;
 
-    /**
-     * 项目预计结束日期
-     */
-    @NotBlank(message = "项目预计结束日期缺失")
-    private String expectEndDate;
+
 
 }

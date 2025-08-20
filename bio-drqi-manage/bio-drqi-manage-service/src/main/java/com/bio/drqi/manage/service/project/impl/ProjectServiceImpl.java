@@ -59,7 +59,6 @@ public class ProjectServiceImpl implements ProjectService {
         CerProjectTb selectCerProjectTb = new CerProjectTb();
         selectCerProjectTb.setProjectName(projectListReqDTO.getProjectName());
         selectCerProjectTb.setProjectCode(projectListReqDTO.getProjectCode());
-        selectCerProjectTb.setSpecies(projectListReqDTO.getSpecies());
         selectCerProjectTb.setGeneEditMethod(projectListReqDTO.getGeneEditMethod());
         selectCerProjectTb.setOwnerUserId(projectListReqDTO.getOwnerUserId());
         if (projectListReqDTO.getOrder() != null) {
@@ -80,10 +79,8 @@ public class ProjectServiceImpl implements ProjectService {
         PageInfo<ProjectListRspDTO> pageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, ProjectListRspDTO.class);
         if (CollectionUtil.isNotEmpty(pageInfo.getList())) {
             pageInfo.getList().forEach(projectListRspDTO -> {
-                projectListRspDTO.setProjectPeriod(DateUtil.countDateNum(projectListRspDTO.getExpectStartDate(), projectListRspDTO.getExpectEndDate(), DateUtil.DATE_FORMAT_PATTERN));
                 projectListRspDTO.setChildrenNum(subProjectService.list(projectListRspDTO.getId()).size());
                 projectListRspDTO.setCurrentStepName(FlowStepEnum.getFlowStepNameByCode(projectListRspDTO.getCurrentStepCode()));
-                projectListRspDTO.setSpeciesList(JSONUtil.toList(projectListRspDTO.getSpecies(), String.class));
             });
         }
         return pageInfo;
@@ -101,7 +98,6 @@ public class ProjectServiceImpl implements ProjectService {
             listBaseInfoRspDTO.setProjectStatus(cerProjectTb.getProjectStatus());
             listBaseInfoRspDTO.setProjectType(cerProjectTb.getProjectType());
             listBaseInfoRspDTO.setGeneEditMethod(cerProjectTb.getGeneEditMethod());
-            listBaseInfoRspDTO.setExpectEndDate(cerProjectTb.getExpectEndDate());
             listBaseInfoRspDTO.setExpectStartDate(cerProjectTb.getExpectStartDate());
             result.add(listBaseInfoRspDTO);
         }
@@ -114,8 +110,6 @@ public class ProjectServiceImpl implements ProjectService {
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectById(id);
         ProjectListRspDTO projectListRspDTO = new ProjectListRspDTO();
         BeanUtil.copyProperties(cerProjectTb, projectListRspDTO);
-        projectListRspDTO.setProjectPeriod(DateUtil.countDateNum(projectListRspDTO.getExpectStartDate(), projectListRspDTO.getExpectEndDate(), DateUtil.DATE_FORMAT_PATTERN));
-        projectListRspDTO.setSpeciesList(JSONUtil.toList(projectListRspDTO.getSpecies(), String.class));
         return projectListRspDTO;
     }
 
@@ -148,29 +142,6 @@ public class ProjectServiceImpl implements ProjectService {
             });
         }
         return result;
-    }
-
-    @Override
-    public List<ProjectSpeciesLispRspDTO> findProjectAllSpecies(String projectCode) {
-        CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(projectCode);
-        if (cerProjectTb == null) {
-            throw new BusinessException("根据项目编号查询不到项目信息");
-        }
-        List<ProjectSpeciesLispRspDTO> projectSpeciesLispRspDTOS = new ArrayList<>();
-        List<String> speciesList = JSONUtil.toList(cerProjectTb.getSpecies(), String.class);
-        if (CollectionUtil.isNotEmpty(speciesList)) {
-            speciesList.forEach(speciesCode -> {
-                CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(speciesCode);
-                if (cerSpeciesConf == null) {
-                    throw new BusinessException("字典中缺失物种：" + speciesCode);
-                }
-                ProjectSpeciesLispRspDTO projectSpeciesLispRspDTO = new ProjectSpeciesLispRspDTO();
-                projectSpeciesLispRspDTO.setSpeciesCode(cerSpeciesConf.getSpeciesCode());
-                projectSpeciesLispRspDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
-                projectSpeciesLispRspDTOS.add(projectSpeciesLispRspDTO);
-            });
-        }
-        return projectSpeciesLispRspDTOS;
     }
 
     @Override
@@ -224,26 +195,6 @@ public class ProjectServiceImpl implements ProjectService {
 
         // cerProjectStatusListener.notice(ProjectStatusEnum.compete,()->cerProjectTb.getId());
 
-    }
-
-    @Override
-    public List<ProjectQueryBySpeciesCodeRspDTO> queryBySpeciesCode(String speciesCode) {
-        List<ProjectQueryBySpeciesCodeRspDTO> result = new ArrayList<ProjectQueryBySpeciesCodeRspDTO>();
-        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllBySpeciesCode(speciesCode);
-        if (CollectionUtil.isNotEmpty(cerVectorTaskTbList)) {
-            Map<String, List<CerVectorTaskTb>> map = cerVectorTaskTbList.stream().collect(Collectors.groupingBy(CerVectorTaskTb::getProjectCode));
-            map.forEach((projectCode, list) -> {
-                CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(projectCode);
-                ProjectQueryBySpeciesCodeRspDTO projectQueryBySpeciesCodeRspDTO=new ProjectQueryBySpeciesCodeRspDTO();
-                projectQueryBySpeciesCodeRspDTO.setProjectCode(cerProjectTb.getProjectCode());
-                projectQueryBySpeciesCodeRspDTO.setProjectName(cerProjectTb.getProjectName());
-                list.forEach(cerVectorTaskTb -> {
-                    projectQueryBySpeciesCodeRspDTO.addImplementationPlanToList(cerVectorTaskTb.getVectorTaskCode(),cerVectorTaskTb.getVectorTaskName());
-                });
-                result.add(projectQueryBySpeciesCodeRspDTO);
-            });
-        }
-        return result;
     }
 
 }

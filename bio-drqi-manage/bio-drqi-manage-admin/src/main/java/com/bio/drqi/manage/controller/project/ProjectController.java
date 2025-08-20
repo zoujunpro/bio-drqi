@@ -79,15 +79,6 @@ public class ProjectController {
         return ResponseResult.getSuccess(projectService.findAllProjectAllUser());
     }
 
-    /**
-     * 查询项目中所有物种
-     */
-    @GetMapping("/findProjectAllSpecies")
-    @WebLog(desc = "查询项目中所有物种")
-    public ResponseResult<List<ProjectSpeciesLispRspDTO>> findProjectAllSpecies(@RequestParam String projectCode) {
-        return ResponseResult.getSuccess(projectService.findProjectAllSpecies(projectCode));
-    }
-
 
     /**
      * 暂停项目
@@ -122,14 +113,5 @@ public class ProjectController {
         return ResponseResult.getSuccess("成功");
     }
 
-    /**
-     * 根据物种查询项目
-     *
-     * @param speciesCode
-     * @return
-     */
-    @GetMapping("/queryBySpeciesCode")
-    public ResponseResult<List<ProjectQueryBySpeciesCodeRspDTO>> queryBySpeciesCode(String speciesCode) {
-        return ResponseResult.getSuccess(projectService.queryBySpeciesCode(speciesCode));
-    }
+
 }

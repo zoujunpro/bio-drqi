@@ -55,10 +55,14 @@ public class ProjectBaseProcService extends AbstractProjectBaseTaskService {
             cerProjectTb.setOwnerUserName(bioTaskDtlTb.getApplyUserName());
             cerProjectTb.setCreateUserId(bioTaskDtlTb.getApplyUserId());
             cerProjectTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
-            cerProjectTb.setProjectType(projectAddDTO.getProjectType());
             cerProjectTb.setProjectStatus(ProjectStatusEnum.execute.name());
-            cerProjectTb.setSpecies(JSONUtil.toJsonStr(projectAddDTO.getSpeciesList()));
             cerProjectTb.setTaskNum(bioTaskDtlTb.getTaskNum());
+            cerProjectTb.setProjectCategoryCode(projectAddDTO.getProjectCategoryCode());
+            cerProjectTb.setGeneEditMethod(projectAddDTO.getGeneEditMethod());
+            cerProjectTb.setProjectType(projectAddDTO.getProjectType());
+            cerProjectTb.setProjectCode(projectAddDTO.getProjectCode());
+            cerProjectTb.setProjectName(projectAddDTO.getProjectName());
+            cerProjectTb.setExpectStartDate(projectAddDTO.getExpectStartDate());
             try {
                 cerProjectTbMapper.insert(cerProjectTb);
             } catch (DuplicateKeyException e) {

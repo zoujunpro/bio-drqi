@@ -20,8 +20,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@TableName(value ="cer_project_tb")
-public class CerProjectTb  implements Serializable {
+@TableName(value = "cer_project_tb")
+public class CerProjectTb implements Serializable {
     /**
      * 主键ID
      */
@@ -37,26 +37,6 @@ public class CerProjectTb  implements Serializable {
      * 项目编号
      */
     private String projectCode;
-
-    /**
-     * 项目优先级
-     */
-    private String projectLevel;
-
-    /**
-     * 受体材料
-     */
-    private String acceptorMaterial;
-
-    /**
-     * 项目物种
-     */
-    private String species;
-
-    /**
-     * 项目目标
-     */
-    private String projectTarget;
 
     /**
      * 项目状态 0未执行 1执行中  2暂停 3结束
@@ -106,16 +86,11 @@ public class CerProjectTb  implements Serializable {
     private String expectStartDate;
 
     /**
-     * 项目预计结束日期
-     */
-    private String expectEndDate;
-
-    /**
      * 任务编号
      */
     private String taskNum;
 
-
+    private String projectCategoryCode;
 
 
     @TableField(exist = false)

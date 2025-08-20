@@ -25,13 +25,10 @@ public interface ProjectService {
 
     List<ProjectUserAllRspDTO> findAllProjectAllUser();
 
-    List<ProjectSpeciesLispRspDTO> findProjectAllSpecies(String projectCode);
-
     void stop(Integer id);
 
     void start(Integer id);
 
     void complete(Integer id);
 
-    List<ProjectQueryBySpeciesCodeRspDTO> queryBySpeciesCode(String speciesCode);
 }

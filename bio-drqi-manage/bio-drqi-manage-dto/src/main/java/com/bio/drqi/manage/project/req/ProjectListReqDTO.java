@@ -23,10 +23,6 @@ public class ProjectListReqDTO extends PageDTO {
      * 项目编码
      */
     private String projectCode;
-    /**
-     * 项目物种
-     */
-    private String species;
 
     /**
      * 编辑类型  1基因编辑 2转基因

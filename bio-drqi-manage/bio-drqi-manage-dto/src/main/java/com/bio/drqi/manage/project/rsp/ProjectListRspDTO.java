@@ -29,30 +29,7 @@ public class ProjectListRspDTO {
      * 立项时间
      */
     private Date projectTime;
-    /**
-     * 项目周期
-     */
-    private Long projectPeriod;
-    /**
-     * 项目优先级
-     */
-    private String projectLevel;
-    /**
-     * 受体材料
-     */
-    private String acceptorMaterial;
-    /**
-     * 项目物种
-     */
-    private List<String> speciesList;
 
-
-    @JsonIgnore
-    private String species;
-    /**
-     * 项目目标
-     */
-    private String projectTarget;
     /**
      * 项目状态   approve审批中 , execute执行中，stop暂停，complete完成
      */
@@ -83,11 +60,6 @@ public class ProjectListRspDTO {
      * 项目预计开始日期
      */
     private String expectStartDate;
-    /**
-     * 项目预计结束日期
-     */
-    private String expectEndDate;
-
 
     private String taskNum;
 
@@ -97,6 +69,7 @@ public class ProjectListRspDTO {
 
     private int childrenNum;
 
+    private String projectCategoryCode;
 
     /**
      * 项目负责人
@@ -107,5 +80,6 @@ public class ProjectListRspDTO {
      * 负责人名称
      */
     private String ownerUserName;
+
 
 }

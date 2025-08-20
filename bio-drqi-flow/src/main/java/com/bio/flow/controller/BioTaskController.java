@@ -138,7 +138,7 @@ public class BioTaskController {
     }
 
     /**
-     * 详情接口
+     * 删除
      *
      * @param id
      * @return
@@ -146,6 +146,7 @@ public class BioTaskController {
     @GetMapping("/delete")
     @WebLog(desc = "详情接口")
     public ResponseResult<String> delete(@RequestParam @Validated Integer id) {
+        bioTaskService.delete(id);
         return ResponseResult.getSuccess("ok");
     }
 

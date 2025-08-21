@@ -34,10 +34,10 @@ public class ProjectAddDTO {
     private String projectType;
 
     /**
-     * 编辑类型  1基因编辑 2转基因
+     * 编辑类型  1基因编辑 2转基因,3育种
      */
     @NotBlank(message = "编辑类型缺失")
-    @EnumValue(strValues = {"1", "2"}, message = "编辑类型参数非法")
+    @EnumValue(strValues = {"1", "2","3"}, message = "编辑类型参数非法")
     private String geneEditMethod;
 
     /**

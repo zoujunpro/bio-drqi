@@ -45,7 +45,11 @@ public class ProjectAddDTO {
      */
     @NotBlank(message = "项目预计开始日期缺失")
     private String expectStartDate;
-    @EnumValue(strValues = {"1", "2","3"}, message = "项目类型参数非法")
+    /**
+     * 项目分类
+     */
+
+    @EnumValue(strValues = {"1", "2","3"}, message = "项目分类参数非法")
     private String projectCategoryCode;
 
 

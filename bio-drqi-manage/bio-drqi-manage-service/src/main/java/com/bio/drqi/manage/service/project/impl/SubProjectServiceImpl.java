@@ -63,6 +63,7 @@ public class SubProjectServiceImpl  implements SubProjectService {
                 }
                 ProjectSpeciesLispRspDTO projectSpeciesLispRspDTO=new ProjectSpeciesLispRspDTO();
                 projectSpeciesLispRspDTO.setSpeciesCode(cerSpeciesConf.getSpeciesCode());
+                projectSpeciesLispRspDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
                 projectSpeciesLispRspDTOS.add(projectSpeciesLispRspDTO);
             });
         }

@@ -9,8 +9,6 @@ import javax.validation.constraints.NotNull;
 @Data
 public class ImplementPlanAddDTO {
 
-    private Integer vectorTaskId;
-
     /**
      * 项目ID
      */

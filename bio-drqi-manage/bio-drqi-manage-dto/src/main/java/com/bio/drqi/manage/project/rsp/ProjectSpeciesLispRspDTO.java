@@ -11,4 +11,10 @@ public class ProjectSpeciesLispRspDTO {
     private String speciesCode;
 
 
+    /**
+     * 项目负责人
+     */
+    private String speciesName;
+
+
 }

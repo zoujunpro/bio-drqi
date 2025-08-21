@@ -77,7 +77,6 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByProjectIdOrderById(queryPageVectorReqDTO.getProjectId());
         PageInfo<CerVectorTaskTb> srcPage = new PageInfo<>(cerVectorTaskTbList);
         PageInfo<VectorListPageRspDTO> vectorBaseInfoRspDTOPageInfo = BeanUtils.copyPageInfoProperties(srcPage, VectorListPageRspDTO.class);
-        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
         vectorBaseInfoRspDTOPageInfo.getList().forEach(vectorListPageRspDTO -> {
             List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectAllByVectorTaskId(vectorListPageRspDTO.getId());
             List<CerVectorGroupTb> cerVectorGroupTbList = cerVectorGroupTbMapper.selectAllByVectorTaskId(vectorListPageRspDTO.getId());

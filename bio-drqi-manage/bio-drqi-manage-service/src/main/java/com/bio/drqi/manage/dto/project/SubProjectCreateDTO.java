@@ -28,8 +28,7 @@ public class SubProjectCreateDTO {
 
     @Data
     public static class Content{
-        @NotBlank(message = "子项目名称不能为空")
-        private String subProjectName;
+
 
         @NotBlank(message = "子项目编码不能为空")
         private String subProjectCode;

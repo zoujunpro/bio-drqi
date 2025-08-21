@@ -217,7 +217,7 @@ public class BioTaskServiceImpl implements BioTaskService {
         if (!BioTaskStatusEnum.TASK_STATUS_0.status.equals(bioTaskDtlTb.getTaskStatus())) {
             throw new BusinessException("草稿状态任务可以删除");
         }
-        if(SecurityContextHolder.getUserId()!=Integer.valueOf(bioTaskDtlTb.getTaskStatus())){
+        if(SecurityContextHolder.getUserId().intValue()!=bioTaskDtlTb.getApplyUserId()){
             throw new BusinessException("只有发起人自己人可以删除");
         }
         bioTaskDtlTbMapper.deleteById(id);

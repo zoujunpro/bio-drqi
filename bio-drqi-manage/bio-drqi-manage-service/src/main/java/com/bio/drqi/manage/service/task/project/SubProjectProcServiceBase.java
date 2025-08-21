@@ -55,7 +55,6 @@ public class SubProjectProcServiceBase extends AbstractProjectBaseTaskService {
                 for (SubProjectCreateDTO.Content content : subProjectCreateDTO.getContentList()) {
                     CerSubProjectTb cerSubProjectTb = new CerSubProjectTb();
                     cerSubProjectTb.setProjectId(subProjectCreateDTO.getProjectId());
-                    cerSubProjectTb.setSubProjectName(content.getSubProjectName());
                     cerSubProjectTb.setSubProjectCode(content.getSubProjectCode());
                     cerSubProjectTb.setCreateTime(new Date());
                     cerSubProjectTb.setUpdateTime(new Date());

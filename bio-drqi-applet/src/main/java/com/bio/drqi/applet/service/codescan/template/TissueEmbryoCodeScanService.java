@@ -66,7 +66,6 @@ public class TissueEmbryoCodeScanService extends AbstractBaseCodeScanService<Tis
         scanCodeSampleTestRspDTO.setProjectCode(cerProjectTb.getProjectCode());
         scanCodeSampleTestRspDTO.setProjectName(cerProjectTb.getProjectName());
         scanCodeSampleTestRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
-        scanCodeSampleTestRspDTO.setSubProjectName(cerSubProjectTb.getSubProjectName());
         scanCodeSampleTestRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         scanCodeSampleTestRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
         scanCodeSampleTestRspDTO.setTransformName(cerVectorGroupTb.getPlasmidNames());

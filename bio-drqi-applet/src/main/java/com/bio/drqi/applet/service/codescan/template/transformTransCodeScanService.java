@@ -70,7 +70,6 @@ public class transformTransCodeScanService extends AbstractBaseCodeScanService<T
         scanCodeTransformRspDTO.setProjectCode(cerVectorTaskTb.getProjectCode());
         scanCodeTransformRspDTO.setProjectName(cerProjectTb.getProjectName());
         scanCodeTransformRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
-        scanCodeTransformRspDTO.setSubProjectName(cerSubProjectTb.getSubProjectName());
         scanCodeTransformRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         scanCodeTransformRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
         scanCodeTransformRspDTO.setUrls(JSONUtil.toList(cerConversionAndTransTb.getImageUrl(), String.class));

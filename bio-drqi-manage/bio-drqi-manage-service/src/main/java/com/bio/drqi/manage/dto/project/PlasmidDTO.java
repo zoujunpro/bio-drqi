@@ -33,8 +33,6 @@ public class PlasmidDTO {
 
     private String projectName;
 
-    private String subProjectName;
-
     private String subProjectCode;
 
     private String geneEditMethod;

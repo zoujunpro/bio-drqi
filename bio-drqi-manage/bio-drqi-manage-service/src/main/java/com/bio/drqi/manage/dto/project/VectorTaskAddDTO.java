@@ -31,8 +31,6 @@ public class VectorTaskAddDTO {
     private String projectCode;
 
 
-    private String subProjectName;
-
     private String subProjectCode;
 
     private String geneEditMethod;

@@ -11,9 +11,6 @@ public class ScanCodePlasmidRspDTO {
 
     private String subProjectCode;
 
-    private String subProjectName;
-
-
     private String vectorTaskCode;
 
     private String vectorTaskName;

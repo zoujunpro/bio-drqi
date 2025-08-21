@@ -14,9 +14,6 @@ public class ScanCodeSampleTestRspDTO {
 
     private String subProjectCode;
 
-    private String subProjectName;
-
-
     private String vectorTaskCode;
 
     private String vectorTaskName;

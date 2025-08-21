@@ -124,7 +124,6 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
                     scanCodeSeedRspDTO.setProjectCode(cerProjectTb.getProjectCode());
                     scanCodeSeedRspDTO.setProjectName(cerProjectTb.getProjectName());
                     scanCodeSeedRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
-                    scanCodeSeedRspDTO.setSubProjectName(cerSubProjectTb.getSubProjectName());
                     scanCodeSeedRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
                     scanCodeSeedRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
                     scanCodeSeedRspDTO.setPlasmidNames(cerTransformTb.getPlasmidName());

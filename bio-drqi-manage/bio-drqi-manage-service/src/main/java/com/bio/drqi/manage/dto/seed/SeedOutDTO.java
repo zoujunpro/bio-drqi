@@ -75,10 +75,6 @@ public class SeedOutDTO extends SeedProcDTO {
         /**
          * 预览 返显用
          */
-        private String subProjectName;
-        /**
-         * 预览 返显用
-         */
         private String subProjectCode;
         /**
          * 预览 返显用
@@ -146,7 +142,6 @@ public class SeedOutDTO extends SeedProcDTO {
         ApplyFromContent applyFromContent=new ApplyFromContent();
         applyFromContent.setProjectCode("项目编号");
         applyFromContent.setProjectName("项目名称");
-        applyFromContent.setSubProjectName("子项目名称");
         applyFromContent.setSubProjectCode("子项目编号");
         applyFromContent.setVectorTaskName("载体任务名称");
         applyFromContent.setVectorTaskCode("载体任务编号");

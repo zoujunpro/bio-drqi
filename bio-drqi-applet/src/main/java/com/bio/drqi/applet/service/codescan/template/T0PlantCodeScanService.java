@@ -57,7 +57,6 @@ public class T0PlantCodeScanService extends AbstractBaseCodeScanService<PlantUni
         scanCodeT0PlantTestRspDTO.setProjectCode(cerProjectTb.getProjectCode());
         scanCodeT0PlantTestRspDTO.setProjectName(cerProjectTb.getProjectName());
         scanCodeT0PlantTestRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
-        scanCodeT0PlantTestRspDTO.setSubProjectName(cerSubProjectTb.getSubProjectName());
         scanCodeT0PlantTestRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         scanCodeT0PlantTestRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
         scanCodeT0PlantTestRspDTO.setPlantDtlInfo(BeanUtils.copyProperties(cerPlantDtlTb, ScanCodeT0PlantTestRspDTO.PlantDtlInfo.class));

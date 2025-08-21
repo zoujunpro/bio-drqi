@@ -28,11 +28,6 @@ public class CerSubProjectTb implements Serializable {
     private Integer projectId;
 
     /**
-     * 子项目名称
-     */
-    private String subProjectName;
-
-    /**
      * 子项目编码
      */
     private String subProjectCode;

@@ -11,8 +11,6 @@ public class SubProjectRspDTO {
      * 主键ID
      */
     private Integer id;
-
-    private String subProjectName;
     /**
      * 子项目编码
      */

@@ -7,7 +7,6 @@
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerSubProjectTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="projectId" column="project_id" jdbcType="INTEGER"/>
-            <result property="subProjectName" column="sub_project_name" jdbcType="VARCHAR"/>
             <result property="subProjectCode" column="sub_project_code" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
@@ -22,7 +21,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,project_id,sub_project_name,
+        id,project_id,
         sub_project_code,create_time,update_time,
         file_urls,task_num,create_user_id,
         create_user_name,task_status,priority_level,species_code

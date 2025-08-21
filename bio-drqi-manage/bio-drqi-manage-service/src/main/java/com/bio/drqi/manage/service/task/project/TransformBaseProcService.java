@@ -97,7 +97,6 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
         transformDTO.setProjectCode(cerProjectTb.getProjectCode());
         transformDTO.setProjectName(cerProjectTb.getProjectName());
         transformDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
-        transformDTO.setSubProjectName(cerSubProjectTb.getSubProjectName());
         transformDTO.setGeneEditMethod(cerProjectTb.getGeneEditMethod());
         transformDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
         transformDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());

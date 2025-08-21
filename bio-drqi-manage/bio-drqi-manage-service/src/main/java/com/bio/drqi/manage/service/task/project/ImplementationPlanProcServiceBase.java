@@ -140,7 +140,6 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
         vectorTaskAddDTO.setProjectCode(cerProjectTb.getProjectCode());
         vectorTaskAddDTO.setProjectName(cerProjectTb.getProjectName());
         vectorTaskAddDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
-        vectorTaskAddDTO.setSubProjectName(cerSubProjectTb.getSubProjectName());
         vectorTaskAddDTO.setGeneEditMethod(cerProjectTb.getGeneEditMethod());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(vectorTaskAddDTO));
         log.info("【任务工单】实施方案构建校验结束");

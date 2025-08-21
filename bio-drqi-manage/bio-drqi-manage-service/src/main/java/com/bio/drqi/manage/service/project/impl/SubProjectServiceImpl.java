@@ -34,7 +34,6 @@ public class SubProjectServiceImpl  implements SubProjectService {
         for (CerSubProjectTb cerSubProjectTb : cerSubProjectTbList) {
             SubProjectRspDTO subProjectRspDTO = new SubProjectRspDTO();
             subProjectRspDTO.setId(cerSubProjectTb.getId());
-            subProjectRspDTO.setSubProjectName(cerSubProjectTb.getSubProjectName());
             subProjectRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
             subProjectRspDTO.setFileUrls(JSONUtil.toList(cerSubProjectTb.getFileUrls(), String.class));
             subProjectRspDTO.setTaskNum(cerSubProjectTb.getTaskNum());
@@ -64,7 +63,6 @@ public class SubProjectServiceImpl  implements SubProjectService {
                 }
                 ProjectSpeciesLispRspDTO projectSpeciesLispRspDTO=new ProjectSpeciesLispRspDTO();
                 projectSpeciesLispRspDTO.setSpeciesCode(cerSpeciesConf.getSpeciesCode());
-                projectSpeciesLispRspDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
                 projectSpeciesLispRspDTOS.add(projectSpeciesLispRspDTO);
             });
         }

@@ -28,9 +28,9 @@ public interface VectorTaskService {
 
     List<StepListRspDTO> stepListByCode(String vectorTaskCode);
 
-    VectorTaskAddDTO detail(Integer id);
+    CerImplementationPlanBaseInfoRspDTO detail(Integer id);
 
-    VectorTaskAddDTO detailByCode( String vectorTaskCode);
+    CerImplementationPlanBaseInfoRspDTO detailByCode( String vectorTaskCode);
 
     void stop(Integer id);
 

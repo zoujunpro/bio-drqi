@@ -138,7 +138,7 @@ public class CerImplementationPlanController {
      */
     @GetMapping("/detail")
     @WebLog(desc = "查询实施方案详情")
-    public ResponseResult<VectorTaskAddDTO> detail(@RequestParam Integer id) {
+    public ResponseResult<CerImplementationPlanBaseInfoRspDTO> detail(@RequestParam Integer id) {
         return ResponseResult.getSuccess(vectorTaskService.detail(id));
     }
 
@@ -150,7 +150,7 @@ public class CerImplementationPlanController {
      */
     @GetMapping("/detailByCode")
     @WebLog(desc = "查询实施方案详情(根据编号)")
-    public ResponseResult<VectorTaskAddDTO> detailByCode(@RequestParam String vectorTaskCode) {
+    public ResponseResult<CerImplementationPlanBaseInfoRspDTO> detailByCode(@RequestParam String vectorTaskCode) {
         return ResponseResult.getSuccess(vectorTaskService.detailByCode(vectorTaskCode));
     }
 

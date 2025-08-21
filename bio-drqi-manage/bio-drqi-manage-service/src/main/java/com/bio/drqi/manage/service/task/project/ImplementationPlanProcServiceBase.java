@@ -10,7 +10,7 @@ import com.bio.drqi.enums.QualityInspectionResultEnum;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.ValidatorUtil;
-import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
+import com.bio.drqi.manage.dto.project.ImplementPlanAddDTO;
 import com.bio.drqi.common.util.LetterUtil;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
@@ -47,36 +47,30 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
     @Resource
     private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
 
-    @Resource
-    private CerBreedDictMapper cerBreedDictMapper;
-
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         log.info("【任务工单】实施方案构建校验开始");
-        VectorTaskAddDTO vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
-        ValidatorUtil.validator(vectorTaskAddDTO);
-        CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectById(vectorTaskAddDTO.getSubProjectId());
+        ImplementPlanAddDTO implementPlanAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), ImplementPlanAddDTO.class);
+        ValidatorUtil.validator(implementPlanAddDTO);
+        CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectById(implementPlanAddDTO.getSubProjectId());
         if (cerSubProjectTb == null) {
             throw new BusinessException("未找到子项目信息");
         }
-        if (!cerSubProjectTb.getProjectId().equals(vectorTaskAddDTO.getProjectId())) {
+        if (!cerSubProjectTb.getProjectId().equals(implementPlanAddDTO.getProjectId())) {
             throw new BusinessException("入参非法，子项目归属错误");
         }
-        CerProjectTb cerProjectTb = cerProjectTbMapper.selectById(vectorTaskAddDTO.getProjectId());
+        CerProjectTb cerProjectTb = cerProjectTbMapper.selectById(implementPlanAddDTO.getProjectId());
         if (cerProjectTb == null) {
-            throw new BusinessException("未找到项目信息 projectId=" + vectorTaskAddDTO.getProjectId());
+            throw new BusinessException("未找到项目信息 projectId=" + implementPlanAddDTO.getProjectId());
         }
         if (!ProjectStatusEnum.execute.name().equals(cerProjectTb.getProjectStatus())) {
             throw new BusinessException("非执行中项目不能进行该操作");
         }
-        if (!vectorTaskAddDTO.getVectorTaskCode().startsWith(cerSubProjectTb.getSubProjectCode())) {
+        if (!implementPlanAddDTO.getVectorTaskCode().startsWith(cerSubProjectTb.getSubProjectCode())) {
             throw new BusinessException("任务编号必须以子项目编号开头");
         }
-        if (vectorTaskAddDTO.getVectorTaskCode().split("-").length != 2) {
+        if (implementPlanAddDTO.getVectorTaskCode().split("-").length != 2) {
             throw new BusinessException("任务编号非法");
-        }
-        if (CollectionUtil.isEmpty(vectorTaskAddDTO.getVectorGroupList())) {
-            throw new BusinessException("转化信息缺失");
         }
 
         synchronized (this) {
@@ -84,15 +78,10 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
             if (cerVectorTaskTb == null) {
                 synchronized (this) {
                     cerVectorTaskTb = new CerVectorTaskTb();
-                    cerVectorTaskTb.setVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
-                    cerVectorTaskTb.setVectorTaskType(vectorTaskAddDTO.getVectorTaskType());
-                    cerVectorTaskTb.setVectorTaskName(vectorTaskAddDTO.getVectorTaskName());
-                    cerVectorTaskTb.setDeliveryMethod(vectorTaskAddDTO.getDeliveryMethod());
-                    cerVectorTaskTb.setAcceptorMaterial(vectorTaskAddDTO.getAcceptorMaterial());
-                    cerVectorTaskTb.setEditTools(vectorTaskAddDTO.getEditTools());
-                    cerVectorTaskTb.setEditToolsType(vectorTaskAddDTO.getEditToolsType());
-                    cerVectorTaskTb.setVectorTaskTarget(vectorTaskAddDTO.getVectorTaskTarget());
-                    cerVectorTaskTb.setRemark(vectorTaskAddDTO.getRemark());
+                    cerVectorTaskTb.setVectorTaskCode(implementPlanAddDTO.getVectorTaskCode());
+                    cerVectorTaskTb.setVectorTaskType(implementPlanAddDTO.getVectorTaskType());
+                    cerVectorTaskTb.setDeliveryMethod(implementPlanAddDTO.getDeliveryMethod());
+                    cerVectorTaskTb.setAcceptorMaterial(implementPlanAddDTO.getAcceptorMaterial());
                     cerVectorTaskTb.setCreateTime(new Date());
                     cerVectorTaskTb.setUpdateTime(new Date());
                     cerVectorTaskTb.setCreateUserId(SecurityContextHolder.getUserId());
@@ -101,17 +90,17 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                     cerVectorTaskTb.setSubProjectId(cerSubProjectTb.getId());
                     cerVectorTaskTb.setProjectCode(cerProjectTb.getProjectCode());
                     cerVectorTaskTb.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
-                    cerVectorTaskTb.setGeneEditMethod(cerProjectTb.getGeneEditMethod());
-                    cerVectorTaskTb.setEditType(vectorTaskAddDTO.getEditType());
+                    cerVectorTaskTb.setEditType(implementPlanAddDTO.getEditType());
                     cerVectorTaskTb.setTaskStatus(bioTaskDtlTb.getTaskStatus());
                     cerVectorTaskTb.setTaskNum(bioTaskDtlTb.getTaskNum());
-                    cerVectorTaskTb.setWordUrl(vectorTaskAddDTO.getWordUrl());
-                    cerVectorTaskTb.setSpeciesCode(vectorTaskAddDTO.getSpeciesCode());
-                    cerVectorTaskTb.setBreedCode(vectorTaskAddDTO.getBreedCode());
-                    cerVectorTaskTb.setExpectStartDate(vectorTaskAddDTO.getExpectStartDate());
-                    cerVectorTaskTb.setExpectEndDate(vectorTaskAddDTO.getExpectEndDate());
+                    cerVectorTaskTb.setSpeciesCode(implementPlanAddDTO.getSpeciesCode());
+                    cerVectorTaskTb.setBreedCode(implementPlanAddDTO.getBreedCode());
+                    cerVectorTaskTb.setExpectStartDate(implementPlanAddDTO.getExpectStartDate());
                     cerVectorTaskTb.setQualityInspectionResult(QualityInspectionResultEnum.nocheck.name());
                     cerVectorTaskTb.setVectorBuildFlag(CerProjectContents.N);
+                    cerVectorTaskTb.setSupervisionLevelCode(implementPlanAddDTO.getSupervisionLevelCode());
+                    cerVectorTaskTb.setExpectedPositiveSeed(implementPlanAddDTO.getExpectedPositiveSeed());
+                    cerVectorTaskTb.setExpectMonth(implementPlanAddDTO.getExpectMonth());
                     try {
                         cerVectorTaskTbMapper.insert(cerVectorTaskTb);
                     } catch (DuplicateKeyException e) {
@@ -122,7 +111,7 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                         //生成sampleCodePrefix
                         cerSampleCodePrefixTb = new CerSampleCodePrefixTb();
                         cerSampleCodePrefixTb.setSampleCodePrefix(createSampleCode());
-                        cerSampleCodePrefixTb.setVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
+                        cerSampleCodePrefixTb.setVectorTaskCode(implementPlanAddDTO.getVectorTaskCode());
                         cerSampleCodePrefixTb.setCreateTime(new Date());
                         cerSampleCodePrefixTb.setCurrentIndex(1);
                         try {
@@ -131,17 +120,16 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                             throw new BusinessException("取样编号前缀重复：" + cerSampleCodePrefixTb.getSampleCodePrefix());
                         }
                     }
-                    vectorTaskAddDTO.setSampleCodePrefix(cerSampleCodePrefixTb.getSampleCodePrefix());
+                    implementPlanAddDTO.setSampleCodePrefix(cerSampleCodePrefixTb.getSampleCodePrefix());
 
                 }
             }
         }
         //回填工单信息
-        vectorTaskAddDTO.setProjectCode(cerProjectTb.getProjectCode());
-        vectorTaskAddDTO.setProjectName(cerProjectTb.getProjectName());
-        vectorTaskAddDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
-        vectorTaskAddDTO.setGeneEditMethod(cerProjectTb.getGeneEditMethod());
-        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(vectorTaskAddDTO));
+        implementPlanAddDTO.setProjectCode(cerProjectTb.getProjectCode());
+        implementPlanAddDTO.setProjectName(cerProjectTb.getProjectName());
+        implementPlanAddDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(implementPlanAddDTO));
         log.info("【任务工单】实施方案构建校验结束");
     }
 
@@ -158,10 +146,6 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
         if (cerVectorTaskTb == null) {
             throw new BusinessException("数据异常，载体任务不存在");
         }
-        VectorTaskAddDTO vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
-        vectorTaskAddDTO.setSampleCodePrefix("");
-        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(vectorTaskAddDTO));
-
         cerVectorTaskTbMapper.deleteById(cerVectorTaskTb.getId());
         cerVectorTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());
         cerVectorGroupTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());

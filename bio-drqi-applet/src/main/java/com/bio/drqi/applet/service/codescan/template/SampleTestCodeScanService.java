@@ -71,7 +71,6 @@ public class SampleTestCodeScanService extends AbstractBaseCodeScanService<Sampl
         scanCodeSampleTestRspDTO.setProjectName(cerProjectTb.getProjectName());
         scanCodeSampleTestRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
         scanCodeSampleTestRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-        scanCodeSampleTestRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
         scanCodeSampleTestRspDTO.setTransformName(cerVectorGroupTb.getPlasmidNames());
         scanCodeSampleTestRspDTO.setTransformCode(cerSampleTestTb.getTransformCode());
         ScanCodeSampleTestRspDTO.SampleTest sampleTest = BeanUtil.copyProperties(cerSampleTestTb, ScanCodeSampleTestRspDTO.SampleTest.class);

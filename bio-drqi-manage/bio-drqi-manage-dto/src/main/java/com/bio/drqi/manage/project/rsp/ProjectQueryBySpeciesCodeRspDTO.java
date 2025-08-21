@@ -20,16 +20,14 @@ public class ProjectQueryBySpeciesCodeRspDTO {
 
         private String vectorTaskCode;
 
-        private String vectorTaskName;
 
-        public ImplementationPlan(String vectorTaskCode, String vectorTaskName) {
+        public ImplementationPlan(String vectorTaskCode ) {
             this.vectorTaskCode = vectorTaskCode;
-            this.vectorTaskName = vectorTaskName;
         }
     }
 
-    public void addImplementationPlanToList(String vectorTaskCode, String vectorTaskName){
-        this.implementationPlanList.add(new ImplementationPlan(vectorTaskCode,vectorTaskName));
+    public void addImplementationPlanToList(String vectorTaskCode){
+        this.implementationPlanList.add(new ImplementationPlan(vectorTaskCode));
     }
 
 

@@ -16,8 +16,6 @@ public class ScanCodeTransformTransRspDTO {
 
     private String vectorTaskCode;
 
-    private String vectorTaskName;
-
     private Transform transform;
 
     private List<String> urls;

@@ -8,13 +8,8 @@
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
         <result property="vectorTaskType" column="vector_task_type" jdbcType="VARCHAR"/>
-        <result property="vectorTaskName" column="vector_task_name" jdbcType="VARCHAR"/>
         <result property="deliveryMethod" column="delivery_method" jdbcType="VARCHAR"/>
         <result property="acceptorMaterial" column="acceptor_material" jdbcType="VARCHAR"/>
-        <result property="editTools" column="edit_tools" jdbcType="VARCHAR"/>
-        <result property="editToolsType" column="edit_tools_type" jdbcType="VARCHAR"/>
-        <result property="vectorTaskTarget" column="vector_task_target" jdbcType="VARCHAR"/>
-        <result property="remark" column="remark" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
@@ -23,31 +18,28 @@
         <result property="subProjectId" column="sub_project_id" jdbcType="INTEGER"/>
         <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
         <result property="subProjectCode" column="sub_project_code" jdbcType="VARCHAR"/>
-        <result property="geneEditMethod" column="gene_edit_method" jdbcType="VARCHAR"/>
         <result property="editType" column="edit_type" jdbcType="VARCHAR"/>
         <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
         <result property="taskStatus" column="task_status" jdbcType="VARCHAR"/>
         <result property="qualityInspectionResult" column="quality_inspection_result" jdbcType="VARCHAR"/>
-        <result property="wordUrl" column="word_url" jdbcType="VARCHAR"/>
         <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
         <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
         <result property="currentStepCode" column="current_step_code" jdbcType="VARCHAR"/>
         <result property="vectorBuildFlag" column="vector_build_flag" jdbcType="VARCHAR"/>
         <result column="expect_start_date" jdbcType="VARCHAR" property="expectStartDate"/>
-        <result column="expect_end_date" jdbcType="VARCHAR" property="expectEndDate"/>
+        <result column="expected_positive_seed" jdbcType="VARCHAR" property="expectedPositiveSeed"/>
+        <result column="supervision_level_code" jdbcType="VARCHAR" property="supervisionLevelCode"/>
+        <result column="expect_month" jdbcType="VARCHAR" property="expectMonth"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
-        ,vector_task_code,vector_task_type,
-        vector_task_name,delivery_method,acceptor_material,
-        edit_tools,edit_tools_type,vector_task_target,
-        remark,create_time,update_time,breed_code,
+        ,vector_task_code,vector_task_type,delivery_method,acceptor_material,vector_task_target,
+        create_time,update_time,breed_code,
         create_user_id,create_user_name,project_id,
-        sub_project_id,project_code,sub_project_code,
-        gene_edit_method,edit_type,task_num,
-        task_status,quality_inspection_result,word_url,species_code,current_step_code,
-        vector_build_flag,expect_start_date,expect_end_date
+        sub_project_id,project_code,sub_project_code,edit_type,task_num,
+        task_status,quality_inspection_result,species_code,current_step_code,
+        vector_build_flag,expect_start_date,expected_positive_seed,supervision_level_code,expect_month
     </sql>
     <select id="selectOneByTaskNum" resultMap="BaseResultMap">
         select

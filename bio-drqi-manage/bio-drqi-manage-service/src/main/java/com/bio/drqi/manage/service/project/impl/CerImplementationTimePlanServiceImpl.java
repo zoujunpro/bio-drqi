@@ -112,7 +112,6 @@ public class CerImplementationTimePlanServiceImpl implements CerImplementationTi
                 continue;
             }
             vectorTaskTimePlanExportDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-            vectorTaskTimePlanExportDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
             vectorTaskTimePlanExportDTO.setProjectCode(cerProjectTbMap.get(cerVectorTaskTb.getProjectCode()).getProjectCode());
             vectorTaskTimePlanExportDTO.setProjectName(cerProjectTbMap.get(cerVectorTaskTb.getProjectCode()).getProjectName());
             vectorTaskTimePlanExportDTO.setSubProjectCode(cerSubProjectTbMap.get(cerVectorTaskTb.getSubProjectCode()).getSubProjectCode());

@@ -16,8 +16,6 @@ public class ScanCodeSampleTestTransRspDTO {
 
     private String vectorTaskCode;
 
-    private String vectorTaskName;
-
     private String transformName;
 
     private String transformCode;

@@ -1,0 +1,87 @@
+package com.bio.drqi.manage.dto.project;
+
+import com.bio.drqi.common.validator.EnumValue;
+import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+@Data
+public class ImplementPlanAddDTO {
+
+    private Integer vectorTaskId;
+
+    /**
+     * 项目ID
+     */
+    @NotNull(message = "项目ID必填")
+    private Integer projectId;
+
+    private String projectName;
+
+    private String projectCode;
+
+    private String subProjectCode;
+    /**
+     * 子项目ID
+     */
+    @NotNull(message = "子项目ID必填")
+    private Integer subProjectId;
+    /**
+     * 载体构建任务编码
+     */
+    @NotBlank(message = "实施方案编码必填")
+    private String vectorTaskCode;
+    /**
+     * 载体构建任务类型 1常任务创建 ，2瞬时测试 3原生质体 4发根
+     */
+    @EnumValue(strValues = {"1", "2", "3", "4"}, message = "实施方案编类型参数非法")
+    private String vectorTaskType;
+
+    @NotBlank(message = "物种必选")
+    private String speciesCode;
+
+    @NotBlank(message = "品种必填")
+    private String breedCode;
+    /**
+     * 预计开始日期
+     */
+    @NotBlank(message = "预期开始时间必填")
+    private String expectStartDate;
+
+    /**
+     * 预计结束日期
+     */
+    @NotBlank(message = "预期结束日期必填")
+    private String expectMonth;
+
+    /**
+     * 递送方式  1基因枪、2原生质体转化、3农杆菌转化、4病毒载体
+     */
+    @EnumValue(strValues = {"1", "2", "3", "4"}, message = "递送方式参数非法")
+    private String deliveryMethod;
+    /**
+     * 受体材料
+     */
+    @NotBlank(message = "受体材料必填")
+    private String acceptorMaterial;
+
+
+    /**
+     * 监管级别 1 无，2 DNA-free； 3 transgene-free
+     */
+    @EnumValue(strValues = {"1", "2", "3"}, message = "监管级别参数非法")
+    private String supervisionLevelCode;
+
+    /**
+     * 编辑类型  1 KO，2点突变，3精准小，4精准大
+     */
+    @EnumValue(strValues = {"1", "2", "3"}, message = "编辑类型参数非法")
+    private String editType;
+
+    @NotBlank(message = "期望阳性表必填")
+    private String expectedPositiveSeed;
+
+    private String  sampleCodePrefix;
+
+}

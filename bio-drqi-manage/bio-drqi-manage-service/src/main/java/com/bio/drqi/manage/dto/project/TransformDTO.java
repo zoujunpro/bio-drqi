@@ -35,8 +35,6 @@ public class TransformDTO {
 
     private String  geneEditMethod;
 
-    private String vectorTaskName;
-
     private String vectorTaskCode;
 
 

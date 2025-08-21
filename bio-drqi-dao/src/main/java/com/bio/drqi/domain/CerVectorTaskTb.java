@@ -33,13 +33,9 @@ public class CerVectorTaskTb implements Serializable {
      */
     private String vectorTaskType;
 
-    /**
-     * 载体构建任务名称
-     */
-    private String vectorTaskName;
 
     /**
-     * 建议递送方式
+     * 递送方式  1基因枪、2原生质体转化、3农杆菌转化、4病毒载体
      */
     private String deliveryMethod;
 
@@ -47,46 +43,6 @@ public class CerVectorTaskTb implements Serializable {
      * 受体材料
      */
     private String acceptorMaterial;
-
-    /**
-     * 建议编辑工具
-     */
-    private String editTools;
-
-    /**
-     * 工具类型
-     */
-    private String editToolsType;
-
-    /**
-     * 载体构建任务目标
-     */
-    private String vectorTaskTarget;
-
-    /**
-     * 备注（实验方案）
-     */
-    private String remark;
-
-    /**
-     * 创建日期
-     */
-    private Date createTime;
-
-    /**
-     * 更新日期
-     */
-    private Date updateTime;
-
-    /**
-     * 创建人ID
-     */
-    private Integer createUserId;
-
-    /**
-     * 创建人姓名
-     */
-    private String createUserName;
 
     /**
      * 项目ID
@@ -109,12 +65,7 @@ public class CerVectorTaskTb implements Serializable {
     private String subProjectCode;
 
     /**
-     * 基因编辑方式 1转基因 2基因编辑
-     */
-    private String geneEditMethod;
-
-    /**
-     * 编辑类型
+     * 编辑类型  1 KO，2点突变，3精准小，4精准大
      */
     private String editType;
 
@@ -133,7 +84,6 @@ public class CerVectorTaskTb implements Serializable {
      */
     private String qualityInspectionResult;
 
-    private String wordUrl;
 
     private String speciesCode;
 
@@ -141,8 +91,18 @@ public class CerVectorTaskTb implements Serializable {
 
     private String currentStepCode;
 
-    private String vectorBuildFlag;
+    /**
+     * 期望阳性苗
+     */
+    private String expectedPositiveSeed;
 
+    /**
+     * 监管级别
+     */
+    private String supervisionLevelCode;
+
+
+    private String vectorBuildFlag;
     /**
      * 预计开始日期
      */
@@ -151,7 +111,29 @@ public class CerVectorTaskTb implements Serializable {
     /**
      * 预计结束日期
      */
-    private String expectEndDate;
+    private String expectMonth;
+
+
+    /**
+     * 创建日期
+     */
+    private Date createTime;
+
+    /**
+     * 更新日期
+     */
+    private Date updateTime;
+
+    /**
+     * 创建人ID
+     */
+    private Integer createUserId;
+
+    /**
+     * 创建人姓名
+     */
+    private String createUserName;
+
 
 
     @TableField(exist = false)

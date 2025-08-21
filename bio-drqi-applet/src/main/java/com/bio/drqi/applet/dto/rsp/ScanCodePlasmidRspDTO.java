@@ -13,8 +13,6 @@ public class ScanCodePlasmidRspDTO {
 
     private String vectorTaskCode;
 
-    private String vectorTaskName;
-
     private CerVector cerVector;
 
     @Data

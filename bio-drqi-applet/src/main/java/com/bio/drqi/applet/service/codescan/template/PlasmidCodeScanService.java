@@ -59,7 +59,6 @@ public class PlasmidCodeScanService extends AbstractBaseCodeScanService<PlasmidU
         scanCodePlasmidRspDTO.setProjectName(cerProjectTb.getProjectName());
         scanCodePlasmidRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
         scanCodePlasmidRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-        scanCodePlasmidRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
         ScanCodePlasmidRspDTO.CerVector cerVector = BeanUtil.copyProperties(cerVectorTb, ScanCodePlasmidRspDTO.CerVector.class);
         scanCodePlasmidRspDTO.setCerVector(cerVector);
         return scanCodePlasmidRspDTO;

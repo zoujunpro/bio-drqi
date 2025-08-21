@@ -9,9 +9,6 @@ import java.util.List;
 
 @Data
 public class VectorListPageRspDTO {
-    /**
-     * 主键ID
-     */
     private Integer id;
 
     /**
@@ -24,13 +21,9 @@ public class VectorListPageRspDTO {
      */
     private String vectorTaskType;
 
-    /**
-     * 载体构建任务名称
-     */
-    private String vectorTaskName;
 
     /**
-     * 建议递送方式
+     * 递送方式  1基因枪、2原生质体转化、3农杆菌转化、4病毒载体
      */
     private String deliveryMethod;
 
@@ -38,48 +31,6 @@ public class VectorListPageRspDTO {
      * 受体材料
      */
     private String acceptorMaterial;
-
-    /**
-     * 建议编辑工具
-     */
-    private String editTools;
-
-
-    private String speciesCode;
-
-    private String breedCode;
-
-    private String wordUrl;
-    /**
-     * 工具类型
-     */
-    private String editToolsType;
-
-    /**
-     * 载体构建任务目标
-     */
-    private String vectorTaskTarget;
-
-    /**
-     * 备注（实验方案）
-     */
-    private String remark;
-
-    /**
-     * 创建日期
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date createTime;
-
-    /**
-     * 创建人ID
-     */
-    private Integer createUserId;
-
-    /**
-     * 创建人姓名
-     */
-    private String createUserName;
 
     /**
      * 项目ID
@@ -102,12 +53,7 @@ public class VectorListPageRspDTO {
     private String subProjectCode;
 
     /**
-     * 基因编辑方式 1转基因 2基因编辑
-     */
-    private String geneEditMethod;
-
-    /**
-     * 编辑类型
+     * 编辑类型  1 KO，2点突变，3精准小，4精准大
      */
     private String editType;
 
@@ -126,128 +72,54 @@ public class VectorListPageRspDTO {
      */
     private String qualityInspectionResult;
 
-    private List<Vector> children;
 
-    private List<VectorGroup> vectorGroupList;
+    private String speciesCode;
 
+    private String breedCode;
 
-    @Data
-    public static class VectorGroup {
+    private String currentStepCode;
 
-        private String groupName;
+    /**
+     * 期望阳性苗
+     */
+    private String expectedPositiveSeed;
 
-        private String plasmidNames;
-
-        private String remark;
-        private Integer repeatNum;
-
-        public VectorGroup(String groupName, String plasmidNames, String remark, Integer repeatNum) {
-            this.groupName = groupName;
-            this.plasmidNames = plasmidNames;
-            this.repeatNum = repeatNum;
-            this.remark = remark;
-        }
-    }
-
-    @Data
-    public static class Vector {
-        /**
-         * 主键ID
-         */
-        private Integer id;
-
-        /**
-         * 载体构建任务
-         */
-        private Integer vectorTaskId;
-
-        /**
-         * 质粒名称
-         */
-        private String plasmidName;
-
-        /**
-         * 靶位点
-         */
-        private String targetSite;
-
-        /**
-         * 细菌抗性
-         */
-        private String bacterialResistance;
-
-        /**
-         * 质粒特异性引物
-         */
-        private String plasmidSpecificPrimers;
-
-        /**
-         * 细菌复制子
-         */
-        private String bacterialReplicon;
-
-        /**
-         * 拷贝数
-         */
-        private String copyNumber;
-
-        /**
-         * 农杆菌信息
-         */
-        private String agrobacteriumInformation;
-
-        /**
-         * 植物筛选标记
-         */
-        private String selectionMarker;
-
-        /**
-         * 外源基因
-         */
-        private String foreignGene;
-
-        /**
-         * 目标特性
-         */
-        private String geneCharacter;
-
-        /**
-         * 靶基因
-         */
-        private String targetGene;
-
-        /**
-         * PAM
-         */
-        private String pam;
-
-        /**
-         * 备注
-         */
-        private String remark;
-
-        private String fileUrls;
-
-        /**
-         * 期望阳性苗
-         */
-        private Integer expectedPositiveVaccine;
-
-        /**
-         * 质质检结果  空未质检 pass已通过 refuse未通过
-         */
-        private String qualityInspectionResult;
+    /**
+     * 监管级别
+     */
+    private String supervisionLevelCode;
 
 
-        /**
-         * 目的条带大小
-         */
-        private String destinationStripeSize;
+    private String vectorBuildFlag;
+    /**
+     * 预计开始日期
+     */
+    private String expectStartDate;
 
-        /**
-         * 载体大小
-         */
-        private String vectorSize;
-    }
+    /**
+     * 预计结束日期
+     */
+    private String expectMonth;
+
+
+    /**
+     * 创建日期
+     */
+    private Date createTime;
+
+    /**
+     * 更新日期
+     */
+    private Date updateTime;
+
+    /**
+     * 创建人ID
+     */
+    private Integer createUserId;
+
+    /**
+     * 创建人姓名
+     */
+    private String createUserName;
 
 }

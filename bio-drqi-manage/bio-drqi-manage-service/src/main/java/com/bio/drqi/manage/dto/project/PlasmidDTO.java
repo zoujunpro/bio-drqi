@@ -37,8 +37,6 @@ public class PlasmidDTO {
 
     private String geneEditMethod;
 
-    private String vectorTaskName;
-
     private String vectorTaskCode;
 
 

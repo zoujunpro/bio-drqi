@@ -103,7 +103,6 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
             vectorTaskListBoardRspDTO.setProjectId(cerVectorTaskTb.getProjectId());
             vectorTaskListBoardRspDTO.setProjectCode(cerVectorTaskTb.getProjectCode());
             vectorTaskListBoardRspDTO.setVectorTaskId(cerVectorTaskTb.getId());
-            vectorTaskListBoardRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
             vectorTaskListBoardRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
             List<CerVectorStepLog> vectorStepList = cerVectorStepLogListMap.get(cerVectorTaskTb.getId()) == null ? new ArrayList<>() : cerVectorStepLogListMap.get(cerVectorTaskTb.getId());
             List<String> stepCodeList = vectorStepList.stream().map(CerVectorStepLog::getStepCode).collect(Collectors.toList());

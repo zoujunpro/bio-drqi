@@ -15,8 +15,6 @@ public class ScanCodeTransformRspDTO {
 
     private String vectorTaskCode;
 
-    private String vectorTaskName;
-
     private Transform transform;
 
     @Data

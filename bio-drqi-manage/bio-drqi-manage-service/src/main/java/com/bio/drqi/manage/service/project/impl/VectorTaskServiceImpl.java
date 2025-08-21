@@ -40,11 +40,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
-    @Resource
-    private CerVectorTbMapper cerVectorTbMapper;
 
-    @Resource
-    private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
     @Resource
     private CerSubProjectTbMapper cerSubProjectTbMapper;
@@ -53,22 +49,13 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     private CerVectorStepLogMapper cerVectorStepLogMapper;
 
     @Resource
-    private BioTaskDtlTbMapper bioTaskDtlTbMapper;
-
-    @Resource
     private CerProjectTbMapper cerProjectTbMapper;
-
-    @Resource
-    private OssService ossService;
 
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
 
     @Resource
     private CerInstantVerifyTaskTbMapper cerInstantVerifyTaskTbMapper;
-
-    @Resource
-    private CerBreedDictMapper cerBreedDictMapper;
 
 
     @Override
@@ -77,13 +64,6 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByProjectIdOrderById(queryPageVectorReqDTO.getProjectId());
         PageInfo<CerVectorTaskTb> srcPage = new PageInfo<>(cerVectorTaskTbList);
         PageInfo<VectorListPageRspDTO> vectorBaseInfoRspDTOPageInfo = BeanUtils.copyPageInfoProperties(srcPage, VectorListPageRspDTO.class);
-        vectorBaseInfoRspDTOPageInfo.getList().forEach(vectorListPageRspDTO -> {
-            List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectAllByVectorTaskId(vectorListPageRspDTO.getId());
-            List<CerVectorGroupTb> cerVectorGroupTbList = cerVectorGroupTbMapper.selectAllByVectorTaskId(vectorListPageRspDTO.getId());
-            vectorListPageRspDTO.setChildren(BeanUtils.copyToList(cerVectorTbList, VectorListPageRspDTO.Vector.class));
-            vectorListPageRspDTO.setVectorGroupList(cerVectorGroupTbList.stream().map(cerVectorGroupTb -> new VectorListPageRspDTO.VectorGroup(cerVectorGroupTb.getGroupName(), cerVectorGroupTb.getPlasmidNames(), cerVectorGroupTb.getRemark(), cerVectorGroupTb.getRepeatNum())).collect(Collectors.toList()));
-
-        });
         return vectorBaseInfoRspDTOPageInfo;
     }
 
@@ -195,26 +175,16 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     }
 
     @Override
-    public VectorTaskAddDTO detail(Integer id) {
+    public CerImplementationPlanBaseInfoRspDTO detail(Integer id) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(id);
-        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerVectorTaskTb.getTaskNum());
-        VectorTaskAddDTO vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
-        if (!VectorTaskTypeEnum.type_1.code.equals(cerVectorTaskTb.getVectorTaskType())) {
-            vectorTaskAddDTO.setExcelVectorList(parseExcelVector(vectorTaskAddDTO.getVectorExcelUrl()));
-        }
-        vectorTaskAddDTO.setTaskStatus(cerVectorTaskTb.getTaskStatus());
-        vectorTaskAddDTO.setCreateUserId(cerVectorTaskTb.getCreateUserId());
-        vectorTaskAddDTO.setVectorTaskId(cerVectorTaskTb.getId());
-        return vectorTaskAddDTO;
+        return BeanUtils.copyProperties(cerVectorTaskTb, CerImplementationPlanBaseInfoRspDTO.class);
     }
 
     @Override
-    public VectorTaskAddDTO detailByCode(String vectorTaskCode) {
+    public CerImplementationPlanBaseInfoRspDTO detailByCode(String vectorTaskCode) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-        if (cerVectorTaskTb == null) {
-            return null;
-        }
-        return detail(cerVectorTaskTb.getId());
+        return BeanUtils.copyProperties(cerVectorTaskTb, CerImplementationPlanBaseInfoRspDTO.class);
+
     }
 
     @Override
@@ -277,25 +247,6 @@ public class VectorTaskServiceImpl implements VectorTaskService {
             });
         }
         return result;
-    }
-
-
-    private List<VectorTaskAddDTO.ExcelVector> parseExcelVector(String excelUrl) {
-        if (StringUtils.isEmpty(excelUrl)) {
-            return new ArrayList<>();
-        }
-        if (!excelUrl.endsWith("xlsx")) {
-            throw new BusinessException("文件格式错误");
-        }
-        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + excelUrl;
-        try {
-            ossService.downloadPath(tempFilePath, excelUrl);
-        } catch (Exception e) {
-            log.error("【任务工单】文件从oss下载失败", e);
-            throw new BusinessException("文件处理异常");
-        }
-        List<VectorTaskAddDTO.ExcelVector> excelVectorList = ExcelUtil.readExcel(tempFilePath, VectorTaskAddDTO.ExcelVector.class);
-        return excelVectorList;
     }
 
 

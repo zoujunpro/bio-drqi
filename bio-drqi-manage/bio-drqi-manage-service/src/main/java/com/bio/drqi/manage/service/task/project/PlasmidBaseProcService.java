@@ -78,7 +78,6 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         plasmidDTO.setProjectName(cerProjectTb.getProjectName());
         plasmidDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
         plasmidDTO.setGeneEditMethod(cerProjectTb.getGeneEditMethod());
-        plasmidDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
         plasmidDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plasmidDTO));
         log.info("【任务工单】质粒质检校验结束");

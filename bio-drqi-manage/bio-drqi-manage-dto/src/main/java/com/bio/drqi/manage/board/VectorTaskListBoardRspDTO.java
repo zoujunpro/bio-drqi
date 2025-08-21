@@ -11,7 +11,6 @@ public class VectorTaskListBoardRspDTO {
     private Integer projectId;
     private String projectCode;
     private Integer vectorTaskId;
-    private String vectorTaskName;
     private String vectorTaskCode;
     private List<Step> stepList = new ArrayList<>();
 

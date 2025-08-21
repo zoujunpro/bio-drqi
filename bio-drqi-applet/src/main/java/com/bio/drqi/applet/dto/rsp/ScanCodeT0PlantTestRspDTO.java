@@ -17,9 +17,6 @@ public class ScanCodeT0PlantTestRspDTO {
 
     private String vectorTaskCode;
 
-    private String vectorTaskName;
-
-
     private PlantDtlInfo plantDtlInfo;
 
     private List<SampleInfo> sampleInfoList;

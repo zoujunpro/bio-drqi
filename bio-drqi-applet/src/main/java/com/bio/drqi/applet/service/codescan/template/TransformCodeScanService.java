@@ -61,7 +61,6 @@ public class TransformCodeScanService extends AbstractBaseCodeScanService<Transf
         scanCodeTransformRspDTO.setProjectName(cerProjectTb.getProjectName());
         scanCodeTransformRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
         scanCodeTransformRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-        scanCodeTransformRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
         ScanCodeTransformRspDTO.Transform transform = BeanUtil.copyProperties(cerTransformTb, ScanCodeTransformRspDTO.Transform.class);
         transform.setTransformName(cerVectorGroupTb.getGroupName());
         transform.setPlasmidName(cerVectorGroupTb.getPlasmidNames());

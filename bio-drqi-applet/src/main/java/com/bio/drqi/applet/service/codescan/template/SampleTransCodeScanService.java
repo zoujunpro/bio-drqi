@@ -69,7 +69,6 @@ public class SampleTransCodeScanService extends AbstractBaseCodeScanService<Tran
         scanCodeSampleTestTransRspDTO.setProjectName(cerProjectTb.getProjectName());
         scanCodeSampleTestTransRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
         scanCodeSampleTestTransRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-        scanCodeSampleTestTransRspDTO.setVectorTaskName(cerVectorTaskTb.getVectorTaskName());
         scanCodeSampleTestTransRspDTO.setTransformName(cerVectorGroupTb.getPlasmidNames());
         scanCodeSampleTestTransRspDTO.setTransformCode(cerSampleTestTb.getTransformCode());
         scanCodeSampleTestTransRspDTO.setUrls(JSONUtil.toList(cerConversionAndTransTb.getImageUrl(),String.class));

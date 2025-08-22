@@ -43,4 +43,6 @@ public class BmsOrderDetailListPageReqDTO extends PageDTO {
      */
     private Integer applyUserId;
 
+    private String filterZeroFlag;
+
 }

@@ -186,6 +186,12 @@ public class BmsOrderDetailTb implements Serializable {
 
     private Integer returnNumber;
 
+    /**
+     * 过滤0标识
+     */
+    @TableField(exist = false)
+    private String filterZeroFlag;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

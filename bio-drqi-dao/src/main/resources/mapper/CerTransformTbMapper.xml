@@ -124,5 +124,13 @@
          select sum(infect_number)    from cer_transform_tb
 
     </select>
+    <select id="selectAllBySpeciesCodeAndCreateTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_transform_tb
+        where
+        species_code = #{speciesCode,jdbcType=VARCHAR}
+        AND date_format(create_time,'%Y%m%d') = #{createTime,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

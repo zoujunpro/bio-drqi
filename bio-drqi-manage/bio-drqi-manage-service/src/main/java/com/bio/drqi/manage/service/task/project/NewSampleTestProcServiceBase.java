@@ -273,8 +273,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 cerSampleCodePrefixTb.setCurrentIndex(cerSampleCodePrefixTb.getCurrentIndex() + firstSampleApply.getSampleNum());
                 cerSampleCodePrefixTbMapper.updateById(cerSampleCodePrefixTb);
 
-                updateVectorTaskTimePlan(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test);
-
                 try {
                     cerSampleTestTbMapper.insertBatch(targetCerSampleTestTbList);
                 } catch (DuplicateKeyException e) {

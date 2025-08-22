@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -32,6 +33,7 @@ public interface CerTransformTbMapper extends BaseMapper<CerTransformTb> {
 
     List<CerTransformTb> selectAllBySpeciesCodeAndVectorTaskTypeAndCreateTime(@Param("speciesCode") String speciesCode, @Param("vectorTaskType") String vectorTaskType, @Param("createTime") String createTime);
 
+    List<CerTransformTb> selectAllBySpeciesCodeAndCreateTime(@Param("speciesCode") String speciesCode, @Param("createTime") String createTime);
    Integer selectSumInfectNumber();
 
 

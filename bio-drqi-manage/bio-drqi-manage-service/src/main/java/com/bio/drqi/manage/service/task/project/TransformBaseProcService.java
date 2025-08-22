@@ -143,7 +143,6 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
                 cerTransformTb.setTaskStatus(bioTaskDtlTb.getTaskStatus());
                 cerTransformTb.setTaskNum(bioTaskDtlTb.getTaskNum());
                 cerTransformTb.setSpeciesCode(cerVectorTaskTb.getSpeciesCode());
-                cerTransformTb.setVectorTaskType(cerVectorTaskTb.getVectorTaskType());
                 try {
                     cerTransformTbMapper.insert(cerTransformTb);
                 } catch (DuplicateKeyException e) {
@@ -152,9 +151,6 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
 
                 content.setTransformCode(cerTransformTb.getTransformCode());
             }
-
-
-            updateVectorTaskTimePlan(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.transform);
 
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(transformDTO));
             log.info("【任务工单】转化再生完毕完毕");
@@ -169,7 +165,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
 
     private String getTransFormCode(String vectorTaskCode, String infectDate) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-        List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllBySpeciesCodeAndVectorTaskTypeAndCreateTime(cerVectorTaskTb.getSpeciesCode(), cerVectorTaskTb.getVectorTaskType(), DateUtil.format(new Date(), "yyyyMMdd"));
+        List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllBySpeciesCodeAndCreateTime(cerVectorTaskTb.getSpeciesCode(),DateUtil.format(new Date(), "yyyyMMdd"));
         cerTransformTbList = cerTransformTbList.stream().filter(cerTransformTb -> cerTransformTb.getTransformCode().matches("^[A-Z]{3}[0-9]{6}$")).collect(Collectors.toList());
         String nextNumber = null;
         if (CollectionUtil.isEmpty(cerTransformTbList)) {
@@ -178,7 +174,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
             nextNumber = StringUtils.padl(String.valueOf(Integer.parseInt(cerTransformTbList.get(0).getTransformCode().substring(7)) + 1), 2, '0');
         }
         CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(cerVectorTaskTb.getSpeciesCode());
-        return cerSpeciesConf.getNumPrefix().substring(2) + VectorTaskTypeEnum.getMethodEnumByType(cerVectorTaskTb.getVectorTaskType()) + infectDate.replace("-", "").substring(4) + nextNumber;
+        return cerSpeciesConf.getNumPrefix().substring(2) + VectorTaskTypeEnum.type_1.code + infectDate.replace("-", "").substring(4) + nextNumber;
     }
 
 }

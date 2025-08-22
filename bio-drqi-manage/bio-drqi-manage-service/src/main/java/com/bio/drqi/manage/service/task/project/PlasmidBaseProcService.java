@@ -55,9 +55,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         if (QualityInspectionResultEnum.pass.name().equals(cerVectorTaskTb.getQualityInspectionResult())) {
             throw new BusinessException("该实施方案质粒质检:拒绝");
         }
-        if (!CerProjectContents.Y.equals(cerVectorTaskTb.getVectorBuildFlag())) {
-            throw new BusinessException("未进行载体构建");
-        }
+
         if (QualityInspectionResultEnum.checking.name().equals(cerVectorTaskTb.getQualityInspectionResult())) {
             throw new BusinessException("已经提交过质粒质检");
         }
@@ -168,6 +166,5 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
             cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
         }
 
-        updateVectorTaskTimePlan(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.plasmid_check);
     }
 }

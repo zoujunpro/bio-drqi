@@ -74,73 +74,22 @@ public class VectorTaskAddDTO {
     private String  sampleCodePrefix;
 
     /**
+     * 载体构建信息，excel上传
+     */
+    private String vectorExcelUrl;
+
+    /**
      * 载体的具体信息，需要区分转基因还是基因编辑
      */
     @Valid
     @NotNull(message = "载体信息缺失")
     private List<Vector> vectorList = new ArrayList<>();
-    /**
-     * 共转质粒
-     */
-    @NotNull(message = "转化质粒缺失")
-    private List<VectorGroup> vectorGroupList = new ArrayList<>();
 
-    private List<ExcelVector> excelVectorList = new ArrayList<>();
 
     private TransportStart transportStart;
 
     private TransportEnd transportEnd;
 
-    /**
-     * 是否需要瞬时验证
-     */
-    private String noticeFlag;
-
-
-    /**
-     * 瞬时验证类型
-     * 1原生质体、2发根、2其他瞬时任务
-     */
-    private String verifyType;
-
-
-    /**
-     * 其他手输入内容
-     */
-    private String otherHandInputContent;
-
-    /**
-     * 预估反应数
-     */
-
-    private String forecastReactionNumber;
-
-    /**
-     * 预计载体提交时间
-     */
-    private String forecastVectorSubmitTime;
-
-    /**
-     * 手写物种
-     */
-    private String handelSpeciesName;
-
-    /**
-     * 手写品种
-     */
-    private String handelBreedName;
-
-
-
-
-    /**
-     * 详情返显用
-     */
-    private String taskStatus;
-    /**
-     * 详情返显用
-     */
-    private Integer createUserId;
 
 
 
@@ -217,15 +166,6 @@ public class VectorTaskAddDTO {
     }
 
 
-    @Data
-    public static class VectorGroup {
-        private String groupName;
-        private String plasmidNames;
-        private String remark;
-        private Integer repeatNum;
-
-    }
-
     /***
      * 基因编辑
      */
@@ -279,15 +219,6 @@ public class VectorTaskAddDTO {
          */
         private String geneCharacter;
 
-        /**
-         * 备注
-         */
-        private String remark;
-
-        /**
-         * 期望阳性苗
-         */
-        private Integer expectedPositiveVaccine;
 
         /**
          * 文件地址
@@ -295,21 +226,6 @@ public class VectorTaskAddDTO {
         private List<String> fileUrls;
 
         /**
-         * 外源基因(转基因专有)
-         */
-        private String foreignGene;
-        /**
-         * 靶基因（基因编辑专有）
-         */
-        private String targetGene;
-
-        /**
-         * PAM（基因编辑专有）
-         */
-        private String pam;
-
-
-        /**
          * 浓度
          */
         private String concentration;
@@ -321,74 +237,6 @@ public class VectorTaskAddDTO {
         private String capacity;
     }
 
-    @Data
-    public static class ExcelVector {
-
-        /**
-         * 编号
-         */
-        @ExcelProperty("编号")
-        private String num;
-        /**
-         * 质粒名称
-         */
-        @ExcelProperty("质粒名称")
-        private String plasmidName;
-        /**
-         * 细菌抗性
-         */
-        @ExcelProperty("细菌抗性")
-        private String bacterialResistance;
-
-
-        /**
-         * 质粒特异性引物
-         */
-        @ExcelProperty("质粒特异性鉴定引物")
-        private String plasmidSpecificPrimers;
-
-        /**
-         * 目的条带大小
-         */
-        @ExcelProperty("目的条带大小")
-        private String destinationStripeSize;
-
-        /**
-         * 载体大小
-         */
-        @ExcelProperty("载体大小（Kb）")
-        private String vectorSize;
-        /**
-         * 拷贝数
-         */
-        @ExcelProperty("拷贝数（高/中/低）")
-        private String copyNumber;
-
-        /**
-         * 植物筛选标记
-         */
-        @ExcelProperty("植物筛选标记（如有请填写）")
-        private String selectionMarker;
-
-        /**
-         * 备注
-         */
-        @ExcelProperty("备注")
-        private String remark;
-
-
-        /**
-         * 浓度
-         */
-        private String concentration;
-
-
-        /**
-         * 体积
-         */
-        private String capacity;
-
-    }
 
 
 }

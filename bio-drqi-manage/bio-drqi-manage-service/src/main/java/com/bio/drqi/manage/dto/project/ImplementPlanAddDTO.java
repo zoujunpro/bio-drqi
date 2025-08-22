@@ -30,11 +30,7 @@ public class ImplementPlanAddDTO {
      */
     @NotBlank(message = "实施方案编码必填")
     private String vectorTaskCode;
-    /**
-     * 载体构建任务类型 1常任务创建 ，2瞬时测试 3原生质体 4发根
-     */
-    @EnumValue(strValues = {"1", "2", "3", "4"}, message = "实施方案编类型参数非法")
-    private String vectorTaskType;
+
 
     @NotBlank(message = "物种必选")
     private String speciesCode;
@@ -80,5 +76,6 @@ public class ImplementPlanAddDTO {
     private String expectedPositiveSeed;
 
     private String  sampleCodePrefix;
+
 
 }

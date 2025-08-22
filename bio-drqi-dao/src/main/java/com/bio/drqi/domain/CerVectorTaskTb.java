@@ -28,11 +28,6 @@ public class CerVectorTaskTb implements Serializable {
      */
     private String vectorTaskCode;
 
-    /**
-     * 载体构建任务类型 1测试任务（普通），2测试任务（原生质体），3正常任务创建
-     */
-    private String vectorTaskType;
-
 
     /**
      * 递送方式  1基因枪、2原生质体转化、3农杆菌转化、4病毒载体
@@ -101,8 +96,6 @@ public class CerVectorTaskTb implements Serializable {
      */
     private String supervisionLevelCode;
 
-
-    private String vectorBuildFlag;
     /**
      * 预计开始日期
      */

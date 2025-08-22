@@ -2,16 +2,15 @@ package com.bio.drqi.manage.service.task.project;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
-import com.bio.drqi.contents.CerProjectContents;
-import com.bio.drqi.domain.*;
-import com.bio.drqi.common.enums.BioTaskStatusEnum;
-import com.bio.drqi.enums.ProjectStatusEnum;
-import com.bio.drqi.enums.QualityInspectionResultEnum;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.ValidatorUtil;
-import com.bio.drqi.manage.dto.project.ImplementPlanAddDTO;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.util.LetterUtil;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.ProjectStatusEnum;
+import com.bio.drqi.enums.QualityInspectionResultEnum;
+import com.bio.drqi.manage.dto.project.ImplementPlanAddDTO;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
@@ -79,7 +78,6 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                 synchronized (this) {
                     cerVectorTaskTb = new CerVectorTaskTb();
                     cerVectorTaskTb.setVectorTaskCode(implementPlanAddDTO.getVectorTaskCode());
-                    cerVectorTaskTb.setVectorTaskType(implementPlanAddDTO.getVectorTaskType());
                     cerVectorTaskTb.setDeliveryMethod(implementPlanAddDTO.getDeliveryMethod());
                     cerVectorTaskTb.setAcceptorMaterial(implementPlanAddDTO.getAcceptorMaterial());
                     cerVectorTaskTb.setCreateTime(new Date());
@@ -97,7 +95,6 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                     cerVectorTaskTb.setBreedCode(implementPlanAddDTO.getBreedCode());
                     cerVectorTaskTb.setExpectStartDate(implementPlanAddDTO.getExpectStartDate());
                     cerVectorTaskTb.setQualityInspectionResult(QualityInspectionResultEnum.nocheck.name());
-                    cerVectorTaskTb.setVectorBuildFlag(CerProjectContents.N);
                     cerVectorTaskTb.setSupervisionLevelCode(implementPlanAddDTO.getSupervisionLevelCode());
                     cerVectorTaskTb.setExpectedPositiveSeed(implementPlanAddDTO.getExpectedPositiveSeed());
                     cerVectorTaskTb.setExpectPeriod(implementPlanAddDTO.getExpectPeriod());

@@ -25,11 +25,6 @@ public abstract class AbstractProjectBaseTaskService implements BaseTaskService 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
-    @Resource
-    private CerVectorTaskPlanLogMapper cerVectorTaskPlanLogMapper;
-
-    @Resource
-    private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
     public void logStep(Integer vectorTaskId, ImplementationPlanTypeEnum implementationPlanTypeEnum, String taskNum) {
         CerVectorStepLog cerVectorStepLog = cerVectorStepLogMapper.selectOneByVectorTaskIdAndStepCode(vectorTaskId, implementationPlanTypeEnum.name());
@@ -45,40 +40,5 @@ public abstract class AbstractProjectBaseTaskService implements BaseTaskService 
         cerVectorStepLog.setTaskNum(taskNum);
         cerVectorStepLogMapper.insert(cerVectorStepLog);
     }
-
-
-    public void updateVectorTaskTimePlan(Integer vectorTaskId, ImplementationPlanTypeEnum implementationPlanTypeEnum) {
-        List<CerVectorTaskPlanLog> cerVectorTaskPlanLogList = cerVectorTaskPlanLogMapper.selectAllByVectorTaskIdAndEventType(vectorTaskId, implementationPlanTypeEnum.name());
-        if (CollectionUtil.isNotEmpty(cerVectorTaskPlanLogList)) {
-            cerVectorTaskPlanLogList.forEach(cerVectorTaskPlanLog -> {
-                cerVectorTaskPlanLog.setActualEndTime(DateUtil.format(new Date(), "yyyy-MM-dd"));
-                cerVectorTaskPlanLog.setUpdateTime(new Date());
-                cerVectorTaskPlanLog.setCreateTime(new Date());
-                cerVectorTaskPlanLog.setActualStartTime(findStartTime(vectorTaskId, implementationPlanTypeEnum));
-                cerVectorTaskPlanLogMapper.updateById(cerVectorTaskPlanLog);
-            });
-        }
-
-    }
-
-    private String findStartTime(Integer vectorTaskId, ImplementationPlanTypeEnum implementationPlanTypeEnum) {
-        List<CerVectorTaskPlanLog> cerVectorTaskPlanLogList = cerVectorTaskPlanLogMapper.selectAllByVectorTaskIdOrderByIdAsc(vectorTaskId);
-        for (int i = 0; i < cerVectorTaskPlanLogList.size(); i++) {
-            if (implementationPlanTypeEnum.name().equals(cerVectorTaskPlanLogList.get(i).getEventType())) {
-                if (i == 0) {
-                    CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(vectorTaskId);
-                    BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerVectorTaskTb.getTaskNum());
-                    return DateUtil.format(bioTaskDtlTb.getUpdateTime(), "yyyy-MM-dd");
-                }
-                if (i > 0) {
-                    return cerVectorTaskPlanLogList.get(i - 1).getActualEndTime();
-                }
-
-            }
-        }
-        return null;
-
-    }
-
 
 }

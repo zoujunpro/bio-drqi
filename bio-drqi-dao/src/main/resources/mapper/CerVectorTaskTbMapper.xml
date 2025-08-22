@@ -29,7 +29,7 @@
         <result column="expect_start_date" jdbcType="VARCHAR" property="expectStartDate"/>
         <result column="expected_positive_seed" jdbcType="VARCHAR" property="expectedPositiveSeed"/>
         <result column="supervision_level_code" jdbcType="VARCHAR" property="supervisionLevelCode"/>
-        <result column="expect_month" jdbcType="VARCHAR" property="expectMonth"/>
+        <result column="expect_period" jdbcType="VARCHAR" property="expectPeriod"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -39,7 +39,7 @@
         create_user_id,create_user_name,project_id,
         sub_project_id,project_code,sub_project_code,edit_type,task_num,
         task_status,quality_inspection_result,species_code,current_step_code,
-        vector_build_flag,expect_start_date,expected_positive_seed,supervision_level_code,expect_month
+        vector_build_flag,expect_start_date,expected_positive_seed,supervision_level_code,expect_period
     </sql>
     <select id="selectOneByTaskNum" resultMap="BaseResultMap">
         select

@@ -48,10 +48,10 @@ public class ImplementPlanAddDTO {
     private String expectStartDate;
 
     /**
-     * 预计结束日期
+     * 预期项目周期必填
      */
-    @NotBlank(message = "预期结束日期必填")
-    private String expectMonth;
+    @NotBlank(message = "预期项目周期必填")
+    private String expectPeriod;
 
     /**
      * 递送方式  1基因枪、2原生质体转化、3农杆菌转化、4病毒载体
@@ -61,7 +61,6 @@ public class ImplementPlanAddDTO {
     /**
      * 受体材料
      */
-    @NotBlank(message = "受体材料必填")
     private String acceptorMaterial;
 
 

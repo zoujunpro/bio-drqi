@@ -99,7 +99,7 @@ public class VectorListPageRspDTO {
     /**
      * 预计结束日期
      */
-    private String expectMonth;
+    private String expectPeriod;
 
 
     /**

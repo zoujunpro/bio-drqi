@@ -100,7 +100,7 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                     cerVectorTaskTb.setVectorBuildFlag(CerProjectContents.N);
                     cerVectorTaskTb.setSupervisionLevelCode(implementPlanAddDTO.getSupervisionLevelCode());
                     cerVectorTaskTb.setExpectedPositiveSeed(implementPlanAddDTO.getExpectedPositiveSeed());
-                    cerVectorTaskTb.setExpectMonth(implementPlanAddDTO.getExpectMonth());
+                    cerVectorTaskTb.setExpectPeriod(implementPlanAddDTO.getExpectPeriod());
                     try {
                         cerVectorTaskTbMapper.insert(cerVectorTaskTb);
                     } catch (DuplicateKeyException e) {

@@ -43,6 +43,10 @@ public class Clean20250721Controller {
     @Resource
     private SeedStockTbMapper seedStockTbMapper;
 
+
+    @Resource
+    private CerSampleTestTbMapper cerSampleTestTbMapper;
+
     @Resource
     private TcExperimentTbMapper tcExperimentTbMapper;
 
@@ -149,7 +153,7 @@ public class Clean20250721Controller {
         List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectList(null);
         for (CerTransformTb cerTransformTb : cerTransformTbList) {
             log.info("cerTransformTb={}", JSONUtil.toJsonStr(cerTransformTb));
-            if(cerTransformTb.getAcceptorMaterial().length()==32){
+            if (cerTransformTb.getAcceptorMaterial().length() == 32) {
                 CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(cerTransformTb.getAcceptorMaterial());
                 cerTransformTb.setAcceptorMaterial(cerBreedDict.getBreedName());
                 cerTransformTbMapper.updateById(cerTransformTb);
@@ -163,13 +167,13 @@ public class Clean20250721Controller {
             if (CollectionUtil.isEmpty(transformDTO.getContentList())) {
                 continue;
             }
-            if(BioTaskStatusEnum.TASK_STATUS_4.status.equals(bioTaskDtlTb.getTaskStatus())
-                    ||BioTaskStatusEnum.TASK_STATUS_3.status.equals(bioTaskDtlTb.getTaskStatus())){
+            if (BioTaskStatusEnum.TASK_STATUS_4.status.equals(bioTaskDtlTb.getTaskStatus())
+                    || BioTaskStatusEnum.TASK_STATUS_3.status.equals(bioTaskDtlTb.getTaskStatus())) {
                 continue;
             }
 
             for (TransformDTO.Content content : transformDTO.getContentList()) {
-                if(content.getAcceptorMaterial().length()==32){
+                if (content.getAcceptorMaterial().length() == 32) {
                     CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(content.getAcceptorMaterial());
                     if (cerBreedDict == null) {
                         throw new BusinessException("找不到品种");
@@ -182,6 +186,50 @@ public class Clean20250721Controller {
         }
 
         return ResponseResult.getSuccess("ok");
+    }
+
+
+    @GetMapping("cleanSampleAcceptorMaterial")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanSample() {
+        List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("sample_and_test");
+        for (BioTaskDtlTb bioTaskDtlTb : bioTaskDtlTbList) {
+            log.info("bioTaskDtlTb={}", JSONUtil.toJsonStr(bioTaskDtlTb));
+            NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
+            if (CollectionUtil.isNotEmpty(newSampleTestDTO.getFirstSampleApplyList())) {
+                for (NewSampleTestDTO.FirstSampleApply firstSampleApply : newSampleTestDTO.getFirstSampleApplyList()) {
+                    CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(), firstSampleApply.getVectorTaskCode());
+                    if (cerTransformTb == null) {
+                        throw new BusinessException("找不到转化编号");
+                    }
+                    firstSampleApply.setAcceptorMaterial(cerTransformTb.getAcceptorMaterial());
+                }
+            }
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
+
+    @GetMapping("cleanSampleOne")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanSampleOne() {
+        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo("T0001566");
+        for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
+            String sampleCodeNum = cerSampleTestTb.getSampleCode().substring(2);
+            if (cerSampleTestTb.getSampleCode().startsWith("AB")) {
+                cerSampleTestTb.setSampleCode("AB" + (Integer.valueOf(sampleCodeNum) - 7));
+                if (StringUtils.isNotEmpty(cerSampleTestTb.getUniqueCode())) {
+                }
+            } else if (cerSampleTestTb.getSampleCode().startsWith("TO")) {
+                cerSampleTestTb.setSampleCode("TO" + (Integer.valueOf(sampleCodeNum) - 29));
+            }
+            cerSampleTestTb.setUniqueCode(cerSampleTestTb.getProjectCode() + cerSampleTestTb.getSampleCode());
+            cerSampleTestTbMapper.updateById(cerSampleTestTb);
+        }
+        return ResponseResult.getSuccess("ok");
+
     }
 
 

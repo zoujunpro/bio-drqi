@@ -2,6 +2,7 @@ package com.bio.drqi.manage.service.task.project;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
+import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.contents.CerProjectContents;
 
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
@@ -60,12 +61,12 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
             if (plasmidNameList.size() != vectorTaskAddDTO.getVectorList().size()) {
                 throw new BusinessException("载体构建中有重复质粒");
             }
-//            for (VectorTaskAddDTO.Vector vector : vectorTaskAddDTO.getVectorList()) {
-//                ResponseResult responseResult = plasmidApi.detail(vector.getPlasmidName());
-//                if (responseResult.isError() || responseResult.getData() == null) {
-//                    throw new BusinessException("质粒库不存在质粒:" + vector.getPlasmidName());
-//                }
-//            }
+     /*       for (VectorTaskAddDTO.Vector vector : vectorTaskAddDTO.getVectorList()) {
+                ResponseResult responseResult = plasmidApi.detail(vector.getPlasmidName());
+                if (responseResult.isError() || responseResult.getData() == null) {
+                    throw new BusinessException("质粒库不存在质粒:" + vector.getPlasmidName());
+                }
+           }*/
         } else {
             List<VectorTaskAddDTO.ExcelVector> excelVectorList = vectorTaskAddDTO.getExcelVectorList();
             if (CollectionUtil.isEmpty(excelVectorList)) {

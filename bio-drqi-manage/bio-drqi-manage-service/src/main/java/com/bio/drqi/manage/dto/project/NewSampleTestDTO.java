@@ -95,11 +95,6 @@ public class NewSampleTestDTO {
         /**
          * 预览 返显用
          */
-        private String acceptorMaterialName;
-
-        /**
-         * 预览 返显用
-         */
         private String plasmidName;
 
 

@@ -14,110 +14,64 @@ import java.util.List;
 public class VectorTaskAddDTO {
 
     private Integer vectorTaskId;
-
-    /**
-     * 任务word文件地址
-     */
-    private String wordUrl;
-
     /**
      * 项目ID
      */
-    @NotNull(message = "项目ID必填")
     private Integer projectId;
 
     private String projectName;
 
     private String projectCode;
 
-
     private String subProjectCode;
-
-    private String geneEditMethod;
     /**
      * 子项目ID
      */
-    @NotNull(message = "子项目ID必填")
     private Integer subProjectId;
     /**
      * 载体构建任务编码
      */
-    @NotBlank(message = "实施方案编码必填")
     private String vectorTaskCode;
     /**
      * 载体构建任务类型 1常任务创建 ，2瞬时测试 3原生质体 4发根
      */
-    @EnumValue(strValues = {"1", "2", "3", "4"}, message = "实施方案编类型参数非法")
     private String vectorTaskType;
 
-    @NotBlank(message = "物种必选")
     private String speciesCode;
 
-    @NotBlank(message = "品种必填")
     private String breedCode;
     /**
      * 预计开始日期
      */
-    @NotBlank(message = "预期开始时间必填")
     private String expectStartDate;
 
     /**
-     * 预计结束日期
+     * 预期项目周期必填
      */
-    @NotBlank(message = "预期结束时间必填")
-    private String expectEndDate;
-
+    private String expectPeriod;
 
     /**
-     * 载体构建任务名称
-     */
-    @NotBlank(message = "子项目名称必填")
-    private String vectorTaskName;
-    /**
-     * 建议递送方式
+     * 递送方式  1基因枪、2原生质体转化、3农杆菌转化、4病毒载体
      */
     private String deliveryMethod;
     /**
      * 受体材料
      */
-    @NotBlank(message = "受体材料必填")
     private String acceptorMaterial;
 
     /**
-     * 建议编辑工具
+     * 监管级别 1 无，2 DNA-free； 3 transgene-free
      */
-    private String editTools;
-    /**
-     * 工具类型
-     */
-    private String editToolsType;
-    /**
-     * 载体构建任务目标
-     */
-    private String vectorTaskTarget;
-    /**
-     * 备注（实验方案）
-     */
-    private String remark;
+    private String supervisionLevelCode;
 
     /**
-     * 编辑类型
+     * 编辑类型  1 KO，2点突变，3精准小，4精准大
      */
     private String editType;
 
-    /**
-     * 载体excel文件
-     */
-    private String vectorExcelUrl;
-
-    /**
-     * Y代表无质粒构建
-     */
-    private String plasmidFlag;
-
+    private String expectedPositiveSeed;
 
     private String  sampleCodePrefix;
-
 
     /**
      * 载体的具体信息，需要区分转基因还是基因编辑

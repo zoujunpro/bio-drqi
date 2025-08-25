@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.kd.dto.model;
 
 import com.bio.drqi.bsm.kd.contents.KdContents;
+import com.bio.drqi.bsm.kd.enums.KdParentGroupEnum;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -32,6 +33,10 @@ public class ReturnStockSaveModel extends KdModel {
      */
     private String FDate;
 
+    /**
+     * 出入库类型
+     */
+    private String F_WAUJ_CRKLX;
     /**
      * 单据类型
      */
@@ -68,19 +73,20 @@ public class ReturnStockSaveModel extends KdModel {
     private List<FPURMRBENTRYModel> FPURMRBENTRY;
 
 
-    public ReturnStockSaveModel(String returnOrderId,String orgCode, String FDate, String kdSupplierId, String materialId, BigDecimal returnNumber, String stockCode, String projectCode,BigDecimal taxRate) {
-        this.F_WAUJ_UUID=returnOrderId;
+    public ReturnStockSaveModel(String returnOrderId, KdParentGroupEnum kdParentGroupEnum, String orgCode, String FDate, String kdSupplierId, String materialId, BigDecimal returnNumber, String stockCode, String projectCode, BigDecimal taxRate) {
+        this.F_WAUJ_UUID = returnOrderId;
         this.FMRTYPE = "B";
         this.FMRMODE = "A";
         this.FStockOrgId = new FStockOrgIdModel(orgCode);
         this.FDate = FDate;
+        this.F_WAUJ_CRKLX=kdParentGroupEnum.type;
         this.FBillTypeID = new FBillTypeIDModel("TLD01_SYS");
         this.FRequireOrgId = new FRequireOrgIdModel(orgCode);
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
         this.FSupplierID = new FSupplierIDModel(kdSupplierId);
         this.FOwnerTypeIdHead = KdContents.OWNER;
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
-        this.FPURMRBENTRY = Arrays.asList(new FPURMRBENTRYModel(materialId, returnNumber, stockCode, orgCode,projectCode,taxRate));
+        this.FPURMRBENTRY = Arrays.asList(new FPURMRBENTRYModel(materialId, returnNumber, stockCode, orgCode, projectCode, taxRate));
     }
 
     @Data
@@ -115,26 +121,27 @@ public class ReturnStockSaveModel extends KdModel {
 
         private BigDecimal FEntryTaxRate;
 
-        public FPURMRBENTRYModel(String materialId, BigDecimal FRMREALQTY, String stockCode, String orgCode,String projectCode,BigDecimal taxRate) {
+        public FPURMRBENTRYModel(String materialId, BigDecimal FRMREALQTY, String stockCode, String orgCode, String projectCode, BigDecimal taxRate) {
             this.FMaterialId = new FMaterialIdModel(materialId);
             this.FRMREALQTY = FRMREALQTY;
             this.FSTOCKID = new FSTOCKIDModel(stockCode);
             this.FOWNERTYPEID = KdContents.OWNER;
             this.FOWNERID = new FOWNERIDModel(orgCode);
-            this.FLot=new FLotModel(projectCode);
-            this.FEntryTaxRate=taxRate;
+            this.FLot = new FLotModel(projectCode);
+            this.FEntryTaxRate = taxRate;
         }
     }
 
 
     @Data
-    private class FLotModel{
+    private class FLotModel {
         private String FNumber;
 
         public FLotModel(String FNumber) {
             this.FNumber = FNumber;
         }
     }
+
     @Data
     private class FOWNERIDModel {
         private String FNumber;

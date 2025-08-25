@@ -23,6 +23,11 @@ public class OutStockSaveModel extends KdModel {
     private String FDate;
 
     /**
+     * 出入库类型
+     */
+    private String F_WAUJ_CRKLX;
+
+    /**
      * 单据类型
      */
     private FBillTypeIDModel fFBillTypeID;
@@ -59,6 +64,7 @@ public class OutStockSaveModel extends KdModel {
     public OutStockSaveModel(String outDetailId, String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdMaterialId, BigDecimal FQty, String stockId) {
         this.F_WAUJ_UUID = outDetailId;
         this.FDate = FDate;
+        this.F_WAUJ_CRKLX=kdParentGroupEnum.type;
         this.fFBillTypeID = new FBillTypeIDModel(KdFBillTypeIDEnum.ofKdParentGroupEnum(kdParentGroupEnum).code);
         this.FRequireOrgId = new FRequireOrgIdModel(orgCode);
         this.FOwnerTypeIdHead = KdContents.OWNER;

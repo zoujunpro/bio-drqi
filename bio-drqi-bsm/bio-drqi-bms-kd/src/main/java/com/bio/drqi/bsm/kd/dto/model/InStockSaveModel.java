@@ -36,6 +36,11 @@ public class InStockSaveModel extends KdModel {
     private String FDate;
 
     /**
+     * 出入库类型
+     */
+    private String F_WAUJ_CRKLX;
+
+    /**
      * 单据类型
      */
     private FBillTypeIDModel FBillTypeID;
@@ -67,17 +72,18 @@ public class InStockSaveModel extends KdModel {
     private List<FInStockEntryModel> FInStockEntry;
 
 
-    public InStockSaveModel(String orderDetailId,String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdSupplierId, String kdMaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty,String projectCode,String stockCode,BigDecimal taxRate) {
+    public InStockSaveModel(String kdProjectType,String orderDetailId,String FDate , KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdSupplierId, String kdMaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty,String projectCode,String stockCode,BigDecimal taxRate) {
         this.FID = 0;
         this.FBillNo = null;
         this.FDate = FDate;
+        this.F_WAUJ_CRKLX=kdParentGroupEnum.type;
         this.FBillTypeID = new FBillTypeIDModel(KdFBillTypeIDEnum.ofKdParentGroupEnum(kdParentGroupEnum).code);
         this.FOwnerTypeIdHead = KdContents.OWNER;
         this.F_WAUJ_UUID=orderDetailId;
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
         this.FSupplierId = new FSupplierIdModel(kdSupplierId);
-        this.FInStockEntry = Arrays.asList(new FInStockEntryModel(kdMaterialId, fTaxPrice, reqlQty, orgCode,projectCode,stockCode,taxRate));
+        this.FInStockEntry = Arrays.asList(new FInStockEntryModel(kdProjectType,kdMaterialId, fTaxPrice, reqlQty, orgCode,projectCode,stockCode,taxRate));
     }
 
     @Override
@@ -99,6 +105,11 @@ public class InStockSaveModel extends KdModel {
         private BigDecimal FTaxPrice;
 
         /**
+         * 项目类型
+         */
+        private String F_WAUJ_XMLX;
+
+        /**
          * 收获数量
          */
         private BigDecimal FRealQty;
@@ -115,7 +126,7 @@ public class InStockSaveModel extends KdModel {
 
         private BigDecimal FEntryTaxRate;
 
-        public FInStockEntryModel(String MaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty, String orgCode,String projectCode,String stockCode,BigDecimal taxRate) {
+        public FInStockEntryModel(String kdProjectType,String MaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty, String orgCode,String projectCode,String stockCode,BigDecimal taxRate) {
             this.setFMaterialId(new FMaterialIdModel(MaterialId));
             this.setFTaxPrice(fTaxPrice);
             this.setFRealQty(reqlQty);
@@ -124,6 +135,7 @@ public class InStockSaveModel extends KdModel {
             this.FLot=new FLotModel(projectCode);
             this.FStockId=new FStockIdModel(stockCode);
             this.FEntryTaxRate=taxRate;
+            this.F_WAUJ_XMLX=kdProjectType;
         }
     }
 

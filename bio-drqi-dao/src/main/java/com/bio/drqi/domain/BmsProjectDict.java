@@ -58,6 +58,8 @@ public class BmsProjectDict implements Serializable {
 
     private String kdNumber;
 
+    private String kdProjectType;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

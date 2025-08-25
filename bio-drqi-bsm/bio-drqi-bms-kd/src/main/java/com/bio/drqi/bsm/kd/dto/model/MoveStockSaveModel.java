@@ -21,6 +21,11 @@ public class MoveStockSaveModel extends KdModel {
     private String FDate;
 
     /**
+     * 出入库类型
+     */
+    private String F_WAUJ_CRKLX;
+
+    /**
      * 调拨类型
      */
     private String FTransferBizType;

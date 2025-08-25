@@ -94,7 +94,6 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                     cerVectorTaskTb.setSpeciesCode(implementPlanAddDTO.getSpeciesCode());
                     cerVectorTaskTb.setBreedCode(implementPlanAddDTO.getBreedCode());
                     cerVectorTaskTb.setExpectStartDate(implementPlanAddDTO.getExpectStartDate());
-                    cerVectorTaskTb.setQualityInspectionResult(QualityInspectionResultEnum.nocheck.name());
                     cerVectorTaskTb.setSupervisionLevelCode(implementPlanAddDTO.getSupervisionLevelCode());
                     cerVectorTaskTb.setExpectedPositiveSeed(implementPlanAddDTO.getExpectedPositiveSeed());
                     cerVectorTaskTb.setExpectPeriod(implementPlanAddDTO.getExpectPeriod());

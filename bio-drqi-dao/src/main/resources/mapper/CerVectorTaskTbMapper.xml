@@ -57,12 +57,13 @@
         project_id = #{projectId,jdbcType=INTEGER}
         order by id desc
     </select>
-    <select id="selectAllBySubProjectId" resultMap="BaseResultMap">
+    <select id="listForVectorBuild" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from cer_vector_task_tb
         where
         sub_project_id = #{subProjectId,jdbcType=NUMERIC}
+        and id not in(select vector_task_id from cer_vector_tb)
         order by id desc;
     </select>
 
@@ -132,6 +133,14 @@
         from cer_vector_task_tb
         where
         species_code = #{speciesCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllBySubProjectId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb
+        where
+        sub_project_id = #{subProjectId,jdbcType=NUMERIC}
+        order by id desc;
     </select>
 
 </mapper>

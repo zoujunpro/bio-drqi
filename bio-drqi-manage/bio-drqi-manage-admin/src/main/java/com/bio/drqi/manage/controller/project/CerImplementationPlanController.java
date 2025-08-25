@@ -50,34 +50,29 @@ public class CerImplementationPlanController {
 
 
     /**
-     * 查询子项目下所有实施方案
+     * 查询实施方案（载体构建用）
      */
-    @GetMapping("/listBySubProject")
+    @GetMapping("/listForVectorBuild")
     @WebLog(desc = "查询子项目下所有实施方案")
-    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listBySubProject(@Validated @RequestParam Integer subProjectId) {
-        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listBySubProject(subProjectId);
+    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForVectorBuild(@Validated @RequestParam Integer subProjectId) {
+        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForVectorBuild(subProjectId);
         return ResponseResult.getSuccess(list);
     }
 
+
+
+
+
     /**
-     * 查询所有质粒质检他通过的实施方案
+     * 查询有转化的实施方案
      */
-    @GetMapping("/listAll")
-    @WebLog(desc = "查询所有质粒质检他通过的实施方案")
-    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listAll() {
-        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listAll();
+    @GetMapping("/listForTransForm")
+    @WebLog(desc = "查询有转化的实施方案")
+    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForTransForm() {
+        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForTransForm();
         return ResponseResult.getSuccess(list);
     }
 
-    /**
-     * 查询所有审批通过的实施方案
-     */
-    @GetMapping("/listApproveAll")
-    @WebLog(desc = "查询所有审批通过的实施方案")
-    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listApproveAll(@RequestParam String speciesCode) {
-        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listApproveAll(speciesCode);
-        return ResponseResult.getSuccess(list);
-    }
 
 
     /**
@@ -154,18 +149,6 @@ public class CerImplementationPlanController {
         return ResponseResult.getSuccess(vectorTaskService.detailByCode(vectorTaskCode));
     }
 
-
-
-
-    /**
-     * 查询有转化的实施方案
-     */
-    @GetMapping("/listForTransForm")
-    @WebLog(desc = "查询有转化的实施方案")
-    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForTransForm() {
-        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForTransForm();
-        return ResponseResult.getSuccess(list);
-    }
 
     /**
      * 暂停实施方案

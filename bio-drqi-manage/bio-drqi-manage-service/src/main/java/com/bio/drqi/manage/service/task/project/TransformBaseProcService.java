@@ -42,8 +42,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
 
-    @Resource
-    private CerBreedDictMapper cerBreedDictMapper;
+
 
 
     @Override
@@ -79,19 +78,9 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
         if (!BioTaskStatusEnum.TASK_STATUS_2.status.equals(cerVectorTaskTb.getTaskStatus())) {
             throw new BusinessException("任务未审批通过,不能进行该项操作：任务号：" + cerVectorTaskTb.getVectorTaskCode());
         }
-        if (!QualityInspectionResultEnum.pass.name().equals(cerVectorTaskTb.getQualityInspectionResult())) {
+        CerVectorStepLog cerVectorStepLog = cerVectorStepLogMapper.selectOneByVectorTaskIdAndStepCode(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.plasmid_check.name());
+        if(cerVectorStepLog==null){
             throw new BusinessException("只有质检通过任务方可进行转化");
-        }
-        for (TransformDTO.Content content : transformDTO.getContentList()) {
-            if (content.getVectorGroupId() == null) {
-                throw new BusinessException("缺失质粒信息");
-            }
-            if (content.getVectorGroupId() != null) {
-                CerVectorGroupTb cerVectorGroupTb = cerVectorGroupTbMapper.selectById(content.getVectorGroupId());
-                if (cerVectorGroupTb == null) {
-                    throw new BusinessException("不存在此载体信息 vectorGroupId:" + content.getVectorGroupId());
-                }
-            }
         }
         //补充form表单
         transformDTO.setProjectCode(cerProjectTb.getProjectCode());
@@ -118,13 +107,6 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
 
             for (TransformDTO.Content content : transformDTO.getContentList()) {
                 CerTransformTb cerTransformTb = new CerTransformTb();
-                if (content.getVectorGroupId() != null) {
-                    CerVectorGroupTb cerVectorGroupTb = cerVectorGroupTbMapper.selectById(content.getVectorGroupId());
-                    if (cerVectorGroupTb == null) {
-                        throw new BusinessException("不存在此载体信息 vectorGroupId:" + content.getVectorGroupId());
-                    }
-                    cerTransformTb.setPlasmidName(cerVectorGroupTb.getGroupName());
-                }
                 cerTransformTb.setProjectId(cerVectorTaskTb.getProjectId());
                 cerTransformTb.setProjectCode(cerVectorTaskTb.getProjectCode());
                 cerTransformTb.setVectorTaskId(cerVectorTaskTb.getId());

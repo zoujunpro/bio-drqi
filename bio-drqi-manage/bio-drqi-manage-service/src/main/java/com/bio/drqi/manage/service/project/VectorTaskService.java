@@ -16,10 +16,8 @@ public interface VectorTaskService {
 
     PageInfo<VectorListPageRspDTO> ListPage(QueryPageVectorReqDTO queryPageVectorReqDTO);
 
-    List<CerImplementationPlanBaseInfoRspDTO> listBySubProject(Integer subProjectId);
+    List<CerImplementationPlanBaseInfoRspDTO> listForVectorBuild(Integer subProjectId);
 
-    List<CerImplementationPlanBaseInfoRspDTO> listAll();
-    List<CerImplementationPlanBaseInfoRspDTO> listApproveAll(String speciesCode);
     List<CerImplementationPlanBaseInfoRspDTO> listForTransForm();
 
     String getTaskNum(GetVectorTaskNumReqDTO getVectorTaskNumReqDTO);

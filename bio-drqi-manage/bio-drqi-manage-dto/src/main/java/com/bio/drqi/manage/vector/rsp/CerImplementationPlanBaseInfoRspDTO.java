@@ -67,18 +67,11 @@ public class CerImplementationPlanBaseInfoRspDTO {
      */
     private String taskStatus;
 
-    /**
-     * 质质检结果  空未质检 pass已通过 refuse未通过
-     */
-    private String qualityInspectionResult;
-
-
     private String speciesCode;
 
     private String breedCode;
 
     private String currentStepCode;
-
     /**
      * 期望阳性苗
      */
@@ -89,8 +82,6 @@ public class CerImplementationPlanBaseInfoRspDTO {
      */
     private String supervisionLevelCode;
 
-
-    private String vectorBuildFlag;
     /**
      * 预计开始日期
      */

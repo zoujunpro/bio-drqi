@@ -45,11 +45,6 @@ public class TransformDTO {
     @Data
     public static class Content{
         /**
-         * 子项目ID
-         */
-        private Integer vectorGroupId;
-
-        /**
          * 侵染数量
          */
         @NotNull(message = "未填写转化数量")
@@ -64,6 +59,7 @@ public class TransformDTO {
         /**
          * 递送方式（实际使用的方式）
          */
+        @NotBlank(message = "递送方式必填")
         private String deliveryMethod;
 
         /**
@@ -77,8 +73,6 @@ public class TransformDTO {
         @NotBlank(message = "受体材料必填")
         private String acceptorMaterial;
 
-        /***/
-        private String groupName;
     }
 
 

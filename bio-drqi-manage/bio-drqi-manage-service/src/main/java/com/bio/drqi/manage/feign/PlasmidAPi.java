@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
-@FeignClient(name = "bio-plasmid-service", path = "/plasmid")
+@FeignClient(name = "bio-plasmid-service", path = "/bio")
 public interface PlasmidAPi {
 
-    @GetMapping("/detail")
+    @GetMapping("/plasmid/detail")
     ResponseResult<Object> detail(@RequestParam String plasmid);
 
 }

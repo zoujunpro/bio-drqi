@@ -122,5 +122,7 @@ public class CerImplementationPlanBaseInfoRspDTO {
      */
     private String createUserName;
 
+    private String sampleCodePrefix;
+
 
 }

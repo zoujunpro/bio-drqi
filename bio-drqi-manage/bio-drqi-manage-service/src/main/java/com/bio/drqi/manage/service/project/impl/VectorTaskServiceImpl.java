@@ -41,7 +41,6 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
 
-
     @Resource
     private CerSubProjectTbMapper cerSubProjectTbMapper;
 
@@ -56,6 +55,9 @@ public class VectorTaskServiceImpl implements VectorTaskService {
 
     @Resource
     private CerInstantVerifyTaskTbMapper cerInstantVerifyTaskTbMapper;
+
+    @Resource
+    private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
 
 
     @Override
@@ -125,8 +127,6 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     }
 
 
-
-
     private Integer findMaxIndex(List<CerVectorTaskTb> cerVectorTaskTbList) {
         if (CollectionUtil.isEmpty(cerVectorTaskTbList)) {
             return 0;
@@ -177,7 +177,11 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     @Override
     public CerImplementationPlanBaseInfoRspDTO detail(Integer id) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(id);
-        return BeanUtils.copyProperties(cerVectorTaskTb, CerImplementationPlanBaseInfoRspDTO.class);
+
+        CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+        CerImplementationPlanBaseInfoRspDTO cerImplementationPlanBaseInfoRspDTO = BeanUtils.copyProperties(cerVectorTaskTb, CerImplementationPlanBaseInfoRspDTO.class);
+        cerImplementationPlanBaseInfoRspDTO.setSampleCodePrefix(cerSampleCodePrefixTb.getSampleCodePrefix());
+        return cerImplementationPlanBaseInfoRspDTO;
     }
 
     @Override

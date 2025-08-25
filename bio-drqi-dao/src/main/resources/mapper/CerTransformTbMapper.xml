@@ -110,27 +110,20 @@
         AND plasmid_name = #{plasmidName,jdbcType=VARCHAR}
         order by id desc
     </select>
-    <select id="selectAllBySpeciesCodeAndVectorTaskTypeAndCreateTime" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from cer_transform_tb
-        where
-        species_code = #{speciesCode,jdbcType=VARCHAR}
-        AND vector_task_type = #{vectorTaskType,jdbcType=VARCHAR}
-        AND date_format(create_time,'%Y%m%d') = #{createTime,jdbcType=VARCHAR}
-        order by id desc
-    </select>
     <select id="selectSumInfectNumber" resultType="java.lang.Integer">
          select sum(infect_number)    from cer_transform_tb
 
     </select>
-    <select id="selectAllBySpeciesCodeAndCreateTime" resultMap="BaseResultMap">
+
+    <select id="selectAllBySpeciesCodeAndDeliveryMethodAndCreateTime" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from cer_transform_tb
         where
         species_code = #{speciesCode,jdbcType=VARCHAR}
+        AND delivery_method = #{deliveryMethod,jdbcType=VARCHAR}
         AND date_format(create_time,'%Y%m%d') = #{createTime,jdbcType=VARCHAR}
+        order by id desc
     </select>
 
 </mapper>

@@ -50,9 +50,9 @@ public class ImplementPlanAddDTO {
     private String expectPeriod;
 
     /**
-     * 递送方式  1基因枪、2原生质体转化、3农杆菌转化、4病毒载体
+     * 递送方式  B基因枪、P原生质体转化、A农杆菌转化、V病毒载体
      */
-    @EnumValue(strValues = {"1", "2", "3", "4"}, message = "递送方式参数非法")
+    @EnumValue(strValues = {"A", "B", "P", "V"}, message = "递送方式参数非法")
     private String deliveryMethod;
     /**
      * 受体材料

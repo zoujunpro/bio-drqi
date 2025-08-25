@@ -23,6 +23,7 @@ public class CerVectorTaskTb implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
+
     /**
      * 载体构建任务编码
      */

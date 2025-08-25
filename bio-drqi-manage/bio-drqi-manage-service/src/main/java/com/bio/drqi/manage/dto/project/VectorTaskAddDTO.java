@@ -13,66 +13,17 @@ import java.util.List;
 @Data
 public class VectorTaskAddDTO {
 
-    private Integer vectorTaskId;
-    /**
-     * 项目ID
-     */
-    private Integer projectId;
-
     private String projectName;
 
     private String projectCode;
 
     private String subProjectCode;
-    /**
-     * 子项目ID
-     */
-    private Integer subProjectId;
-    /**
-     * 载体构建任务编码
-     */
+
+
     private String vectorTaskCode;
-    /**
-     * 载体构建任务类型 1常任务创建 ，2瞬时测试 3原生质体 4发根
-     */
-    private String vectorTaskType;
 
-    private String speciesCode;
 
-    private String breedCode;
-    /**
-     * 预计开始日期
-     */
-    private String expectStartDate;
-
-    /**
-     * 预期项目周期必填
-     */
-    private String expectPeriod;
-
-    /**
-     * 递送方式  1基因枪、2原生质体转化、3农杆菌转化、4病毒载体
-     */
-    private String deliveryMethod;
-    /**
-     * 受体材料
-     */
-    private String acceptorMaterial;
-
-    /**
-     * 监管级别 1 无，2 DNA-free； 3 transgene-free
-     */
-    private String supervisionLevelCode;
-
-    /**
-     * 编辑类型  1 KO，2点突变，3精准小，4精准大
-     */
-    private String editType;
-
-    private String expectedPositiveSeed;
-
-    private String  sampleCodePrefix;
-
+    private Integer vectorTaskId;
     /**
      * 载体构建信息，excel上传
      */

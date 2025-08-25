@@ -128,24 +128,6 @@ public class Clean20250721Controller {
         return ResponseResult.getSuccess("ok");
     }
 
-    @GetMapping("cleanVectorTaskTask")
-    @Transactional(rollbackFor = Exception.class)
-    public ResponseResult<String> cleanVectorTaskTask() {
-        List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("implementation_plan");
-        for (BioTaskDtlTb bioTaskDtlTb : bioTaskDtlTbList) {
-            log.info("bioTaskDtlTb={}", JSONUtil.toJsonStr(bioTaskDtlTb));
-            VectorTaskAddDTO vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
-            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByTaskNum(bioTaskDtlTb.getTaskNum());
-            if (cerVectorTaskTb != null) {
-                vectorTaskAddDTO.setAcceptorMaterial(cerVectorTaskTb.getAcceptorMaterial());
-                vectorTaskAddDTO.setBreedCode(cerVectorTaskTb.getBreedCode());
-                bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(vectorTaskAddDTO));
-                bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
-            }
-
-        }
-        return ResponseResult.getSuccess("ok");
-    }
 
     @GetMapping("cleanTransFormNew")
     @Transactional(rollbackFor = Exception.class)

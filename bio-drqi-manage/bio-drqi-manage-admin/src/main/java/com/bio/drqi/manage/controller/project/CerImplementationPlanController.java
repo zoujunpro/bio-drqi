@@ -50,6 +50,16 @@ public class CerImplementationPlanController {
 
 
     /**
+     * 查询实施方案（查询子项目下所有实施方案）
+     */
+    @GetMapping("/listAllBySubProject")
+    @WebLog(desc = "查询子项目下所有实施方案")
+    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listAllBySubProject(@Validated @RequestParam Integer subProjectId) {
+        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listAllBySubProject(subProjectId);
+        return ResponseResult.getSuccess(list);
+    }
+
+    /**
      * 查询实施方案（载体构建用）
      */
     @GetMapping("/listForVectorBuild")

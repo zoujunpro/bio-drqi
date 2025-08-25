@@ -8,6 +8,7 @@ import com.bio.drqi.manage.vector.rsp.VectorListPageRspDTO;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.vector.rsp.VectorTaskSpeciesRspDTO;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.List;
 public interface VectorTaskService {
 
     PageInfo<VectorListPageRspDTO> ListPage(QueryPageVectorReqDTO queryPageVectorReqDTO);
+
+    List<CerImplementationPlanBaseInfoRspDTO> listAllBySubProject(Integer subProjectId);
 
     List<CerImplementationPlanBaseInfoRspDTO> listForVectorBuild(Integer subProjectId);
 

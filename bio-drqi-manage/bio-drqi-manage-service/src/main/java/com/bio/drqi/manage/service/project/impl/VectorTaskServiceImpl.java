@@ -70,6 +70,12 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     }
 
     @Override
+    public List<CerImplementationPlanBaseInfoRspDTO> listAllBySubProject(Integer subProjectId) {
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllBySubProjectId(subProjectId);
+        return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
+    }
+
+    @Override
     public List<CerImplementationPlanBaseInfoRspDTO> listForVectorBuild(Integer subProjectId) {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.listForVectorBuild(subProjectId);
         return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);

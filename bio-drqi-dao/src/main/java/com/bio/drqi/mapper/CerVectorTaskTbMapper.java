@@ -25,12 +25,6 @@ public interface CerVectorTaskTbMapper extends BaseMapper<CerVectorTaskTb> {
 
     CerVectorTaskTb selectOneByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
 
-    int updateQualityInspectionResultByIdIn(@Param("qualityInspectionResult") String qualityInspectionResult, @Param("idList") Collection<Integer> idList);
-
-    List<CerVectorTaskTb> listAllByQualityInspectionResult(@Param("qualityInspectionResult") String qualityInspectionResult);
-
-    int updateQualityInspectionResultById(@Param("qualityInspectionResult") String qualityInspectionResult, @Param("id") Integer id);
-
     List<CerVectorTaskTb> selectAllByVectorTaskCodeIn(@Param("vectorTaskCodeList") Collection<String> vectorTaskCodeList);
 
     List<CerVectorTaskTb> listForTransForm();
@@ -42,8 +36,6 @@ public interface CerVectorTaskTbMapper extends BaseMapper<CerVectorTaskTb> {
     List<CerVectorTaskTb> selectAllForBoard(@Param("userId") Integer userId, @Param("projectId") Integer projectId, @Param("speciesCode") String speciesCode, @Param("taskStatus") String taskStatus);
 
     List<String> selectAllSpeciesCode();
-
-    List<String> selectAllSpeciesCodeNoCondition();
 
     List<CerVectorTaskTb> selectAllBySpeciesCode(@Param("speciesCode") String speciesCode);
 }

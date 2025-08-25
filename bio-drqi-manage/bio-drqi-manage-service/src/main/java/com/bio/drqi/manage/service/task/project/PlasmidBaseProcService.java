@@ -45,19 +45,8 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         PlasmidDTO plasmidDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlasmidDTO.class);
         ValidatorUtil.validator(plasmidDTO);
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(plasmidDTO.getVectorTaskId());
-
         if (!BioTaskStatusEnum.TASK_STATUS_2.status.equals(cerVectorTaskTb.getTaskStatus())) {
             throw new BusinessException("任务审批中，不能质检");
-        }
-        if (QualityInspectionResultEnum.refuse.name().equals(cerVectorTaskTb.getQualityInspectionResult())) {
-            throw new BusinessException("该实施方案质粒质检:通过");
-        }
-        if (QualityInspectionResultEnum.pass.name().equals(cerVectorTaskTb.getQualityInspectionResult())) {
-            throw new BusinessException("该实施方案质粒质检:拒绝");
-        }
-
-        if (QualityInspectionResultEnum.checking.name().equals(cerVectorTaskTb.getQualityInspectionResult())) {
-            throw new BusinessException("已经提交过质粒质检");
         }
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectById(cerVectorTaskTb.getProjectId());
         if (cerProjectTb == null) {
@@ -70,7 +59,10 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         if (!ProjectStatusEnum.execute.name().equals(cerProjectTb.getProjectStatus())) {
             throw new BusinessException("非执行中项目不能进行该操作");
         }
-
+        List<CerPlasmidQualityTb> cerPlasmidQualityTbList = cerPlasmidQualityTbMapper.selectAllByVectorTaskId(cerVectorTaskTb.getId());
+        if (CollectionUtil.isNotEmpty(cerPlasmidQualityTbList)) {
+            throw new BusinessException("已经做过质粒质检");
+        }
         //补充form表单
         plasmidDTO.setProjectCode(cerProjectTb.getProjectCode());
         plasmidDTO.setProjectName(cerProjectTb.getProjectName());
@@ -125,46 +117,15 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
                 cerPlasmidQualityTb.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
                 cerPlasmidQualityTb.setRemark(content.getRemark());
                 cerPlasmidQualityTbMapper.insert(cerPlasmidQualityTb);
-                content.setPlasmidName(content.getPlasmidName());
             }
-
-            //质检中
-            cerVectorTaskTb.setQualityInspectionResult(QualityInspectionResultEnum.checking.name());
-            cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
-
-            updateVectorTaskQualityInspectionResult(bioTaskDtlTb);
-
         }
     }
 
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
         cerPlasmidQualityTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
-        PlasmidDTO plasmidDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlasmidDTO.class);
-        cerVectorTaskTbMapper.updateQualityInspectionResultById(QualityInspectionResultEnum.nocheck.name(), plasmidDTO.getVectorTaskId());
-        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(),ImplementationPlanTypeEnum.plasmid_check.name());
+        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.plasmid_check.name());
     }
 
-    /**
-     * @param bioTaskDtlTb
-     */
-    private void updateVectorTaskQualityInspectionResult(BioTaskDtlTb bioTaskDtlTb) {
-        //更新审核结果到载体中(以第一次审核结果为准)
-        List<CerPlasmidQualityTb> cerPlasmidQualityTbList = cerPlasmidQualityTbMapper.selectAllByTaskNum(bioTaskDtlTb.getTaskNum());
-        if (CollectionUtil.isEmpty(cerPlasmidQualityTbList)) {
-            return;
-        }
-        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(cerPlasmidQualityTbList.get(0).getVectorTaskId());
 
-        cerPlasmidQualityTbList = cerPlasmidQualityTbList.stream().filter(cerPlasmidQualityTb -> QualityInspectionResultEnum.refuse.name().equals(cerPlasmidQualityTb.getQualityInspectionResult())).collect(Collectors.toList());
-        if (CollectionUtil.isNotEmpty(cerPlasmidQualityTbList)) {
-            //质检未通过
-            cerVectorTaskTb.setQualityInspectionResult(QualityInspectionResultEnum.refuse.name());
-            cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
-        } else {
-            cerVectorTaskTb.setQualityInspectionResult(QualityInspectionResultEnum.pass.name());
-            cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
-        }
-
-    }
 }

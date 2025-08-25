@@ -75,10 +75,6 @@ public class CerVectorTaskTb implements Serializable {
      */
     private String taskStatus;
 
-    /**
-     * 质质检结果  空未质检 pass已通过 refuse未通过
-     */
-    private String qualityInspectionResult;
 
 
     private String speciesCode;

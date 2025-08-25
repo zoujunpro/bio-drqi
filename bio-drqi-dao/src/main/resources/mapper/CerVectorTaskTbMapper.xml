@@ -20,7 +20,6 @@
         <result property="editType" column="edit_type" jdbcType="VARCHAR"/>
         <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
         <result property="taskStatus" column="task_status" jdbcType="VARCHAR"/>
-        <result property="qualityInspectionResult" column="quality_inspection_result" jdbcType="VARCHAR"/>
         <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
         <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
         <result property="currentStepCode" column="current_step_code" jdbcType="VARCHAR"/>
@@ -36,7 +35,7 @@
         create_time,update_time,breed_code,
         create_user_id,create_user_name,project_id,
         sub_project_id,project_code,sub_project_code,edit_type,task_num,
-        task_status,quality_inspection_result,species_code,current_step_code,expect_start_date,expected_positive_seed,supervision_level_code,expect_period
+        task_status,species_code,current_step_code,expect_start_date,expected_positive_seed,supervision_level_code,expect_period
     </sql>
     <select id="selectOneByTaskNum" resultMap="BaseResultMap">
         select
@@ -66,15 +65,7 @@
         sub_project_id = #{subProjectId,jdbcType=NUMERIC}
         order by id desc;
     </select>
-    <update id="updateQualityInspectionResultByIdIn">
-        update cer_vector_task_tb
-        set quality_inspection_result = #{qualityInspectionResult,jdbcType=VARCHAR}
-        where
-        id in
-        <foreach collection="idList" item="item" open="(" close=")" separator=",">
-            #{item,jdbcType=NUMERIC}
-        </foreach>
-    </update>
+
     <select id="selectOneByVectorTaskCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -82,23 +73,6 @@
         where
         vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
     </select>
-    <select id="listAllByQualityInspectionResult" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from cer_vector_task_tb
-        where
-        quality_inspection_result = #{qualityInspectionResult,jdbcType=VARCHAR} and project_id in(select id from
-        cer_project_tb where project_status ='execute')
-        order by id desc
-    </select>
-
-    <update id="updateQualityInspectionResultById">
-        update cer_vector_task_tb
-        set quality_inspection_result = #{qualityInspectionResult,jdbcType=VARCHAR}
-        where id = #{id,jdbcType=NUMERIC}
-          and project_id in (select id from cer_project_tb where project_status = 'execute') order by id desc
-    </update>
-
     <select id="listForTransForm" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -140,7 +114,6 @@
         select distinct species_code
         from cer_vector_task_tb
         where task_status = '2'
-          and quality_inspection_result = 'pass'
           and project_id in(select id from cer_project_tb where project_status ='execute')
     </select>
 

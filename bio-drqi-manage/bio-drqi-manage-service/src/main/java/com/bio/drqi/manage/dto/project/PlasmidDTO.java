@@ -57,7 +57,7 @@ public class PlasmidDTO {
 
 
         @NotBlank(message = "参数缺失：plasmidName")
-        @ExcelProperty(value = "转化名称")
+        @ExcelProperty(value = "质粒信息缺失")
         private String plasmidName;
 
         /**

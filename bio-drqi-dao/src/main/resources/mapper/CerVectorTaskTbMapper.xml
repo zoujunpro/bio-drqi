@@ -77,8 +77,9 @@
     <select id="listForTransForm" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from cer_vector_task_tb where id in(select distinct vector_task_id from cer_transform_tb) and project_id in
-        (select id from cer_project_tb where project_status='execute')
+        from cer_vector_task_tb
+        where id in(select distinct vector_task_id from cer_plasmid_quality_tb)
+        and sub_project_id = #{subProjectId,jdbcType=NUMERIC}
         order by id desc
     </select>
     <select id="selectCountNum" resultType="java.lang.Integer">

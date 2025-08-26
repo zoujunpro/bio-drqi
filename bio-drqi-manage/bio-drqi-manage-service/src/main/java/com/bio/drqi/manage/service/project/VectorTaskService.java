@@ -21,7 +21,7 @@ public interface VectorTaskService {
 
     List<CerImplementationPlanBaseInfoRspDTO> listForVectorBuild(Integer subProjectId);
 
-    List<CerImplementationPlanBaseInfoRspDTO> listForTransForm();
+    List<CerImplementationPlanBaseInfoRspDTO> listForTransForm(Integer subProjectId);
 
     List<CerImplementationPlanBaseInfoRspDTO> listForPlasmid( Integer subProjectId);
 

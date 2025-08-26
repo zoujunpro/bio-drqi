@@ -78,8 +78,8 @@ public class CerImplementationPlanController {
      */
     @GetMapping("/listForTransForm")
     @WebLog(desc = "查询有转化的实施方案")
-    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForTransForm() {
-        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForTransForm();
+    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForTransForm(@Validated @RequestParam Integer subProjectId) {
+        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForTransForm(subProjectId);
         return ResponseResult.getSuccess(list);
     }
     /**

@@ -31,9 +31,9 @@ public interface CerVectorTaskTbMapper extends BaseMapper<CerVectorTaskTb> {
 
     List<CerVectorTaskTb> listForTransForm();
 
-    Integer selectCountNum();
+    List<CerVectorTaskTb> listForPlasmid();
 
-    List<CerVectorTaskTb> selectAllByTaskStatusAndSpeciesCode(@Param("taskStatus") String taskStatus, @Param("speciesCode") String speciesCode);
+    Integer selectCountNum();
 
     List<CerVectorTaskTb> selectAllForBoard(@Param("userId") Integer userId, @Param("projectId") Integer projectId, @Param("speciesCode") String speciesCode, @Param("taskStatus") String taskStatus);
 

@@ -2,6 +2,7 @@ package com.bio.drqi.manage.service.project.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.enums.*;
 import com.bio.drqi.manage.vector.req.GetVectorTaskNumReqDTO;
@@ -86,6 +87,12 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     @Override
     public List<CerImplementationPlanBaseInfoRspDTO> listForTransForm() {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.listForTransForm();
+        return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
+    }
+
+    @Override
+    public List<CerImplementationPlanBaseInfoRspDTO> listForPlasmid() {
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.listForPlasmid();
         return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
     }
 

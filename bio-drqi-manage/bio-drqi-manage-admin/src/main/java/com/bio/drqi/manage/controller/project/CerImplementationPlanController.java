@@ -82,7 +82,15 @@ public class CerImplementationPlanController {
         List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForTransForm();
         return ResponseResult.getSuccess(list);
     }
-
+    /**
+     * 查询实施方案（质粒质检）
+     */
+    @GetMapping("/listForPlasmid")
+    @WebLog(desc = "查询有转化的实施方案")
+    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForPlasmid() {
+        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForPlasmid();
+        return ResponseResult.getSuccess(list);
+    }
 
 
     /**

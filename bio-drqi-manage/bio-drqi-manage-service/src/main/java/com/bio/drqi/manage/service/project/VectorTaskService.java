@@ -23,7 +23,7 @@ public interface VectorTaskService {
 
     List<CerImplementationPlanBaseInfoRspDTO> listForTransForm();
 
-    List<CerImplementationPlanBaseInfoRspDTO> listForPlasmid();
+    List<CerImplementationPlanBaseInfoRspDTO> listForPlasmid( Integer subProjectId);
 
     String getTaskNum(GetVectorTaskNumReqDTO getVectorTaskNumReqDTO);
 

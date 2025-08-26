@@ -140,6 +140,8 @@
         where task_status = '2'
         and project_id in(select id from cer_project_tb where project_status ='execute')
         and id not in(select vector_task_id from cer_plasmid_quality_tb)
+        and sub_project_id = #{subProjectId,jdbcType=NUMERIC}
+        order by id desc
     </select>
 
 </mapper>

@@ -87,8 +87,8 @@ public class CerImplementationPlanController {
      */
     @GetMapping("/listForPlasmid")
     @WebLog(desc = "查询有转化的实施方案")
-    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForPlasmid() {
-        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForPlasmid();
+    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForPlasmid(@Validated @RequestParam  Integer subProjectId) {
+        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForPlasmid(subProjectId);
         return ResponseResult.getSuccess(list);
     }
 

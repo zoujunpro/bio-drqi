@@ -82,17 +82,10 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-
             PlasmidDTO plasmidDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlasmidDTO.class);
-
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(plasmidDTO.getVectorTaskId());
-
             //更新转化质检结果
             for (PlasmidDTO.Content content : plasmidDTO.getContentList()) {
-                CerVectorGroupTb cerVectorGroupTb = cerVectorGroupTbMapper.selectOneByGroupNameAndVectorTaskId(content.getPlasmidName(), cerVectorTaskTb.getId());
-                if (cerVectorGroupTb == null) {
-                    throw new BusinessException("载体任务：" + cerVectorTaskTb.getVectorTaskCode() + "中无此转化:" + content.getPlasmidName());
-                }
                 CerPlasmidQualityTb cerPlasmidQualityTb = new CerPlasmidQualityTb();
                 cerPlasmidQualityTb.setSubProjectId(plasmidDTO.getSubProjectId());
                 cerPlasmidQualityTb.setProjectId(plasmidDTO.getProjectId());

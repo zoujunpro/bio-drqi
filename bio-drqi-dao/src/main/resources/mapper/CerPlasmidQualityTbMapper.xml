@@ -85,5 +85,45 @@
         set quality_inspection_result = #{qualityInspectionResult,jdbcType=VARCHAR}
         where vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
     </update>
+    <select id="selectSelective" resultMap="BaseResultMap" resultType="com.bio.drqi.domain.CerPlasmidQualityTb">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_plasmid_quality_tb
+        <where>
+            <if test="subProjectId != null">and sub_project_id=#{subProjectId,jdbcType=NUMERIC}</if>
+            <if test="projectId != null">and project_id=#{projectId,jdbcType=NUMERIC}</if>
+            <if test="vectorTaskId != null">and vector_task_id=#{vectorTaskId,jdbcType=NUMERIC}</if>
+            <if test="plasmidName != null">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
+            <if test="qualityInspectionNumber != null">
+                and  quality_inspection_number=#{qualityInspectionNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="qualityInspectionResult != null">
+                and   quality_inspection_result=#{qualityInspectionResult,jdbcType=VARCHAR}
+            </if>
+            <if test="agrobacteriumInformation != null">
+                and  agrobacterium_information=#{agrobacteriumInformation,jdbcType=VARCHAR}
+            </if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="qualityInspectionType != null">
+                and  quality_inspection_type=#{qualityInspectionType,jdbcType=VARCHAR}
+            </if>
+            <if test="agrobacteriumResistance != null">
+                and   agrobacterium_resistance=#{agrobacteriumResistance,jdbcType=VARCHAR}
+            </if>
+            <if test="plasmidConcentration != null">and plasmid_concentration=#{plasmidConcentration,jdbcType=VARCHAR}</if>
+            <if test="extractionKit != null">and extraction_kit=#{extractionKit,jdbcType=VARCHAR}</if>
+            <if test="fileUrls != null">and file_urls=#{fileUrls,jdbcType=VARCHAR}</if>
+            <if test="taskStatus != null">and task_status=#{taskStatus,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="projectCode != null">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="subProjectCode != null">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
+    </select>
 </mapper>
 

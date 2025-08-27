@@ -3,6 +3,8 @@ package com.bio.drqi.manage.service.project.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.dto.project.PlasmidDTO;
+import com.bio.drqi.manage.plasmid.req.PlasmidListPageReqDTO;
+import com.bio.drqi.manage.plasmid.rsp.PlasmidListPageRspDTO;
 import com.bio.drqi.manage.service.project.PlasmidService;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.manage.plasmid.req.QueryPagePlasmidReqDTO;
@@ -11,6 +13,8 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.oss.service.OssService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +44,14 @@ public class PlasmidServiceImpl implements PlasmidService {
     private OssService ossService;
 
     @Override
+    public PageInfo<PlasmidListPageRspDTO> listPage(PlasmidListPageReqDTO plasmidListPageReqDTO) {
+        PageHelper.startPage(plasmidListPageReqDTO.getPageNum(), plasmidListPageReqDTO.getPageSize());
+        List<CerPlasmidQualityTb> cerPlasmidQualityTbList = cerPlasmidQualityTbMapper.selectSelective(BeanUtils.copyProperties(plasmidListPageReqDTO, CerPlasmidQualityTb.class));
+        PageInfo<CerPlasmidQualityTb> srcPageInfo = new PageInfo<>(cerPlasmidQualityTbList);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo, PlasmidListPageRspDTO.class);
+    }
+
+    @Override
     public List<QueryPagePlasmidRspDTO> listByVectorTask(QueryPagePlasmidReqDTO queryPagePlasmidReqDTO) {
         List<CerPlasmidQualityTb> cerPlasmidQualityTbList = cerPlasmidQualityTbMapper.selectAllByVectorTaskId(queryPagePlasmidReqDTO.getVectorTaskId());
         return BeanUtils.copyListProperties(cerPlasmidQualityTbList, QueryPagePlasmidRspDTO.class);
@@ -56,16 +68,16 @@ public class PlasmidServiceImpl implements PlasmidService {
 
         List<CerVectorGroupTb> cerVectorGroupTbList = cerVectorGroupTbMapper.selectAllByVectorTaskId(cerVectorTaskTb.getId());
         List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectAllByVectorTaskId(cerVectorTaskTb.getId());
-        if(CollectionUtil.isNotEmpty(cerVectorTbList)){
-            for (CerVectorTb cerVectorTb:cerVectorTbList){
+        if (CollectionUtil.isNotEmpty(cerVectorTbList)) {
+            for (CerVectorTb cerVectorTb : cerVectorTbList) {
                 PlasmidDTO.Content content = new PlasmidDTO.Content();
                 content.setPlasmidName(cerVectorTb.getPlasmidName());
                 content.setQualityInspectionType("质粒制备");
                 plasmidCheckExcelDTOList.add(content);
             }
         }
-        if(CollectionUtil.isNotEmpty(cerVectorGroupTbList)){
-            for (CerVectorGroupTb cerVectorGroupTb:cerVectorGroupTbList){
+        if (CollectionUtil.isNotEmpty(cerVectorGroupTbList)) {
+            for (CerVectorGroupTb cerVectorGroupTb : cerVectorGroupTbList) {
                 PlasmidDTO.Content content = new PlasmidDTO.Content();
                 content.setPlasmidName(cerVectorGroupTb.getGroupName());
                 content.setQualityInspectionType("农杆菌检测");

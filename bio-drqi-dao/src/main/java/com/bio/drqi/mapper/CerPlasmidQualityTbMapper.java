@@ -13,6 +13,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.cer.domain.CerPlasmidQualityTb
 */
 public interface CerPlasmidQualityTbMapper extends BaseMapper<CerPlasmidQualityTb> {
+
+    List<CerPlasmidQualityTb>  selectSelective(CerPlasmidQualityTb cerPlasmidQualityTb);
+
     List<CerPlasmidQualityTb> selectAllByVectorIdAndQualityInspectionResult(@Param("vectorId") Integer vectorId, @Param("qualityInspectionResult") String qualityInspectionResult);
 
     int deleteByTaskNum(@Param("taskNum") String taskNum);

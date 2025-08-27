@@ -49,14 +49,6 @@
         set task_status = #{taskStatus,jdbcType=VARCHAR}
         where task_num = #{taskNum,jdbcType=VARCHAR}
     </update>
-    <select id="selectAllByProjectIdOrderById" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from cer_vector_task_tb
-        where
-        project_id = #{projectId,jdbcType=INTEGER}
-        order by id desc
-    </select>
     <select id="listForVectorBuild" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -116,7 +108,7 @@
         select distinct species_code
         from cer_vector_task_tb
         where task_status = '2'
-          and project_id in(select id from cer_project_tb where project_status ='execute')
+          and project_id in (select id from cer_project_tb where project_status = 'execute')
     </select>
 
     <select id="selectAllBySpeciesCode" resultMap="BaseResultMap">
@@ -152,6 +144,37 @@
         from cer_vector_task_tb
         where id in(select distinct vector_task_id from cer_transform_tb)
         and project_id in(select id from cer_project_tb where project_status ='execute')
+        order by id desc
+    </select>
+    <select id="selectSelective" resultMap="BaseResultMap" resultType="com.bio.drqi.domain.CerVectorTaskTb">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb
+        <where>
+            <if test="vectorTaskCode != null">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="deliveryMethod != null">and delivery_method=#{deliveryMethod,jdbcType=VARCHAR}</if>
+            <if test="acceptorMaterial != null">and acceptor_material=#{acceptorMaterial,jdbcType=VARCHAR}</if>
+            <if test="projectId != null">and project_id=#{projectId,jdbcType=NUMERIC}</if>
+            <if test="subProjectId != null">and sub_project_id=#{subProjectId,jdbcType=NUMERIC}</if>
+            <if test="projectCode != null">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="subProjectCode != null">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
+            <if test="editType != null">and edit_type=#{editType,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="taskStatus != null">and task_status=#{taskStatus,jdbcType=VARCHAR}</if>
+            <if test="speciesCode != null">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
+            <if test="breedCode != null">and breed_code=#{breedCode,jdbcType=VARCHAR}</if>
+            <if test="currentStepCode != null">and current_step_code=#{currentStepCode,jdbcType=VARCHAR}</if>
+            <if test="expectedPositiveSeed != null">and expected_positive_seed=#{expectedPositiveSeed,jdbcType=VARCHAR}
+            </if>
+            <if test="supervisionLevelCode != null">and supervision_level_code=#{supervisionLevelCode,jdbcType=VARCHAR}
+            </if>
+            <if test="expectStartDate != null">and expect_start_date=#{expectStartDate,jdbcType=VARCHAR}</if>
+            <if test="expectPeriod != null">and expect_period=#{expectPeriod,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+        </where>
         order by id desc
     </select>
 

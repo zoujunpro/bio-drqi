@@ -149,6 +149,13 @@ public class BmsTestController {
         return ResponseResult.getSuccess("OK");
     }
 
+    @GetMapping("/synMoveStockTask")
+    public ResponseResult<String> synMoveStockTask() {
+        kdTaskService.synMoveStockTask("2025-01-01", "2025-09-16");
+        return ResponseResult.getSuccess("OK");
+    }
+
+
 
     @GetMapping("/testKd")
     public ResponseResult testKd() {

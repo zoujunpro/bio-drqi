@@ -31,6 +31,8 @@ public interface CerVectorTaskTbMapper extends BaseMapper<CerVectorTaskTb> {
 
     List<CerVectorTaskTb> listForTransForm(@Param("subProjectId") Integer subProjectId);
 
+    List<CerVectorTaskTb> listForMoveSeed();
+
     List<CerVectorTaskTb> listForPlasmid(@Param("subProjectId") Integer subProjectId);
 
     Integer selectCountNum();

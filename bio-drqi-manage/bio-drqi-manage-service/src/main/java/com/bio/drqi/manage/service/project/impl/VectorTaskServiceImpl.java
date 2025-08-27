@@ -91,6 +91,11 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     }
 
     @Override
+    public List<CerImplementationPlanBaseInfoRspDTO> listForMoveSeed() {
+        return null;
+    }
+
+    @Override
     public List<CerImplementationPlanBaseInfoRspDTO> listForPlasmid( Integer subProjectId) {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.listForPlasmid(subProjectId);
         return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);

@@ -53,7 +53,7 @@ public class CerImplementationPlanController {
      * 查询实施方案（查询子项目下所有实施方案）
      */
     @GetMapping("/listAllBySubProject")
-    @WebLog(desc = "查询子项目下所有实施方案")
+    @WebLog(desc = "查询实施方案（查询子项目下所有实施方案）")
     public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listAllBySubProject(@Validated @RequestParam Integer subProjectId) {
         List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listAllBySubProject(subProjectId);
         return ResponseResult.getSuccess(list);
@@ -63,7 +63,7 @@ public class CerImplementationPlanController {
      * 查询实施方案（载体构建用）
      */
     @GetMapping("/listForVectorBuild")
-    @WebLog(desc = "查询子项目下所有实施方案")
+    @WebLog(desc = "询实施方案（载体构建用）")
     public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForVectorBuild(@Validated @RequestParam Integer subProjectId) {
         List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForVectorBuild(subProjectId);
         return ResponseResult.getSuccess(list);
@@ -82,17 +82,26 @@ public class CerImplementationPlanController {
         List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForTransForm(subProjectId);
         return ResponseResult.getSuccess(list);
     }
+
     /**
      * 查询实施方案（质粒质检）
      */
     @GetMapping("/listForPlasmid")
-    @WebLog(desc = "查询有转化的实施方案")
+    @WebLog(desc = "查询实施方案（质粒质检）")
     public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForPlasmid(@Validated @RequestParam  Integer subProjectId) {
         List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForPlasmid(subProjectId);
         return ResponseResult.getSuccess(list);
     }
 
-
+    /**
+     * 询实施方案（移苗使用）
+     */
+    @GetMapping("/listForMoveSeed")
+    @WebLog(desc = "询实施方案（移苗使用）")
+    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForMoveSeed() {
+        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForMoveSeed();
+        return ResponseResult.getSuccess(list);
+    }
     /**
      * 载体模板下载
      *

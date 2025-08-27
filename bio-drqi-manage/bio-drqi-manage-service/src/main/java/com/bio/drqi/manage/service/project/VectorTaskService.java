@@ -23,7 +23,9 @@ public interface VectorTaskService {
 
     List<CerImplementationPlanBaseInfoRspDTO> listForTransForm(Integer subProjectId);
 
-    List<CerImplementationPlanBaseInfoRspDTO> listForPlasmid( Integer subProjectId);
+    List<CerImplementationPlanBaseInfoRspDTO> listForMoveSeed();
+
+    List<CerImplementationPlanBaseInfoRspDTO> listForPlasmid(Integer subProjectId);
 
     String getTaskNum(GetVectorTaskNumReqDTO getVectorTaskNumReqDTO);
 
@@ -33,7 +35,7 @@ public interface VectorTaskService {
 
     CerImplementationPlanBaseInfoRspDTO detail(Integer id);
 
-    CerImplementationPlanBaseInfoRspDTO detailByCode( String vectorTaskCode);
+    CerImplementationPlanBaseInfoRspDTO detailByCode(String vectorTaskCode);
 
     void stop(Integer id);
 

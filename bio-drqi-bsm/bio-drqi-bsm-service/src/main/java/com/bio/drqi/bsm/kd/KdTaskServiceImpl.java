@@ -56,6 +56,9 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
     private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
 
     @Resource
+    private BmsMoveOrderDetailTbMapper bmsMoveOrderDetailTbMapper;
+
+    @Resource
     private BmsSynKdTaskLogMapper bmsSynKdTaskLogMapper;
 
 
@@ -74,7 +77,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                     } catch (Exception e) {
                         kdNumber = kdApiService.execute(OperateEnum.projectQuery, bmsProjectDict, PurchaseUnitEnum.default_.name());
                         if (kdNumber == null) {
-                            log.error("项目同步失败,{}",e);
+                            log.error("项目同步失败,{}", e);
                             throw new BusinessException(e.getMessage());
                         }
                     }
@@ -103,8 +106,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                     kdNumber = kdApiService.execute(OperateEnum.stockSave, bmsStockDict, bmsStockDict.getUnitCode());
                 } catch (Exception e) {
                     kdNumber = kdApiService.execute(OperateEnum.stockQuery, bmsStockDict, bmsStockDict.getUnitCode());
-                    if(kdNumber==null){
-                        log.error("仓库同步失败,{}",e);
+                    if (kdNumber == null) {
+                        log.error("仓库同步失败,{}", e);
                         throw new BusinessException(e.getMessage());
                     }
                 }
@@ -136,8 +139,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                     idStr = kdApiService.execute(OperateEnum.groupSave, bmsProductCategoryTb, PurchaseUnitEnum.default_.name());
                 } catch (Exception e) {
                     idStr = kdApiService.execute(OperateEnum.groupQuery, bmsProductCategoryTb, PurchaseUnitEnum.default_.name());
-                    if(idStr==null){
-                        log.error("分组同步失败,{}",e);
+                    if (idStr == null) {
+                        log.error("分组同步失败,{}", e);
                         throw new BusinessException(e.getMessage());
                     }
 
@@ -191,8 +194,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                     kdNumber = kdApiService.execute(OperateEnum.materialSave, bmsProductTb, PurchaseUnitEnum.default_.name());
                 } catch (Exception e) {
                     kdNumber = kdApiService.execute(OperateEnum.materialQuery, bmsProductTb, PurchaseUnitEnum.default_.name());
-                    if(kdNumber==null){
-                        log.error("材料同步失败{}",e);
+                    if (kdNumber == null) {
+                        log.error("材料同步失败{}", e);
                         throw new BusinessException(e.getMessage());
                     }
                 }
@@ -223,8 +226,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                     kdNumber = kdApiService.execute(OperateEnum.inStockSave, bmsProductStockInLog, bmsProductStockInLog.getUnitCode());
                 } catch (Exception e) {
                     kdNumber = kdApiService.execute(OperateEnum.inStockQuery, bmsProductStockInLog, bmsProductStockInLog.getUnitCode());
-                    if(kdNumber==null){
-                        log.error("入库数据同步失败{}",e);
+                    if (kdNumber == null) {
+                        log.error("入库数据同步失败{}", e);
                         throw new BusinessException(e.getMessage());
                     }
                 }
@@ -256,8 +259,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                     kdNumber = kdApiService.execute(OperateEnum.outStockSave, bmsProductStockOutLog, bmsProductStockOutLog.getUnitCode());
                 } catch (Exception e) {
                     kdNumber = kdApiService.execute(OperateEnum.outStockQuery, bmsProductStockOutLog, bmsProductStockOutLog.getUnitCode());
-                    if(kdNumber==null){
-                        log.error("出库数据同步失败{}",e);
+                    if (kdNumber == null) {
+                        log.error("出库数据同步失败{}", e);
                         throw new BusinessException(e.getMessage());
                     }
 
@@ -291,8 +294,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                     kdNumber = kdApiService.execute(OperateEnum.returnStockSave, bmsReturnOrderDetailTb, bmsReturnOrderDetailTb.getUnitCode());
                 } catch (Exception e) {
                     kdNumber = kdApiService.execute(OperateEnum.returnStockQuery, bmsReturnOrderDetailTb, bmsReturnOrderDetailTb.getUnitCode());
-                    if(kdNumber==null){
-                        log.error("退货数据同步失败{}",e);
+                    if (kdNumber == null) {
+                        log.error("退货数据同步失败{}", e);
                         throw new BusinessException(e.getMessage());
                     }
                 }
@@ -301,6 +304,39 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             }
         }
         log.info("*****************退货数据同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
+
+    }
+
+    @Override
+    public void synMoveStockTask(String startDate, String endDate) {
+        Long startTime = System.currentTimeMillis();
+        log.info("*****************调拨数据同步开始**************************");
+        BmsMoveOrderDetailTb selectBmsMoveOrderDetailTb = new BmsMoveOrderDetailTb();
+        selectBmsMoveOrderDetailTb.setStartDate(startDate);
+        selectBmsMoveOrderDetailTb.setEndDate(endDate);
+        List<BmsMoveOrderDetailTb> bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbMapper.selectSelective(selectBmsMoveOrderDetailTb);
+        if(CollectionUtil.isNotEmpty(bmsMoveOrderDetailTbList)){
+            bmsMoveOrderDetailTbList=bmsMoveOrderDetailTbList.stream().filter(bmsMoveOrderDetailTb -> bmsMoveOrderDetailTb.getKdNumber() == null).sorted(Comparator.comparing(BmsMoveOrderDetailTb::getId)).collect(Collectors.toList());
+            if (CollectionUtil.isEmpty(bmsMoveOrderDetailTbList)) {
+                log.info("调拨数据已经同步完毕，无需再次同步");
+                return;
+            }
+            for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb:bmsMoveOrderDetailTbList){
+                String kdNumber = null;
+                try {
+                    kdNumber = kdApiService.execute(OperateEnum.moveStockSave, bmsMoveOrderDetailTb, bmsMoveOrderDetailTb.getUnitCode());
+                } catch (Exception e) {
+                    kdNumber = kdApiService.execute(OperateEnum.moveStockQuery, bmsMoveOrderDetailTb, bmsMoveOrderDetailTb.getUnitCode());
+                    if (kdNumber == null) {
+                        log.error("调拨数据同步失败{}", e);
+                        throw new BusinessException(e.getMessage());
+                    }
+                }
+                bmsMoveOrderDetailTb.setKdNumber(kdNumber);
+                bmsMoveOrderDetailTbMapper.updateById(bmsMoveOrderDetailTb);
+            }
+        }
+        log.info("*****************调拨数据同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
 
     }
 

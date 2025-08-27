@@ -25,4 +25,5 @@ public enum OperateEnum {
     returnStockSave,
     returnStockQuery,
     moveStockSave,
+    moveStockQuery
 }

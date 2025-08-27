@@ -94,6 +94,8 @@ public class KdApiServiceImpl implements KdApiService {
                 return outStockQuery(obj);
             case moveStockSave:
                 return moveStockSave(obj, unitCode);
+            case moveStockQuery:
+                return moveStockQuery(obj);
             case returnStockSave:
                 return returnStockSave(obj, unitCode);
             case returnStockQuery:
@@ -102,7 +104,19 @@ public class KdApiServiceImpl implements KdApiService {
                 throw new BusinessException("数据异常，请检查金蝶配置");
         }
     }
-
+    private String moveStockQuery(Object obj) {
+        BmsMoveOrderDetailTb bmsMoveOrderDetailTb = (BmsMoveOrderDetailTb) obj;
+        ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
+        executeBillQueryModelDTO.setFormId(FormIdEnum.STK_TransferDirect.name());
+        executeBillQueryModelDTO.setFieldKeys("FID,FBillno,FDocumentStatus");
+        String filterString = "F_WAUJ_UUID='%s' and  FBillTypeID.FNumber ='ZJDB01_SYS'";
+        executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsMoveOrderDetailTb.getId().toString()));
+        List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
+        if (CollectionUtil.isNotEmpty(result) && CollectionUtil.isNotEmpty(result.get(0))) {
+            return result.get(0).get(0).toString();
+        }
+        return null;
+    }
     private String returnStockQuery(Object obj) {
         BmsReturnOrderDetailTb bmsReturnOrderDetailTb = (BmsReturnOrderDetailTb) obj;
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();

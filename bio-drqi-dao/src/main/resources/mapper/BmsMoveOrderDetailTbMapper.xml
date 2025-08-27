@@ -29,6 +29,7 @@
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
+        <result property="kdNumber" column="kd_number" jdbcType="INTEGER"/>
 
     </resultMap>
 
@@ -41,7 +42,7 @@
         product_inner_code,produce_date,expiration_date,
         from_stock_code,from_stock_location_number,to_stock_code,
         to_stock_location_number,move_number,create_user_id,
-        create_user_name,create_time,unique_code
+        create_user_name,create_time,unique_code,kd_number
     </sql>
     <select id="selectAllByUnitCode" resultMap="BaseResultMap">
         select
@@ -56,7 +57,9 @@
         from bms_move_order_detail_tb
         <where>
             <if test="productName != null and productName!=''">and product_name=#{productName,jdbcType=VARCHAR}</if>
-            <if test="productOutCode != null and productOutCode!=''">and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
+            <if test="productOutCode != null and productOutCode!=''">and
+                product_out_code=#{productOutCode,jdbcType=VARCHAR}
+            </if>
             <if test="productCategoryCode != null">and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
             </if>
             <if test="productTypeCode != null">and product_type_code=#{productTypeCode,jdbcType=VARCHAR}</if>
@@ -67,7 +70,9 @@
             <if test="unitCode != null">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
             <if test="supplierName != null">and supplier_name=#{supplierName,jdbcType=VARCHAR}</if>
             <if test="supplierCode != null">and supplier_code=#{supplierCode,jdbcType=VARCHAR}</if>
-            <if test="productInnerCode != null and productInnerCode!=''">and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}</if>
+            <if test="productInnerCode != null and productInnerCode!=''">and
+                product_inner_code=#{productInnerCode,jdbcType=VARCHAR}
+            </if>
             <if test="produceDate != null">and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
             <if test="expirationDate != null">and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
             <if test="fromStockCode != null">and from_stock_code=#{fromStockCode,jdbcType=VARCHAR}</if>
@@ -81,7 +86,12 @@
             <if test="moveNumber != null">and move_number=#{moveNumber,jdbcType=NUMERIC}</if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
-            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="startDate != null and startDate != ''">
+                and date_format(create_time,'%Y-%m-%d') &gt;= #{startDate,jdbcType=VARCHAR}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and date_format(create_time,'%Y-%m-%d') &lt;= #{endDate,jdbcType=VARCHAR}
+            </if>
         </where>
         order by id desc
     </select>

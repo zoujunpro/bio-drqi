@@ -10,7 +10,7 @@ public enum FormIdEnum {
     STK_MisDelivery,
     PUR_MRB,
     STK_TransferDirect,
-    Sal_MATERIALGROUP
+    Sal_MATERIALGROUP,
 
     ;
 

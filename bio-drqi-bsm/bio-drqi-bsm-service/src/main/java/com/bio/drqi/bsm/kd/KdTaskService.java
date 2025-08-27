@@ -46,6 +46,8 @@ public interface KdTaskService {
      */
     void synReturnStockTask(String startDate,String endDate);
 
+    void  synMoveStockTask(String startDate, String endDate);
+
 
 
 }

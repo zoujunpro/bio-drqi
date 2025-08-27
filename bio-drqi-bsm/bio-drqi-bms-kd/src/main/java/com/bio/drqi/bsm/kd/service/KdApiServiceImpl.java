@@ -388,10 +388,10 @@ public class KdApiServiceImpl implements KdApiService {
             throw new BusinessException("材料分组未同步");
         }
         BmsProjectDict bmsProjectDict = bmsProjectDictMapper.selectOneByProjectCode(bmsProductStockInLog.getProjectCode());
-        if(bmsProjectDict==null){
-            throw new BusinessException("入库数据找不到所属项目，项目编号为："+bmsProductStockInLog.getProjectCode());
+        if (bmsProjectDict == null) {
+            throw new BusinessException("入库数据找不到所属项目，项目编号为：" + bmsProductStockInLog.getProjectCode());
         }
-        if(StringUtils.isEmpty(bmsProjectDict.getKdProjectType())){
+        if (StringUtils.isEmpty(bmsProjectDict.getKdProjectType())) {
             throw new BusinessException("项目未配置项目类型是政府项目，研发项目还是合同项目");
         }
 
@@ -486,7 +486,7 @@ public class KdApiServiceImpl implements KdApiService {
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
 
 
-        ReturnStockSaveModel returnStockSaveModel = new ReturnStockSaveModel(bmsReturnOrderDetailTb.getId().toString(),  kdParentGroupEnum,orgCode, returnDate, bmsSupplierTb.getKdNumber().toString(), bmsReturnOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber()), bmsReturnOrderDetailTb.getStockCode(), bmsReturnOrderDetailTb.getProjectCode(), new BigDecimal(bmsReturnOrderDetailTb.getTaxRate() == null ? "0" : bmsReturnOrderDetailTb.getTaxRate()));
+        ReturnStockSaveModel returnStockSaveModel = new ReturnStockSaveModel(bmsReturnOrderDetailTb.getId().toString(), kdParentGroupEnum, orgCode, returnDate, bmsSupplierTb.getKdNumber().toString(), bmsReturnOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber()), bmsReturnOrderDetailTb.getStockCode(), bmsReturnOrderDetailTb.getProjectCode(), new BigDecimal(bmsReturnOrderDetailTb.getTaxRate() == null ? "0" : bmsReturnOrderDetailTb.getTaxRate()));
         return KdRequestUtil.save(FormIdEnum.PUR_MRB, KdApiBaseSaveRequestDTO.buildOfSave(returnStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 
     }
@@ -499,8 +499,43 @@ public class KdApiServiceImpl implements KdApiService {
      * @return
      */
     private String moveStockSave(Object obj, String unitCode) {
+        BmsMoveOrderDetailTb bmsMoveOrderDetailTb = (BmsMoveOrderDetailTb) obj;
+        BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsMoveOrderDetailTb.getProductCategoryCode());
+        if (bmsProductCategoryTb == null) {
+            throw new BusinessException("找不到货品类别：当前货品:" + bmsMoveOrderDetailTb.getProductInnerCode());
+        }
+        if (bmsProductCategoryTb.getKdNumber() == null) {
+            throw new BusinessException("材料分组未同步");
+        }
+        BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsMoveOrderDetailTb.getProductInnerCode());
+        if (bmsProductTb == null) {
+            throw new BusinessException("耗材库中不存在此耗材：" + bmsMoveOrderDetailTb.getProductInnerCode());
+        }
+        if (bmsProductTb.getKdNumber() == null) {
+            throw new BusinessException("耗材还未同步到金蝶" + bmsMoveOrderDetailTb.getProductInnerCode());
+        }
+        BmsStockDict srcBmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsMoveOrderDetailTb.getFromStockCode());
+        if (srcBmsStockDict == null) {
+            throw new BusinessException("库房异常，找不到此库房" + bmsMoveOrderDetailTb.getFromStockCode());
+        }
+        if (srcBmsStockDict.getKdNumber() == null) {
+            throw new BusinessException("库房未同步到金蝶" + srcBmsStockDict.getKdNumber());
+        }
 
-        return null;
+        BmsStockDict targetBmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsMoveOrderDetailTb.getToStockCode());
+        if (targetBmsStockDict == null) {
+            throw new BusinessException("库房异常，找不到此库房" + bmsMoveOrderDetailTb.getFromStockCode());
+        }
+        if (targetBmsStockDict.getKdNumber() == null) {
+            throw new BusinessException("库房未同步到金蝶" + targetBmsStockDict.getKdNumber());
+        }
+
+        String moveDate = DateUtil.format(bmsMoveOrderDetailTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
+        KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
+        String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
+
+        MoveStockSaveModel moveStockSaveModel = new MoveStockSaveModel(bmsMoveOrderDetailTb.getId().toString(), moveDate, kdParentGroupEnum, orgCode, bmsMoveOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsMoveOrderDetailTb.getMoveNumber()), bmsMoveOrderDetailTb.getFromStockCode(), bmsMoveOrderDetailTb.getToStockCode());
+        return KdRequestUtil.save(FormIdEnum.STK_TransferDirect, KdApiBaseSaveRequestDTO.buildOfModify(moveStockSaveModel));
     }
 
     private String executeMaterialModify(Object obj) {

@@ -11,6 +11,7 @@ public enum FormIdEnum {
     PUR_MRB,
     STK_TransferDirect,
     Sal_MATERIALGROUP
+
     ;
 
 }

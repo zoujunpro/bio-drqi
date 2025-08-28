@@ -16,7 +16,7 @@ public class CerVectorBuildListPageRspDTO {
     /**
      * 载体构建任务
      */
-    private Integer vectorTaskCode;
+    private String vectorTaskCode;
 
     /**
      * 质粒名称

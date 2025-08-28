@@ -36,14 +36,15 @@ public class CerVectorBuildServiceImpl implements CerVectorBuildService {
         PageHelper.startPage(cerVectorBuildListPageReqDTO.getPageNum(), cerVectorBuildListPageReqDTO.getPageSize());
         CerVectorTb selectCerVectorTb = BeanUtils.copyProperties(cerVectorBuildListPageReqDTO, CerVectorTb.class);
         List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectSelective(selectCerVectorTb);
-        PageInfo<CerVectorTb> srcPageInfo=new PageInfo<>(cerVectorTbList);
-        return BeanUtils.copyPageInfoProperties(srcPageInfo,CerVectorBuildListPageRspDTO.class);
+        PageInfo<CerVectorTb> srcPageInfo = new PageInfo<>(cerVectorTbList);
+        PageInfo<CerVectorBuildListPageRspDTO> result = BeanUtils.copyPageInfoProperties(srcPageInfo, CerVectorBuildListPageRspDTO.class);
+        return result;
     }
 
     @Override
     public List<VectorBuildDetailRspDTO> detail(Integer vectorTaskId) {
         List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectAllByVectorTaskId(vectorTaskId);
-        return BeanUtils.copyListProperties(cerVectorTbList,VectorBuildDetailRspDTO.class);
+        return BeanUtils.copyListProperties(cerVectorTbList, VectorBuildDetailRspDTO.class);
     }
 
 

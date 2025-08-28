@@ -75,7 +75,11 @@ public class VectorListPageRspDTO {
 
     private String speciesCode;
 
+    private String speciesName;
+
     private String breedCode;
+
+    private String breedName;
 
     private String currentStepCode;
 

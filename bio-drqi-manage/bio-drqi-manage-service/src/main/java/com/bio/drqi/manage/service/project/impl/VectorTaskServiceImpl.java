@@ -55,6 +55,9 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     private CerSpeciesConfMapper cerSpeciesConfMapper;
 
     @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
+
+    @Resource
     private CerInstantVerifyTaskTbMapper cerInstantVerifyTaskTbMapper;
 
     @Resource
@@ -64,9 +67,17 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     @Override
     public PageInfo<VectorListPageRspDTO> ListPage(QueryPageVectorReqDTO queryPageVectorReqDTO) {
         PageHelper.startPage(queryPageVectorReqDTO.getPageNum(), queryPageVectorReqDTO.getPageSize());
-        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectSelective(BeanUtils.copyProperties(queryPageVectorReqDTO,CerVectorTaskTb.class));
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectSelective(BeanUtils.copyProperties(queryPageVectorReqDTO, CerVectorTaskTb.class));
         PageInfo<CerVectorTaskTb> srcPage = new PageInfo<>(cerVectorTaskTbList);
         PageInfo<VectorListPageRspDTO> vectorBaseInfoRspDTOPageInfo = BeanUtils.copyPageInfoProperties(srcPage, VectorListPageRspDTO.class);
+        if (CollectionUtil.isNotEmpty(vectorBaseInfoRspDTOPageInfo.getList())) {
+            Map<String, String> breedMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+            Map<String, String> speciesMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode,CerSpeciesConf::getSpeciesName));
+            vectorBaseInfoRspDTOPageInfo.getList().forEach(vectorListPageRspDTO -> {
+                vectorListPageRspDTO.setBreedName(breedMap.get(vectorListPageRspDTO.getBreedCode()));
+                vectorListPageRspDTO.setSpeciesName(speciesMap.get(vectorListPageRspDTO.getSpeciesCode()));
+            });
+        }
         return vectorBaseInfoRspDTOPageInfo;
     }
 
@@ -83,7 +94,6 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     }
 
 
-
     @Override
     public List<CerImplementationPlanBaseInfoRspDTO> listForTransForm(Integer subProjectId) {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.listForTransForm(subProjectId);
@@ -97,7 +107,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     }
 
     @Override
-    public List<CerImplementationPlanBaseInfoRspDTO> listForPlasmid( Integer subProjectId) {
+    public List<CerImplementationPlanBaseInfoRspDTO> listForPlasmid(Integer subProjectId) {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.listForPlasmid(subProjectId);
         return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
     }

@@ -158,7 +158,7 @@
             <if test="subProjectId != null">and sub_project_id=#{subProjectId,jdbcType=NUMERIC}</if>
             <if test="projectCode != null and projectCode!=''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
             <if test="subProjectCode != null and subProjectCode!=''">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
-            <if test="editType != null">and edit_type=#{editType,jdbcType=VARCHAR}</if>
+            <if test="editType != null and editType!=''">and edit_type=#{editType,jdbcType=VARCHAR}</if>
             <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="taskStatus != null and taskStatus!=''">and task_status=#{taskStatus,jdbcType=VARCHAR}</if>
             <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>

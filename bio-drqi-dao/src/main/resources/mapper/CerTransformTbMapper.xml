@@ -125,5 +125,33 @@
         AND date_format(create_time,'%Y%m%d') = #{createTime,jdbcType=VARCHAR}
         order by id desc
     </select>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.CerTransformTb">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_transform_tb
+        <where>
+            <if test="projectId != null">and project_id=#{projectId,jdbcType=NUMERIC}</if>
+            <if test="vectorTaskId != null">and vector_task_id=#{vectorTaskId,jdbcType=NUMERIC}</if>
+            <if test="subProjectId != null">and sub_project_id=#{subProjectId,jdbcType=NUMERIC}</if>
+            <if test="infectNumber != null">and infect_number=#{infectNumber,jdbcType=NUMERIC}</if>
+            <if test="infectDate != null">and infect_date=#{infectDate,jdbcType=VARCHAR}</if>
+            <if test="deliveryMethod != null">and delivery_method=#{deliveryMethod,jdbcType=VARCHAR}</if>
+            <if test="transformCode != null">and transform_code=#{transformCode,jdbcType=VARCHAR},</if>
+            <if test="acceptorMaterial != null">and acceptor_material=#{acceptorMaterial,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="projectCode != null">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="subProjectCode != null">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="taskStatus != null">and task_status=#{taskStatus,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="plasmidName != null">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
+            <if test="speciesCode != null">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskType != null">and vector_task_type=#{vectorTaskType,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
+    </select>
 
 </mapper>

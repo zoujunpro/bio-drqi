@@ -6,16 +6,20 @@ import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.manage.transform.req.ApprovePassTransformQueryReqDTO;
 import com.bio.drqi.manage.transform.req.TransformListByVectorTaskReqDTO;
 import com.bio.drqi.manage.transform.req.TransformListByVectorTaskRspDTO;
+import com.bio.drqi.manage.transform.req.TransformListPageReqDTO;
 import com.bio.drqi.manage.transform.rsp.ApprovePassTransformQueryRspDTO;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.domain.CerTransformTb;
 import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.manage.service.project.TransformService;
+import com.bio.drqi.manage.transform.rsp.TransformListPageRspDTO;
 import com.bio.drqi.mapper.CerBreedDictMapper;
 import com.bio.drqi.mapper.CerSpeciesConfMapper;
 import com.bio.drqi.mapper.CerTransformTbMapper;
 import com.bio.drqi.mapper.CerVectorTaskTbMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +41,14 @@ public class TransformServiceImpl implements TransformService {
     @Resource
     private CerBreedDictMapper cerBreedDictMapper;
 
+
+    @Override
+    public PageInfo<TransformListPageRspDTO> listPage(TransformListPageReqDTO transformListPageReqDTO) {
+        PageHelper.startPage(transformListPageReqDTO.getPageNum(), transformListPageReqDTO.getPageSize());
+        List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectSelective(BeanUtils.copyProperties(transformListPageReqDTO, CerTransformTb.class));
+        PageInfo<CerTransformTb> srcPageInfo=new PageInfo<>(cerTransformTbList);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo, TransformListPageRspDTO.class);
+    }
 
     @Override
     public List<TransformListByVectorTaskRspDTO> listByVectorTask(TransformListByVectorTaskReqDTO transformListByVectorTaskReqDTO) {

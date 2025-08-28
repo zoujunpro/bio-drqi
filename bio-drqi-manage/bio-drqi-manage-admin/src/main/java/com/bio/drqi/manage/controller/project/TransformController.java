@@ -4,10 +4,13 @@ package com.bio.drqi.manage.controller.project;
 import com.bio.drqi.manage.transform.req.ApprovePassTransformQueryReqDTO;
 import com.bio.drqi.manage.transform.req.TransformListByVectorTaskReqDTO;
 import com.bio.drqi.manage.transform.req.TransformListByVectorTaskRspDTO;
+import com.bio.drqi.manage.transform.req.TransformListPageReqDTO;
 import com.bio.drqi.manage.transform.rsp.ApprovePassTransformQueryRspDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.service.project.TransformService;
+import com.bio.drqi.manage.transform.rsp.TransformListPageRspDTO;
+import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +31,17 @@ public class TransformController {
     @Resource
     private TransformService transformService;
 
+    /**
+     * 取样转化-分页查询
+     *
+     * @param transformListPageReqDTO
+     * @return
+     */
+    @PostMapping("/listPage")
+    @WebLog(desc = "取样转化-分页查询")
+    public ResponseResult<PageInfo<TransformListPageRspDTO>> listPage(@Validated @RequestBody TransformListPageReqDTO transformListPageReqDTO) {
+            return ResponseResult.getSuccess(transformService.listPage(transformListPageReqDTO));
+    }
 
     /**
      * 实施方案维度查询转化信息

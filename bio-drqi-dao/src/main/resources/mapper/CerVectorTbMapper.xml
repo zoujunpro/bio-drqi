@@ -7,6 +7,7 @@
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerVectorTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="vectorTaskId" column="vector_task_id" jdbcType="VARCHAR"/>
+            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
             <result property="plasmidName" column="plasmid_name" jdbcType="VARCHAR"/>
             <result property="targetSite" column="target_site" jdbcType="VARCHAR"/>
             <result property="bacterialResistance" column="bacterial_resistance" jdbcType="VARCHAR"/>
@@ -29,7 +30,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,vector_task_id,plasmid_name,
+        id,vector_task_id,plasmid_name,vector_task_code,
         target_site,bacterial_resistance,plasmid_specific_primers,
         bacterial_replicon,copy_number,agrobacterium_information,
         selection_marker,foreign_gene,gene_character,
@@ -58,7 +59,7 @@
         </foreach>
     </update>
     <insert id="insertBatch">
-        insert into cer_vector_tb(id,vector_task_id,plasmid_name,
+        insert into cer_vector_tb(id,vector_task_id,plasmid_name,vector_task_code,
         target_site,bacterial_resistance,plasmid_specific_primers,
         bacterial_replicon,copy_number,agrobacterium_information,
         selection_marker,foreign_gene,gene_character,
@@ -66,7 +67,7 @@
         file_urls,expected_positive_vaccine,quality_inspection_result,destination_stripe_size,vector_size,task_num)
         values
         <foreach collection="cerVectorTbCollection" item="item" separator=",">
-            (#{item.id,jdbcType=NUMERIC},#{item.vectorTaskId,jdbcType=NUMERIC},#{item.plasmidName,jdbcType=VARCHAR},
+            (#{item.id,jdbcType=NUMERIC},#{item.vectorTaskId,jdbcType=NUMERIC},#{item.plasmidName,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},
             #{item.targetSite,jdbcType=VARCHAR},#{item.bacterialResistance,jdbcType=VARCHAR},#{item.plasmidSpecificPrimers,jdbcType=VARCHAR},
             #{item.bacterialReplicon,jdbcType=VARCHAR},#{item.copyNumber,jdbcType=VARCHAR},#{item.agrobacteriumInformation,jdbcType=VARCHAR},
             #{item.selectionMarker,jdbcType=VARCHAR},#{item.foreignGene,jdbcType=VARCHAR},#{item.geneCharacter,jdbcType=VARCHAR},
@@ -89,6 +90,7 @@
         from cer_vector_tb
         <where>
             <if test="vectorTaskId != null">and vector_task_id=#{vectorTaskId,jdbcType=NUMERIC}</if>
+            <if test="vectorTaskCode != null and vectorTaskCode!=''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
             <if test="plasmidName != null and plasmidName!=''">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
             <if test="targetSite != null">and target_site=#{targetSite,jdbcType=VARCHAR}</if>
             <if test="bacterialResistance != null">and bacterial_resistance=#{bacterialResistance,jdbcType=VARCHAR}</if>

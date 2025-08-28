@@ -116,6 +116,8 @@ public class CerVectorTb implements Serializable {
 
     private String taskNum;
 
+    private String vectorTaskCode;
+
 
 
     @TableField(exist = false)

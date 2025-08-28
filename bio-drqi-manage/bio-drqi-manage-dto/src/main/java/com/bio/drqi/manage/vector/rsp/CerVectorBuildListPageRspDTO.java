@@ -14,6 +14,11 @@ public class CerVectorBuildListPageRspDTO {
     private Integer vectorTaskId;
 
     /**
+     * 载体构建任务
+     */
+    private Integer vectorTaskCode;
+
+    /**
      * 质粒名称
      */
     private String plasmidName;

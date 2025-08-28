@@ -83,4 +83,42 @@
         plasmid_name = #{plasmidName,jdbcType=VARCHAR}
         AND vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
     </select>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.CerVectorTb">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_tb
+        <where>
+            <if test="vectorTaskId != null">and vector_task_id=#{vectorTaskId,jdbcType=NUMERIC}</if>
+            <if test="plasmidName != null and plasmidName!=''">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
+            <if test="targetSite != null">and target_site=#{targetSite,jdbcType=VARCHAR}</if>
+            <if test="bacterialResistance != null">and bacterial_resistance=#{bacterialResistance,jdbcType=VARCHAR}</if>
+            <if test="plasmidSpecificPrimers != null">
+                and  plasmid_specific_primers=#{plasmidSpecificPrimers,jdbcType=VARCHAR}
+            </if>
+            <if test="bacterialReplicon != null">and bacterial_replicon=#{bacterialReplicon,jdbcType=VARCHAR}</if>
+            <if test="copyNumber != null">and copy_number=#{copyNumber,jdbcType=VARCHAR}</if>
+            <if test="agrobacteriumInformation != null">
+                and   agrobacterium_information=#{agrobacteriumInformation,jdbcType=VARCHAR}
+            </if>
+            <if test="selectionMarker != null">and selection_marker=#{selectionMarker,jdbcType=VARCHAR}</if>
+            <if test="foreignGene != null">and foreign_gene=#{foreignGene,jdbcType=VARCHAR}</if>
+            <if test="geneCharacter != null">and gene_character=#{geneCharacter,jdbcType=VARCHAR}</if>
+            <if test="targetGene != null">and target_gene=#{targetGene,jdbcType=VARCHAR}</if>
+            <if test="pam != null">and pam=#{pam,jdbcType=VARCHAR}</if>
+            <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
+            <if test="fileUrls != null">and file_urls=#{fileUrls,jdbcType=VARCHAR}</if>
+            <if test="expectedPositiveVaccine != null">
+                and  expected_positive_vaccine=#{expectedPositiveVaccine,jdbcType=NUMERIC}
+            </if>
+            <if test="qualityInspectionResult != null">
+                and  quality_inspection_result=#{qualityInspectionResult,jdbcType=VARCHAR}
+            </if>
+            <if test="destinationStripeSize != null">
+                and   destination_stripe_size=#{destinationStripeSize,jdbcType=VARCHAR}
+            </if>
+            <if test="vectorSize != null">and vector_size=#{vectorSize,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
+    </select>
 </mapper>

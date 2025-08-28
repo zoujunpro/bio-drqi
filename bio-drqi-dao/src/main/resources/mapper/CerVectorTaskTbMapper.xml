@@ -146,23 +146,23 @@
         and project_id in(select id from cer_project_tb where project_status ='execute')
         order by id desc
     </select>
-    <select id="selectSelective" resultMap="BaseResultMap" resultType="com.bio.drqi.domain.CerVectorTaskTb">
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.CerVectorTaskTb">
         select
         <include refid="Base_Column_List"/>
         from cer_vector_task_tb
         <where>
-            <if test="vectorTaskCode != null">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null and vectorTaskCode!=''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
             <if test="deliveryMethod != null">and delivery_method=#{deliveryMethod,jdbcType=VARCHAR}</if>
             <if test="acceptorMaterial != null">and acceptor_material=#{acceptorMaterial,jdbcType=VARCHAR}</if>
             <if test="projectId != null">and project_id=#{projectId,jdbcType=NUMERIC}</if>
             <if test="subProjectId != null">and sub_project_id=#{subProjectId,jdbcType=NUMERIC}</if>
-            <if test="projectCode != null">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
-            <if test="subProjectCode != null">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
+            <if test="projectCode != null and projectCode!=''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="subProjectCode != null and subProjectCode!=''">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
             <if test="editType != null">and edit_type=#{editType,jdbcType=VARCHAR}</if>
-            <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="taskStatus != null">and task_status=#{taskStatus,jdbcType=VARCHAR}</if>
-            <if test="speciesCode != null">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
-            <if test="breedCode != null">and breed_code=#{breedCode,jdbcType=VARCHAR}</if>
+            <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
+            <if test="breedCode != null and breedCode!=''">and breed_code=#{breedCode,jdbcType=VARCHAR}</if>
             <if test="currentStepCode != null">and current_step_code=#{currentStepCode,jdbcType=VARCHAR}</if>
             <if test="expectedPositiveSeed != null">and expected_positive_seed=#{expectedPositiveSeed,jdbcType=VARCHAR}
             </if>

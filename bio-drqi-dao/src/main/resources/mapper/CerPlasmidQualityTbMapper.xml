@@ -85,7 +85,7 @@
         set quality_inspection_result = #{qualityInspectionResult,jdbcType=VARCHAR}
         where vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
     </update>
-    <select id="selectSelective" resultMap="BaseResultMap" resultType="com.bio.drqi.domain.CerPlasmidQualityTb">
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.CerPlasmidQualityTb">
         select
         <include refid="Base_Column_List"/>
         from cer_plasmid_quality_tb
@@ -93,7 +93,7 @@
             <if test="subProjectId != null">and sub_project_id=#{subProjectId,jdbcType=NUMERIC}</if>
             <if test="projectId != null">and project_id=#{projectId,jdbcType=NUMERIC}</if>
             <if test="vectorTaskId != null">and vector_task_id=#{vectorTaskId,jdbcType=NUMERIC}</if>
-            <if test="plasmidName != null">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
+            <if test="plasmidName != null and plasmidName!=''">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
             <if test="qualityInspectionNumber != null">
                 and  quality_inspection_number=#{qualityInspectionNumber,jdbcType=VARCHAR}
             </if>
@@ -118,9 +118,9 @@
             <if test="fileUrls != null">and file_urls=#{fileUrls,jdbcType=VARCHAR}</if>
             <if test="taskStatus != null">and task_status=#{taskStatus,jdbcType=VARCHAR}</if>
             <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
-            <if test="projectCode != null">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
-            <if test="subProjectCode != null">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
-            <if test="vectorTaskCode != null">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="projectCode != null and projectCode!=''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="subProjectCode != null and subProjectCode!=''">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null and vectorTaskCode!=''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
             <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
         </where>
         order by id desc

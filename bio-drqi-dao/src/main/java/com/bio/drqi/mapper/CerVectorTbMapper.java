@@ -16,6 +16,7 @@ public interface CerVectorTbMapper extends BaseMapper<CerVectorTb> {
 
     int deleteByVectorTaskId(@Param("vectorTaskId") Integer vectorTaskId);
 
+    List<CerVectorTb> selectSelective(CerVectorTb cerVectorTb);
     List<CerVectorTb> selectAllByVectorTaskId(@Param("vectorTaskId") Integer vectorTaskId);
 
     CerVectorTb selectOneByPlasmidNameAndVectorTaskId(@Param("plasmidName") String plasmidName, @Param("vectorTaskId") Integer vectorTaskId);

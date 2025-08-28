@@ -1,11 +1,11 @@
 package com.bio.drqi.manage.vector.rsp;
 
+
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class VectorBuildDetailRspDTO {
+public class CerVectorBuildListPageRspDTO {
+
     private Integer id;
 
     /**
@@ -102,7 +102,6 @@ public class VectorBuildDetailRspDTO {
 
 
     private String taskNum;
-
 
 
 }

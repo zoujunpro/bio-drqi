@@ -177,5 +177,12 @@
         </where>
         order by id desc
     </select>
+    <select id="selectAllByProjectId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb
+        where
+        project_id = #{projectId,jdbcType=NUMERIC}
+    </select>
 
 </mapper>

@@ -154,14 +154,7 @@ public class ProjectServiceImpl implements ProjectService {
         cerProjectTb.setProjectStatus(ProjectStatusEnum.stop.name());
         cerProjectTbMapper.updateById(cerProjectTb);
 
-        //终止所有实施实施方案
-        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByProjectIdOrderById(cerProjectTb.getId());
-        if (CollectionUtil.isNotEmpty(cerVectorTaskTbList)) {
-            cerVectorTaskTbList.forEach(cerVectorTaskTb -> {
-                cerVectorTaskTb.setTaskStatus(VectorTaskStatusEnum.TASK_STATUS_4.status);
-                cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
-            });
-        }
+
         //cerProjectStatusListener.notice(ProjectStatusEnum.stop,()->cerProjectTb.getId());
     }
 
@@ -184,14 +177,6 @@ public class ProjectServiceImpl implements ProjectService {
         cerProjectTb.setProjectStatus(ProjectStatusEnum.compete.name());
         cerProjectTbMapper.updateById(cerProjectTb);
 
-        //完成所有实施实施方案
-        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByProjectIdOrderById(cerProjectTb.getId());
-        if (CollectionUtil.isNotEmpty(cerVectorTaskTbList)) {
-            cerVectorTaskTbList.forEach(cerVectorTaskTb -> {
-                cerVectorTaskTb.setTaskStatus(VectorTaskStatusEnum.TASK_STATUS_5.status);
-                cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
-            });
-        }
 
         // cerProjectStatusListener.notice(ProjectStatusEnum.compete,()->cerProjectTb.getId());
 

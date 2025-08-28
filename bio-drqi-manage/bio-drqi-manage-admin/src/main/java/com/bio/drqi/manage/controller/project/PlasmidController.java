@@ -29,10 +29,10 @@ public class PlasmidController {
 
 
     /**
-     * 查询质粒质检
+     * 质粒质检-分页查询
      */
     @PostMapping("listPage")
-    @WebLog(desc = "查询质粒质检")
+    @WebLog(desc = "质粒质检-分页查询")
     public ResponseResult<PageInfo<PlasmidListPageRspDTO>> listPage(@Validated @RequestBody PlasmidListPageReqDTO plasmidListPageReqDTO) {
         return ResponseResult.getSuccess(plasmidService.listPage(plasmidListPageReqDTO));
     }

@@ -69,6 +69,9 @@ public class Clean20250721Controller {
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
     @Resource
+    private CerVectorTbMapper cerVectorTbMapper;
+
+    @Resource
     private CerTransformTbMapper cerTransformTbMapper;
 
     @Resource
@@ -109,6 +112,21 @@ public class Clean20250721Controller {
         }
         return ResponseResult.getSuccess("ok");
 
+    }
+
+
+    @GetMapping("/cleanVector")
+    public ResponseResult<String> cleanVector() {
+        List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectSelective(null);
+        for (CerVectorTb cerVectorTb : cerVectorTbList) {
+            log.info("cerVectorTb={}",JSONUtil.toJsonStr(cerVectorTb));
+            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(cerVectorTb.getVectorTaskId());
+            if(cerVectorTaskTb!=null){
+                cerVectorTb.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+                cerVectorTbMapper.updateById(cerVectorTb);
+            }
+        }
+        return ResponseResult.getSuccess("ok");
     }
 
 }

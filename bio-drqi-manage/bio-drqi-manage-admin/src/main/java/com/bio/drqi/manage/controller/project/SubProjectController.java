@@ -32,7 +32,7 @@ public class SubProjectController {
      * @param subProjectListPageReqDTO
      * @return
      */
-    @PostMapping("listByProject")
+    @PostMapping("listPage")
     @WebLog(desc = "子项目管理-分页查询")
     public ResponseResult<PageInfo<SubProjectListPageRspDTO>> listPage(@Validated @RequestBody SubProjectListPageReqDTO subProjectListPageReqDTO) {
         return ResponseResult.getSuccess(subProjectService.listPage(subProjectListPageReqDTO));

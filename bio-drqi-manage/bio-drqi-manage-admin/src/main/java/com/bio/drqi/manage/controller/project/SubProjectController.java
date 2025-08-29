@@ -1,16 +1,16 @@
 package com.bio.drqi.manage.controller.project;
 
 
+import com.bio.drqi.manage.project.req.SubProjectListPageReqDTO;
 import com.bio.drqi.manage.project.rsp.ProjectSpeciesLispRspDTO;
+import com.bio.drqi.manage.project.rsp.SubProjectListPageRspDTO;
 import com.bio.drqi.manage.project.rsp.SubProjectRspDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.service.project.SubProjectService;
+import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
@@ -25,6 +25,19 @@ public class SubProjectController {
 
     @Resource
     private SubProjectService subProjectService;
+
+    /**
+     * 子项目管理-分页查询
+     *
+     * @param subProjectListPageReqDTO
+     * @return
+     */
+    @PostMapping("listByProject")
+    @WebLog(desc = "子项目管理-分页查询")
+    public ResponseResult<PageInfo<SubProjectListPageRspDTO>> listPage(@Validated @RequestBody SubProjectListPageReqDTO subProjectListPageReqDTO) {
+        return ResponseResult.getSuccess(subProjectService.listPage(subProjectListPageReqDTO));
+    }
+
 
     /**
      * 子项目管理-列表查

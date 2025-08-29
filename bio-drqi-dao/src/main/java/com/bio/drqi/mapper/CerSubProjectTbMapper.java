@@ -12,6 +12,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.cer.domain.CerSubProjectTb
 */
 public interface CerSubProjectTbMapper extends BaseMapper<CerSubProjectTb> {
+
+    List<CerSubProjectTb> selectSelective(CerSubProjectTb cerSubProjectTb);
     List<CerSubProjectTb> selectAllByTaskNum(@Param("taskNum") String taskNum);
 
     List<CerSubProjectTb> selectAllByProjectId(@Param("projectId") Integer projectId);

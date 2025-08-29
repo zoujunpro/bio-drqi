@@ -4,12 +4,16 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.drqi.domain.CerSpeciesConf;
 import com.bio.drqi.domain.CerSubProjectTb;
+import com.bio.drqi.manage.project.req.SubProjectListPageReqDTO;
+import com.bio.drqi.manage.project.rsp.SubProjectListPageRspDTO;
 import com.bio.drqi.manage.service.project.SubProjectService;
 import com.bio.drqi.mapper.CerSpeciesConfMapper;
 import com.bio.drqi.mapper.CerSubProjectTbMapper;
 import com.bio.drqi.manage.project.rsp.ProjectSpeciesLispRspDTO;
 import com.bio.drqi.manage.project.rsp.SubProjectRspDTO;
 import com.bio.common.core.dto.BusinessException;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +30,13 @@ public class SubProjectServiceImpl  implements SubProjectService {
 
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
+
+    @Override
+    public PageInfo<SubProjectListPageRspDTO> listPage(SubProjectListPageReqDTO subProjectListPageReqDTO) {
+        PageHelper.startPage(subProjectListPageReqDTO.getPageNum(),subProjectListPageReqDTO.getPageSize());
+
+        return null;
+    }
 
     @Override
     public List<SubProjectRspDTO> list(Integer projectId) {

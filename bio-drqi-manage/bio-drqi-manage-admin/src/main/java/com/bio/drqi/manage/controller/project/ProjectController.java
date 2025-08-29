@@ -27,10 +27,10 @@ public class ProjectController {
     private ProjectService projectService;
 
     /**
-     * 分页查询项目列表
+     * 项目管理-分页查询
      */
 
-    @WebLog(desc = "分页查询项目列表")
+    @WebLog(desc = "项目管理-分页查询")
     @PostMapping("/listPage")
     @RequirePermissions("project:data")
     public ResponseResult<PageInfo<ProjectListRspDTO>> listPage(@Validated @RequestBody ProjectListReqDTO projectListReqDTO) {
@@ -39,20 +39,20 @@ public class ProjectController {
     }
 
     /**
-     * 查询项目列表
+     * 项目管理-查询列表
      */
     @GetMapping("/listBaseInfo")
-    @WebLog(desc = "查询项目列表")
+    @WebLog(desc = "项目管理-查询列表")
     public ResponseResult<List<ListBaseInfoRspDTO>> listBaseInfo() {
         List<ListBaseInfoRspDTO> list = projectService.listBaseInfo();
         return ResponseResult.getSuccess(list);
     }
 
     /**
-     * 根据主键查询项目详情信息
+     * 项目管理-根据主键查询项目详情信息
      */
     @GetMapping("/detail")
-    @WebLog(desc = "根据主键查询项目详情信息")
+    @WebLog(desc = "项目管理-根据主键查询项目详情信息")
     @RequirePermissions("project:data:projectDetail")
     public ResponseResult<ProjectListRspDTO> detail(@Validated @RequestParam @NotNull(message = "缺失主键") Integer id) {
         ProjectListRspDTO projectListRspDTO = projectService.detail(id);
@@ -61,53 +61,53 @@ public class ProjectController {
 
 
     /**
-     * 查询所有项目基本信息
+     * 项目管理-查询所有项目基本信息
      */
     @GetMapping("/findAllProject")
-    @WebLog(desc = "查询所有项目基本信息")
+    @WebLog(desc = "项目管理-查询所有项目基本信息")
     public ResponseResult<List<ProjectAllRspDTO>> findAllProject() {
         return ResponseResult.getSuccess(projectService.findAllProject());
     }
 
 
     /**
-     * 查询所有项目用户信息
+     * 项目管理-查询所有项目用户信息
      */
     @GetMapping("/findAllProjectAllUser")
-    @WebLog(desc = "查询项目所有负责人")
+    @WebLog(desc = "项目管理-查询项目所有负责人")
     public ResponseResult<List<ProjectUserAllRspDTO>> findAllProjectAllUser() {
         return ResponseResult.getSuccess(projectService.findAllProjectAllUser());
     }
 
 
     /**
-     * 暂停项目
+     * 项目管理-暂停项目
      */
     @GetMapping("/stop")
-    @WebLog(desc = "暂停项目")
-    @RequestLog("暂停项目")
+    @WebLog(desc = "项目管理-暂停项目")
+    @RequestLog("项目管理-暂停项目")
     public ResponseResult<String> stop(@RequestParam Integer id) {
         projectService.stop(id);
         return ResponseResult.getSuccess("成功");
     }
 
     /**
-     * 启动项目
+     * 项目管理-启动项目
      */
     @GetMapping("/start")
-    @WebLog(desc = "启动项目")
-    @RequestLog("启动项目")
+    @WebLog(desc = "项目管理-启动项目")
+    @RequestLog("项目管理-启动项目")
     public ResponseResult<String> start(@RequestParam Integer id) {
         projectService.start(id);
         return ResponseResult.getSuccess("成功");
     }
 
     /**
-     * 完成项目
+     * 项目管理-完成项目
      */
     @GetMapping("/complete")
-    @WebLog(desc = "结束项目")
-    @RequestLog("结束项目")
+    @WebLog(desc = "项目管理-完成项目")
+    @RequestLog("项目管理-完成项目")
     public ResponseResult<String> complete(@RequestParam Integer id) {
         projectService.complete(id);
         return ResponseResult.getSuccess("成功");

@@ -27,22 +27,22 @@ public class SubProjectController {
     private SubProjectService subProjectService;
 
     /**
-     * 子项目列表查询
+     * 子项目管理-列表查
      *
      * @param projectId
      * @return
      */
     @GetMapping("listByProject")
-    @WebLog(desc = "子项目列表查询")
+    @WebLog(desc = "子项目管理-列表查")
     public ResponseResult<List<SubProjectRspDTO>> list(@Validated @RequestParam @NotNull(message = "参数缺失") Integer projectId) {
         return ResponseResult.getSuccess(subProjectService.list(projectId));
     }
 
     /**
-     * 查询子项目中所有物种
+     * 子项目管理-查询子项目中所有物种
      */
     @GetMapping("/findSubProjectAllSpecies")
-    @WebLog(desc = "查询项目中所有物种")
+    @WebLog(desc = "子项目管理-查询子项目中所有物种")
     public ResponseResult<List<ProjectSpeciesLispRspDTO>> findSubProjectAllSpecies(@RequestParam String subProjectCode) {
         return ResponseResult.getSuccess(subProjectService.findSubProjectAllSpecies(subProjectCode));
     }

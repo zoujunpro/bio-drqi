@@ -31,26 +31,27 @@ public class SampleTestController {
     private OssService ossService;
 
     /**
-     * 分页查询取样申请
+     * 取样检测-分页查询取样申请
      *
      * @param sampleApplyListPageReqDTO
      * @return
      */
     @PostMapping("listPage")
     @RequirePermissions("project:sampleTest")
-    @WebLog(desc = "分页查询取样申请")
+    @WebLog(desc = "取样检测-分页查询取样申请")
     public ResponseResult<PageInfo<SampleApplyRspDTO>> listPage(@Validated @RequestBody SampleApplyListPageReqDTO sampleApplyListPageReqDTO) {
         PageInfo<SampleApplyRspDTO> pageInfo = sampleTestService.listPage(sampleApplyListPageReqDTO);
         return ResponseResult.getSuccess(pageInfo);
     }
 
     /**
-     * 查询执行到某一步骤的取样申请
+     * 取样检测-查询执行到某一步骤的取样申请
      *
      * @param currentStepCode
      * @return
      */
     @GetMapping("sampleApplyListAll")
+    @WebLog(desc = "取样检测-查询执行到某一步骤的取样申请")
     public ResponseResult<List<SampleApplyRspDTO>> sampleApplyListAll(@Validated @RequestParam String currentStepCode) {
         List<SampleApplyRspDTO> list = sampleTestService.sampleApplyListAll(currentStepCode);
         return ResponseResult.getSuccess(list);
@@ -58,13 +59,13 @@ public class SampleTestController {
 
 
     /**
-     * 查询某一个取样申请下取样明细
+     * 取样检测-查询某一个取样申请下取样明细
      *
      * @param sampleTestListDetailReqDTO
      * @return
      */
     @PostMapping("listDetail")
-    @WebLog(desc = "查询某一个取样申请下取样明细")
+    @WebLog(desc = "取样检测-查询某一个取样申请下取样明细")
     public ResponseResult<PageInfo<SampleTestListDetailRspDTO>> listDetail(@Validated @RequestBody SampleTestListDetailReqDTO sampleTestListDetailReqDTO) {
         PageInfo<SampleTestListDetailRspDTO> resultList = sampleTestService.listDetail(sampleTestListDetailReqDTO);
         return ResponseResult.getSuccess(resultList);
@@ -72,52 +73,52 @@ public class SampleTestController {
 
 
     /**
-     * 查询实施方案下取样检测信息
+     * 取样检测-查询实施方案下取样检测信息
      *
      * @param sampleTestByVectorTaskReqDTO
      * @return
      */
     @PostMapping("listByVectorTask")
-    @WebLog(desc = "查询实施方案下取样检测信息")
+    @WebLog(desc = "取样检测-查询实施方案下取样检测信息")
     public ResponseResult<List<SampleApplyRspDTO>> listByVectorTask(@Validated @RequestBody SampleTestByVectorTaskReqDTO sampleTestByVectorTaskReqDTO) {
         return ResponseResult.getSuccess(sampleTestService.listByVectorTask(sampleTestByVectorTaskReqDTO));
     }
 
     /**
-     * 取样数据模板下载
+     * 取样检测-取样数据模板下载
      */
     @PostMapping("downSampleTemplate")
-    @WebLog(desc = "取样数据模板下载")
+    @WebLog(desc = "取样检测-取样数据模板下载")
     public void downSampleTemplate(@Validated @RequestBody DownloadSampleTemplateReqDTO downloadSampleTemplateReqDTO, HttpServletResponse response) {
         sampleTestService.downSampleTemplate(downloadSampleTemplateReqDTO, response);
     }
 
 
     /**
-     * 上传取样数据模板
+     * 取样检测-上传取样数据模板
      */
     @PostMapping("uploadSampleTemplate")
-    @WebLog(desc = "上传取样数据模板")
+    @WebLog(desc = "取样检测-上传取样数据模板")
     public ResponseResult<String> uploadSampleTemplate(@Validated @RequestBody UploadSampleTemplateReqDTO uploadSampleTemplateReqDTO) {
         sampleTestService.uploadSampleTemplate(uploadSampleTemplateReqDTO);
         return ResponseResult.getSuccess("结果处理成功");
     }
 
     /**
-     * 检测数据模板下载
+     * 取样检测-检测数据模板下载
      */
     @PostMapping("downTestTemplate")
-    @WebLog(desc = "检测数据模板下载")
+    @WebLog(desc = "取样检测-检测数据模板下载")
     public void downTestTemplate(@Validated @RequestBody DownTestTemplateReqDTO downTestTemplateReqDTO, HttpServletResponse response) {
         sampleTestService.downTestTemplate(downTestTemplateReqDTO, response);
     }
 
 
     /**
-     * 上传检测数据
+     * 取样检测-上传检测数据
      */
     @PostMapping("uploadTestTemplate")
-    @WebLog(desc = "上传检测数据")
+    @WebLog(desc = "取样检测-上传检测数据")
     public ResponseResult<String> uploadTestTemplate(@Validated @RequestBody UploadTestTemplateReqDTO uploadTestTemplateReqDTO) {
         sampleTestService.uploadTestTemplate(uploadTestTemplateReqDTO);
         return ResponseResult.getSuccess("成功");
@@ -125,19 +126,19 @@ public class SampleTestController {
 
 
     /**
-     * 查询可审批的检测数据
+     * 取样检测-查询可审批的检测数据
      */
     @PostMapping("checkList")
-    @WebLog(desc = "检查列表")
+    @WebLog(desc = "取样检测-检查列表")
     public ResponseResult<List<SampleTestListDetailRspDTO>> checkList(@Validated @RequestBody CheckListReqDTO checkListReqDTO) {
         return ResponseResult.getSuccess(sampleTestService.checkList(checkListReqDTO));
     }
 
     /**
-     * 重复取样模板下载
+     * 取样检测-重复取样模板下载
      */
     @GetMapping("downRepeatSampleApplyTemplate")
-    @WebLog(desc = "重复取样模板下载")
+    @WebLog(desc = "取样检测-重复取样模板下载")
     public void downRepeatSampleApplyTemplate(HttpServletResponse response) {
         try {
             ossService.downloadFile(response, "template", "重复取样申请模板V1.0.xlsx");
@@ -147,106 +148,106 @@ public class SampleTestController {
     }
 
     /**
-     * 取样检测审批
+     * 取样检测-取样检测审批
      */
     @PostMapping("approveSampleResult")
-    @WebLog(desc = "取样结果审批")
+    @WebLog(desc = "取样检测-取样结果审批")
     public ResponseResult<String> approveSampleResult(@Validated @RequestBody ApproveSampleResultReqDTO approveSampleResultReqDTO) {
         sampleTestService.approveSampleResult(approveSampleResultReqDTO);
         return ResponseResult.getSuccess("成功");
     }
 
     /**
-     * 根据状态查询所有取样申请
+     * 取样检测-根据状态查询所有取样申请
      *
      * @param vectorTaskCode
      * @return
      */
     @GetMapping("findAllSampleCodeList")
-    @WebLog(desc = "根据状态查询所有取样申请")
+    @WebLog(desc = "取样检测-根据状态查询所有取样申请")
     public ResponseResult<List<SampleCodeListRspDTO>> findAllSampleCodeList(@RequestParam String vectorTaskCode) {
         return ResponseResult.getSuccess(sampleTestService.findAllSampleCodeList(vectorTaskCode));
     }
 
 
     /**
-     * 下载填写鉴定引物模板
+     * 取样检测-下载填写鉴定引物模板
      *
      * @param response
      * @param applyNo
      * @return
      */
     @GetMapping("downIdentifyPrimerTemplate")
-    @WebLog(desc = "下载填写鉴定引物模板")
+    @WebLog(desc = "取样检测-下载填写鉴定引物模板")
     public void downIdentifyPrimerTemplate(HttpServletResponse response, @RequestParam @Validated String applyNo) {
         sampleTestService.downIdentifyPrimerTemplate(response, applyNo);
     }
 
     /**
-     * 上传填写鉴定引物模板
+     * 取样检测-上传填写鉴定引物模板
      *
      * @return
      */
     @PostMapping("uploadIdentifyPrimerTemplate")
-    @WebLog(desc = "上传填写鉴定引物模板")
+    @WebLog(desc = "取样检测-上传填写鉴定引物模板")
     public ResponseResult<String> uploadIdentifyPrimerTemplate(@RequestBody @Validated UploadIdentifyPrimerTemplateReqDTO uploadIdentifyPrimerTemplateReqDTO) {
         sampleTestService.uploadIdentifyPrimerTemplate(uploadIdentifyPrimerTemplateReqDTO);
         return ResponseResult.getSuccess("成功");
     }
 
     /**
-     * 取样标签排版预览
+     * 取样检测-取样标签排版预览
      *
      * @param applyNo
      * @return
      */
     @GetMapping("layoutPreview")
-    @WebLog(desc = "取样标签排版预览")
+    @WebLog(desc = "取样检测-取样标签排版预览")
     public ResponseResult<LayoutPreviewRspDTO> layoutPreview(@RequestParam @Validated String applyNo) {
         return ResponseResult.getSuccess(sampleTestService.layoutPreview(applyNo));
     }
 
 
     /**
-     * 取样标签排版确认
+     * 取样检测-取样标签排版确认
      *
      * @param layoutConfirmReqDTO
      * @return
      */
     @PostMapping("layoutConfirm")
-    @WebLog(desc = "取样标签排版确认")
+    @WebLog(desc = "取样检测-取样标签排版确认")
     public ResponseResult layoutConfirm(@RequestBody @Validated LayoutConfirmReqDTO layoutConfirmReqDTO) {
         sampleTestService.layoutConfirm(layoutConfirmReqDTO);
         return ResponseResult.getSuccess("成功");
     }
 
     /**
-     * 下载excel96孔板
+     * 取样检测-下载excel96孔板
      *
      * @return
      */
     @GetMapping("dowLayoutExcel")
-    @WebLog(desc = "下载excel96孔板")
+    @WebLog(desc = "取样检测-下载excel96孔板")
     public void dowLayoutExcel(@RequestParam @Validated String applyNo, HttpServletResponse httpServletResponse) {
         sampleTestService.dowLayoutExcel(applyNo, httpServletResponse);
     }
 
     /**
-     * 统计数据
+     * 取样检测-统计数据
      *
      * @return
      */
     @GetMapping("countNumByApplyNo")
-    @WebLog(desc = "统计数据")
+    @WebLog(desc = "取样检测-统计数据")
     public ResponseResult<CountNumByApplyNoRspDTO> countNumByApplyNo(@RequestParam @Validated String applyNo) {
         return ResponseResult.getSuccess(sampleTestService.countNumByApplyNo(applyNo));
     }
 
     /**
-     * 生信结果核对模板下载
+     * 取样检测-生信结果核对模板下载
      */
     @PostMapping("downSampleTestBioInfoResultTemplate")
-    @WebLog(desc = "生信结果核对模板下载")
+    @WebLog(desc = "取样检测-生信结果核对模板下载")
     public void downSampleTestBioInfoResultTemplate(HttpServletResponse response) {
         try {
             ossService.downloadFile(response, "template", "生信结果核对模板V1.0.xlsx");
@@ -256,38 +257,38 @@ public class SampleTestController {
     }
 
     /**
-     * 上传生信检测结果数据核对模板
+     * 取样检测-上传生信检测结果数据核对模板
      *
      * @param uploadBioInfoSampleTestResultReqDTO
      * @return
      */
     @PostMapping("uploadBioInfoSampleTestResult")
-    @WebLog(desc = "上传生信检测结果数据核对模板")
+    @WebLog(desc = "取样检测-上传生信检测结果数据核对模板")
     public ResponseResult<String> uploadBioInfoSampleTestResult(@RequestBody UploadBioInfoSampleTestResultReqDTO uploadBioInfoSampleTestResultReqDTO) {
         sampleTestService.uploadBioInfoSampleTestResult(uploadBioInfoSampleTestResultReqDTO);
         return ResponseResult.getSuccess("ok");
     }
 
     /**
-     * 生信检测结果查看
+     * 取样检测-生信检测结果查看
      *
      * @param id
      * @return
      */
     @GetMapping("queryBioInfoSampleTestResult")
-    @WebLog(desc = "生信检测结果查看")
+    @WebLog(desc = "取样检测-生信检测结果查看")
     public ResponseResult<List<QueryBioInfoSampleTestResultRspDTO>> queryBioInfoSampleTestResult(@RequestParam Integer id) {
         return ResponseResult.getSuccess(sampleTestService.queryBioInfoSampleTestResult(id));
     }
 
     /**
-     * 生信检测结果确认
+     * 取样检测-生信检测结果确认
      *
      * @param bioInfoSampleTestResultConfirmReqDTO
      * @return
      */
     @PostMapping("bioInfoSampleTestResultConfirm")
-    @WebLog(desc = "生信检测结果确认")
+    @WebLog(desc = "取样检测-生信检测结果确认")
     public ResponseResult<String> bioInfoSampleTestResultConfirm(@RequestBody BioInfoSampleTestResultConfirmReqDTO bioInfoSampleTestResultConfirmReqDTO) {
         sampleTestService.bioInfoSampleTestResultConfirm(bioInfoSampleTestResultConfirmReqDTO);
         return ResponseResult.getSuccess(null);
@@ -295,60 +296,60 @@ public class SampleTestController {
 
 
     /**
-     * 同步生信检测结果数据
+     * 取样检测-同步生信检测结果数据
      *
      * @param id
      * @return
      */
     @GetMapping("synBioInfoSampleTestResult")
-    @WebLog(desc = "同步生信检测结果数据")
+    @WebLog(desc = "取样检测-同步生信检测结果数据")
     public ResponseResult<String> synBioInfoSampleTestResult(@RequestParam Integer id) {
         sampleTestService.synBioInfoSampleTestResult(id);
         return ResponseResult.getSuccess("ok");
     }
 
     /**
-     * 生信检测结果数据详情
+     * 取样检测-生信检测结果数据详情
      *
      * @param bioInfoId
      * @return
      */
     @GetMapping("bioInfoSampleTestResultDetail")
-    @WebLog(desc = "生信检测结果数据详情")
+    @WebLog(desc = "取样检测-生信检测结果数据详情")
     public ResponseResult<Object> bioInfoSampleTestResultDetail(@RequestParam Integer bioInfoId) {
         return ResponseResult.getSuccess(sampleTestService.bioInfoSampleTestResultDetail(bioInfoId));
     }
 
 
     /**
-     * 生信检测结果分页详情头
+     * 取样检测-生信检测结果分页详情头
      *
      * @return
      */
     @GetMapping("bioInfoHead")
-    @WebLog(desc = "生信检测结果分页详情头")
+    @WebLog(desc = "取样检测-生信检测结果分页详情头")
     public ResponseResult<Integer> bioInfoHead(@RequestParam @Validated String applyNo) {
         return ResponseResult.getSuccess(sampleTestService.bioInfoHead(applyNo));
     }
 
     /**
-     * 生信检测结果分页详情
+     * 取样检测-生信检测结果分页详情
      *
      * @return
      */
     @PostMapping("bioInfoPage")
-    @WebLog(desc = "生信检测结果分页详情")
+    @WebLog(desc = "取样检测-生信检测结果分页详情")
     public ResponseResult<PageInfo<BioInfoPageRspDTO>> bioInfoPage(@RequestBody @Validated BioInfoPageReqDTO bioInfoPageReqDTO) {
         return ResponseResult.getSuccess(sampleTestService.bioInfoPage(bioInfoPageReqDTO));
     }
 
     /**
-     * 备注
+     * 取样检测-备注
      *
      * @return
      */
     @PostMapping("remark")
-    @WebLog(desc = "备注")
+    @WebLog(desc = "取样检测-备注")
     public ResponseResult<String> remark(@RequestBody @Validated SampleRemarkReqDTO sampleRemarkReqDTO) {
         sampleTestService.remark(sampleRemarkReqDTO);
         return ResponseResult.getSuccess("成功");
@@ -356,12 +357,12 @@ public class SampleTestController {
 
 
     /**
-     * 统计检测结果
+     * 取样检测-统计检测结果
      * @param applyNo
      * @return
      */
     @GetMapping("countCheckResult")
-    @WebLog(desc = "统计检测结果")
+    @WebLog(desc = "取样检测-统计检测结果")
     public ResponseResult<List<CountCheckResultRspDTO>> countCheckResult(@RequestParam @Validated String applyNo){
         return ResponseResult.getSuccess(sampleTestService.countCheckResult(applyNo));
     }

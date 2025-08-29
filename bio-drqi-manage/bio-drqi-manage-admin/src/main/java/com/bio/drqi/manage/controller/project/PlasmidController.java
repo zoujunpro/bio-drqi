@@ -38,10 +38,10 @@ public class PlasmidController {
     }
 
     /**
-     * 查询该项目下质粒
+     * 质粒质检-查询该项目下质粒
      */
     @PostMapping("listByVectorTask")
-    @WebLog(desc = "查询该项目下质粒")
+    @WebLog(desc = "质粒质检-查询该项目下质粒")
     @RequirePermissions("project:data:plasmid")
     public ResponseResult<QueryPagePlasmidRspDTO> listByVectorTask(@Validated @RequestBody QueryPagePlasmidReqDTO queryPagePlasmidReqDTO) {
         return ResponseResult.getSuccess(plasmidService.listByVectorTask(queryPagePlasmidReqDTO));
@@ -49,11 +49,12 @@ public class PlasmidController {
 
 
     /**
-     * 质粒质检模板下载
+     * 质粒质检-质粒质检模板下载
      *
      * @param response
      */
     @GetMapping("/downPlasmidCheckTemplate")
+    @WebLog(desc = "质粒质检-质粒质检模板下载")
     public void downPlasmidCheckTemplate(@RequestParam @Validated String vectorTaskCode, HttpServletResponse response) {
         try {
             plasmidService.downPlasmidCheckTemplate(vectorTaskCode, response);

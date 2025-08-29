@@ -37,12 +37,13 @@ public class CerVectorBuildController {
     }
 
     /**
-     * 载体构建详情
+     * 载体构建-详情
      *
      * @param vectorTaskId
      * @return
      */
     @GetMapping("/detail")
+    @WebLog(desc = "载体构建-详情")
     public ResponseResult<List<VectorBuildDetailRspDTO>> detail(@RequestParam Integer vectorTaskId) {
         return ResponseResult.getSuccess(cerVectorBuildService.detail(vectorTaskId));
     }

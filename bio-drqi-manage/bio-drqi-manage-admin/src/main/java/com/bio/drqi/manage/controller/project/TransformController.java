@@ -44,20 +44,20 @@ public class TransformController {
     }
 
     /**
-     * 实施方案维度查询转化信息
+     * 取样转化-实施方案维度查询转化信息
      */
     @PostMapping("/listByVectorTask")
-    @WebLog(desc = "实施方案维度查询转化信息")
+    @WebLog(desc = "取样转化-实施方案维度查询转化信息")
     public ResponseResult<List<TransformListByVectorTaskRspDTO>> listByVectorTask(@Validated @RequestBody TransformListByVectorTaskReqDTO transformListByVectorTaskReqDTO) {
         List<TransformListByVectorTaskRspDTO> transformListByVectorTaskRspDTOList = transformService.listByVectorTask(transformListByVectorTaskReqDTO);
         return ResponseResult.getSuccess(transformListByVectorTaskRspDTOList);
     }
 
     /**
-     * 审批通过转化列表查询
+     * 取样转化-审批通过转化列表查询
      */
     @PostMapping("/approvePassTransformQuery")
-    @WebLog(desc = "审批通过转化列表查询")
+    @WebLog(desc = "取样转化-审批通过转化列表查询")
     public ResponseResult<List<ApprovePassTransformQueryRspDTO>> approvePassTransformQuery(@RequestBody @Validated ApprovePassTransformQueryReqDTO approvePassTransformQueryReqDTO) {
         List<ApprovePassTransformQueryRspDTO> list = transformService.approvePassTransformQuery(approvePassTransformQueryReqDTO);
         return ResponseResult.getSuccess(list);

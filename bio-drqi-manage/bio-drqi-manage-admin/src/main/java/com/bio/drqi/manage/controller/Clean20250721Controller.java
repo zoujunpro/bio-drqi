@@ -72,6 +72,12 @@ public class Clean20250721Controller {
     private CerVectorTbMapper cerVectorTbMapper;
 
     @Resource
+    private CerSubProjectTbMapper cerSubProjectTbMapper;
+
+    @Resource
+    private CerProjectTbMapper cerProjectTbMapper;
+
+    @Resource
     private CerTransformTbMapper cerTransformTbMapper;
 
     @Resource
@@ -119,11 +125,24 @@ public class Clean20250721Controller {
     public ResponseResult<String> cleanVector() {
         List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectSelective(null);
         for (CerVectorTb cerVectorTb : cerVectorTbList) {
-            log.info("cerVectorTb={}",JSONUtil.toJsonStr(cerVectorTb));
+            log.info("cerVectorTb={}", JSONUtil.toJsonStr(cerVectorTb));
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(cerVectorTb.getVectorTaskId());
-            if(cerVectorTaskTb!=null){
+            if (cerVectorTaskTb != null) {
                 cerVectorTb.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
                 cerVectorTbMapper.updateById(cerVectorTb);
+            }
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
+    @GetMapping("/cleanSubProject")
+    public ResponseResult<String> cleanSubProject() {
+        List<CerSubProjectTb> cerSubProjectTbList = cerSubProjectTbMapper.selectSelective(null);
+        for (CerSubProjectTb cerSubProjectTb : cerSubProjectTbList) {
+            CerProjectTb cerProjectTb = cerProjectTbMapper.selectById(cerSubProjectTb.getProjectId());
+            if(cerProjectTb!=null){
+                cerSubProjectTb.setProjectCode(cerProjectTb.getProjectCode());
+                cerSubProjectTbMapper.updateById(cerSubProjectTb);
             }
         }
         return ResponseResult.getSuccess("ok");

@@ -65,6 +65,7 @@ public class SubProjectProcServiceBase extends AbstractProjectBaseTaskService {
                     cerSubProjectTb.setPriorityLevel(content.getPriorityLevel());
                     cerSubProjectTb.setTaskStatus(bioTaskDtlTb.getTaskStatus());
                     cerSubProjectTb.setSpeciesCode(JSONUtil.toJsonStr(content.getSpeciesList()));
+                    cerSubProjectTb.setProjectCode(cerProjectTb.getProjectCode());
                     try {
                         cerSubProjectTbMapper.insert(cerSubProjectTb);
                     } catch (DuplicateKeyException e) {

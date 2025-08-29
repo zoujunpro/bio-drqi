@@ -131,6 +131,7 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
             cerVectorTb.setSelectionMarker(vector.getSelectionMarker());
             cerVectorTb.setGeneCharacter(vector.getGeneCharacter());
             cerVectorTb.setFileUrls(JSONUtil.toJsonStr(vector.getFileUrls()));
+            cerVectorTb.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
             cerVectorTb.setTaskNum(taskNum);
             cerVectorTbList.add(cerVectorTb);
         }

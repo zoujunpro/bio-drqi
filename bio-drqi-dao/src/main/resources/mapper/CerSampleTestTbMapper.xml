@@ -153,12 +153,12 @@
             <if test="projectId != null  ">and project_id=#{projectId,jdbcType=NUMERIC}</if>
             <if test="subProjectId != null">and sub_project_id=#{subProjectId,jdbcType=NUMERIC}</if>
             <if test="vectorTaskId != null">and vector_task_id=#{vectorTaskId,jdbcType=NUMERIC}</if>
-            <if test="projectCode != null">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
-            <if test="subProjectCode != null">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
+            <if test="projectCode != null and projectCode!=''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="subProjectCode != null and subProjectCode!=''">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
             <if test="vectorTaskCode != null">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
             <if test="plasmidName != null">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
-            <if test="transformCode != null">and transform_code=#{transformCode,jdbcType=VARCHAR}</if>
-            <if test="sampleCode != null">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
+            <if test="transformCode != null and transformCode!=''">and transform_code=#{transformCode,jdbcType=VARCHAR}</if>
+            <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
             <if test="applyTime != null">and apply_time=#{applyTime,jdbcType=TIMESTAMP}</if>
             <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
             <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
@@ -194,7 +194,7 @@
             <if test="checkResult != null">and check_result=#{checkResult,jdbcType=VARCHAR}</if>
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
-            <if test="applyNo != null">and apply_no=#{applyNo,jdbcType=VARCHAR}</if>
+            <if test="applyNo != null and applyNo!=''">and apply_no=#{applyNo,jdbcType=VARCHAR}</if>
             <if test="identifyPrimer != null">and identify_primer=#{identifyPrimer,jdbcType=VARCHAR}</if>
 
         </where>

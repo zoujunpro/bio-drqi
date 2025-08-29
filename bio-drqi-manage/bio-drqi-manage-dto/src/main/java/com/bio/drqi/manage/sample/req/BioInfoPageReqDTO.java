@@ -8,5 +8,29 @@ public class BioInfoPageReqDTO extends PageDTO {
 
     private String applyNo;
 
-    private Integer vectorTaskId;
+    /**
+     * 项目编码
+     */
+    private String projectCode;
+
+    /**
+     * 子项目编码
+     */
+    private String subProjectCode;
+
+    /**
+     * 载体任务编码
+     */
+    private String vectorTaskCode;
+
+
+    /**
+     * 转化编号/种子编号
+     */
+    private String transformCode;
+
+    /**
+     * 取样编号
+     */
+    private String sampleCode;
 }

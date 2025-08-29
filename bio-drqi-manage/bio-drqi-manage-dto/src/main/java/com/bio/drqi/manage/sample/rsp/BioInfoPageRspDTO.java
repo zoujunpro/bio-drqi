@@ -45,6 +45,21 @@ public class BioInfoPageRspDTO {
     private String checkResult;
 
 
+    private String applyNo;
+
+    /**
+     * 项目编码
+     */
+    private String projectCode;
+
+    /**
+     * 子项目编码
+     */
+    private String subProjectCode;
+
+
+
+
 
     private List<BioInfoResult> bioInfoResultList = new ArrayList<>();
 

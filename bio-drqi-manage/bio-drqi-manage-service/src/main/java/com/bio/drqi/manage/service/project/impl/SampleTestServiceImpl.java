@@ -697,16 +697,14 @@ public class SampleTestServiceImpl implements SampleTestService {
     public PageInfo<BioInfoPageRspDTO> bioInfoPage(BioInfoPageReqDTO bioInfoPageReqDTO) {
         PageHelper.startPage(bioInfoPageReqDTO.getPageNum(), bioInfoPageReqDTO.getPageSize());
         CerSampleTestTb cerSampleTestTb = new CerSampleTestTb();
-        cerSampleTestTb.setApplyNo(bioInfoPageReqDTO.getApplyNo());
-        cerSampleTestTb.setVectorTaskId(bioInfoPageReqDTO.getVectorTaskId());
-        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectSelective(cerSampleTestTb);
+        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectSelective(BeanUtils.copyProperties(bioInfoPageReqDTO,CerSampleTestTb.class));
         PageInfo<CerSampleTestTb> srcPageInfo = new PageInfo<>(cerSampleTestTbList);
         if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
             return new PageInfo<BioInfoPageRspDTO>();
         }
         PageInfo<BioInfoPageRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, BioInfoPageRspDTO.class);
         targetPageInfo.getList().forEach(bioInfoPageRspDTO -> {
-            List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = cerSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(bioInfoPageReqDTO.getApplyNo(), bioInfoPageRspDTO.getSampleCode());
+            List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = cerSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(bioInfoPageRspDTO.getApplyNo(), bioInfoPageRspDTO.getSampleCode());
             if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
                 cerSampleTestBioInfoResultTbList.forEach(cerSampleTestBioInfoResultTb -> {
                     bioInfoPageRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());

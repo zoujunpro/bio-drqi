@@ -2,6 +2,7 @@ package com.bio.drqi.manage.service.project.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.domain.CerSpeciesConf;
 import com.bio.drqi.domain.CerSubProjectTb;
 import com.bio.drqi.manage.project.req.SubProjectListPageReqDTO;
@@ -23,7 +24,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class SubProjectServiceImpl  implements SubProjectService {
+public class SubProjectServiceImpl implements SubProjectService {
 
     @Resource
     private CerSubProjectTbMapper cerSubProjectTbMapper;
@@ -33,9 +34,10 @@ public class SubProjectServiceImpl  implements SubProjectService {
 
     @Override
     public PageInfo<SubProjectListPageRspDTO> listPage(SubProjectListPageReqDTO subProjectListPageReqDTO) {
-        PageHelper.startPage(subProjectListPageReqDTO.getPageNum(),subProjectListPageReqDTO.getPageSize());
-
-        return null;
+        PageHelper.startPage(subProjectListPageReqDTO.getPageNum(), subProjectListPageReqDTO.getPageSize());
+        List<CerSubProjectTb> list = cerSubProjectTbMapper.selectSelective(BeanUtils.copyProperties(subProjectListPageReqDTO, CerSubProjectTb.class));
+        PageInfo<CerSubProjectTb> srcPageInfo=new PageInfo<>(list);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo,SubProjectListPageRspDTO.class);
     }
 
     @Override
@@ -52,7 +54,7 @@ public class SubProjectServiceImpl  implements SubProjectService {
             subProjectRspDTO.setCreateUserName(cerSubProjectTb.getCreateUserName());
             subProjectRspDTO.setTaskStatus(cerSubProjectTb.getTaskStatus());
             subProjectRspDTO.setPriorityLevel(cerSubProjectTb.getPriorityLevel());
-            subProjectRspDTO.setSpeciesList(JSONUtil.toList(cerSubProjectTb.getSpeciesCode(),String.class));
+            subProjectRspDTO.setSpeciesList(JSONUtil.toList(cerSubProjectTb.getSpeciesCode(), String.class));
             subProjectRspDTOList.add(subProjectRspDTO);
         }
         return subProjectRspDTOList;
@@ -64,15 +66,15 @@ public class SubProjectServiceImpl  implements SubProjectService {
         if (cerSubProjectTb == null) {
             throw new BusinessException("子项目不存在");
         }
-        List<ProjectSpeciesLispRspDTO> projectSpeciesLispRspDTOS=new ArrayList<>();
+        List<ProjectSpeciesLispRspDTO> projectSpeciesLispRspDTOS = new ArrayList<>();
         List<String> speciesList = JSONUtil.toList(cerSubProjectTb.getSpeciesCode(), String.class);
         if (CollectionUtil.isNotEmpty(speciesList)) {
             speciesList.forEach(speciesCode -> {
                 CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(speciesCode);
-                if(cerSpeciesConf==null){
-                    throw new BusinessException("字典中缺失物种："+speciesCode);
+                if (cerSpeciesConf == null) {
+                    throw new BusinessException("字典中缺失物种：" + speciesCode);
                 }
-                ProjectSpeciesLispRspDTO projectSpeciesLispRspDTO=new ProjectSpeciesLispRspDTO();
+                ProjectSpeciesLispRspDTO projectSpeciesLispRspDTO = new ProjectSpeciesLispRspDTO();
                 projectSpeciesLispRspDTO.setSpeciesCode(cerSpeciesConf.getSpeciesCode());
                 projectSpeciesLispRspDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
                 projectSpeciesLispRspDTOS.add(projectSpeciesLispRspDTO);
@@ -80,8 +82,6 @@ public class SubProjectServiceImpl  implements SubProjectService {
         }
         return projectSpeciesLispRspDTOS;
     }
-
-
 
 
 }

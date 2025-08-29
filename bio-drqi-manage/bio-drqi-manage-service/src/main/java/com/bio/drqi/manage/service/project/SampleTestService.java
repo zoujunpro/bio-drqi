@@ -11,9 +11,7 @@ import java.util.List;
 
 public interface SampleTestService {
 
-    PageInfo<SampleApplyRspDTO> listPage(SampleApplyListPageReqDTO sampleApplyListPageReqDTO);
-
-    PageInfo<SampleTestListDetailRspDTO> listDetail(SampleTestListDetailReqDTO sampleTestListDetailReqDTO);
+    PageInfo<SampleTestListDetailRspDTO> listPage(SampleTestListDetailReqDTO sampleTestListDetailReqDTO);
 
     List<SampleApplyRspDTO> listByVectorTask(SampleTestByVectorTaskReqDTO sampleTestByVectorTaskReqDTO);
 

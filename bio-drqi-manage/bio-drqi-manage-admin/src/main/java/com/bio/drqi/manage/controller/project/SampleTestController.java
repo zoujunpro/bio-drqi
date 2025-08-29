@@ -31,17 +31,16 @@ public class SampleTestController {
     private OssService ossService;
 
     /**
-     * 取样检测-分页查询取样申请
+     * 取样检测-分页查询
      *
-     * @param sampleApplyListPageReqDTO
+     * @param sampleTestListDetailReqDTO
      * @return
      */
     @PostMapping("listPage")
-    @RequirePermissions("project:sampleTest")
-    @WebLog(desc = "取样检测-分页查询取样申请")
-    public ResponseResult<PageInfo<SampleApplyRspDTO>> listPage(@Validated @RequestBody SampleApplyListPageReqDTO sampleApplyListPageReqDTO) {
-        PageInfo<SampleApplyRspDTO> pageInfo = sampleTestService.listPage(sampleApplyListPageReqDTO);
-        return ResponseResult.getSuccess(pageInfo);
+    @WebLog(desc = "取样检测-分页查询")
+    public ResponseResult<PageInfo<SampleTestListDetailRspDTO>> listPage(@Validated @RequestBody SampleTestListDetailReqDTO sampleTestListDetailReqDTO) {
+        PageInfo<SampleTestListDetailRspDTO> resultList = sampleTestService.listPage(sampleTestListDetailReqDTO);
+        return ResponseResult.getSuccess(resultList);
     }
 
     /**
@@ -58,18 +57,6 @@ public class SampleTestController {
     }
 
 
-    /**
-     * 取样检测-查询某一个取样申请下取样明细
-     *
-     * @param sampleTestListDetailReqDTO
-     * @return
-     */
-    @PostMapping("listDetail")
-    @WebLog(desc = "取样检测-查询某一个取样申请下取样明细")
-    public ResponseResult<PageInfo<SampleTestListDetailRspDTO>> listDetail(@Validated @RequestBody SampleTestListDetailReqDTO sampleTestListDetailReqDTO) {
-        PageInfo<SampleTestListDetailRspDTO> resultList = sampleTestService.listDetail(sampleTestListDetailReqDTO);
-        return ResponseResult.getSuccess(resultList);
-    }
 
 
     /**

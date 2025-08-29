@@ -84,36 +84,23 @@ public class SampleTestServiceImpl implements SampleTestService {
     private OssService ossService;
 
 
-    @Override
-    public PageInfo<SampleApplyRspDTO> listPage(SampleApplyListPageReqDTO sampleApplyListPageReqDTO) {
-        PageHelper.startPage(sampleApplyListPageReqDTO.getPageNum(), sampleApplyListPageReqDTO.getPageSize());
-        CerSampleApplyTb cerSampleApplyTb = new CerSampleApplyTb();
-        cerSampleApplyTb.setApplyNo(sampleApplyListPageReqDTO.getApplyNo());
-        cerSampleApplyTb.setSampleCode(sampleApplyListPageReqDTO.getSampleCode());
-        List<CerSampleApplyTb> cerSampleApplyTbList = cerSampleApplyTbMapper.selectSelective(cerSampleApplyTb);
-        PageInfo<CerSampleApplyTb> srcPage = new PageInfo<>(cerSampleApplyTbList);
-        PageInfo<SampleApplyRspDTO> targetPage = BeanUtils.copyPageInfoProperties(srcPage, SampleApplyRspDTO.class);
-        return targetPage;
-    }
 
     @Override
-    public PageInfo<SampleTestListDetailRspDTO> listDetail(SampleTestListDetailReqDTO sampleTestListDetailReqDTO) {
+    public PageInfo<SampleTestListDetailRspDTO> listPage(SampleTestListDetailReqDTO sampleTestListDetailReqDTO) {
         PageHelper.startPage(sampleTestListDetailReqDTO.getPageNum(), sampleTestListDetailReqDTO.getPageSize());
-        CerSampleTestTb cerSampleTestTb = new CerSampleTestTb();
-        cerSampleTestTb.setApplyNo(sampleTestListDetailReqDTO.getApplyNo());
-        cerSampleTestTb.setVectorTaskId(sampleTestListDetailReqDTO.getVectorTaskId());
-        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectSelective(cerSampleTestTb);
+        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectSelective(BeanUtils.copyProperties(sampleTestListDetailReqDTO, CerSampleTestTb.class));
         PageInfo<CerSampleTestTb> srcPageInfo = new PageInfo<>(cerSampleTestTbList);
         if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
             return new PageInfo<SampleTestListDetailRspDTO>();
         }
-        List<String> sameCodeList = cerSampleTestTbList.stream().map(CerSampleTestTb::getSampleCode).collect(Collectors.toList());
-        List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = cerSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCodeIn(sampleTestListDetailReqDTO.getApplyNo(), sameCodeList);
         PageInfo<SampleTestListDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, SampleTestListDetailRspDTO.class);
+
+        List<String> sameCodeList = cerSampleTestTbList.stream().map(CerSampleTestTb::getSampleCode).collect(Collectors.toList());
+        List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = cerSampleTestBioInfoResultTbMapper.selectAllBySampleCodeIn(sameCodeList);
         if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
-            Map<String, List<CerSampleTestBioInfoResultTb>> listMap = cerSampleTestBioInfoResultTbList.stream().collect(Collectors.groupingBy(CerSampleTestBioInfoResultTb::getSampleCode));
+            Map<String, List<CerSampleTestBioInfoResultTb>> listMap = cerSampleTestBioInfoResultTbList.stream().collect(Collectors.groupingBy(cerSampleTestBioInfoResultTb -> cerSampleTestBioInfoResultTb.getApplyNo() + cerSampleTestBioInfoResultTb.getSampleCode()));
             targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
-                List<CerSampleTestBioInfoResultTb> list = listMap.get(sampleTestListDetailRspDTO.getSampleCode());
+                List<CerSampleTestBioInfoResultTb> list = listMap.get(sampleTestListDetailRspDTO.getApplyNo()+sampleTestListDetailRspDTO.getSampleCode());
                 sampleTestListDetailRspDTO.setMatchNum(list == null ? 0 : list.size());
                 sampleTestListDetailRspDTO.setSampleGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getSampleGeneration()));
             });

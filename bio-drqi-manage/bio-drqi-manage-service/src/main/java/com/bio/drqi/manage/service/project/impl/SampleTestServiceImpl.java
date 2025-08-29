@@ -94,22 +94,16 @@ public class SampleTestServiceImpl implements SampleTestService {
             return new PageInfo<SampleTestListDetailRspDTO>();
         }
         PageInfo<SampleTestListDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, SampleTestListDetailRspDTO.class);
-
-        List<String> sameCodeList = cerSampleTestTbList.stream().map(CerSampleTestTb::getSampleCode).collect(Collectors.toList());
-        List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = cerSampleTestBioInfoResultTbMapper.selectAllBySampleCodeIn(sameCodeList);
-        if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
-            Map<String, List<CerSampleTestBioInfoResultTb>> listMap = cerSampleTestBioInfoResultTbList.stream().collect(Collectors.groupingBy(cerSampleTestBioInfoResultTb -> cerSampleTestBioInfoResultTb.getApplyNo() + cerSampleTestBioInfoResultTb.getSampleCode()));
-            targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
-                List<CerSampleTestBioInfoResultTb> list = listMap.get(sampleTestListDetailRspDTO.getApplyNo()+sampleTestListDetailRspDTO.getSampleCode());
-                sampleTestListDetailRspDTO.setMatchNum(list == null ? 0 : list.size());
-                sampleTestListDetailRspDTO.setSampleGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getSampleGeneration()));
-            });
-        } else {
-            targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
-                sampleTestListDetailRspDTO.setMatchNum(0);
-                sampleTestListDetailRspDTO.setSampleGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getSampleGeneration()));
-            });
-        }
+        targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
+            sampleTestListDetailRspDTO.setSampleGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getSampleGeneration()));
+            List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = cerSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(sampleTestListDetailRspDTO.getApplyNo(), sampleTestListDetailRspDTO.getSampleCode());
+            if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
+                cerSampleTestBioInfoResultTbList.forEach(cerSampleTestBioInfoResultTb -> {
+                    sampleTestListDetailRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
+                });
+            }
+            sampleTestListDetailRspDTO.setMatchNum(CollectionUtil.isNotEmpty(sampleTestListDetailRspDTO.getBioInfoResultList())?sampleTestListDetailRspDTO.getBioInfoResultList().size():0);
+        });
         return targetPageInfo;
     }
 
@@ -685,34 +679,6 @@ public class SampleTestServiceImpl implements SampleTestService {
         paramMap.put("HapID", cerSampleTestBioInfoResultTb.getHapId());
         Object o = bioInfoClientApi.sampleTestBioInfoResultDetail(paramMap);
         return o;
-    }
-
-    @Override
-    public Integer bioInfoHead(String applyNo) {
-        Integer maxHead = cerSampleTestBioInfoResultTbMapper.selectMaxHead(applyNo);
-        return maxHead == null ? 0 : maxHead;
-    }
-
-    @Override
-    public PageInfo<BioInfoPageRspDTO> bioInfoPage(BioInfoPageReqDTO bioInfoPageReqDTO) {
-        PageHelper.startPage(bioInfoPageReqDTO.getPageNum(), bioInfoPageReqDTO.getPageSize());
-        CerSampleTestTb cerSampleTestTb = new CerSampleTestTb();
-        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectSelective(BeanUtils.copyProperties(bioInfoPageReqDTO,CerSampleTestTb.class));
-        PageInfo<CerSampleTestTb> srcPageInfo = new PageInfo<>(cerSampleTestTbList);
-        if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
-            return new PageInfo<BioInfoPageRspDTO>();
-        }
-        PageInfo<BioInfoPageRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, BioInfoPageRspDTO.class);
-        targetPageInfo.getList().forEach(bioInfoPageRspDTO -> {
-            List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = cerSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(bioInfoPageRspDTO.getApplyNo(), bioInfoPageRspDTO.getSampleCode());
-            if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
-                cerSampleTestBioInfoResultTbList.forEach(cerSampleTestBioInfoResultTb -> {
-                    bioInfoPageRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
-                });
-
-            }
-        });
-        return targetPageInfo;
     }
 
     @Override

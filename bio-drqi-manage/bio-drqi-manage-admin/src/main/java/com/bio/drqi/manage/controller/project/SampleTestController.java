@@ -309,28 +309,6 @@ public class SampleTestController {
 
 
     /**
-     * 取样检测-生信检测结果分页详情头
-     *
-     * @return
-     */
-    @GetMapping("bioInfoHead")
-    @WebLog(desc = "取样检测-生信检测结果分页详情头")
-    public ResponseResult<Integer> bioInfoHead(@RequestParam @Validated String applyNo) {
-        return ResponseResult.getSuccess(sampleTestService.bioInfoHead(applyNo));
-    }
-
-    /**
-     * 取样检测-生信检测结果分页详情
-     *
-     * @return
-     */
-    @PostMapping("bioInfoPage")
-    @WebLog(desc = "取样检测-生信检测结果分页详情")
-    public ResponseResult<PageInfo<BioInfoPageRspDTO>> bioInfoPage(@RequestBody @Validated BioInfoPageReqDTO bioInfoPageReqDTO) {
-        return ResponseResult.getSuccess(sampleTestService.bioInfoPage(bioInfoPageReqDTO));
-    }
-
-    /**
      * 取样检测-备注
      *
      * @return

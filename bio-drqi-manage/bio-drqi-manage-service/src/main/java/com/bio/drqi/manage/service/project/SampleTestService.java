@@ -61,10 +61,6 @@ public interface SampleTestService {
 
     Object bioInfoSampleTestResultDetail(Integer bioInfoId);
 
-    Integer bioInfoHead(String applyNo);
-
-    PageInfo<BioInfoPageRspDTO> bioInfoPage(BioInfoPageReqDTO bioInfoPageReqDTO);
-
     void remark(SampleRemarkReqDTO sampleRemarkReqDTO);
 
     List<CountCheckResultRspDTO> countCheckResult(@RequestParam @Validated String applyNo);

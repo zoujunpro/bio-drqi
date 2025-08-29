@@ -2,7 +2,9 @@ package com.bio.drqi.manage.sample.rsp;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class SampleTestListDetailRspDTO {
@@ -229,5 +231,29 @@ public class SampleTestListDetailRspDTO {
     public String applyNo;
 
     private Integer matchNum;
+
+
+
+
+    private List<BioInfoResult> bioInfoResultList = new ArrayList<>();
+
+
+    @Data
+    public static class BioInfoResult {
+        private String sampleId;
+        private String varType;
+        private String mutate;
+        private String ratio;
+    }
+
+    public void addBioInfoResultToList(String sampleId, String varType, String mutate, String ratio) {
+        BioInfoResult bioInfoResult = new BioInfoResult();
+        bioInfoResult.setSampleId(sampleId);
+        bioInfoResult.setVarType(varType);
+        bioInfoResult.setMutate(mutate);
+        bioInfoResult.setRatio(ratio);
+        this.bioInfoResultList.add(bioInfoResult);
+
+    }
 
 }

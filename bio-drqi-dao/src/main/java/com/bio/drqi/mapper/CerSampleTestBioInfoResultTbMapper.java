@@ -28,7 +28,6 @@ public interface CerSampleTestBioInfoResultTbMapper extends BaseMapper<CerSample
     int insertBatch(@Param("cerSampleTestBioInfoResultTbCollection") Collection<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbCollection);
 
     List<CerSampleTestBioInfoResultTb> selectAllBySampleCodeIn(@Param("sampleCodeList") Collection<String> sampleCodeList);
-    Integer selectMaxHead(@Param("applyNo") String applyNo);
 
 }
 

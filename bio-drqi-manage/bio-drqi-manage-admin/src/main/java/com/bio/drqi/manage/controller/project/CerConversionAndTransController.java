@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
- * 转化疫苗
+ * 转化移苗
  */
 @RestController
 @RequestMapping("conversionAndTrans")
@@ -37,7 +37,7 @@ public class CerConversionAndTransController {
      * @return
      */
     @PostMapping("/listPage")
-    @WebLog(desc = "转化疫苗-分页查询")
+    @WebLog(desc = "转化移苗-分页查询")
     @RequirePermissions("project:transplantData")
     public ResponseResult<PageInfo<ConversionAndTransRspDTO>> listPage(@RequestBody @Validated ConversionAndTransReqDTO conversionAndTransReqDTO) {
         return ResponseResult.getSuccess(cerConversionAndTransService.listPage(conversionAndTransReqDTO));

@@ -51,6 +51,10 @@ public class ConversionAndTransRspDTO {
 
 
 
+    private String transType;
+
+
+
     public List<String> getImageUrlList() {
         return JSONUtil.toList(this.getImageUrl(),String.class);
     }

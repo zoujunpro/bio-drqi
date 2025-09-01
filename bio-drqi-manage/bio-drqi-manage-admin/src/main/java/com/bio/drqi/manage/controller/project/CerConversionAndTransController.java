@@ -56,11 +56,11 @@ public class CerConversionAndTransController {
 
 
     /**
-     * 查询移苗申请下详情信息移苗详情
+     * 转化移苗，详情分页查询
      * @return
      */
     @PostMapping("/listPageDetail")
-    @WebLog(desc = "查询某一实施方案下移苗详情")
+    @WebLog(desc = "转化移苗-详情分页查询")
     public ResponseResult<PageInfo<ConversionAndTransDetailRspDTO>> listPageDetail(@RequestBody @Validated ConversionAndTransDetailReqDTO conversionAndTransDetailReqDTO) {
         return ResponseResult.getSuccess(cerConversionAndTransService.listPageDetail(conversionAndTransDetailReqDTO));
     }
@@ -81,11 +81,11 @@ public class CerConversionAndTransController {
     }
 
     /**
-     * 移苗接受
+     * 转化移苗-移苗接受
      * @return
      */
     @PostMapping("/transAccept")
-    @WebLog(desc = "接收移苗")
+    @WebLog(desc = "转化移苗-移苗接受")
     public ResponseResult<String> transAccept(@RequestBody @Validated CerConversionAndTransConfirmReqDTO cerConversionAndTransConfirmReqDTO){
         cerConversionAndTransService.transAccept(cerConversionAndTransConfirmReqDTO);
         return ResponseResult.getSuccess("成功");

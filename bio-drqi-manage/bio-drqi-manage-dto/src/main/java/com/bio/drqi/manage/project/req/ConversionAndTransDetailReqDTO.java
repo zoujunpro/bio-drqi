@@ -5,12 +5,26 @@ import lombok.Data;
 
 @Data
 public class ConversionAndTransDetailReqDTO extends PageDTO {
+
     /**
-     * 移苗申请ID
+     * 取样编号
      */
-    private Integer id;
+    private String sampleCode;
+
+
+    private String vectorTaskCode;
+
+    private String subProjectCode;
+
+    private String transformCode;
+
     /**
-     * 实施方案ID
+     * 项目编号
      */
-    private Integer vectorTaskId;
+    private String projectCode;
+
+
+    private String plasmidName;
+
+    private String taskNum;
 }

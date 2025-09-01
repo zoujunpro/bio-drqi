@@ -6,10 +6,6 @@ import lombok.Data;
 @Data
 public class ConversionAndTransDetailRspDTO {
 
-    /**
-     * 主键ID
-     */
-    @TableId
     private Integer id;
 
     /**
@@ -47,5 +43,7 @@ public class ConversionAndTransDetailRspDTO {
     private String plasmidName;
 
     private String remark;
+
+    private String taskNum;
 
 }

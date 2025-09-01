@@ -78,14 +78,8 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
 
     @Override
     public PageInfo<ConversionAndTransDetailRspDTO> listPageDetail(ConversionAndTransDetailReqDTO conversionAndTransDetailReqDTO) {
-        CerConversionAndTransRef cerConversionAndTransRef = new CerConversionAndTransRef();
-        cerConversionAndTransRef.setConversionAndTransId(conversionAndTransDetailReqDTO.getId());
-        if (conversionAndTransDetailReqDTO.getVectorTaskId() != null) {
-            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(conversionAndTransDetailReqDTO.getVectorTaskId());
-            cerConversionAndTransRef.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-        }
         PageHelper.startPage(conversionAndTransDetailReqDTO.getPageNum(), conversionAndTransDetailReqDTO.getPageSize());
-        List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectSelective(cerConversionAndTransRef);
+        List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectSelective(BeanUtils.copyProperties(conversionAndTransDetailReqDTO,CerConversionAndTransRef.class));
         PageInfo<CerConversionAndTransRef> srcPageInfo = new PageInfo<>(cerConversionAndTransRefList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, ConversionAndTransDetailRspDTO.class);
     }

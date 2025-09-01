@@ -18,11 +18,12 @@
         <result property="transGeneFlag" column="trans_gene_flag" jdbcType="VARCHAR"/>
         <result property="plasmidName" column="plasmid_name" jdbcType="VARCHAR"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
-        ,project_code, trans_gene_flag,conversion_and_trans_id,sample_code,edit_pure_union,acceptor_material,vector_task_code,sub_project_code,transform_code,trans_num,plasmid_name,remark
+        ,project_code, trans_gene_flag,conversion_and_trans_id,sample_code,edit_pure_union,acceptor_material,vector_task_code,sub_project_code,transform_code,trans_num,plasmid_name,remark,task_num
     </sql>
     <select id="selectAllByConversionAndTransId" resultMap="BaseResultMap">
         select
@@ -51,17 +52,19 @@
             <if test="conversionAndTransId != null">and
                 conversion_and_trans_id=#{conversionAndTransId,jdbcType=NUMERIC}
             </if>
-            <if test="sampleCode != null">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
+            <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
             <if test="editPureUnion != null">and edit_pure_union=#{editPureUnion,jdbcType=VARCHAR}</if>
             <if test="acceptorMaterial != null">and acceptor_material=#{acceptorMaterial,jdbcType=VARCHAR}</if>
-            <if test="vectorTaskCode != null">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
-            <if test="subProjectCode != null">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
-            <if test="transformCode != null">and transform_code=#{transformCode,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null and vectorTaskCode!=''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="subProjectCode != null and subProjectCode!=''">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
+            <if test="transformCode != null and transformCode!=''">and transform_code=#{transformCode,jdbcType=VARCHAR}</if>
             <if test="transNum != null">and trans_num=#{transNum,jdbcType=NUMERIC}</if>
             <if test="projectCode != null">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
             <if test="transGeneFlag != null">and trans_gene_flag=#{transGeneFlag,jdbcType=VARCHAR}</if>
             <if test="plasmidName != null">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
         </where>
+        orde by id desc
     </select>
     <select id="selectAllByTransformCodeAndVectorTaskCode" resultMap="BaseResultMap">
         select

@@ -64,7 +64,7 @@
             <if test="plasmidName != null">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
             <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
         </where>
-        orde by id desc
+        order by id desc
     </select>
     <select id="selectAllByTransformCodeAndVectorTaskCode" resultMap="BaseResultMap">
         select

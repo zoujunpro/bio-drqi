@@ -89,6 +89,12 @@ public class Clean20250721Controller {
     @Resource
     private CerPlasmidQualityTbMapper cerPlasmidQualityTbMapper;
 
+    @Resource
+    private CerConversionAndTransRefMapper cerConversionAndTransRefMapper;
+
+    @Resource
+    private CerConversionAndTransTbMapper cerConversionAndTransTbMapper;
+
 
     @GetMapping("cleanPlasmid")
     @Transactional(rollbackFor = Exception.class)
@@ -122,6 +128,7 @@ public class Clean20250721Controller {
 
 
     @GetMapping("/cleanVector")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanVector() {
         List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectSelective(null);
         for (CerVectorTb cerVectorTb : cerVectorTbList) {
@@ -136,11 +143,12 @@ public class Clean20250721Controller {
     }
 
     @GetMapping("/cleanSubProject")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanSubProject() {
         List<CerSubProjectTb> cerSubProjectTbList = cerSubProjectTbMapper.selectSelective(null);
         for (CerSubProjectTb cerSubProjectTb : cerSubProjectTbList) {
             CerProjectTb cerProjectTb = cerProjectTbMapper.selectById(cerSubProjectTb.getProjectId());
-            if(cerProjectTb!=null){
+            if (cerProjectTb != null) {
                 cerSubProjectTb.setProjectCode(cerProjectTb.getProjectCode());
                 cerSubProjectTbMapper.updateById(cerSubProjectTb);
             }
@@ -148,4 +156,15 @@ public class Clean20250721Controller {
         return ResponseResult.getSuccess("ok");
     }
 
+    @GetMapping("/cleanConversionAndTrans")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanConversionAndTrans() {
+        List<CerConversionAndTransRef> list = cerConversionAndTransRefMapper.selectList(null);
+        for (CerConversionAndTransRef cerConversionAndTransRef : list) {
+            CerConversionAndTransTb cerConversionAndTransTb = cerConversionAndTransTbMapper.selectById(cerConversionAndTransRef.getConversionAndTransId());
+            cerConversionAndTransRef.setTaskNum(cerConversionAndTransTb.getTaskNum());
+            cerConversionAndTransRefMapper.updateById(cerConversionAndTransRef);
+        }
+        return ResponseResult.getSuccess("ok");
+    }
 }

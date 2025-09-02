@@ -196,7 +196,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         repeatCerSampleTestTb.setProjectCode(cerSampleTestTbList.get(0).getProjectCode());
                         repeatCerSampleTestTb.setSubProjectCode(cerSampleTestTbList.get(0).getSubProjectCode());
                         repeatCerSampleTestTb.setVectorTaskCode(cerSampleTestTbList.get(0).getVectorTaskCode());
-                        repeatCerSampleTestTb.setTransformCode(repeatCerSampleTestTb.getTransformCode());
+                        repeatCerSampleTestTb.setTransformCode(cerSampleTestTbList.get(0).getTransformCode());
                         repeatCerSampleTestTb.setSampleCode(repeatSampleApply.getSampleCode() + "-" + (maxSampleCodeSuffix + i));
                         repeatCerSampleTestTb.setApplyTime(new Date());
                         repeatCerSampleTestTb.setApplyUserId(SecurityContextHolder.getUserId());

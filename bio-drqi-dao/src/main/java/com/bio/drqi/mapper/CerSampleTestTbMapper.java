@@ -76,6 +76,8 @@ public interface CerSampleTestTbMapper extends BaseMapper<CerSampleTestTb> {
 
     List<CerSampleTestTb> selectAllByTransformCode(@Param("transformCode") String transformCode);
 
+    List<CerSampleTestTb> selectAllBySampleCodeLike(@Param("sampleCode") String sampleCode);
+
 }
 
 

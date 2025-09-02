@@ -18,10 +18,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service("sample_and_test")
@@ -64,8 +62,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     private CerConversionAndTransRefMapper cerConversionAndTransRefMapper;
 
 
-
-
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
@@ -82,8 +78,8 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 if (cerProjectTb == null) {
                     throw new BusinessException("未找到项目信息 projectCode=" + cerVectorTaskTb.getProjectCode());
                 }
-                if(!StringUtils.equals(cerVectorTaskTb.getSpeciesCode(),newSampleTestDTO.getSpeciesCode())){
-                    throw new BusinessException("取样物种不是所规定物种,取样编号："+repeatSampleApply.getSampleCode());
+                if (!StringUtils.equals(cerVectorTaskTb.getSpeciesCode(), newSampleTestDTO.getSpeciesCode())) {
+                    throw new BusinessException("取样物种不是所规定物种,取样编号：" + repeatSampleApply.getSampleCode());
                 }
                 if (!ProjectStatusEnum.execute.name().equals(cerProjectTb.getProjectStatus())) {
                     throw new BusinessException(cerVectorTaskTb.getProjectCode() + "项目不是进行中");
@@ -91,6 +87,12 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByVectorTaskCodeAndSampleCode(cerVectorTaskTb.getVectorTaskCode(), repeatSampleApply.getSampleCode());
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                     throw new BusinessException(cerVectorTaskTb.getVectorTaskCode() + "实施方案中取样编号找不到：" + repeatSampleApply.getSampleCode());
+                }
+            }
+            if (newSampleTestDTO.isCloneFlag()) {
+                List list = newSampleTestDTO.getRepeatSampleApplyList().stream().filter(repeatSampleApply -> repeatSampleApply.getCloneNum() == null || repeatSampleApply.getCloneNum() < 1).collect(Collectors.toList());
+                if (CollectionUtil.isNotEmpty(list)) {
+                    throw new BusinessException("克隆苗数量必填");
                 }
             }
         }
@@ -123,8 +125,8 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
                         LayoutConfirmReqDTO layoutConfirmReqDTO = new LayoutConfirmReqDTO();
                         layoutConfirmReqDTO.setApplyNo(bioTaskDtlTb.getTaskNum());
-                        for (CerSampleTestTb cerSampleTestTb:cerSampleTestTbList){
-                            layoutConfirmReqDTO.fillSampleToSingleList(cerSampleTestTb.getVectorTaskCode(),cerSampleTestTb.getTransformCode(),cerSampleTestTb.getSampleCode(),cerSampleTestTb.getIdentifyPrimer());
+                        for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
+                            layoutConfirmReqDTO.fillSampleToSingleList(cerSampleTestTb.getVectorTaskCode(), cerSampleTestTb.getTransformCode(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getIdentifyPrimer());
                         }
                         sampleTestService.layoutConfirm(layoutConfirmReqDTO);
                     }
@@ -153,8 +155,8 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         cerSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerPlantDtlTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
 
-        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(),ImplementationPlanTypeEnum.cer_plant.name());
-        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(),ImplementationPlanTypeEnum.sample_and_test.name());
+        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.cer_plant.name());
+        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.sample_and_test.name());
 
     }
 
@@ -180,31 +182,72 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         //重复取样申请
         if (CollectionUtil.isNotEmpty(newSampleTestDTO.getRepeatSampleApplyList())) {
             List<CerSampleTestTb> targetCerSampleTestTbList = new ArrayList<>();
-            for (NewSampleTestDTO.RepeatSampleApply repeatSampleApply : newSampleTestDTO.getRepeatSampleApplyList()) {
-                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(repeatSampleApply.getVectorTaskCode());
-                CerSampleTestTb orgCerSampleTestTb = cerSampleTestTbMapper.selectOneByUniqueCode(cerVectorTaskTb.getProjectCode() + repeatSampleApply.getSampleCode());
-                if (orgCerSampleTestTb == null) {
-                    throw new BusinessException("实施方案中:" + cerVectorTaskTb.getVectorTaskCode() + "中无此取样编号" + repeatSampleApply.getSampleCode());
+            //克隆苗
+            if (newSampleTestDTO.isCloneFlag()) {
+                for (NewSampleTestDTO.RepeatSampleApply repeatSampleApply : newSampleTestDTO.getRepeatSampleApplyList()) {
+                    List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCodeLike(repeatSampleApply.getSampleCode());
+                    List<Integer> sampleCodeSuffixList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> cerSampleTestTb.getSampleCode().contains("-")).map(cerSampleTestTb -> Integer.valueOf(cerSampleTestTb.getSampleCode().substring(cerSampleTestTb.getSampleCode().indexOf("-") + 1))).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+                    int maxSampleCodeSuffix = CollectionUtil.isNotEmpty(sampleCodeSuffixList) ? Integer.valueOf(sampleCodeSuffixList.get(0)) : 0;
+                    for (int i = 1; i <= repeatSampleApply.getCloneNum(); i++) {
+                        CerSampleTestTb repeatCerSampleTestTb = new CerSampleTestTb();
+                        repeatCerSampleTestTb.setProjectId(repeatCerSampleTestTb.getProjectId());
+                        repeatCerSampleTestTb.setSubProjectId(repeatCerSampleTestTb.getSubProjectId());
+                        repeatCerSampleTestTb.setVectorTaskId(repeatCerSampleTestTb.getVectorTaskId());
+                        repeatCerSampleTestTb.setProjectCode(repeatCerSampleTestTb.getProjectCode());
+                        repeatCerSampleTestTb.setSubProjectCode(repeatCerSampleTestTb.getSubProjectCode());
+                        repeatCerSampleTestTb.setVectorTaskCode(repeatCerSampleTestTb.getVectorTaskCode());
+                        repeatCerSampleTestTb.setPlasmidName(repeatCerSampleTestTb.getPlasmidName());
+                        repeatCerSampleTestTb.setTransformCode(repeatCerSampleTestTb.getTransformCode());
+                        repeatCerSampleTestTb.setSampleCode(repeatCerSampleTestTb.getSampleCode() + "-" + (maxSampleCodeSuffix + i));
+                        repeatCerSampleTestTb.setApplyTime(new Date());
+                        repeatCerSampleTestTb.setApplyUserId(SecurityContextHolder.getUserId());
+                        repeatCerSampleTestTb.setApplyUserName(SecurityContextHolder.getNickName());
+                        repeatCerSampleTestTb.setAcceptorMaterial(repeatCerSampleTestTb.getAcceptorMaterial());
+                        repeatCerSampleTestTb.setCreateTime(new Date());
+                        repeatCerSampleTestTb.setApplyNo(cerSampleApplyTb.getApplyNo());
+                        repeatCerSampleTestTb.setSampleTime(repeatSampleApply.getSampleTime());
+                        repeatCerSampleTestTb.setSampleGeneration(repeatCerSampleTestTb.getSampleGeneration());
+                        targetCerSampleTestTbList.add(repeatCerSampleTestTb);
+
+                        //克隆苗取样生成新的种植编号
+                        CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(repeatCerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioTaskDtlTb.getTaskNum());
+                        cerPlantDtlTb.setPlantCode(repeatCerSampleTestTb.getSampleCode());
+                        cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
+                        if (Objects.isNull(cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(cerPlantDtlTb.getPlantCode(), cerPlantDtlTb.getVectorTaskCode()))) {
+                            cerPlantDtlTbMapper.insert(cerPlantDtlTb);
+                        }
+                    }
                 }
-                CerSampleTestTb repeatCerSampleTestTb = new CerSampleTestTb();
-                repeatCerSampleTestTb.setProjectId(orgCerSampleTestTb.getProjectId());
-                repeatCerSampleTestTb.setSubProjectId(orgCerSampleTestTb.getSubProjectId());
-                repeatCerSampleTestTb.setVectorTaskId(orgCerSampleTestTb.getVectorTaskId());
-                repeatCerSampleTestTb.setProjectCode(orgCerSampleTestTb.getProjectCode());
-                repeatCerSampleTestTb.setSubProjectCode(orgCerSampleTestTb.getSubProjectCode());
-                repeatCerSampleTestTb.setVectorTaskCode(orgCerSampleTestTb.getVectorTaskCode());
-                repeatCerSampleTestTb.setPlasmidName(orgCerSampleTestTb.getPlasmidName());
-                repeatCerSampleTestTb.setTransformCode(orgCerSampleTestTb.getTransformCode());
-                repeatCerSampleTestTb.setSampleCode(orgCerSampleTestTb.getSampleCode());
-                repeatCerSampleTestTb.setApplyTime(new Date());
-                repeatCerSampleTestTb.setApplyUserId(SecurityContextHolder.getUserId());
-                repeatCerSampleTestTb.setApplyUserName(SecurityContextHolder.getNickName());
-                repeatCerSampleTestTb.setAcceptorMaterial(orgCerSampleTestTb.getAcceptorMaterial());
-                repeatCerSampleTestTb.setCreateTime(new Date());
-                repeatCerSampleTestTb.setApplyNo(cerSampleApplyTb.getApplyNo());
-                repeatCerSampleTestTb.setSampleTime(repeatSampleApply.getSampleTime());
-                repeatCerSampleTestTb.setSampleGeneration(orgCerSampleTestTb.getSampleGeneration());
-                targetCerSampleTestTbList.add(repeatCerSampleTestTb);
+
+
+
+            } else {
+                for (NewSampleTestDTO.RepeatSampleApply repeatSampleApply : newSampleTestDTO.getRepeatSampleApplyList()) {
+                    CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(repeatSampleApply.getVectorTaskCode());
+                    CerSampleTestTb orgCerSampleTestTb = cerSampleTestTbMapper.selectOneByUniqueCode(cerVectorTaskTb.getProjectCode() + repeatSampleApply.getSampleCode());
+                    if (orgCerSampleTestTb == null) {
+                        throw new BusinessException("实施方案中:" + cerVectorTaskTb.getVectorTaskCode() + "中无此取样编号" + repeatSampleApply.getSampleCode());
+                    }
+                    CerSampleTestTb repeatCerSampleTestTb = new CerSampleTestTb();
+                    repeatCerSampleTestTb.setProjectId(orgCerSampleTestTb.getProjectId());
+                    repeatCerSampleTestTb.setSubProjectId(orgCerSampleTestTb.getSubProjectId());
+                    repeatCerSampleTestTb.setVectorTaskId(orgCerSampleTestTb.getVectorTaskId());
+                    repeatCerSampleTestTb.setProjectCode(orgCerSampleTestTb.getProjectCode());
+                    repeatCerSampleTestTb.setSubProjectCode(orgCerSampleTestTb.getSubProjectCode());
+                    repeatCerSampleTestTb.setVectorTaskCode(orgCerSampleTestTb.getVectorTaskCode());
+                    repeatCerSampleTestTb.setPlasmidName(orgCerSampleTestTb.getPlasmidName());
+                    repeatCerSampleTestTb.setTransformCode(orgCerSampleTestTb.getTransformCode());
+                    repeatCerSampleTestTb.setSampleCode(orgCerSampleTestTb.getSampleCode());
+                    repeatCerSampleTestTb.setApplyTime(new Date());
+                    repeatCerSampleTestTb.setApplyUserId(SecurityContextHolder.getUserId());
+                    repeatCerSampleTestTb.setApplyUserName(SecurityContextHolder.getNickName());
+                    repeatCerSampleTestTb.setAcceptorMaterial(orgCerSampleTestTb.getAcceptorMaterial());
+                    repeatCerSampleTestTb.setCreateTime(new Date());
+                    repeatCerSampleTestTb.setApplyNo(cerSampleApplyTb.getApplyNo());
+                    repeatCerSampleTestTb.setSampleTime(repeatSampleApply.getSampleTime());
+                    repeatCerSampleTestTb.setSampleGeneration(orgCerSampleTestTb.getSampleGeneration());
+                    targetCerSampleTestTbList.add(repeatCerSampleTestTb);
+                }
             }
             try {
                 cerSampleTestTbMapper.insertBatch(targetCerSampleTestTbList);
@@ -212,7 +255,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 log.error("取样申请异常", e);
                 throw new BusinessException("取样编号有重复");
             }
-
             newSampleTestDTO.getRepeatSampleApplyList().stream().map(NewSampleTestDTO.RepeatSampleApply::getVectorTaskCode).distinct().forEach(vectorTaskCode -> {
                 /**
                  * 更新当前执行步骤
@@ -228,7 +270,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(), firstSampleApply.getVectorTaskCode());
                 CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerTransformTb.getVectorTaskCode());
                 CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-                List<CerConversionAndTransRef> cerConversionAndTransRefList=cerConversionAndTransRefMapper.selectAllByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(),firstSampleApply.getVectorTaskCode());
+                List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectAllByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(), firstSampleApply.getVectorTaskCode());
                 for (int i = 1; i <= firstSampleApply.getSampleNum(); i++) {
                     CerSampleTestTb cerSampleTestTb = new CerSampleTestTb();
                     cerSampleTestTb.setProjectId(cerTransformTb.getProjectId());
@@ -252,8 +294,8 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     targetCerSampleTestTbList.add(cerSampleTestTb);
 
                     //如果此转化编号已经移过苗，此时取样需要直接生成种植编号
-                    if(CollectionUtil.isNotEmpty(cerConversionAndTransRefList)){
-                        CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(),bioTaskDtlTb.getTaskNum());
+                    if (CollectionUtil.isNotEmpty(cerConversionAndTransRefList)) {
+                        CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioTaskDtlTb.getTaskNum());
                         cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
                         cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
                         if (Objects.isNull(cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(cerPlantDtlTb.getPlantCode(), cerPlantDtlTb.getVectorTaskCode()))) {
@@ -263,7 +305,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                          * 更新当前执行步骤
                          */
                         logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.cer_plant, bioTaskDtlTb.getTaskNum());
-                    }else {
+                    } else {
                         /**
                          * 更新当前执行步骤
                          */
@@ -283,6 +325,25 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         }
     }
 
+    public static void main(String[] args) {
+        List<CerSampleTestTb> cerSampleTestTbList = new ArrayList<>();
+        CerSampleTestTb cerSampleTestTb1 = new CerSampleTestTb();
+        cerSampleTestTb1.setSampleCode("AN004-9");
 
+        CerSampleTestTb cerSampleTestTb2 = new CerSampleTestTb();
+        cerSampleTestTb2.setSampleCode("AN004-2");
+
+        CerSampleTestTb cerSampleTestTb3 = new CerSampleTestTb();
+        cerSampleTestTb3.setSampleCode("AN004-1");
+
+        cerSampleTestTbList.add(cerSampleTestTb1);
+        cerSampleTestTbList.add(cerSampleTestTb2);
+        cerSampleTestTbList.add(cerSampleTestTb3);
+
+        List<Integer> sampleCodeSuffixList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> cerSampleTestTb.getSampleCode().contains("-")).map(cerSampleTestTb -> Integer.valueOf(cerSampleTestTb.getSampleCode().substring(cerSampleTestTb.getSampleCode().indexOf("-") + 1))).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+        int maxSampleCodeSuffix = CollectionUtil.isNotEmpty(sampleCodeSuffixList) ? Integer.valueOf(sampleCodeSuffixList.get(0)) + 1 : 0;
+
+        System.out.println(maxSampleCodeSuffix);
+    }
 }
 

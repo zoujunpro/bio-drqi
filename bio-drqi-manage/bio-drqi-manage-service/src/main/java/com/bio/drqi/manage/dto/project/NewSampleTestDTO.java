@@ -20,6 +20,11 @@ public class NewSampleTestDTO {
     private String speciesCode;
 
     /**
+     * 是否是克隆苗
+     */
+    private boolean cloneFlag;
+
+    /**
      * 首次取样申请
      */
 
@@ -77,6 +82,11 @@ public class NewSampleTestDTO {
          * 取样时间
          */
         private String sampleTime;
+
+        /**
+         * 克隆苗
+         */
+        private Integer cloneNum;
     }
 
     @Data

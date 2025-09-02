@@ -427,5 +427,12 @@
         where
         transform_code = #{transformCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllBySampleCodeLike" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_test_tb
+        where
+        sample_code like  CONCAT('%',#{sampleCode,jdbcType=VARCHAR},'%')
+    </select>
 
 </mapper>

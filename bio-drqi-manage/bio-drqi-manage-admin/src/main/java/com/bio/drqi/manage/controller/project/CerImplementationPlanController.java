@@ -102,6 +102,16 @@ public class CerImplementationPlanController {
         List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForMoveSeed();
         return ResponseResult.getSuccess(list);
     }
+
+    /**
+     * 询实施方案（首次取样）
+     */
+    @GetMapping("/listForFirstSample")
+    @WebLog(desc = "询实施方案（首次取样）")
+    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForFirstSample(@Validated  @RequestParam String speciesCode) {
+        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForFirstSample(speciesCode);
+        return ResponseResult.getSuccess(list);
+    }
     /**
      * 载体模板下载
      *

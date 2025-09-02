@@ -198,7 +198,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         repeatCerSampleTestTb.setVectorTaskCode(repeatCerSampleTestTb.getVectorTaskCode());
                         repeatCerSampleTestTb.setPlasmidName(repeatCerSampleTestTb.getPlasmidName());
                         repeatCerSampleTestTb.setTransformCode(repeatCerSampleTestTb.getTransformCode());
-                        repeatCerSampleTestTb.setSampleCode(repeatCerSampleTestTb.getSampleCode() + "-" + (maxSampleCodeSuffix + i));
+                        repeatCerSampleTestTb.setSampleCode(repeatSampleApply.getSampleCode() + "-" + (maxSampleCodeSuffix + i));
                         repeatCerSampleTestTb.setApplyTime(new Date());
                         repeatCerSampleTestTb.setApplyUserId(SecurityContextHolder.getUserId());
                         repeatCerSampleTestTb.setApplyUserName(SecurityContextHolder.getNickName());

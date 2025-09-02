@@ -25,6 +25,10 @@ public interface VectorTaskService {
 
     List<CerImplementationPlanBaseInfoRspDTO> listForMoveSeed();
 
+    List<CerImplementationPlanBaseInfoRspDTO> listForFirstSample(String speciesCode);
+
+
+
     List<CerImplementationPlanBaseInfoRspDTO> listForPlasmid(Integer subProjectId);
 
     String getTaskNum(GetVectorTaskNumReqDTO getVectorTaskNumReqDTO);

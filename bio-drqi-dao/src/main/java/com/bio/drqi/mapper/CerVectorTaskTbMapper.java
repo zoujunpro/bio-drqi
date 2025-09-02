@@ -30,8 +30,9 @@ public interface CerVectorTaskTbMapper extends BaseMapper<CerVectorTaskTb> {
     List<CerVectorTaskTb> selectAllByVectorTaskCodeIn(@Param("vectorTaskCodeList") Collection<String> vectorTaskCodeList);
 
     List<CerVectorTaskTb> listForTransForm(@Param("subProjectId") Integer subProjectId);
-
+    List<CerVectorTaskTb> listForFirstSample(@Param("speciesCode") String speciesCode);
     List<CerVectorTaskTb> listForMoveSeed();
+
 
     List<CerVectorTaskTb> listForPlasmid(@Param("subProjectId") Integer subProjectId);
 

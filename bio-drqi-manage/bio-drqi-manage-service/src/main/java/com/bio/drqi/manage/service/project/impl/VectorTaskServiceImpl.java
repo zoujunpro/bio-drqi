@@ -109,8 +109,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     @Override
     public List<CerImplementationPlanBaseInfoRspDTO> listForFirstSample(String speciesCode) {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.listForFirstSample(speciesCode);
-
-        return null;
+        return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
     }
 
     @Override

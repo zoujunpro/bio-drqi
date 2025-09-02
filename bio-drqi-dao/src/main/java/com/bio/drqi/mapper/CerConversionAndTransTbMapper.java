@@ -17,6 +17,7 @@ public interface CerConversionAndTransTbMapper extends BaseMapper<CerConversionA
 
     List<CerConversionAndTransTb> selectAllOrderByIdDesc();
 
+    List<CerConversionAndTransTb> selectSelective(CerConversionAndTransTb cerConversionAndTransTb);
     CerConversionAndTransTb selectOneByTaskNum(@Param("taskNum") String taskNum);
 
     int deleteByTaskNum(@Param("taskNum") String taskNum);

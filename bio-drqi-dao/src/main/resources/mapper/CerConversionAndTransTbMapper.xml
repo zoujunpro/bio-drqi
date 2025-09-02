@@ -54,4 +54,21 @@
             </where>
             GROUP BY transDate
     </select>
+    <select id="selectSelective" parameterType="com.bio.drqi.domain.CerConversionAndTransTb"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_conversion_and_trans_tb
+        <where>
+            <if test="handoverDate != null">and handover_date=#{handoverDate,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="imageUrl != null">and image_url=#{imageUrl,jdbcType=VARCHAR}</if>
+            <if test="transNumber != null">and trans_number=#{transNumber,jdbcType=NUMERIC}</if>
+            <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
+            <if test="transType != null and transType!=''">and trans_type=#{transType,jdbcType=VARCHAR}</if>
+        </where>
+       order by id desc
+    </select>
 </mapper>

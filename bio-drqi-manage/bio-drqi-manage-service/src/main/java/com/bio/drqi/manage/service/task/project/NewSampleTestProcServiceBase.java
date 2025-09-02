@@ -190,13 +190,12 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     int maxSampleCodeSuffix = CollectionUtil.isNotEmpty(sampleCodeSuffixList) ? Integer.valueOf(sampleCodeSuffixList.get(0)) : 0;
                     for (int i = 1; i <= repeatSampleApply.getCloneNum(); i++) {
                         CerSampleTestTb repeatCerSampleTestTb = new CerSampleTestTb();
-                        repeatCerSampleTestTb.setProjectId(repeatCerSampleTestTb.getProjectId());
-                        repeatCerSampleTestTb.setSubProjectId(repeatCerSampleTestTb.getSubProjectId());
-                        repeatCerSampleTestTb.setVectorTaskId(repeatCerSampleTestTb.getVectorTaskId());
-                        repeatCerSampleTestTb.setProjectCode(repeatCerSampleTestTb.getProjectCode());
-                        repeatCerSampleTestTb.setSubProjectCode(repeatCerSampleTestTb.getSubProjectCode());
-                        repeatCerSampleTestTb.setVectorTaskCode(repeatCerSampleTestTb.getVectorTaskCode());
-                        repeatCerSampleTestTb.setPlasmidName(repeatCerSampleTestTb.getPlasmidName());
+                        repeatCerSampleTestTb.setProjectId(cerSampleTestTbList.get(0).getProjectId());
+                        repeatCerSampleTestTb.setSubProjectId(cerSampleTestTbList.get(0).getSubProjectId());
+                        repeatCerSampleTestTb.setVectorTaskId(cerSampleTestTbList.get(0).getVectorTaskId());
+                        repeatCerSampleTestTb.setProjectCode(cerSampleTestTbList.get(0).getProjectCode());
+                        repeatCerSampleTestTb.setSubProjectCode(cerSampleTestTbList.get(0).getSubProjectCode());
+                        repeatCerSampleTestTb.setVectorTaskCode(cerSampleTestTbList.get(0).getVectorTaskCode());
                         repeatCerSampleTestTb.setTransformCode(repeatCerSampleTestTb.getTransformCode());
                         repeatCerSampleTestTb.setSampleCode(repeatSampleApply.getSampleCode() + "-" + (maxSampleCodeSuffix + i));
                         repeatCerSampleTestTb.setApplyTime(new Date());

@@ -36,9 +36,6 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
-    @Resource
-    private CerVectorGroupTbMapper cerVectorGroupTbMapper;
-
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         log.info("【任务工单】质粒质检校验开始");

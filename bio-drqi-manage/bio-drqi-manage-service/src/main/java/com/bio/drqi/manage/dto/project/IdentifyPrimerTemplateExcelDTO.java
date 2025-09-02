@@ -15,11 +15,6 @@ public class IdentifyPrimerTemplateExcelDTO {
     @NotBlank(message = "数据不全：缺失转化编号")
     private String transformCode;
 
-
-    @ExcelProperty(value = "转化编号", index = 2)
-    @NotBlank(message = "数据不全：缺失质粒信息")
-    private String plasmidName;
-
     @ExcelProperty(value = "取样编号", index = 3)
     @NotBlank(message = "数据不全：缺失取样编号")
     private String sampleCode;

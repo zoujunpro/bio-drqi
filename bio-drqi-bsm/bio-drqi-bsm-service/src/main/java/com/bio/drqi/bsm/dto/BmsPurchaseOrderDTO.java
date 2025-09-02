@@ -1,8 +1,11 @@
 package com.bio.drqi.bsm.dto;
 
 import lombok.Data;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -67,6 +70,7 @@ public class BmsPurchaseOrderDTO {
     private String attachmentUrls;
 
 
+    @NotEmpty(message = "商品信息必填写")
     private List<Product> productList;
 
     /**
@@ -75,6 +79,7 @@ public class BmsPurchaseOrderDTO {
     private BigDecimal purchaseTotalAmount;
 
     @Data
+    @Valid
     public static class Product {
         /**
          * 归属项目编号

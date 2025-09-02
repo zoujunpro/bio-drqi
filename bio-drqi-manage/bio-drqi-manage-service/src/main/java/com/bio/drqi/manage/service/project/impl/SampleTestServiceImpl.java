@@ -67,9 +67,6 @@ public class SampleTestServiceImpl implements SampleTestService {
     @Resource
     private CerSampleLayoutTbMapper cerSampleLayoutTbMapper;
 
-    @Resource
-    private CerVectorGroupTbMapper cerVectorGroupTbMapper;
-
 
     @Resource
     private BioInfoClientApi bioInfoClientApi;
@@ -325,12 +322,10 @@ public class SampleTestServiceImpl implements SampleTestService {
             List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(applyNo);
             List<IdentifyPrimerTemplateExcelDTO> identifyPrimerTemplateExcelDTOList = new ArrayList<IdentifyPrimerTemplateExcelDTO>();
             for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
-                CerVectorGroupTb cerVectorGroupTb = cerVectorGroupTbMapper.selectOneByGroupNameAndVectorTaskId(cerSampleTestTb.getPlasmidName(), cerSampleTestTb.getVectorTaskId());
                 IdentifyPrimerTemplateExcelDTO identifyPrimerTemplateExcelDTO = new IdentifyPrimerTemplateExcelDTO();
                 identifyPrimerTemplateExcelDTO.setTransformCode(cerSampleTestTb.getTransformCode());
                 identifyPrimerTemplateExcelDTO.setSampleCode(cerSampleTestTb.getSampleCode());
                 identifyPrimerTemplateExcelDTO.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
-                identifyPrimerTemplateExcelDTO.setPlasmidName(cerVectorGroupTb.getPlasmidNames());
                 identifyPrimerTemplateExcelDTOList.add(identifyPrimerTemplateExcelDTO);
 
             }

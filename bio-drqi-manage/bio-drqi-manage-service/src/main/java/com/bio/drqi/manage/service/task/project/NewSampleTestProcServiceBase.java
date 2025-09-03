@@ -309,9 +309,10 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test, bioTaskDtlTb.getTaskNum());
                     }
                 }
+
                 cerSampleCodePrefixTb.setCurrentIndex(cerSampleCodePrefixTb.getCurrentIndex() + firstSampleApply.getSampleNum());
                 cerSampleCodePrefixTbMapper.updateById(cerSampleCodePrefixTb);
-
+                logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test, bioTaskDtlTb.getTaskNum());
                 try {
                     cerSampleTestTbMapper.insertBatch(targetCerSampleTestTbList);
                 } catch (DuplicateKeyException e) {
@@ -319,13 +320,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     throw new BusinessException("取样编号有重复");
                 }
             }
-            newSampleTestDTO.getFirstSampleApplyList().stream().map(NewSampleTestDTO.FirstSampleApply::getVectorTaskCode).distinct().forEach(vectorTaskCode -> {
-                /**
-                 * 更新当前执行步骤
-                 */
-                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-                logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test, bioTaskDtlTb.getTaskNum());
-            });
         }
     }
 

@@ -142,6 +142,11 @@ public class PlantDtlListRspDTO {
     private String speciesCode;
 
     /**
+     * 项目物种
+     */
+    private String speciesName;
+
+    /**
      * 受体材料
      */
     private String acceptorMaterial;

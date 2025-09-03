@@ -59,16 +59,17 @@
         from  cer_plant_dtl_tb
         <where>
             <if test="projectId != null"> and  project_id=#{projectId,jdbcType=NUMERIC}</if>
-            <if test="projectCode != null">and  project_code=#{projectCode,jdbcType=VARCHAR}</if>
-            <if test="plantCode != null">and  plant_code=#{plantCode,jdbcType=VARCHAR}</if>
-            <if test="subProjectCode != null">and  sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
+            <if test="projectCode != null and projectCode!=''">and  project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="plantCode != null and plantCode!=''">and  plant_code=#{plantCode,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null and taskNum!=''">and  task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="subProjectCode != null and subProjectCode!=''">and  sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
             <if test="subProjectId != null">and  sub_project_id=#{subProjectId,jdbcType=NUMERIC}</if>
             <if test="transformGroupName != null">and  transform_group_name=#{transformGroupName,jdbcType=VARCHAR}</if>
             <if test="vectorTaskId != null">and  vector_task_id=#{vectorTaskId,jdbcType=NUMERIC}</if>
-            <if test="vectorTaskCode != null">and  vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null and vectorTaskCode!=''">and  vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
             <if test="plasmidName != null">and  plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
             <if test="transformCode != null">and  transform_code=#{transformCode,jdbcType=VARCHAR}</if>
-            <if test="sampleCode != null">and  sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
+            <if test="sampleCode != null and sampleCode!=''">and  sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
             <if test="generation != null">and  generation=#{generation,jdbcType=VARCHAR}</if>
             <if test="plantNumber != null">and  plant_number=#{plantNumber,jdbcType=NUMERIC}</if>
             <if test="plantDate != null">and  plant_date=#{plantDate,jdbcType=VARCHAR}</if>

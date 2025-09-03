@@ -205,7 +205,6 @@ public class CerPlantDtlTb implements Serializable {
         cerPlantDtlTb.setHarvestDate(null);
         cerPlantDtlTb.setOtherField(null);
         cerPlantDtlTb.setEditType(cerSampleTestTb.getTestEditType());
-        cerPlantDtlTb.setSpeciesCode(cerSampleTestTb.getSampleCode());
         cerPlantDtlTb.setAcceptorMaterial(cerSampleTestTb.getAcceptorMaterial());
         cerPlantDtlTb.setCreateDate(new Date());
         cerPlantDtlTb.setUpdateTime(null);

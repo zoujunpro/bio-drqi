@@ -35,12 +35,6 @@ public class CerPlantDtlServiceImpl implements CerPlantDtlService {
         List<CerPlantDtlTb> cerPlantDtlTbList = cerPlantDtlTbMapper.selectSelective(BeanUtils.copyProperties(plantDtlListReqDTO, CerPlantDtlTb.class));
         PageInfo<CerPlantDtlTb> srcPageInfo = new PageInfo<>(cerPlantDtlTbList);
         PageInfo<PlantDtlListRspDTO> result = BeanUtils.copyPageInfoProperties(srcPageInfo, PlantDtlListRspDTO.class);
-        if (CollectionUtil.isNotEmpty(result.getList())) {
-            Map<String, String> map = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
-            result.getList().forEach(plantDtlListRspDTO -> {
-                plantDtlListRspDTO.setSpeciesName(map.get(plantDtlListRspDTO.getSpeciesCode()));
-            });
-        }
         return result;
     }
 

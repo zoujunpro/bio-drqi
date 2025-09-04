@@ -349,7 +349,6 @@ public class SampleTestServiceImpl implements SampleTestService {
                 identifyPrimerTemplateExcelDTO.setTransformCode(cerSampleTestTb.getTransformCode());
                 identifyPrimerTemplateExcelDTO.setSampleCode(cerSampleTestTb.getSampleCode());
                 identifyPrimerTemplateExcelDTO.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
-                identifyPrimerTemplateExcelDTO.setPlasmidName(cerVectorGroupTb.getPlasmidNames());
                 identifyPrimerTemplateExcelDTOList.add(identifyPrimerTemplateExcelDTO);
 
             }

@@ -72,7 +72,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         PageInfo<VectorListPageRspDTO> vectorBaseInfoRspDTOPageInfo = BeanUtils.copyPageInfoProperties(srcPage, VectorListPageRspDTO.class);
         if (CollectionUtil.isNotEmpty(vectorBaseInfoRspDTOPageInfo.getList())) {
             Map<String, String> breedMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
-            Map<String, String> speciesMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode,CerSpeciesConf::getSpeciesName));
+            Map<String, String> speciesMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
             vectorBaseInfoRspDTOPageInfo.getList().forEach(vectorListPageRspDTO -> {
                 vectorListPageRspDTO.setBreedName(breedMap.get(vectorListPageRspDTO.getBreedCode()));
                 vectorListPageRspDTO.setSpeciesName(speciesMap.get(vectorListPageRspDTO.getSpeciesCode()));
@@ -97,7 +97,16 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     @Override
     public List<CerImplementationPlanBaseInfoRspDTO> listForTransForm(Integer subProjectId) {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.listForTransForm(subProjectId);
-        return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
+        List<CerImplementationPlanBaseInfoRspDTO> result = BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
+        result.forEach(cerImplementationPlanBaseInfoRspDTO -> {
+            if(StringUtils.isEmpty(cerImplementationPlanBaseInfoRspDTO.getAcceptorMaterial())){
+              CerBreedDict cerBreedDict=  cerBreedDictMapper.selectOneByBreedCode(cerImplementationPlanBaseInfoRspDTO.getBreedCode());
+              if(cerBreedDict!=null){
+                  cerImplementationPlanBaseInfoRspDTO.setAcceptorMaterial(cerBreedDict.getBreedName());
+              }
+            }
+        });
+        return result;
     }
 
     @Override

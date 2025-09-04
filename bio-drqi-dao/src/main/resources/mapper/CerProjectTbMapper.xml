@@ -174,7 +174,7 @@
     <select id="selectAll" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from cer_project_tb order by project_code desc
+        from cer_project_tb order by id desc
     </select>
     <select id="selectAllByOwnerUserIdIsNotNull" resultMap="BaseResultMap">
         select

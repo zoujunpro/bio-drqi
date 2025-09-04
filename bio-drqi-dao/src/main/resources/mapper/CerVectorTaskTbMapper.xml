@@ -125,6 +125,7 @@
         from cer_vector_task_tb
         where
         sub_project_id = #{subProjectId,jdbcType=NUMERIC}
+        and  task_status = '2'
         order by id desc;
     </select>
     <select id="listForPlasmid" resultMap="BaseResultMap">
@@ -145,6 +146,7 @@
         from cer_vector_task_tb
         where id in(select distinct vector_task_id from cer_transform_tb)
         and project_id in(select id from cer_project_tb where project_status ='execute')
+        and  task_status = '2'
         order by id desc
     </select>
 
@@ -155,6 +157,7 @@
         where id in(select distinct vector_task_id from cer_transform_tb)
         and project_id in(select id from cer_project_tb where project_status ='execute')
         and species_code = #{speciesCode,jdbcType=VARCHAR}
+        and  task_status = '2'
         order by id desc
     </select>
 

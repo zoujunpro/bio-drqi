@@ -167,4 +167,37 @@ public class Clean20250721Controller {
         }
         return ResponseResult.getSuccess("ok");
     }
+
+    @GetMapping("/cleanSampleAcceptorMaterial")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanSampleAcceptorMaterial() {
+        List<CerSampleTestTb> list = cerSampleTestTbMapper.selectList(null);
+        for (CerSampleTestTb cerSampleTestTb : list) {
+            if (cerSampleTestTb.getAcceptorMaterial()==null||cerSampleTestTb.getAcceptorMaterial().length() == 32) {
+              CerTransformTb cerTransformTb=  cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
+                if(cerTransformTb!=null&&StringUtils.isNotEmpty(cerTransformTb.getAcceptorMaterial())){
+                    cerTransformTb.setAcceptorMaterial(cerTransformTb.getAcceptorMaterial());
+                    cerSampleTestTbMapper.updateById(cerSampleTestTb);
+                }
+             }
+
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
+    @GetMapping("/cleanCloneSampleCode")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanCloneSampleCode() {
+        List<CerSampleTestTb> list = cerSampleTestTbMapper.selectList(null);
+        for (CerSampleTestTb cerSampleTestTb : list) {
+            if (cerSampleTestTb.getSampleCode().contains("-")) {
+                cerSampleTestTb.setCloneSampleCode(cerSampleTestTb.getSampleCode().split("-")[0]);
+                cerSampleTestTbMapper.updateById(cerSampleTestTb);
+            }
+
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
+
 }

@@ -211,6 +211,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         repeatCerSampleTestTb.setSampleTime(repeatSampleApply.getSampleTime());
                         repeatCerSampleTestTb.setSampleGeneration(cerSampleTestTbList.get(0).getSampleGeneration());
                         repeatCerSampleTestTb.setCloneSampleCode(repeatSampleApply.getSampleCode());
+                        repeatCerSampleTestTb.setUniqueCode(repeatCerSampleTestTb.getProjectCode() + repeatCerSampleTestTb.getSampleCode());
                         targetCerSampleTestTbList.add(repeatCerSampleTestTb);
 
                         //克隆苗取样生成新的种植编号

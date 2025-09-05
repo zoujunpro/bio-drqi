@@ -32,7 +32,7 @@
         create_user_name,delete_flag,kd_number
     </sql>
 
-    <select id="selectSelective" resultMap="BaseResultMap" resultType="com.bio.drqi.domain.BmsProductTb">
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsProductTb">
         select
         <include refid="Base_Column_List"/>
         from bms_product_tb

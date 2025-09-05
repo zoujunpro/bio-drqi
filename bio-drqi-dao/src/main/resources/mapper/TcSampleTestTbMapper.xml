@@ -166,7 +166,7 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </select>
-    <select id="selectSelective" resultType="com.bio.drqi.domain.TcSampleTestTb">
+    <select id="selectSelective"  resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.TcSampleTestTb">
         select
         <include refid="Base_Column_List"/>
         from tc_sample_test_tb

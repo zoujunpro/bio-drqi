@@ -34,7 +34,7 @@
         apply_user_id,create_time,experiment_num,
         task_num,design_url,sample_code_prefix,next_sample_number,experiment_status, harvest_apply_num,experiment_type
     </sql>
-    <select id="selectSelective" resultType="com.bio.drqi.domain.TcExperimentTb">
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.TcExperimentTb">
         select
         <include refid="Base_Column_List"/>
         from tc_experiment_tb

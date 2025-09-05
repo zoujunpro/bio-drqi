@@ -232,6 +232,8 @@ public class SampleTestListDetailRspDTO {
 
     private Integer matchNum;
 
+    private String cloneSampleCode;
+
 
 
 

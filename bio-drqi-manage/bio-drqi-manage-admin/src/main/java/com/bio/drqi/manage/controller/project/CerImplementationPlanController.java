@@ -48,7 +48,15 @@ public class CerImplementationPlanController {
         return ResponseResult.getSuccess(pageInfo);
     }
 
-
+    /**
+     * 查询实施方案(所有的)
+     */
+    @GetMapping("/listAll")
+    @WebLog(desc = "查询实施方案（所有的）")
+    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listAll() {
+        List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listAll();
+        return ResponseResult.getSuccess(list);
+    }
     /**
      * 查询实施方案（查询子项目下所有实施方案）
      */

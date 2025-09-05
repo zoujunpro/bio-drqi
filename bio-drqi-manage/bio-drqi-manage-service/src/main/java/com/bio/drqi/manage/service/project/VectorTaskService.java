@@ -17,6 +17,8 @@ public interface VectorTaskService {
 
     PageInfo<VectorListPageRspDTO> ListPage(QueryPageVectorReqDTO queryPageVectorReqDTO);
 
+    List<CerImplementationPlanBaseInfoRspDTO> listAll();
+
     List<CerImplementationPlanBaseInfoRspDTO> listAllBySubProject(Integer subProjectId);
 
     List<CerImplementationPlanBaseInfoRspDTO> listForVectorBuild(Integer subProjectId);

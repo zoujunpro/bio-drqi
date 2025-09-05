@@ -82,6 +82,12 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     }
 
     @Override
+    public List<CerImplementationPlanBaseInfoRspDTO> listAll() {
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectSelective(null);
+        return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
+    }
+
+    @Override
     public List<CerImplementationPlanBaseInfoRspDTO> listAllBySubProject(Integer subProjectId) {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllBySubProjectId(subProjectId);
         return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
@@ -99,11 +105,11 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.listForTransForm(subProjectId);
         List<CerImplementationPlanBaseInfoRspDTO> result = BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
         result.forEach(cerImplementationPlanBaseInfoRspDTO -> {
-            if(StringUtils.isEmpty(cerImplementationPlanBaseInfoRspDTO.getAcceptorMaterial())){
-              CerBreedDict cerBreedDict=  cerBreedDictMapper.selectOneByBreedCode(cerImplementationPlanBaseInfoRspDTO.getBreedCode());
-              if(cerBreedDict!=null){
-                  cerImplementationPlanBaseInfoRspDTO.setAcceptorMaterial(cerBreedDict.getBreedName());
-              }
+            if (StringUtils.isEmpty(cerImplementationPlanBaseInfoRspDTO.getAcceptorMaterial())) {
+                CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(cerImplementationPlanBaseInfoRspDTO.getBreedCode());
+                if (cerBreedDict != null) {
+                    cerImplementationPlanBaseInfoRspDTO.setAcceptorMaterial(cerBreedDict.getBreedName());
+                }
             }
         });
         return result;

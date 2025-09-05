@@ -147,7 +147,7 @@
         </foreach>
     </update>
 
-    <select id="selectSelective" resultMap="BaseResultMap" resultType="com.bio.drqi.domain.CerSampleTestTb">
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.CerSampleTestTb">
         select
         <include refid="Base_Column_List"/>
         from cer_sample_test_tb

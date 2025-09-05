@@ -198,7 +198,7 @@
             <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
             <if test="applyNo != null and applyNo!=''">and apply_no=#{applyNo,jdbcType=VARCHAR}</if>
             <if test="identifyPrimer != null">and identify_primer=#{identifyPrimer,jdbcType=VARCHAR}</if>
-            <if test="cloneSampleCode != null">and clone_sample_code=#{cloneSampleCode,jdbcType=VARCHAR}</if>
+            <if test="cloneSampleCode != null and cloneSampleCode!=''">and clone_sample_code=#{cloneSampleCode,jdbcType=VARCHAR}</if>
             <if test='cloneSampleFlag =="Y"'>and clone_sample_code is not null</if>
             <if test='cloneSampleFlag =="N"'>and clone_sample_code is null</if>
         </where>

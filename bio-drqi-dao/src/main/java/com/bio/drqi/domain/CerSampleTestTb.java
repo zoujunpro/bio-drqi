@@ -231,7 +231,13 @@ public class CerSampleTestTb implements Serializable {
     @TableField(exist = false)
     private String sampleMonth;
 
+
+    @TableField(exist = false)
+    private String cloneSampleFlag;
+
     private String uniqueCode;
+
+    private String cloneSampleCode;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

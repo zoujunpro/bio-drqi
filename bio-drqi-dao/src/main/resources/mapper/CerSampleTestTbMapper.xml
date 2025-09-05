@@ -49,6 +49,7 @@
         <result property="identifyPrimer" column="identify_primer" jdbcType="VARCHAR"/>
         <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="cloneSampleCode" column="clone_sample_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -65,7 +66,7 @@
         test_fixed_point_type,test_donor_residue_info,test_insertion_site,
         test_elisa_result,test_qbzr_seq,test_edit_residue_info,test_user_id,test_user_name,
         test_time,check_user_name,check_user_id,check_result,create_time,
-        update_time,test_org_result,acceptor_material,apply_no,identify_primer,unique_code,remark
+        update_time,test_org_result,acceptor_material,apply_no,identify_primer,unique_code,remark,clone_sample_code
     </sql>
 
     <select id="selectAllByProjectId" resultMap="BaseResultMap">
@@ -140,6 +141,7 @@
                 <if test="item.updateTime != null">update_time=#{item.updateTime,jdbcType=TIMESTAMP},</if>
                 <if test="item.identifyPrimer != null">identify_primer=#{item.identifyPrimer,jdbcType=VARCHAR}</if>
                 <if test="item.uniqueCode != null">unique_code=#{item.uniqueCode,jdbcType=VARCHAR}</if>
+                <if test="item.cloneSampleCode != null">clone_sample_code=#{item.cloneSampleCode,jdbcType=VARCHAR}</if>
             </set>
             where id = ${item.id}
         </foreach>
@@ -196,7 +198,9 @@
             <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
             <if test="applyNo != null and applyNo!=''">and apply_no=#{applyNo,jdbcType=VARCHAR}</if>
             <if test="identifyPrimer != null">and identify_primer=#{identifyPrimer,jdbcType=VARCHAR}</if>
-
+            <if test="cloneSampleCode != null">and clone_sample_code=#{cloneSampleCode,jdbcType=VARCHAR}</if>
+            <if test="cloneSampleFlag =='Y'">and clone_sample_code !=null</if>
+            <if test="cloneSampleFlag =='N'">and clone_sample_code ==null</if>
         </where>
         order by id desc
     </select>
@@ -234,7 +238,7 @@
         test_edit_residue_info,test_user_id,
         test_user_name,test_time,check_user_name,
         check_user_id,check_result,
-        create_time,update_time,apply_no,identify_primer,unique_code)
+        create_time,update_time,apply_no,identify_primer,unique_code,clone_sample_code)
         values
         <foreach collection="cerSampleTestTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.projectId,jdbcType=NUMERIC},#{item.subProjectId,jdbcType=NUMERIC},
@@ -252,7 +256,7 @@
             #{item.testUserName,jdbcType=VARCHAR},#{item.testTime,jdbcType=VARCHAR},#{item.checkUserName,jdbcType=VARCHAR},
             #{item.checkUserId,jdbcType=NUMERIC},#{item.checkResult,jdbcType=VARCHAR},
             #{item.createTime,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP},
-            #{item.applyNo,jdbcType=VARCHAR},#{item.identifyPrimer,jdbcType=VARCHAR},#{item.uniqueCode,jdbcType=VARCHAR})
+            #{item.applyNo,jdbcType=VARCHAR},#{item.identifyPrimer,jdbcType=VARCHAR},#{item.uniqueCode,jdbcType=VARCHAR},#{item.cloneSampleCode,jdbcType=VARCHAR})
         </foreach>
     </insert>
 

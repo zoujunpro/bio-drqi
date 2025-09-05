@@ -41,4 +41,7 @@ public class SampleTestListDetailReqDTO extends PageDTO {
      */
     private String cloneSampleFlag;
 
+
+    private String cloneSampleCode;
+
 }

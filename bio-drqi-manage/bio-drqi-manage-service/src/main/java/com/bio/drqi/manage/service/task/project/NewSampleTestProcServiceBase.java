@@ -94,6 +94,10 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 if (CollectionUtil.isNotEmpty(list)) {
                     throw new BusinessException("克隆苗数量必填");
                 }
+                if( newSampleTestDTO.getRepeatSampleApplyList().stream().filter(repeatSampleApply -> repeatSampleApply.getSampleCode().contains("-")).collect(Collectors.toList()).size()>0){
+                throw new BusinessException("不能基于克隆苗进行二次克隆苗取样");
+                }
+
             }
         }
         //如果首次取样，进行转化信息校验

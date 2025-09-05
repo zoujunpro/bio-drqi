@@ -2,6 +2,7 @@ package com.bio.drqi.manage.service.task.project;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.enums.ImplementationPlanTypeEnum;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.domain.CerVectorStepLog;
@@ -32,6 +33,17 @@ public abstract class AbstractProjectBaseTaskService implements BaseTaskService 
             return;
         }
         CerVectorTaskTb vectorTaskTb = cerVectorTaskTbMapper.selectById(vectorTaskId);
+        if (StringUtils.isEmpty(vectorTaskTb.getCurrentStepCode())) {
+            vectorTaskTb.setCurrentStepCode(implementationPlanTypeEnum.name());
+        } else {
+            ImplementationPlanTypeEnum currentStep = ImplementationPlanTypeEnum.getImplementationPlanTypeEnum(vectorTaskTb.getCurrentStepCode());
+            if (implementationPlanTypeEnum.order > currentStep.order) {
+                vectorTaskTb.setCurrentStepCode(implementationPlanTypeEnum.name());
+            }
+        }
+        cerVectorTaskTbMapper.updateById(vectorTaskTb);
+
+
         cerVectorStepLog = new CerVectorStepLog();
         cerVectorStepLog.setProjectId(vectorTaskTb.getProjectId());
         cerVectorStepLog.setVectorTaskId(vectorTaskId);

@@ -76,6 +76,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
             vectorBaseInfoRspDTOPageInfo.getList().forEach(vectorListPageRspDTO -> {
                 vectorListPageRspDTO.setBreedName(breedMap.get(vectorListPageRspDTO.getBreedCode()));
                 vectorListPageRspDTO.setSpeciesName(speciesMap.get(vectorListPageRspDTO.getSpeciesCode()));
+                vectorListPageRspDTO.setCurrentStepName(ImplementationPlanTypeEnum.getDesc(vectorListPageRspDTO.getCurrentStepCode()));
             });
         }
         return vectorBaseInfoRspDTOPageInfo;

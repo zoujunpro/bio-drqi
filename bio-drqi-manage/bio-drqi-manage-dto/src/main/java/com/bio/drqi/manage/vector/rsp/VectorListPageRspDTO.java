@@ -83,6 +83,8 @@ public class VectorListPageRspDTO {
 
     private String currentStepCode;
 
+    private String currentStepName;
+
     /**
      * 期望阳性苗
      */

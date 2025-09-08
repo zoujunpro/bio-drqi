@@ -1,5 +1,7 @@
 package com.bio.drqi.enums;
 
+import com.alibaba.excel.util.StringUtils;
+
 import java.util.Map;
 
 public enum ImplementationPlanTypeEnum {
@@ -18,6 +20,7 @@ public enum ImplementationPlanTypeEnum {
         this.order = order;
         this.desc = desc;
     }
+
     public static ImplementationPlanTypeEnum getImplementationPlanTypeEnum(String implementationPlanType) {
         for (ImplementationPlanTypeEnum implementationPlanTypeEnum : ImplementationPlanTypeEnum.values()) {
             if (implementationPlanTypeEnum.name().equals(implementationPlanType)) {
@@ -26,7 +29,11 @@ public enum ImplementationPlanTypeEnum {
         }
         return null;
     }
+
     public static String getDesc(String implementationPlanType) {
+        if (StringUtils.isEmpty(implementationPlanType)) {
+            return null;
+        }
         for (ImplementationPlanTypeEnum implementationPlanTypeEnum : ImplementationPlanTypeEnum.values()) {
             if (implementationPlanTypeEnum.name().equals(implementationPlanType)) {
                 return implementationPlanTypeEnum.desc;

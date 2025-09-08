@@ -49,7 +49,7 @@ public class CerPlanProcService extends AbstractProjectBaseTaskService {
             for (CerPlantDTO.Content content : cerPlantDTO.getContentList()) {
                 CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(content.getPlantCode());
                 if (cerPlantDtlTb == null) {
-                    throw new BusinessException("找不到此种植编号");
+                    throw new BusinessException("找不到此种植编号:"+content.getPlantCode());
                 }
                 cerPlantDtlTb.setPollinationDate(content.getPollinationDate());
                 cerPlantDtlTb.setVernalizationEndDate(content.getVernalizationEndDate());

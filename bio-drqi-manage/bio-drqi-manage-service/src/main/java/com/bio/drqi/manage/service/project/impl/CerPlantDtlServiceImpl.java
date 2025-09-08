@@ -3,6 +3,7 @@ package com.bio.drqi.manage.service.project.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.domain.BioDict;
 import com.bio.drqi.domain.CerPlantDtlTb;
@@ -46,11 +47,13 @@ public class CerPlantDtlServiceImpl implements CerPlantDtlService {
             List<BioDict> bioDictList = bioDictMapper.selectAll();
             Map<String, BioDict> bioDictMap = bioDictList.stream().collect(Collectors.toMap(bioDict -> bioDict.getDictType() + ":" + bioDict.getDictValueCode(), bioDict -> bioDict));
             result.getList().forEach(plantDtlListRspDTO -> {
-                BioDict pollinationMethodBioDict = bioDictMap.get(BioDictTypeEnum.POLLINATE_TYPE + ":" + plantDtlListRspDTO.getPollinationMethod());
-                if (pollinationMethodBioDict == null) {
-                    throw new BusinessException("授粉方式填写错误：" + plantDtlListRspDTO.getPollinationMethod());
+                if(StringUtils.isNotEmpty(plantDtlListRspDTO.getPollinationMethod())){
+                    BioDict pollinationMethodBioDict = bioDictMap.get(BioDictTypeEnum.POLLINATE_TYPE + ":" + plantDtlListRspDTO.getPollinationMethod());
+                    if (pollinationMethodBioDict == null) {
+                        throw new BusinessException("授粉方式填写错误：" + plantDtlListRspDTO.getPollinationMethod());
+                    }
+                    plantDtlListRspDTO.setPollinationMethodName(pollinationMethodBioDict.getDictValueName());
                 }
-                plantDtlListRspDTO.setPollinationMethodName(pollinationMethodBioDict.getDictValueName());
             });
         }
         return result;

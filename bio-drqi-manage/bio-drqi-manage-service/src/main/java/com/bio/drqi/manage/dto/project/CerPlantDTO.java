@@ -1,26 +1,77 @@
 package com.bio.drqi.manage.dto.project;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 public class CerPlantDTO {
-    @NotNull(message = "参数缺失：projectId")
-    private Integer projectId;
-
-    @NotNull(message = "参数缺失：subProjectId")
-    private Integer subProjectId;
-
-    @NotNull(message = "参数缺失：vectorTaskId")
-    private String vectorTaskId;
 
     @NotBlank(message = "参数缺失：excelUrl")
     private String excelUrl;
 
-    private String projectCode;
+    private List<Content> contentList;
 
-    private String projectName;
+    @Data
+    public static class Content{
+
+        @ExcelProperty("种植编号")
+        private String plantCode;
+
+        @ExcelProperty("播种/移苗日期")
+        private String plantDate;
+
+        @ExcelProperty("移栽日期")
+        private String transplantDate;
+
+        @ExcelProperty("春化开始日期")
+        private String vernalizationBeginDate;
+
+        @ExcelProperty("春化结束日期")
+        private String vernalizationEndDate;
+
+        @ExcelProperty("植株状态")
+        private String plantStatus;
+
+        @ExcelProperty("授粉方式")
+        private String pollinationMethod;
+
+
+        @ExcelProperty("授粉时间")
+        private String pollinationDate;
+
+        @ExcelProperty("拔节期")
+        private String ba_jie_qi;
+
+
+        @ExcelProperty("散粉期")
+        private String shan_fen_qi;
+
+        @ExcelProperty("吐丝期")
+        private String tu_si_qi;
+
+        @ExcelProperty("抽穗期")
+        private String chou_hui_qi;
+
+        @ExcelProperty("始花期")
+        private String shi_hua_qi;
+
+        @ExcelProperty("盛花期")
+        private String sheng_hua_qi;
+
+        @ExcelProperty("扬花期")
+        private String yang_hua_qi;
+
+        @ExcelProperty("鼓粒期")
+        private String gu_li_qi;
+
+        @ExcelProperty("成熟期")
+        private String cheng_shu_qi;
+    }
+
+
 
 }

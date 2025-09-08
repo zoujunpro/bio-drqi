@@ -150,7 +150,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         List<PlantPrintData> plantPrintDataList = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(plantPrintReqDTO.getContentList())) {
             for (PlantPrintReqDTO.Content content : plantPrintReqDTO.getContentList()) {
-                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(content.getPlantCode(), content.getVectorTaskCode());
+                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(content.getPlantCode());
                 if (cerPlantDtlTb == null) {
                     throw new BusinessException("取样苗" + content.getPlantCode() + "未形成种植编号");
                 }

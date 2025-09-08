@@ -18,8 +18,7 @@ public interface CerPlantDtlTbMapper extends BaseMapper<CerPlantDtlTb> {
 
     int deleteByTaskNum(@Param("taskNum") String taskNum);
 
-    CerPlantDtlTb selectOneByPlantCodeAndVectorTaskCode(@Param("plantCode") String plantCode, @Param("vectorTaskCode") String vectorTaskCode);
-
+    CerPlantDtlTb selectOneByPlantCode(@Param("plantCode") String plantCode);
 }
 
 

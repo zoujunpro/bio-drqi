@@ -166,7 +166,7 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioTaskDtlTb.getTaskNum());
                 cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
                 cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
-                if (Objects.isNull(cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(cerPlantDtlTb.getPlantCode(), cerPlantDtlTb.getVectorTaskCode()))) {
+                if (Objects.isNull(cerPlantDtlTbMapper.selectOneByPlantCode(cerPlantDtlTb.getPlantCode()))) {
                     cerPlantDtlTbMapper.insert(cerPlantDtlTb);
                 }
 

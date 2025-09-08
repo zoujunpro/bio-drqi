@@ -43,7 +43,7 @@ public class T0PlantCodeScanService extends AbstractBaseCodeScanService<PlantUni
 
     @Override
     public ScanCodeT0PlantTestRspDTO dealCodeContent(PlantUniqueCodeDTO plantUniqueCodeDTO) {
-        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(plantUniqueCodeDTO.getPlantCode(), plantUniqueCodeDTO.getVectorTaskCode());
+        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(plantUniqueCodeDTO.getPlantCode());
         if (cerPlantDtlTb == null) {
             throw new BusinessException("无此T0代种植信息");
         }

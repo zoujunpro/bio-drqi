@@ -83,7 +83,7 @@ public class SeedlingServiceImpl implements SeedlingService {
 
     @Override
     public void remove(SeedlingRemoveReqDTO seedlingRemoveReqDTO) {
-        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(seedlingRemoveReqDTO.getPlantCode(), seedlingRemoveReqDTO.getVectorTaskCode());
+        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(seedlingRemoveReqDTO.getPlantCode());
         if (cerPlantDtlTb == null) {
             throw new BusinessException("无此种植编号");
         }
@@ -112,7 +112,7 @@ public class SeedlingServiceImpl implements SeedlingService {
 
     @Override
     public void report(SeedlingReportReqDTO seedlingReportReqDTO) {
-        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(seedlingReportReqDTO.getPlantCode(), seedlingReportReqDTO.getVectorTaskCode());
+        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(seedlingReportReqDTO.getPlantCode());
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
         List<CerSpeciesPlantFeaturesConf> cerSpeciesPlantFeaturesConfList = cerSpeciesPlantFeaturesConfMapper.selectAllBySpeciesCodeOrderByOrderNum(cerVectorTaskTb.getSpeciesCode());
 
@@ -173,7 +173,7 @@ public class SeedlingServiceImpl implements SeedlingService {
     @Override
     public List<Map<String, String>> findPlantField(FindPlantFieldReqDTO findPlantFieldReqDTO) {
         List<Map<String, String>> mapListResult = new ArrayList<>();
-        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCodeAndVectorTaskCode(findPlantFieldReqDTO.getPlantCode(), findPlantFieldReqDTO.getVectorTaskCode());
+        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(findPlantFieldReqDTO.getPlantCode());
         if (cerPlantDtlTb == null) {
             throw new BusinessException("种植明细不存在");
         }

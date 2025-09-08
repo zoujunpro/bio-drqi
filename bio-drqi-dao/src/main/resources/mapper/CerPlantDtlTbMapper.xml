@@ -97,17 +97,16 @@
         </where>
         ORDER BY create_date DESC
     </select>
-    <select id="selectOneByPlantCodeAndVectorTaskCode" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from cer_plant_dtl_tb
-        where
-        plant_code = #{plantCode,jdbcType=VARCHAR}
-        AND vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
-    </select>
     <delete id="deleteByTaskNum">
         delete
         from cer_plant_dtl_tb
         where task_num = #{taskNum,jdbcType=VARCHAR}
     </delete>
+    <select id="selectOneByPlantCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_plant_dtl_tb
+        where
+        plant_code = #{plantCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

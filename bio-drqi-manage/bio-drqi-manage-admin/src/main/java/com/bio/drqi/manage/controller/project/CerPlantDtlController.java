@@ -1,9 +1,12 @@
 package com.bio.drqi.manage.controller.project;
 
+import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.oss.service.OssService;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.plant.req.PlantDtlListDetailReqDTO;
 import com.bio.drqi.manage.plant.rsp.PlantDtlListDetailRspDTO;
+import com.bio.drqi.manage.sample.req.DownloadSampleTemplateReqDTO;
 import com.bio.drqi.manage.sample.req.SampleTestListDetailReqDTO;
 import com.bio.drqi.manage.sample.rsp.SampleTestListDetailRspDTO;
 import com.bio.drqi.manage.service.project.CerPlantDtlService;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 种植明细
@@ -27,6 +31,9 @@ public class CerPlantDtlController {
 
     @Resource
     private CerPlantDtlService cerPlantDtlService;
+
+    @Resource
+    private OssService ossService;
 
 
     /**
@@ -54,5 +61,17 @@ public class CerPlantDtlController {
     }
 
 
+    /**
+     * 种植明细-种植模板
+     */
+    @PostMapping("downSampleTemplate")
+    @WebLog(desc = "种植明细-种植模板")
+    public void downSampleTemplate( HttpServletResponse response) {
+        try {
+            ossService.downloadFile(response, "template", "CER种植结果上传数据模板_V1.xlsx");
+        } catch (Exception e) {
+            throw new BusinessException("CER种植结果上传数据模板下载失败，请联系管理员检测模板配置");
+        }
+    }
 
 }

@@ -95,6 +95,9 @@ public class Clean20250721Controller {
     @Resource
     private CerConversionAndTransTbMapper cerConversionAndTransTbMapper;
 
+    @Resource
+    private CerVectorStepLogMapper cerVectorStepLogMapper;
+
 
     @GetMapping("cleanPlasmid")
     @Transactional(rollbackFor = Exception.class)
@@ -173,13 +176,13 @@ public class Clean20250721Controller {
     public ResponseResult<String> cleanSampleAcceptorMaterial() {
         List<CerSampleTestTb> list = cerSampleTestTbMapper.selectList(null);
         for (CerSampleTestTb cerSampleTestTb : list) {
-            if (cerSampleTestTb.getAcceptorMaterial()==null||cerSampleTestTb.getAcceptorMaterial().length() == 32) {
-              CerTransformTb cerTransformTb=  cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
-                if(cerTransformTb!=null&&StringUtils.isNotEmpty(cerTransformTb.getAcceptorMaterial())){
+            if (cerSampleTestTb.getAcceptorMaterial() == null || cerSampleTestTb.getAcceptorMaterial().length() == 32) {
+                CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
+                if (cerTransformTb != null && StringUtils.isNotEmpty(cerTransformTb.getAcceptorMaterial())) {
                     cerTransformTb.setAcceptorMaterial(cerTransformTb.getAcceptorMaterial());
                     cerSampleTestTbMapper.updateById(cerSampleTestTb);
                 }
-             }
+            }
 
         }
         return ResponseResult.getSuccess("ok");
@@ -190,6 +193,7 @@ public class Clean20250721Controller {
     public ResponseResult<String> cleanCloneSampleCode() {
         List<CerSampleTestTb> list = cerSampleTestTbMapper.selectList(null);
         for (CerSampleTestTb cerSampleTestTb : list) {
+            log.info("cerSampleTestTb={}",JSONUtil.toJsonStr(cerSampleTestTb));
             if (cerSampleTestTb.getSampleCode().contains("-")) {
                 cerSampleTestTb.setCloneSampleCode(cerSampleTestTb.getSampleCode().split("-")[0]);
                 cerSampleTestTbMapper.updateById(cerSampleTestTb);
@@ -199,5 +203,19 @@ public class Clean20250721Controller {
         return ResponseResult.getSuccess("ok");
     }
 
+    @GetMapping("/cleanStepCode")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanStepCode() {
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectSelective(null);
+        for (CerVectorTaskTb cerVectorTaskTb : cerVectorTaskTbList) {
+            log.info("cerVectorTaskTb={}",JSONUtil.toJsonStr(cerVectorTaskTb));
+            List<CerVectorStepLog> cerVectorStepLogList = cerVectorStepLogMapper.selectAllByVectorTaskIdOrderById(cerVectorTaskTb.getId());
+            if(CollectionUtil.isNotEmpty(cerVectorStepLogList)){
+                cerVectorTaskTb.setCurrentStepCode(cerVectorStepLogList.get(cerVectorStepLogList.size()-1).getStepCode());
+                cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
+            }
+        }
+        return ResponseResult.getSuccess("ok");
+    }
 
 }

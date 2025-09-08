@@ -36,14 +36,11 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         SeedDestructionDTO seedDestructionDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedDestructionDTO.class);
-        if (SeedDestructionEnum.IN.name().equals(seedDestructionDTO.getDestructionType())) {
-            for (int i = 0; i < seedDestructionDTO.getSeedList().size(); i++) {
-                SeedDestructionDTO.SeedDTO seedDTO = seedDestructionDTO.getSeedList().get(i);
-                ValidatorUtil.validator(seedDestructionDTO);
-                checkSeedStock(seedDTO.getSeedNum(), seedDTO.getSeedNumber());
-            }
+        for (int i = 0; i < seedDestructionDTO.getSeedList().size(); i++) {
+            SeedDestructionDTO.SeedDTO seedDTO = seedDestructionDTO.getSeedList().get(i);
+            ValidatorUtil.validator(seedDestructionDTO);
+            checkSeedStock(seedDTO.getSeedNum(), seedDTO.getSeedNumber());
         }
-
     }
 
     @Override
@@ -65,12 +62,8 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
 
             for (int i = 0; i < seedDestructionDTO.getSeedList().size(); i++) {
                 SeedDestructionDTO.SeedDTO seedDTO = seedDestructionDTO.getSeedList().get(i);
-
-
-                if (SeedDestructionEnum.IN.name().equals(seedDestructionDTO.getDestructionType())) {
-                    //扣减冻结库存，记录出库日志
-                    reduceSeedStock(seedDTO.getSeedNum(), bioTaskDtlTb, seedDTO.getSeedNumber(), seedDTO.getRemarks(), i + 1, USE_TO_DESC);
-                }
+                //扣减冻结库存，记录出库日志
+                reduceSeedStock(seedDTO.getSeedNum(), bioTaskDtlTb, seedDTO.getSeedNumber(), seedDTO.getRemarks(), i + 1, USE_TO_DESC);
                 //记录销毁信息
                 writeSeedDestructionLog(bioTaskDtlTb, seedDTO, seedDestructionDTO);
             }

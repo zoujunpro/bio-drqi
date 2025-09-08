@@ -10,10 +10,6 @@ import java.util.List;
 @Data
 public class SeedDestructionDTO extends SeedProcDTO{
 
-    /**
-     * OUT IN
-     */
-    private String destructionType;
 
     private String destructionLocation;
 
@@ -27,6 +23,7 @@ public class SeedDestructionDTO extends SeedProcDTO{
 
     @Data
     public static class SeedDTO{
+
         private String seedNum;
         /**
          * 种子数量

@@ -26,7 +26,6 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
     private static final String USE_TO_DESC = "种子销毁";
 
 
-
     @Resource
     private SeedStockDestructionLogMapper seedStockDestructionLogMapper;
 
@@ -37,7 +36,7 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         SeedDestructionDTO seedDestructionDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedDestructionDTO.class);
-        if(SeedDestructionEnum.IN.name().equals(seedDestructionDTO.getDestructionType())){
+        if (SeedDestructionEnum.IN.name().equals(seedDestructionDTO.getDestructionType())) {
             for (int i = 0; i < seedDestructionDTO.getSeedList().size(); i++) {
                 SeedDestructionDTO.SeedDTO seedDTO = seedDestructionDTO.getSeedList().get(i);
                 ValidatorUtil.validator(seedDestructionDTO);
@@ -50,25 +49,30 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
+
             SeedDestructionDTO seedDestructionDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedDestructionDTO.class);
+
+            if (CollectionUtil.isEmpty(seedDestructionDTO.getDestructionEvidenceList())) {
+                throw new BusinessException("销毁证据缺失");
+            }
+            if (StringUtils.isEmpty(seedDestructionDTO.getDestructionMethod())) {
+                throw new BusinessException("销毁方式缺失");
+            }
+            if (StringUtils.isEmpty(seedDestructionDTO.getDestructionLocation())) {
+                throw new BusinessException("销毁地点缺失");
+            }
+
+
             for (int i = 0; i < seedDestructionDTO.getSeedList().size(); i++) {
                 SeedDestructionDTO.SeedDTO seedDTO = seedDestructionDTO.getSeedList().get(i);
 
-                if (CollectionUtil.isEmpty(seedDTO.getDestructionEvidenceList())) {
-                    throw new BusinessException("销毁证据缺失");
-                }
-                if (StringUtils.isEmpty(seedDTO.getDestructionMethod())) {
-                    throw new BusinessException("销毁方式缺失");
-                }
-                if (StringUtils.isEmpty(seedDTO.getDestructionLocation())) {
-                    throw new BusinessException("销毁地点缺失");
-                }
-                if(SeedDestructionEnum.IN.name().equals(seedDestructionDTO.getDestructionType())){
+
+                if (SeedDestructionEnum.IN.name().equals(seedDestructionDTO.getDestructionType())) {
                     //扣减冻结库存，记录出库日志
                     reduceSeedStock(seedDTO.getSeedNum(), bioTaskDtlTb, seedDTO.getSeedNumber(), seedDTO.getRemarks(), i + 1, USE_TO_DESC);
                 }
                 //记录销毁信息
-                writeSeedDestructionLog(bioTaskDtlTb, seedDTO);
+                writeSeedDestructionLog(bioTaskDtlTb, seedDTO, seedDestructionDTO);
             }
         }
     }
@@ -79,9 +83,7 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
     }
 
 
-
-
-    private void writeSeedDestructionLog(BioTaskDtlTb bioTaskDtlTb,  SeedDestructionDTO.SeedDTO seedDTO) {
+    private void writeSeedDestructionLog(BioTaskDtlTb bioTaskDtlTb, SeedDestructionDTO.SeedDTO seedDTO, SeedDestructionDTO seedDestructionDTO) {
         SeedStockDestructionLog seedStockDestructionLog = new SeedStockDestructionLog();
         seedStockDestructionLog.setSeedNum(seedDTO.getSeedNum());
         seedStockDestructionLog.setUnit(seedDTO.getUnit());
@@ -90,9 +92,9 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
         seedStockDestructionLog.setTaskNum(bioTaskDtlTb.getTaskNum());
         seedStockDestructionLog.setApplyUserId(bioTaskDtlTb.getApplyUserId());
         seedStockDestructionLog.setApplyUserName(bioTaskDtlTb.getApplyUserName());
-        seedStockDestructionLog.setDestructionLocation(seedDTO.getDestructionLocation());
-        seedStockDestructionLog.setDestructionMethod(seedDTO.getDestructionMethod());
-        seedStockDestructionLog.setDestructionEvidence(JSONUtil.toJsonStr(seedDTO.getDestructionEvidenceList()));
+        seedStockDestructionLog.setDestructionLocation(seedDestructionDTO.getDestructionLocation());
+        seedStockDestructionLog.setDestructionMethod(seedDestructionDTO.getDestructionMethod());
+        seedStockDestructionLog.setDestructionEvidence(JSONUtil.toJsonStr(seedDestructionDTO.getDestructionEvidenceList()));
         seedStockDestructionLog.setDestructionTime(new Date());
         seedStockDestructionLogMapper.insert(seedStockDestructionLog);
     }

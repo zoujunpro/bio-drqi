@@ -15,6 +15,12 @@ public class SeedDestructionDTO extends SeedProcDTO{
      */
     private String destructionType;
 
+    private String destructionLocation;
+
+    private String destructionMethod;
+
+    private List<String> destructionEvidenceList;
+
 
     private List<SeedDTO> seedList;
 
@@ -33,10 +39,6 @@ public class SeedDestructionDTO extends SeedProcDTO{
 
         private String unit;
 
-        private String destructionLocation;
 
-        private String destructionMethod;
-
-        private List<String> destructionEvidenceList;
     }
 }

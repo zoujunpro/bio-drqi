@@ -51,13 +51,13 @@ public class CerPlanProcService extends AbstractProjectBaseTaskService {
                 if (cerPlantDtlTb == null) {
                     throw new BusinessException("找不到此种植编号");
                 }
-                cerPlantDtlTb.setHarvestDate(content.getPlantDate());
                 cerPlantDtlTb.setPollinationDate(content.getPollinationDate());
                 cerPlantDtlTb.setVernalizationEndDate(content.getVernalizationEndDate());
                 cerPlantDtlTb.setVernalizationBeginDate(content.getVernalizationBeginDate());
                 cerPlantDtlTb.setTransplantDate(content.getTransplantDate());
                 cerPlantDtlTb.setPlantDate(content.getPlantDate());
                 cerPlantDtlTb.setPollinationMethod(content.getPollinationMethod());
+                cerPlantDtlTb.setHarvestDate(content.getHarvestDate());
                 cerPlantDtlTb.setPlantStatus(content.getPlantStatus());
                 cerPlantDtlTbMapper.updateById(cerPlantDtlTb);
             }

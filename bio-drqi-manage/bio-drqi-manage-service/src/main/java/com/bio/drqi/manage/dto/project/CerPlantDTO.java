@@ -48,6 +48,10 @@ public class CerPlantDTO {
         @ExcelProperty("授粉时间")
         private String pollinationDate;
 
+
+        @ExcelProperty("收获日期")
+        private String harvestDate;
+
         @ExcelProperty("拔节期")
         private String ba_jie_qi;
 

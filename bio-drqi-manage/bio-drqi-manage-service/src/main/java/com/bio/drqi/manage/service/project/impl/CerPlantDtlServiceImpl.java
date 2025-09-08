@@ -44,7 +44,7 @@ public class CerPlantDtlServiceImpl implements CerPlantDtlService {
         PageInfo<PlantDtlListRspDTO> result = BeanUtils.copyPageInfoProperties(srcPageInfo, PlantDtlListRspDTO.class);
         if(CollectionUtil.isNotEmpty(result.getList())){
             List<BioDict> bioDictList = bioDictMapper.selectAll();
-            Map<String, BioDict> bioDictMap = bioDictList.stream().collect(Collectors.toMap(bioDict -> bioDict.getDictType() + ":" + bioDict.getDictValueName(), bioDict -> bioDict));
+            Map<String, BioDict> bioDictMap = bioDictList.stream().collect(Collectors.toMap(bioDict -> bioDict.getDictType() + ":" + bioDict.getDictValueCode(), bioDict -> bioDict));
             result.getList().forEach(plantDtlListRspDTO -> {
                 BioDict pollinationMethodBioDict = bioDictMap.get(BioDictTypeEnum.POLLINATE_TYPE + ":" + plantDtlListRspDTO.getPollinationMethod());
                 if (pollinationMethodBioDict == null) {

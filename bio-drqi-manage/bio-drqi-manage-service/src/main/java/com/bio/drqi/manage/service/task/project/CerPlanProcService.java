@@ -1,7 +1,6 @@
 package com.bio.drqi.manage.service.task.project;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.ExcelUtil;
@@ -32,24 +31,15 @@ public class CerPlanProcService extends AbstractProjectBaseTaskService {
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         CerPlantDTO cerPlantDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), CerPlantDTO.class);
-        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + cerPlantDTO.getExcelUrl();
-        try {
-            ossService.downloadPath(tempFilePath, cerPlantDTO.getExcelUrl());
-        } catch (Exception e) {
-            log.error("【CER种植数据】文件从oss下载失败", e);
-            throw new BusinessException("文件处理异常");
-        }
-        List<CerPlantDTO.Content> contentList = ExcelUtil.readExcel(tempFilePath, CerPlantDTO.Content.class);
-        if (CollectionUtil.isEmpty(contentList)) {
+        if (CollectionUtil.isEmpty(cerPlantDTO.getContentList())) {
             throw new BusinessException("excel中没有数据");
         }
-        for (CerPlantDTO.Content content : contentList) {
+        for (CerPlantDTO.Content content : cerPlantDTO.getContentList()) {
             CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(content.getPlantCode());
             if (cerPlantDtlTb == null) {
                 throw new BusinessException("找不到此种植编号");
             }
         }
-        cerPlantDTO.setContentList(contentList);
     }
 
     @Override

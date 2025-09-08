@@ -3,7 +3,9 @@ package com.bio.drqi.manage.dto.project;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -13,10 +15,13 @@ public class CerPlantDTO {
     @NotBlank(message = "参数缺失：excelUrl")
     private String excelUrl;
 
+
+    @NotEmpty(message = "数据缺失")
     private List<Content> contentList;
 
     @Data
-    public static class Content{
+    @Valid
+    public static class Content {
 
         @ExcelProperty("种植编号")
         private String plantCode;
@@ -71,7 +76,6 @@ public class CerPlantDTO {
         @ExcelProperty("成熟期")
         private String cheng_shu_qi;
     }
-
 
 
 }

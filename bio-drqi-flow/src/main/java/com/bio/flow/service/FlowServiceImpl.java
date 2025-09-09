@@ -208,8 +208,6 @@ public class FlowServiceImpl implements FlowService {
                     result.getModelList().get(result.getModelList().size() - 1).getNodeUserList().addAll(nodeUserList);
                 }
             }
-
-
         }
 
         //当前正在执行节点

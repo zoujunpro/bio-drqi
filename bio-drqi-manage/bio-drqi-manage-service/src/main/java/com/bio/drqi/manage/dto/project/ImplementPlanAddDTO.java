@@ -69,7 +69,7 @@ public class ImplementPlanAddDTO {
     /**
      * 编辑类型  1 KO，2点突变，3精准小，4精准大
      */
-    @EnumValue(strValues = {"1", "2", "3"}, message = "编辑类型参数非法")
+    @EnumValue(strValues = {"1", "2", "3","4"}, message = "编辑类型参数非法")
     private String editType;
 
     @NotBlank(message = "期望阳性表必填")

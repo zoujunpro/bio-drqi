@@ -39,6 +39,8 @@ public class PlasmidDTO {
 
     private String vectorTaskCode;
 
+    private String vectorBuildRemark;
+
 
     @NotNull(message = "质检信息缺失")
     private List<Content> contentList;

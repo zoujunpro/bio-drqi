@@ -37,6 +37,10 @@ public class VectorTaskAddDTO {
     private List<Vector> vectorList = new ArrayList<>();
 
 
+
+    private String transFlag;
+
+
     private TransportStart transportStart;
 
     private TransportEnd transportEnd;

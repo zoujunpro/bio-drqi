@@ -3,6 +3,7 @@ package com.bio.flow.controller;
 
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.web.aspect.WebLog;
 import com.bio.flow.dto.ApproveDetailRspDTO;
 import com.bio.flow.dto.ProcessDetailReqDTO;
 import com.bio.flow.dto.ProcessDetailRspDTO;
@@ -29,6 +30,7 @@ public class FlowController {
      * @return
      */
     @GetMapping("/instanceView")
+    @WebLog(desc = "流程视图展示")
     public ResponseResult<String> instanceView(@RequestParam String instanceId) {
         return ResponseResult.getSuccess(flowService.instanceView(instanceId));
     }
@@ -39,6 +41,7 @@ public class FlowController {
      * @return
      */
     @PostMapping("/processDetail")
+    @WebLog(desc = "流程详情")
     public ResponseResult<List<ProcessDetailRspDTO>> processDetail(@RequestBody ProcessDetailReqDTO processDetailReqDTO) {
         List<ProcessDetailRspDTO> resultList = flowService.processDetail(processDetailReqDTO);
         return ResponseResult.getSuccess(resultList);
@@ -50,6 +53,7 @@ public class FlowController {
      * @return
      */
     @GetMapping("/approveDetail")
+    @WebLog(desc = "执行中和执行完毕审批详情")
     public ResponseResult<ApproveDetailRspDTO> approveDetail(@RequestParam String instanceId) {
         ApproveDetailRspDTO approveDetailRspDTO = flowService.approveDetail(instanceId);
         return ResponseResult.getSuccess(approveDetailRspDTO);

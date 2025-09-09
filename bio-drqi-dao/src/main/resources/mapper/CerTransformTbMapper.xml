@@ -136,7 +136,7 @@
             <if test="infectNumber != null">and infect_number=#{infectNumber,jdbcType=NUMERIC}</if>
             <if test="infectDate != null">and infect_date=#{infectDate,jdbcType=VARCHAR}</if>
             <if test="deliveryMethod != null">and delivery_method=#{deliveryMethod,jdbcType=VARCHAR}</if>
-            <if test="transformCode != null">and transform_code=#{transformCode,jdbcType=VARCHAR},</if>
+            <if test="transformCode != null and transformCode!=''">and transform_code=#{transformCode,jdbcType=VARCHAR}</if>
             <if test="acceptorMaterial != null">and acceptor_material=#{acceptorMaterial,jdbcType=VARCHAR}</if>
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>

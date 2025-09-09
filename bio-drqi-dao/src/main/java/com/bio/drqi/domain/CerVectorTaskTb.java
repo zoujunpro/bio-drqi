@@ -125,6 +125,9 @@ public class CerVectorTaskTb implements Serializable {
     private String createUserName;
 
 
+    private String vectorBuildRemark;
+
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

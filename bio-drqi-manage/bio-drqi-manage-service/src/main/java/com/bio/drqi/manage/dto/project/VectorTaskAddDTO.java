@@ -40,6 +40,8 @@ public class VectorTaskAddDTO {
 
     private String transFlag;
 
+    private String remark;
+
 
     private TransportStart transportStart;
 

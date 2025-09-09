@@ -115,5 +115,7 @@ public class CerImplementationPlanBaseInfoRspDTO {
 
     private String sampleCodePrefix;
 
+    private String vectorBuildRemark;
+
 
 }

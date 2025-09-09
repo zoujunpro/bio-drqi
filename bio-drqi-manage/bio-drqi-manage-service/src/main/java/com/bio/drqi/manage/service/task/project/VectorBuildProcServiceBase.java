@@ -77,7 +77,7 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
             }
         }
 
-}
+    }
 
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
@@ -104,6 +104,10 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
              * 更新当前执行步骤
              */
             logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.vector_build, bioTaskDtlTb.getTaskNum());
+
+            //更新备注
+            cerVectorTaskTb.setVectorBuildRemark(vectorTaskAddDTO.getRemark());
+            cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
 
             log.info("【任务工单】载体任务创建完毕");
         }

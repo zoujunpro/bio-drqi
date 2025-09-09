@@ -37,6 +37,10 @@ public class TransformListPageReqDTO extends PageDTO {
     private String plasmidName;
 
     private String speciesCode;
+    /**
+     * 转化编号
+     */
+    private String transformCode;
 
 
 }

@@ -127,7 +127,6 @@
         from cer_vector_task_tb
         where
         sub_project_id = #{subProjectId,jdbcType=NUMERIC}
-        and  task_status = '2'
         order by id desc;
     </select>
     <select id="listForPlasmid" resultMap="BaseResultMap">
@@ -205,6 +204,15 @@
         from cer_vector_task_tb
         where
         project_id = #{projectId,jdbcType=NUMERIC}
+    </select>
+    <select id="selectAllBySubProjectIdAndTaskStatusOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_vector_task_tb
+        where
+        sub_project_id = #{subProjectId,jdbcType=NUMERIC}
+        AND task_status = #{taskStatus,jdbcType=VARCHAR}
+        order by id desc
     </select>
 
 

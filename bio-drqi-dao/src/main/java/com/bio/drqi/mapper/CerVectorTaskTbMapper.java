@@ -22,6 +22,8 @@ public interface CerVectorTaskTbMapper extends BaseMapper<CerVectorTaskTb> {
     List<CerVectorTaskTb> selectAllByProjectId(@Param("projectId") Integer projectId);
     List<CerVectorTaskTb> selectSelective(CerVectorTaskTb cerVectorTaskTb);
     List<CerVectorTaskTb> selectAllBySubProjectId(@Param("subProjectId") Integer subProjectId);
+
+    List<CerVectorTaskTb> selectAllBySubProjectIdAndTaskStatusOrderByIdDesc(@Param("subProjectId") Integer subProjectId, @Param("taskStatus") String taskStatus);
     List<CerVectorTaskTb> listForVectorBuild(@Param("subProjectId") Integer subProjectId);
 
 

@@ -33,6 +33,7 @@ public class PlasmidController {
      */
     @PostMapping("listPage")
     @WebLog(desc = "质粒质检-分页查询")
+    @RequirePermissions("cer:plasmid:listPage")
     public ResponseResult<PageInfo<PlasmidListPageRspDTO>> listPage(@Validated @RequestBody PlasmidListPageReqDTO plasmidListPageReqDTO) {
         return ResponseResult.getSuccess(plasmidService.listPage(plasmidListPageReqDTO));
     }

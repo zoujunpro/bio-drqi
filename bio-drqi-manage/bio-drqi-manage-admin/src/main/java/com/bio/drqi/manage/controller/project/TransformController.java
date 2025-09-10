@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.controller.project;
 
 
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.drqi.manage.transform.req.ApprovePassTransformQueryReqDTO;
 import com.bio.drqi.manage.transform.req.TransformListByVectorTaskReqDTO;
 import com.bio.drqi.manage.transform.req.TransformListByVectorTaskRspDTO;
@@ -39,6 +40,7 @@ public class TransformController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "取样转化-分页查询")
+    @RequirePermissions("cer:transform:listPage")
     public ResponseResult<PageInfo<TransformListPageRspDTO>> listPage(@Validated @RequestBody TransformListPageReqDTO transformListPageReqDTO) {
             return ResponseResult.getSuccess(transformService.listPage(transformListPageReqDTO));
     }

@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.controller.project;
 
 
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.drqi.manage.project.req.SubProjectListPageReqDTO;
 import com.bio.drqi.manage.project.rsp.ProjectSpeciesLispRspDTO;
 import com.bio.drqi.manage.project.rsp.SubProjectListPageRspDTO;
@@ -34,6 +35,7 @@ public class SubProjectController {
      */
     @PostMapping("listPage")
     @WebLog(desc = "子项目管理-分页查询")
+    @RequirePermissions("cer:subProject:listPage")
     public ResponseResult<PageInfo<SubProjectListPageRspDTO>> listPage(@Validated @RequestBody SubProjectListPageReqDTO subProjectListPageReqDTO) {
         return ResponseResult.getSuccess(subProjectService.listPage(subProjectListPageReqDTO));
     }

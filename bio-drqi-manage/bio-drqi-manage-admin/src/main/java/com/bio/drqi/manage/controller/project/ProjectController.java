@@ -32,7 +32,7 @@ public class ProjectController {
 
     @WebLog(desc = "项目管理-分页查询")
     @PostMapping("/listPage")
-    @RequirePermissions("project:data")
+    @RequirePermissions("cer:project:listPage")
     public ResponseResult<PageInfo<ProjectListRspDTO>> listPage(@Validated @RequestBody ProjectListReqDTO projectListReqDTO) {
         PageInfo<ProjectListRspDTO> pageInfo = projectService.listPage(projectListReqDTO);
         return ResponseResult.getSuccess(pageInfo);

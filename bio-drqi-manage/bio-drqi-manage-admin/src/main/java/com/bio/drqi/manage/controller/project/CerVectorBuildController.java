@@ -1,5 +1,6 @@
 package com.bio.drqi.manage.controller.project;
 
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.vector.req.CerVectorBuildListPageReqDTO;
 import com.bio.drqi.manage.vector.rsp.CerVectorBuildListPageRspDTO;
@@ -32,6 +33,7 @@ public class CerVectorBuildController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "载体构建-分页查询")
+    @RequirePermissions("cer:vectorBuild:listPage")
     public ResponseResult<PageInfo<CerVectorBuildListPageRspDTO>> listPage(@RequestBody @Validated CerVectorBuildListPageReqDTO cerVectorBuildListPageReqDTO) {
         return ResponseResult.getSuccess(cerVectorBuildService.listPage(cerVectorBuildListPageReqDTO));
     }

@@ -38,7 +38,7 @@ public class CerConversionAndTransController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "转化移苗-分页查询")
-    @RequirePermissions("project:transplantData")
+    @RequirePermissions("cer:conversionAndTrans:listPage")
     public ResponseResult<PageInfo<ConversionAndTransRspDTO>> listPage(@RequestBody @Validated ConversionAndTransReqDTO conversionAndTransReqDTO) {
         return ResponseResult.getSuccess(cerConversionAndTransService.listPage(conversionAndTransReqDTO));
     }

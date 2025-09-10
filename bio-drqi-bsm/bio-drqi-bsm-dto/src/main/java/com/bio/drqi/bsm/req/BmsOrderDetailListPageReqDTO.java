@@ -46,6 +46,16 @@ public class BmsOrderDetailListPageReqDTO extends PageDTO {
     private String filterZeroFlag;
 
     /**
+     * 报账日期是否为空
+     */
+    private String reportAccountTimeNullFlag;
+
+    /**
+     * 品证非空
+     */
+    private String paymentVoucherUrlsNullFlag;
+
+    /**
      * 报账日期
      */
     private String reportAccountTime;

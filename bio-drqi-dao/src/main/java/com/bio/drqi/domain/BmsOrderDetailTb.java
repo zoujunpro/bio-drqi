@@ -192,6 +192,17 @@ public class BmsOrderDetailTb implements Serializable {
     @TableField(exist = false)
     private String filterZeroFlag;
 
+    /**
+     * 报账日期是否为空
+     */
+    @TableField(exist = false)
+    private String reportAccountTimeNullFlag;
+    /**
+     * 品证非空
+     */
+    @TableField(exist = false)
+    private String paymentVoucherUrlsNullFlag;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

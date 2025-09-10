@@ -33,9 +33,6 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     @Resource
     private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
 
-    @Resource
-    private BmsProductStockInLogMapper bmsProductStockInLogMapper;
-
     @Override
     public PageInfo<BmsOrderDetailListPageRspDTO> listPage(BmsOrderDetailListPageReqDTO bmsOrderDetailListPageReqDTO) {
         PageHelper.startPage(bmsOrderDetailListPageReqDTO.getPageNum(), bmsOrderDetailListPageReqDTO.getPageSize());

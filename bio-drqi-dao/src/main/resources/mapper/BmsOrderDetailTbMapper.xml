@@ -106,8 +106,8 @@
             <if test="reportAccountTime != null and reportAccountTime!=''">and  report_account_time=#{reportAccountTime,jdbcType=VARCHAR}</if>
             <if test="invoiceUrls != null">and  invoice_urls=#{invoiceUrls,jdbcType=VARCHAR}</if>
             <if test="contractUrls != null">and  contract_urls=#{contractUrls,jdbcType=VARCHAR}</if>
-            <if test="filterZeroFlag == 'Y'">and  purchase_number>return_number</if>
-
+            <if test="reportAccountTimeNullFlag == 'Y'">and  report_account_time is not null</if>
+            <if test="paymentVoucherUrlsNullFlag == 'Y'">and  payment_voucher_urls is not null</if>
         </where>
         order by id desc
     </select>

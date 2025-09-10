@@ -59,9 +59,9 @@
             <if test="subProjectCode != null and subProjectCode!=''">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
             <if test="transformCode != null and transformCode!=''">and transform_code=#{transformCode,jdbcType=VARCHAR}</if>
             <if test="transNum != null">and trans_num=#{transNum,jdbcType=NUMERIC}</if>
-            <if test="projectCode != null">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="projectCode != null and projectCode!=''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
             <if test="transGeneFlag != null">and trans_gene_flag=#{transGeneFlag,jdbcType=VARCHAR}</if>
-            <if test="plasmidName != null">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
+            <if test="plasmidName != null and plasmidName!=''">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
             <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
         </where>
         order by id desc

@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface VectorTaskService {
 
-    PageInfo<VectorListPageRspDTO> ListPage(QueryPageVectorReqDTO queryPageVectorReqDTO);
+    PageInfo<VectorListPageRspDTO> listPage(QueryPageVectorReqDTO queryPageVectorReqDTO);
 
     List<CerImplementationPlanBaseInfoRspDTO> listAll();
 

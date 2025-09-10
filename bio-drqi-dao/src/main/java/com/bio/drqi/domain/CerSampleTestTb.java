@@ -225,6 +225,8 @@ public class CerSampleTestTb implements Serializable {
 
     private String remark;
 
+    private String targetFlag;
+
     @TableField(exist = false)
     private Integer countNum;
 

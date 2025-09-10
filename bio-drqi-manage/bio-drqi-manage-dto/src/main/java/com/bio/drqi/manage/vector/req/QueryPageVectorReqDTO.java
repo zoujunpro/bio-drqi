@@ -43,6 +43,8 @@ public class QueryPageVectorReqDTO extends PageDTO {
 
     private String breedCode;
 
+    private String targetFlag;
+
 
 
 

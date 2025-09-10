@@ -63,5 +63,7 @@ public interface SampleTestService {
 
     void remark(SampleRemarkReqDTO sampleRemarkReqDTO);
 
+    void uploadTargetResultTemplate(SampleTestUploadTargetResultTemplateReqDTO sampleTestUploadTargetResultTemplateReqDTO);
+
     List<CountCheckResultRspDTO> countCheckResult(@RequestParam @Validated String applyNo);
 }

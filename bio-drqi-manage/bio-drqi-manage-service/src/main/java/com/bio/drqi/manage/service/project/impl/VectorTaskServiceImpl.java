@@ -65,7 +65,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
 
 
     @Override
-    public PageInfo<VectorListPageRspDTO> ListPage(QueryPageVectorReqDTO queryPageVectorReqDTO) {
+    public PageInfo<VectorListPageRspDTO> listPage(QueryPageVectorReqDTO queryPageVectorReqDTO) {
         PageHelper.startPage(queryPageVectorReqDTO.getPageNum(), queryPageVectorReqDTO.getPageSize());
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectSelective(BeanUtils.copyProperties(queryPageVectorReqDTO, CerVectorTaskTb.class));
         PageInfo<CerVectorTaskTb> srcPage = new PageInfo<>(cerVectorTaskTbList);

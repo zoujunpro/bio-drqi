@@ -11,6 +11,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.manage.base.SampleUnitDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
@@ -81,7 +82,6 @@ public class SampleTestServiceImpl implements SampleTestService {
     private OssService ossService;
 
 
-
     @Override
     public PageInfo<SampleTestListDetailRspDTO> listPage(SampleTestListDetailReqDTO sampleTestListDetailReqDTO) {
         PageHelper.startPage(sampleTestListDetailReqDTO.getPageNum(), sampleTestListDetailReqDTO.getPageSize());
@@ -99,7 +99,7 @@ public class SampleTestServiceImpl implements SampleTestService {
                     sampleTestListDetailRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
                 });
             }
-            sampleTestListDetailRspDTO.setMatchNum(CollectionUtil.isNotEmpty(sampleTestListDetailRspDTO.getBioInfoResultList())?sampleTestListDetailRspDTO.getBioInfoResultList().size():0);
+            sampleTestListDetailRspDTO.setMatchNum(CollectionUtil.isNotEmpty(sampleTestListDetailRspDTO.getBioInfoResultList()) ? sampleTestListDetailRspDTO.getBioInfoResultList().size() : 0);
         });
         return targetPageInfo;
     }
@@ -685,6 +685,29 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
         cerSampleTestTb.setRemark(sampleRemarkReqDTO.getRemark());
         cerSampleTestTbMapper.updateById(cerSampleTestTb);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void uploadTargetResultTemplate(SampleTestUploadTargetResultTemplateReqDTO sampleTestUploadTargetResultTemplateReqDTO) {
+        List<List<Object>> list = ExcelUtil.readExcel(sampleTestUploadTargetResultTemplateReqDTO.getExcelUrl());
+        List<String> sampleCodeList = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(list)) {
+            for (int i = 1; i < list.size(); i++) {
+                CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByApplyNoAndSampleCode(sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), list.get(i).get(0).toString());
+                if (cerSampleTestTb == null) {
+                    throw new BusinessException("无此取样编号:" + list.get(i).get(0).toString());
+                }
+                sampleCodeList.add(cerSampleTestTb.getSampleCode());
+            }
+        }
+        cerSampleTestTbMapper.updateTargetFlagByApplyNoAndSampleCodeIn(BioDrQiContents.Y, sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
+    }
+
+    public static void main(String[] args) {
+        List<List<Object>> list = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\目标取样检测结果模板V1.0.xlsx");
+        System.out.println(JSONUtil.toJsonStr(list));
+
     }
 
     @Override

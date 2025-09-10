@@ -45,4 +45,10 @@ public class BmsOrderDetailListPageReqDTO extends PageDTO {
 
     private String filterZeroFlag;
 
+    /**
+     * 报账日期
+     */
+    private String reportAccountTime;
+
+
 }

@@ -234,6 +234,8 @@ public class SampleTestListDetailRspDTO {
 
     private String cloneSampleCode;
 
+    private String remark;
+
 
 
 

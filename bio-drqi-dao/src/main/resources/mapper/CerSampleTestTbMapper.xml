@@ -453,5 +453,20 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </update>
+    <update id="updateCheckResultByApplyNoAndSampleCodeNotIn">
+        update cer_sample_test_tb
+        set check_result = #{checkResult,jdbcType=VARCHAR}
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+        AND sample_code not in
+        <foreach collection="sampleCodeList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </update>
+    <update id="updateTargetFlagByApplyNo">
+        update cer_sample_test_tb
+        set target_flag = #{targetFlag,jdbcType=VARCHAR}
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+    </update>
 
 </mapper>

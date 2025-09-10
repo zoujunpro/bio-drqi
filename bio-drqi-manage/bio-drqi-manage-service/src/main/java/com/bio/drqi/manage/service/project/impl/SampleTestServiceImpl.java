@@ -708,7 +708,9 @@ public class SampleTestServiceImpl implements SampleTestService {
                 sampleCodeList.add(cerSampleTestTb.getSampleCode());
             }
         }
+        cerSampleTestTbMapper.updateTargetFlagByApplyNo(null,sampleTestUploadTargetResultTemplateReqDTO.getTaskNum());
         cerSampleTestTbMapper.updateTargetFlagByApplyNoAndSampleCodeIn(BioDrQiContents.Y, sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
+        cerSampleTestTbMapper.updateCheckResultByApplyNoAndSampleCodeNotIn("舍弃",sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(),sampleCodeList);
     }
 
     public static void main(String[] args) {

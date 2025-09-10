@@ -78,8 +78,10 @@ public interface CerSampleTestTbMapper extends BaseMapper<CerSampleTestTb> {
 
     List<CerSampleTestTb> selectAllBySampleCodeLike(@Param("sampleCode") String sampleCode);
 
-
+    int updateTargetFlagByApplyNo(@Param("targetFlag") String targetFlag, @Param("applyNo") String applyNo);
     int updateTargetFlagByApplyNoAndSampleCodeIn(@Param("targetFlag") String targetFlag, @Param("applyNo") String applyNo, @Param("sampleCodeList") Collection<String> sampleCodeList);
+
+    int updateCheckResultByApplyNoAndSampleCodeNotIn(@Param("checkResult") String checkResult, @Param("applyNo") String applyNo, @Param("sampleCodeList") Collection<String> sampleCodeList);
 }
 
 

@@ -125,6 +125,7 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 cerConversionAndTransRef.setProjectCode(cerVectorTaskTb.getProjectCode());
                 cerConversionAndTransRef.setPlasmidName(transFormList.get(0).getPlasmidName());
                 cerConversionAndTransRef.setRemark(transFormList.get(0).getRemark());
+                cerConversionAndTransRef.setTaskNum(bioTaskDtlTb.getTaskNum());
                 cerConversionAndTransRefMapper.insert(cerConversionAndTransRef);
 
                 //更新总移苗数量
@@ -156,8 +157,10 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 cerConversionAndTransRef.setTransGeneFlag(sampleCodeList.get(0).getTransGeneFlag());
                 cerConversionAndTransRef.setPlasmidName(sampleCodeList.get(0).getPlasmidName());
                 cerConversionAndTransRef.setAcceptorMaterial(sampleCodeList.get(0).getAcceptorMaterial());
+                cerConversionAndTransRef.setTaskNum(bioTaskDtlTb.getTaskNum());
                 cerConversionAndTransRef.setRemark(sampleCodeList.get(0).getRemark());
                 cerConversionAndTransRefMapper.insert(cerConversionAndTransRef);
+
                 //更新总移苗数量
                 cerConversionAndTransTb.setTransNumber((cerConversionAndTransTb.getTransNumber() == null ? 0 : cerConversionAndTransTb.getTransNumber()) + 1);
                 cerConversionAndTransTbMapper.updateById(cerConversionAndTransTb);

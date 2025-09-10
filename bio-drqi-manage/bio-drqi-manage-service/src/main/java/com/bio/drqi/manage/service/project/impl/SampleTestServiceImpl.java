@@ -690,7 +690,14 @@ public class SampleTestServiceImpl implements SampleTestService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void uploadTargetResultTemplate(SampleTestUploadTargetResultTemplateReqDTO sampleTestUploadTargetResultTemplateReqDTO) {
-        List<List<Object>> list = ExcelUtil.readExcel(sampleTestUploadTargetResultTemplateReqDTO.getExcelUrl());
+        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + sampleTestUploadTargetResultTemplateReqDTO.getExcelUrl();
+        try {
+            ossService.downloadPath(tempFilePath, sampleTestUploadTargetResultTemplateReqDTO.getExcelUrl());
+        } catch (Exception e) {
+            log.error("【取样结果标记】文件从oss下载失败", e);
+            throw new BusinessException("文件处理异常");
+        }
+        List<List<Object>> list = ExcelUtil.readExcel(tempFilePath);
         List<String> sampleCodeList = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(list)) {
             for (int i = 1; i < list.size(); i++) {

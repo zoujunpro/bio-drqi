@@ -59,6 +59,7 @@
             <if test="produceDate != null"> and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
             <if test="expirationDate != null"> and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
             <if test="stockCode != null and stockCode!=''"> and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
+            <if test='filterZeroFlag == "Y"'>and current_stock_number>0</if>
         </where>
         order by id desc
     </select>

@@ -41,4 +41,6 @@ public class BmsProductStockListPageReqDTO extends PageDTO {
 
     private String stockCode;
 
+    private String filterZeroFlag;
+
 }

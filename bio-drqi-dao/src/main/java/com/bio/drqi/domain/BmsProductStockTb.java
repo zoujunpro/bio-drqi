@@ -113,6 +113,9 @@ public class BmsProductStockTb implements Serializable {
     private String stockCode;
 
     @TableField(exist = false)
+    private String filterZeroFlag;
+
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
 

@@ -58,4 +58,11 @@
         </where>
         order by id desc
     </select>
+    <select id="selectAllByTaskNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_destruction_log
+        where
+        task_num = #{taskNum,jdbcType=VARCHAR}
+    </select>
 </mapper>

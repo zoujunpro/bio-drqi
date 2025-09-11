@@ -19,6 +19,8 @@ public interface SeedStockDestructionLogMapper extends BaseMapper<SeedStockDestr
 
     SeedStockDestructionLog selectOneBySeedNum(@Param("seedNum") String seedNum);
 
+    List<SeedStockDestructionLog> selectAllByTaskNum(@Param("taskNum") String taskNum);
+
     SeedStockDestructionLog selectOneBySeedNumAndApplyTaskNum(@Param("seedNum") String seedNum, @Param("applyTaskNum") String applyTaskNum);
 
 }

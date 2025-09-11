@@ -98,6 +98,9 @@ public class Clean20250721Controller {
     @Resource
     private CerPlantDtlTbMapper cerPlantDtlTbMapper;
 
+    @Resource
+    private SeedStockDestructionLogMapper seedStockDestructionLogMapper;
+
 
     @GetMapping("cleanPlasmid")
     @Transactional(rollbackFor = Exception.class)
@@ -240,7 +243,7 @@ public class Clean20250721Controller {
     public ResponseResult cleanProjectType() {
         List<Project> projectList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\上线\\project.xlsx", Project.class);
         for (Project project : projectList) {
-            log.info("project={}",JSONUtil.toJsonStr(project));
+            log.info("project={}", JSONUtil.toJsonStr(project));
             CerProjectTb cerProjectTb = cerProjectTbMapper.selectById(project.id);
             if ("大田作物".equals(project.type)) {
                 cerProjectTb.setProjectCategoryCode("1");

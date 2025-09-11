@@ -39,4 +39,6 @@ public class BmsProductStockListPageReqDTO extends PageDTO {
      */
     private String unitCode;
 
+    private String stockCode;
+
 }

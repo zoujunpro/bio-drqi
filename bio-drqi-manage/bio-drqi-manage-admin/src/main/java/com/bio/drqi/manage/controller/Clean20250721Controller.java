@@ -101,6 +101,9 @@ public class Clean20250721Controller {
     @Resource
     private SeedStockDestructionLogMapper seedStockDestructionLogMapper;
 
+    @Resource
+    private BmsProductStockTbMapper bmsProductStockTbMapper;
+
 
     @GetMapping("cleanPlasmid")
     @Transactional(rollbackFor = Exception.class)
@@ -264,6 +267,23 @@ public class Clean20250721Controller {
 
         }
 
+        return ResponseResult.getSuccess("ok");
+    }
+
+    @GetMapping("/cleanBmsStockLocation")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanBmsStockLocation() {
+        List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectList(null);
+        for (BmsProductStockTb bmsProductStockTb : bmsProductStockTbList) {
+            if (StringUtils.isEmpty(bmsProductStockTb.getStockLocationNumber())) {
+                continue;
+            }
+            if (bmsProductStockTb.getStockLocationNumber().contains("[")) {
+                continue;
+            }
+            bmsProductStockTb.setStockLocationNumber(JSONUtil.toJsonStr(Arrays.asList(bmsProductStockTb.getStockLocationNumber())));
+            bmsProductStockTbMapper.updateById(bmsProductStockTb);
+        }
         return ResponseResult.getSuccess("ok");
     }
 

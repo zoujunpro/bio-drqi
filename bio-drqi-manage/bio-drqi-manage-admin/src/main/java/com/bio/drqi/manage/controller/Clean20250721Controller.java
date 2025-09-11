@@ -98,6 +98,9 @@ public class Clean20250721Controller {
     @Resource
     private CerVectorStepLogMapper cerVectorStepLogMapper;
 
+    @Resource
+    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+
 
     @GetMapping("cleanPlasmid")
     @Transactional(rollbackFor = Exception.class)
@@ -164,6 +167,7 @@ public class Clean20250721Controller {
     public ResponseResult<String> cleanConversionAndTrans() {
         List<CerConversionAndTransRef> list = cerConversionAndTransRefMapper.selectList(null);
         for (CerConversionAndTransRef cerConversionAndTransRef : list) {
+            log.info("cerConversionAndTransRef={}", JSONUtil.toJsonStr(cerConversionAndTransRef));
             CerConversionAndTransTb cerConversionAndTransTb = cerConversionAndTransTbMapper.selectById(cerConversionAndTransRef.getConversionAndTransId());
             cerConversionAndTransRef.setTaskNum(cerConversionAndTransTb.getTaskNum());
             cerConversionAndTransRefMapper.updateById(cerConversionAndTransRef);
@@ -176,12 +180,11 @@ public class Clean20250721Controller {
     public ResponseResult<String> cleanSampleAcceptorMaterial() {
         List<CerSampleTestTb> list = cerSampleTestTbMapper.selectList(null);
         for (CerSampleTestTb cerSampleTestTb : list) {
+            log.info("cerSampleTestTb={}", JSONUtil.toJsonStr(cerSampleTestTb));
             if (cerSampleTestTb.getAcceptorMaterial() == null || cerSampleTestTb.getAcceptorMaterial().length() == 32) {
                 CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
-                if (cerTransformTb != null && StringUtils.isNotEmpty(cerTransformTb.getAcceptorMaterial())) {
-                    cerTransformTb.setAcceptorMaterial(cerTransformTb.getAcceptorMaterial());
+                cerSampleTestTb.setAcceptorMaterial(cerTransformTb.getAcceptorMaterial());
                     cerSampleTestTbMapper.updateById(cerSampleTestTb);
-                }
             }
 
         }
@@ -193,7 +196,7 @@ public class Clean20250721Controller {
     public ResponseResult<String> cleanCloneSampleCode() {
         List<CerSampleTestTb> list = cerSampleTestTbMapper.selectList(null);
         for (CerSampleTestTb cerSampleTestTb : list) {
-            log.info("cerSampleTestTb={}",JSONUtil.toJsonStr(cerSampleTestTb));
+            log.info("cerSampleTestTb={}", JSONUtil.toJsonStr(cerSampleTestTb));
             if (cerSampleTestTb.getSampleCode().contains("-")) {
                 cerSampleTestTb.setCloneSampleCode(cerSampleTestTb.getSampleCode().split("-")[0]);
                 cerSampleTestTbMapper.updateById(cerSampleTestTb);
@@ -203,15 +206,31 @@ public class Clean20250721Controller {
         return ResponseResult.getSuccess("ok");
     }
 
+    @GetMapping("/cleanPlantAcceptorMaterial")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanPlantAcceptorMaterial() {
+        List<CerPlantDtlTb> cerPlantDtlTbList = cerPlantDtlTbMapper.selectSelective(null);
+        for (CerPlantDtlTb cerPlantDtlTb : cerPlantDtlTbList) {
+            log.info("cerPlantDtlTb={}",JSONUtil.toJsonStr(cerPlantDtlTb));
+            if (cerPlantDtlTb.getAcceptorMaterial() != null && cerPlantDtlTb.getAcceptorMaterial().length() == 32) {
+                List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(cerPlantDtlTb.getSampleCode());
+                    cerPlantDtlTb.setAcceptorMaterial(cerSampleTestTbList.get(0).getAcceptorMaterial());
+                    cerPlantDtlTbMapper.updateById(cerPlantDtlTb);
+            }
+        }
+        return ResponseResult.getSuccess("ok");
+
+    }
+
     @GetMapping("/cleanStepCode")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanStepCode() {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectSelective(null);
         for (CerVectorTaskTb cerVectorTaskTb : cerVectorTaskTbList) {
-            log.info("cerVectorTaskTb={}",JSONUtil.toJsonStr(cerVectorTaskTb));
+            log.info("cerVectorTaskTb={}", JSONUtil.toJsonStr(cerVectorTaskTb));
             List<CerVectorStepLog> cerVectorStepLogList = cerVectorStepLogMapper.selectAllByVectorTaskIdOrderById(cerVectorTaskTb.getId());
-            if(CollectionUtil.isNotEmpty(cerVectorStepLogList)){
-                cerVectorTaskTb.setCurrentStepCode(cerVectorStepLogList.get(cerVectorStepLogList.size()-1).getStepCode());
+            if (CollectionUtil.isNotEmpty(cerVectorStepLogList)) {
+                cerVectorTaskTb.setCurrentStepCode(cerVectorStepLogList.get(cerVectorStepLogList.size() - 1).getStepCode());
                 cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
             }
         }

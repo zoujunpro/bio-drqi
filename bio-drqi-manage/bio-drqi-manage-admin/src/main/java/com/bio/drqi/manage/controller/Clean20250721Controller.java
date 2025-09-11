@@ -10,10 +10,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
-import com.bio.drqi.manage.dto.project.PlasmidDTO;
-import com.bio.drqi.manage.dto.project.TransformDTO;
-import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
+import com.bio.drqi.manage.dto.project.*;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.service.dto.TcExperimentTaskDTO;
 import com.bio.drqi.tc.service.dto.TcPollinationTaskDTO;
@@ -184,7 +181,7 @@ public class Clean20250721Controller {
             if (cerSampleTestTb.getAcceptorMaterial() == null || cerSampleTestTb.getAcceptorMaterial().length() == 32) {
                 CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
                 cerSampleTestTb.setAcceptorMaterial(cerTransformTb.getAcceptorMaterial());
-                    cerSampleTestTbMapper.updateById(cerSampleTestTb);
+                cerSampleTestTbMapper.updateById(cerSampleTestTb);
             }
 
         }
@@ -211,11 +208,11 @@ public class Clean20250721Controller {
     public ResponseResult<String> cleanPlantAcceptorMaterial() {
         List<CerPlantDtlTb> cerPlantDtlTbList = cerPlantDtlTbMapper.selectSelective(null);
         for (CerPlantDtlTb cerPlantDtlTb : cerPlantDtlTbList) {
-            log.info("cerPlantDtlTb={}",JSONUtil.toJsonStr(cerPlantDtlTb));
+            log.info("cerPlantDtlTb={}", JSONUtil.toJsonStr(cerPlantDtlTb));
             if (cerPlantDtlTb.getAcceptorMaterial() != null && cerPlantDtlTb.getAcceptorMaterial().length() == 32) {
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(cerPlantDtlTb.getSampleCode());
-                    cerPlantDtlTb.setAcceptorMaterial(cerSampleTestTbList.get(0).getAcceptorMaterial());
-                    cerPlantDtlTbMapper.updateById(cerPlantDtlTb);
+                cerPlantDtlTb.setAcceptorMaterial(cerSampleTestTbList.get(0).getAcceptorMaterial());
+                cerPlantDtlTbMapper.updateById(cerPlantDtlTb);
             }
         }
         return ResponseResult.getSuccess("ok");
@@ -236,5 +233,52 @@ public class Clean20250721Controller {
         }
         return ResponseResult.getSuccess("ok");
     }
+
+
+    @GetMapping("/cleanProjectType")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult cleanProjectType() {
+        List<Project> projectList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\上线\\project.xlsx", Project.class);
+        for (Project project : projectList) {
+            log.info("project={}",JSONUtil.toJsonStr(project));
+            CerProjectTb cerProjectTb = cerProjectTbMapper.selectById(project.id);
+            if ("大田作物".equals(project.type)) {
+                cerProjectTb.setProjectCategoryCode("1");
+            } else if ("经济作物".equals(project.type)) {
+                cerProjectTb.setProjectCategoryCode("2");
+
+            } else if ("合成学作物".equals(project.type)) {
+                cerProjectTb.setProjectCategoryCode("3");
+
+            }
+            cerProjectTbMapper.updateById(cerProjectTb);
+
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerProjectTb.getTaskNum());
+            ProjectAddDTO projectAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), ProjectAddDTO.class);
+            projectAddDTO.setProjectCategoryCode(cerProjectTb.getProjectCategoryCode());
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(projectAddDTO));
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+
+        }
+
+        return ResponseResult.getSuccess("ok");
+    }
+
+    @Data
+    public static class Project {
+
+        @ExcelProperty("id")
+        private Integer id;
+
+        @ExcelProperty("项目名称")
+        private String name;
+
+        @ExcelProperty("项目编号")
+        private String code;
+
+        @ExcelProperty("项目分类")
+        private String type;
+    }
+
 
 }

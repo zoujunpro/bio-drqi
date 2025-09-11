@@ -49,7 +49,7 @@ public class ProjectAddDTO {
      * 项目分类
      */
 
-    @EnumValue(strValues = {"1", "2","3"}, message = "项目分类参数非法")
+    //@EnumValue(strValues = {"1", "2","3"}, message = "项目分类参数非法")
     private String projectCategoryCode;
 
 

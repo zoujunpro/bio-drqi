@@ -135,20 +135,27 @@ public class FlowServiceImpl implements FlowService {
         //过滤大字节
         if (conditionType.contains(taskTypeCode)) {
             Map<String, Object> args = new HashMap<>();
-            if (isJSONObject(str)) {
-                args = JSONUtil.toBean(str, Map.class);
-                if (Objects.nonNull(args.get("applyFrom"))) {
-                    return (Map<String, Object>) args.get("applyFrom");
+            if (!isJSONObject(str)) {
+                List<Object> list = JSONUtil.toList(str, Object.class);
+                if (CollectionUtil.isEmpty(list)) {
+                    return args;
                 }
+                args = JSONUtil.toBean(JSONUtil.toJsonStr(list.get(0)), Map.class);
+                return args;
+            } else {
+                if (isJSONObject(str)) {
+                    args = JSONUtil.toBean(str, Map.class);
+                    if (Objects.nonNull(args.get("applyFrom"))) {
+                        return (Map<String, Object>) args.get("applyFrom");
+                    }
+                    return args;
+                }
+                args = JSONUtil.toBean(str, Map.class);
                 return args;
             }
-            args = JSONUtil.toBean(str, Map.class);
-            return args;
         }
         return null;
-
-
-    }
+        }
 
     @Override
     public Map<Long, String> queryListFlowTaskByInstanceIds(List<Long> instanceIdList) {
@@ -168,6 +175,14 @@ public class FlowServiceImpl implements FlowService {
     private boolean isJSONObject(String str) {
         try {
             Object object = JSONUtil.toBean(str, Object.class);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+    private boolean isJSONArray(String str) {
+        try {
+            List<Object> object = JSONUtil.toList(str, Object.class);
         } catch (Exception e) {
             return false;
         }

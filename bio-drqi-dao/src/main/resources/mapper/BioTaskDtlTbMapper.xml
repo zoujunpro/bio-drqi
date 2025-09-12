@@ -47,7 +47,7 @@
         instance_id = #{instanceId,jdbcType=NUMERIC}
     </select>
 
-    <select id="selectForPendingApproval" resultMap="BaseResultMap">
+    <select id="selectForPendingApproval" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BioTaskDtlTb">
         select
         <include refid="Base_Column_List"/>
         from bio_task_dtl_tb
@@ -71,7 +71,7 @@
         order by id desc
     </select>
 
-    <select id="selectForAlreadyApproval" resultMap="BaseResultMap">
+    <select id="selectForAlreadyApproval" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BioTaskDtlTb">
         select
         <include refid="Base_Column_List"/>
         from bio_task_dtl_tb
@@ -97,7 +97,7 @@
         </if>
         order by id desc
     </select>
-    <select id="selectSelectiveNoDraft" resultMap="BaseResultMap">
+    <select id="selectSelectiveNoDraft" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BioTaskDtlTb">
         select
         <include refid="Base_Column_List"/>
         from bio_task_dtl_tb
@@ -111,8 +111,8 @@
         <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
         <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
         <if test="applyTime != null">and apply_time=#{applyTime,jdbcType=TIMESTAMP}</if>
-        <if test="applyDate != null and applyDate!=''">and date_format(create_time,'%Y-%m-%d') =
-            #{applyDate,jdbcType=VARCHAR}
+        <if test="applyDate != null and applyDate!=''">
+        and date_format(create_time,'%Y-%m-%d') =  #{applyDate,jdbcType=VARCHAR}
         </if>
         <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
         <if test="taskForm != null">and task_form=#{taskForm,jdbcType=VARCHAR}</if>
@@ -122,7 +122,7 @@
         <if test="taskCategory != null and taskCategory!=''">and task_category=#{taskCategory,jdbcType=VARCHAR}</if>
         order by id desc
     </select>
-    <select id="selectSelective" resultMap="BaseResultMap">
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BioTaskDtlTb">
         select
         <include refid="Base_Column_List"/>
         from bio_task_dtl_tb
@@ -135,7 +135,9 @@
             <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
             <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
             <if test="applyTime != null">and apply_time=#{applyTime,jdbcType=TIMESTAMP}</if>
-            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="applyDate != null and applyDate!=''">
+                and date_format(create_time,'%Y-%m-%d') =#{applyDate,jdbcType=VARCHAR}
+            </if>
             <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
             <if test="taskForm != null">and task_form=#{taskForm,jdbcType=VARCHAR}</if>
             <if test="taskTypeName != null">and task_type_name=#{taskTypeName,jdbcType=VARCHAR}</if>

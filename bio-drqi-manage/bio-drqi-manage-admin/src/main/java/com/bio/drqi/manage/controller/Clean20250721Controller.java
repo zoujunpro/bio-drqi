@@ -5,8 +5,11 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.uuid.IdUtils;
@@ -444,9 +447,108 @@ public class Clean20250721Controller {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsReturnOrderDetailTb.getProductInnerCode() + bmsReturnOrderDetailTb.getUnitCode() + bmsReturnOrderDetailTb.getBatchNo() + bmsReturnOrderDetailTb.getStockCode());
             bmsProductStockTb.setCurrentStockNumber(bmsReturnOrderDetailTb.getReturnNumber()+bmsProductStockTb.getCurrentStockNumber());
         }
+        //复原调拨
+        for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb:bmsMoveOrderDetailTbList){
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsMoveOrderDetailTb.getProductInnerCode() + bmsMoveOrderDetailTb.getUnitCode() + bmsMoveOrderDetailTb.getBatchNo() + bmsMoveOrderDetailTb.getFromStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsMoveOrderDetailTb.getMoveNumber()+bmsProductStockTb.getCurrentStockNumber());
+        }
+        //回退入库的
+        for (BmsProductStockInLog bmsProductStockInLog:bmsProductStockInLogList){
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsProductStockInLog.getProductInnerCode() + bmsProductStockInLog.getUnitCode() + bmsProductStockInLog.getBatchNo() + bmsProductStockInLog.getStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber()-bmsProductStockInLog.getStoreNumber());
+        }
+        //回退调拨的
+        for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb:bmsMoveOrderDetailTbList){
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsMoveOrderDetailTb.getProductInnerCode() + bmsMoveOrderDetailTb.getUnitCode() + bmsMoveOrderDetailTb.getBatchNo() + bmsMoveOrderDetailTb.getFromStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber()-bmsMoveOrderDetailTb.getMoveNumber());
+        }
+
+
+    List<BmsStock> bmsStockList= BeanUtils.copyListProperties(bmsProductStockTbList,BmsStock.class);
+        ExcelUtil.writeExcel("D://7月1号之后数据.xlsx","sheet1",bmsStockList,BmsStock.class);
 
 
 
+
+    }
+
+
+    @Data
+    public static class BmsStock{
+        /**
+         * 主键ID
+         */
+        @ExcelProperty("主键ID")
+        private Integer id;
+
+        /**
+         * 商品名称
+         */
+        @ExcelProperty("商品名称")
+        private String productName;
+
+
+        /**
+         * 所属类别编号
+         */
+        @ExcelProperty("所属类别编号")
+        private String productCategoryCode;
+
+
+
+        /**
+         * 品牌编号
+         */
+        @ExcelProperty("品牌编号")
+        private String brandCode;
+
+        /**
+         * 品牌名称
+         */
+        @ExcelProperty("品牌名称")
+        private String brandName;
+
+        /**
+         * 商品规格
+         */
+        @ExcelProperty("商品规格")
+        private String productSpecs;
+
+        /**
+         * 商品批次
+         */
+        @ExcelProperty("商品批次")
+        private String batchNo;
+
+        /**
+         * 当前库存数量
+         */
+        @ExcelProperty("当前库存数量")
+        private Integer currentStockNumber;
+
+        /**
+         * 单位
+         */
+        @ExcelProperty("单位")
+        private String unitCode;
+
+
+        @ExcelProperty("商品编号")
+        private String productInnerCode;
+
+        @ExcelProperty("供应商编号")
+        private String supplierCode;
+
+        @ExcelProperty("供应商名称")
+        private String supplierName;
+
+
+        @ExcelProperty("生产日期")
+        private String produceDate;
+
+
+        @ExcelProperty("库房编号")
+        private String stockCode;
     }
 
     @Data

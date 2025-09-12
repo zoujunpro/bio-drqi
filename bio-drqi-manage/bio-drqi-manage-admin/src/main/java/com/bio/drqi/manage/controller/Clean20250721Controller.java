@@ -1,6 +1,8 @@
 package com.bio.drqi.manage.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.bio.common.core.dto.BusinessException;
@@ -25,10 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -103,6 +103,18 @@ public class Clean20250721Controller {
 
     @Resource
     private BmsProductStockTbMapper bmsProductStockTbMapper;
+
+    @Resource
+    private BmsProductStockOutLogMapper bmsProductStockOutLogMapper;
+
+    @Resource
+    private BmsProductStockInLogMapper bmsProductStockInLogMapper;
+
+    @Resource
+    private BmsMoveOrderDetailTbMapper bmsMoveOrderDetailTbMapper;
+
+    @Resource
+    private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
 
 
     @GetMapping("cleanPlasmid")
@@ -285,6 +297,172 @@ public class Clean20250721Controller {
             bmsProductStockTbMapper.updateById(bmsProductStockTb);
         }
         return ResponseResult.getSuccess("ok");
+    }
+
+    @GetMapping("/cleanVectorTaskDeliveryMethod")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanVectorTaskDeliveryMethod() {
+        List<VectorTask> vectorTaskList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\上线\\vectorTask.xlsx", VectorTask.class);
+        for (VectorTask vectorTask : vectorTaskList) {
+            //A 农杆菌转化 B基因枪 P原生质体转化 V病毒载体
+            log.info("vectorTask={}", JSONUtil.toJsonStr(vectorTask));
+            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(vectorTask.id);
+            if (vectorTask.getDeliveryMethod().contains("|")) {
+                StringBuffer deliveryMethodBuf = new StringBuffer("");
+                String[] deliveryMethodArr = vectorTask.getDeliveryMethod().split("\\|");
+                for (String str : deliveryMethodArr) {
+                    if ("原生质体转化".equals(str)) {
+                        deliveryMethodBuf.append("P").append("|");
+                    } else if ("农杆菌转化".equals(str)) {
+                        deliveryMethodBuf.append("A").append("|");
+                    } else if ("基因枪".equals(str)) {
+                        deliveryMethodBuf.append("B").append("|");
+                    } else if ("病毒载体".equals(str)) {
+                        deliveryMethodBuf.append("V").append("|");
+                    }
+                }
+                cerVectorTaskTb.setDeliveryMethod(deliveryMethodBuf.substring(0, deliveryMethodBuf.length() - 1));
+            } else {
+                if ("原生质体转化".equals(vectorTask.getDeliveryMethod())) {
+                    cerVectorTaskTb.setDeliveryMethod("P");
+                } else if ("农杆菌转化".equals(vectorTask.deliveryMethod)) {
+                    cerVectorTaskTb.setDeliveryMethod("A");
+                } else if ("基因枪".equals(vectorTask.deliveryMethod)) {
+                    cerVectorTaskTb.setDeliveryMethod("B");
+                } else if ("病毒载体".equals(vectorTask.deliveryMethod)) {
+                    cerVectorTaskTb.setDeliveryMethod("V");
+                }
+            }
+            cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerVectorTaskTb.getTaskNum());
+            ImplementPlanAddDTO implementPlanAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), ImplementPlanAddDTO.class);
+            implementPlanAddDTO.setDeliveryMethod(cerVectorTaskTb.getDeliveryMethod());
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(implementPlanAddDTO));
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        }
+
+        return ResponseResult.getSuccess("ok");
+
+    }
+
+    @GetMapping("/cleanTransDeliveryMethod")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanTransDeliveryMethod() {
+        List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectSelective(null);
+        for (CerTransformTb cerTransformTb : cerTransformTbList) {
+            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerTransformTb.getVectorTaskCode());
+            //A 农杆菌转化 B基因枪 P原生质体转化 V病毒载体
+            if (cerVectorTaskTb.getDeliveryMethod().contains("|")) {
+                if ("原生质体转化".equals(cerTransformTb.getDeliveryMethod())) {
+                    cerTransformTb.setDeliveryMethod("P");
+                    cerTransformTbMapper.updateById(cerTransformTb);
+                } else if ("农杆菌转化".equals(cerTransformTb.getDeliveryMethod())) {
+                    cerTransformTb.setDeliveryMethod("A");
+                    cerTransformTbMapper.updateById(cerTransformTb);
+                } else if ("基因枪".equals(cerTransformTb.getDeliveryMethod())) {
+                    cerTransformTb.setDeliveryMethod("B");
+                    cerTransformTbMapper.updateById(cerTransformTb);
+                } else if ("病毒载体".equals(cerTransformTb.getDeliveryMethod())) {
+                    cerTransformTb.setDeliveryMethod("V");
+                    cerTransformTbMapper.updateById(cerTransformTb);
+                }
+            } else {
+                cerTransformTb.setDeliveryMethod(cerVectorTaskTb.getDeliveryMethod());
+                cerTransformTbMapper.updateById(cerTransformTb);
+            }
+        }
+
+        return ResponseResult.getSuccess("ok");
+
+    }
+
+    @GetMapping("/cleanTransTask")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanTransTask() {
+        List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("transform");
+        for (BioTaskDtlTb bioTaskDtlTb : bioTaskDtlTbList) {
+            TransformDTO transformDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TransformDTO.class);
+            if (CollectionUtil.isNotEmpty(transformDTO.getContentList())) {
+                for (TransformDTO.Content content : transformDTO.getContentList()) {
+                    CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(content.getTransformCode(), transformDTO.getVectorTaskCode());
+                    if (cerTransformTb != null) {
+                        content.setDeliveryMethod(cerTransformTb.getDeliveryMethod());
+                    }
+                }
+            }
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(transformDTO));
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+
+        }
+        return ResponseResult.getSuccess("ok");
+
+    }
+
+
+    @GetMapping("/createBmsStockExcel")
+    public void createBmsStockExcel(HttpServletResponse httpServletResponse) {
+        Date pointDate = DateUtil.parse("20250701000000", DatePattern.PURE_DATETIME_PATTERN);
+        //step 数据查询
+        List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
+        Map<String, BmsProductStockTb> bmsProductStockTbMap = bmsProductStockTbList.stream().collect(Collectors.toMap(bmsProductStockTb -> bmsProductStockTb.getProductInnerCode() + bmsProductStockTb.getUnitCode() + bmsProductStockTb.getBatchNo() + bmsProductStockTb.getStockCode(), bmsProductStockTb -> bmsProductStockTb));
+
+
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectList(null);
+        System.out.println("bmsProductStockInLogList :" + bmsProductStockInLogList.size());
+
+        List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectSelective(null);
+        System.out.println("bmsProductStockOutLogList :" + bmsProductStockOutLogList.size());
+
+
+        List<BmsMoveOrderDetailTb> bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbMapper.selectList(null);
+        System.out.println("bmsMoveOrderDetailTbList :" + bmsMoveOrderDetailTbList.size());
+
+
+        List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectList(null);
+        System.out.println("bmsReturnOrderDetailTbList :" + bmsReturnOrderDetailTbList.size());
+
+        //时间过滤
+        bmsProductStockInLogList = bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductStockInLog.getCreateTime().compareTo(pointDate) > 0).collect(Collectors.toList());
+        System.out.println("bmsProductStockInLogList filter:" + bmsProductStockInLogList.size());
+
+        bmsProductStockOutLogList = bmsProductStockOutLogList.stream().filter(bmsProductStockOutLog -> bmsProductStockOutLog.getCreateTime().compareTo(pointDate) > 0).collect(Collectors.toList());
+        System.out.println("bmsProductStockOutLogList filter:" + bmsProductStockOutLogList.size());
+
+        bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbList.stream().filter(bmsMoveOrderDetailTb -> bmsMoveOrderDetailTb.getCreateTime().compareTo(pointDate) > 0).collect(Collectors.toList());
+        System.out.println("bmsMoveOrderDetailTbList filter:" + bmsMoveOrderDetailTbList.size());
+
+        bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsReturnOrderDetailTb.getCreateTime().compareTo(pointDate) > 0).collect(Collectors.toList());
+        System.out.println("bmsReturnOrderDetailTbList filter:" + bmsReturnOrderDetailTbList.size());
+        //复原库存
+        //先复原出库  出库的数据加到库存中
+        for (BmsProductStockOutLog bmsProductStockOutLog : bmsProductStockOutLogList) {
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsProductStockOutLog.getProductInnerCode() + bmsProductStockOutLog.getUnitCode() + bmsProductStockOutLog.getBatchNo() + bmsProductStockOutLog.getStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockOutLog.getOutNumber()+bmsProductStockTb.getCurrentStockNumber());
+        }
+        //复原退货
+        for (BmsReturnOrderDetailTb bmsReturnOrderDetailTb:bmsReturnOrderDetailTbList){
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsReturnOrderDetailTb.getProductInnerCode() + bmsReturnOrderDetailTb.getUnitCode() + bmsReturnOrderDetailTb.getBatchNo() + bmsReturnOrderDetailTb.getStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsReturnOrderDetailTb.getReturnNumber()+bmsProductStockTb.getCurrentStockNumber());
+        }
+
+
+
+    }
+
+    @Data
+    public static class VectorTask {
+
+
+        @ExcelProperty("id")
+        private String id;
+
+
+        @ExcelProperty("实施方案编号")
+        private String code;
+
+        @ExcelProperty("递送方式")
+        private String deliveryMethod;
+
     }
 
     @Data

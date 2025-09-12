@@ -14,6 +14,8 @@ public class BioTaskListPageReqDTO extends PageDTO {
     private String taskStatus;
 
     private Integer applyUserId;
+
+    private String applyDate;
     /**
      *
      */

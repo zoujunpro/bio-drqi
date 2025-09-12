@@ -1,4 +1,5 @@
 package com.bio.drqi.manage.dto.project;
+import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -43,6 +44,7 @@ public class TransformDTO {
     private List<Content> contentList;
 
     @Data
+    @Valid
     public static class Content{
         /**
          * 侵染数量
@@ -57,9 +59,9 @@ public class TransformDTO {
         private String infectDate;
 
         /**
-         * 递送方式（实际使用的方式）
+         * 递送方式 A 农杆菌转化 B基因枪 P原生质体转化 V病毒载体
          */
-        @NotBlank(message = "递送方式必填")
+        @EnumValue(strValues = {"A", "B", "P", "V"}, message = "递送方式参数非法")
         private String deliveryMethod;
 
         /**

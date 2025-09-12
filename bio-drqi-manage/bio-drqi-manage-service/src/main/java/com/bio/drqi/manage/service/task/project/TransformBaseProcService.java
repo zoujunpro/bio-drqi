@@ -27,8 +27,6 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
 
     @Resource
     private CerTransformTbMapper cerTransformTbMapper;
-    @Resource
-    private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
     @Resource
     private CerProjectTbMapper cerProjectTbMapper;

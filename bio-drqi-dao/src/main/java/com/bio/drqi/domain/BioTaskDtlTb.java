@@ -99,6 +99,9 @@ public class BioTaskDtlTb implements Serializable {
     private Integer countNum;
 
     @TableField(exist = false)
+    private String applyDate;
+
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
 

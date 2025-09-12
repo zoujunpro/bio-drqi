@@ -250,13 +250,13 @@ public class BioTaskServiceImpl implements BioTaskService {
         PageHelper.startPage(bioTaskListPageReqDTO.getPageNum(), bioTaskListPageReqDTO.getPageSize());
         List<BioTaskDtlTb> bioTaskDtlTbList = new ArrayList<>();
         if (QueryTypeEnum.TYPE_1 == queryTypeEnum) {
-            bioTaskDtlTbList = bioTaskDtlTbMapper.selectSelectiveNoDraft(BioTaskDtlTb.builder().taskNum(bioTaskListPageReqDTO.getTaskNum()).taskTypeCode(bioTaskListPageReqDTO.getTaskTypeCode()).taskStatus(bioTaskListPageReqDTO.getTaskStatus()).applyUserId(bioTaskListPageReqDTO.getApplyUserId()).taskCategory(bioTaskListPageReqDTO.getTaskCategory()).build());
+            bioTaskDtlTbList = bioTaskDtlTbMapper.selectSelectiveNoDraft(BioTaskDtlTb.builder().applyDate(bioTaskListPageReqDTO.getApplyDate()).taskNum(bioTaskListPageReqDTO.getTaskNum()).taskTypeCode(bioTaskListPageReqDTO.getTaskTypeCode()).taskStatus(bioTaskListPageReqDTO.getTaskStatus()).applyUserId(bioTaskListPageReqDTO.getApplyUserId()).taskCategory(bioTaskListPageReqDTO.getTaskCategory()).build());
         } else if (QueryTypeEnum.TYPE_2 == queryTypeEnum) {
-            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForPendingApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(), bioTaskListPageReqDTO.getApplyUserId());
+            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForPendingApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(), bioTaskListPageReqDTO.getApplyUserId(), bioTaskListPageReqDTO.getApplyDate());
         } else if (QueryTypeEnum.TYPE_3 == queryTypeEnum) {
-            bioTaskDtlTbList = bioTaskDtlTbMapper.selectSelective(BioTaskDtlTb.builder().taskNum(bioTaskListPageReqDTO.getTaskNum()).taskStatus(bioTaskListPageReqDTO.getTaskStatus()).taskTypeCode(bioTaskListPageReqDTO.getTaskTypeCode()).applyUserId(SecurityContextHolder.getUserId()).taskCategory(bioTaskListPageReqDTO.getTaskCategory()).build());
+            bioTaskDtlTbList = bioTaskDtlTbMapper.selectSelective(BioTaskDtlTb.builder().applyDate(bioTaskListPageReqDTO.getApplyDate()).taskNum(bioTaskListPageReqDTO.getTaskNum()).taskStatus(bioTaskListPageReqDTO.getTaskStatus()).taskTypeCode(bioTaskListPageReqDTO.getTaskTypeCode()).applyUserId(SecurityContextHolder.getUserId()).taskCategory(bioTaskListPageReqDTO.getTaskCategory()).build());
         } else if (QueryTypeEnum.TYPE_4 == queryTypeEnum) {
-            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForAlreadyApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(), bioTaskListPageReqDTO.getTaskStatus(), bioTaskListPageReqDTO.getApplyUserId());
+            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForAlreadyApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(), bioTaskListPageReqDTO.getTaskStatus(), bioTaskListPageReqDTO.getApplyUserId(), bioTaskListPageReqDTO.getApplyDate());
         }
         PageInfo<BioTaskDtlTb> pageInfo = new PageInfo<>(bioTaskDtlTbList);
         List<BioTaskListPageRspDTO> bioTaskListPageRspDTOList = getTaskListPageRspDTOS(bioTaskDtlTbList);

@@ -120,6 +120,17 @@ public class Clean20250721Controller {
     private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
 
 
+    @Resource
+    private BmsOrderDetailTbMapper bmsOrderDetailTbMapper;
+
+
+    @Resource
+    private BmsProductTbMapper bmsProductTbMapper;
+
+
+    @Resource
+    private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
+
     @GetMapping("cleanPlasmid")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanPlasmid() {
@@ -302,6 +313,7 @@ public class Clean20250721Controller {
         return ResponseResult.getSuccess("ok");
     }
 
+
     @GetMapping("/cleanVectorTaskDeliveryMethod")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanVectorTaskDeliveryMethod() {
@@ -399,6 +411,117 @@ public class Clean20250721Controller {
         }
         return ResponseResult.getSuccess("ok");
 
+    }
+
+    @GetMapping("/cleanVectorTaskOther")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanVectorTaskOther() {
+        List<VectorTask> vectorTaskList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\上线\\实施方案.xlsx", VectorTask.class);
+        for (VectorTask vectorTask : vectorTaskList) {
+            log.info("vectorTask={}",JSONUtil.toJsonStr(vectorTask));
+            //1 KO，2点突变，3精准小，4精准大 ,5随机转基因
+            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(vectorTask.id);
+            if ("KO".equals(vectorTask.edit_type)) {
+                cerVectorTaskTb.setEditType("1");
+            } else if ("点突变".equals(vectorTask.edit_type)) {
+                cerVectorTaskTb.setEditType("2");
+            } else if ("精准小".equals(vectorTask.edit_type)) {
+                cerVectorTaskTb.setEditType("3");
+            } else if ("精准大".equals(vectorTask.edit_type)) {
+                cerVectorTaskTb.setEditType("4");
+            } else if ("随机转基因".equals(vectorTask.edit_type)) {
+                cerVectorTaskTb.setEditType("5");
+            } else {
+                throw new BusinessException("不识别编辑类型");
+            }
+
+            //1 无，2 ； 3 transgene-free
+            if ("transgene-free".equals(vectorTask.supervision_level_code)) {
+                cerVectorTaskTb.setSupervisionLevelCode("3");
+            } else if ("DNA-free".equals(vectorTask.supervision_level_code)) {
+                cerVectorTaskTb.setSupervisionLevelCode("2");
+            } else {
+                cerVectorTaskTb.setSupervisionLevelCode("1");
+            }
+            cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
+
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerVectorTaskTb.getTaskNum());
+            ImplementPlanAddDTO implementPlanAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), ImplementPlanAddDTO.class);
+            implementPlanAddDTO.setEditType(cerVectorTaskTb.getEditType());
+            implementPlanAddDTO.setSupervisionLevelCode(cerVectorTaskTb.getSupervisionLevelCode());
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(implementPlanAddDTO));
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
+    @GetMapping("/cleanBmsData")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanBmsData() {
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectSelective(null);
+        for (BmsOrderDetailTb bmsOrderDetailTb : bmsOrderDetailTbList) {
+            if (StringUtils.isEmpty(bmsOrderDetailTb.getBrandCode())) {
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsOrderDetailTb.getProductInnerCode());
+                bmsOrderDetailTb.setBrandCode(bmsProductTb.getBrandCode());
+                bmsOrderDetailTb.setBrandName(bmsProductTb.getBrandName());
+                bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+            }
+            if (StringUtils.isEmpty(bmsOrderDetailTb.getProductCategoryCode())) {
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsOrderDetailTb.getProductInnerCode());
+                BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsProductTb.getProductCategoryCode());
+                bmsOrderDetailTb.setProductCategoryCode(bmsProductTb.getProductCategoryCode());
+                bmsOrderDetailTb.setProductCategoryName(bmsProductCategoryTb.getProductCategoryName());
+                bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+            }
+        }
+
+        List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
+        for (BmsProductStockTb bmsProductStockTb : bmsProductStockTbList) {
+            if (StringUtils.isEmpty(bmsProductStockTb.getBrandCode())) {
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsProductStockTb.getProductInnerCode());
+                bmsProductStockTb.setBrandCode(bmsProductTb.getBrandCode());
+                bmsProductStockTb.setBrandName(bmsProductTb.getBrandName());
+                bmsProductStockTbMapper.updateById(bmsProductStockTb);
+            }
+            if (StringUtils.isEmpty(bmsProductStockTb.getProductCategoryCode())) {
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsProductStockTb.getProductInnerCode());
+                bmsProductStockTb.setProductCategoryCode(bmsProductTb.getProductCategoryCode());
+                bmsProductStockTbMapper.updateById(bmsProductStockTb);
+            }
+        }
+
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectList(null);
+        for (BmsProductStockInLog bmsProductStockInLog : bmsProductStockInLogList) {
+            if (StringUtils.isEmpty(bmsProductStockInLog.getBrandCode())) {
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsProductStockInLog.getProductInnerCode());
+                bmsProductStockInLog.setBrandCode(bmsProductTb.getBrandCode());
+                bmsProductStockInLog.setBrandName(bmsProductTb.getBrandName());
+                bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
+            }
+            if (StringUtils.isEmpty(bmsProductStockInLog.getProductCategoryCode())) {
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsProductStockInLog.getProductInnerCode());
+                bmsProductStockInLog.setProductCategoryCode(bmsProductTb.getProductCategoryCode());
+                bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
+            }
+        }
+
+
+        List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectSelective(null);
+        for (BmsProductStockOutLog bmsProductStockOutLog : bmsProductStockOutLogList) {
+            if (StringUtils.isEmpty(bmsProductStockOutLog.getBrandCode())) {
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsProductStockOutLog.getProductInnerCode());
+                bmsProductStockOutLog.setBrandCode(bmsProductTb.getBrandCode());
+                bmsProductStockOutLog.setBrandName(bmsProductTb.getBrandName());
+                bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
+            }
+            if (StringUtils.isEmpty(bmsProductStockOutLog.getProductCategoryCode())) {
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsProductStockOutLog.getProductInnerCode());
+                bmsProductStockOutLog.setProductCategoryCode(bmsProductTb.getProductCategoryCode());
+                bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
+            }
+        }
+
+        return ResponseResult.getSuccess("ok");
     }
 
 
@@ -562,6 +685,11 @@ public class Clean20250721Controller {
         @ExcelProperty("递送方式")
         private String deliveryMethod;
 
+        @ExcelProperty("监管级别")
+        private String supervision_level_code;
+
+        @ExcelProperty("编辑类型")
+        private String edit_type;
     }
 
     @Data

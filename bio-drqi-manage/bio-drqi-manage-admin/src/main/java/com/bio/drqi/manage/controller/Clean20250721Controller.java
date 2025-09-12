@@ -440,41 +440,39 @@ public class Clean20250721Controller {
         //先复原出库  出库的数据加到库存中
         for (BmsProductStockOutLog bmsProductStockOutLog : bmsProductStockOutLogList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsProductStockOutLog.getProductInnerCode() + bmsProductStockOutLog.getUnitCode() + bmsProductStockOutLog.getBatchNo() + bmsProductStockOutLog.getStockCode());
-            bmsProductStockTb.setCurrentStockNumber(bmsProductStockOutLog.getOutNumber()+bmsProductStockTb.getCurrentStockNumber());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockOutLog.getOutNumber() + bmsProductStockTb.getCurrentStockNumber());
         }
         //复原退货
-        for (BmsReturnOrderDetailTb bmsReturnOrderDetailTb:bmsReturnOrderDetailTbList){
+        for (BmsReturnOrderDetailTb bmsReturnOrderDetailTb : bmsReturnOrderDetailTbList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsReturnOrderDetailTb.getProductInnerCode() + bmsReturnOrderDetailTb.getUnitCode() + bmsReturnOrderDetailTb.getBatchNo() + bmsReturnOrderDetailTb.getStockCode());
-            bmsProductStockTb.setCurrentStockNumber(bmsReturnOrderDetailTb.getReturnNumber()+bmsProductStockTb.getCurrentStockNumber());
+            bmsProductStockTb.setCurrentStockNumber(bmsReturnOrderDetailTb.getReturnNumber() + bmsProductStockTb.getCurrentStockNumber());
         }
         //复原调拨
-        for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb:bmsMoveOrderDetailTbList){
+        for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb : bmsMoveOrderDetailTbList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsMoveOrderDetailTb.getProductInnerCode() + bmsMoveOrderDetailTb.getUnitCode() + bmsMoveOrderDetailTb.getBatchNo() + bmsMoveOrderDetailTb.getFromStockCode());
-            bmsProductStockTb.setCurrentStockNumber(bmsMoveOrderDetailTb.getMoveNumber()+bmsProductStockTb.getCurrentStockNumber());
+            bmsProductStockTb.setCurrentStockNumber(bmsMoveOrderDetailTb.getMoveNumber() + bmsProductStockTb.getCurrentStockNumber());
         }
         //回退入库的
-        for (BmsProductStockInLog bmsProductStockInLog:bmsProductStockInLogList){
+        for (BmsProductStockInLog bmsProductStockInLog : bmsProductStockInLogList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsProductStockInLog.getProductInnerCode() + bmsProductStockInLog.getUnitCode() + bmsProductStockInLog.getBatchNo() + bmsProductStockInLog.getStockCode());
-            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber()-bmsProductStockInLog.getStoreNumber());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductStockInLog.getStoreNumber());
         }
         //回退调拨的
-        for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb:bmsMoveOrderDetailTbList){
+        for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb : bmsMoveOrderDetailTbList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsMoveOrderDetailTb.getProductInnerCode() + bmsMoveOrderDetailTb.getUnitCode() + bmsMoveOrderDetailTb.getBatchNo() + bmsMoveOrderDetailTb.getFromStockCode());
-            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber()-bmsMoveOrderDetailTb.getMoveNumber());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsMoveOrderDetailTb.getMoveNumber());
         }
 
 
-    List<BmsStock> bmsStockList= BeanUtils.copyListProperties(bmsProductStockTbList,BmsStock.class);
-        ExcelUtil.writeExcel("D://7月1号之后数据.xlsx","sheet1",bmsStockList,BmsStock.class);
-
-
+        List<BmsStock> bmsStockList = BeanUtils.copyListProperties(bmsProductStockTbList, BmsStock.class);
+        ExcelUtil.writeExcel("D://7月1号之后数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
 
 
     }
 
 
     @Data
-    public static class BmsStock{
+    public static class BmsStock {
         /**
          * 主键ID
          */
@@ -493,7 +491,6 @@ public class Clean20250721Controller {
          */
         @ExcelProperty("所属类别编号")
         private String productCategoryCode;
-
 
 
         /**

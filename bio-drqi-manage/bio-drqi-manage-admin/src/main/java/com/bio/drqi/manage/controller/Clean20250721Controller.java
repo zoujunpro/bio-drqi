@@ -600,9 +600,9 @@ public class Clean20250721Controller {
     public String testTransForm() {
         String vectorTaskCode = "EB00701-02b";
         String deliveryMethod = "A";
-        String infectDate = "20250701";
+        String infectDate = "2025-07-01";
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-        List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllBySpeciesCodeAndDeliveryMethodAndCreateTime(cerVectorTaskTb.getSpeciesCode(), deliveryMethod, "20250701");
+        List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllBySpeciesCodeAndDeliveryMethodAndCreateTime(cerVectorTaskTb.getSpeciesCode(), deliveryMethod, infectDate);
         cerTransformTbList = cerTransformTbList.stream().filter(cerTransformTb -> cerTransformTb.getTransformCode().matches("^[A-Z]{3}[0-9]{6}$")).collect(Collectors.toList());
         String nextNumber = null;
         if (CollectionUtil.isEmpty(cerTransformTbList)) {

@@ -30,7 +30,7 @@ public interface CerTransformTbMapper extends BaseMapper<CerTransformTb> {
     CerTransformTb selectOneByTransformCodeAndVectorTaskCode(@Param("transformCode") String transformCode, @Param("vectorTaskCode") String vectorTaskCode);
 
     List<CerTransformTb> selectAllByVectorTaskCodeAndPlasmidNameOrderByIdDesc(@Param("vectorTaskCode") String vectorTaskCode, @Param("plasmidName") String plasmidName);
-    List<CerTransformTb> selectAllBySpeciesCodeAndDeliveryMethodAndCreateTime(@Param("speciesCode") String speciesCode, @Param("deliveryMethod") String deliveryMethod, @Param("createTime") String createTime);
+    List<CerTransformTb> selectAllBySpeciesCodeAndDeliveryMethodAndCreateTime(@Param("speciesCode") String speciesCode, @Param("deliveryMethod") String deliveryMethod, @Param("infectDate") String infectDate);
    Integer selectSumInfectNumber();
     List<CerTransformTb>  selectSelective(CerTransformTb cerTransformTb);
 

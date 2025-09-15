@@ -122,7 +122,7 @@
         where
         species_code = #{speciesCode,jdbcType=VARCHAR}
         AND delivery_method = #{deliveryMethod,jdbcType=VARCHAR}
-        AND date_format(create_time,'%Y%m%d') = #{createTime,jdbcType=VARCHAR}
+        AND infect_date = #{infectDate,jdbcType=VARCHAR}
         order by id desc
     </select>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.CerTransformTb">

@@ -27,6 +27,8 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
 
     @Resource
     private CerTransformTbMapper cerTransformTbMapper;
+    @Resource
+    private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
     @Resource
     private CerProjectTbMapper cerProjectTbMapper;
@@ -145,7 +147,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
 
     private String getTransFormCode(String vectorTaskCode, String deliveryMethod,String infectDate) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-        List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllBySpeciesCodeAndDeliveryMethodAndCreateTime(cerVectorTaskTb.getSpeciesCode(),deliveryMethod,DateUtil.format(new Date(), "yyyyMMdd"));
+        List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllBySpeciesCodeAndDeliveryMethodAndCreateTime(cerVectorTaskTb.getSpeciesCode(),deliveryMethod,infectDate);
         cerTransformTbList = cerTransformTbList.stream().filter(cerTransformTb -> cerTransformTb.getTransformCode().matches("^[A-Z]{3}[0-9]{6}$")).collect(Collectors.toList());
         String nextNumber = null;
         if (CollectionUtil.isEmpty(cerTransformTbList)) {

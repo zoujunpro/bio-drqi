@@ -594,6 +594,26 @@ public class Clean20250721Controller {
     }
 
 
+
+
+    @GetMapping("testTransForm")
+    public String testTransForm() {
+        String vectorTaskCode = "EB00701-02b";
+        String deliveryMethod = "A";
+        String infectDate = "20250701";
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+        List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllBySpeciesCodeAndDeliveryMethodAndCreateTime(cerVectorTaskTb.getSpeciesCode(), deliveryMethod, "20250701");
+        cerTransformTbList = cerTransformTbList.stream().filter(cerTransformTb -> cerTransformTb.getTransformCode().matches("^[A-Z]{3}[0-9]{6}$")).collect(Collectors.toList());
+        String nextNumber = null;
+        if (CollectionUtil.isEmpty(cerTransformTbList)) {
+            nextNumber = "01";
+        } else {
+            nextNumber = StringUtils.padl(String.valueOf(Integer.parseInt(cerTransformTbList.get(0).getTransformCode().substring(7)) + 1), 2, '0');
+        }
+        CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(cerVectorTaskTb.getSpeciesCode());
+        return cerSpeciesConf.getNumPrefix().substring(2) + cerVectorTaskTb.getDeliveryMethod() + infectDate.replace("-", "").substring(4) + nextNumber;
+    }
+
     @Data
     public static class BmsStock {
         /**

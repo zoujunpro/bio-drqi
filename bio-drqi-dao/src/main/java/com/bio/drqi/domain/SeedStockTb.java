@@ -205,6 +205,9 @@ public class SeedStockTb implements Serializable {
     private String vectorTaskCode;
 
 
+    private String experimentNum;
+
+
 
     /**
      * yyyyMMdd

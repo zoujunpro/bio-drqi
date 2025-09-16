@@ -65,6 +65,7 @@ public class BmsSupplierController {
     @PostMapping("/add")
     @WebLog(desc = "供应商管理-新增")
     @RequirePermissions("bms:supplier:add")
+    @RequestLog("供应商管理-新增")
     public ResponseResult<String> add(@RequestBody BmsSupplierAddReqDTO bmsSupplierAddReqDTO) {
         bmsSupplierService.add(bmsSupplierAddReqDTO);
         return ResponseResult.getSuccess("成功");
@@ -79,6 +80,7 @@ public class BmsSupplierController {
     @PostMapping("/edit")
     @WebLog(desc = "供应商管理-编辑")
     @RequirePermissions("bms:supplier:edit")
+    @RequestLog("供应商管理-编辑")
     public ResponseResult<String> edit(@RequestBody BmsSupplierEditReqDTO  bmsSupplierEditReqDTO) {
         bmsSupplierService.edit(bmsSupplierEditReqDTO);
         return ResponseResult.getSuccess("成功");
@@ -92,7 +94,6 @@ public class BmsSupplierController {
     @GetMapping("/detail")
     @WebLog(desc = "供应商管理-详情")
     @RequirePermissions("bms:supplier:detail")
-    @RequestLog("库存明细管理-详情")
     public ResponseResult<BmsBrandDetailRspDTO> detail(@RequestParam Integer id ) {
         return ResponseResult.getSuccess(bmsSupplierService.detail(id));
     }

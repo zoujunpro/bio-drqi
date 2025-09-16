@@ -8,6 +8,7 @@ import com.bio.drqi.bsm.rsp.BmsOrderDetailListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailQueryByOrderNumRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDtlDetailRspDTO;
 import com.bio.drqi.bsm.service.BmsOrderDetailService;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -64,6 +65,7 @@ public class BmsOrderDetailController {
     @WebLog(desc = "采购订单管理-上传合同")
     @PostMapping("/uploadContract")
     @RequirePermissions("bms:orderDetail:edit")
+    @RequestLog("采购订单管理-上传合同")
     public ResponseResult<String> uploadContract(@RequestBody BmsOrderDetailUploadContractReqDTO bmsOrderDetailUploadContractReqDTO){
         bmsOrderDetailService.uploadContract(bmsOrderDetailUploadContractReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -76,6 +78,7 @@ public class BmsOrderDetailController {
     @PostMapping("/uploadInvoice")
     @WebLog(desc = "采购订单管理-上传发票")
     @RequirePermissions("bms:orderDetail:edit")
+    @RequestLog("采购订单管理-上传发票")
     public ResponseResult<String> uploadInvoice(@RequestBody BmsOrderDetailUploadInvoiceReqDTO bmsOrderDetailUploadInvoiceReqDTO){
         bmsOrderDetailService.uploadInvoice(bmsOrderDetailUploadInvoiceReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -89,6 +92,7 @@ public class BmsOrderDetailController {
     @WebLog(desc = "采购订单管理-订单报账结算")
     @PostMapping("/reportAccount")
     @RequirePermissions("bms:orderDetail:edit")
+    @RequestLog("采购订单管理-订单报账结算")
     public ResponseResult<String> reportAccount(@RequestBody @Validated BmsOrderDetailReportAccountReqDTO bmsOrderDetailReportAccountReqDTO){
         bmsOrderDetailService.reportAccount(bmsOrderDetailReportAccountReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -102,6 +106,7 @@ public class BmsOrderDetailController {
     @WebLog(desc = "采购订单管理-上传结算凭证")
     @PostMapping("/uploadPaymentVoucher")
     @RequirePermissions("bms:orderDetail:edit")
+    @RequestLog("采购订单管理-上传结算凭证")
     public ResponseResult<String> uploadPaymentVoucher(@RequestBody @Validated BmsOrderDetailUploadPaymentVoucherReqDTO bmsOrderDetailUploadPaymentVoucherReqDTO){
         bmsOrderDetailService.uploadPaymentVoucher(bmsOrderDetailUploadPaymentVoucherReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -115,6 +120,7 @@ public class BmsOrderDetailController {
     @WebLog(desc = "采购订单管理-税率")
     @PostMapping("/taxRate")
     @RequirePermissions("bms:orderDetail:edit")
+    @RequestLog("采购订单管理-税率")
     public ResponseResult<String> taxRate(@RequestBody @Validated BmsOrderDetailTaxRateReqDTO bmsOrderDetailTaxRateReqDTO){
         bmsOrderDetailService.taxRate(bmsOrderDetailTaxRateReqDTO);
         return ResponseResult.getSuccess("ok");
@@ -126,6 +132,7 @@ public class BmsOrderDetailController {
     @WebLog(desc = "采购订单管理-导出")
     @PostMapping("/exportExcel")
     @RequirePermissions("bms:orderDetail:exportExcel")
+    @RequestLog("采购订单管理-导出")
     public void exportExcel(@RequestBody @Validated BmsOrderDetailExportExcelReqDTO bmsOrderDetailExportExcelReqDTO, HttpServletResponse httpServletResponse){
         bmsOrderDetailService.exportExcel(bmsOrderDetailExportExcelReqDTO,httpServletResponse);
     }

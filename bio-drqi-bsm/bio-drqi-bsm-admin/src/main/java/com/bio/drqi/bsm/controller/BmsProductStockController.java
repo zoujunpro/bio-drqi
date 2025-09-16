@@ -11,6 +11,7 @@ import com.bio.drqi.bsm.rsp.BmsProductStockDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockService;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -90,6 +91,7 @@ public class BmsProductStockController {
     @PostMapping("/editDate")
     @WebLog(desc = "库存明细管理-更新日期")
     @RequirePermissions("bms:productStock:editDate")
+    @RequestLog("库存明细管理-更新日期")
     public ResponseResult<String> editDate(@RequestBody BmsProductStockEditDateReqDTO bmsProductStockEditDateReqDTO) {
         bmsProductStockService.editDate(bmsProductStockEditDateReqDTO);
         return ResponseResult.getSuccess(null);
@@ -105,6 +107,7 @@ public class BmsProductStockController {
     @PostMapping("/moveStock")
     @WebLog(desc = "库存明细管理-调拨")
     @RequirePermissions("bms:productStock:moveStock")
+    @RequestLog("库存明细管理-调拨")
     public ResponseResult<String> moveStock(@RequestBody @Validated BmsProductStockMoveStockReqDTO bmsProductStockMoveStockReqDTO) {
         bmsProductStockService.moveStock(bmsProductStockMoveStockReqDTO);
         return ResponseResult.getSuccess("ok");

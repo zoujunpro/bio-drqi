@@ -9,6 +9,7 @@ import com.bio.drqi.bsm.rsp.BmsProductStockInLogDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogQueryByTaskNumRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockInService;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -75,6 +76,7 @@ public class BmsProductStockInLogController {
     @PostMapping("returnStock")
     @WebLog(desc = "入库存明细管理-退货")
     @RequirePermissions("bms:productStockInLog:returnStock")
+    @RequestLog("入库存明细管理-退货")
     public ResponseResult<String> returnStock(@RequestBody @Validated BmsProductStockInLogReturnStockReqDTO bmsProductStockInLogReturnStockReqDTO) {
         bmsProductStockInService.returnStock(bmsProductStockInLogReturnStockReqDTO);
         return ResponseResult.getSuccess("ok");

@@ -7,6 +7,7 @@ import com.bio.drqi.bsm.req.BmsSynKdExecuteReqDTO;
 import com.bio.drqi.bsm.req.BmsSynKdListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsSynKdListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsSynKdService;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,7 @@ public class BmsSynKdController {
     @PostMapping("execute")
     @RequirePermissions("bms:bmsSynKd:execute")
     @WebLog(desc = "星空云数据同步-执行同步")
+    @RequestLog("星空云数据同步-执行同步")
     public ResponseResult<String> execute(@Validated @RequestBody BmsSynKdExecuteReqDTO bmsSynKdExecuteReqDTO) {
         bmsSynKdService.execute(bmsSynKdExecuteReqDTO);
         return ResponseResult.getSuccess("ok");

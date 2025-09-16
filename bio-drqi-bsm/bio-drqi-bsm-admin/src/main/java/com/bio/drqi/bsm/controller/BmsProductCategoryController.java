@@ -73,6 +73,7 @@ public class BmsProductCategoryController {
     @GetMapping("/delete")
     @WebLog(desc = "材料类别管理-删除")
     @RequirePermissions("bms:productCategory:delete")
+    @RequestLog("材料类别管理-删除")
     public ResponseResult<String> delete(@RequestParam Integer id) {
         bmsProductCategoryService.delete(id);
         return ResponseResult.getSuccess("ok");
@@ -86,6 +87,7 @@ public class BmsProductCategoryController {
     @PostMapping("/edit")
     @WebLog(desc = "材料类别管理-编辑")
     @RequirePermissions("bms:productCategory:edit")
+    @RequestLog("材料类别管理-编辑")
     public ResponseResult<String> edit(@RequestBody BmsProductCategoryEditReqDTO bmsProductCategoryEditReqDTO) {
         bmsProductCategoryService.edit(bmsProductCategoryEditReqDTO);
         return ResponseResult.getSuccess("ok");

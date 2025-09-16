@@ -594,8 +594,11 @@ public class Clean20250721Controller {
         for (BmsStock bmsStock : bmsStockList) {
             List<BmsProductStockInLog> bmsProductStockInLogs = bmsProductStockInLogMapper.selectAllByUniqueCode(bmsStock.getUniqueCode());
             if (bmsProductStockInLogs != null) {
-                String projectCode=bmsProductStockInLogs.get(0).getProjectCode();
-                bmsProjectDictMapper.selectOneByProjectCode(projectCode);
+                String projectCode = bmsProductStockInLogs.get(0).getProjectCode();
+                BmsProjectDict bmsProjectDict = bmsProjectDictMapper.selectOneByProjectCode(projectCode);
+                bmsStock.setProjectCode(bmsProjectDict.getProjectCode());
+                bmsStock.setProjectType(bmsProjectDict.getKdProjectType());
+                bmsStock.setProductName(bmsProjectDict.getKdProjectName());
             }
         }
 
@@ -705,6 +708,8 @@ public class Clean20250721Controller {
         @ExcelProperty("项目名称")
         private String projectName;
 
+        @ExcelProperty("项目类型")
+        private String projectType;
         /**
          * 唯一编号
          */

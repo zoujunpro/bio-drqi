@@ -3,6 +3,7 @@ package com.bio.drqi.manage.service.task.project;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.contents.CerProjectContents;
 
@@ -47,7 +48,7 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         log.info("【任务工单】载体构建开始");
         VectorTaskAddDTO vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
-
+        ValidatorUtil.validator(vectorTaskAddDTO);
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
         if (cerVectorTaskTb == null) {
             throw new BusinessException("无此实施方案信息");

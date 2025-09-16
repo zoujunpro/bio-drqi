@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +34,8 @@ public class VectorTaskAddDTO {
      * 载体的具体信息，需要区分转基因还是基因编辑
      */
     @Valid
-    @NotNull(message = "载体信息缺失")
-    private List<Vector> vectorList = new ArrayList<>();
+    @NotEmpty(message = "载体信息缺失")
+    private List<Vector> vectorList ;
 
 
 

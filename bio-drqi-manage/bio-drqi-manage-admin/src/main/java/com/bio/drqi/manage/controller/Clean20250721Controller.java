@@ -121,6 +121,9 @@ public class Clean20250721Controller {
 
 
     @Resource
+    private BmsProjectDictMapper bmsProjectDictMapper;
+
+    @Resource
     private BmsOrderDetailTbMapper bmsOrderDetailTbMapper;
 
 
@@ -418,7 +421,7 @@ public class Clean20250721Controller {
     public ResponseResult<String> cleanVectorTaskOther() {
         List<VectorTask> vectorTaskList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\上线\\实施方案.xlsx", VectorTask.class);
         for (VectorTask vectorTask : vectorTaskList) {
-            log.info("vectorTask={}",JSONUtil.toJsonStr(vectorTask));
+            log.info("vectorTask={}", JSONUtil.toJsonStr(vectorTask));
             //1 KO，2点突变，3精准小，4精准大 ,5随机转基因
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(vectorTask.id);
             if ("KO".equals(vectorTask.edit_type)) {
@@ -585,15 +588,21 @@ public class Clean20250721Controller {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsMoveOrderDetailTb.getProductInnerCode() + bmsMoveOrderDetailTb.getUnitCode() + bmsMoveOrderDetailTb.getBatchNo() + bmsMoveOrderDetailTb.getToStockCode());
             bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsMoveOrderDetailTb.getMoveNumber());
         }
-
-
         List<BmsStock> bmsStockList = BeanUtils.copyListProperties(bmsProductStockTbList, BmsStock.class);
+
+        bmsStockList = bmsStockList.stream().filter(bmsStock -> bmsStock.getCurrentStockNumber() > 0).collect(Collectors.toList());
+        for (BmsStock bmsStock : bmsStockList) {
+            List<BmsProductStockInLog> bmsProductStockInLogs = bmsProductStockInLogMapper.selectAllByUniqueCode(bmsStock.getUniqueCode());
+            if (bmsProductStockInLogs != null) {
+                String projectCode=bmsProductStockInLogs.get(0).getProjectCode();
+
+            }
+        }
+
         ExcelUtil.writeExcel("D://7月1号之后数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
 
 
     }
-
-
 
 
     @GetMapping("testTransForm")
@@ -689,6 +698,17 @@ public class Clean20250721Controller {
 
         @ExcelProperty("库房编号")
         private String stockCode;
+
+        @ExcelProperty("项目编号")
+        private String projectCode;
+
+        @ExcelProperty("项目名称")
+        private String projectName;
+
+        /**
+         * 唯一编号
+         */
+        private String uniqueCode;
     }
 
     @Data

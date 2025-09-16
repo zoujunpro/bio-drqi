@@ -71,7 +71,7 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
         if (plasmidNameList.size() != vectorTaskAddDTO.getVectorList().size()) {
             throw new BusinessException("载体构建中有重复质粒");
         }
-        if(BioDrQiContents.Y.equals(cerVectorTaskTb.getNoPlasmidFlag())){
+        if(!BioDrQiContents.Y.equals(cerVectorTaskTb.getNoPlasmidFlag())){
             for (VectorTaskAddDTO.Vector vector : vectorTaskAddDTO.getVectorList()) {
                 ResponseResult responseResult = plasmidApi.detail(vector.getPlasmidName());
                 if (responseResult.isError() || responseResult.getData() == null) {

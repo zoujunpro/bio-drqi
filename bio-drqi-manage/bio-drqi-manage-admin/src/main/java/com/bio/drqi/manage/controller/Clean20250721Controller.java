@@ -593,7 +593,7 @@ public class Clean20250721Controller {
         bmsStockList = bmsStockList.stream().filter(bmsStock -> bmsStock.getCurrentStockNumber() > 0).collect(Collectors.toList());
         for (BmsStock bmsStock : bmsStockList) {
             List<BmsProductStockInLog> bmsProductStockInLogs = bmsProductStockInLogMapper.selectAllByUniqueCode(bmsStock.getUniqueCode());
-            if (bmsProductStockInLogs != null) {
+            if (CollectionUtil.isNotEmpty(bmsProductStockInLogs)) {
                 String projectCode = bmsProductStockInLogs.get(0).getProjectCode();
                 BmsProjectDict bmsProjectDict = bmsProjectDictMapper.selectOneByProjectCode(projectCode);
                 bmsStock.setProjectCode(bmsProjectDict.getProjectCode());

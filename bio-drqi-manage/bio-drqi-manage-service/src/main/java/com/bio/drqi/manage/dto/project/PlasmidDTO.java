@@ -4,6 +4,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -46,6 +47,7 @@ public class PlasmidDTO {
     private List<Content> contentList;
 
     @Data
+    @Valid
     public static class Content {
 
 

@@ -127,6 +127,9 @@ public class CerVectorTaskTb implements Serializable {
 
     private String vectorBuildRemark;
 
+    private String noPlasmidFlag;
+
+
 
 
     @TableField(exist = false)

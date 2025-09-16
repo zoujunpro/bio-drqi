@@ -117,5 +117,7 @@ public class CerImplementationPlanBaseInfoRspDTO {
 
     private String vectorBuildRemark;
 
+    private String noPlasmidFlag;
+
 
 }

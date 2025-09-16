@@ -96,6 +96,7 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                     cerVectorTaskTb.setExpectStartDate(implementPlanAddDTO.getExpectStartDate());
                     cerVectorTaskTb.setSupervisionLevelCode(implementPlanAddDTO.getSupervisionLevelCode());
                     cerVectorTaskTb.setExpectedPositiveSeed(implementPlanAddDTO.getExpectedPositiveSeed());
+                    cerVectorTaskTb.setNoPlasmidFlag(implementPlanAddDTO.getNoPlasmidFlag());
                     cerVectorTaskTb.setExpectPeriod(implementPlanAddDTO.getExpectPeriod());
                     try {
                         cerVectorTaskTbMapper.insert(cerVectorTaskTb);

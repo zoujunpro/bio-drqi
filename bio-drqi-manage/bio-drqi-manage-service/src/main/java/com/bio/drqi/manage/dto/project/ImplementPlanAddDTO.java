@@ -77,5 +77,11 @@ public class ImplementPlanAddDTO {
 
     private String  sampleCodePrefix;
 
+    /**
+     * 无质粒递送标识
+     */
+    @EnumValue(strValues = {"Y","N"}, message = "无质粒递送标识必填")
+    private String noPlasmidFlag;
+
 
 }

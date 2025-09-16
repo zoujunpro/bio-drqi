@@ -128,4 +128,7 @@ public class VectorListPageRspDTO {
      */
     private String createUserName;
 
+
+    private String noPlasmidFlag;
+
 }

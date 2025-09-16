@@ -127,6 +127,7 @@ public class VectorTaskAddDTO {
      * 基因编辑
      */
     @Data
+    @Valid
     public static class Vector {
 
 

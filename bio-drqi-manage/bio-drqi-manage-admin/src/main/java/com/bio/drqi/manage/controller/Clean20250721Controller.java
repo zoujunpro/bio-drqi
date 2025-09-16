@@ -595,7 +595,7 @@ public class Clean20250721Controller {
             List<BmsProductStockInLog> bmsProductStockInLogs = bmsProductStockInLogMapper.selectAllByUniqueCode(bmsStock.getUniqueCode());
             if (bmsProductStockInLogs != null) {
                 String projectCode=bmsProductStockInLogs.get(0).getProjectCode();
-
+                bmsProjectDictMapper.selectOneByProjectCode(projectCode);
             }
         }
 

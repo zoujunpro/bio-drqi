@@ -45,7 +45,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,plant_num,seed_num,
+        id,plant_code,seed_num,
         project_code,plant_code,farther_info,
         mather_info,generation,species_code,
         breed_code,pollination_method,harvest_type,
@@ -80,7 +80,7 @@
         from seed_stock_tb
         <where>
             <if test="notEmptySeedNumberFlag ">and seed_number>0</if>
-            <if test="plantCode != null and plantCode != '' ">and plant_num=#{plantCode,jdbcType=VARCHAR}</if>
+            <if test="plantCode != null and plantCode != '' ">and plant_code=#{plantCode,jdbcType=VARCHAR}</if>
             <if test="seedNum != null and seedNum != ''">and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
             <if test="projectCode != null and projectCode != ''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
             <if test="parentNum != null and parentNum!='' ">and plant_code=#{parentNum,jdbcType=VARCHAR}</if>
@@ -152,7 +152,7 @@
         <include refid="Base_Column_List"/>
         from seed_stock_tb
         where
-        plant_num = #{plantCode,jdbcType=VARCHAR}
+        plant_code = #{plantCode,jdbcType=VARCHAR}
     </select>
     <select id="selectAllBySeedNumIn" resultMap="BaseResultMap">
         select

@@ -78,15 +78,11 @@ public class SeedInStoreDTO extends SeedProcDTO {
         /**
          * 种植编号
          */
-        private String plantNum;
+        private String plantCode;
         /**
-         * 取样编号
+         * 实施方案编号
          */
-        private String projectCode;
-        /**
-         * 取样编号
-         */
-        private String sampleCode;
+        private String vectorTaskCode;
         /**
          * 父本信息
          */
@@ -96,6 +92,16 @@ public class SeedInStoreDTO extends SeedProcDTO {
          * 母本信息
          */
         private String matherInfo;
+
+        /**
+         * 母本种子编号
+         */
+        private String matherSeedNum;
+
+        /**
+         * 父本种子编号
+         */
+        private String fatherSeedNum;
         /**
          * 代次
          */
@@ -152,7 +158,7 @@ public class SeedInStoreDTO extends SeedProcDTO {
         /**
          * 基因型性状
          */
-        private String geneticCharacter;
+        private String targetCharacter;
 
         /**
          * 备注
@@ -173,6 +179,27 @@ public class SeedInStoreDTO extends SeedProcDTO {
         @NotBlank(message = "参数缺失：uniqueCode")
         private String uniqueCode;
 
+        /**
+         * 区域编号
+         */
+        private String regionNum;
+
+
+        /**
+         * 是否基因分离
+         */
+        private String geneSeparateFlag;
+
+        /**
+         * 是否转基因
+         */
+        private String transFlag;
+
+
+        /**
+         * 试验方案编号
+         */
+        private String experimentNum;
 
 
     }

@@ -27,7 +27,7 @@ public class SeedStockPageReqDTO extends PageDTO {
     /**
      * 项目编号
      */
-    private String projectCode;
+    private String vectorTaskCode;
     /**
      * 生产地点
      */
@@ -52,7 +52,7 @@ public class SeedStockPageReqDTO extends PageDTO {
     /**
      * 种植编号
      */
-    private String plantNum;
+    private String plantCode;
 
     /**
      * 授粉方式
@@ -96,7 +96,7 @@ public class SeedStockPageReqDTO extends PageDTO {
     /**
      * 基因性性状
      */
-    private String geneticCharacter;
+    private String targetCharacter;
 
     /**
      * 别名

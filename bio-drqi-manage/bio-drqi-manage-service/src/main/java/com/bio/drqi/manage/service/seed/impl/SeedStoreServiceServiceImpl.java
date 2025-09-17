@@ -212,7 +212,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         dataPermissionList = dataPermissionList.stream().filter(dataPermission -> dataPermission.getPermissionType().equals(DataPermissionTypeEnum.SEED_STORE.name())).collect(Collectors.toList());
         SeedStockTb seedStockTb = new SeedStockTb();
         seedStockTb.setSeedNum(seedStockPageReqDTO.getSeedNum());
-        seedStockTb.setProjectCode(seedStockPageReqDTO.getProjectCode());
+        seedStockTb.setVectorTaskCode(seedStockPageReqDTO.getVectorTaskCode());
         seedStockTb.setGeneration(seedStockPageReqDTO.getGeneration());
         seedStockTb.setSpeciesCode(seedStockPageReqDTO.getSpecies());
         seedStockTb.setBreedCode(seedStockPageReqDTO.getBreedCode());
@@ -222,11 +222,11 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         seedStockTb.setProductionLocationCode(seedStockPageReqDTO.getProductionLocationCode());
         seedStockTb.setParentNum(seedStockPageReqDTO.getParentNum());
         seedStockTb.setPollinationMethod(seedStockPageReqDTO.getPollinationMethod());
-        seedStockTb.setPlantNum(seedStockPageReqDTO.getPlantNum());
+        seedStockTb.setPlantCode(seedStockPageReqDTO.getPlantCode());
         seedStockTb.setBeninHarvestTime(seedStockPageReqDTO.getBeninHarvestTime());
         seedStockTb.setEndHarvestTime(seedStockPageReqDTO.getEndHarvestTime());
         seedStockTb.setGeneType(seedStockPageReqDTO.getGeneType());
-        seedStockTb.setGeneticCharacter(seedStockPageReqDTO.getGeneticCharacter());
+        seedStockTb.setTargetCharacter(seedStockPageReqDTO.getTargetCharacter());
         seedStockTb.setAliasName(seedStockPageReqDTO.getAliasName());
         seedStockTb.setMaterialType(seedStockPageReqDTO.getMaterialType());
         if (seedStockPageReqDTO.getOrder() != null) {

@@ -67,6 +67,9 @@ public class SeedStockInServiceImpl implements SeedStockInService {
     private RemoteUserService remoteUserService;
 
     @Resource
+    private CerVectorTaskTbMapper cerVectorTaskTbMapper;
+
+    @Resource
     private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
 
 
@@ -118,26 +121,23 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             }
 
             SeedInStoreDTO seedInStoreDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedInStoreDTO.class);
-            SeedInStoreDTO.ExecuteFormContent executeFormContent = null;
-            for (SeedInStoreDTO.ExecuteFormContent formContent : seedInStoreDTO.getExecuteForm().getExecuteFormContentList()) {
-                if (content.getUniqueCode().equals(formContent.getUniqueCode())) {
-                    executeFormContent = formContent;
-                    break;
-                }
-            }
+
+           Map<String, SeedInStoreDTO.ExecuteFormContent> executeFormContentMap= seedInStoreDTO.getExecuteForm().getExecuteFormContentList().stream().collect(Collectors.toMap(SeedInStoreDTO.ExecuteFormContent::getUniqueCode, executeFormContent -> executeFormContent));
+            SeedInStoreDTO.ExecuteFormContent executeFormContent = executeFormContentMap.get(content.getUniqueCode());
             if (executeFormContent == null) {
                 throw new BusinessException("此工单中无此种子");
             }
             SeedStockTb seedStockTb = new SeedStockTb();
-            if (StringUtils.isNotEmpty(executeFormContent.getParentNum())) {
-                SeedStockTb parentSeedStockTb = seedStockTbMapper.selectOneBySeedNum(executeFormContent.getParentNum());
-                seedStockTb.setProjectCode(parentSeedStockTb.getProjectCode());
-            } else {
-                seedStockTb.setProjectCode(executeFormContent.getProjectCode());
+            if(StringUtils.isNotEmpty(executeFormContent.getVectorTaskCode())){
+             CerVectorTaskTb cerVectorTaskTb=cerVectorTaskTbMapper.selectOneByVectorTaskCode(executeFormContent.getVectorTaskCode());
+             if(cerVectorTaskTb==null){
+                 throw new BusinessException("实施方案不存在："+executeFormContent.getVectorTaskCode());
+             }
+             seedStockTb.setProjectCode(cerVectorTaskTb.getProjectCode());
             }
-            seedStockTb.setPlantNum(executeFormContent.getPlantNum());
+            seedStockTb.setVectorTaskCode(executeFormContent.getVectorTaskCode());
+            seedStockTb.setPlantCode(executeFormContent.getPlantCode());
             seedStockTb.setParentNum(executeFormContent.getParentNum());
-            seedStockTb.setSampleCode(executeFormContent.getSampleCode());
             seedStockTb.setFartherInfo(executeFormContent.getFartherInfo());
             seedStockTb.setMatherInfo(executeFormContent.getMatherInfo());
             seedStockTb.setGeneration(executeFormContent.getGeneration());
@@ -152,7 +152,7 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             seedStockTb.setSourceType(executeFormContent.getSource());
             seedStockTb.setProductionLocationCode(executeFormContent.getProductionLocationCode());
             seedStockTb.setSubmitUserId(bioTaskDtlTb.getApplyUserId());
-            seedStockTb.setGeneticCharacter(executeFormContent.getGeneticCharacter());
+            seedStockTb.setTargetCharacter(executeFormContent.getTargetCharacter());
             seedStockTb.setSubmitUserName(bioTaskDtlTb.getApplyUserName());
             seedStockTb.setCreateTime(new Date());
             seedStockTb.setUpdateTime(new Date());
@@ -162,6 +162,11 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             seedStockTb.setAliasName(executeFormContent.getAliasName());
             seedStockTb.setMaterialType(executeFormContent.getMaterialType());
             seedStockTb.setStockLocationNum(content.getStockLocationNum());
+            seedStockTb.setExperimentNum(executeFormContent.getExperimentNum());
+            seedStockTb.setTransFlag(executeFormContent.getTransFlag());
+            seedStockTb.setMatherSeedNum(executeFormContent.getMatherSeedNum());
+            seedStockTb.setFatherSeedNum(executeFormContent.getFatherSeedNum());
+            seedStockTb.setGeneSeparateFlag(executeFormContent.getGeneSeparateFlag());
             seedStockTbMapper.insert(seedStockTb);
             CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(executeFormContent.getSpeciesCode());
             seedStockTb.setSeedNum(cerSpeciesConf.getNumPrefix() + StringUtils.padl(String.valueOf(seedStockTb.getId()), 8, '0'));

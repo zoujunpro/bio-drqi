@@ -23,7 +23,7 @@ public interface SeedStockTbMapper extends BaseMapper<SeedStockTb> {
 
     List<SeedStockTb> selectSelective(SeedStockTb seedStockTb);
 
-    SeedStockTb selectOneByPlantNum(@Param("plantNum") String plantNum);
+    SeedStockTb selectOneByPlantCode(@Param("plantNum") String plantNum);
 
     int updateParentNumById(@Param("parentNum") String parentNum, @Param("id") Integer id);
 

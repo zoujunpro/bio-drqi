@@ -33,7 +33,13 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
     private SeedStockInLogMapper seedStockInLogMapper;
 
     @Resource
-    private CerSampleTestTbMapper cerSampleTestTbMapper;
+    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+
+    @Resource
+    private CerProjectTbMapper cerProjectTbMapper;
+
+    @Resource
+    private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
     @Resource
     private CerBreedDictMapper cerBreedDictMapper;
@@ -80,16 +86,13 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
             if (StringUtils.isEmpty(generationNum)) {
                 throw new BusinessException("代次填写错误：" + executeFormContent.getGeneration());
             }
-            if (StringUtils.isNotEmpty(executeFormContent.getSampleCode())) {
-                if (StringUtils.isEmpty(executeFormContent.getProjectCode())) {
-                    throw new BusinessException("填写取样取样编号必填所属项目");
-                }
+            if (StringUtils.isNotEmpty(executeFormContent.getPlantCode())) {
                 if (StringUtils.isNotEmpty(executeFormContent.getParentNum())) {
-                    throw new BusinessException("有取样编号后不应填写上代种子编号");
+                    throw new BusinessException("有种植编号后不应填写上代种子编号");
                 }
-                CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByProjectCodeAndSampleCodeFirst(executeFormContent.getProjectCode(), executeFormContent.getSampleCode());
-                if (cerSampleTestTb == null) {
-                    throw new BusinessException(executeFormContent.getProjectCode() + "项目中不存在此取样编号:" + executeFormContent.getSampleCode());
+                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(executeFormContent.getPlantCode());
+                if (cerPlantDtlTb == null) {
+                    throw new BusinessException(executeFormContent.getPlantCode() + "种植编号不存在:" + executeFormContent.getPlantCode());
                 }
             }
             if (StringUtils.isNotEmpty(executeFormContent.getParentNum())) {
@@ -97,7 +100,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 if (parentSeedStockTb == null) {
                     throw new BusinessException("上代种子编号非法");
                 }
-                executeFormContent.setProjectCode(parentSeedStockTb.getProjectCode());
+                executeFormContent.setVectorTaskCode(parentSeedStockTb.getVectorTaskCode());
             }
 
             if (StringUtils.isNotEmpty(executeFormContent.getProductionLocationName())) {
@@ -106,6 +109,14 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                     throw new BusinessException("种子生产地点填写错误");
                 }
                 executeFormContent.setProductionLocationCode(seedProduceAddressDict.getAddressCode());
+            }
+            if(StringUtils.isNotEmpty(executeFormContent.getVectorTaskCode())){
+              CerVectorTaskTb vectorTaskTb= cerVectorTaskTbMapper.selectOneByVectorTaskCode(executeFormContent.getVectorTaskCode());
+              if(vectorTaskTb==null){
+                  throw new BusinessException("实施方案不存在："+executeFormContent.getVectorTaskCode());
+              }
+                CerProjectTb cerProjectTb= cerProjectTbMapper.selectOneByProjectCode(vectorTaskTb.getProjectCode());
+                executeFormContent.setTargetCharacter(cerProjectTb.getProjectName());
             }
 
             executeFormContent.setBreedName(cerBreedDict.getBreedName());

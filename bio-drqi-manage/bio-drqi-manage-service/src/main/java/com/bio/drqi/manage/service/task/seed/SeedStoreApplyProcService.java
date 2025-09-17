@@ -2,14 +2,15 @@ package com.bio.drqi.manage.service.task.seed;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
-import com.bio.drqi.contents.CerProjectContents;
-import com.bio.drqi.domain.*;
-import com.bio.drqi.common.enums.GenerationEnum;
-import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
-import com.bio.drqi.mapper.*;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
+import com.bio.drqi.common.enums.GenerationEnum;
+import com.bio.drqi.contents.CerProjectContents;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.SeedSourceEnum;
+import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
+import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,12 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
     @Resource
     private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
 
+    @Resource
+    private TcExperimentTbMapper tcExperimentTbMapper;
+
+    @Resource
+    private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
+
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -63,7 +70,6 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
             log.info("种子入库 executeFormContent={}", JSONUtil.toJsonStr(executeFormContent));
             ValidatorUtil.validator(seedInStoreDTO);
             //通用校验
-
             if (StringUtils.isNotEmpty(executeFormContent.getHarvestTime())) {
                 if (!validateDateFormat(executeFormContent.getHarvestTime())) {
                     throw new BusinessException("收获日期格式错误,要求yyyy-mm-dd，实际格式：" + executeFormContent.getHarvestTime());
@@ -86,23 +92,6 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
             if (StringUtils.isEmpty(generationNum)) {
                 throw new BusinessException("代次填写错误：" + executeFormContent.getGeneration());
             }
-            if (StringUtils.isNotEmpty(executeFormContent.getPlantCode())) {
-                if (StringUtils.isNotEmpty(executeFormContent.getMatherSeedNum())) {
-                    throw new BusinessException("有种植编号后不应填写母本种子编号");
-                }
-                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(executeFormContent.getPlantCode());
-                if (cerPlantDtlTb == null) {
-                    throw new BusinessException(executeFormContent.getPlantCode() + "种植编号不存在:" + executeFormContent.getPlantCode());
-                }
-            }
-            if (StringUtils.isNotEmpty(executeFormContent.getMatherSeedNum())) {
-                SeedStockTb parentSeedStockTb = seedStockTbMapper.selectOneBySeedNum(executeFormContent.getMatherSeedNum());
-                if (parentSeedStockTb == null) {
-                    throw new BusinessException("上代种子编号非法");
-                }
-                executeFormContent.setVectorTaskCode(parentSeedStockTb.getVectorTaskCode());
-            }
-
             if (StringUtils.isNotEmpty(executeFormContent.getProductionLocationName())) {
                 SeedProduceAddressDict seedProduceAddressDict = seedProduceAddressDictMapper.selectOneByAddressName(executeFormContent.getProductionLocationName());
                 if (seedProduceAddressDict == null) {
@@ -110,13 +99,56 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 }
                 executeFormContent.setProductionLocationCode(seedProduceAddressDict.getAddressCode());
             }
-            if(StringUtils.isNotEmpty(executeFormContent.getVectorTaskCode())){
-              CerVectorTaskTb vectorTaskTb= cerVectorTaskTbMapper.selectOneByVectorTaskCode(executeFormContent.getVectorTaskCode());
-              if(vectorTaskTb==null){
-                  throw new BusinessException("实施方案不存在："+executeFormContent.getVectorTaskCode());
-              }
-                CerProjectTb cerProjectTb= cerProjectTbMapper.selectOneByProjectCode(vectorTaskTb.getProjectCode());
+            if (StringUtils.isNotEmpty(executeFormContent.getVectorTaskCode())) {
+                CerVectorTaskTb vectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(executeFormContent.getVectorTaskCode());
+                if (vectorTaskTb == null) {
+                    throw new BusinessException("实施方案不存在：" + executeFormContent.getVectorTaskCode());
+                }
+                CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(vectorTaskTb.getProjectCode());
                 executeFormContent.setTargetCharacter(cerProjectTb.getProjectName());
+            }
+            //CER 校验
+            if (StringUtils.isNotEmpty(executeFormContent.getPlantCode())) {
+                if (StringUtils.isNotEmpty(executeFormContent.getMatherSeedNum())) {
+                    throw new BusinessException("CER的T1代种子无母本种植编号");
+                }
+                if (StringUtils.isNotEmpty(executeFormContent.getFatherSeedNum())) {
+                    throw new BusinessException("CER的T1代种子无父本种植编号");
+                }
+                if (StringUtils.isEmpty(executeFormContent.getVectorTaskCode())) {
+                    throw new BusinessException("CER的T1代种子请填写所属实施方案");
+                }
+                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(executeFormContent.getPlantCode());
+                if (cerPlantDtlTb == null) {
+                    throw new BusinessException(executeFormContent.getPlantCode() + "种植编号不存在:" + executeFormContent.getPlantCode());
+                }
+            }
+            //大田校验
+            if (SeedSourceEnum.CODE_4.code.equals(executeFormContent.getSource())) {
+                if (StringUtils.isEmpty(executeFormContent.getFatherSeedNum())) {
+                    throw new BusinessException("父本种子编号必填");
+                }
+                if (StringUtils.isEmpty(executeFormContent.getMatherSeedNum())) {
+                    throw new BusinessException("母本种子编号必填");
+                }
+                if (StringUtils.isEmpty(executeFormContent.getRegionNum())) {
+                    throw new BusinessException("小区编号必填");
+                }
+                if (StringUtils.isEmpty(executeFormContent.getExperimentNum())) {
+                    throw new BusinessException("试验编号必填");
+                }
+                TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(executeFormContent.getExperimentNum());
+                if (tcExperimentTb == null) {
+                    throw new BusinessException("试验编号不存在：" + executeFormContent.getExperimentNum());
+                }
+                TcExperimentDesignTb matherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcExperimentTb.getExperimentNum(), executeFormContent.getRegionNum(), executeFormContent.getMatherSeedNum());
+                if (matherTcExperimentDesignTb == null) {
+                    throw new BusinessException("试验方案中不存在此小区或者母本种子，当前试验方案编号：" + tcExperimentTb.getExperimentNum() + "小区编号：" + executeFormContent.getRegionNum() + "母本种子编号:" + executeFormContent.getMatherSeedNum());
+                }
+                TcExperimentDesignTb fatherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcExperimentTb.getExperimentNum(), executeFormContent.getRegionNum(), executeFormContent.getFatherSeedNum());
+                if (fatherTcExperimentDesignTb == null) {
+                    throw new BusinessException("试验方案中不存在此小区或者母本种子，当前试验方案编号：" + tcExperimentTb.getExperimentNum() + "小区编号：" + executeFormContent.getRegionNum() + "父本种子编号:" + executeFormContent.getFatherSeedNum());
+                }
             }
 
             executeFormContent.setBreedName(cerBreedDict.getBreedName());

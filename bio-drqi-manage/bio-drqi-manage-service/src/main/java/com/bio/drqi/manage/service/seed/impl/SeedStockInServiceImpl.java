@@ -122,18 +122,18 @@ public class SeedStockInServiceImpl implements SeedStockInService {
 
             SeedInStoreDTO seedInStoreDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedInStoreDTO.class);
 
-           Map<String, SeedInStoreDTO.ExecuteFormContent> executeFormContentMap= seedInStoreDTO.getExecuteForm().getExecuteFormContentList().stream().collect(Collectors.toMap(SeedInStoreDTO.ExecuteFormContent::getUniqueCode, executeFormContent -> executeFormContent));
+            Map<String, SeedInStoreDTO.ExecuteFormContent> executeFormContentMap = seedInStoreDTO.getExecuteForm().getExecuteFormContentList().stream().collect(Collectors.toMap(SeedInStoreDTO.ExecuteFormContent::getUniqueCode, executeFormContent -> executeFormContent));
             SeedInStoreDTO.ExecuteFormContent executeFormContent = executeFormContentMap.get(content.getUniqueCode());
             if (executeFormContent == null) {
                 throw new BusinessException("此工单中无此种子");
             }
             SeedStockTb seedStockTb = new SeedStockTb();
-            if(StringUtils.isNotEmpty(executeFormContent.getVectorTaskCode())){
-             CerVectorTaskTb cerVectorTaskTb=cerVectorTaskTbMapper.selectOneByVectorTaskCode(executeFormContent.getVectorTaskCode());
-             if(cerVectorTaskTb==null){
-                 throw new BusinessException("实施方案不存在："+executeFormContent.getVectorTaskCode());
-             }
-             seedStockTb.setProjectCode(cerVectorTaskTb.getProjectCode());
+            if (StringUtils.isNotEmpty(executeFormContent.getVectorTaskCode())) {
+                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(executeFormContent.getVectorTaskCode());
+                if (cerVectorTaskTb == null) {
+                    throw new BusinessException("实施方案不存在：" + executeFormContent.getVectorTaskCode());
+                }
+                seedStockTb.setProjectCode(cerVectorTaskTb.getProjectCode());
             }
             seedStockTb.setVectorTaskCode(executeFormContent.getVectorTaskCode());
             seedStockTb.setPlantCode(executeFormContent.getPlantCode());
@@ -212,11 +212,11 @@ public class SeedStockInServiceImpl implements SeedStockInService {
         for (ParseSeedInExcelRspDTO parseSeedInExcelRspDTO : parseSeedInExcelRspDTOList) {
             log.info("种子入库：parseSeedInExcelRspDTO={}", JSONUtil.toJsonStr(parseSeedInExcelRspDTO));
             //翻译种子来源
-            BioDict sourceTypeBioDict = bioDictMap.get(BioDictTypeEnum.SOURCE_CHANNEL + ":" + parseSeedInExcelRspDTO.getSource());
-            if (sourceTypeBioDict == null) {
+            SeedSourceEnum seedSourceEnum = SeedSourceEnum.getByCode(parseSeedInExcelRspDTO.getSource());
+            if (seedSourceEnum == null) {
                 throw new BusinessException("种子来源填写错误：" + parseSeedInExcelRspDTO.getSource());
             }
-            parseSeedInExcelRspDTO.setSource(sourceTypeBioDict.getDictValueCode());
+            parseSeedInExcelRspDTO.setSource(seedSourceEnum.name());
 
             //翻译收获方式
             if (StringUtils.isNotEmpty(parseSeedInExcelRspDTO.getHarvestType())) {

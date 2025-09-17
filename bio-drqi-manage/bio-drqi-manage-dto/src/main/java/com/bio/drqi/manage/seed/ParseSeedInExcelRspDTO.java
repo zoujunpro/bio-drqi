@@ -15,17 +15,13 @@ public class ParseSeedInExcelRspDTO {
     private String generation;
 
     @ExcelProperty(value = "种植编号")
-    private String plantNum;
+    private String plantCode;
 
-    @ExcelProperty(value = "项目编号")
-    private String projectCode;
-
+    @ExcelProperty(value = "实施方案编号")
+    private String vectorTaskCode;
 
     @ExcelProperty(value = "取样编号")
     private String sampleCode;
-
-    @ExcelProperty(value = "上代种子编号")
-    private String parentNum;
 
     @ExcelProperty(value = "作物")
     private String specieName;
@@ -33,12 +29,8 @@ public class ParseSeedInExcelRspDTO {
     @ExcelProperty(value = "品种")
     private String breedName;
 
-
-
     @ExcelProperty(value = "生产地点")
     private String productAddress;
-
-
 
     @ExcelProperty(value = "母本信息")
     private String matherInfo;
@@ -46,21 +38,17 @@ public class ParseSeedInExcelRspDTO {
     @ExcelProperty(value = "父本信息")
     private String fartherInfo;
 
+    @ExcelProperty(value = "母本种子编号")
+    private String matherSeedNum;
+
+    @ExcelProperty(value = "父本种子编号")
+    private String fartherSeedNum;
 
     @ExcelProperty(value = "数量")
     private BigDecimal seedNumber;
 
     @ExcelProperty(value = "计量单位")
     private String unit;
-
-
-    @ExcelProperty(value = "基因型")
-    private String geneType;
-
-
-    @ExcelProperty(value = "基因型性状")
-    private String geneticCharacter;
-
 
     @ExcelProperty(value = "收获日期")
     private String harvestTime;
@@ -88,7 +76,6 @@ public class ParseSeedInExcelRspDTO {
     private String breedCode;
 
     private String speciesCode;
-
 
     private String productionLocationCode;
     private String storeFlag;

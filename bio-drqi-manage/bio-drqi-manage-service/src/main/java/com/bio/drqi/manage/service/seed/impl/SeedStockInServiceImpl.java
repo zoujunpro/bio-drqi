@@ -137,7 +137,6 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             }
             seedStockTb.setVectorTaskCode(executeFormContent.getVectorTaskCode());
             seedStockTb.setPlantCode(executeFormContent.getPlantCode());
-            seedStockTb.setParentNum(executeFormContent.getParentNum());
             seedStockTb.setFartherInfo(executeFormContent.getFartherInfo());
             seedStockTb.setMatherInfo(executeFormContent.getMatherInfo());
             seedStockTb.setGeneration(executeFormContent.getGeneration());

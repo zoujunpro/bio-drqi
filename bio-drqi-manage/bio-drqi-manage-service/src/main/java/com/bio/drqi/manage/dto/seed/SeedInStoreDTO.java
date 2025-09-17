@@ -72,10 +72,6 @@ public class SeedInStoreDTO extends SeedProcDTO {
         private String source;
 
         /**
-         * 上一代种子编号
-         */
-        private String parentNum;
-        /**
          * 种植编号
          */
         private String plantCode;

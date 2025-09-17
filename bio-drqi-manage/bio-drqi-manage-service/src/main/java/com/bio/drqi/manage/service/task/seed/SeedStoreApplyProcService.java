@@ -87,16 +87,16 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 throw new BusinessException("代次填写错误：" + executeFormContent.getGeneration());
             }
             if (StringUtils.isNotEmpty(executeFormContent.getPlantCode())) {
-                if (StringUtils.isNotEmpty(executeFormContent.getParentNum())) {
-                    throw new BusinessException("有种植编号后不应填写上代种子编号");
+                if (StringUtils.isNotEmpty(executeFormContent.getMatherSeedNum())) {
+                    throw new BusinessException("有种植编号后不应填写母本种子编号");
                 }
                 CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(executeFormContent.getPlantCode());
                 if (cerPlantDtlTb == null) {
                     throw new BusinessException(executeFormContent.getPlantCode() + "种植编号不存在:" + executeFormContent.getPlantCode());
                 }
             }
-            if (StringUtils.isNotEmpty(executeFormContent.getParentNum())) {
-                SeedStockTb parentSeedStockTb = seedStockTbMapper.selectOneBySeedNum(executeFormContent.getParentNum());
+            if (StringUtils.isNotEmpty(executeFormContent.getMatherSeedNum())) {
+                SeedStockTb parentSeedStockTb = seedStockTbMapper.selectOneBySeedNum(executeFormContent.getMatherSeedNum());
                 if (parentSeedStockTb == null) {
                     throw new BusinessException("上代种子编号非法");
                 }

@@ -212,7 +212,7 @@ public class SeedStockInServiceImpl implements SeedStockInService {
         for (ParseSeedInExcelRspDTO parseSeedInExcelRspDTO : parseSeedInExcelRspDTOList) {
             log.info("种子入库：parseSeedInExcelRspDTO={}", JSONUtil.toJsonStr(parseSeedInExcelRspDTO));
             //翻译种子来源
-            SeedSourceEnum seedSourceEnum = SeedSourceEnum.getByCode(parseSeedInExcelRspDTO.getSource());
+            SeedSourceEnum seedSourceEnum = SeedSourceEnum.getByName(parseSeedInExcelRspDTO.getSource());
             if (seedSourceEnum == null) {
                 throw new BusinessException("种子来源填写错误：" + parseSeedInExcelRspDTO.getSource());
             }

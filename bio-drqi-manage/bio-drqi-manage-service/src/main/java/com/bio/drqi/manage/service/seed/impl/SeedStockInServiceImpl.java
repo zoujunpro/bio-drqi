@@ -168,6 +168,8 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             seedStockTb.setGeneSeparateFlag(executeFormContent.getGeneSeparateFlag());
             seedStockTb.setFatherRegionNum(executeFormContent.getFatherRegionNum());
             seedStockTb.setMatherRegionNum(executeFormContent.getMatherRegionNum());
+            seedStockTb.setFatherRegionNum(executeFormContent.getFatherRegionNum());
+            seedStockTb.setMatherSingleNum(executeFormContent.getMatherSingleNum());
             seedStockTbMapper.insert(seedStockTb);
             CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(executeFormContent.getSpeciesCode());
             seedStockTb.setSeedNum(cerSpeciesConf.getNumPrefix() + StringUtils.padl(String.valueOf(seedStockTb.getId()), 8, '0'));

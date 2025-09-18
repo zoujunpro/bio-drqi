@@ -43,6 +43,8 @@
         <result property="transFlag" column="trans_flag" jdbcType="VARCHAR"/>
         <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
         <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
+        <result property="fatherSingleNum" column="father_single_num" jdbcType="VARCHAR"/>
+        <result property="matherSingleNum" column="mather_single_num" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -58,7 +60,7 @@
         check_result,material_type,
         mather_seed_num,father_seed_num,father_region_num,mather_region_num,
         genealogy,gene_separate_flag,trans_flag,
-        vector_task_code,experiment_num
+        vector_task_code,experiment_num,father_single_num,mather_single_num
     </sql>
     <select id="selectOneBySeedNum" resultMap="BaseResultMap">
         select

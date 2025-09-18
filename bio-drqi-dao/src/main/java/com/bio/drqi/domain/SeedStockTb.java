@@ -206,6 +206,15 @@ public class SeedStockTb implements Serializable {
 
     private String projectCode;
 
+    /**
+     * 父本单株编号
+     */
+    private String fatherSingleNum;
+
+    /**
+     * 母本单株编号
+     */
+    private String matherSingleNum;
 
 
     /**

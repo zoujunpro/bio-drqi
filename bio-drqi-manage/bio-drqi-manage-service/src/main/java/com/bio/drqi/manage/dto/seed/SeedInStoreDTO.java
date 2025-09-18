@@ -202,6 +202,16 @@ public class SeedInStoreDTO extends SeedProcDTO {
          */
         private String experimentNum;
 
+        /**
+         * 父本单株编号
+         */
+        private String fatherSingleNum;
+
+        /**
+         * 母本单株编号
+         */
+        private String matherSingleNum;
+
 
     }
 

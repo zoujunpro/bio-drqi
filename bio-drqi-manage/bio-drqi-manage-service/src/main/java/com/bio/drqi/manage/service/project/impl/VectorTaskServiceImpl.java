@@ -329,6 +329,9 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         if (cerVectorTaskTb == null) {
             throw new BusinessException("参数异常，实施方案找不到");
         }
+        if (!vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode().startsWith(cerVectorTaskTb.getSubProjectCode())) {
+            throw new BusinessException("实施方案编号必须包含子项目");
+        }
         if (SecurityContextHolder.getUserId().intValue() != cerVectorTaskTb.getCreateUserId()) {
             throw new BusinessException("只有项目负责人可以删除");
         }
@@ -338,18 +341,21 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         if (cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode()) != null) {
             throw new BusinessException("实施方案编号系统中已经存在，不能改成重复编号");
         }
+        if (!vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode().matches("^[0-9a-zA-Z]{1,8}\\-[0-9]{2}[a-z]$") && !vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode().matches("^[0-9a-zA-Z]{1,8}\\-[0-9]{2}$")) {
+            throw new BusinessException("实施方案编号格式不正确");
+        }
 
         //必须先更新
         CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-        if(cerSampleCodePrefixTb==null){
+        if (cerSampleCodePrefixTb == null) {
             throw new BusinessException("数据异常，找不到该实施方案的取样编号前缀记录信息");
         }
         cerSampleCodePrefixTb.setVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode());
 
-       BioTaskDtlTb bioTaskDtlTb= bioTaskDtlTbMapper.selectOneByTaskNum(cerVectorTaskTb.getTaskNum());
-       if(bioTaskDtlTb==null){
-           throw new BusinessException("数据异常，找不到该实施方案的发起工单");
-       }
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerVectorTaskTb.getTaskNum());
+        if (bioTaskDtlTb == null) {
+            throw new BusinessException("数据异常，找不到该实施方案的发起工单");
+        }
 
         cerVectorTaskTb.setVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode());
         cerVectorTaskTbMapper.updateById(cerVectorTaskTb);

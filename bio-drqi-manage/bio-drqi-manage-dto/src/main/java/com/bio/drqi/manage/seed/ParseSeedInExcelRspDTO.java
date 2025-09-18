@@ -43,7 +43,6 @@ public class ParseSeedInExcelRspDTO {
 
     @ExcelProperty(value = "父本种子编号")
     private String fatherSeedNum;
-
     /**
      * 父本单株编号
      */
@@ -68,10 +67,12 @@ public class ParseSeedInExcelRspDTO {
     @ExcelProperty(value = "父本小区编号")
     private String fatherRegionNum;
 
-
+    @ExcelProperty(value = "试验方案编号")
+    private String experimentNum;
 
     @ExcelProperty(value = "数量")
     private BigDecimal seedNumber;
+
 
     @ExcelProperty(value = "计量单位")
     private String unit;

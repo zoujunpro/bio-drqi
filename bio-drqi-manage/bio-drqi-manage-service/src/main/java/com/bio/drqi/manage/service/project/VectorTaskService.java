@@ -2,6 +2,7 @@ package com.bio.drqi.manage.service.project;
 
 import com.bio.drqi.manage.vector.req.GetVectorTaskNumReqDTO;
 import com.bio.drqi.manage.vector.req.QueryPageVectorReqDTO;
+import com.bio.drqi.manage.vector.req.VectorTaskModifyVectorTaskCodeReqDTO;
 import com.bio.drqi.manage.vector.rsp.CerImplementationPlanBaseInfoRspDTO;
 import com.bio.drqi.manage.vector.rsp.StepListRspDTO;
 import com.bio.drqi.manage.vector.rsp.VectorListPageRspDTO;
@@ -9,6 +10,7 @@ import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.vector.rsp.VectorTaskSpeciesRspDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -28,7 +30,6 @@ public interface VectorTaskService {
     List<CerImplementationPlanBaseInfoRspDTO> listForMoveSeed();
 
     List<CerImplementationPlanBaseInfoRspDTO> listForFirstSample(String speciesCode);
-
 
 
     List<CerImplementationPlanBaseInfoRspDTO> listForPlasmid(Integer subProjectId);
@@ -52,5 +53,9 @@ public interface VectorTaskService {
     String getInstantVerifyTaskCode(String vectorTaskCode);
 
     List<VectorTaskSpeciesRspDTO> findAllSpecies();
+
+    void delete(Integer id);
+
+    void modifyVectorTaskCode(VectorTaskModifyVectorTaskCodeReqDTO vectorTaskModifyVectorTaskCodeReqDTO);
 
 }

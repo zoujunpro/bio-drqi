@@ -2,11 +2,14 @@ package com.bio.drqi.manage.service.project.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.enums.*;
+import com.bio.drqi.manage.dto.project.ImplementPlanAddDTO;
 import com.bio.drqi.manage.vector.req.GetVectorTaskNumReqDTO;
 import com.bio.drqi.manage.vector.req.QueryPageVectorReqDTO;
+import com.bio.drqi.manage.vector.req.VectorTaskModifyVectorTaskCodeReqDTO;
 import com.bio.drqi.manage.vector.rsp.CerImplementationPlanBaseInfoRspDTO;
 import com.bio.drqi.manage.vector.rsp.StepListRspDTO;
 import com.bio.drqi.manage.vector.rsp.VectorListPageRspDTO;
@@ -25,6 +28,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -63,6 +67,9 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     @Resource
     private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
 
+    @Resource
+    private BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
 
     @Override
     public PageInfo<VectorListPageRspDTO> listPage(QueryPageVectorReqDTO queryPageVectorReqDTO) {
@@ -90,7 +97,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
 
     @Override
     public List<CerImplementationPlanBaseInfoRspDTO> listAllBySubProject(Integer subProjectId) {
-        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllBySubProjectIdAndTaskStatusOrderByIdDesc(subProjectId,VectorTaskStatusEnum.TASK_STATUS_2.status);
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllBySubProjectIdAndTaskStatusOrderByIdDesc(subProjectId, VectorTaskStatusEnum.TASK_STATUS_2.status);
         return BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
     }
 
@@ -295,6 +302,59 @@ public class VectorTaskServiceImpl implements VectorTaskService {
             });
         }
         return result;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(Integer id) {
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(id);
+        if (cerVectorTaskTb == null) {
+            throw new BusinessException("参数异常，实施方案找不到");
+        }
+        if (SecurityContextHolder.getUserId().intValue() != cerVectorTaskTb.getCreateUserId()) {
+            throw new BusinessException("只有项目负责人可以删除");
+        }
+        if (StringUtils.isNotEmpty(cerVectorTaskTb.getCurrentStepCode())) {
+            throw new BusinessException("该实施方案已有后续步骤进行，无法删除");
+        }
+        cerVectorTaskTbMapper.deleteById(id);
+        cerSampleCodePrefixTbMapper.deleteByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+        bioTaskDtlTbMapper.deleteByTaskNum(cerVectorTaskTb.getTaskNum());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void modifyVectorTaskCode(VectorTaskModifyVectorTaskCodeReqDTO vectorTaskModifyVectorTaskCodeReqDTO) {
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(vectorTaskModifyVectorTaskCodeReqDTO.getId());
+        if (cerVectorTaskTb == null) {
+            throw new BusinessException("参数异常，实施方案找不到");
+        }
+        if (SecurityContextHolder.getUserId().intValue() != cerVectorTaskTb.getCreateUserId()) {
+            throw new BusinessException("只有项目负责人可以删除");
+        }
+        if (StringUtils.isNotEmpty(cerVectorTaskTb.getCurrentStepCode())) {
+            throw new BusinessException("该实施方案已有后续步骤进行，无法删除");
+        }
+        if (cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode()) != null) {
+            throw new BusinessException("实施方案编号系统中已经存在，不能改成重复编号");
+        }
+        cerVectorTaskTb.setVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode());
+        cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
+
+        CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+        if(cerSampleCodePrefixTb==null){
+            throw new BusinessException("数据异常，找不到该实施方案的取样编号前缀记录信息");
+        }
+        cerSampleCodePrefixTb.setVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode());
+
+       BioTaskDtlTb bioTaskDtlTb= bioTaskDtlTbMapper.selectOneByTaskNum(cerVectorTaskTb.getTaskNum());
+       if(bioTaskDtlTb==null){
+           throw new BusinessException("数据异常，找不到该实施方案的发起工单");
+       }
+        ImplementPlanAddDTO implementPlanAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), ImplementPlanAddDTO.class);
+        implementPlanAddDTO.setVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode());
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(implementPlanAddDTO));
+        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
     }
 
 

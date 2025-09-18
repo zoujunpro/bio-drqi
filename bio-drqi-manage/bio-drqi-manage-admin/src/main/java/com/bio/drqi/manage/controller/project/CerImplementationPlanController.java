@@ -4,6 +4,7 @@ package com.bio.drqi.manage.controller.project;
 import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.manage.vector.req.GetVectorTaskNumReqDTO;
 import com.bio.drqi.manage.vector.req.QueryPageVectorReqDTO;
+import com.bio.drqi.manage.vector.req.VectorTaskModifyVectorTaskCodeReqDTO;
 import com.bio.drqi.manage.vector.rsp.CerImplementationPlanBaseInfoRspDTO;
 import com.bio.drqi.manage.vector.rsp.StepListRspDTO;
 import com.bio.drqi.manage.vector.rsp.VectorListPageRspDTO;
@@ -248,9 +249,25 @@ public class CerImplementationPlanController {
      * @return
      */
     @GetMapping("/findAllSpecies")
+    @WebLog(desc = "实施方案-查询实施方案所有物种")
     public ResponseResult<List<VectorTaskSpeciesRspDTO>> findAllSpecies() {
         return ResponseResult.getSuccess(vectorTaskService.findAllSpecies());
     }
 
+    @GetMapping("/delete")
+    @WebLog(desc = "实施方案-删除")
+    @RequestLog("实施方案-删除")
+    public ResponseResult<String> delete(@RequestParam Integer id){
+        vectorTaskService.delete(id);
+        return ResponseResult.getSuccess("删除成功");
+    }
+
+    @PostMapping("/modifyVectorTaskCode")
+    @WebLog(desc = "实施方案-修改编号")
+    @RequestLog("实施方案-修改编号")
+    public ResponseResult<String> modifyVectorTaskCode(@RequestBody @Validated VectorTaskModifyVectorTaskCodeReqDTO vectorTaskModifyVectorTaskCodeReqDTO){
+        vectorTaskService.modifyVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO);
+        return ResponseResult.getSuccess("修改编号成功");
+    }
 
 }

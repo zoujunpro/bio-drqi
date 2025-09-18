@@ -209,5 +209,10 @@
         AND instance_id is null
         order by id desc
     </select>
+    <delete id="deleteByTaskNum">
+        delete
+        from bio_task_dtl_tb
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </delete>
 
 </mapper>

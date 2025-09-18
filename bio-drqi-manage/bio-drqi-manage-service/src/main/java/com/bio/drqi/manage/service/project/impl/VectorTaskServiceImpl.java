@@ -338,9 +338,8 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         if (cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode()) != null) {
             throw new BusinessException("实施方案编号系统中已经存在，不能改成重复编号");
         }
-        cerVectorTaskTb.setVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode());
-        cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
 
+        //必须先更新
         CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         if(cerSampleCodePrefixTb==null){
             throw new BusinessException("数据异常，找不到该实施方案的取样编号前缀记录信息");
@@ -351,6 +350,11 @@ public class VectorTaskServiceImpl implements VectorTaskService {
        if(bioTaskDtlTb==null){
            throw new BusinessException("数据异常，找不到该实施方案的发起工单");
        }
+
+        cerVectorTaskTb.setVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode());
+        cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
+
+
         ImplementPlanAddDTO implementPlanAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), ImplementPlanAddDTO.class);
         implementPlanAddDTO.setVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(implementPlanAddDTO));

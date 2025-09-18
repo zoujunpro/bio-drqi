@@ -44,7 +44,6 @@ public class ParseSeedInExcelRspDTO {
     @ExcelProperty(value = "父本种子编号")
     private String fartherSeedNum;
 
-
     /**
      * 父本单株编号
      */
@@ -67,7 +66,7 @@ public class ParseSeedInExcelRspDTO {
      * 父本小区编号
      */
     @ExcelProperty(value = "父本小区编号")
-    private String FatherRegionNum;
+    private String fatherRegionNum;
 
 
 

@@ -137,8 +137,6 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             }
             seedStockTb.setVectorTaskCode(executeFormContent.getVectorTaskCode());
             seedStockTb.setPlantCode(executeFormContent.getPlantCode());
-            seedStockTb.setFatherInfo(executeFormContent.getFatherInfo());
-            seedStockTb.setMatherInfo(executeFormContent.getMatherInfo());
             seedStockTb.setGeneration(executeFormContent.getGeneration());
             seedStockTb.setSpeciesCode(executeFormContent.getSpeciesCode());
             seedStockTb.setBreedCode(executeFormContent.getBreedCode());
@@ -168,8 +166,10 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             seedStockTb.setGeneSeparateFlag(executeFormContent.getGeneSeparateFlag());
             seedStockTb.setFatherRegionNum(executeFormContent.getFatherRegionNum());
             seedStockTb.setMatherRegionNum(executeFormContent.getMatherRegionNum());
-            seedStockTb.setFatherRegionNum(executeFormContent.getFatherRegionNum());
+            seedStockTb.setFatherSingleNum(executeFormContent.getFatherSingleNum());
             seedStockTb.setMatherSingleNum(executeFormContent.getMatherSingleNum());
+            seedStockTb.setFatherInfo(executeFormContent.getFatherInfo());
+            seedStockTb.setMatherInfo(executeFormContent.getMatherInfo());
             seedStockTbMapper.insert(seedStockTb);
             CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(executeFormContent.getSpeciesCode());
             seedStockTb.setSeedNum(cerSpeciesConf.getNumPrefix() + StringUtils.padl(String.valueOf(seedStockTb.getId()), 8, '0'));

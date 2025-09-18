@@ -36,7 +36,8 @@
         <result property="materialType" column="material_type" jdbcType="VARCHAR"/>
         <result property="matherSeedNum" column="mather_seed_num" jdbcType="VARCHAR"/>
         <result property="fatherSeedNum" column="father_seed_num" jdbcType="VARCHAR"/>
-        <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
+        <result property="fatherRegionNum" column="father_region_num" jdbcType="VARCHAR"/>
+        <result property="matherRegionNum" column="mather_region_num" jdbcType="VARCHAR"/>
         <result property="genealogy" column="genealogy" jdbcType="VARCHAR"/>
         <result property="geneSeparateFlag" column="gene_separate_flag" jdbcType="VARCHAR"/>
         <result property="transFlag" column="trans_flag" jdbcType="VARCHAR"/>
@@ -55,7 +56,7 @@
         update_time,remarks,total_number,
         target_character,alias_name,gene_type,
         check_result,material_type,
-        mather_seed_num,father_seed_num,region_num,
+        mather_seed_num,father_seed_num,father_region_num,mather_region_num,
         genealogy,gene_separate_flag,trans_flag,
         vector_task_code,experiment_num
     </sql>

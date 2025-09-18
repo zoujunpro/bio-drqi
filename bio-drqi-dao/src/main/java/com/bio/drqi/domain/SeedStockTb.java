@@ -171,9 +171,15 @@ public class SeedStockTb implements Serializable {
     private String fatherSeedNum;
 
     /**
-     * 小区编号
+     * 母本小区编号
      */
-    private String regionNum;
+    private String matherRegionNum;
+
+    /**
+     * 父本小区编号
+     */
+    private String fatherRegionNum;
+
 
     /**
      * 系谱

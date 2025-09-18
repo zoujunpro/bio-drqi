@@ -57,6 +57,9 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
     @Resource
     private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
 
+    @Resource
+    private TcPollinationTbMapper tcPollinationTbMapper;
+
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -131,8 +134,11 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 if (StringUtils.isEmpty(executeFormContent.getMatherSeedNum())) {
                     throw new BusinessException("母本种子编号必填");
                 }
-                if (StringUtils.isEmpty(executeFormContent.getRegionNum())) {
-                    throw new BusinessException("小区编号必填");
+                if (StringUtils.isEmpty(executeFormContent.getFatherRegionNum())) {
+                    throw new BusinessException("父本小区编号必填");
+                }
+                if (StringUtils.isEmpty(executeFormContent.getMatherRegionNum())) {
+                    throw new BusinessException("母本小区编号必填");
                 }
                 if (StringUtils.isEmpty(executeFormContent.getExperimentNum())) {
                     throw new BusinessException("试验编号必填");
@@ -141,13 +147,13 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 if (tcExperimentTb == null) {
                     throw new BusinessException("试验编号不存在：" + executeFormContent.getExperimentNum());
                 }
-                TcExperimentDesignTb matherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcExperimentTb.getExperimentNum(), executeFormContent.getRegionNum(), executeFormContent.getMatherSeedNum());
+                TcExperimentDesignTb matherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcExperimentTb.getExperimentNum(), executeFormContent.getMatherRegionNum(), executeFormContent.getMatherSeedNum());
                 if (matherTcExperimentDesignTb == null) {
-                    throw new BusinessException("试验方案中不存在此小区或者母本种子，当前试验方案编号：" + tcExperimentTb.getExperimentNum() + "小区编号：" + executeFormContent.getRegionNum() + "母本种子编号:" + executeFormContent.getMatherSeedNum());
+                    throw new BusinessException("试验方案中不存在此小区或者母本种子，当前试验方案编号：" + tcExperimentTb.getExperimentNum() + "母本小区编号：" + executeFormContent.getMatherRegionNum() + "母本种子编号:" + executeFormContent.getMatherSeedNum());
                 }
-                TcExperimentDesignTb fatherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcExperimentTb.getExperimentNum(), executeFormContent.getRegionNum(), executeFormContent.getFatherSeedNum());
+                TcExperimentDesignTb fatherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcExperimentTb.getExperimentNum(), executeFormContent.getFatherRegionNum(), executeFormContent.getFatherSeedNum());
                 if (fatherTcExperimentDesignTb == null) {
-                    throw new BusinessException("试验方案中不存在此小区或者母本种子，当前试验方案编号：" + tcExperimentTb.getExperimentNum() + "小区编号：" + executeFormContent.getRegionNum() + "父本种子编号:" + executeFormContent.getFatherSeedNum());
+                    throw new BusinessException("试验方案中不存在此小区或者母本种子，当前试验方案编号：" + tcExperimentTb.getExperimentNum() + "父本小区编号：" + executeFormContent.getFatherRegionNum() + "父本种子编号:" + executeFormContent.getFatherSeedNum());
                 }
             }
 

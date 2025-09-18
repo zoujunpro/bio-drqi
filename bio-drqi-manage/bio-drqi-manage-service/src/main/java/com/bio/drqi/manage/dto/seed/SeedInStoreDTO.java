@@ -176,9 +176,14 @@ public class SeedInStoreDTO extends SeedProcDTO {
         private String uniqueCode;
 
         /**
-         * 区域编号
+         * 母本小区编号
          */
-        private String regionNum;
+        private String matherRegionNum;
+
+        /**
+         * 父本小区编号
+         */
+        private String FatherRegionNum;
 
 
         /**

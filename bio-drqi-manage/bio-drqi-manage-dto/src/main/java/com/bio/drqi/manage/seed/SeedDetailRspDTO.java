@@ -184,11 +184,6 @@ public class SeedDetailRspDTO {
     private String fatherSeedNum;
 
     /**
-     * 小区编号
-     */
-    private String regionNum;
-
-    /**
      * 系谱
      */
     private String genealogy;
@@ -210,6 +205,27 @@ public class SeedDetailRspDTO {
 
 
     private String experimentNum;
+
+
+    /**
+     * 父本单株编号
+     */
+    private String fatherSingleNum;
+
+    /**
+     * 母本单株编号
+     */
+    private String matherSingleNum;
+
+    /**
+     * 母本小区编号
+     */
+    private String matherRegionNum;
+
+    /**
+     * 父本小区编号
+     */
+    private String FatherRegionNum;
 
 
 }

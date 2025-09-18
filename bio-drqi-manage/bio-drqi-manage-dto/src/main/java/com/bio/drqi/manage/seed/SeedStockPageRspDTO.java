@@ -179,12 +179,6 @@ public class SeedStockPageRspDTO {
      * 父本种子编号
      */
     private String fatherSeedNum;
-
-    /**
-     * 小区编号
-     */
-    private String regionNum;
-
     /**
      * 系谱
      */
@@ -207,6 +201,27 @@ public class SeedStockPageRspDTO {
 
 
     private String experimentNum;
+
+    /**
+     * 父本单株编号
+     */
+    private String fatherSingleNum;
+
+    /**
+     * 母本单株编号
+     */
+    private String matherSingleNum;
+
+    /**
+     * 母本小区编号
+     */
+    private String matherRegionNum;
+
+    /**
+     * 父本小区编号
+     */
+    private String FatherRegionNum;
+
 
 
 

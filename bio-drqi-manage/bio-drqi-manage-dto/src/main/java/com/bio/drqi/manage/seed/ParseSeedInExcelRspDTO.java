@@ -44,6 +44,33 @@ public class ParseSeedInExcelRspDTO {
     @ExcelProperty(value = "父本种子编号")
     private String fartherSeedNum;
 
+
+    /**
+     * 父本单株编号
+     */
+    @ExcelProperty(value = "父本单株编号")
+    private String fatherSingleNum;
+
+    /**
+     * 母本单株编号
+     */
+    @ExcelProperty(value = "母本单株编号")
+    private String matherSingleNum;
+
+    /**
+     * 母本小区编号
+     */
+    @ExcelProperty(value = "母本小区编号")
+    private String matherRegionNum;
+
+    /**
+     * 父本小区编号
+     */
+    @ExcelProperty(value = "父本小区编号")
+    private String FatherRegionNum;
+
+
+
     @ExcelProperty(value = "数量")
     private BigDecimal seedNumber;
 

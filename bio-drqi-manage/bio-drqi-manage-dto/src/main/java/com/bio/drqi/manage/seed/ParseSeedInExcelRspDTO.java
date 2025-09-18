@@ -36,7 +36,7 @@ public class ParseSeedInExcelRspDTO {
     private String matherInfo;
 
     @ExcelProperty(value = "父本信息")
-    private String fartherInfo;
+    private String fatherInfo;
 
     @ExcelProperty(value = "母本种子编号")
     private String matherSeedNum;

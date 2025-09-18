@@ -42,7 +42,7 @@ public class SeedStockTb implements Serializable {
     /**
      * 父本信息
      */
-    private String fartherInfo;
+    private String fatherInfo;
 
     /**
      * 母本信息

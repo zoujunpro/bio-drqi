@@ -10,7 +10,7 @@
         <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
         <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
         <result property="parentNum" column="plant_code" jdbcType="VARCHAR"/>
-        <result property="fartherInfo" column="farther_info" jdbcType="VARCHAR"/>
+        <result property="fatherInfo" column="father_info" jdbcType="VARCHAR"/>
         <result property="matherInfo" column="mather_info" jdbcType="VARCHAR"/>
         <result property="generation" column="generation" jdbcType="VARCHAR"/>
         <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
@@ -49,7 +49,7 @@
 
     <sql id="Base_Column_List">
         id,plant_code,seed_num,
-        project_code,plant_code,farther_info,
+        project_code,plant_code,father_info,
         mather_info,generation,species_code,
         breed_code,pollination_method,harvest_type,
         harvest_time,seed_number,unit,

@@ -220,7 +220,7 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             if (seedSourceEnum == null) {
                 throw new BusinessException("种子来源填写错误：" + parseSeedInExcelRspDTO.getSource());
             }
-            parseSeedInExcelRspDTO.setSource(seedSourceEnum.name);
+            parseSeedInExcelRspDTO.setSource(seedSourceEnum.code);
 
             //翻译收获方式
             if (StringUtils.isNotEmpty(parseSeedInExcelRspDTO.getHarvestType())) {

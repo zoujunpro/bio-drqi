@@ -77,7 +77,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setPlantNum(seedStockTb.getPlantCode());
             seed.setSeedNum(seedStockTb.getSeedNum());
             seed.setParentNum(seedStockTb.getParentNum());
-            seed.setFartherInfo(seedStockTb.getFartherInfo());
+            seed.setFatherInfo(seedStockTb.getFatherInfo());
             seed.setMatherInfo(seedStockTb.getMatherInfo());
             seed.setGeneration(GenerationEnum.getGenerationDesc(seedStockTb.getGeneration()));
             seed.setSpeciesCode(seedStockTb.getSpeciesCode());

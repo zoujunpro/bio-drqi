@@ -183,7 +183,7 @@ public class SeedInStoreDTO extends SeedProcDTO {
         /**
          * 父本小区编号
          */
-        private String FatherRegionNum;
+        private String fatherRegionNum;
 
 
         /**

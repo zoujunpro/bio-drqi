@@ -351,6 +351,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
             throw new BusinessException("数据异常，找不到该实施方案的取样编号前缀记录信息");
         }
         cerSampleCodePrefixTb.setVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode());
+        cerSampleCodePrefixTbMapper.updateById(cerSampleCodePrefixTb);
 
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerVectorTaskTb.getTaskNum());
         if (bioTaskDtlTb == null) {

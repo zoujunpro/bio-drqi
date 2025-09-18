@@ -87,13 +87,26 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     @Override
     public List<TcExperimentListAllRspDTO> listAll() {
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByExperimentStatusOrderByIdDesc(ExperimentStatusEnum.INIT.status);
-        return BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListAllRspDTO.class);
+        Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
+        List<TcExperimentListAllRspDTO> tcExperimentListAllRspDTOList= BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListAllRspDTO.class);
+        tcExperimentListAllRspDTOList.forEach(tcExperimentListAllRspDTO -> {
+            tcExperimentListAllRspDTO.setExperimentAddressName(seedProduceAddressDictMap.get(tcExperimentListAllRspDTO.getExperimentAddressCode()));
+        });
+        return tcExperimentListAllRspDTOList;
     }
 
     @Override
     public List<TcExperimentListNoHarvestRspDTO> listNoHarvest() {
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByExperimentStatusAndHarvestApplyNumIsNullOrderByIdDesc(ExperimentStatusEnum.INIT.status);
-        return BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListNoHarvestRspDTO.class);
+        List<TcExperimentListNoHarvestRspDTO>  tcExperimentListNoHarvestRspDTOList= BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListNoHarvestRspDTO.class);
+        if(CollectionUtil.isNotEmpty(tcExperimentListNoHarvestRspDTOList)){
+            Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
+            tcExperimentListNoHarvestRspDTOList.forEach(tcExperimentListNoHarvestRspDTO -> {
+                tcExperimentListNoHarvestRspDTO.setExperimentAddressName(seedProduceAddressDictMap.get(tcExperimentListNoHarvestRspDTO.getExperimentAddressCode()));
+
+            });
+        }
+        return tcExperimentListNoHarvestRspDTOList;
     }
 
     @Override

@@ -37,6 +37,10 @@ public class TcPollinationExportPollinationExcelReqDTO {
 
         private String motherSampleCode;
 
+        /**
+         * 母本大田单株编号
+         */
+        private String motherTcSampleCode;
 
         /**
          * 母本品种
@@ -63,7 +67,10 @@ public class TcPollinationExportPollinationExcelReqDTO {
          */
         private String fatherSeedNum;
 
-
+        /**
+         * 父本大田单株编号
+         */
+        private String fatherTcSampleCode;
 
         /**
          * 父本单株编号

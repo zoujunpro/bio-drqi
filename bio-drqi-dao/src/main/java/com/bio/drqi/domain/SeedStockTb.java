@@ -27,17 +27,12 @@ public class SeedStockTb implements Serializable {
     /**
      * 种植编号
      */
-    private String plantNum;
+    private String plantCode;
 
     /**
      * 种子编号
      */
     private String seedNum;
-
-    /**
-     * 项目号
-     */
-    private String projectCode;
 
     /**
      * 上一代种子编号
@@ -47,7 +42,7 @@ public class SeedStockTb implements Serializable {
     /**
      * 父本信息
      */
-    private String fartherInfo;
+    private String fatherInfo;
 
     /**
      * 母本信息
@@ -142,7 +137,7 @@ public class SeedStockTb implements Serializable {
     /**
      * 目标性状
      */
-    private String geneticCharacter;
+    private String targetCharacter;
 
     /**
      * 别名
@@ -159,10 +154,6 @@ public class SeedStockTb implements Serializable {
      */
     private String checkResult;
 
-    /**
-     * 取样编号
-     */
-    private String sampleCode;
 
     /**
      * 材料类型
@@ -180,9 +171,15 @@ public class SeedStockTb implements Serializable {
     private String fatherSeedNum;
 
     /**
-     * 小区编号
+     * 母本小区编号
      */
-    private String regionNum;
+    private String matherRegionNum;
+
+    /**
+     * 父本小区编号
+     */
+    private String fatherRegionNum;
+
 
     /**
      * 系谱
@@ -204,6 +201,20 @@ public class SeedStockTb implements Serializable {
      */
     private String vectorTaskCode;
 
+
+    private String experimentNum;
+
+    private String projectCode;
+
+    /**
+     * 父本单株编号
+     */
+    private String fatherSingleNum;
+
+    /**
+     * 母本单株编号
+     */
+    private String matherSingleNum;
 
 
     /**

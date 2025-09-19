@@ -9,8 +9,6 @@ import java.util.List;
 @Data
 public class TcExperimentTaskDTO {
 
-    @NotEmpty(message = "参数缺失：项目信息")
-    private List<String> projectCodeList;
 
     @NotEmpty(message = "参数缺失：实施方案")
     private List<String> vectorTaskCodeList;

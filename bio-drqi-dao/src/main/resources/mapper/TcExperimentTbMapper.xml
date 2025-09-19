@@ -6,7 +6,6 @@
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.TcExperimentTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="projectCodes" column="project_codes" jdbcType="VARCHAR"/>
             <result property="vectorTaskCodes" column="vector_task_codes" jdbcType="VARCHAR"/>
             <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
             <result property="speciesName" column="species_name" jdbcType="VARCHAR"/>
@@ -28,7 +27,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,project_codes,vector_task_codes,
+        id,vector_task_codes,
         species_code,species_name,file_url,
         experiment_goal,experiment_address_code,apply_user_name,
         apply_user_id,create_time,experiment_num,
@@ -39,7 +38,6 @@
         <include refid="Base_Column_List"/>
         from tc_experiment_tb
         <where>
-            <if test="projectCodes != null and projectCodes!=''">and project_codes LIKE  CONCAT('%',#{projectCodes,jdbcType=VARCHAR},'%')</if>
             <if test="vectorTaskCodes != null and vectorTaskCodes!=''">and vector_task_codes  LIKE  CONCAT('%',#{vectorTaskCodes,jdbcType=VARCHAR},'%')</if>
             <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
             <if test="speciesName != null and speciesName!='' ">and species_name=#{speciesName,jdbcType=VARCHAR}</if>

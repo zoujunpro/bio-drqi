@@ -15,17 +15,13 @@ public class ParseSeedInExcelRspDTO {
     private String generation;
 
     @ExcelProperty(value = "种植编号")
-    private String plantNum;
+    private String plantCode;
 
-    @ExcelProperty(value = "项目编号")
-    private String projectCode;
-
+    @ExcelProperty(value = "实施方案编号")
+    private String vectorTaskCode;
 
     @ExcelProperty(value = "取样编号")
     private String sampleCode;
-
-    @ExcelProperty(value = "上代种子编号")
-    private String parentNum;
 
     @ExcelProperty(value = "作物")
     private String specieName;
@@ -33,34 +29,53 @@ public class ParseSeedInExcelRspDTO {
     @ExcelProperty(value = "品种")
     private String breedName;
 
-
-
     @ExcelProperty(value = "生产地点")
     private String productAddress;
-
-
 
     @ExcelProperty(value = "母本信息")
     private String matherInfo;
 
     @ExcelProperty(value = "父本信息")
-    private String fartherInfo;
+    private String fatherInfo;
 
+    @ExcelProperty(value = "母本种子编号")
+    private String matherSeedNum;
+
+    @ExcelProperty(value = "父本种子编号")
+    private String fatherSeedNum;
+    /**
+     * 父本单株编号
+     */
+    @ExcelProperty(value = "父本单株编号")
+    private String fatherSingleNum;
+
+    /**
+     * 母本单株编号
+     */
+    @ExcelProperty(value = "母本单株编号")
+    private String matherSingleNum;
+
+    /**
+     * 母本小区编号
+     */
+    @ExcelProperty(value = "母本小区编号")
+    private String matherRegionNum;
+
+    /**
+     * 父本小区编号
+     */
+    @ExcelProperty(value = "父本小区编号")
+    private String fatherRegionNum;
+
+    @ExcelProperty(value = "试验方案编号")
+    private String experimentNum;
 
     @ExcelProperty(value = "数量")
     private BigDecimal seedNumber;
 
+
     @ExcelProperty(value = "计量单位")
     private String unit;
-
-
-    @ExcelProperty(value = "基因型")
-    private String geneType;
-
-
-    @ExcelProperty(value = "基因型性状")
-    private String geneticCharacter;
-
 
     @ExcelProperty(value = "收获日期")
     private String harvestTime;
@@ -88,7 +103,6 @@ public class ParseSeedInExcelRspDTO {
     private String breedCode;
 
     private String speciesCode;
-
 
     private String productionLocationCode;
     private String storeFlag;

@@ -69,48 +69,52 @@ public class SeedInStoreDTO extends SeedProcDTO {
         /**
          * 来源
          */
+        @NotBlank(message = "渠道来源必填")
         private String source;
 
         /**
-         * 上一代种子编号
-         */
-        private String parentNum;
-        /**
          * 种植编号
          */
-        private String plantNum;
+        private String plantCode;
         /**
-         * 取样编号
+         * 实施方案编号
          */
-        private String projectCode;
-        /**
-         * 取样编号
-         */
-        private String sampleCode;
+        private String vectorTaskCode;
         /**
          * 父本信息
          */
-        private String fartherInfo;
+        private String fatherInfo;
 
         /**
          * 母本信息
          */
         private String matherInfo;
+
+        /**
+         * 母本种子编号
+         */
+        private String matherSeedNum;
+
+        /**
+         * 父本种子编号
+         */
+        private String fatherSeedNum;
         /**
          * 代次
          */
+        @NotBlank(message = "代次必填")
         private String generation;
         /**
          * 项目物种
          */
-        @NotBlank(message = "参数缺失：speciesCode")
+        @NotBlank(message = "物种必填")
         private String speciesCode;
 
         private String speciesName;
         /**
          * 受体材料（作物）
          */
-        @NotBlank(message = "参数缺失：breedCode")
+        @NotBlank(message = "品种必填")
         private String breedCode;
 
         private String breedName;
@@ -118,6 +122,7 @@ public class SeedInStoreDTO extends SeedProcDTO {
         /**
          * 授粉方式
          */
+
         private String pollinationMethod;
 
         /**
@@ -152,7 +157,7 @@ public class SeedInStoreDTO extends SeedProcDTO {
         /**
          * 基因型性状
          */
-        private String geneticCharacter;
+        private String targetCharacter;
 
         /**
          * 备注
@@ -173,6 +178,42 @@ public class SeedInStoreDTO extends SeedProcDTO {
         @NotBlank(message = "参数缺失：uniqueCode")
         private String uniqueCode;
 
+        /**
+         * 母本小区编号
+         */
+        private String matherRegionNum;
+
+        /**
+         * 父本小区编号
+         */
+        private String fatherRegionNum;
+
+
+        /**
+         * 是否基因分离
+         */
+        private String geneSeparateFlag;
+
+        /**
+         * 是否转基因
+         */
+        private String transFlag;
+
+
+        /**
+         * 试验方案编号
+         */
+        private String experimentNum;
+
+        /**
+         * 父本单株编号
+         */
+        private String fatherSingleNum;
+
+        /**
+         * 母本单株编号
+         */
+        private String matherSingleNum;
 
 
     }

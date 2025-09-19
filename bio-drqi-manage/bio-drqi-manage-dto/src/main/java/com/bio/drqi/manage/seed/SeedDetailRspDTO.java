@@ -18,7 +18,7 @@ public class SeedDetailRspDTO {
     /**
      * 种植编号
      */
-    private String plantNum;
+    private String plantCode;
 
     /**
      * 种子编号
@@ -38,7 +38,7 @@ public class SeedDetailRspDTO {
     /**
      * 父本信息
      */
-    private String fartherInfo;
+    private String fatherInfo;
 
     /**
      * 母本信息
@@ -155,17 +155,13 @@ public class SeedDetailRspDTO {
      */
     private String remarks;
 
-    /**
-     * 取样编号
-     */
-    private String sampleCode;
 
     private String checkResult;
 
     @JsonSerialize(using = BigDecimalSerialize.class)
     private BigDecimal totalNumber;
 
-    private String geneticCharacter;
+    private String targetCharacter;
 
     private String aliasName;
 
@@ -173,5 +169,63 @@ public class SeedDetailRspDTO {
 
 
     private String materialType;
+
+
+
+
+    /**
+     * 母本种子编号
+     */
+    private String matherSeedNum;
+
+    /**
+     * 父本种子编号
+     */
+    private String fatherSeedNum;
+
+    /**
+     * 系谱
+     */
+    private String genealogy;
+
+    /**
+     * 是否基因分离
+     */
+    private String geneSeparateFlag;
+
+    /**
+     * 是否转基因
+     */
+    private String transFlag;
+
+    /**
+     * 实施方案编号
+     */
+    private String vectorTaskCode;
+
+
+    private String experimentNum;
+
+
+    /**
+     * 父本单株编号
+     */
+    private String fatherSingleNum;
+
+    /**
+     * 母本单株编号
+     */
+    private String matherSingleNum;
+
+    /**
+     * 母本小区编号
+     */
+    private String matherRegionNum;
+
+    /**
+     * 父本小区编号
+     */
+    private String FatherRegionNum;
+
 
 }

@@ -603,9 +603,28 @@ public class Clean20250721Controller {
         }
 
         ExcelUtil.writeExcel("D://7月1号之后数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
-
-
     }
+
+
+
+    @GetMapping("/cleanSeedStock")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanSeedStock(){
+        List<Species> speciesList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\上线\\物种库 - 副本.xlsx", Species.class);
+        List<SpeciesNew> speciesNewList=BeanUtils.copyListProperties(speciesList,SpeciesNew.class);
+        List<CerSpeciesConf> cerSpeciesConfList= cerSpeciesConfMapper.selectAll();
+        Map<String,CerSpeciesConf> cerSpeciesConfMap=  cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode,cerSpeciesConf -> cerSpeciesConf));
+        for (SpeciesNew speciesNew:speciesNewList){
+            CerSpeciesConf cerSpeciesConf= cerSpeciesConfMap.get(speciesNew.code);
+            if(cerSpeciesConf==null){
+                throw new BusinessException("找不到物种："+speciesNew.name);
+            }
+            speciesNew.setOldPrefix(cerSpeciesConf.getNumPrefix());
+        }
+        ExcelUtil.writeExcel("C:\\Users\\zou'jun\\Desktop\\上线\\物种库(新).xlsx", "sheet1", speciesList, Species.class);
+        return ResponseResult.getSuccess("ok");
+    }
+
 
 
     @GetMapping("testTransForm")
@@ -624,6 +643,38 @@ public class Clean20250721Controller {
         }
         CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(cerVectorTaskTb.getSpeciesCode());
         return cerSpeciesConf.getNumPrefix().substring(2) + cerVectorTaskTb.getDeliveryMethod() + infectDate.replace("-", "").substring(4) + nextNumber;
+    }
+
+
+    @Data
+    public static class Species{
+
+        @ExcelProperty("品种名称")
+        private String name;
+
+        @ExcelProperty("品种编号")
+        private String code;
+
+        @ExcelProperty("种子编号前缀")
+        private String newPrefix;
+
+    }
+
+    @Data
+    public static class SpeciesNew{
+
+        @ExcelProperty("品种名称")
+        private String name;
+
+        @ExcelProperty("品种编号")
+        private String code;
+
+        @ExcelProperty("种子编号前缀(新)")
+        private String newPrefix;
+
+
+        @ExcelProperty("种子编号前缀(旧)")
+        private String oldPrefix;
     }
 
     @Data

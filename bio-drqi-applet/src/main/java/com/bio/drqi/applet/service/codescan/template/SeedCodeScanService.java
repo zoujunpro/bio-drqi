@@ -40,6 +40,9 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
     private CerSampleTestTbMapper cerSampleTestTbMapper;
 
     @Resource
+    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+
+    @Resource
     private BioDictMapper bioDictMapper;
 
     @Resource
@@ -71,10 +74,10 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
         Collections.reverse(seedStockTbList);
         for (SeedStockTb seedStockTb : seedStockTbList) {
             ScanCodeSeedRspDTO.Seed seed = new ScanCodeSeedRspDTO.Seed();
-            seed.setPlantNum(seedStockTb.getPlantNum());
+            seed.setPlantNum(seedStockTb.getPlantCode());
             seed.setSeedNum(seedStockTb.getSeedNum());
             seed.setParentNum(seedStockTb.getParentNum());
-            seed.setFartherInfo(seedStockTb.getFartherInfo());
+            seed.setFatherInfo(seedStockTb.getFatherInfo());
             seed.setMatherInfo(seedStockTb.getMatherInfo());
             seed.setGeneration(GenerationEnum.getGenerationDesc(seedStockTb.getGeneration()));
             seed.setSpeciesCode(seedStockTb.getSpeciesCode());
@@ -101,7 +104,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setUpdateTime(seedStockTb.getUpdateTime());
             seed.setRemarks(seedStockTb.getRemarks());
             seed.setTotalNumber(seedStockTb.getTotalNumber());
-            seed.setGeneticCharacter(seedStockTb.getGeneticCharacter());
+            seed.setGeneticCharacter(seedStockTb.getTargetCharacter());
             seed.setAliasName(seedStockTb.getAliasName());
             seed.setGeneType(seedStockTb.getGeneType());
              if(seedStockTb.getMaterialType()!=null){
@@ -114,13 +117,13 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
         }
         if (CollectionUtil.isNotEmpty(seedStockTbList)) {
             SeedStockTb firstSeed = seedStockTbList.get(0);
-            if (StringUtils.isNotEmpty(firstSeed.getProjectCode()) && StringUtils.isNotEmpty(firstSeed.getSampleCode())) {
-                CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByUniqueCode(firstSeed.getProjectCode() + firstSeed.getSampleCode());
-                if (cerSampleTestTb != null) {
-                    CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerSampleTestTb.getProjectCode());
-                    CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerSampleTestTb.getSubProjectCode());
-                    CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
-                    CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerVectorTaskTb.getVectorTaskCode());
+            if (StringUtils.isNotEmpty(firstSeed.getPlantCode())) {
+                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(firstSeed.getPlantCode());
+                if (cerPlantDtlTb != null) {
+                    CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerPlantDtlTb.getProjectCode());
+                    CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerPlantDtlTb.getSubProjectCode());
+                    CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
+                    CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerPlantDtlTb.getTransformCode(), cerVectorTaskTb.getVectorTaskCode());
                     scanCodeSeedRspDTO.setProjectCode(cerProjectTb.getProjectCode());
                     scanCodeSeedRspDTO.setProjectName(cerProjectTb.getProjectName());
                     scanCodeSeedRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());

@@ -8,7 +8,6 @@ import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.SeedSourceEnum;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +25,11 @@ import java.util.stream.Collectors;
 @Service("seed_store_apply")
 @Slf4j
 public class SeedStoreApplyProcService extends AbstractSeedTaskService {
+
+    /**
+     * 大田
+     */
+    private static String SOURCE_TYPE_4="4";
 
     @Resource
     private SeedStockTbMapper seedStockTbMapper;
@@ -130,7 +134,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 }
             }
             //大田校验
-            if (SeedSourceEnum.CODE_4.code.equals(executeFormContent.getSource())) {
+            if (SOURCE_TYPE_4.equals(executeFormContent.getSource())) {
                 if (StringUtils.isEmpty(executeFormContent.getFatherSeedNum())) {
                     throw new BusinessException("父本种子编号必填");
                 }

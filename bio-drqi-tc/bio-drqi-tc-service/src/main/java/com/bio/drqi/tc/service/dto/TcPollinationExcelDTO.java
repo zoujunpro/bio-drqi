@@ -14,86 +14,86 @@ public class TcPollinationExcelDTO {
     /**
      * 母本小区编号
      */
-    @ExcelProperty(value = {"母本","小区编号(母)"})
-    @NotBlank(message = "参数缺失：小区编号(母)")
+    @ExcelProperty(value = {"母本","母本小区编号"})
+    @NotBlank(message = "参数缺失：母本小区编号")
     private String motherRegionNum;
     /**
      * 母本种子编号
      */
-    @ExcelProperty(value = {"母本","种子编号(母)"})
-    @NotBlank(message = "参数缺失：种子编号(母)")
+    @ExcelProperty(value = {"母本","母本种子编号"})
+    @NotBlank(message = "参数缺失：母本种子编号")
     private String motherSeedNum;
     /**
      * 母本单株编号
      */
-    @ExcelProperty(value ={"母本","单株编号(母)"})
-    @NotBlank(message = "参数缺失：单株编号(母)")
+    @ExcelProperty(value ={"母本","母本单株编号"})
+    @NotBlank(message = "参数缺失：母本单株编号")
     private String motherSampleCode;
 
     /**
      * 母本大田单株编号
      */
-    @ExcelProperty(value ={"母本","大田单株编号(母)"})
-    @NotBlank(message = "参数缺失：大田单株编号(母)")
+    @ExcelProperty(value ={"母本","母本大田单株编号"})
+    @NotBlank(message = "参数缺失：母本大田单株编号")
     private String motherTcSampleCode;
 
     /**
      * 母本品种
      */
-    @ExcelProperty(value ={"母本","品种(母)"})
-    @NotBlank(message = "参数缺失：品种(母)")
+    @ExcelProperty(value ={"母本","母本品种"})
+    @NotBlank(message = "参数缺失：母本品种")
     private String motherBreedName;
 
     private String motherBreedCode;
     /**
      * 母本实施方案编号
      */
-    @ExcelProperty(value ={"母本","实施方案编号(母)"})
-    @NotBlank(message = "参数缺失：实施方案编号(母)")
+    @ExcelProperty(value ={"母本","母本实施方案编号"})
+    @NotBlank(message = "参数缺失：母本实施方案编号")
     private String motherVectorTaskCode;
     /**
      * 母本世代
      */
-    @ExcelProperty(value ={"母本","世代(母)"})
-    @NotBlank(message = "参数缺失：世代(母)")
+    @ExcelProperty(value ={"母本","母本世代"})
+    @NotBlank(message = "参数缺失：母本世代")
     private String motherGenerationName;
     /**
      * 母本基因类型
      */
-    @ExcelProperty(value ={"母本","基因型(母)"})
-    @NotBlank(message = "参数缺失：基因型(母)")
+    @ExcelProperty(value ={"母本","母本基因型"})
+    @NotBlank(message = "参数缺失：母本基因型")
     private String motherTcGene;
     /**
      * 父本小区编号
      */
-    @ExcelProperty(value ={"父本","小区编号(父)"})
-    @NotBlank(message = "参数缺失：小区编号(父)")
+    @ExcelProperty(value ={"父本","父本小区编号"})
+    @NotBlank(message = "参数缺失：父本小区编号")
     private String fatherRegionNum;
     /**
      * 父本种子编号
      */
-    @ExcelProperty(value ={"父本","种子编号(父)"})
-    @NotBlank(message = "参数缺失：种子编号(父)")
+    @ExcelProperty(value ={"父本","父本种子编号"})
+    @NotBlank(message = "参数缺失：父本种子编号")
     private String fatherSeedNum;
 
     /**
      * 父本大田单株编号
      */
-    @ExcelProperty(value ={"父本","大田单株编号(父)"})
-    @NotBlank(message = "参数缺失：大田单株编号(父)")
+    @ExcelProperty(value ={"父本","父本大田单株编号"})
+    @NotBlank(message = "参数缺失：父本大田单株编号")
     private String fatherTcSampleCode;
 
     /**
      * 父本单株编号
      */
-    @ExcelProperty(value ={"父本","单株编号(父)"})
-    @NotBlank(message = "参数缺失：单株编号(父)")
+    @ExcelProperty(value ={"父本","父本单株编号"})
+    @NotBlank(message = "参数缺失：父本单株编号")
     private String fatherSampleCode;
     /**
      * 父本品种
      */
-    @ExcelProperty(value ={"父本","品种(父)"})
-    @NotBlank(message = "参数缺失：品种(父)")
+    @ExcelProperty(value ={"父本","父本品种"})
+    @NotBlank(message = "参数缺失：父本品种")
     private String fatherBreedName;
 
     private String fatherBreedCode;
@@ -101,20 +101,20 @@ public class TcPollinationExcelDTO {
     /**
      * 父本实施方案编号
      */
-    @ExcelProperty(value ={"父本","实施方案编号(父)"})
-    @NotBlank(message = "参数缺失：实施方案编号(父)")
+    @ExcelProperty(value ={"父本","父本实施方案编号"})
+    @NotBlank(message = "参数缺失：父本实施方案编号")
     private String fatherVectorTaskCode;
     /**
      * 父本世代
      */
-    @ExcelProperty(value ={"父本","世代(父)"})
-    @NotBlank(message = "参数缺失：世代(父)")
+    @ExcelProperty(value ={"父本","父本世代"})
+    @NotBlank(message = "参数缺失：父本世代")
     private String fatherGenerationName;
     /**
      * 父本基因类型
      */
-    @ExcelProperty(value ={"基因型(父)"})
-    @NotBlank(message = "参数缺失：基因型(父)")
+    @ExcelProperty(value ={"父本基因型"})
+    @NotBlank(message = "参数缺失：父本基因型")
     private String fatherTcGene;
 
     /**

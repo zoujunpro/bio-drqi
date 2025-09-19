@@ -193,7 +193,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         if (StringUtils.isEmpty(maxSampleCodePrefix)) {
             return "TAA";
         } else {
-            return SampleGroupPergixEnum.T.name() + LetterUtil.nextLetterForInstantVerify(maxSampleCodePrefix.substring(2));
+            return SampleGroupPergixEnum.T.name() + LetterUtil.nextLetterForInstantVerify(maxSampleCodePrefix.substring(1));
         }
     }
 }

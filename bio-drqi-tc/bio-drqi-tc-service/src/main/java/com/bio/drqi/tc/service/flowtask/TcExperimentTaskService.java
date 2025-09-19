@@ -78,7 +78,6 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             }
 
             TcExperimentTb tcExperimentTb = new TcExperimentTb();
-            tcExperimentTb.setProjectCodes(JSONUtil.toJsonStr(tcExperimentTaskDTO.getProjectCodeList()));
             tcExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(tcExperimentTaskDTO.getVectorTaskCodeList()));
             tcExperimentTb.setSpeciesCode(tcExperimentTaskDTO.getSpeciesCode());
             tcExperimentTb.setSpeciesName(tcExperimentTaskDTO.getSpeciesName());

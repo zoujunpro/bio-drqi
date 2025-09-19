@@ -22,10 +22,6 @@ public class TcExperimentTb implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * 项目编号
-     */
-    private String projectCodes;
 
     /**
      * 实施方案编号

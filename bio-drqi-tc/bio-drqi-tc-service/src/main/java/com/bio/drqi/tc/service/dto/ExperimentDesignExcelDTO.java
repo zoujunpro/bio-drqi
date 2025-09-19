@@ -61,12 +61,6 @@ public class ExperimentDesignExcelDTO {
     @NotBlank(message = "基因型必填")
     private String tcGene;
     /**
-     * 项目编号
-     */
-    @ExcelProperty("项目编号")
-    @NotBlank(message = "项目编号必填")
-    private String projectCode;
-    /**
      * 小区面积
      */
     @ExcelProperty("小区面积")

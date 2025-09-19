@@ -102,7 +102,6 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
                 tcExperimentDesignTb.setExperimentNum(tcExperimentTb.getExperimentNum());
                 tcExperimentDesignTb.setRegionNum(experimentDesignExcelDTO.getRegionNum());
                 tcExperimentDesignTb.setSeedNum(experimentDesignExcelDTO.getSeedNum());
-                tcExperimentDesignTb.setProjectCode(experimentDesignExcelDTO.getProjectCode());
                 tcExperimentDesignTb.setVectorTaskCode(experimentDesignExcelDTO.getVectorTaskCode());
                 tcExperimentDesignTb.setSpeciesCode(tcExperimentTb.getSpeciesCode());
                 tcExperimentDesignTb.setBreedCode(experimentDesignExcelDTO.getBreedCode());
@@ -162,9 +161,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             if (!tcExperimentTaskDTO.getVectorTaskCodeList().contains(experimentDesignExcelDTO.getVectorTaskCode())) {
                 throw new BusinessException("excel大田设计文件中实验方案编号不正确，必须归属所选方案中");
             }
-            if (!experimentDesignExcelDTO.getVectorTaskCode().startsWith(experimentDesignExcelDTO.getProjectCode())) {
-                throw new BusinessException("实施方案:" + experimentDesignExcelDTO.getVectorTaskCode() + "不属于此项目:" + experimentDesignExcelDTO.getProjectCode());
-            }
+
             if (breedNameCodeMap.get(experimentDesignExcelDTO.getBreedName()) == null) {
                 throw new BusinessException("物种下无此品种配置" + experimentDesignExcelDTO.getBreedName());
             } else {

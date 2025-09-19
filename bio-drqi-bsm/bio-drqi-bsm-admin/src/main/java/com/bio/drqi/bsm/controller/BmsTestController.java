@@ -132,26 +132,26 @@ public class BmsTestController {
 
     @GetMapping("/synInStock")
     public ResponseResult<String> synInStock() {
-        kdTaskService.synInStockTask("2025-01-01", "2025-09-16");
+        kdTaskService.synInStockTask("2025-07-01", "2025-09-16");
         return ResponseResult.getSuccess("OK");
     }
 
     @GetMapping("/synOutStock")
     public ResponseResult<String> synOutStock() {
-        kdTaskService.synOutStockTask("2025-01-01", "2025-09-16");
+        kdTaskService.synOutStockTask("2025-07-01", "2025-09-16");
         return ResponseResult.getSuccess("OK");
     }
 
 
     @GetMapping("/synReturnStock")
     public ResponseResult<String> synReturnStock() {
-        kdTaskService.synReturnStockTask("2025-01-01", "2025-09-16");
+        kdTaskService.synReturnStockTask("2025-07-01", "2025-09-16");
         return ResponseResult.getSuccess("OK");
     }
 
     @GetMapping("/synMoveStockTask")
     public ResponseResult<String> synMoveStockTask() {
-        kdTaskService.synMoveStockTask("2025-01-01", "2025-09-16");
+        kdTaskService.synMoveStockTask("2025-07-01", "2025-09-16");
         return ResponseResult.getSuccess("OK");
     }
 

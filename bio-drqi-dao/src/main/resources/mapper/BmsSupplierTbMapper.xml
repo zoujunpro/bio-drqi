@@ -26,7 +26,7 @@
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
         <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
         <result property="deleteFlag" column="delete_flag" jdbcType="VARCHAR"/>
-        <result property="kdNumber" column="kd_number" jdbcType="INTEGER"/>
+        <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">

@@ -6,11 +6,11 @@
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.SeedStockTb">
         <id property="id" column="id" jdbcType="INTEGER"/>
-        <result property="plantNum" column="plant_num" jdbcType="VARCHAR"/>
+        <result property="plantCode" column="plant_code" jdbcType="VARCHAR"/>
         <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
         <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
-        <result property="parentNum" column="parent_num" jdbcType="VARCHAR"/>
-        <result property="fartherInfo" column="farther_info" jdbcType="VARCHAR"/>
+        <result property="parentNum" column="plant_code" jdbcType="VARCHAR"/>
+        <result property="fatherInfo" column="father_info" jdbcType="VARCHAR"/>
         <result property="matherInfo" column="mather_info" jdbcType="VARCHAR"/>
         <result property="generation" column="generation" jdbcType="VARCHAR"/>
         <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
@@ -29,35 +29,38 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
         <result property="totalNumber" column="total_number" jdbcType="DECIMAL"/>
-        <result property="geneticCharacter" column="genetic_character" jdbcType="VARCHAR"/>
+        <result property="targetCharacter" column="target_character" jdbcType="VARCHAR"/>
         <result property="aliasName" column="alias_name" jdbcType="VARCHAR"/>
         <result property="geneType" column="gene_type" jdbcType="VARCHAR"/>
         <result property="checkResult" column="check_result" jdbcType="OTHER"/>
-        <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
         <result property="materialType" column="material_type" jdbcType="VARCHAR"/>
         <result property="matherSeedNum" column="mather_seed_num" jdbcType="VARCHAR"/>
         <result property="fatherSeedNum" column="father_seed_num" jdbcType="VARCHAR"/>
-        <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
+        <result property="fatherRegionNum" column="father_region_num" jdbcType="VARCHAR"/>
+        <result property="matherRegionNum" column="mather_region_num" jdbcType="VARCHAR"/>
         <result property="genealogy" column="genealogy" jdbcType="VARCHAR"/>
         <result property="geneSeparateFlag" column="gene_separate_flag" jdbcType="VARCHAR"/>
         <result property="transFlag" column="trans_flag" jdbcType="VARCHAR"/>
         <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+        <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
+        <result property="fatherSingleNum" column="father_single_num" jdbcType="VARCHAR"/>
+        <result property="matherSingleNum" column="mather_single_num" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,plant_num,seed_num,
-        project_code,parent_num,farther_info,
+        id,plant_code,seed_num,
+        project_code,plant_code,father_info,
         mather_info,generation,species_code,
         breed_code,pollination_method,harvest_type,
         harvest_time,seed_number,unit,
         source_type,production_location_code,stock_location_num,
         submit_user_id,submit_user_name,create_time,
         update_time,remarks,total_number,
-        genetic_character,alias_name,gene_type,
-        check_result,sample_code,material_type,
-        mather_seed_num,father_seed_num,region_num,
+        target_character,alias_name,gene_type,
+        check_result,material_type,
+        mather_seed_num,father_seed_num,father_region_num,mather_region_num,
         genealogy,gene_separate_flag,trans_flag,
-        vector_task_code
+        vector_task_code,experiment_num,father_single_num,mather_single_num
     </sql>
     <select id="selectOneBySeedNum" resultMap="BaseResultMap">
         select
@@ -80,10 +83,10 @@
         from seed_stock_tb
         <where>
             <if test="notEmptySeedNumberFlag ">and seed_number>0</if>
-            <if test="plantNum != null and plantNum != '' ">and plant_num=#{plantNum,jdbcType=VARCHAR}</if>
+            <if test="plantCode != null and plantCode != '' ">and plant_code=#{plantCode,jdbcType=VARCHAR}</if>
             <if test="seedNum != null and seedNum != ''">and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
             <if test="projectCode != null and projectCode != ''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
-            <if test="parentNum != null and parentNum!='' ">and parent_num=#{parentNum,jdbcType=VARCHAR}</if>
+            <if test="parentNum != null and parentNum!='' ">and plant_code=#{parentNum,jdbcType=VARCHAR}</if>
             <if test="generation != null and generation!=''">and generation=#{generation,jdbcType=VARCHAR}</if>
             <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
             <if test="breedCode != null and breedCode!=''">and breed_code=#{breedCode,jdbcType=VARCHAR}</if>
@@ -107,11 +110,11 @@
             <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
             <if test="remarks != null">and remarks=#{remarks,jdbcType=VARCHAR}</if>
             <if test="totalNumber != null and totalNumber!=''">and total_number=#{totalNumber,jdbcType=DECIMAL}</if>
-            <if test="geneticCharacter != null and geneticCharacter!=''"> and genetic_character LIKE   CONCAT('%',#{geneticCharacter,jdbcType=VARCHAR},'%')  </if>
+            <if test="targetCharacter != null and targetCharacter!=''"> and target_character LIKE   CONCAT('%',#{targetCharacter,jdbcType=VARCHAR},'%')  </if>
             <if test="aliasName != null and aliasName!=''"> and alias_name LIKE   CONCAT('%',#{aliasName,jdbcType=VARCHAR},'%')  </if>
             <if test="geneType != null and geneType!=''">and gene_type LIKE CONCAT('%',#{geneType,jdbcType=VARCHAR},'%') </if>
-            <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
             <if test="materialType != null and materialType!=''">and material_type=#{materialType,jdbcType=VARCHAR}</if>
+            <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
             <if test="beginDate != null and beginDate != ''">
                 and date_format(create_time,'%Y%m%d') &gt;= #{beginDate,jdbcType=VARCHAR}
             </if>
@@ -144,15 +147,15 @@
 
     <update id="updateParentNumById">
         update seed_stock_tb
-        set parent_num = #{parentNum,jdbcType=VARCHAR}
+        set plant_code = #{parentNum,jdbcType=VARCHAR}
         where id = #{id,jdbcType=NUMERIC}
     </update>
-    <select id="selectOneByPlantNum" resultMap="BaseResultMap">
+    <select id="selectOneByPlantCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from seed_stock_tb
         where
-        plant_num = #{plantNum,jdbcType=VARCHAR}
+        plant_code = #{plantCode,jdbcType=VARCHAR}
     </select>
     <select id="selectAllBySeedNumIn" resultMap="BaseResultMap">
         select

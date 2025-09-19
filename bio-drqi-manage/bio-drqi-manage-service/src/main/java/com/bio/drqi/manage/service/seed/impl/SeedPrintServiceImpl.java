@@ -148,7 +148,7 @@ public class SeedPrintServiceImpl implements SeedPrintService {
             seedInLabelPrintDTO.setProjectCode(StringUtils.isEmpty(seedStockTb.getProjectCode()) ? "无" : seedStockTb.getProjectCode());
             seedInLabelPrintDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
             seedInLabelPrintDTO.setBreedName(cerBreedDict.getBreedName());
-            seedInLabelPrintDTO.setPlantNum(StringUtils.isEmpty(seedStockTb.getPlantNum()) ? "N/A" : seedStockTb.getPlantNum());
+            seedInLabelPrintDTO.setPlantNum(StringUtils.isEmpty(seedStockTb.getPlantCode()) ? "N/A" : seedStockTb.getPlantCode());
             seedInLabelPrintDTO.setGeneration(GenerationEnum.getGenerationDesc(seedStockTb.getGeneration()));
             seedInLabelPrintDTO.setTaskNum(seedStockInLog.getTaskNum());
             if (StringUtils.isNotEmpty(seedStockTb.getHarvestType())) {

@@ -346,8 +346,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             synStockTask();
             synMaterialGroupTask();
             synSupplierTask();
-            synMaterialTask();
             synProjectTask();
+            synMaterialTask();
             synInStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
             synReturnStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
             synOutStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());

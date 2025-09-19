@@ -183,7 +183,7 @@
             <if test="editType != null and editType!=''">and edit_type=#{editType,jdbcType=VARCHAR}</if>
             <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="taskStatus != null and taskStatus!=''">and task_status=#{taskStatus,jdbcType=VARCHAR}</if>
-            <if test="speciesCode != null and speciesCode!=''">and species_code LIKE  CONCAT('%',#{speciesCode,jdbcType=VARCHAR},'%')</if>
+            <if test="speciesCode != null and speciesCode!=''">and species_code =#{speciesCode,jdbcType=VARCHAR}</if>
             <if test="breedCode != null and breedCode!=''">and breed_code=#{breedCode,jdbcType=VARCHAR}</if>
             <if test="currentStepCode != null">and current_step_code=#{currentStepCode,jdbcType=VARCHAR}</if>
             <if test="expectedPositiveSeed != null">and expected_positive_seed=#{expectedPositiveSeed,jdbcType=VARCHAR}

@@ -66,7 +66,6 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
         TcExperimentTb tcExperimentTb = new TcExperimentTb();
         tcExperimentTb.setVectorTaskCodes(tcExperimentListPageReqDTO.getVectorTaskCode());
-        tcExperimentTb.setProjectCodes(tcExperimentListPageReqDTO.getProjectCode());
         tcExperimentTb.setSpeciesCode(tcExperimentListPageReqDTO.getSpeciesCode());
         tcExperimentTb.setExperimentNum(tcExperimentListPageReqDTO.getExperimentNum());
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectSelective(tcExperimentTb);

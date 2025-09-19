@@ -8,6 +8,7 @@ import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.SeedSourceEnum;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +26,6 @@ import java.util.stream.Collectors;
 @Service("seed_store_apply")
 @Slf4j
 public class SeedStoreApplyProcService extends AbstractSeedTaskService {
-
-    /**
-     * 大田
-     */
-    private static String SOURCE_TYPE_4="4";
 
     @Resource
     private SeedStockTbMapper seedStockTbMapper;
@@ -114,8 +110,9 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(vectorTaskTb.getProjectCode());
                 executeFormContent.setTargetCharacter(cerProjectTb.getProjectName());
             }
-
-
+            if (SeedSourceEnum.getByCode(executeFormContent.getSource()) == null) {
+                throw new BusinessException("来源渠道不正确：" + executeFormContent.getSource());
+            }
             //CER 校验
             if (StringUtils.isNotEmpty(executeFormContent.getPlantCode())) {
                 if (StringUtils.isNotEmpty(executeFormContent.getMatherSeedNum())) {
@@ -133,7 +130,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 }
             }
             //大田校验
-            if (SOURCE_TYPE_4.equals(executeFormContent.getSource())) {
+            if (SeedSourceEnum.CODE_4.code.equals(executeFormContent.getSource())) {
                 if (StringUtils.isEmpty(executeFormContent.getFatherSeedNum())) {
                     throw new BusinessException("父本种子编号必填");
                 }
@@ -162,8 +159,8 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                     throw new BusinessException("试验方案中不存在此小区或者母本种子，当前试验方案编号：" + tcExperimentTb.getExperimentNum() + "父本小区编号：" + executeFormContent.getFatherRegionNum() + "父本种子编号:" + executeFormContent.getFatherSeedNum());
                 }
                 TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode(executeFormContent.getExperimentNum(), executeFormContent.getFatherRegionNum(), executeFormContent.getMatherRegionNum(), executeFormContent.getFatherSeedNum(), executeFormContent.getMatherSeedNum(), executeFormContent.getFatherSingleNum(), executeFormContent.getMatherSingleNum());
-                if(tcPollinationTb==null){
-                    throw new BusinessException("无此授粉信息或者授粉信息不匹配：当前对应数据行的试验方案："+ executeFormContent.getExperimentNum()+" 父本种子编号："+ executeFormContent.getFatherSeedNum()+" 母本种子编号："+executeFormContent.getMatherSeedNum());
+                if (tcPollinationTb == null) {
+                    throw new BusinessException("无此授粉信息或者授粉信息不匹配：当前对应数据行的试验方案：" + executeFormContent.getExperimentNum() + " 父本种子编号：" + executeFormContent.getFatherSeedNum() + " 母本种子编号：" + executeFormContent.getMatherSeedNum());
                 }
             }
 

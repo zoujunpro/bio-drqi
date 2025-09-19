@@ -160,9 +160,6 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         Map<String, String> breedNameCodeMap = breedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedName, CerBreedDict::getBreedCode));
         for (ExperimentDesignExcelDTO experimentDesignExcelDTO : experimentDesignExcelDTOList) {
             ValidatorUtil.validator(experimentDesignExcelDTO);
-            if (!tcExperimentTaskDTO.getProjectCodeList().contains(experimentDesignExcelDTO.getProjectCode())) {
-                throw new BusinessException("excel大田设计文件中项目不是目标试验项目");
-            }
             if (!tcExperimentTaskDTO.getVectorTaskCodeList().contains(experimentDesignExcelDTO.getVectorTaskCode())) {
                 throw new BusinessException("excel大田设计文件中实验方案编号不正确，必须归属所选方案中");
             }

@@ -69,6 +69,7 @@ public class SeedInStoreDTO extends SeedProcDTO {
         /**
          * 来源
          */
+        @NotBlank(message = "渠道来源必填")
         private String source;
 
         /**
@@ -101,18 +102,19 @@ public class SeedInStoreDTO extends SeedProcDTO {
         /**
          * 代次
          */
+        @NotBlank(message = "代次必填")
         private String generation;
         /**
          * 项目物种
          */
-        @NotBlank(message = "参数缺失：speciesCode")
+        @NotBlank(message = "物种必填")
         private String speciesCode;
 
         private String speciesName;
         /**
          * 受体材料（作物）
          */
-        @NotBlank(message = "参数缺失：breedCode")
+        @NotBlank(message = "品种必填")
         private String breedCode;
 
         private String breedName;
@@ -120,6 +122,7 @@ public class SeedInStoreDTO extends SeedProcDTO {
         /**
          * 授粉方式
          */
+
         private String pollinationMethod;
 
         /**

@@ -114,9 +114,8 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(vectorTaskTb.getProjectCode());
                 executeFormContent.setTargetCharacter(cerProjectTb.getProjectName());
             }
-            if(SeedSourceEnum.getByCode(executeFormContent.getSource())==null){
-                throw new BusinessException("来源渠道不正确："+executeFormContent.getSource());
-            }
+
+
             //CER 校验
             if (StringUtils.isNotEmpty(executeFormContent.getPlantCode())) {
                 if (StringUtils.isNotEmpty(executeFormContent.getMatherSeedNum())) {

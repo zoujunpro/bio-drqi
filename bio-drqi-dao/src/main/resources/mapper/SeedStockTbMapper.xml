@@ -9,7 +9,7 @@
         <result property="plantCode" column="plant_code" jdbcType="VARCHAR"/>
         <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
         <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
-        <result property="parentNum" column="plant_code" jdbcType="VARCHAR"/>
+        <result property="parentNum" column="parent_num" jdbcType="VARCHAR"/>
         <result property="fatherInfo" column="father_info" jdbcType="VARCHAR"/>
         <result property="matherInfo" column="mather_info" jdbcType="VARCHAR"/>
         <result property="generation" column="generation" jdbcType="VARCHAR"/>

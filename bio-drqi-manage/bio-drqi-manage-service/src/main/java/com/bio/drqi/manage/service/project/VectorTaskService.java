@@ -21,6 +21,8 @@ public interface VectorTaskService {
 
     List<CerImplementationPlanBaseInfoRspDTO> listAll();
 
+    List<CerImplementationPlanBaseInfoRspDTO> listBySpeciesCode(String speciesCode);
+
     List<CerImplementationPlanBaseInfoRspDTO> listAllBySubProject(Integer subProjectId);
 
     List<CerImplementationPlanBaseInfoRspDTO> listForVectorBuild(Integer subProjectId);

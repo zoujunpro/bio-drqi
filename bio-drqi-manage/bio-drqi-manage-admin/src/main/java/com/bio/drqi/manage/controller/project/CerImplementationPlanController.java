@@ -58,6 +58,17 @@ public class CerImplementationPlanController {
         List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listAll();
         return ResponseResult.getSuccess(list);
     }
+
+    /**
+     * 实施方案-查询实施方案(根据物种查询)
+     */
+    @GetMapping("/listBySpeciesCode")
+    @WebLog(desc = "实施方案-查询实施方案（根据物种查询）")
+    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listBySpeciesCode(@RequestParam String speciesCode) {
+        List<CerImplementationPlanBaseInfoRspDTO> result = vectorTaskService.listBySpeciesCode(speciesCode);
+        return ResponseResult.getSuccess(result);
+    }
+
     /**
      * 查询实施方案（查询子项目下所有实施方案）
      */
@@ -79,9 +90,6 @@ public class CerImplementationPlanController {
     }
 
 
-
-
-
     /**
      * 查询有转化的实施方案
      */
@@ -97,7 +105,7 @@ public class CerImplementationPlanController {
      */
     @GetMapping("/listForPlasmid")
     @WebLog(desc = "查询实施方案（质粒质检）")
-    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForPlasmid(@Validated @RequestParam  Integer subProjectId) {
+    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForPlasmid(@Validated @RequestParam Integer subProjectId) {
         List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForPlasmid(subProjectId);
         return ResponseResult.getSuccess(list);
     }
@@ -117,10 +125,11 @@ public class CerImplementationPlanController {
      */
     @GetMapping("/listForFirstSample")
     @WebLog(desc = "询实施方案（首次取样）")
-    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForFirstSample(@Validated  @RequestParam String speciesCode) {
+    public ResponseResult<List<CerImplementationPlanBaseInfoRspDTO>> listForFirstSample(@Validated @RequestParam String speciesCode) {
         List<CerImplementationPlanBaseInfoRspDTO> list = vectorTaskService.listForFirstSample(speciesCode);
         return ResponseResult.getSuccess(list);
     }
+
     /**
      * 载体模板下载
      *
@@ -257,7 +266,7 @@ public class CerImplementationPlanController {
     @GetMapping("/delete")
     @WebLog(desc = "实施方案-删除")
     @RequestLog("实施方案-删除")
-    public ResponseResult<String> delete(@RequestParam Integer id){
+    public ResponseResult<String> delete(@RequestParam Integer id) {
         vectorTaskService.delete(id);
         return ResponseResult.getSuccess("删除成功");
     }
@@ -265,7 +274,7 @@ public class CerImplementationPlanController {
     @PostMapping("/modifyVectorTaskCode")
     @WebLog(desc = "实施方案-修改编号")
     @RequestLog("实施方案-修改编号")
-    public ResponseResult<String> modifyVectorTaskCode(@RequestBody @Validated VectorTaskModifyVectorTaskCodeReqDTO vectorTaskModifyVectorTaskCodeReqDTO){
+    public ResponseResult<String> modifyVectorTaskCode(@RequestBody @Validated VectorTaskModifyVectorTaskCodeReqDTO vectorTaskModifyVectorTaskCodeReqDTO) {
         vectorTaskService.modifyVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO);
         return ResponseResult.getSuccess("修改编号成功");
     }

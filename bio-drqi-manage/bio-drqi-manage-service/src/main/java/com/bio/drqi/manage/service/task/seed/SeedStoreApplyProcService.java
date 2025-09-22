@@ -71,7 +71,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
 
         for (SeedInStoreDTO.ExecuteFormContent executeFormContent : seedInStoreDTO.getExecuteForm().getExecuteFormContentList()) {
             log.info("种子入库 executeFormContent={}", JSONUtil.toJsonStr(executeFormContent));
-            ValidatorUtil.validator(seedInStoreDTO);
+            ValidatorUtil.validator(executeFormContent);
             //通用校验
             if (StringUtils.isNotEmpty(executeFormContent.getHarvestTime())) {
                 if (!validateDateFormat(executeFormContent.getHarvestTime())) {
@@ -113,6 +113,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
             if (SeedSourceEnum.getByCode(executeFormContent.getSource()) == null) {
                 throw new BusinessException("来源渠道不正确：" + executeFormContent.getSource());
             }
+
             //CER 校验
             if (StringUtils.isNotEmpty(executeFormContent.getPlantCode())) {
                 if (StringUtils.isNotEmpty(executeFormContent.getMatherSeedNum())) {

@@ -5,25 +5,16 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
-import com.bio.common.core.uuid.IdUtils;
-import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.dto.project.*;
 import com.bio.drqi.mapper.*;
-import com.bio.drqi.tc.service.dto.TcExperimentTaskDTO;
-import com.bio.drqi.tc.service.dto.TcPollinationTaskDTO;
-import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
-import com.lark.oapi.service.task.v1.enums.SourceEnum;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -133,6 +124,7 @@ public class Clean20250721Controller {
 
     @Resource
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
+
 
     @GetMapping("cleanPlasmid")
     @Transactional(rollbackFor = Exception.class)
@@ -606,25 +598,23 @@ public class Clean20250721Controller {
     }
 
 
-
     @GetMapping("/cleanSeedStock")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseResult<String> cleanSeedStock(){
+    public ResponseResult<String> cleanSeedStock() {
         List<Species> speciesList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\上线\\物种库 - 副本.xlsx", Species.class);
-        List<SpeciesNew> speciesNewList=BeanUtils.copyListProperties(speciesList,SpeciesNew.class);
-        List<CerSpeciesConf> cerSpeciesConfList= cerSpeciesConfMapper.selectAll();
-        Map<String,CerSpeciesConf> cerSpeciesConfMap=  cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode,cerSpeciesConf -> cerSpeciesConf));
-        for (SpeciesNew speciesNew:speciesNewList){
-            CerSpeciesConf cerSpeciesConf= cerSpeciesConfMap.get(speciesNew.code);
-            if(cerSpeciesConf==null){
-                throw new BusinessException("找不到物种："+speciesNew.name);
+        List<SpeciesNew> speciesNewList = BeanUtils.copyListProperties(speciesList, SpeciesNew.class);
+        List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectAll();
+        Map<String, CerSpeciesConf> cerSpeciesConfMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, cerSpeciesConf -> cerSpeciesConf));
+        for (SpeciesNew speciesNew : speciesNewList) {
+            CerSpeciesConf cerSpeciesConf = cerSpeciesConfMap.get(speciesNew.code);
+            if (cerSpeciesConf == null) {
+                throw new BusinessException("找不到物种：" + speciesNew.name);
             }
             speciesNew.setOldPrefix(cerSpeciesConf.getNumPrefix());
         }
         ExcelUtil.writeExcel("C:\\Users\\zou'jun\\Desktop\\上线\\物种库(新).xlsx", "sheet1", speciesList, Species.class);
         return ResponseResult.getSuccess("ok");
     }
-
 
 
     @GetMapping("testTransForm")
@@ -647,7 +637,7 @@ public class Clean20250721Controller {
 
 
     @Data
-    public static class Species{
+    public static class Species {
 
         @ExcelProperty("品种名称")
         private String name;
@@ -661,7 +651,7 @@ public class Clean20250721Controller {
     }
 
     @Data
-    public static class SpeciesNew{
+    public static class SpeciesNew {
 
         @ExcelProperty("品种名称")
         private String name;

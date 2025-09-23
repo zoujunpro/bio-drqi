@@ -127,6 +127,9 @@
             <if test="endHarvestTime != null and endHarvestTime != ''">
                 and harvest_time &lt;= #{endHarvestTime,jdbcType=VARCHAR}
             </if>
+            <if test='filterNullFlag=="Y"'>
+                and seed_number>0
+            </if>
         </where>
         <choose>
         <when test="orderField != null and orderField != ''">

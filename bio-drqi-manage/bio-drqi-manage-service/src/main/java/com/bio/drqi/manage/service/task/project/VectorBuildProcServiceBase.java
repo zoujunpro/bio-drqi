@@ -80,6 +80,10 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
                 }
             }
         }
+        /**
+         * 更新当前执行步骤
+         */
+        logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.vector_build, bioTaskDtlTb.getTaskNum());
     }
 
     @Override
@@ -103,15 +107,14 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
             }
             doNormalVectorTask(cerVectorTaskTb, vectorTaskAddDTO, bioTaskDtlTb.getTaskNum());
 
-            /**
-             * 更新当前执行步骤
-             */
-            logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.vector_build, bioTaskDtlTb.getTaskNum());
-
             //更新备注
             cerVectorTaskTb.setVectorBuildRemark(vectorTaskAddDTO.getRemark());
             cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
 
+            /**
+             * 更新当前执行步骤,有则不更新
+             */
+            logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.vector_build, bioTaskDtlTb.getTaskNum());
             log.info("【任务工单】载体任务创建完毕");
         }
     }

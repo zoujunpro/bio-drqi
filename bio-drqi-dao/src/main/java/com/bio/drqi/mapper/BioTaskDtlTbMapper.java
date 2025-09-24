@@ -26,7 +26,8 @@ public interface BioTaskDtlTbMapper extends BaseMapper<BioTaskDtlTb> {
                                                 @Param("taskTypeCode") String taskTypeCode,
                                                 @Param("taskCategory") String taskCategory,
                                                 @Param("applyUserId") Integer applyUserId,
-                                                @Param("applyDate") String applyDate
+                                                @Param("applyDate") String applyDate,
+                                                @Param("taskDesc") String taskDesc
     );
 
     List<BioTaskDtlTb> selectForAlreadyApproval(@Param("actorUserId") String actorUserId,
@@ -35,7 +36,8 @@ public interface BioTaskDtlTbMapper extends BaseMapper<BioTaskDtlTb> {
                                                 @Param("taskCategory") String taskCategory,
                                                 @Param("taskStatus") String taskStatus,
                                                 @Param("applyUserId") Integer applyUserId,
-                                                @Param("applyDate") String applyDate);
+                                                @Param("applyDate") String applyDate,
+                                                @Param("taskDesc") String taskDesc);
 
     List<BioTaskDtlTb> selectSelective(BioTaskDtlTb bioTaskDtlTb);
 

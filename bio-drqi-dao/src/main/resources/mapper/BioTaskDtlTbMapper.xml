@@ -68,6 +68,9 @@
         <if test="applyDate != null and applyDate!=''">
             and date_format(create_time,'%Y-%m-%d') = #{applyDate,jdbcType=VARCHAR}
         </if>
+        <if test="taskDesc != null">
+            and task_desc  like  CONCAT('%',#{taskDesc,jdbcType=VARCHAR},'%')
+        </if>
         order by id desc
     </select>
 
@@ -95,6 +98,9 @@
         <if test="applyDate != null and applyDate!=''">
             and date_format(create_time,'%Y-%m-%d') = #{applyDate,jdbcType=VARCHAR}
         </if>
+        <if test="taskDesc != null">
+            and task_desc  like  CONCAT('%',#{taskDesc,jdbcType=VARCHAR},'%')
+        </if>
         order by id desc
     </select>
     <select id="selectSelectiveNoDraft" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BioTaskDtlTb">
@@ -107,7 +113,7 @@
         </if>
         <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
         <if test="taskStatus != null and taskStatus!=''">and task_status=#{taskStatus,jdbcType=VARCHAR}</if>
-        <if test="taskDesc != null">and task_desc=#{taskDesc,jdbcType=VARCHAR}</if>
+        <if test="taskDesc != null">and task_desc  like  CONCAT('%',#{taskDesc,jdbcType=VARCHAR},'%')</if>
         <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
         <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
         <if test="applyTime != null">and apply_time=#{applyTime,jdbcType=TIMESTAMP}</if>
@@ -131,7 +137,7 @@
             </if>
             <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="taskStatus != null and taskStatus!=''">and task_status=#{taskStatus,jdbcType=VARCHAR}</if>
-            <if test="taskDesc != null">and task_desc=#{taskDesc,jdbcType=VARCHAR}</if>
+            <if test="taskDesc != null">and task_desc  like  CONCAT('%',#{taskDesc,jdbcType=VARCHAR},'%')</if>
             <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
             <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
             <if test="applyTime != null">and apply_time=#{applyTime,jdbcType=TIMESTAMP}</if>

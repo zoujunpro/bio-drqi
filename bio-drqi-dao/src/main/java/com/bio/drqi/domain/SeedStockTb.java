@@ -252,6 +252,11 @@ public class SeedStockTb implements Serializable {
     @TableField(exist = false)
     private String orderField;
 
+    @TableField(exist = false)
+    private String filterNullFlag;
+
+
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

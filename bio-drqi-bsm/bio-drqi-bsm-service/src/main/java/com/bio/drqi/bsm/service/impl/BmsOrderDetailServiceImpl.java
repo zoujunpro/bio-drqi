@@ -37,9 +37,6 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     public PageInfo<BmsOrderDetailListPageRspDTO> listPage(BmsOrderDetailListPageReqDTO bmsOrderDetailListPageReqDTO) {
         PageHelper.startPage(bmsOrderDetailListPageReqDTO.getPageNum(), bmsOrderDetailListPageReqDTO.getPageSize());
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectSelective(BeanUtils.copyProperties(bmsOrderDetailListPageReqDTO, BmsOrderDetailTb.class));
-        if (CollectionUtil.isEmpty(bmsOrderDetailTbList)) {
-            return new PageInfo<>();
-        }
         PageInfo<BmsOrderDetailTb> srcPageInfo = new PageInfo<>(bmsOrderDetailTbList);
 
         return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsOrderDetailListPageRspDTO.class);

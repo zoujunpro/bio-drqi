@@ -122,12 +122,13 @@ public class SeedInStoreDTO extends SeedProcDTO {
         /**
          * 授粉方式
          */
-
+        @NotBlank(message = "授粉方式必填")
         private String pollinationMethod;
 
         /**
          * 收获方式，单珠和混珠
          */
+        @NotBlank(message = "收获方式必填")
         private String harvestType;
         /**
          * 收获时间
@@ -136,7 +137,7 @@ public class SeedInStoreDTO extends SeedProcDTO {
         /**
          * 种子数量
          */
-        @NotNull(message = "参数缺失：seedNumber")
+        @NotNull(message = "参数缺失：种子数量")
         private BigDecimal seedNumber;
         /**
          * 计量单位g/kg/粒

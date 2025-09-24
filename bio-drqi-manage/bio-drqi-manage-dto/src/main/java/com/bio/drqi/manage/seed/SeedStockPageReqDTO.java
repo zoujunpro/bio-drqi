@@ -110,6 +110,12 @@ public class SeedStockPageReqDTO extends PageDTO {
 
     private String materialType;
 
+
+    /**
+     * Y代表非零库存
+     */
+    private String filterNullFlag;
+
     @Data
     @Valid
     public static  class  Order{

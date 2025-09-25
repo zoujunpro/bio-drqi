@@ -136,4 +136,15 @@ public class BmsOrderDetailController {
     public void exportExcel(@RequestBody @Validated BmsOrderDetailExportExcelReqDTO bmsOrderDetailExportExcelReqDTO, HttpServletResponse httpServletResponse){
         bmsOrderDetailService.exportExcel(bmsOrderDetailExportExcelReqDTO,httpServletResponse);
     }
+
+    /**
+     * 导出工单信息
+     */
+    @WebLog(desc = "采购订单管理-导出")
+    @PostMapping("/modifyPriceAndNumber")
+    @RequirePermissions("bms:orderDetail:modifyPriceAndNumber")
+    @RequestLog("采购订单管理-导出")
+    public ResponseResult<String> modifyPriceAndNumber(){
+        return null;
+    }
 }

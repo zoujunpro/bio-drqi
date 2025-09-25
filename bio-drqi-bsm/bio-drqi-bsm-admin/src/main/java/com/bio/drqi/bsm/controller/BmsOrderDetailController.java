@@ -78,7 +78,7 @@ public class BmsOrderDetailController {
     @WebLog(desc = "采购订单管理-删除合同")
     @PostMapping("/deleteContract")
     @RequirePermissions("bms:orderDetail:edit")
-    @RequestLog("采购订单管理-上传合同")
+    @RequestLog("采购订单管理-删除合同")
     public ResponseResult<String> deleteContract(@RequestBody BmsOrderDetailDeleteContractReqDTO bmsOrderDetailDeleteContractReqDTO){
         bmsOrderDetailService.deleteContract(bmsOrderDetailDeleteContractReqDTO);
         return ResponseResult.getSuccess("ok");

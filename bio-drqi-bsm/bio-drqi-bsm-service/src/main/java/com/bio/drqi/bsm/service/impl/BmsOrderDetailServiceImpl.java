@@ -2,6 +2,7 @@ package com.bio.drqi.bsm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
@@ -13,6 +14,10 @@ import com.bio.drqi.bsm.rsp.BmsOrderDtlDetailRspDTO;
 import com.bio.drqi.bsm.service.BmsOrderDetailService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
+import com.easyflow.engine.FlowEngineService;
+import com.easyflow.engine.entity.FlowEntity;
+import com.easyflow.engine.entity.FlowHisCommitTb;
+import com.easyflow.mybatis.mapper.FlowHisCommitTbMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +43,12 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
 
     @Resource
     private BmsProductStockInLogMapper bmsProductStockInLogMapper;
+
+    @Resource
+    private FlowEngineService flowEngineService;
+
+    @Resource
+    private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
     @Override
     public PageInfo<BmsOrderDetailListPageRspDTO> listPage(BmsOrderDetailListPageReqDTO bmsOrderDetailListPageReqDTO) {
@@ -150,13 +161,24 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
         if (bmsOrderDetailTb == null) {
             throw new BusinessException("找不到此订单信息");
         }
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(bmsOrderDetailTb.getTaskNum());
+        if (bioTaskDtlTb == null) {
+            throw new BusinessException("数据异常，找不到此发起工单");
+        }
+
+        List<FlowHisCommitTb> flowHisCommitTbList = flowEngineService.getQueryService().getFlowCommitTbByInstanceId(bioTaskDtlTb.getInstanceId());
+        List<String> userIdList = flowHisCommitTbList.stream().map(FlowEntity::getCreateId).collect(Collectors.toList());
+        if (SecurityContextHolder.getUserId().intValue() != bmsOrderDetailTb.getApplyUserId() && !userIdList.contains(bmsOrderDetailTb.getApplyUserId().toString())) {
+            throw new BusinessException("只有审批参与人或者发起人可以修改");
+        }
+
         List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectAllByOrderDetailNum(bmsOrderDetailTb.getOrderDetailNum());
-        if (CollectionUtil.isNotEmpty(bmsProductStockInLogList) && bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductStockInLog.getKdNumber()!=null).collect(Collectors.toList()).size()>0) {
+        if (CollectionUtil.isNotEmpty(bmsProductStockInLogList) && bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductStockInLog.getKdNumber() != null).collect(Collectors.toList()).size() > 0) {
             throw new BusinessException("此订单已经入库且已经和金蝶进行过账务同步，无法更改");
         }
 
         List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectAllByOrderDetailNum(bmsOrderDetailTb.getOrderDetailNum());
-        if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList) && bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsReturnOrderDetailTb.getKdNumber()!=null).collect(Collectors.toList()).size()>0) {
+        if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList) && bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsReturnOrderDetailTb.getKdNumber() != null).collect(Collectors.toList()).size() > 0) {
             throw new BusinessException("此订单的退货订单已经同步到金蝶系统，无法更改");
         }
 
@@ -176,7 +198,7 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
         }
 
         //更新退回信息
-        if(CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)){
+        if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)) {
             bmsReturnOrderDetailTbList.forEach(bmsReturnOrderDetailTb -> {
                 bmsReturnOrderDetailTb.setProductPrice(bmsOrderDetailModifyPriceReqDTO.getPurchasePrice());
                 bmsReturnOrderDetailTb.setReturnAmount(bmsReturnOrderDetailTb.getProductPrice().multiply(new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber())));

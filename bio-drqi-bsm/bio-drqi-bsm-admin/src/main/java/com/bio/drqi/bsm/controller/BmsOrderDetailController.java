@@ -142,7 +142,7 @@ public class BmsOrderDetailController {
      */
     @WebLog(desc = "采购订单管理-修改采购金额")
     @PostMapping("/modifyPriceAndNumber")
-    @RequirePermissions("bms:orderDetail:modifyPriceAndNumber")
+    @RequirePermissions("bms:orderDetail:edit")
     @RequestLog("采购订单管理-修改采购金额")
     public ResponseResult<String> modifyPrice(@RequestBody @Validated BmsOrderDetailModifyPriceReqDTO bmsOrderDetailModifyPriceReqDTO){
         bmsOrderDetailService.modifyPrice(bmsOrderDetailModifyPriceReqDTO);

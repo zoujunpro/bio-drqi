@@ -168,7 +168,7 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
 
         List<FlowHisCommitTb> flowHisCommitTbList = flowEngineService.getQueryService().getFlowCommitTbByInstanceId(bioTaskDtlTb.getInstanceId());
         List<String> userIdList = flowHisCommitTbList.stream().map(FlowEntity::getCreateId).collect(Collectors.toList());
-        if (SecurityContextHolder.getUserId().intValue() != bmsOrderDetailTb.getApplyUserId() && !userIdList.contains(bmsOrderDetailTb.getApplyUserId().toString())) {
+        if (SecurityContextHolder.getUserId().intValue() != bmsOrderDetailTb.getApplyUserId() && !userIdList.contains(SecurityContextHolder.getUserId().toString())) {
             throw new BusinessException("只有审批参与人或者发起人可以修改");
         }
 

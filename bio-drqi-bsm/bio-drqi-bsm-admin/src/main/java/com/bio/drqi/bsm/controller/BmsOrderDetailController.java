@@ -66,7 +66,7 @@ public class BmsOrderDetailController {
     @PostMapping("/uploadContract")
     @RequirePermissions("bms:orderDetail:edit")
     @RequestLog("采购订单管理-上传合同")
-    public ResponseResult<String> uploadContract(@RequestBody BmsOrderDetailUploadContractReqDTO bmsOrderDetailUploadContractReqDTO){
+    public synchronized ResponseResult<String> uploadContract(@RequestBody BmsOrderDetailUploadContractReqDTO bmsOrderDetailUploadContractReqDTO){
         bmsOrderDetailService.uploadContract(bmsOrderDetailUploadContractReqDTO);
         return ResponseResult.getSuccess("ok");
     }
@@ -79,7 +79,7 @@ public class BmsOrderDetailController {
     @PostMapping("/deleteContract")
     @RequirePermissions("bms:orderDetail:edit")
     @RequestLog("采购订单管理-删除合同")
-    public ResponseResult<String> deleteContract(@RequestBody BmsOrderDetailDeleteContractReqDTO bmsOrderDetailDeleteContractReqDTO){
+    public  ResponseResult<String> deleteContract(@RequestBody BmsOrderDetailDeleteContractReqDTO bmsOrderDetailDeleteContractReqDTO){
         bmsOrderDetailService.deleteContract(bmsOrderDetailDeleteContractReqDTO);
         return ResponseResult.getSuccess("ok");
     }
@@ -92,7 +92,7 @@ public class BmsOrderDetailController {
     @WebLog(desc = "采购订单管理-上传发票")
     @RequirePermissions("bms:orderDetail:edit")
     @RequestLog("采购订单管理-上传发票")
-    public ResponseResult<String> uploadInvoice(@RequestBody @Validated  BmsOrderDetailUploadInvoiceReqDTO bmsOrderDetailUploadInvoiceReqDTO){
+    public synchronized ResponseResult<String> uploadInvoice(@RequestBody @Validated  BmsOrderDetailUploadInvoiceReqDTO bmsOrderDetailUploadInvoiceReqDTO){
         bmsOrderDetailService.uploadInvoice(bmsOrderDetailUploadInvoiceReqDTO);
         return ResponseResult.getSuccess("ok");
     }
@@ -133,7 +133,7 @@ public class BmsOrderDetailController {
     @PostMapping("/uploadPaymentVoucher")
     @RequirePermissions("bms:orderDetail:edit")
     @RequestLog("采购订单管理-上传结算凭证")
-    public ResponseResult<String> uploadPaymentVoucher(@RequestBody @Validated BmsOrderDetailUploadPaymentVoucherReqDTO bmsOrderDetailUploadPaymentVoucherReqDTO){
+    public synchronized ResponseResult<String>  uploadPaymentVoucher(@RequestBody @Validated BmsOrderDetailUploadPaymentVoucherReqDTO bmsOrderDetailUploadPaymentVoucherReqDTO){
         bmsOrderDetailService.uploadPaymentVoucher(bmsOrderDetailUploadPaymentVoucherReqDTO);
         return ResponseResult.getSuccess("ok");
     }

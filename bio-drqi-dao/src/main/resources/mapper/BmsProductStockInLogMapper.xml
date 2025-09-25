@@ -102,19 +102,19 @@
         AND product_inner_code = #{productInnerCode,jdbcType=VARCHAR}
         AND batch_no = #{batchNo,jdbcType=VARCHAR}
     </select>
-    <select id="selectOneByOrderDetailNum" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from bms_product_stock_in_log
-        where
-        order_detail_num = #{orderDetailNum,jdbcType=VARCHAR}
-    </select>
     <select id="selectAllByUniqueCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from bms_product_stock_in_log
         where
         unique_code = #{uniqueCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByOrderDetailNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_in_log
+        where
+        order_detail_num = #{orderDetailNum,jdbcType=VARCHAR}
     </select>
 
 </mapper>

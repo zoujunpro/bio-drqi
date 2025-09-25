@@ -17,11 +17,14 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -32,6 +35,9 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
 
     @Resource
     private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
+
+    @Resource
+    private BmsProductStockInLogMapper bmsProductStockInLogMapper;
 
     @Override
     public PageInfo<BmsOrderDetailListPageRspDTO> listPage(BmsOrderDetailListPageReqDTO bmsOrderDetailListPageReqDTO) {
@@ -135,5 +141,49 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailExportExcelReqDTO.getIdList());
         List<BmsOrderDetailExcelDTO> bmsOrderDetailExcelDTOList = BeanUtils.copyListProperties(bmsOrderDetailTbList, BmsOrderDetailExcelDTO.class);
         ExcelUtil.writeExcel("订单明细" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xlsx", "sheet", bmsOrderDetailExcelDTOList, BmsOrderDetailExcelDTO.class, httpServletResponse);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void modifyPrice(BmsOrderDetailModifyPriceReqDTO bmsOrderDetailModifyPriceReqDTO) {
+        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailModifyPriceReqDTO.getId());
+        if (bmsOrderDetailTb == null) {
+            throw new BusinessException("找不到此订单信息");
+        }
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectAllByOrderDetailNum(bmsOrderDetailTb.getOrderDetailNum());
+        if (CollectionUtil.isNotEmpty(bmsProductStockInLogList) && bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductStockInLog.getKdNumber()!=null).collect(Collectors.toList()).size()>0) {
+            throw new BusinessException("此订单已经入库且已经和金蝶进行过账务同步，无法更改");
+        }
+
+        List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectAllByOrderDetailNum(bmsOrderDetailTb.getOrderDetailNum());
+        if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList) && bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsReturnOrderDetailTb.getKdNumber()!=null).collect(Collectors.toList()).size()>0) {
+            throw new BusinessException("此订单的退货订单已经同步到金蝶系统，无法更改");
+        }
+
+        //修改订单金额和总金额
+        bmsOrderDetailTb.setPurchasePrice(bmsOrderDetailModifyPriceReqDTO.getPurchasePrice());
+        bmsOrderDetailTb.setPayAmount(bmsOrderDetailTb.getPurchasePrice().multiply(new BigDecimal(bmsOrderDetailTb.getPurchaseNumber())));
+        bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+
+
+        //更新入库记录金额信息
+        if (CollectionUtil.isNotEmpty(bmsProductStockInLogList)) {
+            bmsProductStockInLogList.forEach(bmsProductStockInLog -> {
+                bmsProductStockInLog.setProductPrice(bmsOrderDetailModifyPriceReqDTO.getPurchasePrice());
+                bmsProductStockInLog.setStoreAmount(new BigDecimal(bmsProductStockInLog.getStoreNumber()).multiply(bmsProductStockInLog.getProductPrice()));
+                bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+            });
+        }
+
+        //更新退回信息
+        if(CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)){
+            bmsReturnOrderDetailTbList.forEach(bmsReturnOrderDetailTb -> {
+                bmsReturnOrderDetailTb.setProductPrice(bmsOrderDetailModifyPriceReqDTO.getPurchasePrice());
+                bmsReturnOrderDetailTb.setReturnAmount(bmsReturnOrderDetailTb.getProductPrice().multiply(new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber())));
+                bmsReturnOrderDetailTbMapper.updateById(bmsReturnOrderDetailTb);
+            });
+        }
+
+
     }
 }

@@ -127,7 +127,7 @@ public class BmsOrderDetailController {
     }
 
     /**
-     * 导出工单信息
+     * -采购订单管理导出工单信息
      */
     @WebLog(desc = "采购订单管理-导出")
     @PostMapping("/exportExcel")
@@ -138,13 +138,14 @@ public class BmsOrderDetailController {
     }
 
     /**
-     * 导出工单信息
+     * 采购订单管理-修改采购金额
      */
-    @WebLog(desc = "采购订单管理-导出")
+    @WebLog(desc = "采购订单管理-修改采购金额")
     @PostMapping("/modifyPriceAndNumber")
     @RequirePermissions("bms:orderDetail:modifyPriceAndNumber")
-    @RequestLog("采购订单管理-导出")
-    public ResponseResult<String> modifyPriceAndNumber(){
-        return null;
+    @RequestLog("采购订单管理-修改采购金额")
+    public ResponseResult<String> modifyPrice(@RequestBody @Validated BmsOrderDetailModifyPriceReqDTO bmsOrderDetailModifyPriceReqDTO){
+        bmsOrderDetailService.modifyPrice(bmsOrderDetailModifyPriceReqDTO);
+        return ResponseResult.getSuccess("修改采购金额和数量成功");
     }
 }

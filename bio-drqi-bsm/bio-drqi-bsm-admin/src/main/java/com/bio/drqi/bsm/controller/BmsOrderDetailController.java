@@ -72,7 +72,7 @@ public class BmsOrderDetailController {
     }
 
     /**
-     * 上传合同
+     * 删除合同
      * @return
      */
     @WebLog(desc = "采购订单管理-删除合同")
@@ -101,7 +101,7 @@ public class BmsOrderDetailController {
      * 删除发票
      * @return
      */
-    @PostMapping("/uploadInvoice")
+    @PostMapping("/deleteInvoice")
     @WebLog(desc = "采购订单管理-删除发票")
     @RequirePermissions("bms:orderDetail:edit")
     @RequestLog("采购订单管理-删除发票")
@@ -144,7 +144,7 @@ public class BmsOrderDetailController {
      */
 
     @WebLog(desc = "采购订单管理-删除结算凭证")
-    @PostMapping("/uploadPaymentVoucher")
+    @PostMapping("/deletePaymentVoucher")
     @RequirePermissions("bms:orderDetail:edit")
     @RequestLog("采购订单管理-删除结算凭证")
     public ResponseResult<String> deletePaymentVoucher(@RequestBody @Validated BmsOrderDetailDeletePaymentVoucherReqDTO bmsOrderDetailDeletePaymentVoucherReqDTO){

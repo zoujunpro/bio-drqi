@@ -6,6 +6,7 @@ import com.bio.drqi.bsm.rsp.BmsOrderDetailListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailQueryByOrderNumRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDtlDetailRspDTO;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
@@ -29,9 +30,10 @@ public interface BmsOrderDetailService {
 
     /**
      * 删除合同
+     *
      * @param bmsOrderDetailDeleteContractReqDTO
      */
-    void deleteContract( BmsOrderDetailDeleteContractReqDTO bmsOrderDetailDeleteContractReqDTO);
+    void deleteContract(BmsOrderDetailDeleteContractReqDTO bmsOrderDetailDeleteContractReqDTO);
 
     /**
      * 上传发票
@@ -39,6 +41,14 @@ public interface BmsOrderDetailService {
      * @return
      */
     void uploadInvoice(BmsOrderDetailUploadInvoiceReqDTO bmsOrderDetailUploadInvoiceReqDTO);
+
+
+    /**
+     * 删除发票
+     *
+     * @param bmsOrderDetailDeleteInvoiceReqDTO
+     */
+    void deleteInvoice(BmsOrderDetailDeleteInvoiceReqDTO bmsOrderDetailDeleteInvoiceReqDTO);
 
     /**
      * 订单报账结算
@@ -50,10 +60,12 @@ public interface BmsOrderDetailService {
 
     void uploadPaymentVoucher(BmsOrderDetailUploadPaymentVoucherReqDTO bmsOrderDetailUploadPaymentVoucherReqDTO);
 
+    void deletePaymentVoucher(BmsOrderDetailDeletePaymentVoucherReqDTO bmsOrderDetailDeletePaymentVoucherReqDTO);
+
     void taxRate(BmsOrderDetailTaxRateReqDTO bmsOrderDetailTaxRateReqDTO);
 
 
     void exportExcel(BmsOrderDetailExportExcelReqDTO bmsOrderDetailExportExcelReqDTO, HttpServletResponse httpServletResponse);
 
-    void modifyPrice( BmsOrderDetailModifyPriceReqDTO bmsOrderDetailModifyPriceReqDTO);
+    void modifyPrice(BmsOrderDetailModifyPriceReqDTO bmsOrderDetailModifyPriceReqDTO);
 }

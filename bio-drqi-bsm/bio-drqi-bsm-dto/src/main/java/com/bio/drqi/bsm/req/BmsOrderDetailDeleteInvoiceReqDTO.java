@@ -4,16 +4,17 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-public class BmsOrderDetailUploadInvoiceReqDTO {
+public class BmsOrderDetailDeleteInvoiceReqDTO {
 
     /**
      * 订单编号
      */
-    @NotEmpty(message = "参数缺失：ID")
-    private List<Integer> idList;
+    @NotNull(message = "参数缺失：ID")
+    private Integer id;
 
     /**
      * 发票地址（单个）

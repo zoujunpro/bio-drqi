@@ -94,12 +94,12 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteContract(BmsOrderDetailDeleteContractReqDTO bmsOrderDetailDeleteContractReqDTO) {
         BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailDeleteContractReqDTO.getId());
-        if(bmsOrderDetailTb==null){
+        if (bmsOrderDetailTb == null) {
             throw new BusinessException("找不到订单信息");
         }
         List<String> contractUrlList = JSONUtil.toList(bmsOrderDetailTb.getContractUrls(), String.class);
-        if(CollectionUtil.isNotEmpty(contractUrlList)&&contractUrlList.contains(bmsOrderDetailDeleteContractReqDTO.getContractUrl().trim())){
-            contractUrlList=contractUrlList.stream().map(contractUrl->contractUrl.trim()).collect(Collectors.toList());
+        if (CollectionUtil.isNotEmpty(contractUrlList) && contractUrlList.contains(bmsOrderDetailDeleteContractReqDTO.getContractUrl().trim())) {
+            contractUrlList = contractUrlList.stream().map(contractUrl -> contractUrl.trim()).collect(Collectors.toList());
             contractUrlList.remove(bmsOrderDetailDeleteContractReqDTO.getContractUrl());
         }
         bmsOrderDetailTb.setContractUrls(JSONUtil.toJsonStr(contractUrlList));
@@ -108,14 +108,38 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void uploadInvoice(BmsOrderDetailUploadInvoiceReqDTO bmsOrderDetailUploadInvoiceReqDTO) {
-        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailUploadInvoiceReqDTO.getId());
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailUploadInvoiceReqDTO.getIdList());
+        if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
+            bmsOrderDetailTbList.forEach(bmsOrderDetailTb -> {
+                List<String> invoiceUrlList = new ArrayList<>();
+                if (StringUtils.isNotEmpty(bmsOrderDetailTb.getInvoiceUrls())) {
+                    invoiceUrlList = JSONUtil.toList(bmsOrderDetailTb.getInvoiceUrls(), String.class);
+                }
+                invoiceUrlList.add(bmsOrderDetailUploadInvoiceReqDTO.getInvoiceUrl().trim());
+                bmsOrderDetailTb.setInvoiceUrls(JSONUtil.toJsonStr(invoiceUrlList));
+                bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+            });
+        }
+
+    }
+
+    @Override
+    public void deleteInvoice(BmsOrderDetailDeleteInvoiceReqDTO bmsOrderDetailDeleteInvoiceReqDTO) {
+        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailDeleteInvoiceReqDTO.getId());
         if (bmsOrderDetailTb == null) {
-            log.error("订单不存在，orderDetailId={}", bmsOrderDetailUploadInvoiceReqDTO.getId());
             throw new BusinessException("订单不存在");
         }
-        bmsOrderDetailTb.setInvoiceUrls(bmsOrderDetailUploadInvoiceReqDTO.getInvoiceUrls());
-        bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+        List<String> invoiceUrlList = JSONUtil.toList(bmsOrderDetailTb.getInvoiceUrls(), String.class);
+        if (CollectionUtil.isNotEmpty(invoiceUrlList)) {
+            invoiceUrlList = invoiceUrlList.stream().map(invoiceUrl -> invoiceUrl.trim()).collect(Collectors.toList());
+            invoiceUrlList.remove(bmsOrderDetailDeleteInvoiceReqDTO.getInvoiceUrl().trim());
+            bmsOrderDetailTb.setInvoiceUrls(JSONUtil.toJsonStr(invoiceUrlList));
+            bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+        }
+
+
     }
 
     @Override
@@ -132,15 +156,37 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void uploadPaymentVoucher(BmsOrderDetailUploadPaymentVoucherReqDTO bmsOrderDetailUploadPaymentVoucherReqDTO) {
-        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailUploadPaymentVoucherReqDTO.getId());
-        if (bmsOrderDetailTb == null) {
-            log.error("订单不存在，orderDetailId={}", bmsOrderDetailUploadPaymentVoucherReqDTO.getId());
-            throw new BusinessException("订单不存在");
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailUploadPaymentVoucherReqDTO.getIdList());
+        if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
+            bmsOrderDetailTbList.forEach(bmsOrderDetailTb -> {
+                List<String> paymentVoucherUrlList = new ArrayList<>();
+                paymentVoucherUrlList = JSONUtil.toList(bmsOrderDetailTb.getPaymentVoucherUrls(), String.class);
+                paymentVoucherUrlList.add(bmsOrderDetailUploadPaymentVoucherReqDTO.getPaymentVoucherUrl());
+                bmsOrderDetailTb.setPaymentVoucherUrls(JSONUtil.toJsonStr(paymentVoucherUrlList));
+                bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+            });
         }
-        bmsOrderDetailTb.setPaymentVoucherUrls(bmsOrderDetailUploadPaymentVoucherReqDTO.getPaymentVoucherUrls());
 
-        bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deletePaymentVoucher(BmsOrderDetailDeletePaymentVoucherReqDTO bmsOrderDetailDeletePaymentVoucherReqDTO) {
+        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailDeletePaymentVoucherReqDTO.getId());
+        if (bmsOrderDetailTb == null) {
+            throw new BusinessException("找不到订单信息");
+        }
+        List<String> paymentVoucherUrlList = JSONUtil.toList(bmsOrderDetailTb.getPaymentVoucherUrls(), String.class);
+        if(CollectionUtil.isNotEmpty(paymentVoucherUrlList)){
+            paymentVoucherUrlList=paymentVoucherUrlList.stream().map(paymentVoucherUrl->paymentVoucherUrl.trim()).collect(Collectors.toList());
+            paymentVoucherUrlList.remove(bmsOrderDetailDeletePaymentVoucherReqDTO.getPaymentVoucherUrl().trim());
+            bmsOrderDetailTb.setPaymentVoucherUrls(JSONUtil.toJsonStr(paymentVoucherUrlList));
+            bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+        }
+
+
     }
 
     @Override

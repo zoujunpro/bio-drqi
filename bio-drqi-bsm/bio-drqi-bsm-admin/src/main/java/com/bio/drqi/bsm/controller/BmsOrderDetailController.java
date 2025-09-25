@@ -92,8 +92,21 @@ public class BmsOrderDetailController {
     @WebLog(desc = "采购订单管理-上传发票")
     @RequirePermissions("bms:orderDetail:edit")
     @RequestLog("采购订单管理-上传发票")
-    public ResponseResult<String> uploadInvoice(@RequestBody BmsOrderDetailUploadInvoiceReqDTO bmsOrderDetailUploadInvoiceReqDTO){
+    public ResponseResult<String> uploadInvoice(@RequestBody @Validated  BmsOrderDetailUploadInvoiceReqDTO bmsOrderDetailUploadInvoiceReqDTO){
         bmsOrderDetailService.uploadInvoice(bmsOrderDetailUploadInvoiceReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 删除发票
+     * @return
+     */
+    @PostMapping("/uploadInvoice")
+    @WebLog(desc = "采购订单管理-删除发票")
+    @RequirePermissions("bms:orderDetail:edit")
+    @RequestLog("采购订单管理-删除发票")
+    public ResponseResult<String> deleteInvoice(@RequestBody @Validated BmsOrderDetailDeleteInvoiceReqDTO bmsOrderDetailDeleteInvoiceReqDTO){
+        bmsOrderDetailService.deleteInvoice(bmsOrderDetailDeleteInvoiceReqDTO);
         return ResponseResult.getSuccess("ok");
     }
 
@@ -122,6 +135,20 @@ public class BmsOrderDetailController {
     @RequestLog("采购订单管理-上传结算凭证")
     public ResponseResult<String> uploadPaymentVoucher(@RequestBody @Validated BmsOrderDetailUploadPaymentVoucherReqDTO bmsOrderDetailUploadPaymentVoucherReqDTO){
         bmsOrderDetailService.uploadPaymentVoucher(bmsOrderDetailUploadPaymentVoucherReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 删除结算凭证
+     * @return
+     */
+
+    @WebLog(desc = "采购订单管理-删除结算凭证")
+    @PostMapping("/uploadPaymentVoucher")
+    @RequirePermissions("bms:orderDetail:edit")
+    @RequestLog("采购订单管理-删除结算凭证")
+    public ResponseResult<String> deletePaymentVoucher(@RequestBody @Validated BmsOrderDetailDeletePaymentVoucherReqDTO bmsOrderDetailDeletePaymentVoucherReqDTO){
+        bmsOrderDetailService.deletePaymentVoucher(bmsOrderDetailDeletePaymentVoucherReqDTO);
         return ResponseResult.getSuccess("ok");
     }
 

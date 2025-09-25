@@ -2,10 +2,12 @@ package com.bio.drqi.bsm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
+import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.dto.BmsOrderDetailExcelDTO;
 import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailListPageRspDTO;
@@ -27,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,15 +75,36 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void uploadContract(BmsOrderDetailUploadContractReqDTO bmsOrderDetailUploadContractReqDTO) {
-        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailUploadContractReqDTO.getId());
-        if (bmsOrderDetailTb == null) {
-            log.error("订单不存在，orderDetailId={}", bmsOrderDetailUploadContractReqDTO.getId());
-            throw new BusinessException("订单不存在");
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailUploadContractReqDTO.getIdList());
+        bmsOrderDetailTbList.forEach(bmsOrderDetailTb -> {
+            List<String> contractUrlList = new ArrayList<>();
+            if (StringUtils.isNotEmpty(bmsOrderDetailTb.getOrderDetailNum())) {
+                contractUrlList = JSONUtil.toList(bmsOrderDetailTb.getContractUrls(), String.class);
+            }
+            contractUrlList.add(bmsOrderDetailUploadContractReqDTO.getContractUrl());
+            bmsOrderDetailTb.setContractNumber(bmsOrderDetailUploadContractReqDTO.getContractNumber());
+            bmsOrderDetailTb.setContractUrls(JSONUtil.toJsonStr(contractUrlList));
+            bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+        });
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteContract(BmsOrderDetailDeleteContractReqDTO bmsOrderDetailDeleteContractReqDTO) {
+        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailDeleteContractReqDTO.getId());
+        if(bmsOrderDetailTb==null){
+            throw new BusinessException("找不到订单信息");
         }
-        bmsOrderDetailTb.setContractNumber(bmsOrderDetailUploadContractReqDTO.getContractNumber());
-        bmsOrderDetailTb.setContractUrls(bmsOrderDetailUploadContractReqDTO.getContractUrls());
+        List<String> contractUrlList = JSONUtil.toList(bmsOrderDetailTb.getContractUrls(), String.class);
+        if(CollectionUtil.isNotEmpty(contractUrlList)&&contractUrlList.contains(bmsOrderDetailDeleteContractReqDTO.getContractUrl().trim())){
+            contractUrlList=contractUrlList.stream().map(contractUrl->contractUrl.trim()).collect(Collectors.toList());
+            contractUrlList.remove(bmsOrderDetailDeleteContractReqDTO.getContractUrl());
+        }
+        bmsOrderDetailTb.setContractUrls(JSONUtil.toJsonStr(contractUrlList));
         bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+
     }
 
     @Override

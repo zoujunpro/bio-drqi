@@ -5,19 +5,14 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class BmsOrderDetailUploadContractReqDTO {
+public class BmsOrderDetailDeleteContractReqDTO {
     /**
      * 订单单号
      */
-    private List<Integer> idList;
+    private Integer id;
 
     /**
      * 合同地址
      */
     private String contractUrl;
-
-    /**
-     * 合同编号
-     */
-    private String contractNumber;
 }

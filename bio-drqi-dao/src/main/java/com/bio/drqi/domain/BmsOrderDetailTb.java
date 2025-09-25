@@ -15,9 +15,10 @@ import java.util.Date;
 
 /**
  * 订单明细表
+ *
  * @TableName bms_order_detail_tb
  */
-@TableName(value ="bms_order_detail_tb")
+@TableName(value = "bms_order_detail_tb")
 @Data
 @Builder
 @AllArgsConstructor

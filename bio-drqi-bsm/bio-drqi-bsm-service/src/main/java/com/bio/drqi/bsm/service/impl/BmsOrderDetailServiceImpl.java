@@ -193,7 +193,7 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
             bmsProductStockInLogList.forEach(bmsProductStockInLog -> {
                 bmsProductStockInLog.setProductPrice(bmsOrderDetailModifyPriceReqDTO.getPurchasePrice());
                 bmsProductStockInLog.setStoreAmount(new BigDecimal(bmsProductStockInLog.getStoreNumber()).multiply(bmsProductStockInLog.getProductPrice()));
-                bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+                bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
             });
         }
 

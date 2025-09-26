@@ -85,7 +85,7 @@
         select
         <include refid="Base_Column_List"/>
         from cer_vector_task_tb
-        where vector_task_type !='2' and vector_task_code not
+        where project_id in(select id from cer_project_tb where project_type='1') and vector_task_code not
         in('TM01201-OH01','TM01201-OH02','TS00101-AB01','TS00101-AB02','CM00301-GN01','CM00301-GN02','TM01201-OH03','TS00101-BZ03','TS00101-SQ04','TM01201-OH04')
         <if test="projectId!=null">and project_id = #{projectId,jdbcType=INTEGER}</if>
         <if test="taskStatus!=null and taskStatus!=''">and task_status =#{taskStatus,jdbcType=VARCHAR}</if>

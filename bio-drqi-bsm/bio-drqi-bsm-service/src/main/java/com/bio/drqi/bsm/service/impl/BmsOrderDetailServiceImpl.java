@@ -78,6 +78,11 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     @Transactional(rollbackFor = Exception.class)
     public void uploadContract(BmsOrderDetailUploadContractReqDTO bmsOrderDetailUploadContractReqDTO) {
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailUploadContractReqDTO.getIdList());
+        if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
+            if(bmsOrderDetailTbList.stream().map(BmsOrderDetailTb::getOrderNum).distinct().collect(Collectors.toList()).size()!=1){
+                throw new BusinessException("只有同一个订单下可以批次上传合同");
+            }
+        }
         bmsOrderDetailTbList.forEach(bmsOrderDetailTb -> {
             List<String> contractUrlList = new ArrayList<>();
             if (StringUtils.isNotEmpty(bmsOrderDetailTb.getOrderDetailNum())) {
@@ -111,6 +116,11 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     @Transactional(rollbackFor = Exception.class)
     public void uploadInvoice(BmsOrderDetailUploadInvoiceReqDTO bmsOrderDetailUploadInvoiceReqDTO) {
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailUploadInvoiceReqDTO.getIdList());
+        if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
+            if(bmsOrderDetailTbList.stream().map(BmsOrderDetailTb::getOrderNum).distinct().collect(Collectors.toList()).size()!=1){
+                throw new BusinessException("只有同一个订单下可以批次上传发票");
+            }
+        }
         if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
             bmsOrderDetailTbList.forEach(bmsOrderDetailTb -> {
                 List<String> invoiceUrlList = new ArrayList<>();
@@ -160,6 +170,11 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     public void uploadPaymentVoucher(BmsOrderDetailUploadPaymentVoucherReqDTO bmsOrderDetailUploadPaymentVoucherReqDTO) {
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailUploadPaymentVoucherReqDTO.getIdList());
         if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
+            if(bmsOrderDetailTbList.stream().map(BmsOrderDetailTb::getOrderNum).distinct().collect(Collectors.toList()).size()!=1){
+                throw new BusinessException("只有同一个订单下可以批次上传结算凭证");
+            }
+        }
+        if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
             bmsOrderDetailTbList.forEach(bmsOrderDetailTb -> {
                 List<String> paymentVoucherUrlList = new ArrayList<>();
                 paymentVoucherUrlList = JSONUtil.toList(bmsOrderDetailTb.getPaymentVoucherUrls(), String.class);
@@ -179,8 +194,8 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
             throw new BusinessException("找不到订单信息");
         }
         List<String> paymentVoucherUrlList = JSONUtil.toList(bmsOrderDetailTb.getPaymentVoucherUrls(), String.class);
-        if(CollectionUtil.isNotEmpty(paymentVoucherUrlList)){
-            paymentVoucherUrlList=paymentVoucherUrlList.stream().map(paymentVoucherUrl->paymentVoucherUrl.trim()).collect(Collectors.toList());
+        if (CollectionUtil.isNotEmpty(paymentVoucherUrlList)) {
+            paymentVoucherUrlList = paymentVoucherUrlList.stream().map(paymentVoucherUrl -> paymentVoucherUrl.trim()).collect(Collectors.toList());
             paymentVoucherUrlList.remove(bmsOrderDetailDeletePaymentVoucherReqDTO.getPaymentVoucherUrl().trim());
             bmsOrderDetailTb.setPaymentVoucherUrls(JSONUtil.toJsonStr(paymentVoucherUrlList));
             bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
@@ -200,8 +215,8 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
         if (bmsOrderDetailTb == null) {
             throw new BusinessException("找不到此订单");
         }
-    //    if (bmsOrderDetailTb.getReceiveNumber() != bmsOrderDetailTb.getPurchaseNumber().intValue()) {
-      //      throw new BusinessException("耗材未全部到货");
+        //    if (bmsOrderDetailTb.getReceiveNumber() != bmsOrderDetailTb.getPurchaseNumber().intValue()) {
+        //      throw new BusinessException("耗材未全部到货");
         //}
 
         bmsOrderDetailTb.setTaxRate(bmsOrderDetailTaxRateReqDTO.getTaxRate());

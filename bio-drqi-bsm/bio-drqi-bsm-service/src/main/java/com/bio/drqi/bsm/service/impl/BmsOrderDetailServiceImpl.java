@@ -79,7 +79,7 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     public void uploadContract(BmsOrderDetailUploadContractReqDTO bmsOrderDetailUploadContractReqDTO) {
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailUploadContractReqDTO.getIdList());
         if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
-            if(bmsOrderDetailTbList.stream().map(BmsOrderDetailTb::getOrderNum).distinct().collect(Collectors.toList()).size()!=1){
+            if (bmsOrderDetailTbList.stream().map(BmsOrderDetailTb::getOrderNum).distinct().collect(Collectors.toList()).size() != 1) {
                 throw new BusinessException("只有同一个订单下可以批次上传合同");
             }
         }
@@ -117,7 +117,7 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     public void uploadInvoice(BmsOrderDetailUploadInvoiceReqDTO bmsOrderDetailUploadInvoiceReqDTO) {
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailUploadInvoiceReqDTO.getIdList());
         if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
-            if(bmsOrderDetailTbList.stream().map(BmsOrderDetailTb::getOrderNum).distinct().collect(Collectors.toList()).size()!=1){
+            if (bmsOrderDetailTbList.stream().map(BmsOrderDetailTb::getOrderNum).distinct().collect(Collectors.toList()).size() != 1) {
                 throw new BusinessException("只有同一个订单下可以批次上传发票");
             }
         }
@@ -153,16 +153,15 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void reportAccount(BmsOrderDetailReportAccountReqDTO bmsOrderDetailReportAccountReqDTO) {
-        BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(bmsOrderDetailReportAccountReqDTO.getId());
-
-        if (bmsOrderDetailTb == null) {
-            log.error("订单不存在，orderDetailId={}", bmsOrderDetailReportAccountReqDTO.getId());
-            throw new BusinessException("订单不存在");
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailReportAccountReqDTO.getIdList());
+        if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
+            bmsOrderDetailTbList.forEach(bmsOrderDetailTb -> {
+                bmsOrderDetailTb.setReportAccountTime(bmsOrderDetailReportAccountReqDTO.getAccountTime());
+                bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+            });
         }
-        bmsOrderDetailTb.setReportAccountTime(bmsOrderDetailReportAccountReqDTO.getAccountTime());
-
-        bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
     }
 
     @Override
@@ -170,7 +169,7 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     public void uploadPaymentVoucher(BmsOrderDetailUploadPaymentVoucherReqDTO bmsOrderDetailUploadPaymentVoucherReqDTO) {
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailUploadPaymentVoucherReqDTO.getIdList());
         if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
-            if(bmsOrderDetailTbList.stream().map(BmsOrderDetailTb::getOrderNum).distinct().collect(Collectors.toList()).size()!=1){
+            if (bmsOrderDetailTbList.stream().map(BmsOrderDetailTb::getOrderNum).distinct().collect(Collectors.toList()).size() != 1) {
                 throw new BusinessException("只有同一个订单下可以批次上传结算凭证");
             }
         }

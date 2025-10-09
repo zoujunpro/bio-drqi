@@ -48,6 +48,8 @@ public class TcExperimentListAllRspDTO {
      */
     private Integer applyUserId;
 
+    private String breedingFlag;
+
     /**
      * 创建时间
      */

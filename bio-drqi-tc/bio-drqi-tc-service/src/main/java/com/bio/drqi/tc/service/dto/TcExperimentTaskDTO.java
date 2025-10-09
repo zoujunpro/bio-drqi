@@ -40,6 +40,7 @@ public class TcExperimentTaskDTO {
 
     private String sampleCodePrefix;
 
+    private String breedingFlag;
 
 
 }

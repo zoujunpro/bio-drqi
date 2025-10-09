@@ -23,6 +23,8 @@
             <result property="experimentStatus" column="experiment_status" jdbcType="VARCHAR"/>
             <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
             <result property="experimentType" column="experiment_type" jdbcType="VARCHAR"/>
+            <result property="breedingFlag" column="breeding_flag" jdbcType="VARCHAR"/>
+
 
     </resultMap>
 
@@ -31,7 +33,7 @@
         species_code,species_name,file_url,
         experiment_goal,experiment_address_code,apply_user_name,
         apply_user_id,create_time,experiment_num,
-        task_num,design_url,sample_code_prefix,next_sample_number,experiment_status, harvest_apply_num,experiment_type
+        task_num,design_url,sample_code_prefix,next_sample_number,experiment_status, harvest_apply_num,experiment_type,breeding_flag
     </sql>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.TcExperimentTb">
         select

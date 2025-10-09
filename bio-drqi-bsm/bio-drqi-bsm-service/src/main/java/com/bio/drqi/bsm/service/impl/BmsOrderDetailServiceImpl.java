@@ -200,9 +200,9 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
         if (bmsOrderDetailTb == null) {
             throw new BusinessException("找不到此订单");
         }
-        if (bmsOrderDetailTb.getReceiveNumber() != bmsOrderDetailTb.getPurchaseNumber().intValue()) {
-            throw new BusinessException("耗材未全部到货");
-        }
+    //    if (bmsOrderDetailTb.getReceiveNumber() != bmsOrderDetailTb.getPurchaseNumber().intValue()) {
+      //      throw new BusinessException("耗材未全部到货");
+        //}
 
         bmsOrderDetailTb.setTaxRate(bmsOrderDetailTaxRateReqDTO.getTaxRate());
         bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);

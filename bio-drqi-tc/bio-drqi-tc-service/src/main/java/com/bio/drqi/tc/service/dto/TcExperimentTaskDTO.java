@@ -1,5 +1,6 @@
 package com.bio.drqi.tc.service.dto;
 
+import com.bio.common.core.util.EnumValue;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -40,6 +41,7 @@ public class TcExperimentTaskDTO {
 
     private String sampleCodePrefix;
 
+    @EnumValue(strValues = {"Y", "N"}, message = "扩繁入参异常")
     private String breedingFlag;
 
 

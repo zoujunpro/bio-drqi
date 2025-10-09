@@ -72,7 +72,6 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             throw new BusinessException("试验地点不正确");
         }
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-
             if (CollectionUtil.isEmpty(experimentDesignExcelDTOList)) {
                 throw new BusinessException("大田试验田间设计缺失");
             }
@@ -159,10 +158,13 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         Map<String, String> breedNameCodeMap = breedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedName, CerBreedDict::getBreedCode));
         for (ExperimentDesignExcelDTO experimentDesignExcelDTO : experimentDesignExcelDTOList) {
             ValidatorUtil.validator(experimentDesignExcelDTO);
-            if (!tcExperimentTaskDTO.getVectorTaskCodeList().contains(experimentDesignExcelDTO.getVectorTaskCode())) {
-                throw new BusinessException("excel大田设计文件中实验方案编号不正确，必须归属所选方案中");
-            }
 
+            //如果是扩繁试验，无需校验实施方案编号
+            if(BioDrQiContents.N.equals(tcExperimentTaskDTO.getBreedingFlag())){
+                if (!tcExperimentTaskDTO.getVectorTaskCodeList().contains(experimentDesignExcelDTO.getVectorTaskCode())) {
+                    throw new BusinessException("excel大田设计文件中实验方案编号不正确，必须归属所选方案中");
+                }
+            }
             if (breedNameCodeMap.get(experimentDesignExcelDTO.getBreedName()) == null) {
                 throw new BusinessException("物种下无此品种配置" + experimentDesignExcelDTO.getBreedName());
             } else {

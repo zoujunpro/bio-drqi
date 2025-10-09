@@ -155,6 +155,12 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         if (CollectionUtil.isEmpty(breedDictList)) {
             throw new BusinessException("该物种下无品种配置项");
         }
+
+        if(BioDrQiContents.N.equals(tcExperimentTaskDTO.getBreedingFlag())){
+            if(CollectionUtil.isEmpty(tcExperimentTaskDTO.getVectorTaskCodeList())){
+                throw new BusinessException("不是扩繁试验，实施方案必填");
+            }
+        }
         Map<String, String> breedNameCodeMap = breedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedName, CerBreedDict::getBreedCode));
         for (ExperimentDesignExcelDTO experimentDesignExcelDTO : experimentDesignExcelDTOList) {
             ValidatorUtil.validator(experimentDesignExcelDTO);

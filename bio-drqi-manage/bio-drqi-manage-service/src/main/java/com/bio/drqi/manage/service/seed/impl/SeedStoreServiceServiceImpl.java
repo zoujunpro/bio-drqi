@@ -79,7 +79,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         }
         if (StringUtils.isNotEmpty(seedStockTb.getProductionLocationCode())) {
             SeedProduceAddressDict seedProduceAddressDict = seedProduceAddressDictMapper.selectOneByAddressCode(seedStockTb.getProductionLocationCode());
-            seedDetailRspDTO.setProductionLocationName(seedProduceAddressDict==null?null:seedProduceAddressDict.getAddressName());
+            seedDetailRspDTO.setProductionLocationName(seedProduceAddressDict == null ? null : seedProduceAddressDict.getAddressName());
         }
 
         return seedDetailRspDTO;
@@ -182,6 +182,28 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
             }
         }
         return result;
+    }
+
+    @Override
+    public SeedMapRspDTO findSeedMap(String seedNum) {
+        SeedMapRspDTO seedMapRspDTO = new SeedMapRspDTO();
+        buildSeedMapRspDTO(seedNum, seedMapRspDTO);
+        return seedMapRspDTO;
+    }
+
+    private void buildSeedMapRspDTO(String seedNum, SeedMapRspDTO seedMapRspDTO) {
+        SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum);
+        if (seedStockTb == null) {
+            throw new BusinessException("异常种子编号,库存中无此种子编号:"+seedNum);
+        }
+        seedMapRspDTO.buildMap(seedNum, seedStockTb.getFatherSeedNum(), seedStockTb.getMatherSeedNum());
+        if(StringUtils.isNotEmpty(seedStockTb.getMatherSeedNum())){
+            buildSeedMapRspDTO(seedStockTb.getFatherSeedNum(),seedMapRspDTO);
+        }
+        if(StringUtils.isNotEmpty(seedStockTb.getMatherSeedNum())){
+            buildSeedMapRspDTO(seedStockTb.getMatherSeedNum(),seedMapRspDTO);
+        }
+
     }
 
     @Override

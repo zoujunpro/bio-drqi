@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -121,6 +122,17 @@ public class SeedStockController {
     public ResponseResult<List<SeedTaskSeedNumRspDTO>> findAllSeedNum(@RequestParam @Validated String taskNum) {
         List<SeedTaskSeedNumRspDTO> res = seedStoreService.findAllSeedNum(taskNum);
         return ResponseResult.getSuccess(res);
+    }
+
+    /**
+     *种子库-查询图谱
+     * @param seedNum
+     * @return
+     */
+    @GetMapping("/findSeedMap")
+    @WebLog(desc = "种子库-查询图谱")
+    public ResponseResult<SeedMapRspDTO> findSeedMap(@RequestParam @Validated @NotBlank(message = "参数缺失") String seedNum){
+        return ResponseResult.getSuccess(seedStoreService.findSeedMap(seedNum));
     }
 
 

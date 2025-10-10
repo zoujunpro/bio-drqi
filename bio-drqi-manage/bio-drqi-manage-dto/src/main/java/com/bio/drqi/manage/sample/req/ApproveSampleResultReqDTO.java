@@ -27,4 +27,5 @@ public class ApproveSampleResultReqDTO {
         @NotBlank(message = "参数缺失：checkResult")
         private String checkResult;
     }
+
 }

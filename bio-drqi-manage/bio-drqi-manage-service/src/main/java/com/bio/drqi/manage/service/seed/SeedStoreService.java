@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 public interface SeedStoreService {
@@ -29,6 +30,9 @@ public interface SeedStoreService {
     PageInfo<SeedInStoreDTO.ExecuteFormContent> seedInData(@RequestParam @Validated SeedInDataReqDTO seedInDataReqDTO);
 
     List<SeedTaskSeedNumRspDTO> findAllSeedNum(String taskNum);
+
+
+    SeedMapRspDTO findSeedMap( String seedNum);
 
    void remark( SeedStockRemarkReqDTO seedStockRemarkReqDTO);
 }

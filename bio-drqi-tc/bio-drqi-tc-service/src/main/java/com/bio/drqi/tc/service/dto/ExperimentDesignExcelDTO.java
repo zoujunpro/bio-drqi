@@ -38,7 +38,6 @@ public class ExperimentDesignExcelDTO {
      * 实施方案编号
      */
     @ExcelProperty("实施方案编号")
-    @NotBlank(message = "实施方案必填")
     private String vectorTaskCode;
     /**
      * 目标性状

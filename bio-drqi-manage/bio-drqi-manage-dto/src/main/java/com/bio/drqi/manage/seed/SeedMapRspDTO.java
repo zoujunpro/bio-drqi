@@ -35,8 +35,12 @@ public class SeedMapRspDTO {
             return seedMapNode;
         } else {
             if (seedMapNode.getChildren() != null) {
+                SeedMapNode currentNode = null;
                 for (SeedMapNode childSeedMapNode : seedMapNode.getChildren()) {
-                    return findCurrentNode(seedNum, childSeedMapNode);
+                    currentNode = findCurrentNode(seedNum, childSeedMapNode);
+                    if(currentNode!=null){
+                        return currentNode;
+                    }
                 }
             }
             return null;

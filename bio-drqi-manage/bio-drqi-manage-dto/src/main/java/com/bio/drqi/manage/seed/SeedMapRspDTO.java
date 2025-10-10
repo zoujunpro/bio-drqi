@@ -38,7 +38,7 @@ public class SeedMapRspDTO {
                 SeedMapNode currentNode = null;
                 for (SeedMapNode childSeedMapNode : seedMapNode.getChildren()) {
                     currentNode = findCurrentNode(seedNum, childSeedMapNode);
-                    if(currentNode!=null){
+                    if (currentNode != null) {
                         return currentNode;
                     }
                 }
@@ -69,7 +69,7 @@ public class SeedMapRspDTO {
             if (StringUtils.isNotEmpty(fatherSeedNum)) {
                 children.add(new SeedMapNode(fatherSeedNum, null));
             }
-            if (StringUtils.isNotEmpty(matherSeedNum)) {
+            if (StringUtils.isNotEmpty(matherSeedNum) && !fatherSeedNum.equals(matherSeedNum)) {
                 children.add(new SeedMapNode(matherSeedNum, null));
             }
         }

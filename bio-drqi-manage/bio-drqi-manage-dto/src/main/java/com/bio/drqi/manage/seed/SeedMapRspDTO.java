@@ -74,12 +74,15 @@ public class SeedMapRspDTO {
         public void buildChildren(SeedMapDTO fatherSeed, SeedMapDTO matherSeed) {
             //自交只有一个亲本
             if (Objects.nonNull(fatherSeed) && Objects.nonNull(matherSeed) && fatherSeed.seedNum.equals(matherSeed.seedNum)) {
+                fatherSeed.setParentType("parent");
                 children.add(new SeedMapNode(fatherSeed));
             } else {
                 if (Objects.nonNull(fatherSeed)) {
+                    fatherSeed.setParentType("father");
                     children.add(new SeedMapNode(fatherSeed));
                 }
                 if (Objects.nonNull(matherSeed)) {
+                    fatherSeed.setParentType("mather");
                     children.add(new SeedMapNode(matherSeed));
                 }
             }

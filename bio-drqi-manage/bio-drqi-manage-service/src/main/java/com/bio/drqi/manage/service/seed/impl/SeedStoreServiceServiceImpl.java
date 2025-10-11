@@ -196,14 +196,9 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         if (seedStockTb == null) {
             throw new BusinessException("异常种子编号,库存中无此种子编号:" + seedNum);
         }
-        SeedMapRspDTO.SeedMapValueDTO currentSeedValue = new SeedMapRspDTO.SeedMapValueDTO();
-        currentSeedValue.setSeedNum(seedNum);
-        currentSeedValue.setVectorTaskCode(seedStockTb.getVectorTaskCode());
-        currentSeedValue.setGeneration(seedStockTb.getGeneration());
-        currentSeedValue.setBreedName(cerBreedDictMap.get(seedStockTb.getBreedCode()));
 
 
-        seedMapRspDTO.buildMap(seedNum, seedStockTb.getFatherSeedNum(), seedStockTb.getMatherSeedNum());
+        seedMapRspDTO.buildMap(buildSeedMapDTO(seedNum, cerBreedDictMap), buildSeedMapDTO(seedStockTb.getFatherSeedNum(), cerBreedDictMap), buildSeedMapDTO(seedStockTb.getMatherSeedNum(), cerBreedDictMap));
         if (StringUtils.isNotEmpty(seedStockTb.getMatherSeedNum())) {
             buildSeedMapRspDTO(seedStockTb.getFatherSeedNum(), seedMapRspDTO, cerBreedDictMap);
         }
@@ -211,6 +206,16 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
             buildSeedMapRspDTO(seedStockTb.getMatherSeedNum(), seedMapRspDTO, cerBreedDictMap);
         }
 
+    }
+
+    private SeedMapRspDTO.SeedMapDTO buildSeedMapDTO(String seedNum, Map<String, String> cerBreedDictMap) {
+        SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum);
+        SeedMapRspDTO.SeedMapDTO seedMapDTO = new SeedMapRspDTO.SeedMapDTO();
+        seedMapDTO.setSeedNum(seedNum);
+        seedMapDTO.setVectorTaskCode(seedStockTb.getVectorTaskCode());
+        seedMapDTO.setGeneration(seedStockTb.getGeneration());
+        seedMapDTO.setBreedName(cerBreedDictMap.get(seedStockTb.getBreedCode()));
+        return seedMapDTO;
     }
 
     @Override

@@ -1,11 +1,13 @@
 package com.bio.drqi.manage.seed;
 
+import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 public class SeedMapRspDTO {
@@ -14,30 +16,30 @@ public class SeedMapRspDTO {
     private SeedMapNode rootMap = new SeedMapNode();
 
 
-    public void buildMap(String seedNum, String fatherSeedNum, String matherSeedNum) {
+    public void buildMap(SeedMapDTO currentSeed, SeedMapDTO fatherSeed, SeedMapDTO matherSeed) {
         if (rootMap.getName() == null) {
-            rootMap.setName(seedNum);
-            rootMap.buildChildren(fatherSeedNum, matherSeedNum);
+            rootMap.seedNode(currentSeed);
+            rootMap.buildChildren(fatherSeed, matherSeed);
         } else {
-            SeedMapNode currentNode = findCurrentNode(seedNum, rootMap);
+            SeedMapNode currentNode = findCurrentNode(currentSeed, rootMap);
             if (currentNode == null) {
-                throw new BusinessException("构建图谱失败，失败种子编号：" + seedNum);
+                throw new BusinessException("构建图谱失败，失败种子编号：" + currentSeed.seedNum);
             } else {
-                currentNode.buildChildren(fatherSeedNum, matherSeedNum);
+                currentNode.buildChildren(fatherSeed, matherSeed);
             }
         }
 
     }
 
 
-    private SeedMapNode findCurrentNode(String seedNum, SeedMapNode seedMapNode) {
-        if (seedNum.equals(seedMapNode.getName())) {
+    private SeedMapNode findCurrentNode(SeedMapDTO seedMapDTO, SeedMapNode seedMapNode) {
+        if (seedMapDTO.seedNum.equals(seedMapNode.getName())) {
             return seedMapNode;
         } else {
             if (seedMapNode.getChildren() != null) {
                 SeedMapNode currentNode = null;
                 for (SeedMapNode childSeedMapNode : seedMapNode.getChildren()) {
-                    currentNode = findCurrentNode(seedNum, childSeedMapNode);
+                    currentNode = findCurrentNode(seedMapDTO, childSeedMapNode);
                     if (currentNode != null) {
                         return currentNode;
                     }
@@ -54,30 +56,40 @@ public class SeedMapRspDTO {
     public static class SeedMapNode {
         private String name;
         private String value;
-        private List<SeedMapNode> children;
+        private List<SeedMapNode> children = new ArrayList<>();
 
-        public SeedMapNode(String name, String value) {
-            this.name = name;
-            this.value = value;
+        public SeedMapNode(SeedMapDTO seedMapDTO) {
+            this.name = seedMapDTO.seedNum;
+            this.value = JSONUtil.toJsonStr(seedMapDTO);
         }
 
         public SeedMapNode() {
         }
 
-        public void buildChildren(String fatherSeedNum, String matherSeedNum) {
-            children = new ArrayList<>();
-            if (StringUtils.isNotEmpty(fatherSeedNum)) {
-                children.add(new SeedMapNode(fatherSeedNum, null));
+        public void seedNode(SeedMapDTO seedMapDTO) {
+            this.name = seedMapDTO.seedNum;
+            this.value = JSONUtil.toJsonStr(seedMapDTO);
+        }
+
+        public void buildChildren(SeedMapDTO fatherSeed, SeedMapDTO matherSeed) {
+            //自交只有一个亲本
+            if (Objects.nonNull(fatherSeed) && Objects.nonNull(matherSeed) && fatherSeed.seedNum.equals(matherSeed.seedNum)) {
+                children.add(new SeedMapNode(fatherSeed));
+            } else {
+                if (Objects.nonNull(fatherSeed)) {
+                    children.add(new SeedMapNode(fatherSeed));
+                }
+                if (Objects.nonNull(matherSeed)) {
+                    children.add(new SeedMapNode(matherSeed));
+                }
             }
-            if (StringUtils.isNotEmpty(matherSeedNum) && !fatherSeedNum.equals(matherSeedNum)) {
-                children.add(new SeedMapNode(matherSeedNum, null));
-            }
+
         }
     }
 
 
     @Data
-    public static class SeedMapValueDTO {
+    public static class SeedMapDTO {
         private String seedNum;
         private String vectorTaskCode;
         private String generation;

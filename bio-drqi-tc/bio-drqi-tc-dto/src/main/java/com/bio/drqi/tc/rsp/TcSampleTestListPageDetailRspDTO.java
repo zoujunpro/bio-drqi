@@ -2,6 +2,9 @@ package com.bio.drqi.tc.rsp;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class TcSampleTestListPageDetailRspDTO {
 
@@ -193,5 +196,28 @@ public class TcSampleTestListPageDetailRspDTO {
     private Integer matchNum;
 
     private String tcSampleCode;
+
+
+
+    private List<BioInfoResult> bioInfoResultList = new ArrayList<>();
+
+
+    @Data
+    public static class BioInfoResult {
+        private String sampleId;
+        private String varType;
+        private String mutate;
+        private String ratio;
+    }
+
+    public void addBioInfoResultToList(String sampleId, String varType, String mutate, String ratio) {
+        BioInfoResult bioInfoResult = new BioInfoResult();
+        bioInfoResult.setSampleId(sampleId);
+        bioInfoResult.setVarType(varType);
+        bioInfoResult.setMutate(mutate);
+        bioInfoResult.setRatio(ratio);
+        this.bioInfoResultList.add(bioInfoResult);
+
+    }
 
 }

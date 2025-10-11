@@ -276,7 +276,7 @@ public class TcSampleTestController {
      *
      * @return
      */
-    @GetMapping("bioInfoHead")
+    //@GetMapping("bioInfoHead")
     @WebLog(desc = "田测取样检测管理-生信检测结果分页详情头")
     public ResponseResult<Integer> bioInfoHead(@RequestParam @Validated String applyNo) {
         return ResponseResult.getSuccess(tcSampleTestService.bioInfoHead(applyNo));
@@ -287,7 +287,7 @@ public class TcSampleTestController {
      *
      * @return
      */
-    @PostMapping("bioInfoPage")
+    //@PostMapping("bioInfoPage")
     @WebLog(desc = "田测取样检测管理-生信检测结果分页详情")
     public ResponseResult<PageInfo<TcSampleTestBioInfoPageRspDTO>> bioInfoPage(@RequestBody @Validated TcSampleTestBioInfoPageReqDTO tcSampleTestBioInfoPageReqDTO) {
         return ResponseResult.getSuccess(tcSampleTestService.bioInfoPage(tcSampleTestBioInfoPageReqDTO));

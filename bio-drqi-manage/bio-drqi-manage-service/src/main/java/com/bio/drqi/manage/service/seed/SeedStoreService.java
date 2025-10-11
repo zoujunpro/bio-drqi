@@ -35,4 +35,6 @@ public interface SeedStoreService {
     SeedMapRspDTO findSeedMap( String seedNum);
 
    void remark( SeedStockRemarkReqDTO seedStockRemarkReqDTO);
+
+    List<String> queryChildSeed(String seedNum);
 }

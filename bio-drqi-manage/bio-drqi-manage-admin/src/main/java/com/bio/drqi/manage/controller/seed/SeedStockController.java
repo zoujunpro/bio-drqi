@@ -150,4 +150,16 @@ public class SeedStockController {
         seedStoreService.remark(seedStockRemarkReqDTO);
         return ResponseResult.getSuccess("ok");
     }
+
+
+    /**
+     *种子库-查询某一个种子所有直系子代
+     * @param seedNum
+     * @return
+     */
+    @GetMapping("/findSeedMap")
+    @WebLog(desc = "种子库-查询某一个种子所有直系子代")
+    public ResponseResult<List<String>> queryChildSeed(String seedNum){
+        return ResponseResult.getSuccess(seedStoreService.queryChildSeed(seedNum));
+    }
 }

@@ -190,6 +190,20 @@
         where
         breed_code = #{breedCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByMatherSeedNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_tb
+        where
+        mather_seed_num = #{matherSeedNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByFatherSeedNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_tb
+        where
+        father_seed_num = #{fatherSeedNum,jdbcType=VARCHAR}
+    </select>
 
 
 </mapper>

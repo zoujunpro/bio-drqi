@@ -239,6 +239,20 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
     }
 
+    @Override
+    public List<String> queryChildSeed(String seedNum) {
+        List<String> result = new ArrayList<>();
+        List<SeedStockTb> matherSeedStockTbList = seedStockTbMapper.selectAllByMatherSeedNum(seedNum);
+        List<SeedStockTb> fatherSeedStockTbList = seedStockTbMapper.selectAllByFatherSeedNum(seedNum);
+        if (CollectionUtil.isNotEmpty(matherSeedStockTbList)) {
+            result.addAll(matherSeedStockTbList.stream().map(SeedStockTb::getSeedNum).collect(Collectors.toList()));
+        }
+        if (CollectionUtil.isNotEmpty(fatherSeedStockTbList)) {
+            result.addAll(fatherSeedStockTbList.stream().map(SeedStockTb::getSeedNum).collect(Collectors.toList()));
+        }
+        return result.stream().distinct().collect(Collectors.toList());
+    }
+
 
     private PageInfo<SeedStockPageRspDTO> getSeedStockPageRspDTOPageInfo(SeedStockPageReqDTO seedStockPageReqDTO, Boolean notEmptySeedNumberFlag) {
         PageInfo<SeedStockPageRspDTO> resultPage = new PageInfo<>(new ArrayList<SeedStockPageRspDTO>());

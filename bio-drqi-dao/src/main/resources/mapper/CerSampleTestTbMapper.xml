@@ -468,5 +468,15 @@
         set target_flag = #{targetFlag,jdbcType=VARCHAR}
         where apply_no = #{applyNo,jdbcType=VARCHAR}
     </update>
+    <update id="updateCheckResultByApplyNoAndSampleCodeIn">
+        update cer_sample_test_tb
+        set check_result = #{checkResult,jdbcType=VARCHAR}
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+        AND sample_code in
+        <foreach collection="sampleCodeList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </update>
 
 </mapper>

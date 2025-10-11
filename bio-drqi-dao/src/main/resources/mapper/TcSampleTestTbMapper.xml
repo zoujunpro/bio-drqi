@@ -319,5 +319,15 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </update>
+    <update id="updateCheckResultBySampleApplyNumAndSampleCodeIn">
+        update tc_sample_test_tb
+        set check_result = #{checkResult,jdbcType=VARCHAR}
+        where
+        sample_apply_num = #{sampleApplyNum,jdbcType=VARCHAR}
+        AND sample_code in
+        <foreach collection="sampleCodeList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </update>
 
 </mapper>

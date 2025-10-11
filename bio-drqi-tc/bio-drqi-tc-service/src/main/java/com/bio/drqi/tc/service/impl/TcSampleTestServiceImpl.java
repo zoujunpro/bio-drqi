@@ -582,6 +582,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         }
         tcSampleTestTbMapper.updateTargetFlagBySampleApplyNum(null,tcSampleTestUploadTargetResultTemplateReqDTO.getTaskNum());
         tcSampleTestTbMapper.updateTargetFlagBySampleApplyNumAndSampleCodeIn(BioDrQiContents.Y, tcSampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
+        tcSampleTestTbMapper.updateCheckResultBySampleApplyNumAndSampleCodeIn("stay",tcSampleTestUploadTargetResultTemplateReqDTO.getTaskNum(),sampleCodeList);
         tcSampleTestTbMapper.updateCheckResultBySampleApplyNumAndSampleCodeNotIn("remove",tcSampleTestUploadTargetResultTemplateReqDTO.getTaskNum(),sampleCodeList);
     }
 

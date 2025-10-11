@@ -710,6 +710,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
         cerSampleTestTbMapper.updateTargetFlagByApplyNo(null,sampleTestUploadTargetResultTemplateReqDTO.getTaskNum());
         cerSampleTestTbMapper.updateTargetFlagByApplyNoAndSampleCodeIn(BioDrQiContents.Y, sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
+        cerSampleTestTbMapper.updateCheckResultByApplyNoAndSampleCodeIn("留种",sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(),sampleCodeList);
         cerSampleTestTbMapper.updateCheckResultByApplyNoAndSampleCodeNotIn("舍弃",sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(),sampleCodeList);
     }
 

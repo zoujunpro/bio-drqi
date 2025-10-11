@@ -116,12 +116,6 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
 
             //CER 校验
             if (StringUtils.isNotEmpty(executeFormContent.getPlantCode())) {
-                if (StringUtils.isNotEmpty(executeFormContent.getMatherSeedNum())) {
-                    throw new BusinessException("CER的T1代种子无母本种植编号");
-                }
-                if (StringUtils.isNotEmpty(executeFormContent.getFatherSeedNum())) {
-                    throw new BusinessException("CER的T1代种子无父本种植编号");
-                }
                 if (StringUtils.isEmpty(executeFormContent.getVectorTaskCode())) {
                     throw new BusinessException("CER的T1代种子请填写所属实施方案");
                 }

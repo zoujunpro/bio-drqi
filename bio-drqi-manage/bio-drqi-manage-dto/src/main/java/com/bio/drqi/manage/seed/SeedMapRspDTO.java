@@ -93,6 +93,7 @@ public class SeedMapRspDTO {
         private String seedNum;
         private String vectorTaskCode;
         private String generation;
+        private String pollinationMethod;
         private String parentType;
         private String breedName;
     }

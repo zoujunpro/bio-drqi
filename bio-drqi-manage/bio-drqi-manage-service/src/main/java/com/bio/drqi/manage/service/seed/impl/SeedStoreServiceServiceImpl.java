@@ -9,6 +9,7 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.DataPermissionTypeEnum;
 import com.bio.drqi.enums.DataPermissionValueEnum;
@@ -60,6 +61,9 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
     @Resource
     private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
+
+    @Resource
+    private BioDictMapper bioDictMapper;
 
     @Override
     public SeedDetailRspDTO querySeedByNum(String seedNum) {
@@ -210,11 +214,13 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
     private SeedMapRspDTO.SeedMapDTO buildSeedMapDTO(String seedNum, Map<String, String> cerBreedDictMap) {
         SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum);
+        BioDict bioDict = bioDictMapper.selectOneByDictTypeAndDictValueCode(BioDictTypeEnum.POLLINATE_TYPE.name(), seedStockTb.getPollinationMethod());
         if (seedStockTb != null) {
             SeedMapRspDTO.SeedMapDTO seedMapDTO = new SeedMapRspDTO.SeedMapDTO();
             seedMapDTO.setSeedNum(seedNum);
-            seedMapDTO.setVectorTaskCode(seedStockTb.getVectorTaskCode());
+            seedMapDTO.setVectorTaskCode(seedStockTb.getVectorTaskCode() == null ? "" : seedStockTb.getVectorTaskCode());
             seedMapDTO.setGeneration(seedStockTb.getGeneration());
+            seedMapDTO.setPollinationMethod(bioDict!=null?bioDict.getDictValueName():"");
             seedMapDTO.setBreedName(cerBreedDictMap.get(seedStockTb.getBreedCode()));
             return seedMapDTO;
         } else {

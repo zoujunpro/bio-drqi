@@ -214,13 +214,13 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
     private SeedMapRspDTO.SeedMapDTO buildSeedMapDTO(String seedNum, Map<String, String> cerBreedDictMap) {
         SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum);
-        BioDict bioDict = bioDictMapper.selectOneByDictTypeAndDictValueCode(BioDictTypeEnum.POLLINATE_TYPE.name(), seedStockTb.getPollinationMethod());
         if (seedStockTb != null) {
+            BioDict bioDict = bioDictMapper.selectOneByDictTypeAndDictValueCode(BioDictTypeEnum.POLLINATE_TYPE.name(), seedStockTb.getPollinationMethod());
             SeedMapRspDTO.SeedMapDTO seedMapDTO = new SeedMapRspDTO.SeedMapDTO();
             seedMapDTO.setSeedNum(seedNum);
             seedMapDTO.setVectorTaskCode(seedStockTb.getVectorTaskCode() == null ? "" : seedStockTb.getVectorTaskCode());
             seedMapDTO.setGeneration(seedStockTb.getGeneration());
-            seedMapDTO.setPollinationMethod(bioDict!=null?bioDict.getDictValueName():"");
+            seedMapDTO.setPollinationMethod(bioDict != null ? bioDict.getDictValueName() : "");
             seedMapDTO.setBreedName(cerBreedDictMap.get(seedStockTb.getBreedCode()));
             return seedMapDTO;
         } else {

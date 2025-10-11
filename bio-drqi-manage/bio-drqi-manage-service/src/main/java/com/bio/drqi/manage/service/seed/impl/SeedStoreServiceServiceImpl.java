@@ -210,12 +210,17 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
     private SeedMapRspDTO.SeedMapDTO buildSeedMapDTO(String seedNum, Map<String, String> cerBreedDictMap) {
         SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum);
-        SeedMapRspDTO.SeedMapDTO seedMapDTO = new SeedMapRspDTO.SeedMapDTO();
-        seedMapDTO.setSeedNum(seedNum);
-        seedMapDTO.setVectorTaskCode(seedStockTb.getVectorTaskCode());
-        seedMapDTO.setGeneration(seedStockTb.getGeneration());
-        seedMapDTO.setBreedName(cerBreedDictMap.get(seedStockTb.getBreedCode()));
-        return seedMapDTO;
+        if (seedStockTb != null) {
+            SeedMapRspDTO.SeedMapDTO seedMapDTO = new SeedMapRspDTO.SeedMapDTO();
+            seedMapDTO.setSeedNum(seedNum);
+            seedMapDTO.setVectorTaskCode(seedStockTb.getVectorTaskCode());
+            seedMapDTO.setGeneration(seedStockTb.getGeneration());
+            seedMapDTO.setBreedName(cerBreedDictMap.get(seedStockTb.getBreedCode()));
+            return seedMapDTO;
+        } else {
+            return null;
+        }
+
     }
 
     @Override

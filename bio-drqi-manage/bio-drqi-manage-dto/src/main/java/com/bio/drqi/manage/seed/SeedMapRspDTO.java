@@ -80,29 +80,22 @@ public class SeedMapRspDTO {
                 if (Objects.nonNull(fatherSeed)) {
                     fatherSeed.setParentType("father");
                     children.add(new SeedMapNode(fatherSeed));
-                }
-                if (Objects.nonNull(matherSeed)) {
-                    fatherSeed.setParentType("mather");
-                    children.add(new SeedMapNode(matherSeed));
-                }
-            }
-            //如果不是自交，需要补数据
-            if(!"自交".equals(currentSeed.pollinationMethod)){
-                if(fatherSeed==null){
+                }else {
                     fatherSeed=new SeedMapDTO();
                     fatherSeed.setSeedNum("");
                     fatherSeed.setParentType("father");
                     children.add(new SeedMapNode(fatherSeed));
                 }
-                if(matherSeed==null){
+                if (Objects.nonNull(matherSeed)) {
+                    matherSeed.setParentType("mather");
+                    children.add(new SeedMapNode(matherSeed));
+                }else {
                     matherSeed=new SeedMapDTO();
                     matherSeed.setSeedNum("");
                     matherSeed.setParentType("mather");
                     children.add(new SeedMapNode(matherSeed));
                 }
             }
-
-
         }
     }
 

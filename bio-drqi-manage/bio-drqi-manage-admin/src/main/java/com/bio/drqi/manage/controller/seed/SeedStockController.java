@@ -157,7 +157,7 @@ public class SeedStockController {
      * @param seedNum
      * @return
      */
-    @GetMapping("/findSeedMap")
+    @GetMapping("/queryChildSeed")
     @WebLog(desc = "种子库-查询某一个种子所有直系子代")
     public ResponseResult<List<String>> queryChildSeed(String seedNum){
         return ResponseResult.getSuccess(seedStoreService.queryChildSeed(seedNum));

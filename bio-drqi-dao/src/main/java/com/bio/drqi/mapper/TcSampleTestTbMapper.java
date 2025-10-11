@@ -50,7 +50,7 @@ public interface TcSampleTestTbMapper extends BaseMapper<TcSampleTestTb> {
 
     int updateTargetFlagBySampleApplyNumAndSampleCodeIn(@Param("targetFlag") String targetFlag, @Param("sampleApplyNum") String sampleApplyNum, @Param("sampleCodeList") Collection<String> sampleCodeList);
 
-    int updateCheckResultBySampleApplyNumSampleCodeNotIn(@Param("checkResult") String checkResult, @Param("sampleApplyNum") String sampleApplyNum, @Param("sampleCodeList") Collection<String> sampleCodeList);
+    int updateCheckResultBySampleApplyNumAndSampleCodeNotIn(@Param("checkResult") String checkResult, @Param("sampleApplyNum") String sampleApplyNum, @Param("sampleCodeList") Collection<String> sampleCodeList);
 }
 
 

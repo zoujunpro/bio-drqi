@@ -309,12 +309,12 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </update>
-    <update id="updateCheckResultBySampleApplyNumSampleCodeNotIn">
+    <update id="updateCheckResultBySampleApplyNumAndSampleCodeNotIn">
         update tc_sample_test_tb
         set check_result = #{checkResult,jdbcType=VARCHAR}
         where
         sample_apply_num = #{sampleApplyNum,jdbcType=VARCHAR}
-        sample_code not in
+        and  sample_code not in
         <foreach collection="sampleCodeList" item="item" open="(" close=")" separator=",">
             #{item,jdbcType=VARCHAR}
         </foreach>

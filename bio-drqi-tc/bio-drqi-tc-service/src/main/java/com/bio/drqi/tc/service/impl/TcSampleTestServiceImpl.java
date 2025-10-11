@@ -588,7 +588,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
         }
         tcSampleTestTbMapper.updateTargetFlagBySampleApplyNum(null,tcSampleTestUploadTargetResultTemplateReqDTO.getTaskNum());
         tcSampleTestTbMapper.updateTargetFlagBySampleApplyNumAndSampleCodeIn(BioDrQiContents.Y, tcSampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
-        tcSampleTestTbMapper.updateCheckResultBySampleApplyNumSampleCodeNotIn("舍弃",tcSampleTestUploadTargetResultTemplateReqDTO.getTaskNum(),sampleCodeList);
+        tcSampleTestTbMapper.updateCheckResultBySampleApplyNumAndSampleCodeNotIn("舍弃",tcSampleTestUploadTargetResultTemplateReqDTO.getTaskNum(),sampleCodeList);
     }
 
     private List<TcSampleTestBioInfoResultTb> synBioInfoResult(AtomicInteger executeNum, String sampleId, String runId, String applyNo, String sampleCode) {

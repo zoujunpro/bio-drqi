@@ -10,6 +10,7 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.domain.*;
@@ -32,6 +33,7 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -561,6 +563,32 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
             }
         });
         return targetPageInfo;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void uploadTargetResultTemplate(TcSampleTestUploadTargetResultTemplateReqDTO tcSampleTestUploadTargetResultTemplateReqDTO) {
+        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + tcSampleTestUploadTargetResultTemplateReqDTO.getExcelUrl();
+        try {
+            ossService.downloadPath(tempFilePath, tcSampleTestUploadTargetResultTemplateReqDTO.getExcelUrl());
+        } catch (Exception e) {
+            log.error("【TC取样结果标记】文件从oss下载失败", e);
+            throw new BusinessException("文件处理异常");
+        }
+        List<List<Object>> list = ExcelUtil.readExcel(tempFilePath);
+        List<String> sampleCodeList = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(list)) {
+            for (int i = 1; i < list.size(); i++) {
+                TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneBySampleApplyNumAndSampleCode(tcSampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), list.get(i).get(0).toString());
+                if (tcSampleTestTb == null) {
+                    throw new BusinessException("无此取样编号:" + list.get(i).get(0).toString());
+                }
+                sampleCodeList.add(tcSampleTestTb.getSampleCode());
+            }
+        }
+        tcSampleTestTbMapper.updateTargetFlagBySampleApplyNum(null,tcSampleTestUploadTargetResultTemplateReqDTO.getTaskNum());
+        tcSampleTestTbMapper.updateTargetFlagBySampleApplyNumAndSampleCodeIn(BioDrQiContents.Y, tcSampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
+        tcSampleTestTbMapper.updateCheckResultBySampleApplyNumSampleCodeNotIn("舍弃",tcSampleTestUploadTargetResultTemplateReqDTO.getTaskNum(),sampleCodeList);
     }
 
     private List<TcSampleTestBioInfoResultTb> synBioInfoResult(AtomicInteger executeNum, String sampleId, String runId, String applyNo, String sampleCode) {

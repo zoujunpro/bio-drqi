@@ -90,6 +90,8 @@ public class TcSampleTestApplyTb implements Serializable {
      */
     private String identifyPrimerExcelUrl;
 
+    private String targetFlag;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

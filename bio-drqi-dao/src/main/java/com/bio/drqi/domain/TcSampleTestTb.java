@@ -194,6 +194,11 @@ public class TcSampleTestTb implements Serializable {
 
     private String tcSampleCode;
 
+
+
+    private String targetFlag;
+
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

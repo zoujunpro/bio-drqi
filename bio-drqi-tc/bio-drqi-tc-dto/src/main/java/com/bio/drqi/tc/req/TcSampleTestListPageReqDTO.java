@@ -26,4 +26,6 @@ public class TcSampleTestListPageReqDTO extends PageDTO {
      * 取样类型 F首次取样   R重复取样
      */
     private String applyType;
+
+    private String targetFlag;
 }

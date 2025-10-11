@@ -294,4 +294,28 @@ public class TcSampleTestController {
     }
 
 
+    /**
+     * 大田取样检测-目标检测结果模板下载
+     */
+    @PostMapping("downTargetResultTemplate")
+    @WebLog(desc = "取样检测-目标检测结果模板下载")
+    public void downTargetResultTemplate(HttpServletResponse response) {
+        try {
+            ossService.downloadFile(response, "template", "目标取样检测结果模板V1.0.xlsx");
+        } catch (Exception e) {
+            throw new BusinessException("模板检测结果模板下载失败，请联系管理员检测模板配置");
+        }
+    }
+
+
+    /**
+     * 大田取样检测-目标检测结果模板上传
+     */
+    @PostMapping("uploadTargetResultTemplate")
+    @WebLog(desc = "取样检测-目标检测结果模板下载")
+    public ResponseResult<String> uploadTargetResultTemplate(@Validated @RequestBody TcSampleTestUploadTargetResultTemplateReqDTO tcSampleTestUploadTargetResultTemplateReqDTO) {
+        tcSampleTestService.uploadTargetResultTemplate(tcSampleTestUploadTargetResultTemplateReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
 }

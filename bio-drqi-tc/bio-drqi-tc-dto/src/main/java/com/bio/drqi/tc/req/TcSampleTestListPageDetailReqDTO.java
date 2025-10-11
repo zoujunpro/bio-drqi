@@ -40,4 +40,7 @@ public class TcSampleTestListPageDetailReqDTO extends PageDTO {
      * 品种编号
      */
     private String speciesCode;
+
+
+    private String targetFlag;
 }

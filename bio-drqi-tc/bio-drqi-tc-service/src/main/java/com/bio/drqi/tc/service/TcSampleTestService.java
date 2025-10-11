@@ -112,4 +112,6 @@ public interface TcSampleTestService {
     Integer bioInfoHead( String applyNo);
 
     PageInfo<TcSampleTestBioInfoPageRspDTO> bioInfoPage(TcSampleTestBioInfoPageReqDTO tcSampleTestBioInfoPageReqDTO);
+
+    void uploadTargetResultTemplate( TcSampleTestUploadTargetResultTemplateReqDTO tcSampleTestUploadTargetResultTemplateReqDTO);
 }

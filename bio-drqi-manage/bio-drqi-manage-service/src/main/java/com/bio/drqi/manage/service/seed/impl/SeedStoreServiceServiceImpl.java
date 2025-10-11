@@ -32,7 +32,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -187,21 +186,29 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
     @Override
     public SeedMapRspDTO findSeedMap(String seedNum) {
         SeedMapRspDTO seedMapRspDTO = new SeedMapRspDTO();
-        buildSeedMapRspDTO(seedNum, seedMapRspDTO);
+        Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+        buildSeedMapRspDTO(seedNum, seedMapRspDTO, cerBreedDictMap);
         return seedMapRspDTO;
     }
 
-    private void buildSeedMapRspDTO(String seedNum, SeedMapRspDTO seedMapRspDTO) {
+    private void buildSeedMapRspDTO(String seedNum, SeedMapRspDTO seedMapRspDTO, Map<String, String> cerBreedDictMap) {
         SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum);
         if (seedStockTb == null) {
-            throw new BusinessException("异常种子编号,库存中无此种子编号:"+seedNum);
+            throw new BusinessException("异常种子编号,库存中无此种子编号:" + seedNum);
         }
+        SeedMapRspDTO.SeedMapValueDTO currentSeedValue = new SeedMapRspDTO.SeedMapValueDTO();
+        currentSeedValue.setSeedNum(seedNum);
+        currentSeedValue.setVectorTaskCode(seedStockTb.getVectorTaskCode());
+        currentSeedValue.setGeneration(seedStockTb.getGeneration());
+        currentSeedValue.setBreedName(cerBreedDictMap.get(seedStockTb.getBreedCode()));
+
+
         seedMapRspDTO.buildMap(seedNum, seedStockTb.getFatherSeedNum(), seedStockTb.getMatherSeedNum());
-        if(StringUtils.isNotEmpty(seedStockTb.getMatherSeedNum())){
-            buildSeedMapRspDTO(seedStockTb.getFatherSeedNum(),seedMapRspDTO);
+        if (StringUtils.isNotEmpty(seedStockTb.getMatherSeedNum())) {
+            buildSeedMapRspDTO(seedStockTb.getFatherSeedNum(), seedMapRspDTO, cerBreedDictMap);
         }
-        if(StringUtils.isNotEmpty(seedStockTb.getMatherSeedNum())){
-            buildSeedMapRspDTO(seedStockTb.getMatherSeedNum(),seedMapRspDTO);
+        if (StringUtils.isNotEmpty(seedStockTb.getMatherSeedNum())) {
+            buildSeedMapRspDTO(seedStockTb.getMatherSeedNum(), seedMapRspDTO, cerBreedDictMap);
         }
 
     }

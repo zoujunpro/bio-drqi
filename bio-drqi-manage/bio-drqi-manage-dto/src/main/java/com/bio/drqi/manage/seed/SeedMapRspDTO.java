@@ -74,6 +74,17 @@ public class SeedMapRspDTO {
             }
         }
     }
+
+
+    @Data
+    public static class SeedMapValueDTO {
+        private String seedNum;
+        private String vectorTaskCode;
+        private String generation;
+        private String parentType;
+        private String breedName;
+    }
+
 }
 
 

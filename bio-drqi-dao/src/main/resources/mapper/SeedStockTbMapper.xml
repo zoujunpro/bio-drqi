@@ -204,6 +204,14 @@
         where
         father_seed_num = #{fatherSeedNum,jdbcType=VARCHAR}
     </select>
+    <update id="updatePlantCodeAndRemarksById">
+        update seed_stock_tb
+        set plant_code = #{plantCode,jdbcType=VARCHAR},
+        <if test="remarks != null and remarks!=''">
+            remarks    = #{remarks,jdbcType=VARCHAR}
+            </if>
+        where id = #{id,jdbcType=NUMERIC}
+    </update>
 
 
 </mapper>

@@ -10,6 +10,8 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.dto.project.*;
 import com.bio.drqi.mapper.*;
@@ -124,6 +126,181 @@ public class Clean20250721Controller {
 
     @Resource
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
+
+
+    @GetMapping("cleanSeedStockNew20251011")
+    @Transactional(rollbackFor = Exception.class)
+    @WebLog(desc = "cleanSeedStockNew20251011 种子库数据清洗")
+    public ResponseResult<String> cleanSeedStockNew20251011() {
+        List<Seed> seedList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\上线\\种子库数据（各团队更新）.xlsx", Seed.class);
+        for (Seed seed : seedList) {
+            log.info("清洗当前数据：seed" + JSONUtil.toJsonStr(seed));
+            SeedStockTb seedStockTb = seedStockTbMapper.selectById(seed.id);
+            if (seedStockTb == null) {
+                throw new BusinessException("数据异常，动了excel中ID");
+            }
+            //数据一致性校验
+            if (!seedStockTb.getSeedNum().equals(seed.seedNum)) {
+                throw new BusinessException("数据异常，动了excel中种子编号,数据库中种子编号：" + seedStockTb.getSeedNum());
+            }
+            //代次清洗，如果有代次，校验格式是否正确
+            if (StringUtils.isNotEmpty(seed.generation)) {
+                String generationNum = GenerationEnum.getGenerationNum(seed.getGeneration());
+                if (generationNum == null) {
+                    throw new BusinessException("代次填写错误");
+                }
+                seedStockTb.setGeneration(seed.getGeneration());
+            }
+            //上代种子编号清洗， 如果有母本种子编号 放入到母本种子编号中
+            if (StringUtils.isNotEmpty(seed.parentSeedNum)) {
+                SeedStockTb matherSeed = seedStockTbMapper.selectOneBySeedNum(seed.parentSeedNum);
+                if (matherSeed == null) {
+                    throw new BusinessException("母本种子编号错误");
+                }
+                seedStockTb.setMatherSeedNum(matherSeed.getSeedNum());
+            }
+            //父本种植编号清洗
+            if(StringUtils.isNotEmpty(seed.fatherSeedNum)){
+                SeedStockTb fatherSeed = seedStockTbMapper.selectOneBySeedNum(seed.fatherSeedNum);
+                if (fatherSeed == null) {
+                    throw new BusinessException("父本种子编号错误");
+                }
+                seedStockTb.setFatherSeedNum(fatherSeed.getSeedNum());
+            }
+
+            //新种植编号清洗，
+            if(StringUtils.isNotEmpty(seed.plantNumNew)){
+                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(seed.plantNumNew);
+                if(cerPlantDtlTb==null){
+                    throw new BusinessException("新的种植编号在库存中找不到");
+                }
+                if(StringUtils.isNotEmpty(seedStockTb.getPlantCode())){
+                    seedStockTb.setRemarks(StringUtils.isNotEmpty(seedStockTb.getRemarks()) ? seedStockTb.getRemarks() + "," + seedStockTb.getPlantCode() : seedStockTb.getPlantCode());
+                }
+                seedStockTb.setPlantCode(seed.plantNumNew);
+            }else
+
+            //旧种植编号判断，判断excel中种植编号是否存在，如果是真实存在，则放入种子编号中，原有的种植编号放入到备注
+            if (StringUtils.isNotEmpty(seed.getPlantNumOld())) {
+                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(seed.plantNumOld);
+                if (cerPlantDtlTb != null) {
+                    if (StringUtils.isNotEmpty(seedStockTb.getPlantCode())) {
+                        seedStockTb.setRemarks(StringUtils.isNotEmpty(seedStockTb.getRemarks()) ? seedStockTb.getRemarks() + "," + seedStockTb.getPlantCode() : seedStockTb.getPlantCode());
+                    }
+                    seedStockTb.setPlantCode(seed.plantNumOld);
+                }else {
+                    seedStockTb.setPlantCode(null);
+                }
+            } else {
+                //如果excel中种植编号不存在，校验当前库存中种植编号是否合法,不合法则放入到备注
+                if (StringUtils.isNotEmpty(seedStockTb.getPlantCode())) {
+                    CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(seedStockTb.getPlantCode());
+                    if (cerPlantDtlTb == null) {
+                        seedStockTb.setRemarks(StringUtils.isNotEmpty(seedStockTb.getRemarks()) ? seedStockTb.getPlantCode() + "," + seedStockTb.getPlantCode() : seedStockTb.getPlantCode());
+                        seedStockTb.setPlantCode(null);
+                    }
+                }
+
+            }
+            //根据当前的种植编号反查实施方案号
+            if (StringUtils.isNotEmpty(seedStockTb.getPlantCode())) {
+                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(seedStockTb.getPlantCode());
+                if(cerPlantDtlTb!=null){
+                    seedStockTb.setVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
+                    seedStockTb.setProjectCode(cerPlantDtlTb.getProjectCode());
+                    if (StringUtils.isNotEmpty(seed.projectCode)) {
+                        if (!cerPlantDtlTb.getProjectCode().equals(seed.projectCode)) {
+                            log.info(seed.projectCode+":"+cerPlantDtlTb.getProjectCode());
+                            throw new BusinessException("项目号和种植编号不匹配");
+                        }
+
+                    }
+                    if (StringUtils.isNotEmpty(seed.vectorTaskCode)) {
+                        if (!cerPlantDtlTb.getVectorTaskCode().equals(seed.vectorTaskCode)) {
+                            throw new BusinessException("实施方案号和种植编号不匹配");
+                        }
+                    }
+                }
+            } else {
+
+                //项目编号校验和清洗
+                if (StringUtils.isNotEmpty(seed.projectCode)) {
+                    CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(seed.projectCode);
+                    if (cerProjectTb == null) {
+                        throw new BusinessException("项目编号非法");
+                    }
+                    seedStockTb.setProjectCode(seed.projectCode);
+                }
+
+                //实施方案号清洗和校验
+                if (StringUtils.isNotEmpty(seed.vectorTaskCode)) {
+                    CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(seed.vectorTaskCode);
+                    if (cerVectorTaskTb == null) {
+                        throw new BusinessException("实施方案编号非法");
+                    }
+                    seedStockTb.setVectorTaskCode(seed.vectorTaskCode);
+                }
+            }
+
+            seedStockTbMapper.updateById(seedStockTb);
+
+        }
+
+        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectList(null);
+        log.info("种植编号清洗");
+        for (SeedStockTb seedStockTb : seedStockTbList) {
+            if (StringUtils.isNotEmpty(seedStockTb.getPlantCode())) {
+                if (cerPlantDtlTbMapper.selectOneByPlantCode(seedStockTb.getPlantCode()) == null) {
+                    if (StringUtils.isEmpty(seedStockTb.getRemarks())) {
+                        seedStockTbMapper.updatePlantCodeAndRemarksById(null, seedStockTb.getPlantCode(), seedStockTb.getId());
+                    } else {
+                        if (!seedStockTb.getRemarks().contains(seedStockTb.getPlantCode())) {
+                            seedStockTbMapper.updatePlantCodeAndRemarksById(null, seedStockTb.getRemarks() + "," + seedStockTb.getPlantCode(), seedStockTb.getId());
+                        }
+
+                    }
+                }
+            }
+        }
+        return ResponseResult.getSuccess("ok");
+
+    }
+
+    @Data
+    public static class Seed {
+        //  主键ID	种子编号	项目编号	世代		上代种子编号 母本种子编号	父本种子编号	种植编号（新）	种植编号（旧，会删除）	实施方案编号
+        @ExcelProperty("主键ID")
+        private String id;
+
+        @ExcelProperty("种子编号")
+        private String seedNum;
+
+        @ExcelProperty("项目编号")
+        private String projectCode;
+
+        @ExcelProperty("世代")
+        private String generation;
+
+        @ExcelProperty("上代种子编号")
+        private String parentSeedNum;
+
+        @ExcelProperty("母本种子编号")
+        private String matherSeedNum;
+
+        @ExcelProperty("父本种子编号")
+        private String fatherSeedNum;
+
+        @ExcelProperty("种植编号（新）")
+        private String plantNumNew;
+
+        @ExcelProperty("种植编号（旧，会删除）")
+        private String plantNumOld;
+
+        @ExcelProperty("实施方案编号")
+        private String vectorTaskCode;
+
+
+    }
 
 
     @GetMapping("cleanPlasmid")

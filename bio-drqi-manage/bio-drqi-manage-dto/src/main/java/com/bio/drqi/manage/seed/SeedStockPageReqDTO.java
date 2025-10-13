@@ -111,6 +111,9 @@ public class SeedStockPageReqDTO extends PageDTO {
     private String materialType;
 
 
+    private String projectCode;
+
+
     /**
      * Y代表非零库存
      */

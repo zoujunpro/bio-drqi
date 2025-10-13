@@ -145,7 +145,8 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
 
     private String getTransFormCode(String vectorTaskCode, String deliveryMethod,String infectDate) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-        List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllBySpeciesCodeAndDeliveryMethodAndCreateTime(cerVectorTaskTb.getSpeciesCode(),deliveryMethod,infectDate);
+        CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(cerVectorTaskTb.getSpeciesCode());
+        List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllByTransformCodeLike(cerSpeciesConf.getNumPrefix().substring(2) + deliveryMethod + infectDate.replace("-", "").substring(4));
         cerTransformTbList = cerTransformTbList.stream().filter(cerTransformTb -> cerTransformTb.getTransformCode().matches("^[A-Z]{3}[0-9]{6}$")).collect(Collectors.toList());
         String nextNumber = null;
         if (CollectionUtil.isEmpty(cerTransformTbList)) {
@@ -153,8 +154,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
         } else {
             nextNumber = StringUtils.padl(String.valueOf(Integer.parseInt(cerTransformTbList.get(0).getTransformCode().substring(7)) + 1), 2, '0');
         }
-        CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(cerVectorTaskTb.getSpeciesCode());
-        return cerSpeciesConf.getNumPrefix().substring(2) + cerVectorTaskTb.getDeliveryMethod() + infectDate.replace("-", "").substring(4) + nextNumber;
+        return cerSpeciesConf.getNumPrefix().substring(2) +deliveryMethod + infectDate.replace("-", "").substring(4) + nextNumber;
     }
 
 }

@@ -153,5 +153,12 @@
         </where>
         order by id desc
     </select>
+    <select id="selectAllByTransformCodeLike" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_transform_tb
+        where
+        transform_code like   CONCAT('%',#{transformCode,jdbcType=VARCHAR},'%')
+    </select>
 
 </mapper>

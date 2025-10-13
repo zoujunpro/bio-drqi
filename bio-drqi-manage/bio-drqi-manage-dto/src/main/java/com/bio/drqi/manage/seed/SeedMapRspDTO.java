@@ -19,13 +19,13 @@ public class SeedMapRspDTO {
     public void buildMap(SeedMapDTO currentSeed, SeedMapDTO fatherSeed, SeedMapDTO matherSeed) {
         if (rootMap.getName() == null) {
             rootMap.seedNode(currentSeed);
-            rootMap.buildChildren(currentSeed,fatherSeed, matherSeed);
+            rootMap.buildChildren(fatherSeed, matherSeed);
         } else {
             SeedMapNode currentNode = findCurrentNode(currentSeed, rootMap);
             if (currentNode == null) {
                 throw new BusinessException("构建图谱失败，失败种子编号：" + currentSeed.seedNum);
             } else {
-                currentNode.buildChildren(currentSeed,fatherSeed, matherSeed);
+                currentNode.buildChildren(fatherSeed, matherSeed);
             }
         }
 
@@ -71,7 +71,7 @@ public class SeedMapRspDTO {
             this.value = JSONUtil.toJsonStr(seedMapDTO);
         }
 
-        public void buildChildren(SeedMapDTO currentSeed ,SeedMapDTO fatherSeed, SeedMapDTO matherSeed) {
+        public void buildChildren(SeedMapDTO fatherSeed, SeedMapDTO matherSeed) {
             //自交只有一个亲本
             if (Objects.nonNull(fatherSeed) && Objects.nonNull(matherSeed) && fatherSeed.seedNum.equals(matherSeed.seedNum)) {
                 fatherSeed.setParentType("parent");

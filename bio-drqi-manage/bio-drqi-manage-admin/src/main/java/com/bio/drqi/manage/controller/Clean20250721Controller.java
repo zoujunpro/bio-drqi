@@ -128,6 +128,75 @@ public class Clean20250721Controller {
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
 
 
+
+    @GetMapping("cleanSeedStockNew20251012")
+    @Transactional(rollbackFor = Exception.class)
+    @WebLog(desc = "cleanSeedStockNew20251011 种子库数据清洗")
+    public ResponseResult<String> cleanSeedStockNew20251012() {
+        List<Seed> seedList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\上线\\种子库数据（各团队更新）.xlsx", Seed.class);
+        for (Seed seed : seedList) {
+            log.info("清洗当前数据：seed" + JSONUtil.toJsonStr(seed));
+            SeedStockTb seedStockTb = seedStockTbMapper.selectById(seed.id);
+            //新种植编号清洗，
+            if(StringUtils.isNotEmpty(seed.plantNumNew)){
+                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(seed.plantNumNew);
+                if(cerPlantDtlTb==null){
+                    throw new BusinessException("新的种植编号在库存中找不到");
+                }
+                if(StringUtils.isNotEmpty(seedStockTb.getPlantCode())){
+                    seedStockTb.setRemarks(StringUtils.isNotEmpty(seedStockTb.getRemarks()) ? seedStockTb.getRemarks() + "," + seedStockTb.getPlantCode() : seedStockTb.getPlantCode());
+                }
+                seedStockTb.setPlantCode(seed.plantNumNew);
+            }else
+                //旧种植编号判断，判断excel中种植编号是否存在，如果是真实存在，则放入种子编号中，原有的种植编号放入到备注
+                if (StringUtils.isNotEmpty(seed.getPlantNumOld())) {
+                    CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(seed.plantNumOld);
+                    if (cerPlantDtlTb != null) {
+                        if (StringUtils.isNotEmpty(seedStockTb.getPlantCode())) {
+                            seedStockTb.setRemarks(StringUtils.isNotEmpty(seedStockTb.getRemarks()) ? seedStockTb.getRemarks() + "," + seedStockTb.getPlantCode() : seedStockTb.getPlantCode());
+                        }
+                        seedStockTb.setPlantCode(seed.plantNumOld);
+                    }else {
+                        seedStockTb.setPlantCode(null);
+                    }
+                } else {
+                    //如果excel中种植编号不存在，校验当前库存中种植编号是否合法,不合法则放入到备注
+                    if (StringUtils.isNotEmpty(seedStockTb.getPlantCode())) {
+                        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(seedStockTb.getPlantCode());
+                        if (cerPlantDtlTb == null) {
+                            seedStockTb.setRemarks(StringUtils.isNotEmpty(seedStockTb.getRemarks()) ? seedStockTb.getPlantCode() + "," + seedStockTb.getPlantCode() : seedStockTb.getPlantCode());
+                            seedStockTb.setPlantCode(null);
+                        }
+                    }
+
+                }
+
+            seedStockTbMapper.updateById(seedStockTb);
+
+        }
+
+        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectList(null);
+        log.info("种植编号清洗");
+        for (SeedStockTb seedStockTb : seedStockTbList) {
+            if (StringUtils.isNotEmpty(seedStockTb.getPlantCode())) {
+                if (cerPlantDtlTbMapper.selectOneByPlantCode(seedStockTb.getPlantCode()) == null) {
+                    if (StringUtils.isEmpty(seedStockTb.getRemarks())) {
+                        seedStockTbMapper.updatePlantCodeAndRemarksById(null, seedStockTb.getPlantCode(), seedStockTb.getId());
+                    } else {
+                        if (!seedStockTb.getRemarks().contains(seedStockTb.getPlantCode())) {
+                            seedStockTbMapper.updatePlantCodeAndRemarksById(null, seedStockTb.getRemarks() + "," + seedStockTb.getPlantCode(), seedStockTb.getId());
+                        }
+
+                    }
+                }
+            }
+        }
+        return ResponseResult.getSuccess("ok");
+
+    }
+
+
+
     @GetMapping("cleanSeedStockNew20251011")
     @Transactional(rollbackFor = Exception.class)
     @WebLog(desc = "cleanSeedStockNew20251011 种子库数据清洗")

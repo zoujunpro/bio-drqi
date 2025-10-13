@@ -24,6 +24,10 @@ public class NewSampleTestDTO {
      */
     private boolean cloneFlag;
 
+
+
+    private String cancelTaskSampleList;
+
     /**
      * 首次取样申请
      */

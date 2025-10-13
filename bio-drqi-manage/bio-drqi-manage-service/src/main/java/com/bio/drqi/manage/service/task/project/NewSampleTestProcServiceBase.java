@@ -94,8 +94,8 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 if (CollectionUtil.isNotEmpty(list)) {
                     throw new BusinessException("克隆苗数量必填");
                 }
-                if( newSampleTestDTO.getRepeatSampleApplyList().stream().filter(repeatSampleApply -> repeatSampleApply.getSampleCode().contains("-")).collect(Collectors.toList()).size()>0){
-                throw new BusinessException("不能基于克隆苗进行二次克隆苗取样");
+                if (newSampleTestDTO.getRepeatSampleApplyList().stream().filter(repeatSampleApply -> repeatSampleApply.getSampleCode().contains("-")).collect(Collectors.toList()).size() > 0) {
+                    throw new BusinessException("不能基于克隆苗进行二次克隆苗取样");
                 }
 
             }
@@ -152,6 +152,12 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
 
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
+        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
+        if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
+            NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
+            newSampleTestDTO.setCancelTaskSampleList(JSONUtil.toJsonStr(cerSampleTestTbList));
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
+        }
         cerSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());

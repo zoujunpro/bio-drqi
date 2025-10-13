@@ -203,7 +203,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
 
         seedMapRspDTO.buildMap(buildSeedMapDTO(seedNum, cerBreedDictMap), buildSeedMapDTO(seedStockTb.getFatherSeedNum(), cerBreedDictMap), buildSeedMapDTO(seedStockTb.getMatherSeedNum(), cerBreedDictMap));
-        if (StringUtils.isNotEmpty(seedStockTb.getMatherSeedNum())) {
+        if (StringUtils.isNotEmpty(seedStockTb.getFatherSeedNum())) {
             buildSeedMapRspDTO(seedStockTb.getFatherSeedNum(), seedMapRspDTO, cerBreedDictMap);
         }
         if (StringUtils.isNotEmpty(seedStockTb.getMatherSeedNum())) {

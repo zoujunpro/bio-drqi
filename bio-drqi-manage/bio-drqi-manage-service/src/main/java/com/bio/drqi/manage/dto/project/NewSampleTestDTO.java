@@ -27,7 +27,7 @@ public class NewSampleTestDTO {
 
 
 
-    private Object cancelTaskSampleList;
+    private String cancelTaskSampleList;
 
     /**
      * 首次取样申请

@@ -13,6 +13,8 @@ import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
 import com.bio.drqi.manage.sample.req.LayoutConfirmReqDTO;
 import com.bio.drqi.manage.service.project.SampleTestService;
 import com.bio.drqi.mapper.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -154,8 +156,11 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
         List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
         if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
+            GsonBuilder builder = new GsonBuilder();
+            builder.serializeNulls(); // 启用序列化null值
+            Gson gson = builder.create();
             NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
-            newSampleTestDTO.setCancelTaskSampleList(cerSampleTestTbList);
+            newSampleTestDTO.setCancelTaskSampleList(gson.toJson(cerSampleTestTbList));
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
         }
         cerSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());

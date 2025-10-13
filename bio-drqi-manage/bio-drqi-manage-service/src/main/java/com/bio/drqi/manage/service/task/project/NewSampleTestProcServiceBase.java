@@ -155,7 +155,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
         if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
             NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
-            newSampleTestDTO.setCancelTaskSampleList(JSONUtil.toJsonStr(cerSampleTestTbList));
+            newSampleTestDTO.setCancelTaskSampleList(cerSampleTestTbList);
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
         }
         cerSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());

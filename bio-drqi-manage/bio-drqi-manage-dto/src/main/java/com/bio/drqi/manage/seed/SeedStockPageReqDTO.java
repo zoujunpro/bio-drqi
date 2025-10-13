@@ -119,6 +119,12 @@ public class SeedStockPageReqDTO extends PageDTO {
      */
     private String filterNullFlag;
 
+
+    /**
+     * 备注
+     */
+    private String remarks;
+
     @Data
     @Valid
     public static  class  Order{

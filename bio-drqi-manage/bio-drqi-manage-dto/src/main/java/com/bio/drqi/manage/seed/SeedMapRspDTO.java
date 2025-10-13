@@ -33,7 +33,7 @@ public class SeedMapRspDTO {
 
 
     private SeedMapNode findCurrentNode(SeedMapDTO seedMapDTO, SeedMapNode seedMapNode) {
-        if (seedMapDTO.seedNum.equals(seedMapNode.getName())) {
+        if (StringUtils.isNotEmpty(seedMapDTO.seedNum) && StringUtils.isNotEmpty(seedMapNode.name) && seedMapDTO.seedNum.equals(seedMapNode.getName())) {
             return seedMapNode;
         } else {
             if (seedMapNode.getChildren() != null) {
@@ -80,8 +80,8 @@ public class SeedMapRspDTO {
                 if (Objects.nonNull(fatherSeed)) {
                     fatherSeed.setParentType("father");
                     children.add(new SeedMapNode(fatherSeed));
-                }else {
-                    fatherSeed=new SeedMapDTO();
+                } else {
+                    fatherSeed = new SeedMapDTO();
                     fatherSeed.setSeedNum("");
                     fatherSeed.setParentType("father");
                     children.add(new SeedMapNode(fatherSeed));
@@ -89,8 +89,8 @@ public class SeedMapRspDTO {
                 if (Objects.nonNull(matherSeed)) {
                     matherSeed.setParentType("mather");
                     children.add(new SeedMapNode(matherSeed));
-                }else {
-                    matherSeed=new SeedMapDTO();
+                } else {
+                    matherSeed = new SeedMapDTO();
                     matherSeed.setSeedNum("");
                     matherSeed.setParentType("mather");
                     children.add(new SeedMapNode(matherSeed));

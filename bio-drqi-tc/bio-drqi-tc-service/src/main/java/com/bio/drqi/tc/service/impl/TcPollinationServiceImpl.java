@@ -168,6 +168,8 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         Map<String, List<TcSampleTestTb>> reginTcSampleTestTbListMap = tcSampleTestTbMapper.selectAllByExperimentNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum()).stream().collect(Collectors.groupingBy(TcSampleTestTb::getRegionNum));
         //循环选中的授粉数据
         for (TcPollinationCreatePollinationExcelReqDTO.Content content : tcPollinationCreatePollinationExcelReqDTO.getContentList()) {
+            //一定要清空
+            currentTcPollinationSingleNumTbList.clear();
             TcExperimentDesignTb tcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum(), content.getRegionNum(), content.getSeedNum());
             if (tcExperimentDesignTb == null) {
                 throw new BusinessException("数据异常，找不到此试验设计种子信息 试验：" + tcPollinationCreatePollinationExcelReqDTO.getExperimentNum() + "种子号：" + content.getSeedNum() + "区域：" + content.getRegionNum());
@@ -236,6 +238,11 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     }
                 }
             }
+
+            //判断是否有单株编号生成
+            if (CollectionUtil.isNotEmpty(currentTcPollinationSingleNumTbList)) {
+                tcPollinationSingleNumTbMapper.insertBatch(currentTcPollinationSingleNumTbList);
+            }
         }
         if (CollectionUtil.isNotEmpty(fatherList)) {
             for (int i = 0; i < fatherList.size(); i++) {
@@ -255,11 +262,6 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     matherList.add(fatherList.get(i));
                 }
             }
-        }
-        //判断是否有单株编号生成
-        if (CollectionUtil.isNotEmpty(currentTcPollinationSingleNumTbList)) {
-            tcPollinationSingleNumTbMapper.insertBatch(currentTcPollinationSingleNumTbList);
-            tcExperimentTbMapper.updateById(tcExperimentTb);
         }
         return matherList;
     }

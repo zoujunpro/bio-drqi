@@ -72,4 +72,12 @@
         AND region_num = #{regionNum,jdbcType=VARCHAR}
         order by id desc
     </select>
+    <select id="selectAllByExperimentNumOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_pollination_single_num_tb
+        where
+        experiment_num = #{experimentNum,jdbcType=VARCHAR}
+        order by id desc
+    </select>
 </mapper>

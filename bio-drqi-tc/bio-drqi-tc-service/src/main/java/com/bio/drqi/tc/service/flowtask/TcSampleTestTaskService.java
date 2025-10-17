@@ -7,10 +7,7 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
-import com.bio.drqi.domain.BioTaskDtlTb;
-import com.bio.drqi.domain.TcExperimentTb;
-import com.bio.drqi.domain.TcSampleTestApplyTb;
-import com.bio.drqi.domain.TcSampleTestTb;
+import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.enums.SampleTestTypeEnum;
@@ -38,6 +35,9 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
 
     @Resource
     private TcSampleLayoutTbMapper tcSampleLayoutTbMapper;
+
+    @Resource
+    private TcPollinationSingleNumTbMapper tcPollinationSingleNumTbMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -91,14 +91,17 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         List<TcSampleTestTb> batchList = new ArrayList<TcSampleTestTb>();
         //首次取样
         if (CollectionUtil.isNotEmpty(tcSampleTestTaskDTO.getFirstSampleApplyList())) {
-            Map<String, Integer> reginofMaxSampleCodeMap = queryReginOfSampleCode(experimentNum);
+            //每一个小区的最大的大田取样编号后缀
+            Map<String, Integer> reginofMaxSampleCodeNumberMap = queryReginOfMaxSampleCodeNumber(experimentNum);
             TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(experimentNum);
-            Integer nextSampleNumber = tcExperimentTb.getNextSampleNumber();
+            //当前数据库中某一个试验方案取样编号后缀最大值
+            Integer maxSampleNumber = tcSampleTestTbMapper.selectAllByExperimentNum(experimentNum).stream().map(tcSampleTestTb -> Integer.valueOf(tcSampleTestTb.getSampleCode().substring(3))).max(Integer::compare).get();
             for (int i = 0; i < tcSampleTestTaskDTO.getFirstSampleApplyList().size(); i++) {
                 TcSampleTestTaskDTO.FirstSampleApply firstSampleApply = tcSampleTestTaskDTO.getFirstSampleApplyList().get(i);
                 for (int j = 1; j <= firstSampleApply.getSampleNum(); j++) {
-                    Integer nextTcSampleCodeNumber = reginofMaxSampleCodeMap.get(firstSampleApply.getRegionNum()) == null ? 1 : reginofMaxSampleCodeMap.get(firstSampleApply.getRegionNum()) + 1;
-                    reginofMaxSampleCodeMap.put(firstSampleApply.getRegionNum(), nextTcSampleCodeNumber);
+                    Integer nextTcSampleCodeNumber = reginofMaxSampleCodeNumberMap.get(firstSampleApply.getRegionNum()) == null ? 1 : reginofMaxSampleCodeNumberMap.get(firstSampleApply.getRegionNum()) + 1;
+                    maxSampleNumber=maxSampleNumber==null?1:maxSampleNumber+1;
+                    reginofMaxSampleCodeNumberMap.put(firstSampleApply.getRegionNum(), nextTcSampleCodeNumber);
                     TcSampleTestTb tcSampleTestTb = new TcSampleTestTb();
                     tcSampleTestTb.setExperimentNum(tcSampleTestApplyTb.getExperimentNum());
                     tcSampleTestTb.setRegionNum(firstSampleApply.getRegionNum());
@@ -110,7 +113,7 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                     tcSampleTestTb.setTargetCharacter(firstSampleApply.getTargetCharacter());
                     tcSampleTestTb.setGenerationCode(firstSampleApply.getGenerationCode());
                     tcSampleTestTb.setTcGene(firstSampleApply.getTcGene());
-                    tcSampleTestTb.setSampleCode(tcExperimentTb.getSampleCodePrefix() + nextSampleNumber);
+                    tcSampleTestTb.setSampleCode(tcExperimentTb.getSampleCodePrefix() + maxSampleNumber);
                     tcSampleTestTb.setSampleTime(firstSampleApply.getSampleTime());
                     tcSampleTestTb.setSampleApplyNum(tcSampleTestApplyTb.getSampleApplyNum());
                     tcSampleTestTb.setTaskNum(tcSampleTestApplyTb.getTaskNum());
@@ -118,14 +121,9 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                     tcSampleTestTb.setUniqueCode(tcSampleTestTb.getSampleCode());
                     tcSampleTestTb.setTcSampleCode(firstSampleApply.getRegionNum() + StringUtils.padl(nextTcSampleCodeNumber.toString(), 3, '0'));
                     batchList.add(tcSampleTestTb);
-
-                    //算出下次取样编号
-                    nextSampleNumber = nextSampleNumber + 1;
                 }
-
             }
-            tcExperimentTb.setNextSampleNumber(nextSampleNumber);
-            tcExperimentTbMapper.updateById(tcExperimentTb);
+
         }
         //重复取样
         if (CollectionUtil.isNotEmpty(tcSampleTestTaskDTO.getRepeatSampleApplyList())) {
@@ -157,16 +155,34 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         tcSampleTestTbMapper.insertBatch(batchList);
     }
 
-    private Map<String, Integer> queryReginOfSampleCode(String experimentNum) {
-        Map<String, Integer> reginofMaxSampleCodeMap = new HashMap<>();
+    private Map<String, Integer> queryReginOfMaxSampleCodeNumber(String experimentNum) {
+        Map<String, Integer> reginofMaxSampleCodeNumberMap = new HashMap<>();
+        Map<String,List<String>> reginofMaxSampleCodeListMap=new HashMap<>();
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllByExperimentNum(experimentNum);
+        List<TcPollinationSingleNumTb> tcPollinationSingleNumTbList = tcPollinationSingleNumTbMapper.selectAllByExperimentNumOrderByIdDesc(experimentNum);
         if (CollectionUtil.isNotEmpty(tcSampleTestTbList)) {
-            Map<String, List<TcSampleTestTb>> mapList = tcSampleTestTbList.stream().collect(Collectors.groupingBy(TcSampleTestTb::getRegionNum));
-            mapList.forEach((reginNum, sampletestList) -> {
-                reginofMaxSampleCodeMap.put(reginNum, sampletestList.stream().map(tcSampleTestTb -> Integer.valueOf(tcSampleTestTb.getTcSampleCode().substring(reginNum.length()))).max(Integer::compare).get());
+            tcSampleTestTbList.forEach(tcSampleTestTb -> {
+                if(reginofMaxSampleCodeListMap.get(tcSampleTestTb.getRegionNum())==null){
+                    reginofMaxSampleCodeListMap.put(tcSampleTestTb.getRegionNum(),Arrays.asList(tcSampleTestTb.getTcSampleCode()));
+                }else {
+                    reginofMaxSampleCodeListMap.get(tcSampleTestTb.getRegionNum()).add(tcSampleTestTb.getTcSampleCode());
+                }
             });
         }
-        return reginofMaxSampleCodeMap;
+        if (CollectionUtil.isNotEmpty(tcPollinationSingleNumTbList)) {
+            tcPollinationSingleNumTbList.forEach(tcPollinationSingleNumTb -> {
+                if(reginofMaxSampleCodeListMap.get(tcPollinationSingleNumTb.getRegionNum())==null){
+                    reginofMaxSampleCodeListMap.put(tcPollinationSingleNumTb.getRegionNum(),Arrays.asList(tcPollinationSingleNumTb.getTcSingleNumber()));
+                }else {
+                    reginofMaxSampleCodeListMap.get(tcPollinationSingleNumTb.getRegionNum()).add(tcPollinationSingleNumTb.getTcSingleNumber());
+                }
+            });
+
+        }
+        reginofMaxSampleCodeListMap.forEach((reginNum, tcSampleCodeList) -> {
+            reginofMaxSampleCodeNumberMap.put(reginNum, tcSampleCodeList.stream().distinct().map(tcSampleCode -> Integer.valueOf(tcSampleCode.substring(reginNum.length()))).max(Integer::compare).get());
+        });
+        return reginofMaxSampleCodeNumberMap;
     }
 
     @Override

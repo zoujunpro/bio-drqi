@@ -43,11 +43,6 @@ public class TcPollinationSingleNumTb implements Serializable {
     private String regionNum;
 
     /**
-     * 单株编号
-     */
-    private String singleNumber;
-
-    /**
      * 创建时间
      */
     private Date createTime;

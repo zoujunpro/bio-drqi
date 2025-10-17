@@ -96,6 +96,35 @@ public class BmsTestController {
     @Resource
     private BioPrintLabelInfoTbMapper bioPrintLabelInfoTbMapper;
 
+    @GetMapping("/cleanTianJinStock")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanTianJinStock() {
+        List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(BmsProductStockTb.builder().unitCode("tianjin").build());
+        for (BmsProductStockTb bmsProductStockTb : bmsProductStockTbList) {
+            log.info("修正数据："+JSONUtil.toJsonStr(bmsProductStockTb));
+            List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectAllByUniqueCode(bmsProductStockTb.getUniqueCode());
+            Integer outNum = 0;
+            int intNum=0;
+            if (CollectionUtil.isNotEmpty(bmsProductStockOutLogList)) {
+                for (BmsProductStockOutLog bmsProductStockOutLog : bmsProductStockOutLogList) {
+                    outNum = outNum + bmsProductStockOutLog.getOutNumber();
+                }
+            }
+
+            List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectAllByUniqueCode(bmsProductStockTb.getUniqueCode());
+            if(CollectionUtil.isNotEmpty(bmsProductStockInLogList)){
+                for (BmsProductStockInLog bmsProductStockInLog:bmsProductStockInLogList){
+                    intNum=intNum+bmsProductStockInLog.getStoreNumber();
+                }
+            }
+            bmsProductStockTb.setTotalStoreNumber(intNum);
+            bmsProductStockTb.setTotalOutNumber(outNum);
+            bmsProductStockTbMapper.updateById(bmsProductStockTb);
+        }
+        return ResponseResult.getSuccess("ok");
+
+    }
+
 
     @GetMapping("/synStockLocationSave")
     public ResponseResult<String> synKdStockLocation() {
@@ -154,7 +183,6 @@ public class BmsTestController {
         kdTaskService.synMoveStockTask("2025-07-01", "2025-09-16");
         return ResponseResult.getSuccess("OK");
     }
-
 
 
     @GetMapping("/testKd")

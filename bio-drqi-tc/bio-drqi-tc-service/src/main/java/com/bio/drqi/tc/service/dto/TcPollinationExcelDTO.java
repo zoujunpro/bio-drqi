@@ -141,22 +141,20 @@ public class TcPollinationExcelDTO {
     private String remark;
 
 
-    public static TcPollinationExcelDTO ofMather(TcExperimentDesignTb tcExperimentDesignTb, String sample,String breedName) {
+    public static TcPollinationExcelDTO ofMather(TcExperimentDesignTb tcExperimentDesignTb, String sampleCode,String tcSampleCode,String breedName) {
         TcPollinationExcelDTO tcPollinationExcelDTO = new TcPollinationExcelDTO();
         tcPollinationExcelDTO.setMotherRegionNum(tcExperimentDesignTb.getRegionNum());
         tcPollinationExcelDTO.setMotherSeedNum(tcExperimentDesignTb.getSeedNum());
-        tcPollinationExcelDTO.setMotherSampleCode(sample);
+        tcPollinationExcelDTO.setMotherSampleCode(sampleCode);
         tcPollinationExcelDTO.setMotherBreedName(breedName);
         tcPollinationExcelDTO.setMotherVectorTaskCode(tcExperimentDesignTb.getVectorTaskCode());
         tcPollinationExcelDTO.setMotherGenerationName(tcExperimentDesignTb.getGenerationCode());
         tcPollinationExcelDTO.setMotherTcGene(tcExperimentDesignTb.getTcGene());
-        if(StringUtils.isNotEmpty(sample)){
-            tcPollinationExcelDTO.setMotherTcSampleCode(tcExperimentDesignTb.getRegionNum()+sample.substring(3));
-        }
+        tcPollinationExcelDTO.setMotherTcSampleCode(tcSampleCode);
         return tcPollinationExcelDTO;
     }
 
-    public static TcPollinationExcelDTO ofFather(TcExperimentDesignTb tcExperimentDesignTb, String sample,String breedName) {
+    public static TcPollinationExcelDTO ofFather(TcExperimentDesignTb tcExperimentDesignTb, String sampleCode,String tcSampleCode,String breedName) {
         TcPollinationExcelDTO tcPollinationExcelDTO = new TcPollinationExcelDTO();
         tcPollinationExcelDTO.setFatherRegionNum(tcExperimentDesignTb.getRegionNum());
         tcPollinationExcelDTO.setFatherSeedNum(tcExperimentDesignTb.getSeedNum());
@@ -165,10 +163,9 @@ public class TcPollinationExcelDTO {
         tcPollinationExcelDTO.setFatherVectorTaskCode(tcExperimentDesignTb.getVectorTaskCode());
         tcPollinationExcelDTO.setFatherGenerationName(tcExperimentDesignTb.getGenerationCode());
         tcPollinationExcelDTO.setFatherTcGene(tcExperimentDesignTb.getTcGene());
-        tcPollinationExcelDTO.setFatherSampleCode(sample);
-        if(StringUtils.isNotEmpty(sample)){
-            tcPollinationExcelDTO.setFatherTcSampleCode(tcExperimentDesignTb.getRegionNum()+sample.substring(3));
-        }
+        tcPollinationExcelDTO.setFatherSampleCode(sampleCode);
+        tcPollinationExcelDTO.setFatherTcSampleCode(tcSampleCode);
+
         return tcPollinationExcelDTO;
     }
 

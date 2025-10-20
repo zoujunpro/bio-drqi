@@ -204,7 +204,10 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                 if (reginTcSampleTestTbListMap.get(content.getRegionNum()) != null) {
                     tcSingleNumberList.addAll(reginTcSampleTestTbListMap.get(content.getRegionNum()).stream().map(TcSampleTestTb::getTcSampleCode).collect(Collectors.toList()));
                 }
-                Integer maxNumber = tcSingleNumberList.stream().distinct().map(tcSingleNumber -> Integer.valueOf(tcSingleNumber.substring(content.getRegionNum().length()))).max(Integer::compare).get();
+                Integer maxNumber = null;
+                if (CollectionUtil.isNotEmpty(tcSampleCodeList)) {
+                    maxNumber = tcSingleNumberList.stream().distinct().map(tcSingleNumber -> Integer.valueOf(tcSingleNumber.substring(content.getRegionNum().length()))).max(Integer::compare).get();
+                }
 
                 for (int i = 0; i < content.getSinglePlantNumber(); i++) {
                     String tcSampleCode = null;

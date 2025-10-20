@@ -26,6 +26,11 @@ public class LayoutUtil {
             listMap.forEach((vectorTaskCode, vectorTaskCerSampleTestTbList) -> {
                 //找到最新的一个孔板,并插入新行
                 List<List<SampleUnitDTO>> lastNinetySixList = ninetySixList.get(ninetySixList.size() - 1);
+                //如果最新的一个孔板已经满盘，需要新添加一个孔板
+                if (lastNinetySixList.size() == 8) {
+                    ninetySixList.add(new ArrayList<List<SampleUnitDTO>>());
+                    lastNinetySixList = ninetySixList.get(ninetySixList.size() - 1);
+                }
                 lastNinetySixList.add(new ArrayList<SampleUnitDTO>());
                 vectorTaskCerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId)).forEach(cerSampleTestTb -> {
                     fillSampleToNinetySixList(ninetySixList, cerSampleTestTb.getVectorTaskCode(), cerSampleTestTb.getTransformCode(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getIdentifyPrimer());
@@ -42,7 +47,35 @@ public class LayoutUtil {
         List<List<SampleUnitDTO>> lastNinetySixList = ninetySixList.get(ninetySixList.size() - 1);
         //找到最新的一行
         List<SampleUnitDTO> lastRow = lastNinetySixList.get(lastNinetySixList.size() - 1);
-        if (lastRow.size() < 12&&lastNinetySixList.size()<8) {
+        //如果没有满盘
+        if (lastNinetySixList.size() < 8) {
+            //没有满行
+            if (lastRow.size() < 12) {
+                lastRow.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
+            } else {
+                //满行需要新添加一行
+                List<SampleUnitDTO> sampleUnitDTOList = new ArrayList<>();
+                sampleUnitDTOList.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
+                lastNinetySixList.add(sampleUnitDTOList);
+            }
+            //最后一行
+        } else if (lastNinetySixList.size() == 8) {
+            //没有满盘（最后一行8列）
+            if (lastRow.size() < 8) {
+                lastRow.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
+            } else {
+                //满盘需要新添加一孔板
+                List layout = new ArrayList<List<SampleUnitDTO>>();
+                layout.add(new ArrayList<SampleUnitDTO>());
+                ninetySixList.add(layout);
+                //再次进行数据插入
+                fillSampleToNinetySixList(ninetySixList, vectorTaskCode, transFormCode, sampleCode, identifyPrimer);
+
+            }
+
+        }
+
+/*        if (lastRow.size() < 12&&lastNinetySixList.size()<8) {
             lastRow.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
         } else if(lastRow.size() < 8&&lastNinetySixList.size()==8){
             lastRow.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
@@ -57,10 +90,10 @@ public class LayoutUtil {
                 List layout = new ArrayList<List<SampleUnitDTO>>();
                 layout.add(new ArrayList<SampleUnitDTO>());
                 ninetySixList.add(layout);
-                //再次进行数据插入
+                 //                //再次进行数据插入
                 fillSampleToNinetySixList(ninetySixList, vectorTaskCode, transFormCode, sampleCode, identifyPrimer);
             }
-        }
+        }*/
     }
 
 

@@ -97,24 +97,27 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
             }
             //校验3:父本单珠编号校验
             if (StringUtils.isNotEmpty(tcPollinationExcelDTO.getFatherSampleCode())) {
-                TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneBySampleApplyNumAndSampleCode(tcPollinationTaskDTO.getSampleApplyNum(), tcPollinationExcelDTO.getFatherSampleCode());
-                TcPollinationSingleNumTb tcPollinationSingleNumTb = tcPollinationSingleNumTbMapper.selectOneBySingleNumber(tcPollinationExcelDTO.getFatherSampleCode());
+                TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneBySampleApplyNumAndTcSampleCode(tcPollinationTaskDTO.getSampleApplyNum(), tcPollinationExcelDTO.getFatherTcSampleCode());
+                TcPollinationSingleNumTb tcPollinationSingleNumTb = tcPollinationSingleNumTbMapper.selectOneByExperimentNumAndTcSingleNumber(tcPollinationTaskDTO.getExperimentNum(),tcPollinationExcelDTO.getFatherTcSampleCode());
                 if (tcSampleTestTb != null) {
                     if (!StringUtils.equals(tcSampleTestTb.getSeedNum(), tcPollinationExcelDTO.getFatherSeedNum())) {
-                        throw new BusinessException("单株编号为：" + tcPollinationExcelDTO.getFatherSeedNum() + "的父本对应的种子编应为：" + tcSampleTestTb.getSeedNum());
+                        throw new BusinessException("大田单珠编号为：" + tcPollinationExcelDTO.getFatherTcSampleCode() + "的父本对应的种子编应为：" + tcSampleTestTb.getSeedNum());
                     }
                     if (!StringUtils.equals(tcSampleTestTb.getRegionNum(), tcPollinationExcelDTO.getFatherRegionNum())) {
-                        throw new BusinessException("单株编号为：" + tcPollinationExcelDTO.getFatherSeedNum() + "的父本对应的小区编应为：" + tcSampleTestTb.getRegionNum());
+                        throw new BusinessException("大田单珠编编号为：" + tcPollinationExcelDTO.getFatherTcSampleCode() + "的父本对应的小区编应为：" + tcSampleTestTb.getRegionNum());
+                    }
+                    if (!StringUtils.equals(tcSampleTestTb.getSampleCode(), tcPollinationExcelDTO.getFatherSampleCode())) {
+                        throw new BusinessException("大田单珠编号为：" + tcPollinationExcelDTO.getFatherTcSampleCode() + "的父本对应的取样编应为：" + tcSampleTestTb.getSampleCode());
                     }
                 } else if (tcPollinationSingleNumTb != null) {
                     if (!StringUtils.equals(tcPollinationSingleNumTb.getSeedNum(), tcPollinationExcelDTO.getFatherSeedNum())) {
-                        throw new BusinessException("单株编号为：" + tcPollinationExcelDTO.getFatherSeedNum() + "的父本对应的种子编应为：" + tcPollinationSingleNumTb.getSeedNum());
+                        throw new BusinessException("大田单珠编编号为：" + tcPollinationExcelDTO.getFatherTcSampleCode() + "的父本对应的种子编应为：" + tcPollinationSingleNumTb.getSeedNum());
                     }
                     if (!StringUtils.equals(tcPollinationSingleNumTb.getRegionNum(), tcPollinationExcelDTO.getFatherRegionNum())) {
-                        throw new BusinessException("单株编号为：" + tcPollinationExcelDTO.getFatherSeedNum() + "的父本对应的小区编应为：" + tcPollinationSingleNumTb.getRegionNum());
+                        throw new BusinessException("大田单珠编编号为：" + tcPollinationExcelDTO.getFatherTcSampleCode() + "的父本对应的小区编应为：" + tcPollinationSingleNumTb.getRegionNum());
                     }
                 } else {
-                    throw new BusinessException("单珠编号为" + tcPollinationExcelDTO.getFatherSeedNum() + "的父本不存在");
+                    throw new BusinessException("大田单株编号" + tcPollinationExcelDTO.getFatherTcSampleCode() + "的父本不存在");
                 }
             }
             //校验4:母本存在性校验
@@ -124,24 +127,27 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
             }
             //校验5:母本单珠编号校验
             if (StringUtils.isNotEmpty(tcPollinationExcelDTO.getMotherSampleCode())) {
-                TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneBySampleApplyNumAndSampleCode(tcPollinationTaskDTO.getSampleApplyNum(), tcPollinationExcelDTO.getMotherSampleCode());
-                TcPollinationSingleNumTb tcPollinationSingleNumTb = tcPollinationSingleNumTbMapper.selectOneBySingleNumber(tcPollinationExcelDTO.getMotherSampleCode());
+                TcSampleTestTb tcSampleTestTb = tcSampleTestTbMapper.selectOneBySampleApplyNumAndTcSampleCode(tcPollinationTaskDTO.getSampleApplyNum(), tcPollinationExcelDTO.getMotherTcSampleCode());
+                TcPollinationSingleNumTb tcPollinationSingleNumTb = tcPollinationSingleNumTbMapper.selectOneByExperimentNumAndTcSingleNumber(tcPollinationTaskDTO.getExperimentNum(),tcPollinationExcelDTO.getMotherSampleCode());
                 if (tcSampleTestTb != null) {
                     if (!StringUtils.equals(tcSampleTestTb.getSeedNum(), tcPollinationExcelDTO.getMotherSeedNum())) {
-                        throw new BusinessException("单株编号为：" + tcPollinationExcelDTO.getMotherSampleCode() + "的母本对应的种子编应为：" + tcSampleTestTb.getSeedNum());
+                        throw new BusinessException("大田单珠编编号为：" + tcPollinationExcelDTO.getMotherTcSampleCode() + "的母本对应的种子编应为：" + tcSampleTestTb.getSeedNum());
                     }
                     if (!StringUtils.equals(tcSampleTestTb.getRegionNum(), tcPollinationExcelDTO.getMotherRegionNum())) {
-                        throw new BusinessException("单株编号为：" + tcPollinationExcelDTO.getMotherSampleCode() + "的母本对应的小区编应为：" + tcSampleTestTb.getRegionNum());
+                        throw new BusinessException("大田单珠编编号为：" + tcPollinationExcelDTO.getMotherTcSampleCode() + "的母本对应的小区编应为：" + tcSampleTestTb.getRegionNum());
+                    }
+                    if (!StringUtils.equals(tcSampleTestTb.getSampleCode(), tcPollinationExcelDTO.getMotherRegionNum())) {
+                        throw new BusinessException("大田单珠编号为：" + tcPollinationExcelDTO.getFatherTcSampleCode() + "的母本对应的取样编应为：" + tcSampleTestTb.getSampleCode());
                     }
                 } else if (tcPollinationSingleNumTb != null) {
                     if (!StringUtils.equals(tcPollinationSingleNumTb.getSeedNum(), tcPollinationExcelDTO.getMotherSeedNum())) {
-                        throw new BusinessException("单株编号为：" + tcPollinationExcelDTO.getMotherSampleCode() + "的母本对应的种子编应为：" + tcPollinationSingleNumTb.getSeedNum());
+                        throw new BusinessException("大田单珠编编号为：" + tcPollinationExcelDTO.getMotherTcSampleCode() + "的母本对应的种子编应为：" + tcPollinationSingleNumTb.getSeedNum());
                     }
                     if (!StringUtils.equals(tcPollinationSingleNumTb.getRegionNum(), tcPollinationExcelDTO.getMotherRegionNum())) {
-                        throw new BusinessException("单株编号为：" + tcPollinationExcelDTO.getMotherSampleCode() + "的母本对应的小区编应为：" + tcPollinationSingleNumTb.getRegionNum());
+                        throw new BusinessException("大田单珠编编号为：" + tcPollinationExcelDTO.getMotherTcSampleCode() + "的母本对应的小区编应为：" + tcPollinationSingleNumTb.getRegionNum());
                     }
                 } else {
-                    throw new BusinessException("单珠编号为" + tcPollinationExcelDTO.getMotherSampleCode() + "的母本不存在");
+                    throw new BusinessException("大田单珠编编号为" + tcPollinationExcelDTO.getMotherTcSampleCode() + "的母本不存在");
                 }
             }
             //校验6: 收获方式校验

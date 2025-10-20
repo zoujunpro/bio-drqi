@@ -19,9 +19,9 @@ public interface TcPollinationSingleNumTbMapper extends BaseMapper<TcPollination
 
     int insertBatch(@Param("tcPollinationSingleNumTbCollection") Collection<TcPollinationSingleNumTb> tcPollinationSingleNumTbCollection);
 
-    TcPollinationSingleNumTb selectOneBySingleNumber(@Param("singleNumber") String singleNumber);
-
     int updatePollinationApplyNumIsNullByPollinationApplyNum(@Param("pollinationApplyNum") String pollinationApplyNum);
+
+    TcPollinationSingleNumTb selectOneByExperimentNumAndTcSingleNumber(@Param("experimentNum") String experimentNum, @Param("tcSingleNumber") String tcSingleNumber);
 
     List<TcPollinationSingleNumTb> selectAllByExperimentNumOrderByIdDesc(@Param("experimentNum") String experimentNum);
     List<TcPollinationSingleNumTb> selectAllByExperimentNumAndRegionNumOrderByIdDesc(@Param("experimentNum") String experimentNum, @Param("regionNum") String regionNum);

@@ -80,4 +80,12 @@
         experiment_num = #{experimentNum,jdbcType=VARCHAR}
         order by id desc
     </select>
+    <select id="selectOneByExperimentNumAndTcSingleNumber" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_pollination_single_num_tb
+        where
+        experiment_num = #{experimentNum,jdbcType=VARCHAR}
+        AND tc_single_number = #{tcSingleNumber,jdbcType=VARCHAR}
+    </select>
 </mapper>

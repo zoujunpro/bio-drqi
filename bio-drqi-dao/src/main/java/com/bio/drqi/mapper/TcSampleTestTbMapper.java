@@ -28,6 +28,8 @@ public interface TcSampleTestTbMapper extends BaseMapper<TcSampleTestTb> {
 
     TcSampleTestTb selectOneBySampleApplyNumAndSampleCode(@Param("sampleApplyNum") String sampleApplyNum, @Param("sampleCode") String sampleCode);
 
+    TcSampleTestTb selectOneBySampleApplyNumAndTcSampleCode(@Param("sampleApplyNum") String sampleApplyNum, @Param("tcSampleCode") String tcSampleCode);
+
     int updateIdentifyPrimerById(@Param("identifyPrimer") String identifyPrimer, @Param("id") Integer id);
 
     List<TcSampleTestTb> selectAllBySampleApplyNumAndSampleCodeIn(@Param("sampleApplyNum") String sampleApplyNum, @Param("sampleCodeList") Collection<String> sampleCodeList);

@@ -205,7 +205,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     tcSingleNumberList.addAll(reginTcSampleTestTbListMap.get(content.getRegionNum()).stream().map(TcSampleTestTb::getTcSampleCode).collect(Collectors.toList()));
                 }
                 Integer maxNumber = null;
-                if (CollectionUtil.isNotEmpty(tcSampleCodeList)) {
+                if (CollectionUtil.isNotEmpty(tcSingleNumberList)) {
                     maxNumber = tcSingleNumberList.stream().distinct().map(tcSingleNumber -> Integer.valueOf(tcSingleNumber.substring(content.getRegionNum().length()))).max(Integer::compare).get();
                 }
 

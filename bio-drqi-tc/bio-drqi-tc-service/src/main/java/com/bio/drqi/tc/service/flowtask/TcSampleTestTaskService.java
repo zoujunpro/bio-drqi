@@ -95,12 +95,16 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
             Map<String, Integer> reginofMaxSampleCodeNumberMap = queryReginOfMaxSampleCodeNumber(experimentNum);
             TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(experimentNum);
             //当前数据库中某一个试验方案取样编号后缀最大值
-            Integer maxSampleNumber = tcSampleTestTbMapper.selectAllByExperimentNum(experimentNum).stream().map(tcSampleTestTb -> Integer.valueOf(tcSampleTestTb.getSampleCode().substring(3))).max(Integer::compare).get();
+            List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllByExperimentNum(experimentNum);
+            Integer maxSampleNumber=null;
+            if(CollectionUtil.isNotEmpty(tcSampleTestTbList)){
+                 maxSampleNumber =tcSampleTestTbList.stream().map(tcSampleTestTb -> Integer.valueOf(tcSampleTestTb.getSampleCode().substring(3))).max(Integer::compare).get();
+            }
             for (int i = 0; i < tcSampleTestTaskDTO.getFirstSampleApplyList().size(); i++) {
                 TcSampleTestTaskDTO.FirstSampleApply firstSampleApply = tcSampleTestTaskDTO.getFirstSampleApplyList().get(i);
                 for (int j = 1; j <= firstSampleApply.getSampleNum(); j++) {
                     Integer nextTcSampleCodeNumber = reginofMaxSampleCodeNumberMap.get(firstSampleApply.getRegionNum()) == null ? 1 : reginofMaxSampleCodeNumberMap.get(firstSampleApply.getRegionNum()) + 1;
-                    maxSampleNumber=maxSampleNumber==null?1:maxSampleNumber+1;
+                    maxSampleNumber = maxSampleNumber == null ? 1 : maxSampleNumber + 1;
                     reginofMaxSampleCodeNumberMap.put(firstSampleApply.getRegionNum(), nextTcSampleCodeNumber);
                     TcSampleTestTb tcSampleTestTb = new TcSampleTestTb();
                     tcSampleTestTb.setExperimentNum(tcSampleTestApplyTb.getExperimentNum());
@@ -157,25 +161,25 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
 
     private Map<String, Integer> queryReginOfMaxSampleCodeNumber(String experimentNum) {
         Map<String, Integer> reginofMaxSampleCodeNumberMap = new HashMap<>();
-        Map<String,List<String>> reginofMaxSampleCodeListMap=new HashMap<>();
+        Map<String, List<String>> reginofMaxSampleCodeListMap = new HashMap<>();
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllByExperimentNum(experimentNum);
         List<TcPollinationSingleNumTb> tcPollinationSingleNumTbList = tcPollinationSingleNumTbMapper.selectAllByExperimentNumOrderByIdDesc(experimentNum);
         if (CollectionUtil.isNotEmpty(tcSampleTestTbList)) {
             tcSampleTestTbList.forEach(tcSampleTestTb -> {
-                if(reginofMaxSampleCodeListMap.get(tcSampleTestTb.getRegionNum())==null){
-                    List<String> tcSampleCodeList=new ArrayList<>();
+                if (reginofMaxSampleCodeListMap.get(tcSampleTestTb.getRegionNum()) == null) {
+                    List<String> tcSampleCodeList = new ArrayList<>();
                     tcSampleCodeList.add(tcSampleTestTb.getTcSampleCode());
-                    reginofMaxSampleCodeListMap.put(tcSampleTestTb.getRegionNum(),tcSampleCodeList);
-                }else {
+                    reginofMaxSampleCodeListMap.put(tcSampleTestTb.getRegionNum(), tcSampleCodeList);
+                } else {
                     reginofMaxSampleCodeListMap.get(tcSampleTestTb.getRegionNum()).add(tcSampleTestTb.getTcSampleCode());
                 }
             });
         }
         if (CollectionUtil.isNotEmpty(tcPollinationSingleNumTbList)) {
             tcPollinationSingleNumTbList.forEach(tcPollinationSingleNumTb -> {
-                if(reginofMaxSampleCodeListMap.get(tcPollinationSingleNumTb.getRegionNum())==null){
-                    reginofMaxSampleCodeListMap.put(tcPollinationSingleNumTb.getRegionNum(),Arrays.asList(tcPollinationSingleNumTb.getTcSingleNumber()));
-                }else {
+                if (reginofMaxSampleCodeListMap.get(tcPollinationSingleNumTb.getRegionNum()) == null) {
+                    reginofMaxSampleCodeListMap.put(tcPollinationSingleNumTb.getRegionNum(), Arrays.asList(tcPollinationSingleNumTb.getTcSingleNumber()));
+                } else {
                     reginofMaxSampleCodeListMap.get(tcPollinationSingleNumTb.getRegionNum()).add(tcPollinationSingleNumTb.getTcSingleNumber());
                 }
             });

@@ -136,7 +136,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                     if (!StringUtils.equals(tcSampleTestTb.getRegionNum(), tcPollinationExcelDTO.getMotherRegionNum())) {
                         throw new BusinessException("大田单珠编编号为：" + tcPollinationExcelDTO.getMotherTcSampleCode() + "的母本对应的小区编应为：" + tcSampleTestTb.getRegionNum());
                     }
-                    if (!StringUtils.equals(tcSampleTestTb.getSampleCode(), tcPollinationExcelDTO.getMotherRegionNum())) {
+                    if (!StringUtils.equals(tcSampleTestTb.getSampleCode(), tcPollinationExcelDTO.getMotherSampleCode())) {
                         throw new BusinessException("大田单珠编号为：" + tcPollinationExcelDTO.getFatherTcSampleCode() + "的母本对应的取样编应为：" + tcSampleTestTb.getSampleCode());
                     }
                 } else if (tcPollinationSingleNumTb != null) {

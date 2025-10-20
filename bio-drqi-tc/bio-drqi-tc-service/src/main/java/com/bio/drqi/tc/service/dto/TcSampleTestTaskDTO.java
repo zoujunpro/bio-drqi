@@ -69,6 +69,11 @@ public class TcSampleTestTaskDTO {
 
     private String bioInfoResultExcelUrl;
 
+    /**
+     * 取消的数据
+     */
+    private String cancelTaskSampleList;
+
 
     @Data
     public static class RepeatSampleApply{

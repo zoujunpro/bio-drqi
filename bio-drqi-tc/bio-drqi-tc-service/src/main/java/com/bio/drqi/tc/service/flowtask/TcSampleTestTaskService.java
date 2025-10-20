@@ -12,6 +12,8 @@ import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.enums.SampleTestTypeEnum;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -208,17 +210,16 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
 
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
-        TcSampleTestApplyTb tcSampleTestApplyTb = tcSampleTestApplyTbMapper.selectOneByTaskNum(bioTaskDtlTb.getTaskNum());
-        tcSampleTestApplyTbMapper.deleteBySampleApplyNum(bioTaskDtlTb.getTaskNum());
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNum(bioTaskDtlTb.getTaskNum());
         if (CollectionUtil.isNotEmpty(tcSampleTestTbList)) {
-            Optional<Integer> minSampleCodeOptional = tcSampleTestTbList.stream().map(tcSampleTestTb -> Integer.valueOf(tcSampleTestTb.getSampleCode().substring(3))).min(Integer::compare);
-            if (minSampleCodeOptional.isPresent()) {
-                TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcSampleTestApplyTb.getExperimentNum());
-                tcExperimentTb.setNextSampleNumber(minSampleCodeOptional.get());
-                tcExperimentTbMapper.updateById(tcExperimentTb);
-            }
+            GsonBuilder builder = new GsonBuilder();
+            builder.serializeNulls(); // 启用序列化null值
+            Gson gson = builder.create();
+            TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
+            tcSampleTestTaskDTO.setCancelTaskSampleList(gson.toJson(tcSampleTestTbList));
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcSampleTestTaskDTO));
         }
+        tcSampleTestApplyTbMapper.deleteBySampleApplyNum(bioTaskDtlTb.getTaskNum());
         tcSampleTestTbMapper.deleteBySampleApplyNum(bioTaskDtlTb.getTaskNum());
         tcSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         tcSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());

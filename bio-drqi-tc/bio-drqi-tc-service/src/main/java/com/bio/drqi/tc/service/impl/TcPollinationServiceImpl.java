@@ -192,7 +192,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
 
             } else {
                 //单株授粉，如果取样编号不够，需要生成虚拟的单株编号
-                List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNumAndRegionNumAndSeedNum(tcPollinationCreatePollinationExcelReqDTO.getSampleApplyNum(), content.getRegionNum(), content.getSeedNum());
+                List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNumAndSeedNumAndRegionNumAndCheckResult(tcPollinationCreatePollinationExcelReqDTO.getSampleApplyNum(), content.getSeedNum(),content.getRegionNum(),SampleTestCheckResultEnum.stay.name());
                 Map<String, List<TcSampleTestTb>> tcSampleCodeListMap = tcSampleTestTbList.stream().collect(Collectors.groupingBy(TcSampleTestTb::getTcSampleCode));
                 List<String> tcSampleCodeList = tcSampleTestTbList.stream().map(TcSampleTestTb::getTcSampleCode).distinct().collect(Collectors.toList());
                 List<TcPollinationSingleNumTb> tcPollinationSingleNumTbList = tcPollinationSingleNumTbMapper.selectAllByExperimentNumAndRegionNumOrderByIdDesc(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum(), content.getRegionNum());

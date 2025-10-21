@@ -27,7 +27,7 @@ public class TcPollinationExcelDTO {
     /**
      * 母本单株编号
      */
-    @ExcelProperty(value ={"母本","母本取样编号"})
+    @ExcelProperty(value ={"母本","母本分子取样编号"})
     private String motherSampleCode;
 
     /**
@@ -91,7 +91,7 @@ public class TcPollinationExcelDTO {
     /**
      * 父本单株编号
      */
-    @ExcelProperty(value ={"父本","父本取样编号"})
+    @ExcelProperty(value ={"父本","父本分子取样编号"})
     private String fatherSampleCode;
 
 

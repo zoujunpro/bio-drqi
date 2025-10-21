@@ -25,6 +25,7 @@ public interface SeedStockTbMapper extends BaseMapper<SeedStockTb> {
 
     SeedStockTb selectOneByPlantCode(@Param("plantNum") String plantNum);
 
+
     int updateParentNumById(@Param("parentNum") String parentNum, @Param("id") Integer id);
 
     List<SeedStockTb> selectAllBySeedNumIn(@Param("seedNumList") Collection<String> seedNumList);

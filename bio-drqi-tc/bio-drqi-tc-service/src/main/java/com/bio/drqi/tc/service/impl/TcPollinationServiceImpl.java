@@ -227,7 +227,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                         tcPollinationSingleNumTb.setRegionNum(content.getRegionNum());
                         tcPollinationSingleNumTb.setCreateTime(new Date());
                         tcPollinationSingleNumTb.setCreateUserName(SecurityContextHolder.getNickName());
-                        tcPollinationSingleNumTb.setTcSingleNumber(tcSampleCode);
+                        tcPollinationSingleNumTb.setTcSingleNumber(singleNumber);
                         currentTcPollinationSingleNumTbList.add(tcPollinationSingleNumTb);
                     }
                     if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {

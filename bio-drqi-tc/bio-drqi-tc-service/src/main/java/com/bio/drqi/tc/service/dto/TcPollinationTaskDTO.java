@@ -23,7 +23,5 @@ public class TcPollinationTaskDTO {
     @NotBlank(message = "参数缺失：授粉表单")
     private String pollinationExcelUrl;
 
-    @Valid
-    @NotEmpty(message = "数据缺失")
     private  List<TcPollinationExcelDTO> tcPollinationExcelDTOList;
 }

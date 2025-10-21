@@ -26,42 +26,42 @@ public class TcPollinationExportPollinationExcelReqDTO {
     @Valid
     public static class Content{
 
-        private String matherRegionNum;
+        private String motherRegionNum;
         /**
          * 母本种子编号
          */
-        private String matherSeedNum;
+        private String motherSeedNum;
         /**
          * 母本取样编号
          */
 
-        private String matherSampleCode;
+        private String motherSampleCode;
 
         /**
          * 母本大田取样编号
          */
-        private String matherTcSampleCode;
+        private String motherTcSampleCode;
         /**
          * 母本单株编号
          */
-        private String matherSingleNumber;
+        private String motherSingleNumber;
 
         /**
          * 母本品种
          */
-        private String matherBreedName;
+        private String motherBreedName;
         /**
          * 母本实施方案编号
          */
-        private String matherVectorTaskCode;
+        private String motherVectorTaskCode;
         /**
          * 母本世代
          */
-        private String matherGenerationName;
+        private String motherGenerationName;
         /**
          * 母本基因类型
          */
-        private String matherTcGene;
+        private String motherTcGene;
         /**
          * 父本小区编号
          */

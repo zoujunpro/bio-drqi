@@ -129,7 +129,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
      */
     @Override
     public List<TcPollinationExcelDTO> createPollinationExcel(TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO) {
-        List<TcPollinationExcelDTO> matherList = new ArrayList<TcPollinationExcelDTO>();
+        List<TcPollinationExcelDTO> MotherList = new ArrayList<TcPollinationExcelDTO>();
         List<TcPollinationExcelDTO> fatherList = new ArrayList<TcPollinationExcelDTO>();
         List<TcPollinationSingleNumTb> currentTcPollinationSingleNumTbList = new ArrayList<TcPollinationSingleNumTb>();
         TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum());
@@ -181,13 +181,13 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     fatherList.add(tcPollinationExcelDTO);
 
                 } else if (PollinationParentFlagEnum.mother.name().equals(content.getParentFlag())) {
-                    TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofMather(tcExperimentDesignTb, null, null, null, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
-                    matherList.add(tcPollinationExcelDTO);
+                    TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofMother(tcExperimentDesignTb, null, null, null, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
+                    MotherList.add(tcPollinationExcelDTO);
                 } else if (PollinationParentFlagEnum.parent.name().equals(content.getParentFlag())) {
                     TcPollinationExcelDTO fatherTcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, null, null, null, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
                     fatherList.add(fatherTcPollinationExcelDTO);
-                    TcPollinationExcelDTO matherTcPollinationExcelDTO = TcPollinationExcelDTO.ofMather(tcExperimentDesignTb, null, null, null, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
-                    matherList.add(matherTcPollinationExcelDTO);
+                    TcPollinationExcelDTO MotherTcPollinationExcelDTO = TcPollinationExcelDTO.ofMother(tcExperimentDesignTb, null, null, null, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
+                    MotherList.add(MotherTcPollinationExcelDTO);
                 }
 
             } else {
@@ -234,13 +234,13 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                         TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, sampleCode, tcSampleCode,singleNumber, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
                         fatherList.add(tcPollinationExcelDTO);
                     } else if (PollinationParentFlagEnum.mother.name().equals(content.getParentFlag())) {
-                        TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofMather(tcExperimentDesignTb,sampleCode, tcSampleCode,singleNumber, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
-                        matherList.add(tcPollinationExcelDTO);
+                        TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofMother(tcExperimentDesignTb,sampleCode, tcSampleCode,singleNumber, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
+                        MotherList.add(tcPollinationExcelDTO);
                     } else if (PollinationParentFlagEnum.parent.name().equals(content.getParentFlag())) {
                         TcPollinationExcelDTO fatherTcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb,sampleCode, tcSampleCode,singleNumber, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
                         fatherList.add(fatherTcPollinationExcelDTO);
-                        TcPollinationExcelDTO matherTcPollinationExcelDTO = TcPollinationExcelDTO.ofMather(tcExperimentDesignTb, sampleCode, tcSampleCode,singleNumber, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
-                        matherList.add(matherTcPollinationExcelDTO);
+                        TcPollinationExcelDTO MotherTcPollinationExcelDTO = TcPollinationExcelDTO.ofMother(tcExperimentDesignTb, sampleCode, tcSampleCode,singleNumber, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
+                        MotherList.add(MotherTcPollinationExcelDTO);
                     }
                 }
             }
@@ -252,24 +252,24 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         }
         if (CollectionUtil.isNotEmpty(fatherList)) {
             for (int i = 0; i < fatherList.size(); i++) {
-                if (i < matherList.size()) {
-                    TcPollinationExcelDTO matherTcPollinationExcelDTO = matherList.get(i);
+                if (i < MotherList.size()) {
+                    TcPollinationExcelDTO MotherTcPollinationExcelDTO = MotherList.get(i);
                     TcPollinationExcelDTO fatherTcPollinationExcelDTO = fatherList.get(i);
-                    matherTcPollinationExcelDTO.setFatherRegionNum(fatherTcPollinationExcelDTO.getFatherRegionNum());
-                    matherTcPollinationExcelDTO.setFatherSeedNum(fatherTcPollinationExcelDTO.getFatherSeedNum());
-                    matherTcPollinationExcelDTO.setFatherSampleCode(null);
-                    matherTcPollinationExcelDTO.setFatherBreedName(fatherTcPollinationExcelDTO.getFatherBreedName());
-                    matherTcPollinationExcelDTO.setFatherVectorTaskCode(fatherTcPollinationExcelDTO.getFatherVectorTaskCode());
-                    matherTcPollinationExcelDTO.setFatherGenerationName(fatherTcPollinationExcelDTO.getFatherGenerationName());
-                    matherTcPollinationExcelDTO.setFatherTcGene(fatherTcPollinationExcelDTO.getFatherTcGene());
-                    matherTcPollinationExcelDTO.setFatherSampleCode(fatherTcPollinationExcelDTO.getFatherSampleCode());
-                    matherTcPollinationExcelDTO.setFatherTcSampleCode(fatherTcPollinationExcelDTO.getFatherTcSampleCode());
+                    MotherTcPollinationExcelDTO.setFatherRegionNum(fatherTcPollinationExcelDTO.getFatherRegionNum());
+                    MotherTcPollinationExcelDTO.setFatherSeedNum(fatherTcPollinationExcelDTO.getFatherSeedNum());
+                    MotherTcPollinationExcelDTO.setFatherSampleCode(null);
+                    MotherTcPollinationExcelDTO.setFatherBreedName(fatherTcPollinationExcelDTO.getFatherBreedName());
+                    MotherTcPollinationExcelDTO.setFatherVectorTaskCode(fatherTcPollinationExcelDTO.getFatherVectorTaskCode());
+                    MotherTcPollinationExcelDTO.setFatherGenerationName(fatherTcPollinationExcelDTO.getFatherGenerationName());
+                    MotherTcPollinationExcelDTO.setFatherTcGene(fatherTcPollinationExcelDTO.getFatherTcGene());
+                    MotherTcPollinationExcelDTO.setFatherSampleCode(fatherTcPollinationExcelDTO.getFatherSampleCode());
+                    MotherTcPollinationExcelDTO.setFatherTcSampleCode(fatherTcPollinationExcelDTO.getFatherTcSampleCode());
                 } else {
-                    matherList.add(fatherList.get(i));
+                    MotherList.add(fatherList.get(i));
                 }
             }
         }
-        return matherList;
+        return MotherList;
     }
 
 
@@ -283,15 +283,15 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         List<TcPollinationExcelDTO> tcPollinationExcelDTOList = new ArrayList<>();
         for (TcPollinationExportPollinationExcelReqDTO.Content content : tcPollinationExportPollinationExcelReqDTO.getContentList()) {
             TcPollinationExcelDTO tcPollinationExcelDTO = new TcPollinationExcelDTO();
-            tcPollinationExcelDTO.setMatherRegionNum(content.getMatherRegionNum());
-            tcPollinationExcelDTO.setMatherSeedNum(content.getMatherSeedNum());
-            tcPollinationExcelDTO.setMatherSampleCode(content.getMatherSampleCode());
-            tcPollinationExcelDTO.setMatherTcSampleCode(content.getMatherTcSampleCode());
-            tcPollinationExcelDTO.setMatherSingleNumber(content.getMatherSingleNumber());
-            tcPollinationExcelDTO.setMatherBreedName(content.getMatherBreedName());
-            tcPollinationExcelDTO.setMatherVectorTaskCode(content.getMatherVectorTaskCode());
-            tcPollinationExcelDTO.setMatherGenerationName(content.getMatherGenerationName());
-            tcPollinationExcelDTO.setMatherTcGene(content.getMatherTcGene());
+            tcPollinationExcelDTO.setMotherRegionNum(content.getMotherRegionNum());
+            tcPollinationExcelDTO.setMotherSeedNum(content.getMotherSeedNum());
+            tcPollinationExcelDTO.setMotherSampleCode(content.getMotherSampleCode());
+            tcPollinationExcelDTO.setMotherTcSampleCode(content.getMotherTcSampleCode());
+            tcPollinationExcelDTO.setMotherSingleNumber(content.getMotherSingleNumber());
+            tcPollinationExcelDTO.setMotherBreedName(content.getMotherBreedName());
+            tcPollinationExcelDTO.setMotherVectorTaskCode(content.getMotherVectorTaskCode());
+            tcPollinationExcelDTO.setMotherGenerationName(content.getMotherGenerationName());
+            tcPollinationExcelDTO.setMotherTcGene(content.getMotherTcGene());
             tcPollinationExcelDTO.setFatherRegionNum(content.getFatherRegionNum());
             tcPollinationExcelDTO.setFatherSeedNum(content.getFatherSeedNum());
             tcPollinationExcelDTO.setFatherTcSampleCode(content.getFatherTcSampleCode());

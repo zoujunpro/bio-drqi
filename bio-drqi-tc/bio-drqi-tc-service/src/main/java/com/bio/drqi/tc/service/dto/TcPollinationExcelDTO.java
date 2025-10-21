@@ -6,6 +6,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.domain.TcExperimentDesignTb;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 @Data
@@ -16,53 +17,58 @@ public class TcPollinationExcelDTO {
      */
     @ExcelProperty(value = {"母本","母本小区编号"})
     @NotBlank(message = "参数缺失：母本小区编号")
-    private String motherRegionNum;
+    private String matherRegionNum;
     /**
      * 母本种子编号
      */
     @ExcelProperty(value = {"母本","母本种子编号"})
     @NotBlank(message = "参数缺失：母本种子编号")
-    private String motherSeedNum;
+    private String matherSeedNum;
+    /**
+     * 母本单株编号
+     */
+    @ExcelProperty(value ={"母本","母本取样编号"})
+    private String matherSampleCode;
+
+    /**
+     * 母本大田取样编号
+     */
+    @ExcelProperty(value ={"母本","母本大田取样编号"})
+    private String matherTcSampleCode;
+
     /**
      * 母本单株编号
      */
     @ExcelProperty(value ={"母本","母本单株编号"})
     @NotBlank(message = "参数缺失：母本单株编号")
-    private String motherSampleCode;
-
-    /**
-     * 母本大田单株编号
-     */
-    @ExcelProperty(value ={"母本","母本大田单株编号"})
-    @NotBlank(message = "参数缺失：母本大田单株编号")
-    private String motherTcSampleCode;
+    private String matherSingleNumber;
 
     /**
      * 母本品种
      */
     @ExcelProperty(value ={"母本","母本品种"})
     @NotBlank(message = "参数缺失：母本品种")
-    private String motherBreedName;
+    private String matherBreedName;
 
-    private String motherBreedCode;
+    private String matherBreedCode;
     /**
      * 母本实施方案编号
      */
     @ExcelProperty(value ={"母本","母本实施方案编号"})
     @NotBlank(message = "参数缺失：母本实施方案编号")
-    private String motherVectorTaskCode;
+    private String matherVectorTaskCode;
     /**
      * 母本世代
      */
     @ExcelProperty(value ={"母本","母本世代"})
     @NotBlank(message = "参数缺失：母本世代")
-    private String motherGenerationName;
+    private String matherGenerationName;
     /**
      * 母本基因类型
      */
     @ExcelProperty(value ={"母本","母本基因型"})
     @NotBlank(message = "参数缺失：母本基因型")
-    private String motherTcGene;
+    private String matherTcGene;
     /**
      * 父本小区编号
      */
@@ -79,16 +85,22 @@ public class TcPollinationExcelDTO {
     /**
      * 父本大田单株编号
      */
-    @ExcelProperty(value ={"父本","父本大田单株编号"})
-    @NotBlank(message = "参数缺失：父本大田单株编号")
+    @ExcelProperty(value ={"父本","父本大田取样编号"})
     private String fatherTcSampleCode;
 
     /**
      * 父本单株编号
      */
+    @ExcelProperty(value ={"父本","父本取样编号"})
+    private String fatherSampleCode;
+
+
+    /**
+     * 父本大田单株编号
+     */
     @ExcelProperty(value ={"父本","父本单株编号"})
     @NotBlank(message = "参数缺失：父本单株编号")
-    private String fatherSampleCode;
+    private String fatherSingleNumber;
     /**
      * 父本品种
      */
@@ -141,25 +153,26 @@ public class TcPollinationExcelDTO {
     private String remark;
 
 
-    public static TcPollinationExcelDTO ofMather(TcExperimentDesignTb tcExperimentDesignTb, String sampleCode,String tcSampleCode,String breedName) {
+    public static TcPollinationExcelDTO ofMather(TcExperimentDesignTb tcExperimentDesignTb, String sampleCode,String tcSampleCode,String matherSingleNumber,String breedName) {
         TcPollinationExcelDTO tcPollinationExcelDTO = new TcPollinationExcelDTO();
-        tcPollinationExcelDTO.setMotherRegionNum(tcExperimentDesignTb.getRegionNum());
-        tcPollinationExcelDTO.setMotherSeedNum(tcExperimentDesignTb.getSeedNum());
-        tcPollinationExcelDTO.setMotherSampleCode(sampleCode);
-        tcPollinationExcelDTO.setMotherBreedName(breedName);
-        tcPollinationExcelDTO.setMotherVectorTaskCode(tcExperimentDesignTb.getVectorTaskCode());
-        tcPollinationExcelDTO.setMotherGenerationName(tcExperimentDesignTb.getGenerationCode());
-        tcPollinationExcelDTO.setMotherTcGene(tcExperimentDesignTb.getTcGene());
-        tcPollinationExcelDTO.setMotherTcSampleCode(tcSampleCode);
+        tcPollinationExcelDTO.setMatherRegionNum(tcExperimentDesignTb.getRegionNum());
+        tcPollinationExcelDTO.setMatherSeedNum(tcExperimentDesignTb.getSeedNum());
+        tcPollinationExcelDTO.setMatherSampleCode(sampleCode);
+        tcPollinationExcelDTO.setMatherSingleNumber(matherSingleNumber);
+        tcPollinationExcelDTO.setMatherBreedName(breedName);
+        tcPollinationExcelDTO.setMatherVectorTaskCode(tcExperimentDesignTb.getVectorTaskCode());
+        tcPollinationExcelDTO.setMatherGenerationName(tcExperimentDesignTb.getGenerationCode());
+        tcPollinationExcelDTO.setMatherTcGene(tcExperimentDesignTb.getTcGene());
+        tcPollinationExcelDTO.setMatherTcSampleCode(tcSampleCode);
         return tcPollinationExcelDTO;
     }
 
-    public static TcPollinationExcelDTO ofFather(TcExperimentDesignTb tcExperimentDesignTb, String sampleCode,String tcSampleCode,String breedName) {
+    public static TcPollinationExcelDTO ofFather(TcExperimentDesignTb tcExperimentDesignTb, String sampleCode,String tcSampleCode,String fatherSingleNumber,String breedName) {
         TcPollinationExcelDTO tcPollinationExcelDTO = new TcPollinationExcelDTO();
         tcPollinationExcelDTO.setFatherRegionNum(tcExperimentDesignTb.getRegionNum());
         tcPollinationExcelDTO.setFatherSeedNum(tcExperimentDesignTb.getSeedNum());
-        tcPollinationExcelDTO.setFatherSampleCode(null);
         tcPollinationExcelDTO.setFatherBreedName(breedName);
+        tcPollinationExcelDTO.setFatherSingleNumber(fatherSingleNumber);
         tcPollinationExcelDTO.setFatherVectorTaskCode(tcExperimentDesignTb.getVectorTaskCode());
         tcPollinationExcelDTO.setFatherGenerationName(tcExperimentDesignTb.getGenerationCode());
         tcPollinationExcelDTO.setFatherTcGene(tcExperimentDesignTb.getTcGene());

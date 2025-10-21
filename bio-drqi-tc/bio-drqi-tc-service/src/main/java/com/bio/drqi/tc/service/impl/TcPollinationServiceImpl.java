@@ -262,6 +262,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     MotherTcPollinationExcelDTO.setFatherVectorTaskCode(fatherTcPollinationExcelDTO.getFatherVectorTaskCode());
                     MotherTcPollinationExcelDTO.setFatherGenerationName(fatherTcPollinationExcelDTO.getFatherGenerationName());
                     MotherTcPollinationExcelDTO.setFatherTcGene(fatherTcPollinationExcelDTO.getFatherTcGene());
+                    MotherTcPollinationExcelDTO.setFatherSingleNumber(fatherTcPollinationExcelDTO.getFatherSingleNumber());
                     MotherTcPollinationExcelDTO.setFatherSampleCode(fatherTcPollinationExcelDTO.getFatherSampleCode());
                     MotherTcPollinationExcelDTO.setFatherTcSampleCode(fatherTcPollinationExcelDTO.getFatherTcSampleCode());
                 } else {

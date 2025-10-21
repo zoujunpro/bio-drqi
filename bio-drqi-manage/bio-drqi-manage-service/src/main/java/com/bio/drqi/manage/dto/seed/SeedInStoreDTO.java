@@ -66,6 +66,11 @@ public class SeedInStoreDTO extends SeedProcDTO {
 
     @Data
     public static class ExecuteFormContent {
+
+        /**
+         * 种子编号，入库后有
+         */
+        private String seedNum;
         /**
          * 来源
          */

@@ -191,6 +191,7 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             executeFormContent.setSeedNumber(content.getSeedNumber());
             executeFormContent.setStoreFlag(CerProjectContents.Y);
             executeFormContent.setStockLocationNum(content.getStockLocationNum());
+            executeFormContent.setSeedNum(seedStockTb.getSeedNum());
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(seedInStoreDTO, new JSONConfig().setIgnoreNullValue(false)));
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
         }

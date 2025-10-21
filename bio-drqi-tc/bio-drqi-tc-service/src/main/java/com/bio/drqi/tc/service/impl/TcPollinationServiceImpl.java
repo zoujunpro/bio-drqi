@@ -318,7 +318,6 @@ public class TcPollinationServiceImpl implements TcPollinationService {
             log.error("模板下载失败，", e);
             throw new BusinessException("模板下载失败，请联系管理员检测模板配置");
         }
-        ExcelUtil.writeExcel("田测授粉结果表","sheet1",tcPollinationExcelDTOList,TcPollinationExcelDTO.class,httpServletResponse);
-       // ExcelUtil.fillExcel(templateDir, tcPollinationExcelDTOList, TcPollinationExcelDTO.class, httpServletResponse);
+        ExcelUtil.fillExcel(templateDir, tcPollinationExcelDTOList, TcPollinationExcelDTO.class, httpServletResponse);
     }
 }

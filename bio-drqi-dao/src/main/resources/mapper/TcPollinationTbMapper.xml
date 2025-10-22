@@ -13,14 +13,10 @@
         <result property="fRegionNum" column="f_region_num" jdbcType="VARCHAR"/>
         <result property="mSampleCode" column="m_sample_code" jdbcType="VARCHAR"/>
         <result property="fSampleCode" column="f_sample_code" jdbcType="VARCHAR"/>
-        <result property="mTcSampleCode" column="m_tc_sample_code" jdbcType="VARCHAR"/>
-        <result property="fTcSampleCode" column="f_tc_sample_code" jdbcType="VARCHAR"/>
-        <result property="mSingleNumber" column="m_single_number" jdbcType="VARCHAR"/>
-        <result property="fSingleNumber" column="f_single_number" jdbcType="VARCHAR"/>
         <result property="mSeedNum" column="m_seed_num" jdbcType="VARCHAR"/>
         <result property="fSeedNum" column="f_seed_num" jdbcType="VARCHAR"/>
-        <result property="mBreedCode" column="m_breed_code" jdbcType="VARCHAR"/>
         <result property="fBreedCode" column="f_breed_code" jdbcType="VARCHAR"/>
+        <result property="mBreedCode" column="m_breed_code" jdbcType="VARCHAR"/>
         <result property="mVectorTaskCode" column="m_vector_task_code" jdbcType="VARCHAR"/>
         <result property="fVectorTaskCode" column="f_vector_task_code" jdbcType="VARCHAR"/>
         <result property="mGenerationCode" column="m_generation_code" jdbcType="VARCHAR"/>
@@ -33,23 +29,34 @@
         <result property="harvestTypeCode" column="harvest_type_code" jdbcType="VARCHAR"/>
         <result property="harvestTypeName" column="harvest_type_name" jdbcType="VARCHAR"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
-        <result property="seedNumber" column="seed_number" jdbcType="VARCHAR"/>
+        <result property="harvestTime" column="harvest_time" jdbcType="VARCHAR"/>
+        <result property="seedNumber" column="seed_number" jdbcType="DECIMAL"/>
         <result property="unit" column="unit" jdbcType="VARCHAR"/>
+        <result property="seedType" column="seed_type" jdbcType="VARCHAR"/>
         <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
         <result property="harvestRemark" column="harvest_remark" jdbcType="VARCHAR"/>
+        <result property="fSingleNumber" column="f_single_number" jdbcType="VARCHAR"/>
+        <result property="mSingleNumber" column="m_single_number" jdbcType="VARCHAR"/>
+        <result property="mTcSampleCode" column="m_tc_sample_code" jdbcType="VARCHAR"/>
+        <result property="fTcSampleCode" column="f_tc_sample_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
-        ,experiment_num,sample_apply_num,pollination_apply_num,
-        m_region_num,f_region_num,m_sample_code,m_tc_sample_code,f_tc_sample_code,m_single_number,f_single_number,
-        f_sample_code,m_seed_num,f_seed_num,
-        m_breed_code,f_breed_code,m_vector_task_code,f_vector_task_code,
-        m_generation_code,f_generation_code,m_tc_gene,
-        f_tc_gene,pollination_date,pollination_method_code,
-        pollination_method_name,harvest_type_code,harvest_type_name,
-        remark,unit,seed_number,harvest_apply_num,harvest_remark
+        ,experiment_num,sample_apply_num,
+        pollination_apply_num,m_region_num,f_region_num,
+        m_sample_code,f_sample_code,m_seed_num,
+        f_seed_num,f_breed_code,m_breed_code,
+        m_vector_task_code,f_vector_task_code,m_generation_code,
+        f_generation_code,m_tc_gene,f_tc_gene,
+        pollination_date,pollination_method_code,pollination_method_name,
+        harvest_type_code,harvest_type_name,remark,
+        harvest_time,seed_number,unit,
+        seed_type,harvest_apply_num,harvest_remark,
+        f_single_number,m_single_number,m_tc_sample_code,
+        f_tc_sample_code
     </sql>
+
     <select id="selectAllByPollinationApplyNum" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -62,40 +69,71 @@
         <include refid="Base_Column_List"/>
         from tc_pollination_tb
         <where>
-            <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
-            <if test="sampleApplyNum != null and sampleApplyNum!=''">and sample_apply_num=#{sampleApplyNum,jdbcType=VARCHAR}</if>
-            <if test="pollinationApplyNum != null and pollinationApplyNum!=''">and pollination_apply_num=#{pollinationApplyNum,jdbcType=VARCHAR}
+            <if test="experimentNum != null and experimentNum!=''">and
+                experiment_num=#{experimentNum,jdbcType=VARCHAR}
+            </if>
+            <if test="sampleApplyNum != null and sampleApplyNum!=''">and
+                sample_apply_num=#{sampleApplyNum,jdbcType=VARCHAR}
+            </if>
+            <if test="pollinationApplyNum != null and pollinationApplyNum!=''">and
+                pollination_apply_num=#{pollinationApplyNum,jdbcType=VARCHAR}
             </if>
             <if test="mRegionNum != null and mRegionNum!=''">and m_region_num=#{mRegionNum,jdbcType=VARCHAR}</if>
             <if test="fRegionNum != null and fRegionNum!=''">and f_region_num=#{fRegionNum,jdbcType=VARCHAR}</if>
             <if test="mSampleCode != null and mSampleCode!=''">and m_sample_code=#{mSampleCode,jdbcType=VARCHAR}</if>
             <if test="fSampleCode != null and fSampleCode!=''">and f_sample_code=#{fSampleCode,jdbcType=VARCHAR}</if>
-            <if test="mTcSampleCode != null and mTcSampleCode!=''">and m_tc_sample_code=#{mTcSampleCode,jdbcType=VARCHAR}</if>
-            <if test="fTcSampleCode != null and fTcSampleCode!=''">and f_tc_sample_code=#{fTcSampleCode,jdbcType=VARCHAR}</if>
-            <if test="mSingleNumber != null and mSingleNumber!=''">and m_single_number=#{mSingleNumber,jdbcType=VARCHAR}</if>
-            <if test="fSingleNumber != null and fSingleNumber!=''">and f_single_number=#{fSingleNumber,jdbcType=VARCHAR}</if>
+            <if test="mTcSampleCode != null and mTcSampleCode!=''">and
+                m_tc_sample_code=#{mTcSampleCode,jdbcType=VARCHAR}
+            </if>
+            <if test="fTcSampleCode != null and fTcSampleCode!=''">and
+                f_tc_sample_code=#{fTcSampleCode,jdbcType=VARCHAR}
+            </if>
+            <if test="mSingleNumber != null and mSingleNumber!=''">and
+                m_single_number=#{mSingleNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="fSingleNumber != null and fSingleNumber!=''">and
+                f_single_number=#{fSingleNumber,jdbcType=VARCHAR}
+            </if>
             <if test="mSeedNum != null and mSeedNum!=''">and m_seed_num=#{mSeedNum,jdbcType=VARCHAR}</if>
             <if test="fSeedNum != null and fSeedNum!=''">and f_seed_num=#{fSeedNum,jdbcType=VARCHAR}</if>
             <if test="fBreedCode != null and fBreedCode!=''">and f_breed_code=#{fBreedCode,jdbcType=VARCHAR}</if>
             <if test="mBreedCode != null and mBreedCode!=''">and m_breed_code=#{mBreedCode,jdbcType=VARCHAR}</if>
-            <if test="mVectorTaskCode != null and mVectorTaskCode!=''">and m_vector_task_code=#{mVectorTaskCode,jdbcType=VARCHAR}</if>
-            <if test="fVectorTaskCode != null and fVectorTaskCode!=''">and f_vector_task_code=#{fVectorTaskCode,jdbcType=VARCHAR}</if>
-            <if test="mGenerationCode != null and mGenerationCode!=''">and m_generation_code=#{mGenerationCode,jdbcType=VARCHAR}</if>
-            <if test="fGenerationCode != null and fGenerationCode!=''">and f_generation_code=#{fGenerationCode,jdbcType=VARCHAR}</if>
+            <if test="mVectorTaskCode != null and mVectorTaskCode!=''">and
+                m_vector_task_code=#{mVectorTaskCode,jdbcType=VARCHAR}
+            </if>
+            <if test="fVectorTaskCode != null and fVectorTaskCode!=''">and
+                f_vector_task_code=#{fVectorTaskCode,jdbcType=VARCHAR}
+            </if>
+            <if test="mGenerationCode != null and mGenerationCode!=''">and
+                m_generation_code=#{mGenerationCode,jdbcType=VARCHAR}
+            </if>
+            <if test="fGenerationCode != null and fGenerationCode!=''">and
+                f_generation_code=#{fGenerationCode,jdbcType=VARCHAR}
+            </if>
             <if test="mTcGene != null and mTcGene!=''">and m_tc_gene=#{mTcGene,jdbcType=VARCHAR}</if>
             <if test="fTcGene != null and fTcGene!=''">and f_tc_gene=#{fTcGene,jdbcType=VARCHAR}</if>
-            <if test="pollinationDate != null and pollinationDate!=''">and pollination_date=#{pollinationDate,jdbcType=VARCHAR}</if>
+            <if test="pollinationDate != null and pollinationDate!=''">and
+                pollination_date=#{pollinationDate,jdbcType=VARCHAR}
+            </if>
             <if test="pollinationMethodCode != null and pollinationMethodCode!=''">
                 and pollination_method_code=#{pollinationMethodCode,jdbcType=VARCHAR}
             </if>
             <if test="pollinationMethodName != null and pollinationMethodName!=''">
                 and pollination_method_name=#{pollinationMethodName,jdbcType=VARCHAR}
             </if>
-            <if test="harvestTypeCode != null and harvestTypeCode!=''">and harvest_type_code=#{harvestTypeCode,jdbcType=VARCHAR}</if>
-            <if test="harvestTypeName != null and harvestTypeName!=''">and harvest_type_name=#{harvestTypeName,jdbcType=VARCHAR}</if>
+            <if test="harvestTypeCode != null and harvestTypeCode!=''">and
+                harvest_type_code=#{harvestTypeCode,jdbcType=VARCHAR}
+            </if>
+            <if test="harvestTypeName != null and harvestTypeName!=''">and
+                harvest_type_name=#{harvestTypeName,jdbcType=VARCHAR}
+            </if>
             <if test="remark != null and remark!=''">and remark=#{remark,jdbcType=VARCHAR}</if>
-            <if test="harvestApplyNum != null and harvestApplyNum!=''">and harvest_apply_num=#{harvestApplyNum,jdbcType=VARCHAR}</if>
-            <if test="harvestRemark != null and harvestRemark!=''">and harvest_remark=#{harvestRemark,jdbcType=VARCHAR}</if>
+            <if test="harvestApplyNum != null and harvestApplyNum!=''">and
+                harvest_apply_num=#{harvestApplyNum,jdbcType=VARCHAR}
+            </if>
+            <if test="harvestRemark != null and harvestRemark!=''">and
+                harvest_remark=#{harvestRemark,jdbcType=VARCHAR}
+            </if>
         </where>
         order by id desc
     </select>
@@ -125,7 +163,7 @@
                 AND m_single_number = #{mSingleNumber,jdbcType=VARCHAR}
             </when>
             <otherwise>
-                AND m_single_number  is null
+                AND m_single_number is null
             </otherwise>
         </choose>
     </select>
@@ -142,7 +180,7 @@
                 AND m_single_number = #{mSingleNumber,jdbcType=VARCHAR}
             </when>
             <otherwise>
-                AND m_single_number  is null
+                AND m_single_number is null
             </otherwise>
         </choose>
     </select>

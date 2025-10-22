@@ -47,7 +47,6 @@ public interface SampleTestService {
 
     void dowLayoutExcel(String applyNo, HttpServletResponse httpServletResponse);
 
-    List<SampleApplyRspDTO> sampleApplyListAll(String currentStepCode);
 
     CountNumByApplyNoRspDTO countNumByApplyNo(String applyNo);
 

@@ -29,35 +29,11 @@
         where
         apply_no = #{applyNo,jdbcType=VARCHAR}
     </select>
-    <select id="selectSelective" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from cer_sample_apply_tb
-        <where>
-            <if test="applyNo != null and applyNo!=''">and apply_no=#{applyNo,jdbcType=VARCHAR}</if>
-            <if test="applyNumber != null">and apply_number=#{applyNumber,jdbcType=NUMERIC}</if>
-            <if test="applyTime != null">and apply_time=#{applyTime,jdbcType=TIMESTAMP}</if>
-            <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
-            <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
-            <if test="currentStepCode != null">and current_step_code=#{currentStepCode,jdbcType=VARCHAR}</if>
-            <if test="applyType != null">and apply_type=#{applyType,jdbcType=VARCHAR}</if>
-            <if test="sampleCode != null and sampleCode!=''">and apply_no in (select apply_no from cer_sample_test_tb where sample_code=#{sampleCode,jdbcType=VARCHAR})</if>
-        </where>
-        order by id desc
-    </select>
     <select id="selectAllByVectorTaskId" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from cer_sample_apply_tb
         where apply_no in(select distinct  apply_no from cer_sample_test_tb where vector_task_id=#{vectorTaskId,jdbcType=NUMERIC})
-        order by id desc
-    </select>
-    <select id="selectAllByCurrentStepCode" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from cer_sample_apply_tb
-        where
-        current_step_code = #{currentStepCode,jdbcType=VARCHAR}
         order by id desc
     </select>
     <delete id="deleteByApplyNo">

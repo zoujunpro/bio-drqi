@@ -15,12 +15,9 @@ public interface CerSampleApplyTbMapper extends BaseMapper<CerSampleApplyTb> {
 
     CerSampleApplyTb selectOneByApplyNo(@Param("applyNo") String applyNo);
 
-    List<CerSampleApplyTb> selectSelective(CerSampleApplyTb cerSampleApplyTb);
 
     List<CerSampleApplyTb> selectAllByVectorTaskId(@Param("vectorTaskId") Integer vectorTaskId);
 
-
-    List<CerSampleApplyTb> selectAllByCurrentStepCode(@Param("currentStepCode") String currentStepCode);
 
     int deleteByApplyNo(@Param("applyNo") String applyNo);
 

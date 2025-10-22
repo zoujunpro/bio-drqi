@@ -512,13 +512,6 @@ public class SampleTestServiceImpl implements SampleTestService {
 
     }
 
-
-    @Override
-    public List<SampleApplyRspDTO> sampleApplyListAll(String currentStepCode) {
-        List<CerSampleApplyTb> cerSampleApplyTbList = cerSampleApplyTbMapper.selectAllByCurrentStepCode(currentStepCode);
-        return BeanUtils.copyListProperties(cerSampleApplyTbList, SampleApplyRspDTO.class);
-    }
-
     @Override
     public CountNumByApplyNoRspDTO countNumByApplyNo(String applyNo) {
         CountNumByApplyNoRspDTO countNumByApplyNoRspDTO = new CountNumByApplyNoRspDTO();

@@ -45,22 +45,6 @@ public class SampleTestController {
     }
 
     /**
-     * 取样检测-查询执行到某一步骤的取样申请
-     *
-     * @param currentStepCode
-     * @return
-     */
-    @GetMapping("sampleApplyListAll")
-    @WebLog(desc = "取样检测-查询执行到某一步骤的取样申请")
-    public ResponseResult<List<SampleApplyRspDTO>> sampleApplyListAll(@Validated @RequestParam String currentStepCode) {
-        List<SampleApplyRspDTO> list = sampleTestService.sampleApplyListAll(currentStepCode);
-        return ResponseResult.getSuccess(list);
-    }
-
-
-
-
-    /**
      * 取样检测-查询实施方案下取样检测信息
      *
      * @param sampleTestByVectorTaskReqDTO

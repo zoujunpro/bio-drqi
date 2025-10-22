@@ -4,6 +4,7 @@ package com.bio.drqi.manage.controller.seed;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.manage.seed.BreedAddReqDTO;
 import com.bio.drqi.manage.seed.BreedEditReqDTO;
 import com.bio.drqi.manage.seed.BreedListReqDTO;
@@ -64,6 +65,7 @@ public class SeedBreedDictController {
     @PostMapping("add")
     @WebLog(desc = "新增品种")
     @RequirePermissions("seed:breed:add")
+    @RequestLog("新增品种")
     public ResponseResult add(@RequestBody BreedAddReqDTO breedAddReqDTO){
         seedBreedDictService.add(breedAddReqDTO);
         return ResponseResult.getSuccess("成功");
@@ -77,6 +79,7 @@ public class SeedBreedDictController {
     @GetMapping("delete")
     @WebLog(desc = "删除品种")
     @RequirePermissions("seed:breed:delete")
+    @RequestLog("删除品种")
     public ResponseResult delete(@RequestParam Integer id){
         seedBreedDictService.delete(id);
         return ResponseResult.getSuccess("成功");
@@ -90,6 +93,7 @@ public class SeedBreedDictController {
     @PostMapping("edit")
     @WebLog(desc = "更新品种")
     @RequirePermissions("seed:breed:edit")
+    @RequestLog("更新品种")
     public ResponseResult edit(@RequestBody BreedEditReqDTO breedEditReqDTO){
         seedBreedDictService.edit(breedEditReqDTO);
         return ResponseResult.getSuccess("成功");

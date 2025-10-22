@@ -4,6 +4,7 @@ package com.bio.drqi.manage.controller.seed;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.common.dto.PageDTO;
 import com.bio.drqi.manage.conf.SpeciesBreedListRspDTO;
 import com.bio.drqi.manage.seed.SpeciesAddReqDTO;
@@ -67,6 +68,7 @@ public class SeedSpeciesDictController {
     @PostMapping("/add")
     @WebLog(desc = "新增物种")
     @RequirePermissions("seed:species:add")
+    @RequestLog("新增物种")
     public ResponseResult<String> add(@RequestBody SpeciesAddReqDTO speciesAddReqDTO) {
         seedSpeciesDictService.add(speciesAddReqDTO);
         return ResponseResult.getSuccess("成功");
@@ -80,6 +82,7 @@ public class SeedSpeciesDictController {
     @GetMapping("/delete")
     @WebLog(desc = "删除物种")
     @RequirePermissions("seed:species:delete")
+    @RequestLog("删除物种")
     public ResponseResult<String> delete(@RequestParam Integer id) {
         seedSpeciesDictService.delete(id);
         return ResponseResult.getSuccess("成功");
@@ -93,6 +96,7 @@ public class SeedSpeciesDictController {
     @PostMapping("/edit")
     @WebLog(desc = "更新物种")
     @RequirePermissions("seed:species:edit")
+    @RequestLog("更新物种")
     public ResponseResult<String> edit(@RequestBody SpeciesEditDTO speciesEditDTO) {
         seedSpeciesDictService.edit(speciesEditDTO);
         return ResponseResult.getSuccess("成功");

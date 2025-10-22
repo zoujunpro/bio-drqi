@@ -2,6 +2,7 @@ package com.bio.drqi.manage.controller.seed;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.manage.seed.SeedDictAddReqDTO;
 import com.bio.drqi.manage.seed.SeedDictEditReqDTO;
 import com.bio.drqi.manage.seed.SeedDictTreeListRspDTO;
@@ -35,6 +36,7 @@ public class SeedDictController {
      */
     @PostMapping("/add")
     @RequirePermissions("seed:seedDict:add")
+    @RequestLog("种子库字典新增")
     public ResponseResult<String> add(@RequestBody SeedDictAddReqDTO seedDictAddReqDTO) {
         seedBioDictService.add(seedDictAddReqDTO);
         return ResponseResult.getSuccess("成功");
@@ -45,6 +47,7 @@ public class SeedDictController {
      */
     @GetMapping("/delete")
     @RequirePermissions("seed:seedDict:delete")
+    @RequestLog("种子库字典删除")
     public ResponseResult delete(@RequestParam Integer id) {
         seedBioDictService.delete(id);
         return ResponseResult.getSuccess("成功");
@@ -55,6 +58,7 @@ public class SeedDictController {
      */
     @PostMapping("/edit")
     @RequirePermissions("seed:seedDict:edit")
+    @RequestLog("种子库字典编辑")
     public ResponseResult edit(@RequestBody SeedDictEditReqDTO seedDictEditReqDTO) {
         seedBioDictService.edit(seedDictEditReqDTO);
         return ResponseResult.getSuccess("成功");

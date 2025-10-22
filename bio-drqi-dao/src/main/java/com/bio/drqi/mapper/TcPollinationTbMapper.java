@@ -14,6 +14,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface TcPollinationTbMapper extends BaseMapper<TcPollinationTb> {
 
+    int deleteByPollinationApplyNum(@Param("pollinationApplyNum") String pollinationApplyNum);
+
     List<TcPollinationTb> selectAllByPollinationApplyNum(@Param("pollinationApplyNum") String pollinationApplyNum);
 
     List<TcPollinationTb> selectSelective(TcPollinationTb tcPollinationTb);

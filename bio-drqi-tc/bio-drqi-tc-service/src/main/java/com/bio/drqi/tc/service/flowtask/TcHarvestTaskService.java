@@ -76,14 +76,14 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
             throw new BusinessException("收获总数据和授粉数不匹配，请核实收获内容");
         }
         for (TcHarvestExcelDTO tcHarvestExcelDTO : tcHarvestExcelDTOList) {
-            TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode
+            TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSingleNumberAndMSingleNumber
                     (tcExperimentTb.getExperimentNum(),
                             tcHarvestExcelDTO.getFatherRegionNum(),
                             tcHarvestExcelDTO.getMotherRegionNum(),
                             tcHarvestExcelDTO.getFatherSeedNum(),
                             tcHarvestExcelDTO.getMotherSeedNum(),
-                            tcHarvestExcelDTO.getFatherSampleCode(),
-                            tcHarvestExcelDTO.getMotherSampleCode());
+                            tcHarvestExcelDTO.getFatherSingleNumber(),
+                            tcHarvestExcelDTO.getMotherSingleNumber());
             if (tcPollinationTb == null) {
                 throw new BusinessException("无此授粉记录：" + JSONUtil.toJsonStr(tcHarvestExcelDTO));
             }
@@ -112,14 +112,14 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
             tcHarvestSeedApplyTbMapper.insert(tcHarvestSeedApplyTb);
 
             for (TcHarvestExcelDTO tcHarvestExcelDTO : tcHarvestTaskDTO.getTcHarvestExcelDTOList()) {
-                TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode
+                TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSingleNumberAndMSingleNumber
                         (tcExperimentTb.getExperimentNum(),
                                 tcHarvestExcelDTO.getFatherRegionNum(),
                                 tcHarvestExcelDTO.getMotherRegionNum(),
                                 tcHarvestExcelDTO.getFatherSeedNum(),
                                 tcHarvestExcelDTO.getMotherSeedNum(),
-                                tcHarvestExcelDTO.getFatherSampleCode(),
-                                tcHarvestExcelDTO.getMotherSampleCode());
+                                tcHarvestExcelDTO.getFatherSingleNumber(),
+                                tcHarvestExcelDTO.getMotherSingleNumber());
                 if (tcPollinationTb == null) {
                     throw new BusinessException("无此授粉记录：" + JSONUtil.toJsonStr(tcHarvestExcelDTO));
                 }

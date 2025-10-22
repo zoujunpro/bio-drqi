@@ -153,7 +153,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 if (fatherTcExperimentDesignTb == null) {
                     throw new BusinessException("试验方案中不存在此小区或者母本种子，当前试验方案编号：" + tcExperimentTb.getExperimentNum() + "父本小区编号：" + executeFormContent.getFatherRegionNum() + "父本种子编号:" + executeFormContent.getFatherSeedNum());
                 }
-                TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode(executeFormContent.getExperimentNum(), executeFormContent.getFatherRegionNum(), executeFormContent.getMatherRegionNum(), executeFormContent.getFatherSeedNum(), executeFormContent.getMatherSeedNum(), executeFormContent.getFatherSingleNum(), executeFormContent.getMatherSingleNum());
+                TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSingleNumberAndMSingleNumber(executeFormContent.getExperimentNum(), executeFormContent.getFatherRegionNum(), executeFormContent.getMatherRegionNum(), executeFormContent.getFatherSeedNum(), executeFormContent.getMatherSeedNum(), executeFormContent.getFatherSingleNum(), executeFormContent.getMatherSingleNum());
                 if (tcPollinationTb == null) {
                     throw new BusinessException("无此授粉信息或者授粉信息不匹配：当前对应数据行的试验方案：" + executeFormContent.getExperimentNum() + " 父本种子编号：" + executeFormContent.getFatherSeedNum() + " 母本种子编号：" + executeFormContent.getMatherSeedNum());
                 }

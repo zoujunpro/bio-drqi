@@ -13,6 +13,10 @@
         <result property="fRegionNum" column="f_region_num" jdbcType="VARCHAR"/>
         <result property="mSampleCode" column="m_sample_code" jdbcType="VARCHAR"/>
         <result property="fSampleCode" column="f_sample_code" jdbcType="VARCHAR"/>
+        <result property="mTcSampleCode" column="m_tc_sample_code" jdbcType="VARCHAR"/>
+        <result property="fTcSampleCode" column="f_tc_sample_code" jdbcType="VARCHAR"/>
+        <result property="mSingleNumber" column="m_single_number" jdbcType="VARCHAR"/>
+        <result property="fSingleNumber" column="f_single_number" jdbcType="VARCHAR"/>
         <result property="mSeedNum" column="m_seed_num" jdbcType="VARCHAR"/>
         <result property="fSeedNum" column="f_seed_num" jdbcType="VARCHAR"/>
         <result property="mBreedCode" column="m_breed_code" jdbcType="VARCHAR"/>
@@ -38,7 +42,7 @@
     <sql id="Base_Column_List">
         id
         ,experiment_num,sample_apply_num,pollination_apply_num,
-        m_region_num,f_region_num,m_sample_code,
+        m_region_num,f_region_num,m_sample_code,m_tc_sample_code,f_tc_sample_code,m_single_number,f_single_number,
         f_sample_code,m_seed_num,f_seed_num,
         m_breed_code,f_breed_code,m_vector_task_code,f_vector_task_code,
         m_generation_code,f_generation_code,m_tc_gene,
@@ -66,6 +70,10 @@
             <if test="fRegionNum != null and fRegionNum!=''">and f_region_num=#{fRegionNum,jdbcType=VARCHAR}</if>
             <if test="mSampleCode != null and mSampleCode!=''">and m_sample_code=#{mSampleCode,jdbcType=VARCHAR}</if>
             <if test="fSampleCode != null and fSampleCode!=''">and f_sample_code=#{fSampleCode,jdbcType=VARCHAR}</if>
+            <if test="mTcSampleCode != null and mTcSampleCode!=''">and m_tc_sample_code=#{mTcSampleCode,jdbcType=VARCHAR}</if>
+            <if test="fTcSampleCode != null and fTcSampleCode!=''">and f_tc_sample_code=#{fTcSampleCode,jdbcType=VARCHAR}</if>
+            <if test="mSingleNumber != null and mSingleNumber!=''">and m_single_number=#{mSingleNumber,jdbcType=VARCHAR}</if>
+            <if test="fSingleNumber != null and fSingleNumber!=''">and f_single_number=#{fSingleNumber,jdbcType=VARCHAR}</if>
             <if test="mSeedNum != null and mSeedNum!=''">and m_seed_num=#{mSeedNum,jdbcType=VARCHAR}</if>
             <if test="fSeedNum != null and fSeedNum!=''">and f_seed_num=#{fSeedNum,jdbcType=VARCHAR}</if>
             <if test="fBreedCode != null and fBreedCode!=''">and f_breed_code=#{fBreedCode,jdbcType=VARCHAR}</if>
@@ -91,29 +99,9 @@
         </where>
         order by id desc
     </select>
-    <insert id="insertBatch">
-        insert into tc_pollination_tb(id,experiment_num,sample_apply_num,
-        pollination_apply_num,m_region_num,f_region_num,
-        m_sample_code,f_sample_code,m_seed_num,
-        f_seed_num,f_breed_code,m_breed_code,
-        m_vector_task_code,f_vector_task_code,m_generation_code,
-        f_generation_code,m_tc_gene,f_tc_gene,
-        pollination_date,pollination_method_code,pollination_method_name,
-        harvest_type_code,harvest_type_name,remark,unit,seed_number)
-        values
-        <foreach collection="tcPollinationTbCollection" item="item" separator=",">
-            (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.sampleApplyNum,jdbcType=VARCHAR},
-            #{item.pollinationApplyNum,jdbcType=VARCHAR},#{item.mRegionNum,jdbcType=VARCHAR},#{item.fRegionNum,jdbcType=VARCHAR},
-            #{item.mSampleCode,jdbcType=VARCHAR},#{item.fSampleCode,jdbcType=VARCHAR},#{item.mSeedNum,jdbcType=VARCHAR},
-            #{item.fSeedNum,jdbcType=VARCHAR},#{item.fBreedCode,jdbcType=VARCHAR},#{item.mBreedCode,jdbcType=VARCHAR},
-            #{item.mVectorTaskCode,jdbcType=VARCHAR},#{item.fVectorTaskCode,jdbcType=VARCHAR},#{item.mGenerationCode,jdbcType=VARCHAR},
-            #{item.fGenerationCode,jdbcType=VARCHAR},#{item.mTcGene,jdbcType=VARCHAR},#{item.fTcGene,jdbcType=VARCHAR},
-            #{item.pollinationDate,jdbcType=VARCHAR},#{item.pollinationMethodCode,jdbcType=VARCHAR},#{item.pollinationMethodName,jdbcType=VARCHAR},
-            #{item.harvestTypeCode,jdbcType=VARCHAR},#{item.harvestTypeName,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},#{item.unit,jdbcType=VARCHAR},#{item.seedNumber,jdbcType=VARCHAR})
-        </foreach>
-    </insert>
+
     <select id="TcPollinationTb"></select>
-    <select id="selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSampleCodeAndMSampleCode"
+    <select id="selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSingleNumberAndMSingleNumber"
             resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -125,23 +113,23 @@
         AND f_seed_num = #{fSeedNum,jdbcType=VARCHAR}
         AND m_seed_num = #{mSeedNum,jdbcType=VARCHAR}
         <choose>
-            <when test="fSampleCode !=null and fSampleCode!='' ">
-                AND f_sample_code = #{fSampleCode,jdbcType=VARCHAR}
+            <when test="fSingleNumber !=null and fSingleNumber!='' ">
+                AND f_single_number = #{fSingleNumber,jdbcType=VARCHAR}
             </when>
             <otherwise>
-                AND f_sample_code is null
+                AND f_single_number is null
             </otherwise>
         </choose>
         <choose>
-            <when test="mSampleCode !=null and mSampleCode!='' ">
-                AND m_sample_code = #{mSampleCode,jdbcType=VARCHAR}
+            <when test="mSingleNumber !=null and mSingleNumber!='' ">
+                AND m_single_number = #{mSingleNumber,jdbcType=VARCHAR}
             </when>
             <otherwise>
-                AND m_sample_code  is null
+                AND m_single_number  is null
             </otherwise>
         </choose>
     </select>
-    <select id="selectOneByExperimentNumAndMRegionNumAndMSeedNumAndMSampleCode" resultMap="BaseResultMap">
+    <select id="selectOneByExperimentNumAndMRegionNumAndMSeedNumAndMSingleNumber" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from tc_pollination_tb
@@ -150,11 +138,11 @@
         AND m_region_num = #{mRegionNum,jdbcType=VARCHAR}
         AND m_seed_num = #{mSeedNum,jdbcType=VARCHAR}
         <choose>
-            <when test="mSampleCode !=null and mSampleCode!='' ">
-                AND m_sample_code = #{mSampleCode,jdbcType=VARCHAR}
+            <when test="mSingleNumber !=null and mSingleNumber!='' ">
+                AND m_single_number = #{mSingleNumber,jdbcType=VARCHAR}
             </when>
             <otherwise>
-                AND m_sample_code  is null
+                AND m_single_number  is null
             </otherwise>
         </choose>
     </select>
@@ -165,4 +153,31 @@
         where
         experiment_num = #{experimentNum,jdbcType=VARCHAR}
     </select>
+    <insert id="insertBatch">
+        insert into tc_pollination_tb(id,experiment_num,sample_apply_num,
+        pollination_apply_num,m_region_num,f_region_num,
+        m_sample_code,f_sample_code,m_tc_sample_code,
+        f_tc_sample_code,m_single_number,f_single_number,
+        m_seed_num,f_seed_num,f_breed_code,
+        m_breed_code,m_vector_task_code,f_vector_task_code,
+        m_generation_code,f_generation_code,m_tc_gene,
+        f_tc_gene,pollination_date,pollination_method_code,
+        pollination_method_name,harvest_type_code,harvest_type_name,
+        remark,unit,seed_number,
+        harvest_apply_num,harvest_remark)
+        values
+        <foreach collection="tcPollinationTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.sampleApplyNum,jdbcType=VARCHAR},
+            #{item.pollinationApplyNum,jdbcType=VARCHAR},#{item.mRegionNum,jdbcType=VARCHAR},#{item.fRegionNum,jdbcType=VARCHAR},
+            #{item.mSampleCode,jdbcType=VARCHAR},#{item.fSampleCode,jdbcType=VARCHAR},#{item.mTcSampleCode,jdbcType=VARCHAR},
+            #{item.fTcSampleCode,jdbcType=VARCHAR},#{item.mSingleNumber,jdbcType=VARCHAR},#{item.fSingleNumber,jdbcType=VARCHAR},
+            #{item.mSeedNum,jdbcType=VARCHAR},#{item.fSeedNum,jdbcType=VARCHAR},#{item.fBreedCode,jdbcType=VARCHAR},
+            #{item.mBreedCode,jdbcType=VARCHAR},#{item.mVectorTaskCode,jdbcType=VARCHAR},#{item.fVectorTaskCode,jdbcType=VARCHAR},
+            #{item.mGenerationCode,jdbcType=VARCHAR},#{item.fGenerationCode,jdbcType=VARCHAR},#{item.mTcGene,jdbcType=VARCHAR},
+            #{item.fTcGene,jdbcType=VARCHAR},#{item.pollinationDate,jdbcType=VARCHAR},#{item.pollinationMethodCode,jdbcType=VARCHAR},
+            #{item.pollinationMethodName,jdbcType=VARCHAR},#{item.harvestTypeCode,jdbcType=VARCHAR},#{item.harvestTypeName,jdbcType=VARCHAR},
+            #{item.remark,jdbcType=VARCHAR},#{item.unit,jdbcType=VARCHAR},#{item.seedNumber,jdbcType=DECIMAL},
+            #{item.harvestApplyNum,jdbcType=VARCHAR},#{item.harvestRemark,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
 </mapper>

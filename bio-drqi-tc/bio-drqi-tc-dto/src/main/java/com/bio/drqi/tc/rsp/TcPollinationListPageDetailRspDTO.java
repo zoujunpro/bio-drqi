@@ -49,6 +49,18 @@ public class TcPollinationListPageDetailRspDTO {
     @JsonProperty("fSampleCode")
     private String fSampleCode;
 
+    @JsonProperty("mTcSampleCode")
+    private String mTcSampleCode;
+
+    @JsonProperty("fTcSampleCode")
+    private String fTcSampleCode;
+
+    @JsonProperty("mSingleNumber")
+    private String mSingleNumber;
+
+    @JsonProperty("fSingleNumber")
+    private String fSingleNumber;
+
     /**
      * 母本种子编号
      */

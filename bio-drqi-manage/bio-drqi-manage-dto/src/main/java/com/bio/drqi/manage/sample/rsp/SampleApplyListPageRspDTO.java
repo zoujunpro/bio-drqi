@@ -7,60 +7,21 @@ import java.util.Date;
 
 @Data
 public class SampleApplyListPageRspDTO {
-    /**
-     * 主键ID
-     */
     private Integer id;
 
     /**
-     * 项目ID
+     * 取样申请编号
      */
-    private Integer projectId;
+    private String applyNo;
 
     /**
-     * 子项目ID
+     * 取样申请数量
      */
-    private Integer subProjectId;
-
-    /**
-     * 载体任务ID
-     */
-    private Integer vectorTaskId;
-
-    /**
-     * 项目编码
-     */
-    private String projectCode;
-
-    /**
-     * 子项目编码
-     */
-    private String subProjectCode;
-
-    /**
-     * 载体任务编码
-     */
-    private String vectorTaskCode;
-
-    /**
-     * 质粒名称
-     */
-    private String plasmidName;
-
-    /**
-     * 转化编号/种子编号
-     */
-    private String transformCode;
-
-    /**
-     * 取样编号
-     */
-    private String sampleCode;
+    private Integer applyNumber;
 
     /**
      * 取样申请时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date applyTime;
 
     /**
@@ -69,150 +30,58 @@ public class SampleApplyListPageRspDTO {
     private Integer applyUserId;
 
     /**
-     * 取样申请人姓名
+     * 取样申请人
      */
     private String applyUserName;
 
     /**
-     * 取样申请关联工单
+     * 取样工单描述
      */
-    private String applyTaskNum;
+    private String applyDesc;
 
     /**
-     * 取样时间
+     * 取样类型 F首次取样   R重复取样
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date sampleTime;
+    private String applyType;
 
     /**
-     * 取样备注
+     * 鉴定引物地址
      */
-    private String sampleRemark;
+    private String identifyExcelUrl;
 
     /**
-     * 代次
+     * 一代测序文件地址
      */
-    private String sampleGeneration;
+    private String oneTestExcelUrl;
 
     /**
-     * 取样数据递送关联工单
+     * NGS测序文件地址
      */
-    private String sampleTaskNum;
+    private String ngsExcelUrl;
 
     /**
-     * 取样数据递送人姓名
+     * 取消后的取样数据信息
      */
-    private String sampleUserName;
+    private String cancelTaskSampleList;
 
     /**
-     * 取样数据递送人ID
+     * 是否是克隆苗取样 Y N
      */
-    private Integer sampleUserId;
+    private String cloneFlag;
 
     /**
-     * 鉴定引物
+     * 孔板类型 one,more
      */
-    private String testIdentifyPrimer;
+    private String layoutFlag;
 
     /**
-     * 检测方法
+     * 实施方案编号
      */
-    private String testMethod;
+    private String vectorTaskCodes;
 
     /**
-     * 编辑特性
+     * 取样编号范围
      */
-    private String testEditType;
-
-    /**
-     * 非转鉴定引物
-     */
-    private String testNoTransIdentityPrimer;
-
-    /**
-     * 是否为转基因阳性
-     */
-    private String testIsGeneModifyPositive;
-
-    /**
-     * 是否为定点插入
-     */
-    private String testIfFixedPoint;
-
-    /**
-     * 是否为单拷贝插入
-     */
-    private String testIfCopyInsert;
-
-    /**
-     * 定点插入方式（定点纯合/定点杂合）
-     */
-    private String testFixedPointType;
-
-    /**
-     * donor载体残留情况
-     */
-    private String testDonorResidueInfo;
-
-    /**
-     * 插入位点
-     */
-    private String testInsertionSite;
-
-    /**
-     * ELISA结果（蛋白表达量）
-     */
-    private String testElisaResult;
-
-    /**
-     * qbzr表达量
-     */
-    private String testQbzrSeq;
-
-    /**
-     * 编辑工具残留情况
-     */
-    private String testEditResidueInfo;
-
-    /**
-     * 检测数据递送关联工单
-     */
-    private String testTaskNum;
-
-    /**
-     * 检测数据递送人ID
-     */
-    private Integer testUserId;
-
-    /**
-     * 检测人
-     */
-    private String testUserName;
-
-    /**
-     * 检测时间
-     */
-    private String testTime;
-
-    /**
-     * 审核人姓名
-     */
-    private String checkUserName;
-
-    /**
-     * 审核人ID
-     */
-    private Integer checkUserId;
-
-    /**
-     * 审核关联工单
-     */
-    private String checkTaskNum;
-
-    /**
-     * 审查结果
-     */
-    private String checkResult;
-
+    private String sampleCodeRange;
 
 }

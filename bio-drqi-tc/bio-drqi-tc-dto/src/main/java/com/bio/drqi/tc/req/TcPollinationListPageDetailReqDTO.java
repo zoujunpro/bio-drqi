@@ -10,4 +10,9 @@ public class TcPollinationListPageDetailReqDTO extends PageDTO {
      * 授粉批次号
      */
     private String pollinationApplyNum;
+
+    /**
+     * 实验编号
+     */
+    private String experimentNum;
 }

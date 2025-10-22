@@ -180,4 +180,9 @@
             #{item.harvestApplyNum,jdbcType=VARCHAR},#{item.harvestRemark,jdbcType=VARCHAR})
         </foreach>
     </insert>
+    <delete id="deleteByPollinationApplyNum">
+        delete
+        from tc_pollination_tb
+        where pollination_apply_num = #{pollinationApplyNum,jdbcType=VARCHAR}
+    </delete>
 </mapper>

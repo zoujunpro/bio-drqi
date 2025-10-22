@@ -222,7 +222,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                 tcPollinationTb.setMSampleCode(tcPollinationExcelDTO.getMotherSampleCode());
                 tcPollinationTb.setFSampleCode(tcPollinationExcelDTO.getFatherSampleCode());
                 tcPollinationTb.setMTcSampleCode(tcPollinationExcelDTO.getMotherTcSampleCode());
-                tcPollinationTb.setFTcSampleCode(tcPollinationExcelDTO.getMotherTcSampleCode());
+                tcPollinationTb.setFTcSampleCode(tcPollinationExcelDTO.getFatherTcSampleCode());
                 tcPollinationTb.setFSingleNumber(tcPollinationExcelDTO.getFatherSingleNumber());
                 tcPollinationTb.setMSingleNumber(tcPollinationExcelDTO.getMotherSingleNumber());
                 tcPollinationTb.setMSeedNum(tcPollinationExcelDTO.getMotherSeedNum());

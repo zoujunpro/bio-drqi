@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/test1")
 public class Clean20250721Controller {
 
     @Resource

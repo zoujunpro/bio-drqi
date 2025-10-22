@@ -7,8 +7,7 @@ import lombok.Data;
 public class TcPollinationListPageDetailReqDTO extends PageDTO {
 
     /**
-     * 实验编号
+     * 授粉批次号
      */
-    private String experimentNum;
-
+    private String pollinationApplyNum;
 }

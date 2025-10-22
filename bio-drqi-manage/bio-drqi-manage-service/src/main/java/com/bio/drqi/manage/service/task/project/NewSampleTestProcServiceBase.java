@@ -189,7 +189,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         cerSampleApplyTb.setApplyTime(new Date());
         cerSampleApplyTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
         cerSampleApplyTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
-        cerSampleApplyTb.setCurrentStepCode(SampleTaskStatusEnum.STATUS_0.status);
         cerSampleApplyTb.setApplyDesc(bioTaskDtlTb.getTaskDesc());
         cerSampleApplyTb.setApplyType(CollectionUtil.isNotEmpty(newSampleTestDTO.getRepeatSampleApplyList()) ? SampleApplyTypeEnum.R.name() : SampleApplyTypeEnum.F.name());
         cerSampleApplyTbMapper.insert(cerSampleApplyTb);

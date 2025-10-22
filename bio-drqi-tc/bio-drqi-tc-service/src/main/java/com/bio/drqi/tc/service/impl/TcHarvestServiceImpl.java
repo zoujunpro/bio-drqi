@@ -93,7 +93,9 @@ public class TcHarvestServiceImpl implements TcHarvestService {
             TcHarvestExcelDTO tcHarvestExcelDTO = new TcHarvestExcelDTO();
             tcHarvestExcelDTO.setMotherRegionNum(tcPollinationTb.getMRegionNum());
             tcHarvestExcelDTO.setMotherSeedNum(tcPollinationTb.getMSeedNum());
+            tcHarvestExcelDTO.setMotherSingleNumber(tcPollinationTb.getMSingleNumber());
             tcHarvestExcelDTO.setMotherSampleCode(tcPollinationTb.getMSampleCode());
+            tcHarvestExcelDTO.setMotherTcSampleCode(tcPollinationTb.getMTcSampleCode());
             if (tcPollinationTb.getMBreedCode() != null) {
                 tcHarvestExcelDTO.setMotherBreedName(codeOfNameMap.get(tcPollinationTb.getMBreedCode()));
             }
@@ -105,7 +107,9 @@ public class TcHarvestServiceImpl implements TcHarvestService {
             tcHarvestExcelDTO.setMotherTcGene(tcPollinationTb.getMTcGene());
             tcHarvestExcelDTO.setFatherRegionNum(tcPollinationTb.getFRegionNum());
             tcHarvestExcelDTO.setFatherSeedNum(tcPollinationTb.getFSeedNum());
+            tcHarvestExcelDTO.setFatherSingleNumber(tcPollinationTb.getFSingleNumber());
             tcHarvestExcelDTO.setFatherSampleCode(tcPollinationTb.getFSampleCode());
+            tcHarvestExcelDTO.setFatherTcSampleCode(tcPollinationTb.getFTcSampleCode());
             tcHarvestExcelDTO.setFatherVectorTaskCode(tcPollinationTb.getFVectorTaskCode());
             tcHarvestExcelDTO.setFatherGenerationName(tcPollinationTb.getFGenerationCode());
             tcHarvestExcelDTO.setFatherTcGene(tcPollinationTb.getFTcGene());

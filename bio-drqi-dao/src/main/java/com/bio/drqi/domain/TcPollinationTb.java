@@ -56,6 +56,14 @@ public class TcPollinationTb implements Serializable {
      */
     private String fSampleCode;
 
+    private String mTcSampleCode;
+
+    private String fTcSampleCode;
+
+    private String mSingleNumber;
+
+    private String fSingleNumber;
+
     /**
      * 母本种子编号
      */

@@ -70,7 +70,7 @@
             </if>
             <if test="cloneFlag != null and cloneFlag!=''">and clone_flag=#{cloneFlag,jdbcType=VARCHAR}</if>
             <if test="layoutFlag != null and layoutFlag!=''">and layout_flag=#{layoutFlag,jdbcType=VARCHAR}</if>
-            <if test="vectorTaskCodes != null">and vector_task_codes  LIKE  CONCAT('%',#{vectorTaskCodes,jdbcType=VARCHAR},'%')</if>
+            <if test="vectorTaskCodes != null and vectorTaskCodes!=''">and vector_task_codes  LIKE  CONCAT('%',#{vectorTaskCodes,jdbcType=VARCHAR},'%')</if>
             <if test="sampleCodeRange != null">and sample_code_range=#{sampleCodeRange,jdbcType=VARCHAR}</if>
         </where>
     </select>

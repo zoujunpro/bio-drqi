@@ -16,7 +16,6 @@
             <result property="identifyExcelUrl" column="identify_excel_url" jdbcType="VARCHAR"/>
             <result property="oneTestExcelUrl" column="one_test_excel_url" jdbcType="VARCHAR"/>
             <result property="ngsExcelUrl" column="ngs_excel_url" jdbcType="VARCHAR"/>
-            <result property="cancelTaskSampleList" column="cancel_task_sample_List" jdbcType="VARCHAR"/>
             <result property="cloneFlag" column="clone_flag" jdbcType="VARCHAR"/>
             <result property="layoutFlag" column="layout_flag" jdbcType="VARCHAR"/>
             <result property="vectorTaskCodes" column="vector_task_codes" jdbcType="VARCHAR"/>
@@ -27,7 +26,7 @@
         id,apply_no,apply_number,
         apply_time,apply_user_id,apply_user_name,
         apply_desc,apply_type,identify_excel_url,
-        one_test_excel_url,ngs_excel_url,cancel_task_sample_List,
+        one_test_excel_url,ngs_excel_url,
         clone_flag,layout_flag,vector_task_codes,
         sample_code_range
     </sql>
@@ -66,8 +65,6 @@
             <if test="identifyExcelUrl != null">and identify_excel_url=#{identifyExcelUrl,jdbcType=VARCHAR}</if>
             <if test="oneTestExcelUrl != null">and one_test_excel_url=#{oneTestExcelUrl,jdbcType=VARCHAR}</if>
             <if test="ngsExcelUrl != null">and ngs_excel_url=#{ngsExcelUrl,jdbcType=VARCHAR}</if>
-            <if test="cancelTaskSampleList != null">and cancel_task_sample_List=#{cancelTaskSampleList,jdbcType=VARCHAR}
-            </if>
             <if test="cloneFlag != null and cloneFlag!=''">and clone_flag=#{cloneFlag,jdbcType=VARCHAR}</if>
             <if test="layoutFlag != null and layoutFlag!=''">and layout_flag=#{layoutFlag,jdbcType=VARCHAR}</if>
             <if test="vectorTaskCodes != null and vectorTaskCodes!=''">and vector_task_codes  LIKE  CONCAT('%',#{vectorTaskCodes,jdbcType=VARCHAR},'%')</if>

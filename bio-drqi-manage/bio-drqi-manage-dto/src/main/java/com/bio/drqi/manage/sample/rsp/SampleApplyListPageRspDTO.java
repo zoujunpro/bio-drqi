@@ -59,10 +59,6 @@ public class SampleApplyListPageRspDTO {
      */
     private String ngsExcelUrl;
 
-    /**
-     * 取消后的取样数据信息
-     */
-    private String cancelTaskSampleList;
 
     /**
      * 是否是克隆苗取样 Y N

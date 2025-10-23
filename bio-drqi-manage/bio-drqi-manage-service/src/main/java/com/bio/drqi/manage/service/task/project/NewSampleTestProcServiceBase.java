@@ -195,7 +195,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         cerSampleApplyTb.setIdentifyExcelUrl(null);
         cerSampleApplyTb.setOneTestExcelUrl(null);
         cerSampleApplyTb.setNgsExcelUrl(null);
-        cerSampleApplyTb.setCancelTaskSampleList(null);
         cerSampleApplyTb.setCloneFlag(newSampleTestDTO.isCloneFlag() ? BioDrQiContents.Y : BioDrQiContents.N);
         cerSampleApplyTb.setLayoutFlag(newSampleTestDTO.getTestType());
         cerSampleApplyTb.setVectorTaskCodes(null);

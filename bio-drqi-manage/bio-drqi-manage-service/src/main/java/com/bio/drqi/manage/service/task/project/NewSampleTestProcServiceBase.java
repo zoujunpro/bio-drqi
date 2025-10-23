@@ -354,7 +354,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
             cerSampleTestTbListMap.forEach((vectorTaskCode, sampleTestList) -> {
                 vectorTaskCodeBuff.append(vectorTaskCode).append(",");
                 sampleTestList = sampleTestList.stream().sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
-                sampleCodeRangeBuff.append(sampleTestList.get(0)+"-"+sampleTestList.get(sampleTestList.size()-1)).append(",");
+                sampleCodeRangeBuff.append(sampleTestList.get(0).getSampleCode()+"-"+sampleTestList.get(sampleTestList.size()-1).getSampleCode()).append(",");
             });
             cerSampleApplyTb.setVectorTaskCodes(vectorTaskCodeBuff.substring(0, vectorTaskCodeBuff.length() - 1));
             cerSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));

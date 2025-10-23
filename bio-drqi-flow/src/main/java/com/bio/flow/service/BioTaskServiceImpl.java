@@ -4,11 +4,8 @@ package com.bio.flow.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.bio.base.api.RemoteUserService;
-import com.bio.base.user.rsp.UserBaseInfoRspDTO;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
-import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.SpringUtils;
@@ -45,9 +42,6 @@ import java.util.stream.Collectors;
 public class BioTaskServiceImpl implements BioTaskService {
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
-
-    @Resource
-    private RemoteUserService remoteUserService;
 
     @Resource
     private BioTaskConfMapper bioTaskConfMapper;
@@ -276,10 +270,6 @@ public class BioTaskServiceImpl implements BioTaskService {
     }
 
     private List<BioTaskListPageRspDTO> getTaskListPageRspDTOS(List<BioTaskDtlTb> bioTaskDtlTbList) {
-        ResponseResult<List<UserBaseInfoRspDTO>> responseResult = remoteUserService.list();
-        if (responseResult.isError()) {
-            throw new BusinessException(responseResult.getMessage());
-        }
         List<BioTaskListPageRspDTO> bioTaskListPageRspDTOList = new ArrayList<>();
         for (BioTaskDtlTb bioTaskDtlTb : bioTaskDtlTbList) {
             BioTaskListPageRspDTO bioTaskListPageRspDTO = new BioTaskListPageRspDTO();

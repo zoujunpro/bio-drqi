@@ -6,6 +6,7 @@ import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
+import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.*;
@@ -191,6 +192,14 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         cerSampleApplyTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
         cerSampleApplyTb.setApplyDesc(bioTaskDtlTb.getTaskDesc());
         cerSampleApplyTb.setApplyType(CollectionUtil.isNotEmpty(newSampleTestDTO.getRepeatSampleApplyList()) ? SampleApplyTypeEnum.R.name() : SampleApplyTypeEnum.F.name());
+        cerSampleApplyTb.setIdentifyExcelUrl(null);
+        cerSampleApplyTb.setOneTestExcelUrl(null);
+        cerSampleApplyTb.setNgsExcelUrl(null);
+        cerSampleApplyTb.setCancelTaskSampleList(null);
+        cerSampleApplyTb.setCloneFlag(newSampleTestDTO.isCloneFlag() ? BioDrQiContents.Y : BioDrQiContents.N);
+        cerSampleApplyTb.setLayoutFlag(newSampleTestDTO.getTestType());
+        cerSampleApplyTb.setVectorTaskCodes(null);
+        cerSampleApplyTb.setSampleCodeRange(null);
         cerSampleApplyTbMapper.insert(cerSampleApplyTb);
 
         //重复取样申请
@@ -337,6 +346,20 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     throw new BusinessException("取样编号有重复");
                 }
             }
+            //如果是首次申请，更新申请中包含的事实方案和取样编号范围
+            List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
+            Map<String, List<CerSampleTestTb>> cerSampleTestTbListMap = cerSampleTestTbList.stream().collect(Collectors.groupingBy(CerSampleTestTb::getVectorTaskCode));
+            StringBuffer vectorTaskCodeBuff = new StringBuffer();
+            StringBuffer sampleCodeRangeBuff = new StringBuffer();
+            cerSampleTestTbListMap.forEach((vectorTaskCode, sampleTestList) -> {
+                vectorTaskCodeBuff.append(vectorTaskCode).append(",");
+                sampleTestList = sampleTestList.stream().sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
+                sampleCodeRangeBuff.append(sampleTestList.get(0)+"-"+sampleTestList.get(sampleTestList.size()-1)).append(",");
+            });
+            cerSampleApplyTb.setVectorTaskCodes(vectorTaskCodeBuff.substring(0, vectorTaskCodeBuff.length() - 1));
+            cerSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));
+            cerSampleApplyTbMapper.updateById(cerSampleApplyTb);
+
         }
     }
 

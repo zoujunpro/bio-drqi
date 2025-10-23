@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.controller.project;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.drqi.manage.sample.req.SampleApplyListPageReqDTO;
 import com.bio.drqi.manage.sample.rsp.SampleApplyListPageRspDTO;
 import com.bio.drqi.manage.service.project.SampleApplyService;
@@ -32,6 +33,7 @@ public class SampleApplyController {
      * @return
      */
     @PostMapping("/listPage")
+    @RequirePermissions("cer:sampleApply:listPage")
     public ResponseResult<PageInfo<SampleApplyListPageRspDTO>> listPage(@RequestBody @Validated SampleApplyListPageReqDTO sampleApplyListPageReqDTO) {
         return ResponseResult.getSuccess(sampleApplyService.listPage(sampleApplyListPageReqDTO));
     }

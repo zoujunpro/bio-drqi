@@ -38,7 +38,7 @@ public class SampleTestController {
      */
     @PostMapping("listPage")
     @WebLog(desc = "取样检测-分页查询")
-    @RequirePermissions("cer:sampleTest:listPage")
+    @RequirePermissions({"cer:sampleTest:listPage","cer:sampleApply:listPage"})
     public ResponseResult<PageInfo<SampleTestListDetailRspDTO>> listPage(@Validated @RequestBody SampleTestListDetailReqDTO sampleTestListDetailReqDTO) {
         PageInfo<SampleTestListDetailRspDTO> resultList = sampleTestService.listPage(sampleTestListDetailReqDTO);
         return ResponseResult.getSuccess(resultList);

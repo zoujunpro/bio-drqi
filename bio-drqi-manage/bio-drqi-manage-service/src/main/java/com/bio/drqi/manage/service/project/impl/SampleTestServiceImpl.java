@@ -235,6 +235,12 @@ public class SampleTestServiceImpl implements SampleTestService {
         if (testExcelDTOList.size() != cerSampleTestTbList.size()) {
             throw new BusinessException("有取样编号不存在此申请中");
         }
+
+        CerSampleApplyTb cerSampleApplyTb = cerSampleApplyTbMapper.selectOneByApplyNo(uploadTestTemplateReqDTO.getApplyNo());
+        if (cerSampleApplyTb == null) {
+            throw new BusinessException("数据异常，找不到申请数据");
+        }
+
         List<CerSampleTestTb> updateList = new ArrayList<>();
         Map<String, CerSampleTestTb> cerSampleTestTbMap = cerSampleTestTbList.stream().collect(Collectors.toMap(CerSampleTestTb::getSampleCode, cerSampleTestTb -> cerSampleTestTb));
         for (TestExcelDTO testExcelDTO : testExcelDTOList) {
@@ -263,12 +269,15 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
 
 
+        cerSampleApplyTb.setOneTestExcelUrl(uploadTestTemplateReqDTO.getExcelUrl());
+
+
         NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
         newSampleTestDTO.setTestDataExcelUrl(uploadTestTemplateReqDTO.getExcelUrl());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
         cerSampleTestTbMapper.updateBatchById(updateList);
-
+        cerSampleApplyTbMapper.updateById(cerSampleApplyTb);
     }
 
     @Override
@@ -344,7 +353,16 @@ public class SampleTestServiceImpl implements SampleTestService {
     public void uploadIdentifyPrimerTemplate(UploadIdentifyPrimerTemplateReqDTO uploadIdentifyPrimerTemplateReqDTO) {
 
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(uploadIdentifyPrimerTemplateReqDTO.getApplyNo());
-
+        if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            throw new BusinessException("非执行中任务");
+        }
+        if (!uploadIdentifyPrimerTemplateReqDTO.getExcelUrl().endsWith("xlsx")) {
+            throw new BusinessException("文件格式错误");
+        }
+        CerSampleApplyTb cerSampleApplyTb = cerSampleApplyTbMapper.selectOneByApplyNo(uploadIdentifyPrimerTemplateReqDTO.getApplyNo());
+        if (cerSampleApplyTb == null) {
+            throw new BusinessException("数据异常，找不到申请数据");
+        }
         String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + uploadIdentifyPrimerTemplateReqDTO.getExcelUrl();
         try {
             ossService.downloadPath(tempFilePath, uploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
@@ -363,11 +381,12 @@ public class SampleTestServiceImpl implements SampleTestService {
                 }
             }
         }
-
+        cerSampleApplyTb.setIdentifyExcelUrl(uploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
         NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
         newSampleTestDTO.setIdentifyPrimerTemplateExcelUrl(uploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        cerSampleApplyTbMapper.updateById(cerSampleApplyTb);
 
         //默认排版
         LayoutConfirmReqDTO layoutConfirmReqDTO = getLayoutConfirmReqDTO(bioTaskDtlTb.getTaskNum());
@@ -529,6 +548,13 @@ public class SampleTestServiceImpl implements SampleTestService {
         if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
             throw new BusinessException("非执行中任务，无法进行操作");
         }
+        if (!uploadBioInfoSampleTestResultReqDTO.getExcelUrl().endsWith("xlsx")) {
+            throw new BusinessException("文件格式错误");
+        }
+        CerSampleApplyTb cerSampleApplyTb = cerSampleApplyTbMapper.selectOneByApplyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
+        if (cerSampleApplyTb == null) {
+            throw new BusinessException("数据异常，找不到申请数据");
+        }
         NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
         newSampleTestDTO.setBioInfoResultExcelUrl(uploadBioInfoSampleTestResultReqDTO.getExcelUrl());
 
@@ -608,8 +634,11 @@ public class SampleTestServiceImpl implements SampleTestService {
             });
             cerSampleTestBioInfoResultTbMapper.insertBatch(cerSampleTestBioInfoResultTbList);
         }
+
+        cerSampleApplyTb.setNgsExcelUrl(uploadBioInfoSampleTestResultReqDTO.getExcelUrl());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        cerSampleApplyTbMapper.updateById(cerSampleApplyTb);
     }
 
     @Override
@@ -701,10 +730,10 @@ public class SampleTestServiceImpl implements SampleTestService {
                 sampleCodeList.add(cerSampleTestTb.getSampleCode());
             }
         }
-        cerSampleTestTbMapper.updateTargetFlagByApplyNo(null,sampleTestUploadTargetResultTemplateReqDTO.getTaskNum());
+        cerSampleTestTbMapper.updateTargetFlagByApplyNo(null, sampleTestUploadTargetResultTemplateReqDTO.getTaskNum());
         cerSampleTestTbMapper.updateTargetFlagByApplyNoAndSampleCodeIn(BioDrQiContents.Y, sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
-        cerSampleTestTbMapper.updateCheckResultByApplyNoAndSampleCodeIn("留种",sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(),sampleCodeList);
-        cerSampleTestTbMapper.updateCheckResultByApplyNoAndSampleCodeNotIn("舍弃",sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(),sampleCodeList);
+        cerSampleTestTbMapper.updateCheckResultByApplyNoAndSampleCodeIn("留种", sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
+        cerSampleTestTbMapper.updateCheckResultByApplyNoAndSampleCodeNotIn("舍弃", sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
     }
 
     public static void main(String[] args) {

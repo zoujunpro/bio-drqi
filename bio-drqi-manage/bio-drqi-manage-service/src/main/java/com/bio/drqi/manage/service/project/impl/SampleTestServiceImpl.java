@@ -568,7 +568,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         Date currentDate = new Date();
         //解析excel
         List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList = ExcelUtil.readExcel(tempFilePath, SampleTestBioInfoExcelDTO.class);
-        if (sampleTestBioInfoExcelDTOList == null) {
+        if (CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)) {
             throw new BusinessException("excel无数据");
         }
         sampleTestBioInfoExcelDTOList = sampleTestBioInfoExcelDTOList.stream().filter(sampleTestBioInfoExcelDTO -> StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getSampleId()) && StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getRunId())).collect(Collectors.toList());

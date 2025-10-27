@@ -174,6 +174,7 @@ public class MaterialSaveModel extends KdModel {
         List<String> list = new ArrayList<>();
         list.add("Fnumber");
         list.add("FSpecification");
+        list.add("Fname");
         return list;
     }
 

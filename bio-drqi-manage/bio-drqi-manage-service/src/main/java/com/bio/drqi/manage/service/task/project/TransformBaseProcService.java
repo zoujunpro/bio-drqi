@@ -152,7 +152,8 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
         if (CollectionUtil.isEmpty(cerTransformTbList)) {
             nextNumber = "01";
         } else {
-            nextNumber = StringUtils.padl(String.valueOf(Integer.parseInt(cerTransformTbList.get(0).getTransformCode().substring(7)) + 1), 2, '0');
+            Integer maxInt = cerTransformTbList.stream().map(cerTransformTb -> Integer.valueOf(cerTransformTb.getTransformCode().substring(7))).max(Integer::compare).get();
+            nextNumber = StringUtils.padl(String.valueOf(maxInt + 1), 2, '0');
         }
         return cerSpeciesConf.getNumPrefix().substring(2) +deliveryMethod + infectDate.replace("-", "").substring(4) + nextNumber;
     }

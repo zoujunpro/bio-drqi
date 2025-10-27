@@ -5,7 +5,9 @@ import com.bio.drqi.manage.sample.req.SampleResultFileUploadFileReqDTO;
 import com.bio.drqi.manage.sample.rsp.SampleResultFileListPageRspDTO;
 import com.bio.drqi.manage.service.project.SampleResultFileService;
 import com.github.pagehelper.PageInfo;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SampleResultFileServiceImpl implements SampleResultFileService {
     @Override
     public PageInfo<SampleResultFileListPageRspDTO> listPage(SampleResultFileListPageReqDTO sampleResultFileListPageReqDTO) {

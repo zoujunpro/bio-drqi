@@ -137,13 +137,13 @@ public class Clean20250721Controller {
     public ResponseResult<String> cleanSeedNum() {
         List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("seed_store_apply");
         for (BioTaskDtlTb bioTaskDtlTb : bioTaskDtlTbList) {
-            log.info("bioTaskDtlTb={}"+JSONUtil.toJsonStr(bioTaskDtlTb));
+            log.info("bioTaskDtlTb={}" + JSONUtil.toJsonStr(bioTaskDtlTb));
             SeedInStoreDTO seedInStoreDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedInStoreDTO.class);
             for (SeedInStoreDTO.ExecuteFormContent executeFormContent : seedInStoreDTO.getExecuteForm().getExecuteFormContentList()) {
                 SeedStockInLog stockInLog = seedStockInLogMapper.selectOneByUniqueCode(executeFormContent.getUniqueCode());
                 if (stockInLog != null) {
                     SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(stockInLog.getSeedNum());
-                    if(seedStockTb!=null){
+                    if (seedStockTb != null) {
                         executeFormContent.setSeedNum(seedStockTb.getSeedNum());
                     }
                 }
@@ -893,9 +893,9 @@ public class Clean20250721Controller {
 
     @GetMapping("testTransForm")
     public String testTransForm() {
-        String vectorTaskCode = "EB00701-02b";
+        String vectorTaskCode = "TT00301-01a";
         String deliveryMethod = "A";
-        String infectDate = "2025-07-01";
+        String infectDate = "2025-10-23";
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
         List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllBySpeciesCodeAndDeliveryMethodAndCreateTime(cerVectorTaskTb.getSpeciesCode(), deliveryMethod, infectDate);
         cerTransformTbList = cerTransformTbList.stream().filter(cerTransformTb -> cerTransformTb.getTransformCode().matches("^[A-Z]{3}[0-9]{6}$")).collect(Collectors.toList());
@@ -903,7 +903,8 @@ public class Clean20250721Controller {
         if (CollectionUtil.isEmpty(cerTransformTbList)) {
             nextNumber = "01";
         } else {
-            nextNumber = StringUtils.padl(String.valueOf(Integer.parseInt(cerTransformTbList.get(0).getTransformCode().substring(7)) + 1), 2, '0');
+            Integer maxInt = cerTransformTbList.stream().map(cerTransformTb -> Integer.valueOf(cerTransformTb.getTransformCode().substring(7))).max(Integer::compare).get();
+            nextNumber = StringUtils.padl(String.valueOf(maxInt + 1), 2, '0');
         }
         CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(cerVectorTaskTb.getSpeciesCode());
         return cerSpeciesConf.getNumPrefix().substring(2) + cerVectorTaskTb.getDeliveryMethod() + infectDate.replace("-", "").substring(4) + nextNumber;

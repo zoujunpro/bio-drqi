@@ -19,6 +19,7 @@ import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.external.client.BioInfoClientApi;
 import com.bio.drqi.external.dto.BioResult;
 import com.bio.drqi.manage.dto.project.*;
+import com.bio.drqi.manage.service.common.SynSampleTestResultService;
 import com.bio.drqi.manage.service.project.SampleTestService;
 import com.bio.drqi.manage.util.LayoutUtil;
 import com.bio.drqi.manage.util.SampleExcelUtil;
@@ -47,8 +48,8 @@ public class SampleTestServiceImpl implements SampleTestService {
     @Value("${cer.properties.excelTemplatePath}")
     private String excelTemplatePath;
 
-
-    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(50, 50, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(10000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+    @Resource
+    private SynSampleTestResultService synSampleTestResultService;
 
 
     @Resource
@@ -596,44 +597,15 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
         if (CollectionUtil.isNotEmpty(cerSampleTestBioResultRefList)) {
             cerSampleTestBioResultRefMapper.insertBatch(cerSampleTestBioResultRefList);
-        }
-
-        cerSampleTestBioInfoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
-        List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = new ArrayList<>();
-        AtomicInteger executeNum = new AtomicInteger(0);
-        for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
-            while (threadPool.getPoolSize() > 1000) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                }
-            }
-
-            Future<List<CerSampleTestBioInfoResultTb>> future = threadPool.submit(() -> {
-                return synBioInfoResult(executeNum, sampleTestBioInfoExcelDTO.getSampleId(), sampleTestBioInfoExcelDTO.getRunId(), uploadBioInfoSampleTestResultReqDTO.getApplyNo(), sampleTestBioInfoExcelDTO.getSampleCode());
-            });
-            List<CerSampleTestBioInfoResultTb> currentCerSampleTestBioInfoResultTbList = null;
-            try {
-                currentCerSampleTestBioInfoResultTbList = future.get();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            if (CollectionUtil.isNotEmpty(currentCerSampleTestBioInfoResultTbList)) {
-                cerSampleTestBioInfoResultTbList.addAll(currentCerSampleTestBioInfoResultTbList);
+            //异步同步结果
+            List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = synSampleTestResultService.synBioResult(cerSampleTestBioResultRefList);
+            if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
+                cerSampleTestBioInfoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+                cerSampleTestBioInfoResultTbMapper.insertBatch(cerSampleTestBioInfoResultTbList);
             }
 
         }
 
-        if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
-            cerSampleTestBioInfoResultTbList.forEach(cerSampleTestBioInfoResultTb -> {
-                CerSampleTestTb cerSampleTestTb = stringCerSampleTestTbMap.get(cerSampleTestBioInfoResultTb.getSampleCode());
-                ;
-                if (cerSampleTestTb != null) {
-                    cerSampleTestBioInfoResultTb.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
-                }
-            });
-            cerSampleTestBioInfoResultTbMapper.insertBatch(cerSampleTestBioInfoResultTbList);
-        }
 
         cerSampleApplyTb.setNgsExcelUrl(uploadBioInfoSampleTestResultReqDTO.getExcelUrl());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));

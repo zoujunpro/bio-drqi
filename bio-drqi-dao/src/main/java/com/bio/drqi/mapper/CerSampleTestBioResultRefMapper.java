@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface CerSampleTestBioResultRefMapper extends BaseMapper<CerSampleTestBioResultRef> {
     int deleteByApplyNo(@Param("applyNo") String applyNo);
 
+
     int insertBatch(@Param("cerSampleTestBioResultRefCollection") Collection<CerSampleTestBioResultRef> cerSampleTestBioResultRefCollection);
 
     CerSampleTestBioResultRef selectOneByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);

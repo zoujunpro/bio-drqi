@@ -20,6 +20,7 @@
             <result property="layoutFlag" column="layout_flag" jdbcType="VARCHAR"/>
             <result property="vectorTaskCodes" column="vector_task_codes" jdbcType="VARCHAR"/>
             <result property="sampleCodeRange" column="sample_code_range" jdbcType="VARCHAR"/>
+            <result property="taskStatus" column="task_status" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -28,7 +29,7 @@
         apply_desc,apply_type,identify_excel_url,
         one_test_excel_url,ngs_excel_url,
         clone_flag,layout_flag,vector_task_codes,
-        sample_code_range
+        sample_code_range,task_status
     </sql>
 
     <select id="selectOneByApplyNo" resultMap="BaseResultMap">
@@ -69,6 +70,7 @@
             <if test="layoutFlag != null and layoutFlag!=''">and layout_flag=#{layoutFlag,jdbcType=VARCHAR}</if>
             <if test="vectorTaskCodes != null and vectorTaskCodes!=''">and vector_task_codes  LIKE  CONCAT('%',#{vectorTaskCodes,jdbcType=VARCHAR},'%')</if>
             <if test="sampleCodeRange != null">and sample_code_range=#{sampleCodeRange,jdbcType=VARCHAR}</if>
+            <if test="taskStatus != null and taskStatus!=''">and task_status=#{staskStatus,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

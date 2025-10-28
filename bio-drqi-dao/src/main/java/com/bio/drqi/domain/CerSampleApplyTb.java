@@ -93,6 +93,8 @@ public class CerSampleApplyTb implements Serializable {
      */
     private String sampleCodeRange;
 
+    private String taskStatus;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

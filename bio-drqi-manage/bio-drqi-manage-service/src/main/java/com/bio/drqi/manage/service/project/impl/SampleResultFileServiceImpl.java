@@ -94,7 +94,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
         cerSampleTestResultFileTb.setCreateUserId(SecurityContextHolder.getUserId());
         cerSampleTestResultFileTb.setCreateUserName(SecurityContextHolder.getNickName());
         cerSampleTestResultFileTb.setCreateTime(new Date());
-        cerSampleTestResultFileTb.setUploadNo(DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN));
+        cerSampleTestResultFileTb.setUploadNum(DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN));
         cerSampleTestResultFileTbMapper.insert(cerSampleTestResultFileTb);
 
         //一代测序
@@ -156,12 +156,12 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                     cerSampleTestBioResultRefMapper.deleteById(cerSampleTestBioResultRef.getId());
                     cerSampleTestBioInfoResultTbMapper.deleteByApplyNoAndSampleCode(firstCerSampleTestTb.getApplyNo(), firstCerSampleTestTb.getSampleCode());
                 }
-                cerSampleTestBioResultRefList.add(buildCerSampleTestBioResultRef(sampleTestBioInfoExcelDTO, firstCerSampleTestTb, cerSampleTestResultFileTb.getUploadNo()));
+                cerSampleTestBioResultRefList.add(buildCerSampleTestBioResultRef(sampleTestBioInfoExcelDTO, firstCerSampleTestTb, cerSampleTestResultFileTb.getUploadNum()));
                 //剩下的，如果没有上传过结果，则补更新结果
                 for (int i = 1; i < cerSampleTestTbList.size(); i++) {
                     CerSampleTestTb cerSampleTest = cerSampleTestTbList.get(i);
                     if (cerSampleTest.getTestUserId() == null) {
-                        cerSampleTestBioResultRefList.add(buildCerSampleTestBioResultRef(sampleTestBioInfoExcelDTO, cerSampleTest, cerSampleTestResultFileTb.getUploadNo()));
+                        cerSampleTestBioResultRefList.add(buildCerSampleTestBioResultRef(sampleTestBioInfoExcelDTO, cerSampleTest, cerSampleTestResultFileTb.getUploadNum()));
                         updateCerSampleTestTbList.add(CerSampleTestTb.builder().id(cerSampleTest.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getUserName()).build());
 
                     }
@@ -188,7 +188,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
         updateCerSampleTestBioResultRef.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
         updateCerSampleTestBioResultRef.setRunId(sampleTestBioInfoExcelDTO.getRunId());
         updateCerSampleTestBioResultRef.setCreateTime(new Date());
-        updateCerSampleTestBioResultRef.setUploadNo(uploadNo);
+        updateCerSampleTestBioResultRef.setUploadNum(uploadNo);
         return updateCerSampleTestBioResultRef;
     }
 

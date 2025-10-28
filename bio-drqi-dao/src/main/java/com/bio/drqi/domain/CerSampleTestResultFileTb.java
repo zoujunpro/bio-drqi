@@ -50,7 +50,7 @@ public class CerSampleTestResultFileTb implements Serializable {
     /**
      * 上传编号
      */
-    private String uploadNo;
+    private String uploadNum;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

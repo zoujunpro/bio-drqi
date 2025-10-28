@@ -11,14 +11,14 @@
         <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-        <result property="uploadNo" column="upload_no" jdbcType="VARCHAR"/>
+        <result property="uploadNum" column="upload_num" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
         ,file_url,result_type,
         create_user_id,create_user_name,create_time,
-        upload_no
+        upload_num
     </sql>
     <select id="selectSelective" resultMap="BaseResultMap">
         select
@@ -30,7 +30,7 @@
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
-            <if test="uploadNo != null and uploadNo!=''">and upload_no=#{uploadNo,jdbcType=VARCHAR}</if>
+            <if test="uploadNum != null and uploadNum!=''">and upload_num=#{uploadNum,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

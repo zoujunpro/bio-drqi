@@ -36,5 +36,5 @@ public class SampleResultFileListPageRspDTO {
     /**
      * 上传编号
      */
-    private String uploadNo;
+    private String uploadNum;
 }

@@ -53,7 +53,7 @@ public class CerSampleTestBioResultRef implements Serializable {
     private Date createTime;
 
 
-    private String uploadNo;
+    private String uploadNum;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

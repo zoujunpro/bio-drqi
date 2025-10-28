@@ -10,6 +10,7 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.enums.TestChannelEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SampleResultFileTypeENum;
 import com.bio.drqi.external.client.BioInfoClientApi;
@@ -21,10 +22,7 @@ import com.bio.drqi.manage.sample.req.SampleResultFileUploadFileReqDTO;
 import com.bio.drqi.manage.sample.rsp.SampleResultFileListPageRspDTO;
 import com.bio.drqi.manage.service.common.SynSampleTestResultService;
 import com.bio.drqi.manage.service.project.SampleResultFileService;
-import com.bio.drqi.mapper.CerSampleTestBioInfoResultTbMapper;
-import com.bio.drqi.mapper.CerSampleTestBioResultRefMapper;
-import com.bio.drqi.mapper.CerSampleTestResultFileTbMapper;
-import com.bio.drqi.mapper.CerSampleTestTbMapper;
+import com.bio.drqi.mapper.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +65,9 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
     @Resource
     private SynSampleTestResultService synSampleTestResultService;
 
+    @Resource
+    private BioSampleSampleOneResultTbMapper bioSampleSampleOneResultTbMapper;
+
 
     @Override
     public PageInfo<SampleResultFileListPageRspDTO> listPage(SampleResultFileListPageReqDTO sampleResultFileListPageReqDTO) {
@@ -80,6 +81,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
     @Transactional(rollbackFor = Exception.class)
     public void uploadFile(SampleResultFileUploadFileReqDTO sampleResultFileUploadFileReqDTO) {
         List<CerSampleTestTb> updateCerSampleTestTbList = new ArrayList<>();
+        List<BioSampleSampleOneResultTb> bioSampleSampleOneResultTbList=new ArrayList<>();
         String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + sampleResultFileUploadFileReqDTO.getExcelUrl();
         try {
             ossService.downloadPath(tempFilePath, sampleResultFileUploadFileReqDTO.getExcelUrl());
@@ -117,6 +119,8 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 cerSampleTestTbList = cerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId).reversed()).collect(Collectors.toList());
                 //第一个的一定更新
                 updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId()));
+                bioSampleSampleOneResultTbList.add(BioSampleSampleOneResultTb.of(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId()), TestChannelEnum.project.name(),null,cerSampleTestResultFileTb.getUploadNum()));
+
                 //剩下的，如果没有上传过结果，则补更新结果
                 for (int i = 1; i < cerSampleTestTbList.size(); i++) {
                     CerSampleTestTb cerSampleTest = cerSampleTestTbList.get(i);
@@ -125,6 +129,9 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                     }
                 }
             }
+            //更新检测结果到检测表
+            bioSampleSampleOneResultTbMapper.insertBatch(bioSampleSampleOneResultTbList);
+            //更新最新的检测结果到取样数据中
             cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
 
         }
@@ -132,7 +139,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
         if (SampleResultFileTypeENum.TYPE_2.code.equals(sampleResultFileUploadFileReqDTO.getResultType())) {
             List<CerSampleTestBioResultRef> cerSampleTestBioResultRefList = new ArrayList<>();
             List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList = ExcelUtil.readExcel(tempFilePath, SampleTestBioInfoExcelDTO.class);
-            if(CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)){
+            if (CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)) {
                 throw new BusinessException("excel中二代测序结果读取为空");
             }
             sampleTestBioInfoExcelDTOList = sampleTestBioInfoExcelDTOList.stream().filter(sampleTestBioInfoExcelDTO -> StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getSampleId()) && StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getRunId())).collect(Collectors.toList());

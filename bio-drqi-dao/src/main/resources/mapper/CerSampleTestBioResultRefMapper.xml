@@ -11,13 +11,14 @@
             <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
             <result property="sampleId" column="sample_id" jdbcType="VARCHAR"/>
             <result property="runId" column="run_id" jdbcType="VARCHAR"/>
+            <result property="uploadNo" column="upload_no" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,apply_no,sample_code,
         vector_task_code,sample_id,run_id,
-        create_time
+        create_time,upload_no
     </sql>
     <delete id="deleteByApplyNo">
         delete
@@ -26,13 +27,13 @@
     </delete>
     <insert id="insertBatch">
         insert into cer_sample_test_bio_result_ref(id,apply_no,sample_code,
-        vector_task_code,sample_id,run_id,
+        vector_task_code,sample_id,run_id,upload_no
         create_time)
         values
         <foreach collection="cerSampleTestBioResultRefCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.applyNo,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},
             #{item.vectorTaskCode,jdbcType=VARCHAR},#{item.sampleId,jdbcType=VARCHAR},#{item.runId,jdbcType=VARCHAR},
-            #{item.createTime,jdbcType=TIMESTAMP})
+             #{item.uploadNo,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP})
         </foreach>
     </insert>
     <select id="selectOneByApplyNoAndSampleCode" resultMap="BaseResultMap">

@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,10 +68,14 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
             if (CollectionUtil.isNotEmpty(testExcelDTOList)) {
                 for (TestExcelDTO testExcelDTO : testExcelDTOList) {
                     List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(testExcelDTO.getSampleCode());
-                    if(CollectionUtil.isEmpty(cerSampleTestTbList)){
-                        throw new BusinessException("找不到此取样编号:"+testExcelDTO.getSampleCode());
+                    if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
+                        throw new BusinessException("找不到此取样编号:" + testExcelDTO.getSampleCode());
                     }
-                    cerSampleTestTbList.stream().filter(cerSampleTestTb -> cerSampleTestTb.getTestUserId()!=null).collect(Collectors.toList());
+                    //过滤
+                    cerSampleTestTbList = cerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId).reversed()).collect(Collectors.toList());
+                    //第一个的一定更新
+                    CerSampleTestTb cerSampleTestTb = cerSampleTestTbList.get(0);
+
 
 
                 }

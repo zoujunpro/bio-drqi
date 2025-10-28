@@ -188,16 +188,19 @@ public class SampleTestServiceImpl implements SampleTestService {
 
     @Override
     public void downTestTemplate(DownTestTemplateReqDTO downTestTemplateReqDTO, HttpServletResponse response) {
-        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(downTestTemplateReqDTO.getApplyNo());
         List<TestExcelDTO> testExcelDTOList = new ArrayList<>();
-        for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
-            TestExcelDTO testExcelDTO = new TestExcelDTO();
-            testExcelDTO.setSampleCode(cerSampleTestTb.getSampleCode());
-            testExcelDTO.setSampleTime(cerSampleTestTb.getSampleTime());
-            testExcelDTO.setGeneration(cerSampleTestTb.getSampleGeneration());
-            testExcelDTO.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
-            testExcelDTOList.add(testExcelDTO);
+        if(StringUtils.isNotEmpty(downTestTemplateReqDTO.getApplyNo())){
+            List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(downTestTemplateReqDTO.getApplyNo());
+            for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
+                TestExcelDTO testExcelDTO = new TestExcelDTO();
+                testExcelDTO.setSampleCode(cerSampleTestTb.getSampleCode());
+                testExcelDTO.setSampleTime(cerSampleTestTb.getSampleTime());
+                testExcelDTO.setGeneration(cerSampleTestTb.getSampleGeneration());
+                testExcelDTO.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
+                testExcelDTOList.add(testExcelDTO);
+            }
         }
+
         try {
             String excelTemplateName = "检测数据上传模板_V1.xlsx";
             String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;

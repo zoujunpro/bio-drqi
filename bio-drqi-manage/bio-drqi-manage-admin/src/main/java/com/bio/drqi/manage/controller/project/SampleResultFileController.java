@@ -46,7 +46,7 @@ public class SampleResultFileController {
      * @return
      */
     @PostMapping("uploadFile")
-    public ResponseResult<String> uploadFile(@RequestBody @Validated SampleResultFileUploadFileReqDTO sampleResultFileUploadFileReqDTO) {
+    public synchronized ResponseResult<String> uploadFile(@RequestBody @Validated SampleResultFileUploadFileReqDTO sampleResultFileUploadFileReqDTO) {
         sampleResultFileService.uploadFile(sampleResultFileUploadFileReqDTO);
         return ResponseResult.getSuccess("ok");
     }

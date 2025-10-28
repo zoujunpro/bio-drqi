@@ -88,7 +88,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
             throw new BusinessException("文件处理异常");
         }
         //记录上传的文件
-        CerSampleTestResultFileTb  cerSampleTestResultFileTb=new  CerSampleTestResultFileTb();
+        CerSampleTestResultFileTb cerSampleTestResultFileTb = new CerSampleTestResultFileTb();
         cerSampleTestResultFileTb.setFileUrl(sampleResultFileUploadFileReqDTO.getExcelUrl());
         cerSampleTestResultFileTb.setResultType(sampleResultFileUploadFileReqDTO.getResultType());
         cerSampleTestResultFileTb.setCreateUserId(SecurityContextHolder.getUserId());
@@ -100,27 +100,28 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
         //一代测序
         if (SampleResultFileTypeENum.TYPE_1.code.equals(sampleResultFileUploadFileReqDTO.getResultType())) {
             List<TestExcelDTO> testExcelDTOList = ExcelUtil.readExcel(tempFilePath, TestExcelDTO.class);
-            if (CollectionUtil.isNotEmpty(testExcelDTOList)) {
-                for (TestExcelDTO testExcelDTO : testExcelDTOList) {
-                    List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(testExcelDTO.getSampleCode());
-                    if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
-                        log.info("取样不存在项目管理系统：" + testExcelDTO.getSampleCode());
-                        continue;
-                    }
-                    cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isEmpty(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
-                    if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
-                        log.info("取样已经审批完成：" + testExcelDTO.getSampleCode());
-                        continue;
-                    }
-                    cerSampleTestTbList = cerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId).reversed()).collect(Collectors.toList());
-                    //第一个的一定更新
-                    updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId()));
-                    //剩下的，如果没有上传过结果，则补更新结果
-                    for (int i = 1; i < cerSampleTestTbList.size(); i++) {
-                        CerSampleTestTb cerSampleTest = cerSampleTestTbList.get(i);
-                        if (cerSampleTest.getTestUserId() == null) {
-                            updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTest.getId()));
-                        }
+            if (CollectionUtil.isEmpty(testExcelDTOList)) {
+                throw new BusinessException("没有读取到一代测序结果excel中数据");
+            }
+            for (TestExcelDTO testExcelDTO : testExcelDTOList) {
+                List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(testExcelDTO.getSampleCode());
+                if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
+                    log.info("取样不存在项目管理系统：" + testExcelDTO.getSampleCode());
+                    continue;
+                }
+                cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isEmpty(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
+                if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
+                    log.info("取样已经审批完成：" + testExcelDTO.getSampleCode());
+                    continue;
+                }
+                cerSampleTestTbList = cerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId).reversed()).collect(Collectors.toList());
+                //第一个的一定更新
+                updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId()));
+                //剩下的，如果没有上传过结果，则补更新结果
+                for (int i = 1; i < cerSampleTestTbList.size(); i++) {
+                    CerSampleTestTb cerSampleTest = cerSampleTestTbList.get(i);
+                    if (cerSampleTest.getTestUserId() == null) {
+                        updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTest.getId()));
                     }
                 }
             }
@@ -128,9 +129,12 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
 
         }
         //NGS测序（二代测序）
-        if (SampleResultFileTypeENum.TYPE_1.code.equals(sampleResultFileUploadFileReqDTO.getResultType())) {
+        if (SampleResultFileTypeENum.TYPE_2.code.equals(sampleResultFileUploadFileReqDTO.getResultType())) {
             List<CerSampleTestBioResultRef> cerSampleTestBioResultRefList = new ArrayList<>();
             List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList = ExcelUtil.readExcel(tempFilePath, SampleTestBioInfoExcelDTO.class);
+            if(CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)){
+                throw new BusinessException("excel中二代测序结果读取为空");
+            }
             sampleTestBioInfoExcelDTOList = sampleTestBioInfoExcelDTOList.stream().filter(sampleTestBioInfoExcelDTO -> StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getSampleId()) && StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getRunId())).collect(Collectors.toList());
             for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
@@ -152,12 +156,12 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                     cerSampleTestBioResultRefMapper.deleteById(cerSampleTestBioResultRef.getId());
                     cerSampleTestBioInfoResultTbMapper.deleteByApplyNoAndSampleCode(firstCerSampleTestTb.getApplyNo(), firstCerSampleTestTb.getSampleCode());
                 }
-                cerSampleTestBioResultRefList.add(buildCerSampleTestBioResultRef(sampleTestBioInfoExcelDTO, firstCerSampleTestTb,cerSampleTestResultFileTb.getUploadNo()));
+                cerSampleTestBioResultRefList.add(buildCerSampleTestBioResultRef(sampleTestBioInfoExcelDTO, firstCerSampleTestTb, cerSampleTestResultFileTb.getUploadNo()));
                 //剩下的，如果没有上传过结果，则补更新结果
                 for (int i = 1; i < cerSampleTestTbList.size(); i++) {
                     CerSampleTestTb cerSampleTest = cerSampleTestTbList.get(i);
                     if (cerSampleTest.getTestUserId() == null) {
-                        cerSampleTestBioResultRefList.add(buildCerSampleTestBioResultRef(sampleTestBioInfoExcelDTO, cerSampleTest,cerSampleTestResultFileTb.getUploadNo()));
+                        cerSampleTestBioResultRefList.add(buildCerSampleTestBioResultRef(sampleTestBioInfoExcelDTO, cerSampleTest, cerSampleTestResultFileTb.getUploadNo()));
                         updateCerSampleTestTbList.add(CerSampleTestTb.builder().id(cerSampleTest.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getUserName()).build());
 
                     }
@@ -168,7 +172,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
             //更新检测结果标识（取样信息上加入检测人）
             cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
             //异步同步结果
-            List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList=  synSampleTestResultService.synBioResult(cerSampleTestBioResultRefList);
+            List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = synSampleTestResultService.synBioResult(cerSampleTestBioResultRefList);
             //更新同步的结果，更新前旧的需要删除
             if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
                 cerSampleTestBioInfoResultTbMapper.insertBatch(cerSampleTestBioInfoResultTbList);
@@ -176,7 +180,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
         }
     }
 
-    private CerSampleTestBioResultRef buildCerSampleTestBioResultRef(SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO, CerSampleTestTb firstCerSampleTestTb,String uploadNo) {
+    private CerSampleTestBioResultRef buildCerSampleTestBioResultRef(SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO, CerSampleTestTb firstCerSampleTestTb, String uploadNo) {
         CerSampleTestBioResultRef updateCerSampleTestBioResultRef = new CerSampleTestBioResultRef();
         updateCerSampleTestBioResultRef.setApplyNo(firstCerSampleTestTb.getApplyNo());
         updateCerSampleTestBioResultRef.setSampleCode(firstCerSampleTestTb.getSampleCode());

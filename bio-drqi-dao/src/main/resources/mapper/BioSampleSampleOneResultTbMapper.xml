@@ -94,7 +94,6 @@
             <if test="testUserId != null">test_user_id=#{testUserId,jdbcType=NUMERIC}</if>
             <if test="testUserName != null">test_user_name=#{testUserName,jdbcType=VARCHAR}</if>
             <if test="testTime != null">test_time=#{testTime,jdbcType=VARCHAR}</if>
-            <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="testChannel != null and testChannel!=''">test_channel=#{testChannel,jdbcType=VARCHAR}</if>
             <if test="taskNum != null and taskNum!=''">task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="uploadNum != null and uploadNum!=''">upload_num=#{uploadNum,jdbcType=VARCHAR}</if>

@@ -15,7 +15,7 @@ public class CerSampleOneResultListPageReqDTO extends PageDTO {
 
 
     /**
-     * 检测渠道 1 项目 2大田
+     * 检测渠道     project,field
      */
     private String testChannel;
 

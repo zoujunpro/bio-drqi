@@ -118,14 +118,14 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 }
                 cerSampleTestTbList = cerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId).reversed()).collect(Collectors.toList());
                 //第一个的一定更新
-                updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId()));
-                bioSampleSampleOneResultTbList.add(BioSampleSampleOneResultTb.of(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId()), TestChannelEnum.project.name(),null,cerSampleTestResultFileTb.getUploadNum()));
+                updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(),cerSampleTestTbList.get(0).getSampleCode()));
+                bioSampleSampleOneResultTbList.add(BioSampleSampleOneResultTb.of(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(),cerSampleTestTbList.get(0).getSampleCode()), TestChannelEnum.project.name(),null,cerSampleTestResultFileTb.getUploadNum()));
 
                 //剩下的，如果没有上传过结果，则补更新结果
                 for (int i = 1; i < cerSampleTestTbList.size(); i++) {
                     CerSampleTestTb cerSampleTest = cerSampleTestTbList.get(i);
                     if (cerSampleTest.getTestUserId() == null) {
-                        updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTest.getId()));
+                        updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTest.getId(),cerSampleTest.getSampleCode()));
                     }
                 }
             }
@@ -200,9 +200,10 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
     }
 
     @NotNull
-    private static CerSampleTestTb buildUpdateCerSampleTestTb(TestExcelDTO testExcelDTO, Integer id) {
+    private static CerSampleTestTb buildUpdateCerSampleTestTb(TestExcelDTO testExcelDTO, Integer id,String sampleCode) {
         CerSampleTestTb updateCerSampleTestTb = new CerSampleTestTb();
         updateCerSampleTestTb.setId(id);
+        updateCerSampleTestTb.setSampleCode(sampleCode);
         updateCerSampleTestTb.setTestIdentifyPrimer(testExcelDTO.getIdentifyPrimer());
         updateCerSampleTestTb.setTestMethod(testExcelDTO.getTestMethod());
         updateCerSampleTestTb.setTestEditType(testExcelDTO.getEditType());

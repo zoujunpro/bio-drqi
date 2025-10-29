@@ -64,6 +64,9 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     @Resource
     private CerConversionAndTransRefMapper cerConversionAndTransRefMapper;
 
+    @Resource
+    private BioSampleSampleOneResultTbMapper bioSampleSampleOneResultTbMapper;
+
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -170,7 +173,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         cerSampleTestBioInfoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerPlantDtlTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
-
+        bioSampleSampleOneResultTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.cer_plant.name());
         cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.sample_and_test.name());
 

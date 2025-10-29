@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import java.util.Collection;
 
@@ -16,6 +17,8 @@ public interface BioSampleSampleOneResultTbMapper extends BaseMapper<BioSampleSa
     int insertBatch(@Param("bioSampleSampleOneResultTbCollection") Collection<BioSampleSampleOneResultTb> bioSampleSampleOneResultTbCollection);
 
     int deleteByTaskNum(@Param("taskNum") String taskNum);
+
+    List<BioSampleSampleOneResultTb> selectSelective(BioSampleSampleOneResultTb bioSampleSampleOneResultTb);
 
 }
 

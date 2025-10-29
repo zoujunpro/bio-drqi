@@ -5,32 +5,33 @@
 <mapper namespace="com.bio.drqi.mapper.BioSampleSampleOneResultTbMapper">
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioSampleSampleOneResultTb">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
-            <result property="testIdentifyPrimer" column="test_identify_primer" jdbcType="VARCHAR"/>
-            <result property="testMethod" column="test_method" jdbcType="VARCHAR"/>
-            <result property="testEditType" column="test_edit_type" jdbcType="VARCHAR"/>
-            <result property="testNoTransIdentityPrimer" column="test_no_trans_identity_primer" jdbcType="VARCHAR"/>
-            <result property="testIsGeneModifyPositive" column="test_is_gene_modify_positive" jdbcType="VARCHAR"/>
-            <result property="testIfFixedPoint" column="test_if_fixed_point" jdbcType="VARCHAR"/>
-            <result property="testIfCopyInsert" column="test_if_copy_insert" jdbcType="VARCHAR"/>
-            <result property="testFixedPointType" column="test_fixed_point_type" jdbcType="VARCHAR"/>
-            <result property="testDonorResidueInfo" column="test_donor_residue_info" jdbcType="VARCHAR"/>
-            <result property="testInsertionSite" column="test_insertion_site" jdbcType="VARCHAR"/>
-            <result property="testElisaResult" column="test_elisa_result" jdbcType="VARCHAR"/>
-            <result property="testQbzrSeq" column="test_qbzr_seq" jdbcType="VARCHAR"/>
-            <result property="testEditResidueInfo" column="test_edit_residue_info" jdbcType="VARCHAR"/>
-            <result property="testUserId" column="test_user_id" jdbcType="INTEGER"/>
-            <result property="testUserName" column="test_user_name" jdbcType="VARCHAR"/>
-            <result property="testTime" column="test_time" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="testChannel" column="test_channel" jdbcType="VARCHAR"/>
-            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
-            <result property="uploadNum" column="upload_num" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
+        <result property="testIdentifyPrimer" column="test_identify_primer" jdbcType="VARCHAR"/>
+        <result property="testMethod" column="test_method" jdbcType="VARCHAR"/>
+        <result property="testEditType" column="test_edit_type" jdbcType="VARCHAR"/>
+        <result property="testNoTransIdentityPrimer" column="test_no_trans_identity_primer" jdbcType="VARCHAR"/>
+        <result property="testIsGeneModifyPositive" column="test_is_gene_modify_positive" jdbcType="VARCHAR"/>
+        <result property="testIfFixedPoint" column="test_if_fixed_point" jdbcType="VARCHAR"/>
+        <result property="testIfCopyInsert" column="test_if_copy_insert" jdbcType="VARCHAR"/>
+        <result property="testFixedPointType" column="test_fixed_point_type" jdbcType="VARCHAR"/>
+        <result property="testDonorResidueInfo" column="test_donor_residue_info" jdbcType="VARCHAR"/>
+        <result property="testInsertionSite" column="test_insertion_site" jdbcType="VARCHAR"/>
+        <result property="testElisaResult" column="test_elisa_result" jdbcType="VARCHAR"/>
+        <result property="testQbzrSeq" column="test_qbzr_seq" jdbcType="VARCHAR"/>
+        <result property="testEditResidueInfo" column="test_edit_residue_info" jdbcType="VARCHAR"/>
+        <result property="testUserId" column="test_user_id" jdbcType="INTEGER"/>
+        <result property="testUserName" column="test_user_name" jdbcType="VARCHAR"/>
+        <result property="testTime" column="test_time" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="testChannel" column="test_channel" jdbcType="VARCHAR"/>
+        <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+        <result property="uploadNum" column="upload_num" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,sample_code,test_identify_primer,
+        id
+        ,sample_code,test_identify_primer,
         test_method,test_edit_type,test_no_trans_identity_primer,
         test_is_gene_modify_positive,test_if_fixed_point,test_if_copy_insert,
         test_fixed_point_type,test_donor_residue_info,test_insertion_site,
@@ -65,4 +66,39 @@
         from bio_sample_sample_one_result_tb
         where task_num = #{taskNum,jdbcType=VARCHAR}
     </delete>
+    <select id="selectSelective" resultMap="BaseResultMap"
+            parameterType="com.bio.drqi.domain.BioSampleSampleOneResultTb">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_sample_one_result_tb
+        <where>
+            <if test="sampleCode != null and sampleCode!=''">sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
+            <if test="testIdentifyPrimer != null">test_identify_primer=#{testIdentifyPrimer,jdbcType=VARCHAR}</if>
+            <if test="testMethod != null">test_method=#{testMethod,jdbcType=VARCHAR}</if>
+            <if test="testEditType != null">test_edit_type=#{testEditType,jdbcType=VARCHAR}</if>
+            <if test="testNoTransIdentityPrimer != null">
+                test_no_trans_identity_primer=#{testNoTransIdentityPrimer,jdbcType=VARCHAR}
+            </if>
+            <if test="testIsGeneModifyPositive != null">
+                test_is_gene_modify_positive=#{testIsGeneModifyPositive,jdbcType=VARCHAR}
+            </if>
+            <if test="testIfFixedPoint != null">test_if_fixed_point=#{testIfFixedPoint,jdbcType=VARCHAR}</if>
+            <if test="testIfCopyInsert != null">test_if_copy_insert=#{testIfCopyInsert,jdbcType=VARCHAR}</if>
+            <if test="testFixedPointType != null">test_fixed_point_type=#{testFixedPointType,jdbcType=VARCHAR}</if>
+            <if test="testDonorResidueInfo != null">test_donor_residue_info=#{testDonorResidueInfo,jdbcType=VARCHAR}
+            </if>
+            <if test="testInsertionSite != null">test_insertion_site=#{testInsertionSite,jdbcType=VARCHAR}</if>
+            <if test="testElisaResult != null">test_elisa_result=#{testElisaResult,jdbcType=VARCHAR}</if>
+            <if test="testQbzrSeq != null">test_qbzr_seq=#{testQbzrSeq,jdbcType=VARCHAR}</if>
+            <if test="testEditResidueInfo != null">test_edit_residue_info=#{testEditResidueInfo,jdbcType=VARCHAR}</if>
+            <if test="testUserId != null">test_user_id=#{testUserId,jdbcType=NUMERIC}</if>
+            <if test="testUserName != null">test_user_name=#{testUserName,jdbcType=VARCHAR}</if>
+            <if test="testTime != null">test_time=#{testTime,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="testChannel != null and testChannel!=''">test_channel=#{testChannel,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null and taskNum!=''">task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="uploadNum != null and uploadNum!=''">upload_num=#{uploadNum,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
+    </select>
 </mapper>

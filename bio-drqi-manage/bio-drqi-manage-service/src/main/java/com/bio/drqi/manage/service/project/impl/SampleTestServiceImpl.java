@@ -611,6 +611,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             cerSampleTestBioResultRef.setRunId(sampleTestBioInfoExcelDTO.getRunId());
             cerSampleTestBioResultRef.setCreateTime(currentDate);
             cerSampleTestBioResultRefList.add(cerSampleTestBioResultRef);
+            //更新检测人（检测标志）
             updateCerSampleTestTbList.add(CerSampleTestTb.builder().id(cerSampleTestTb.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
 
         }

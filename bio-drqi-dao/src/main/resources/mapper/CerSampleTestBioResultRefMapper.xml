@@ -27,7 +27,7 @@
     </delete>
     <insert id="insertBatch">
         insert into cer_sample_test_bio_result_ref(id,apply_no,sample_code,
-        vector_task_code,sample_id,run_id,upload_num
+        vector_task_code,sample_id,run_id,upload_num,
         create_time)
         values
         <foreach collection="cerSampleTestBioResultRefCollection" item="item" separator=",">

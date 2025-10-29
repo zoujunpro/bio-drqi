@@ -14,6 +14,7 @@ import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
+import com.bio.drqi.common.enums.TestChannelEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.external.client.BioInfoClientApi;
 import com.bio.drqi.external.dto.BioResult;
@@ -77,6 +78,9 @@ public class SampleTestServiceImpl implements SampleTestService {
 
     @Resource
     private CerSampleTestBioResultRefMapper cerSampleTestBioResultRefMapper;
+
+    @Resource
+    private BioSampleSampleOneResultTbMapper bioSampleSampleOneResultTbMapper;
 
     @Resource
     private OssService ossService;
@@ -245,6 +249,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
 
         List<CerSampleTestTb> updateList = new ArrayList<>();
+        List<BioSampleSampleOneResultTb> bioSampleSampleOneResultTbList=new ArrayList<>();
         Map<String, CerSampleTestTb> cerSampleTestTbMap = cerSampleTestTbList.stream().collect(Collectors.toMap(CerSampleTestTb::getSampleCode, cerSampleTestTb -> cerSampleTestTb));
         for (TestExcelDTO testExcelDTO : testExcelDTOList) {
             log.info("检测数据上送 数据处理中：" + testExcelDTO.getSampleCode());
@@ -269,15 +274,20 @@ public class SampleTestServiceImpl implements SampleTestService {
             updateCerSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
             updateCerSampleTestTb.setUpdateTime(new Date());
             updateList.add(updateCerSampleTestTb);
+            bioSampleSampleOneResultTbList.add(BioSampleSampleOneResultTb.of(updateCerSampleTestTb, TestChannelEnum.project.name(),uploadTestTemplateReqDTO.getApplyNo(),null));
+
         }
 
 
         cerSampleApplyTb.setOneTestExcelUrl(uploadTestTemplateReqDTO.getExcelUrl());
-
-
         NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
         newSampleTestDTO.setTestDataExcelUrl(uploadTestTemplateReqDTO.getExcelUrl());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
+        //清空旧数据
+        bioSampleSampleOneResultTbMapper.deleteByTaskNum(uploadTestTemplateReqDTO.getApplyNo());
+
+        //插入新数据
+        bioSampleSampleOneResultTbMapper.insertBatch(bioSampleSampleOneResultTbList);
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
         cerSampleTestTbMapper.updateBatchById(updateList);
         cerSampleApplyTbMapper.updateById(cerSampleApplyTb);

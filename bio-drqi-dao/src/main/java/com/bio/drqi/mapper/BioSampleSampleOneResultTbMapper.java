@@ -15,6 +15,8 @@ public interface BioSampleSampleOneResultTbMapper extends BaseMapper<BioSampleSa
 
     int insertBatch(@Param("bioSampleSampleOneResultTbCollection") Collection<BioSampleSampleOneResultTb> bioSampleSampleOneResultTbCollection);
 
+    int deleteByTaskNum(@Param("taskNum") String taskNum);
+
 }
 
 

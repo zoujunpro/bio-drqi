@@ -60,4 +60,9 @@
             #{item.uploadNum,jdbcType=VARCHAR})
         </foreach>
     </insert>
+    <delete id="deleteByTaskNum">
+        delete
+        from bio_sample_sample_one_result_tb
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </delete>
 </mapper>

@@ -256,6 +256,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             CerSampleTestTb cerSampleTestTb = cerSampleTestTbMap.get(testExcelDTO.getSampleCode());
             CerSampleTestTb updateCerSampleTestTb = new CerSampleTestTb();
             updateCerSampleTestTb.setId(cerSampleTestTb.getId());
+            updateCerSampleTestTb.setSampleCode(cerSampleTestTb.getSampleCode());
             updateCerSampleTestTb.setTestIdentifyPrimer(testExcelDTO.getIdentifyPrimer());
             updateCerSampleTestTb.setTestMethod(testExcelDTO.getTestMethod());
             updateCerSampleTestTb.setTestEditType(testExcelDTO.getEditType());

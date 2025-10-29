@@ -78,11 +78,6 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     @Transactional(rollbackFor = Exception.class)
     public void uploadContract(BmsOrderDetailUploadContractReqDTO bmsOrderDetailUploadContractReqDTO) {
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailUploadContractReqDTO.getIdList());
-        if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
-            if (bmsOrderDetailTbList.stream().map(BmsOrderDetailTb::getOrderNum).distinct().collect(Collectors.toList()).size() != 1) {
-                throw new BusinessException("只有同一个订单下可以批次上传合同");
-            }
-        }
         bmsOrderDetailTbList.forEach(bmsOrderDetailTb -> {
             List<String> contractUrlList = new ArrayList<>();
             if (StringUtils.isNotEmpty(bmsOrderDetailTb.getOrderDetailNum())) {

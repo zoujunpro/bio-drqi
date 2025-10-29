@@ -72,31 +72,31 @@
         <include refid="Base_Column_List"/>
         from bio_sample_sample_one_result_tb
         <where>
-            <if test="sampleCode != null and sampleCode!=''">sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
-            <if test="testIdentifyPrimer != null">test_identify_primer=#{testIdentifyPrimer,jdbcType=VARCHAR}</if>
-            <if test="testMethod != null">test_method=#{testMethod,jdbcType=VARCHAR}</if>
-            <if test="testEditType != null">test_edit_type=#{testEditType,jdbcType=VARCHAR}</if>
+            <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
+            <if test="testIdentifyPrimer != null">and test_identify_primer=#{testIdentifyPrimer,jdbcType=VARCHAR}</if>
+            <if test="testMethod != null">and test_method=#{testMethod,jdbcType=VARCHAR}</if>
+            <if test="testEditType != null">and test_edit_type=#{testEditType,jdbcType=VARCHAR}</if>
             <if test="testNoTransIdentityPrimer != null">
-                test_no_trans_identity_primer=#{testNoTransIdentityPrimer,jdbcType=VARCHAR}
+                and    test_no_trans_identity_primer=#{testNoTransIdentityPrimer,jdbcType=VARCHAR}
             </if>
             <if test="testIsGeneModifyPositive != null">
-                test_is_gene_modify_positive=#{testIsGeneModifyPositive,jdbcType=VARCHAR}
+                and   test_is_gene_modify_positive=#{testIsGeneModifyPositive,jdbcType=VARCHAR}
             </if>
-            <if test="testIfFixedPoint != null">test_if_fixed_point=#{testIfFixedPoint,jdbcType=VARCHAR}</if>
-            <if test="testIfCopyInsert != null">test_if_copy_insert=#{testIfCopyInsert,jdbcType=VARCHAR}</if>
-            <if test="testFixedPointType != null">test_fixed_point_type=#{testFixedPointType,jdbcType=VARCHAR}</if>
-            <if test="testDonorResidueInfo != null">test_donor_residue_info=#{testDonorResidueInfo,jdbcType=VARCHAR}
+            <if test="testIfFixedPoint != null">and test_if_fixed_point=#{testIfFixedPoint,jdbcType=VARCHAR}</if>
+            <if test="testIfCopyInsert != null">and test_if_copy_insert=#{testIfCopyInsert,jdbcType=VARCHAR}</if>
+            <if test="testFixedPointType != null">and test_fixed_point_type=#{testFixedPointType,jdbcType=VARCHAR}</if>
+            <if test="testDonorResidueInfo != null">and test_donor_residue_info=#{testDonorResidueInfo,jdbcType=VARCHAR}
             </if>
-            <if test="testInsertionSite != null">test_insertion_site=#{testInsertionSite,jdbcType=VARCHAR}</if>
-            <if test="testElisaResult != null">test_elisa_result=#{testElisaResult,jdbcType=VARCHAR}</if>
-            <if test="testQbzrSeq != null">test_qbzr_seq=#{testQbzrSeq,jdbcType=VARCHAR}</if>
-            <if test="testEditResidueInfo != null">test_edit_residue_info=#{testEditResidueInfo,jdbcType=VARCHAR}</if>
-            <if test="testUserId != null">test_user_id=#{testUserId,jdbcType=NUMERIC}</if>
-            <if test="testUserName != null">test_user_name=#{testUserName,jdbcType=VARCHAR}</if>
-            <if test="testTime != null">test_time=#{testTime,jdbcType=VARCHAR}</if>
-            <if test="testChannel != null and testChannel!=''">test_channel=#{testChannel,jdbcType=VARCHAR}</if>
-            <if test="taskNum != null and taskNum!=''">task_num=#{taskNum,jdbcType=VARCHAR}</if>
-            <if test="uploadNum != null and uploadNum!=''">upload_num=#{uploadNum,jdbcType=VARCHAR}</if>
+            <if test="testInsertionSite != null">and test_insertion_site=#{testInsertionSite,jdbcType=VARCHAR}</if>
+            <if test="testElisaResult != null">and test_elisa_result=#{testElisaResult,jdbcType=VARCHAR}</if>
+            <if test="testQbzrSeq != null">and test_qbzr_seq=#{testQbzrSeq,jdbcType=VARCHAR}</if>
+            <if test="testEditResidueInfo != null">and test_edit_residue_info=#{testEditResidueInfo,jdbcType=VARCHAR}</if>
+            <if test="testUserId != null">and test_user_id=#{testUserId,jdbcType=NUMERIC}</if>
+            <if test="testUserName != null">and test_user_name=#{testUserName,jdbcType=VARCHAR}</if>
+            <if test="testTime != null">and test_time=#{testTime,jdbcType=VARCHAR}</if>
+            <if test="testChannel != null and testChannel!=''">and test_channel=#{testChannel,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="uploadNum != null and uploadNum!=''">and upload_num=#{uploadNum,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

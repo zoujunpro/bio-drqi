@@ -56,6 +56,12 @@ public class CerImplementationPlanBaseInfoRspDTO {
      */
     private String subProjectCode;
 
+
+    /**
+     * 子项目编码
+     */
+    private String subProjectDesc;
+
     /**
      * 编辑类型  1 KO，2点突变，3精准小，4精准大
      */

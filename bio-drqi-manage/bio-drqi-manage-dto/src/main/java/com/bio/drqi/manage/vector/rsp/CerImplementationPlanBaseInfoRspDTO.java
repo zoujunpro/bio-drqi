@@ -46,6 +46,10 @@ public class CerImplementationPlanBaseInfoRspDTO {
      * 项目编码
      */
     private String projectCode;
+    /**
+     * 项目编码
+     */
+    private String projectName;
 
     /**
      * 子项目编码

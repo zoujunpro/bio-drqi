@@ -230,6 +230,8 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     public CerImplementationPlanBaseInfoRspDTO detail(Integer id) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(id);
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
+        CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerVectorTaskTb.getSubProjectCode());
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerSubProjectTb.getTaskNum());
         CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         CerImplementationPlanBaseInfoRspDTO cerImplementationPlanBaseInfoRspDTO = BeanUtils.copyProperties(cerVectorTaskTb, CerImplementationPlanBaseInfoRspDTO.class);
         cerImplementationPlanBaseInfoRspDTO.setSampleCodePrefix(cerSampleCodePrefixTb.getSampleCodePrefix());
@@ -239,6 +241,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
                 cerImplementationPlanBaseInfoRspDTO.setAcceptorMaterial(cerBreedDict.getBreedName());
             }
         }
+        cerImplementationPlanBaseInfoRspDTO.setSubProjectDesc(bioTaskDtlTb.getTaskDesc());
         cerImplementationPlanBaseInfoRspDTO.setProjectName(cerProjectTb.getProjectName());
         return cerImplementationPlanBaseInfoRspDTO;
     }

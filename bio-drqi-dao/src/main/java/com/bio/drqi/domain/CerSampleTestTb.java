@@ -243,6 +243,9 @@ public class CerSampleTestTb implements Serializable {
     @TableField(exist = false)
     private String cloneSampleFlag;
 
+    @TableField(exist = false)
+    private String testFlag;
+
     private String uniqueCode;
 
     private String cloneSampleCode;

@@ -46,4 +46,9 @@ public class SampleTestListDetailReqDTO extends PageDTO {
 
     private String targetFlag;
 
+    /**
+     * 检测标识 Y已检测 N未检测
+     */
+    private String testFlag;
+
 }

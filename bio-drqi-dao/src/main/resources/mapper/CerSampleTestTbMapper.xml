@@ -191,8 +191,6 @@
             <if test="testQbzrSeq != null">and test_qbzr_seq=#{testQbzrSeq,jdbcType=VARCHAR}</if>
             <if test="testEditResidueInfo != null">and test_edit_residue_info=#{testEditResidueInfo,jdbcType=VARCHAR}
             </if>
-            <if test="testUserId != null">and test_user_id=#{testUserId,jdbcType=NUMERIC}</if>
-            <if test="testUserName != null">and test_user_name=#{testUserName,jdbcType=VARCHAR}</if>
             <if test="testTime != null">and test_time=#{testTime,jdbcType=VARCHAR}</if>
             <if test="checkUserName != null">and check_user_name=#{checkUserName,jdbcType=VARCHAR}</if>
             <if test="checkUserId != null">and check_user_id=#{checkUserId,jdbcType=NUMERIC}</if>
@@ -205,6 +203,7 @@
             <if test="cloneSampleCode != null and cloneSampleCode!=''">and clone_sample_code=#{cloneSampleCode,jdbcType=VARCHAR}</if>
             <if test='cloneSampleFlag =="Y"'>and clone_sample_code is not null</if>
             <if test='cloneSampleFlag =="N"'>and clone_sample_code is null</if>
+            <if test='testFlag =="Y"'>and test_user_id is not null</if>
         </where>
         order by id desc
     </select>

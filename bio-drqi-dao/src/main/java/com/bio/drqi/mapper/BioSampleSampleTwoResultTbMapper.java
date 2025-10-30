@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
 * @author zou'jun
@@ -15,7 +16,7 @@ import java.util.Collection;
 public interface BioSampleSampleTwoResultTbMapper extends BaseMapper<BioSampleSampleTwoResultTb> {
     int deleteByApplyNo(@Param("applyNo") String applyNo);
 
-
+    List<BioSampleSampleTwoResultTb> selectSelective(BioSampleSampleTwoResultTb bioSampleSampleTwoResultTb);
     int insertBatch(@Param("bioSampleSampleTwoResultTbCollection") Collection<BioSampleSampleTwoResultTb> bioSampleSampleTwoResultTbCollection);
 
     BioSampleSampleTwoResultTb selectOneByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);

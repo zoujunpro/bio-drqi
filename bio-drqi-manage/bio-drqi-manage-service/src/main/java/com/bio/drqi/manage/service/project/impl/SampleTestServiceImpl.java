@@ -71,9 +71,6 @@ public class SampleTestServiceImpl implements SampleTestService {
 
 
     @Resource
-    private BioInfoClientApi bioInfoClientApi;
-
-    @Resource
     private BioSampleSampleTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
 
     @Resource
@@ -680,18 +677,6 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
 
     }
-
-    @Override
-    public Object bioInfoSampleTestResultDetail(Integer bioInfoId) {
-        BioSampleSampleTwoResultDetailTb bioSampleSampleTwoResultDetailTb = bioSampleSampleTwoResultDetailTbMapper.selectById(bioInfoId);
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("sampleID", bioSampleSampleTwoResultDetailTb.getSampleId());
-        paramMap.put("QBuniqCode", bioSampleSampleTwoResultDetailTb.getUniqueDbCode());
-        paramMap.put("HapID", bioSampleSampleTwoResultDetailTb.getHapId());
-        Object o = bioInfoClientApi.sampleTestBioInfoResultDetail(paramMap);
-        return o;
-    }
-
     @Override
     public void remark(SampleRemarkReqDTO sampleRemarkReqDTO) {
         CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectById(sampleRemarkReqDTO.getId());

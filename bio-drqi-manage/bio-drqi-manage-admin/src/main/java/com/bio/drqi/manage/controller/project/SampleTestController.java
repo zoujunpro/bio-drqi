@@ -281,19 +281,6 @@ public class SampleTestController {
     }
 
     /**
-     * 取样检测-生信检测结果数据详情
-     *
-     * @param bioInfoId
-     * @return
-     */
-    @GetMapping("bioInfoSampleTestResultDetail")
-    @WebLog(desc = "取样检测-生信检测结果数据详情")
-    public ResponseResult<Object> bioInfoSampleTestResultDetail(@RequestParam Integer bioInfoId) {
-        return ResponseResult.getSuccess(sampleTestService.bioInfoSampleTestResultDetail(bioInfoId));
-    }
-
-
-    /**
      * 取样检测-备注
      *
      * @return

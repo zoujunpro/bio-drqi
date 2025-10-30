@@ -58,7 +58,6 @@ public interface SampleTestService {
 
     void synBioInfoSampleTestResult(Integer id);
 
-    Object bioInfoSampleTestResultDetail(Integer bioInfoId);
 
     void remark(SampleRemarkReqDTO sampleRemarkReqDTO);
 

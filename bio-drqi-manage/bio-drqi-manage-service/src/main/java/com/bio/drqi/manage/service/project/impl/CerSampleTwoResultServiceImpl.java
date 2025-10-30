@@ -49,8 +49,8 @@ public class CerSampleTwoResultServiceImpl implements CerSampleTwoResultService 
     }
 
     @Override
-    public Object detail(Integer id) {
-        BioSampleSampleTwoResultDetailTb bioSampleSampleTwoResultDetailTb = bioSampleSampleTwoResultDetailTbMapper.selectById(id);
+    public Object detail(Integer detailId) {
+        BioSampleSampleTwoResultDetailTb bioSampleSampleTwoResultDetailTb = bioSampleSampleTwoResultDetailTbMapper.selectById(detailId);
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("sampleID", bioSampleSampleTwoResultDetailTb.getSampleId());
         paramMap.put("QBuniqCode", bioSampleSampleTwoResultDetailTb.getUniqueDbCode());

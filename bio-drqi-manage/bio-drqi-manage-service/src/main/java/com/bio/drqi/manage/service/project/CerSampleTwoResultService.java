@@ -18,6 +18,6 @@ public interface CerSampleTwoResultService {
 
     List<CerSampleTwoResultListDetailRspDTO> listDetail( Integer id);
 
-   Object detail( Integer id);
+   Object detail( Integer detailId);
 
 }

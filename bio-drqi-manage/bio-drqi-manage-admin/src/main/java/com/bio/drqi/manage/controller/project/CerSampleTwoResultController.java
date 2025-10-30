@@ -54,12 +54,12 @@ public class CerSampleTwoResultController {
     /**
      * 二代测序-结果详情
      *
-     * @param id
+     * @param detailId
      * @return
      */
     @GetMapping("detail")
     @WebLog(desc = "取样检测-生信检测结果数据详情")
-    public ResponseResult<Object> detail(@RequestParam Integer id) {
-        return ResponseResult.getSuccess(cerSampleTwoResultService.detail(id));
+    public ResponseResult<Object> detail(@RequestParam Integer detailId) {
+        return ResponseResult.getSuccess(cerSampleTwoResultService.detail(detailId));
     }
 }

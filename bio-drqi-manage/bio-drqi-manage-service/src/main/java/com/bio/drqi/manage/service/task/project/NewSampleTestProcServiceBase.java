@@ -348,18 +348,24 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     throw new BusinessException("取样编号有重复");
                 }
             }
+
             //如果是首次申请，更新申请中包含的事实方案和取样编号范围
             List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
             Map<String, List<CerSampleTestTb>> cerSampleTestTbListMap = cerSampleTestTbList.stream().collect(Collectors.groupingBy(CerSampleTestTb::getVectorTaskCode));
-            StringBuffer vectorTaskCodeBuff = new StringBuffer();
+            cerSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(cerSampleTestTbListMap.keySet()).replace("[","").replace("]","").replace("\"",""));
             StringBuffer sampleCodeRangeBuff = new StringBuffer();
-            cerSampleTestTbListMap.forEach((vectorTaskCode, sampleTestList) -> {
-                vectorTaskCodeBuff.append(vectorTaskCode).append(",");
-                sampleTestList = sampleTestList.stream().sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
-                sampleCodeRangeBuff.append(sampleTestList.get(0).getSampleCode()+"-"+sampleTestList.get(sampleTestList.size()-1).getSampleCode()).append(",");
-            });
-            cerSampleApplyTb.setVectorTaskCodes(vectorTaskCodeBuff.substring(0, vectorTaskCodeBuff.length() - 1));
-            cerSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));
+            if (SampleApplyTypeEnum.F.name().equals(cerSampleApplyTb.getApplyType())) {
+                cerSampleTestTbListMap.forEach((vectorTaskCode, sampleTestList) -> {
+                    CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+                    sampleTestList = sampleTestList.stream().filter(sampleTest->sampleTest.getSampleCode().startsWith(cerSampleCodePrefixTb.getSampleCodePrefix())).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
+                    if(CollectionUtil.isNotEmpty(sampleTestList)){
+                        sampleCodeRangeBuff.append(sampleTestList.get(0).getSampleCode() + "-" + sampleTestList.get(sampleTestList.size() - 1).getSampleCode()).append(",");
+                    }
+                });
+                if(StringUtils.isNotEmpty(sampleCodeRangeBuff.toString())){
+                    cerSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));
+                }
+            }
             cerSampleApplyTbMapper.updateById(cerSampleApplyTb);
 
         }

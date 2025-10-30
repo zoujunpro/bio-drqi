@@ -597,7 +597,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         List<BioSampleSampleTwoResultTb> bioSampleSampleTwoResultTbList = new ArrayList<>();
         List<CerSampleTestTb> updateCerSampleTestTbList = new ArrayList<>();
 
-        //组装cerSampleTestBioResultRef数据
+        //组装BioSampleSampleTwoResultTb数据
         for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
             CerSampleTestTb cerSampleTestTb = stringCerSampleTestTbMap.get(sampleTestBioInfoExcelDTO.getSampleCode());
             if (cerSampleTestTb == null) {
@@ -609,6 +609,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             bioSampleSampleTwoResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
             bioSampleSampleTwoResultTb.setRunId(sampleTestBioInfoExcelDTO.getRunId());
             bioSampleSampleTwoResultTb.setCreateTime(currentDate);
+            bioSampleSampleTwoResultTb.setTestChannel(TestChannelEnum.project.name());
             bioSampleSampleTwoResultTbList.add(bioSampleSampleTwoResultTb);
             //更新检测人（检测标志）
             updateCerSampleTestTbList.add(CerSampleTestTb.builder().id(cerSampleTestTb.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
@@ -727,12 +728,6 @@ public class SampleTestServiceImpl implements SampleTestService {
         cerSampleTestTbMapper.updateTargetFlagByApplyNoAndSampleCodeIn(BioDrQiContents.Y, sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
         cerSampleTestTbMapper.updateCheckResultByApplyNoAndSampleCodeIn("留种", sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
         cerSampleTestTbMapper.updateCheckResultByApplyNoAndSampleCodeNotIn("舍弃", sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
-    }
-
-    public static void main(String[] args) {
-        List<List<Object>> list = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\目标取样检测结果模板V1.0.xlsx");
-        System.out.println(JSONUtil.toJsonStr(list));
-
     }
 
     @Override

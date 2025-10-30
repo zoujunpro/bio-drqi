@@ -12,6 +12,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.common.contents.BioDrQiContents;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SampleApplyTypeEnum;
@@ -141,6 +142,45 @@ public class Clean20251030Controller {
     @Resource
     private CerSampleApplyTbMapper cerSampleApplyTbMapper;
 
+    @Resource
+    private BioSampleSampleTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
+
+
+    @GetMapping("/cleanSampleTestUserId20251030")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanSampleTestUserId() {
+        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectSelective(null);
+        for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
+            log.info("cerSampleTestTb=" + JSONUtil.toJsonStr(cerSampleTestTb));
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerSampleTestTb.getApplyNo());
+            if (bioTaskDtlTb == null) {
+                throw new BusinessException("找不到申请信息");
+            }
+            if (bioTaskDtlTb.getTaskStatus().equals(BioTaskStatusEnum.TASK_STATUS_2.status)) {
+                if (cerSampleTestTb.getTestUserId() != null) {
+                    cerSampleTestTb.setTestUserId(117);
+                    cerSampleTestTb.setTestUserName("张立肖");
+                    cerSampleTestTbMapper.updateById(cerSampleTestTb);
+                }
+            } else if (StringUtils.isNotEmpty(cerSampleTestTb.getCheckResult())) {
+                if (cerSampleTestTb.getTestUserId() != null) {
+                    cerSampleTestTb.setTestUserId(117);
+                    cerSampleTestTb.setTestUserName("张立肖");
+                    cerSampleTestTbMapper.updateById(cerSampleTestTb);
+                }
+            } else if(CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode()))){
+                if (cerSampleTestTb.getTestUserId() != null) {
+                    cerSampleTestTb.setTestUserId(117);
+                    cerSampleTestTb.setTestUserName("张立肖");
+                    cerSampleTestTbMapper.updateById(cerSampleTestTb);
+                }
+            }
+        }
+        return ResponseResult.getSuccess("ok");
+
+    }
+
+
     @GetMapping("/cleanSampleApply20251030")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanSampleApply() {
@@ -168,17 +208,17 @@ public class Clean20251030Controller {
                 continue;
             }
             Map<String, List<CerSampleTestTb>> cerSampleTestTbListMap = cerSampleTestTbList.stream().collect(Collectors.groupingBy(CerSampleTestTb::getVectorTaskCode));
-            cerSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(cerSampleTestTbListMap.keySet()).replace("[","").replace("]","").replace("\"",""));
+            cerSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(cerSampleTestTbListMap.keySet()).replace("[", "").replace("]", "").replace("\"", ""));
             StringBuffer sampleCodeRangeBuff = new StringBuffer();
             if (SampleApplyTypeEnum.F.name().equals(cerSampleApplyTb.getApplyType())) {
                 cerSampleTestTbListMap.forEach((vectorTaskCode, sampleTestList) -> {
                     CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-                    sampleTestList = sampleTestList.stream().filter(sampleTest->sampleTest.getSampleCode().startsWith(cerSampleCodePrefixTb.getSampleCodePrefix())).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
-                    if(CollectionUtil.isNotEmpty(sampleTestList)){
+                    sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(cerSampleCodePrefixTb.getSampleCodePrefix())).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
+                    if (CollectionUtil.isNotEmpty(sampleTestList)) {
                         sampleCodeRangeBuff.append(sampleTestList.get(0).getSampleCode() + "-" + sampleTestList.get(sampleTestList.size() - 1).getSampleCode()).append(",");
                     }
                 });
-                if(StringUtils.isNotEmpty(sampleCodeRangeBuff.toString())){
+                if (StringUtils.isNotEmpty(sampleCodeRangeBuff.toString())) {
                     cerSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));
                 }
             }

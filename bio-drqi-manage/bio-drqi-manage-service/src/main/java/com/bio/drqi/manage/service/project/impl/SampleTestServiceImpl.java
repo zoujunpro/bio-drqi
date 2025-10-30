@@ -268,7 +268,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             updateCerSampleTestTb.setTestQbzrSeq(testExcelDTO.getQbzrSeq());
             updateCerSampleTestTb.setTestEditResidueInfo(testExcelDTO.getEditResidueInfo());
             updateCerSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
-            updateCerSampleTestTb.setTestUserName(SecurityContextHolder.getUserName());
+            updateCerSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
             updateCerSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
             updateCerSampleTestTb.setUpdateTime(new Date());
             updateList.add(updateCerSampleTestTb);

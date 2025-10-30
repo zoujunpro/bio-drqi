@@ -53,10 +53,10 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     private CerSampleLayoutTbMapper cerSampleLayoutTbMapper;
 
     @Resource
-    private CerSampleTestBioInfoResultTbMapper cerSampleTestBioInfoResultTbMapper;
+    private BioSampleSampleTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
 
     @Resource
-    private CerSampleTestBioResultRefMapper cerSampleTestBioResultRefMapper;
+    private BioSampleSampleTwoResultTbMapper bioSampleSampleTwoResultTbMapper;
 
     @Resource
     private CerPlantDtlTbMapper cerPlantDtlTbMapper;
@@ -170,8 +170,8 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         cerSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
-        cerSampleTestBioInfoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
-        cerSampleTestBioResultRefMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        bioSampleSampleTwoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerPlantDtlTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         bioSampleSampleOneResultTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.cer_plant.name());

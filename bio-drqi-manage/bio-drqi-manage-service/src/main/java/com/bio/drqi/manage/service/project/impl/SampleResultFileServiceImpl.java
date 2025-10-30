@@ -52,11 +52,11 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
 
 
     @Resource
-    private CerSampleTestBioResultRefMapper cerSampleTestBioResultRefMapper;
+    private BioSampleSampleTwoResultTbMapper bioSampleSampleTwoResultTbMapper;
 
 
     @Resource
-    private CerSampleTestBioInfoResultTbMapper cerSampleTestBioInfoResultTbMapper;
+    private BioSampleSampleTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
 
     @Resource
     private OssService ossService;
@@ -119,7 +119,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 cerSampleTestTbList = cerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId).reversed()).collect(Collectors.toList());
                 //第一个的一定更新
                 updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(),cerSampleTestTbList.get(0).getSampleCode()));
-                bioSampleSampleOneResultTbList.add(BioSampleSampleOneResultTb.of(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(),cerSampleTestTbList.get(0).getSampleCode()), TestChannelEnum.project.name(),null,cerSampleTestResultFileTb.getUploadNum()));
+                bioSampleSampleOneResultTbList.add(BioSampleSampleOneResultTb.of(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(),cerSampleTestTbList.get(0).getSampleCode()), TestChannelEnum.project.name(),cerSampleTestTbList.get(0).getApplyNo(),cerSampleTestResultFileTb.getUploadNum()));
 
                 //剩下的，如果没有上传过结果，则补更新结果
                 for (int i = 1; i < cerSampleTestTbList.size(); i++) {
@@ -137,7 +137,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
         }
         //NGS测序（二代测序）
         if (SampleResultFileTypeENum.TYPE_2.code.equals(sampleResultFileUploadFileReqDTO.getResultType())) {
-            List<CerSampleTestBioResultRef> cerSampleTestBioResultRefList = new ArrayList<>();
+            List<BioSampleSampleTwoResultTb> bioSampleTwoResultTbList = new ArrayList<>();
             List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList = ExcelUtil.readExcel(tempFilePath, SampleTestBioInfoExcelDTO.class);
             if (CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)) {
                 throw new BusinessException("excel中二代测序结果读取为空");
@@ -158,45 +158,45 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 CerSampleTestTb firstCerSampleTestTb = cerSampleTestTbList.get(0);
                 updateCerSampleTestTbList.add(CerSampleTestTb.builder().id(firstCerSampleTestTb.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getUserName()).build());
                 //清空旧数据，如果有
-                CerSampleTestBioResultRef cerSampleTestBioResultRef = cerSampleTestBioResultRefMapper.selectOneByApplyNoAndSampleCode(firstCerSampleTestTb.getApplyNo(), firstCerSampleTestTb.getSampleCode());
-                if (cerSampleTestBioResultRef != null) {
-                    cerSampleTestBioResultRefMapper.deleteById(cerSampleTestBioResultRef.getId());
-                    cerSampleTestBioInfoResultTbMapper.deleteByApplyNoAndSampleCode(firstCerSampleTestTb.getApplyNo(), firstCerSampleTestTb.getSampleCode());
+                BioSampleSampleTwoResultTb bioSampleSampleTwoResultTb = bioSampleSampleTwoResultTbMapper.selectOneByApplyNoAndSampleCode(firstCerSampleTestTb.getApplyNo(), firstCerSampleTestTb.getSampleCode());
+                if (bioSampleSampleTwoResultTb != null) {
+                    bioSampleSampleTwoResultTbMapper.deleteById(bioSampleSampleTwoResultTb.getId());
+                    bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(firstCerSampleTestTb.getApplyNo(), firstCerSampleTestTb.getSampleCode());
                 }
-                cerSampleTestBioResultRefList.add(buildCerSampleTestBioResultRef(sampleTestBioInfoExcelDTO, firstCerSampleTestTb, cerSampleTestResultFileTb.getUploadNum()));
+                bioSampleTwoResultTbList.add(buildBioSampleSampleTwoResultTb(sampleTestBioInfoExcelDTO, firstCerSampleTestTb, cerSampleTestResultFileTb.getUploadNum()));
                 //剩下的，如果没有上传过结果，则补更新结果
                 for (int i = 1; i < cerSampleTestTbList.size(); i++) {
                     CerSampleTestTb cerSampleTest = cerSampleTestTbList.get(i);
                     if (cerSampleTest.getTestUserId() == null) {
-                        cerSampleTestBioResultRefList.add(buildCerSampleTestBioResultRef(sampleTestBioInfoExcelDTO, cerSampleTest, cerSampleTestResultFileTb.getUploadNum()));
+                        bioSampleTwoResultTbList.add(buildBioSampleSampleTwoResultTb(sampleTestBioInfoExcelDTO, cerSampleTest, cerSampleTestResultFileTb.getUploadNum()));
                         updateCerSampleTestTbList.add(CerSampleTestTb.builder().id(cerSampleTest.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getUserName()).build());
 
                     }
                 }
             }
             //更新文件中的测序信息（有效信息）
-            cerSampleTestBioResultRefMapper.insertBatch(cerSampleTestBioResultRefList);
+            bioSampleSampleTwoResultTbMapper.insertBatch(bioSampleTwoResultTbList);
             //更新检测结果标识（取样信息上加入检测人）
             cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
             //异步同步结果
-            List<CerSampleTestBioInfoResultTb> cerSampleTestBioInfoResultTbList = synSampleTestResultService.synBioResult(cerSampleTestBioResultRefList);
+            List<BioSampleSampleTwoResultDetailTb> bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(bioSampleTwoResultTbList);
             //更新同步的结果，更新前旧的需要删除
-            if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
-                cerSampleTestBioInfoResultTbMapper.insertBatch(cerSampleTestBioInfoResultTbList);
+            if (CollectionUtil.isNotEmpty(bioSampleTwoResultDetailTbList)) {
+                bioSampleSampleTwoResultDetailTbMapper.insertBatch(bioSampleTwoResultDetailTbList);
             }
         }
     }
 
-    private CerSampleTestBioResultRef buildCerSampleTestBioResultRef(SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO, CerSampleTestTb firstCerSampleTestTb, String uploadNo) {
-        CerSampleTestBioResultRef updateCerSampleTestBioResultRef = new CerSampleTestBioResultRef();
-        updateCerSampleTestBioResultRef.setApplyNo(firstCerSampleTestTb.getApplyNo());
-        updateCerSampleTestBioResultRef.setSampleCode(firstCerSampleTestTb.getSampleCode());
-        updateCerSampleTestBioResultRef.setVectorTaskCode(firstCerSampleTestTb.getVectorTaskCode());
-        updateCerSampleTestBioResultRef.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
-        updateCerSampleTestBioResultRef.setRunId(sampleTestBioInfoExcelDTO.getRunId());
-        updateCerSampleTestBioResultRef.setCreateTime(new Date());
-        updateCerSampleTestBioResultRef.setUploadNum(uploadNo);
-        return updateCerSampleTestBioResultRef;
+    private BioSampleSampleTwoResultTb buildBioSampleSampleTwoResultTb(SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO, CerSampleTestTb firstCerSampleTestTb, String uploadNo) {
+        BioSampleSampleTwoResultTb bioSampleSampleTwoResultTb = new BioSampleSampleTwoResultTb();
+        bioSampleSampleTwoResultTb.setApplyNo(firstCerSampleTestTb.getApplyNo());
+        bioSampleSampleTwoResultTb.setSampleCode(firstCerSampleTestTb.getSampleCode());
+        bioSampleSampleTwoResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
+        bioSampleSampleTwoResultTb.setRunId(sampleTestBioInfoExcelDTO.getRunId());
+        bioSampleSampleTwoResultTb.setTestChannel(TestChannelEnum.project.name());
+        bioSampleSampleTwoResultTb.setCreateTime(new Date());
+        bioSampleSampleTwoResultTb.setUploadNum(uploadNo);
+        return bioSampleSampleTwoResultTb;
     }
 
     @NotNull

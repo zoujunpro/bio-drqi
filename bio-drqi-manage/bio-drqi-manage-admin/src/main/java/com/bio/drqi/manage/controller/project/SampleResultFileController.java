@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.controller.project;
 
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.sample.req.SampleResultFileListPageReqDTO;
 import com.bio.drqi.manage.sample.req.SampleResultFileUploadFileReqDTO;
@@ -34,6 +35,7 @@ public class SampleResultFileController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "取样检测批量检测结果上送管理-分页查询")
+    @RequirePermissions("cer:sampleResultFile:listPage")
     public ResponseResult<PageInfo<SampleResultFileListPageRspDTO>> listPage(SampleResultFileListPageReqDTO sampleResultFileListPageReqDTO) {
         return ResponseResult.getSuccess(sampleResultFileService.listPage(sampleResultFileListPageReqDTO));
     }
@@ -46,6 +48,8 @@ public class SampleResultFileController {
      * @return
      */
     @PostMapping("uploadFile")
+    @WebLog(desc = "取样检测批量检测结果上送管理-结果文件上送")
+    @RequirePermissions("cer:sampleResultFile:uploadFile")
     public synchronized ResponseResult<String> uploadFile(@RequestBody @Validated SampleResultFileUploadFileReqDTO sampleResultFileUploadFileReqDTO) {
         sampleResultFileService.uploadFile(sampleResultFileUploadFileReqDTO);
         return ResponseResult.getSuccess("ok");

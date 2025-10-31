@@ -125,5 +125,13 @@
         </where>
         order by id desc
     </select>
+    <select id="selectAllByVectorTaskCodeAndPlasmidName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_plasmid_quality_tb
+        where
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+        AND plasmid_name = #{plasmidName,jdbcType=VARCHAR}
+    </select>
 </mapper>
 

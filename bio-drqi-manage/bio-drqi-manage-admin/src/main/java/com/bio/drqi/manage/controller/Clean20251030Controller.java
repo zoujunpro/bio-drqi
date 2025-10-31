@@ -146,6 +146,140 @@ public class Clean20251030Controller {
     private BioSampleSampleTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
 
 
+    @GetMapping("createExcel")
+    public void createExcel(HttpServletResponse httpServletResponse) {
+        List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectSelective(null);
+        List<Vector> vectorList = new ArrayList<>();
+        for (CerVectorTb cerVectorTb : cerVectorTbList) {
+            log.info("cerVectorTb=" + JSONUtil.toJsonStr(cerVectorTb));
+            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerVectorTb.getVectorTaskCode());
+            if (cerVectorTaskTb == null) {
+                throw new BusinessException("找不到实施方案信息");
+            }
+            CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
+            if("2".equals(cerProjectTb.getProjectType())){
+                continue;
+            }
+            List<CerPlasmidQualityTb> cerPlasmidQualityTbList = cerPlasmidQualityTbMapper.selectAllByVectorTaskCodeAndPlasmidName(cerVectorTaskTb.getVectorTaskCode(), cerVectorTb.getPlasmidName());
+            Vector vector = new Vector();
+            vector.setProjectCode(cerVectorTaskTb.getProjectCode());
+            vector.setSubProjectCode(cerVectorTaskTb.getSubProjectCode());
+            vector.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+            vector.setPlasmidName(cerVectorTb.getPlasmidName());
+            vector.setBacterialResistance(cerVectorTb.getBacterialResistance());
+            vector.setPlasmidSpecificPrimers(cerVectorTb.getPlasmidSpecificPrimers());
+            vector.setCopyNumber(cerVectorTb.getCopyNumber());
+            vector.setSelectionMarker(cerVectorTb.getSelectionMarker());
+            if (CollectionUtil.isNotEmpty(cerPlasmidQualityTbList)) {
+                if (cerPlasmidQualityTbList.size() == 1) {
+                    vector.setAgrobacteriumInformation(cerPlasmidQualityTbList.get(0).getAgrobacteriumInformation());
+                    vector.setAgrobacteriumResistance(cerPlasmidQualityTbList.get(0).getAgrobacteriumResistance());
+                    vector.setPlasmidConcentration(cerPlasmidQualityTbList.get(0).getPlasmidConcentration());
+                    vector.setExtractionKit(cerPlasmidQualityTbList.get(0).getExtractionKit());
+                } else {
+                    for (CerPlasmidQualityTb cerPlasmidQualityTb : cerPlasmidQualityTbList) {
+                        if (StringUtils.isNotEmpty(cerPlasmidQualityTb.getAgrobacteriumInformation())) {
+                            vector.setAgrobacteriumInformation(cerPlasmidQualityTb.getAgrobacteriumInformation());
+                        }
+                        if (StringUtils.isNotEmpty(cerPlasmidQualityTb.getAgrobacteriumResistance())) {
+                            vector.setAgrobacteriumResistance(cerPlasmidQualityTb.getAgrobacteriumResistance());
+                        }
+                        if (StringUtils.isNotEmpty(cerPlasmidQualityTb.getPlasmidConcentration())) {
+                            vector.setPlasmidConcentration(cerPlasmidQualityTb.getPlasmidConcentration());
+                        }
+                        if (StringUtils.isNotEmpty(cerPlasmidQualityTb.getExtractionKit())) {
+                            vector.setExtractionKit(cerPlasmidQualityTb.getExtractionKit());
+                        }
+                    }
+                }
+            } else {
+                cerPlasmidQualityTbList = cerPlasmidQualityTbMapper.selectAllByVectorTaskId(cerVectorTaskTb.getId());
+                if (CollectionUtil.isNotEmpty(cerPlasmidQualityTbList)) {
+                    for (CerPlasmidQualityTb cerPlasmidQualityTb : cerPlasmidQualityTbList) {
+                        if (StringUtils.isNotEmpty(cerPlasmidQualityTb.getAgrobacteriumInformation())) {
+                            vector.setAgrobacteriumInformation(cerPlasmidQualityTb.getAgrobacteriumInformation());
+                        }
+                        if (StringUtils.isNotEmpty(cerPlasmidQualityTb.getAgrobacteriumResistance())) {
+                            vector.setAgrobacteriumResistance(cerPlasmidQualityTb.getAgrobacteriumResistance());
+                        }
+                        if (StringUtils.isNotEmpty(cerPlasmidQualityTb.getPlasmidConcentration())) {
+                            vector.setPlasmidConcentration(cerPlasmidQualityTb.getPlasmidConcentration());
+                        }
+                        if (StringUtils.isNotEmpty(cerPlasmidQualityTb.getExtractionKit())) {
+                            vector.setExtractionKit(cerPlasmidQualityTb.getExtractionKit());
+                        }
+                    }
+                }
+            }
+            vectorList.add(vector);
+        }
+
+        ExcelUtil.writeExcel("质粒信息.xlsx", "sheet1", vectorList, Vector.class, httpServletResponse);
+    }
+
+    @Data
+    public static class Vector {
+
+        @ExcelProperty("项目编号")
+        private String projectCode;
+
+        @ExcelProperty("子项目编号")
+        private String subProjectCode;
+
+        @ExcelProperty("实施方案编号")
+        private String vectorTaskCode;
+
+        @ExcelProperty("质粒名称")
+        private String plasmidName;
+        /**
+         * 细菌抗性
+         */
+        @ExcelProperty("细菌抗性")
+        private String bacterialResistance;
+
+        /**
+         * 质粒特异性引物
+         */
+        @ExcelProperty("质粒特异性引物")
+        private String plasmidSpecificPrimers;
+        /**
+         * 拷贝数
+         */
+        @ExcelProperty("拷贝数")
+        private String copyNumber;
+        /**
+         * 植物筛选标记
+         */
+        @ExcelProperty("植物筛选标记")
+        private String selectionMarker;
+
+        /**
+         * 质检农杆菌信息
+         */
+        @ExcelProperty("质检农杆菌信息")
+        private String agrobacteriumInformation;
+
+        /**
+         * 农杆菌抗性
+         */
+        @ExcelProperty("质检农杆菌抗性")
+        private String agrobacteriumResistance;
+
+        /**
+         * 质粒浓度
+         */
+        @ExcelProperty("质检质粒浓度")
+        private String plasmidConcentration;
+
+        /**
+         * 提取试剂盒
+         */
+        @ExcelProperty("质检提取试剂盒")
+        private String extractionKit;
+
+
+    }
+
     @GetMapping("/cleanSampleTestUserId20251030")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanSampleTestUserId() {
@@ -168,7 +302,7 @@ public class Clean20251030Controller {
                     cerSampleTestTb.setTestUserName("张立肖");
                     cerSampleTestTbMapper.updateById(cerSampleTestTb);
                 }
-            } else if(CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode()))){
+            } else if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode()))) {
                 if (cerSampleTestTb.getTestUserId() != null) {
                     cerSampleTestTb.setTestUserId(117);
                     cerSampleTestTb.setTestUserName("张立肖");

@@ -4,19 +4,19 @@ import com.bio.common.core.dto.BusinessException;
 
 public enum OrgEnum {
 
-    DEV_BEIJING_ORG("dev", "beijing", "1001"),
-    DEV_TIANJIN_ORG("dev", "tianjin", "1001"),
+    DEV_BEIJING_ORG("dev", "beijing", "1002"),
+    DEV_TIANJIN_ORG("dev", "tianjin", "1003"),
     DEV_DEFAULT_ORG("dev", "default_", "1001"),
 
 
-    TEST_BEIJING_ORG("test", "beijing", "1001"),
-    TEST_TIANJIN_ORG("test", "tianjin", "1001"),
+    TEST_BEIJING_ORG("test", "beijing", "1002"),
+    TEST_TIANJIN_ORG("test", "tianjin", "1003"),
     TEST_DEFAULT_ORG("test", "default_", "1001"),
 
 
 
-    LOCAL_BEIJING_ORG("local", "beijing", "1001"),
-    LOCAL_TIANJIN_ORG("local", "tianjin", "1001"),
+    LOCAL_BEIJING_ORG("local", "beijing", "1002"),
+    LOCAL_TIANJIN_ORG("local", "tianjin", "1003"),
     LOCAL_DEFAULT_ORG("local", "default_", "1001"),
 
     PROD_TIANJIN_ORG("prod", "tianjin", ""),

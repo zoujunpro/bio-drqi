@@ -568,7 +568,6 @@ public class Clean20251030Controller {
     }
 
     @GetMapping("/cleanSampleTestUserId20251030")
-    @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanSampleTestUserId() {
         List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectSelective(null);
         for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
@@ -578,19 +577,19 @@ public class Clean20251030Controller {
                 throw new BusinessException("找不到申请信息");
             }
             if (bioTaskDtlTb.getTaskStatus().equals(BioTaskStatusEnum.TASK_STATUS_2.status)) {
-                if (cerSampleTestTb.getTestUserId() != null) {
+                if (cerSampleTestTb.getTestUserId() == null) {
                     cerSampleTestTb.setTestUserId(117);
                     cerSampleTestTb.setTestUserName("张立肖");
                     cerSampleTestTbMapper.updateById(cerSampleTestTb);
                 }
             } else if (StringUtils.isNotEmpty(cerSampleTestTb.getCheckResult())) {
-                if (cerSampleTestTb.getTestUserId() != null) {
+                if (cerSampleTestTb.getTestUserId() == null) {
                     cerSampleTestTb.setTestUserId(117);
                     cerSampleTestTb.setTestUserName("张立肖");
                     cerSampleTestTbMapper.updateById(cerSampleTestTb);
                 }
             } else if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode()))) {
-                if (cerSampleTestTb.getTestUserId() != null) {
+                if (cerSampleTestTb.getTestUserId() == null) {
                     cerSampleTestTb.setTestUserId(117);
                     cerSampleTestTb.setTestUserName("张立肖");
                     cerSampleTestTbMapper.updateById(cerSampleTestTb);

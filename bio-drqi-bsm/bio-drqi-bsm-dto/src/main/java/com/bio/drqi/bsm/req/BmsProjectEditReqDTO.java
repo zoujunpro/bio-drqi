@@ -21,4 +21,10 @@ public class BmsProjectEditReqDTO {
      */
     private String kdProjectName;
 
+
+    /**
+     * 金蝶项目类别
+     */
+    private String kdProjectType;
+
 }

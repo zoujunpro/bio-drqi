@@ -22,4 +22,9 @@ public class BmsProjectAddReqDTO {
      * 金蝶项目编号
      */
     private String kdProjectName;
+
+    /**
+     * 金蝶项目类别
+     */
+    private String kdProjectType;
 }

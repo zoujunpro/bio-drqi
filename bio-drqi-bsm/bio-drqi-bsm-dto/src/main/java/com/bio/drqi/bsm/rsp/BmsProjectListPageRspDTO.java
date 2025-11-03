@@ -42,4 +42,12 @@ public class BmsProjectListPageRspDTO {
      * 创建人姓名
      */
     private String createUserName;
+
+
+    /**
+     * 金蝶项目类别
+     */
+    private String kdProjectType;
+
+
 }

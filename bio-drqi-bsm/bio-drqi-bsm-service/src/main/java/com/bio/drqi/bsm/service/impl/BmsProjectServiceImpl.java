@@ -55,6 +55,7 @@ public class BmsProjectServiceImpl implements BmsProjectService {
         bmsProjectDict.setProjectName(bmsProjectAddReqDTO.getProjectName());
         bmsProjectDict.setKdProjectCode(bmsProjectAddReqDTO.getKdProjectCode());
         bmsProjectDict.setKdProjectName(bmsProjectAddReqDTO.getKdProjectName());
+        bmsProjectDict.setKdProjectType(bmsProjectAddReqDTO.getKdProjectType());
         bmsProjectDict.setCreateTime(new Date());
         bmsProjectDict.setCreateUserId(SecurityContextHolder.getUserId());
         bmsProjectDict.setCreateUserName(SecurityContextHolder.getNickName());
@@ -76,6 +77,7 @@ public class BmsProjectServiceImpl implements BmsProjectService {
         bmsProjectDict.setProjectName(bmsProjectEditReqDTO.getProjectName());
         bmsProjectDict.setKdProjectName(bmsProjectEditReqDTO.getKdProjectName());
         bmsProjectDict.setKdProjectCode(bmsProjectEditReqDTO.getKdProjectCode());
+        bmsProjectDict.setKdProjectType(bmsProjectDict.getKdProjectType());
         try {
             bmsProjectDictMapper.updateById(bmsProjectDict);
         } catch (DuplicateKeyException e) {

@@ -18,7 +18,10 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SampleApplyTypeEnum;
 import com.bio.drqi.manage.dto.project.*;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
+import com.bio.drqi.manage.sample.rsp.SampleTestListDetailRspDTO;
 import com.bio.drqi.mapper.*;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -146,6 +149,290 @@ public class Clean20251030Controller {
     private BioSampleSampleTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
 
 
+    @GetMapping("createPlantExcel")
+    public void createPlantExcel(HttpServletResponse httpServletResponse) {
+        List<CerPlantDtlTb> cerPlantDtlTbList = cerPlantDtlTbMapper.selectList(null);
+        for (CerPlantDtlTb cerPlantDtlTb : cerPlantDtlTbList) {
+
+        }
+
+    }
+
+    @GetMapping("createSampleExcel")
+    public void createSampleExcel(HttpServletResponse httpServletResponse) {
+        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectSelective(null);
+        List<SampleTestListDetailRspDTO> targetListInfo = BeanUtils.copyListProperties(cerSampleTestTbList, SampleTestListDetailRspDTO.class);
+
+        targetListInfo.forEach(sampleTestListDetailRspDTO -> {
+            sampleTestListDetailRspDTO.setSampleGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getSampleGeneration()));
+            List<BioSampleSampleTwoResultDetailTb> cerSampleTestBioInfoResultTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(sampleTestListDetailRspDTO.getApplyNo(), sampleTestListDetailRspDTO.getSampleCode());
+            sampleTestListDetailRspDTO.setMatchNum(CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList) ? cerSampleTestBioInfoResultTbList.size() : 0);
+        });
+
+        List<SampleDTO> sampleDTOList = BeanUtils.copyListProperties(targetListInfo, SampleDTO.class);
+
+        ExcelUtil.writeExcel("质粒信息.xlsx", "sheet1", sampleDTOList, SampleDTO.class, httpServletResponse);
+
+    }
+
+    @Data
+    public static class SampleDTO {
+
+        /**
+         * 项目编码
+         */
+        @ExcelProperty("项目编号")
+        private String projectCode;
+        /**
+         * 受体材料
+         */
+        @ExcelProperty("受体材料")
+        private String acceptorMaterial;
+
+        /**
+         * 子项目编码
+         */
+        @ExcelProperty("子项目编码")
+        private String subProjectCode;
+
+        /**
+         * 载体任务编码
+         */
+        @ExcelProperty("实施方案编号")
+        private String vectorTaskCode;
+
+
+        /**
+         * 转化编号/种子编号
+         */
+        @ExcelProperty("转化编号")
+        private String transformCode;
+
+        /**
+         * 取样编号
+         */
+        @ExcelProperty("取样编号")
+        private String sampleCode;
+
+
+        /**
+         * 代次
+         */
+        @ExcelProperty("代次")
+        private String sampleGeneration;
+
+        /**
+         * 鉴定引物
+         */
+        @ExcelProperty("鉴定引物")
+        private String testIdentifyPrimer;
+
+        /**
+         * 检测方法
+         */
+        @ExcelProperty("检测方法")
+        private String testMethod;
+
+        /**
+         * 编辑类型
+         */
+        @ExcelProperty("编辑类型")
+        private String testEditType;
+
+        /**
+         * 非转鉴定引物
+         */
+        @ExcelProperty("非转鉴定引物")
+        private String testNoTransIdentityPrimer;
+
+        /**
+         * 是否为转基因阳性
+         */
+        @ExcelProperty("是否为转基因阳性")
+        private String testIsGeneModifyPositive;
+
+        /**
+         * 是否为定点插入
+         */
+        @ExcelProperty("是否为定点插入")
+        private String testIfFixedPoint;
+
+        /**
+         * 是否为单拷贝插入
+         */
+        @ExcelProperty("是否为单拷贝插入")
+        private String testIfCopyInsert;
+
+        /**
+         * 定点插入方式（定点纯合/定点杂合）
+         */
+        @ExcelProperty("定点插入方式")
+        private String testFixedPointType;
+
+        /**
+         * donor载体残留情况
+         */
+        @ExcelProperty("donor载体残留情况")
+        private String testDonorResidueInfo;
+
+        /**
+         * 插入位点
+         */
+        @ExcelProperty("插入位点")
+        private String testInsertionSite;
+
+        /**
+         * ELISA结果（蛋白表达量）
+         */
+        @ExcelProperty("ELISA结果（蛋白表达量）")
+        private String testElisaResult;
+
+        /**
+         * qbzr表达量
+         */
+        @ExcelProperty("qbzr表达量")
+        private String testQbzrSeq;
+
+        /**
+         * 编辑工具残留情况
+         */
+        @ExcelProperty("编辑工具残留情况")
+        private String testEditResidueInfo;
+
+        /**
+         * 检测数据递送关联工单
+         */
+        @ExcelProperty("检测数据递送关联工单")
+        private String testTaskNum;
+
+        /**
+         * 检测数据递送人ID
+         */
+        @ExcelProperty("检测数据递送人ID")
+        private Integer testUserId;
+
+
+        /**
+         * 审查结果
+         */
+        @ExcelProperty("审查结果")
+        private String checkResult;
+
+        @ExcelProperty("NGS结果")
+        private Integer matchNum;
+
+        @ExcelProperty("克隆苗本体取样编号")
+        private String cloneSampleCode;
+
+    }
+
+    @Data
+    public static class PlantDTO {
+
+        /**
+         * 所属项目编码
+         */
+        @ExcelProperty("项目编号")
+        private String projectCode;
+        /**
+         * 子项目编号
+         */
+        @ExcelProperty("子项目编号")
+        private String subProjectCode;
+
+        /**
+         * 任务编码
+         */
+        @ExcelProperty("实施方案编号")
+        private String vectorTaskCode;
+        /**
+         * 转化编号
+         */
+        @ExcelProperty("转化编号")
+        private String transformCode;
+
+        /**
+         * 取样编号
+         */
+        @ExcelProperty("取样编号")
+        private String sampleCode;
+
+        /**
+         * 受体材料
+         */
+        @ExcelProperty("受体材料")
+        private String acceptorMaterial;
+        /**
+         * 种子编号
+         */
+        @ExcelProperty("种植编号")
+        private String plantCode;
+
+
+        /**
+         * 代次
+         */
+        @ExcelProperty("代次")
+        private String generation;
+
+        /**
+         * 株树
+         */
+        @ExcelProperty("株树")
+        private Integer plantNumber;
+
+        /**
+         * 播种/移苗日期
+         */
+        @ExcelProperty("种/移苗日期")
+        private String plantDate;
+
+        /**
+         * 移栽日期
+         */
+        @ExcelProperty("移栽日期")
+        private String transplantDate;
+
+        /**
+         * 春化开始日期
+         */
+        @ExcelProperty("春化开始日期")
+        private String vernalizationBeginDate;
+
+        /**
+         * 春化结束日期
+         */
+        @ExcelProperty("春化结束日期")
+        private String vernalizationEndDate;
+
+        /**
+         * 授粉方式
+         */
+        @ExcelProperty("授粉方式")
+        private String pollinationMethod;
+
+        /**
+         * 植株状态 1正常，异常
+         */
+        @ExcelProperty("植株状态")
+        private String plantStatus;
+
+
+        /**
+         * 授粉时间
+         */
+        @ExcelProperty("授粉时间")
+        private String pollinationDate;
+
+        /**
+         * 收获日期
+         */
+        @ExcelProperty("收获日期")
+        private String harvestDate;
+
+
+    }
+
     @GetMapping("createExcel")
     public void createExcel(HttpServletResponse httpServletResponse) {
         List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectSelective(null);
@@ -157,7 +444,7 @@ public class Clean20251030Controller {
                 throw new BusinessException("找不到实施方案信息");
             }
             CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
-            if("2".equals(cerProjectTb.getProjectType())){
+            if ("2".equals(cerProjectTb.getProjectType())) {
                 continue;
             }
             List<CerPlasmidQualityTb> cerPlasmidQualityTbList = cerPlasmidQualityTbMapper.selectAllByVectorTaskCodeAndPlasmidName(cerVectorTaskTb.getVectorTaskCode(), cerVectorTb.getPlasmidName());

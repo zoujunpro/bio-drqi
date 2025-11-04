@@ -85,6 +85,7 @@
         where
         transform_code = #{transformCode,jdbcType=VARCHAR}
         AND vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+        order by id desc
     </select>
 
 </mapper>

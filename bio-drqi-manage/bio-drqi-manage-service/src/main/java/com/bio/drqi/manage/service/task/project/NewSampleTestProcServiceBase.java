@@ -154,6 +154,30 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         CerSampleApplyTb cerSampleApplyTb = cerSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             cerSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull("舍弃", cerSampleApplyTb.getApplyNo());
+            //首次取样，且已经发生过移苗
+            if (SampleApplyTypeEnum.F.name().equals(cerSampleApplyTb.getApplyType())) {
+                List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(cerSampleApplyTb.getApplyNo()).stream().filter(cerSampleTestTb -> "传代".equals(cerSampleTestTb.getCheckResult()) || "留种".equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
+                if(CollectionUtil.isNotEmpty(cerSampleTestTbList)){
+                    for (CerSampleTestTb cerSampleTestTb:cerSampleTestTbList){
+                        List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectAllByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
+                        CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioTaskDtlTb.getTaskNum());
+                        cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
+                        cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
+                        cerPlantDtlTb.setTransplantDate(DateUtil.format(cerConversionAndTransRefList.get(0).getCreateTime(), DatePattern.NORM_DATE_PATTERN));
+                        if (Objects.isNull(cerPlantDtlTbMapper.selectOneByPlantCode(cerPlantDtlTb.getPlantCode()))) {
+                            //更新种植信息
+                            cerPlantDtlTbMapper.insert(cerPlantDtlTb);
+                            /**
+                             * 更新当前执行步骤
+                             */
+                            logStep(cerSampleTestTb.getVectorTaskId(), ImplementationPlanTypeEnum.cer_plant, bioTaskDtlTb.getTaskNum());
+                        }
+                    }
+
+                }
+            }
+
+
         }
 
     }
@@ -289,7 +313,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(), firstSampleApply.getVectorTaskCode());
                 CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerTransformTb.getVectorTaskCode());
                 CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-                List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectAllByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(), firstSampleApply.getVectorTaskCode());
                 for (int i = 1; i <= firstSampleApply.getSampleNum(); i++) {
                     CerSampleTestTb cerSampleTestTb = new CerSampleTestTb();
                     cerSampleTestTb.setProjectId(cerTransformTb.getProjectId());
@@ -311,26 +334,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     cerSampleTestTb.setSampleGeneration(firstSampleApply.getSampleGeneration());
                     cerSampleTestTb.setSampleTime(firstSampleApply.getSampleTime());
                     targetCerSampleTestTbList.add(cerSampleTestTb);
-
-                    //如果此转化编号已经移过苗，此时取样需要直接生成种植编号
-                    if (CollectionUtil.isNotEmpty(cerConversionAndTransRefList)) {
-                        CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioTaskDtlTb.getTaskNum());
-                        cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
-                        cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
-                        cerPlantDtlTb.setTransplantDate(DateUtil.format(cerConversionAndTransRefList.get(0).getCreateTime(), DatePattern.NORM_DATE_PATTERN));
-                        if (Objects.isNull(cerPlantDtlTbMapper.selectOneByPlantCode(cerPlantDtlTb.getPlantCode()))) {
-                            cerPlantDtlTbMapper.insert(cerPlantDtlTb);
-                        }
-                        /**
-                         * 更新当前执行步骤
-                         */
-                        logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.cer_plant, bioTaskDtlTb.getTaskNum());
-                    } else {
-                        /**
-                         * 更新当前执行步骤
-                         */
-                        logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test, bioTaskDtlTb.getTaskNum());
-                    }
                 }
 
                 cerSampleCodePrefixTb.setCurrentIndex(cerSampleCodePrefixTb.getCurrentIndex() + firstSampleApply.getSampleNum());
@@ -366,25 +369,5 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         }
     }
 
-    public static void main(String[] args) {
-        List<CerSampleTestTb> cerSampleTestTbList = new ArrayList<>();
-        CerSampleTestTb cerSampleTestTb1 = new CerSampleTestTb();
-        cerSampleTestTb1.setSampleCode("AN004-9");
-
-        CerSampleTestTb cerSampleTestTb2 = new CerSampleTestTb();
-        cerSampleTestTb2.setSampleCode("AN004-2");
-
-        CerSampleTestTb cerSampleTestTb3 = new CerSampleTestTb();
-        cerSampleTestTb3.setSampleCode("AN004-1");
-
-        cerSampleTestTbList.add(cerSampleTestTb1);
-        cerSampleTestTbList.add(cerSampleTestTb2);
-        cerSampleTestTbList.add(cerSampleTestTb3);
-
-        List<Integer> sampleCodeSuffixList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> cerSampleTestTb.getSampleCode().contains("-")).map(cerSampleTestTb -> Integer.valueOf(cerSampleTestTb.getSampleCode().substring(cerSampleTestTb.getSampleCode().indexOf("-") + 1))).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
-        int maxSampleCodeSuffix = CollectionUtil.isNotEmpty(sampleCodeSuffixList) ? Integer.valueOf(sampleCodeSuffixList.get(0)) + 1 : 0;
-
-        System.out.println(maxSampleCodeSuffix);
-    }
 }
 

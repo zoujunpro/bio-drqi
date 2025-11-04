@@ -236,14 +236,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         repeatCerSampleTestTb.setCloneSampleCode(repeatSampleApply.getSampleCode());
                         repeatCerSampleTestTb.setUniqueCode(repeatCerSampleTestTb.getProjectCode() + repeatCerSampleTestTb.getSampleCode());
                         targetCerSampleTestTbList.add(repeatCerSampleTestTb);
-
-                        //克隆苗取样生成新的种植编号
-                        CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(repeatCerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioTaskDtlTb.getTaskNum());
-                        cerPlantDtlTb.setPlantCode(repeatCerSampleTestTb.getSampleCode());
-                        cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
-                        if (Objects.isNull(cerPlantDtlTbMapper.selectOneByPlantCode(cerPlantDtlTb.getPlantCode()))) {
-                            cerPlantDtlTbMapper.insert(cerPlantDtlTb);
-                        }
                     }
                 }
 

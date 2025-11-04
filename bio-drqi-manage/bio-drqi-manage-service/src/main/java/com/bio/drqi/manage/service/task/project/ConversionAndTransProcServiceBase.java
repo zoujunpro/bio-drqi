@@ -79,12 +79,14 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
                 if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
                     throw new BusinessException("此实施方案中无此取样编号：" + sample.getSampleCode());
                 }
-                if (CollectionUtil.isNotEmpty(cerSampleTestTbList.stream().filter(cerSampleTestTb -> "舍弃".equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList()))) {
+                //取样移苗时不校验是否是留种，如果把舍弃的苗移到CER,CER相关人员进行剔苗操作
+
+ /*               if (CollectionUtil.isNotEmpty(cerSampleTestTbList.stream().filter(cerSampleTestTb -> "舍弃".equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList()))) {
                     throw new BusinessException("取样编号" + sample.getSampleCode() + "的检测结果为舍弃");
                 }
                 if (CollectionUtil.isEmpty(cerSampleTestTbList.stream().filter(cerSampleTestTb -> "传代".equals(cerSampleTestTb.getCheckResult()) || "留种".equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList()))) {
                     throw new BusinessException("取样编号" + sample.getSampleCode() + "还未检测完毕");
-                }
+                }*/
 
                 Long number = conversionAndTransDTO.getSampleCodeList().stream().filter(sample1 -> StringUtils.equals(sample1.getVectorTaskCode(), sample.getVectorTaskCode()) && StringUtils.equals(sample1.getSampleCode(), sample.getSampleCode())).count();
                 if (number > 1) {

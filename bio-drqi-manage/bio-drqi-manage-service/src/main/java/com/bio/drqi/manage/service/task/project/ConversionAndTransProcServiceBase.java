@@ -39,6 +39,9 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
     @Resource
     private CerPlantDtlTbMapper cerPlantDtlTbMapper;
 
+    @Resource
+    private BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
     /**
      * 数据校验，暂时不做数据校验
      *
@@ -72,10 +75,17 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
                 if (cerVectorTaskTb == null) {
                     throw new BusinessException("实施方案编号不存在：" + sample.getVectorTaskCode());
                 }
-                CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(cerVectorTaskTb.getVectorTaskCode(), sample.getSampleCode());
-                if (cerSampleTestTb == null) {
+                List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(sample.getSampleCode());
+                if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
                     throw new BusinessException("此实施方案中无此取样编号：" + sample.getSampleCode());
                 }
+                if (CollectionUtil.isNotEmpty(cerSampleTestTbList.stream().filter(cerSampleTestTb -> "舍弃".equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList()))) {
+                    throw new BusinessException("取样编号" + sample.getSampleCode() + "的检测结果为舍弃");
+                }
+                if (CollectionUtil.isEmpty(cerSampleTestTbList.stream().filter(cerSampleTestTb -> "传代".equals(cerSampleTestTb.getCheckResult()) || "留种".equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList()))) {
+                    throw new BusinessException("取样编号" + sample.getSampleCode() + "还未检测完毕");
+                }
+
                 Long number = conversionAndTransDTO.getSampleCodeList().stream().filter(sample1 -> StringUtils.equals(sample1.getVectorTaskCode(), sample.getVectorTaskCode()) && StringUtils.equals(sample1.getSampleCode(), sample.getSampleCode())).count();
                 if (number > 1) {
                     throw new BusinessException("提交数据有重复");
@@ -139,7 +149,7 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
             cerConversionAndTransRefMapper.deleteByConversionAndTransId(cerConversionAndTransTb.getId());
             cerPlantDtlTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         }
-        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(),ImplementationPlanTypeEnum.cer_plant.name());
+        cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.cer_plant.name());
 
     }
 }

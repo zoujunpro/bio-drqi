@@ -1,6 +1,8 @@
 package com.bio.drqi.manage.service.task.project;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
@@ -323,6 +325,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioTaskDtlTb.getTaskNum());
                         cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
                         cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
+                        cerPlantDtlTb.setTransplantDate(DateUtil.format(cerConversionAndTransRefList.get(0).getCreateTime(), DatePattern.NORM_DATE_PATTERN));
                         if (Objects.isNull(cerPlantDtlTbMapper.selectOneByPlantCode(cerPlantDtlTb.getPlantCode()))) {
                             cerPlantDtlTbMapper.insert(cerPlantDtlTb);
                         }
@@ -352,17 +355,17 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
             //如果是首次申请，更新申请中包含的事实方案和取样编号范围
             List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
             Map<String, List<CerSampleTestTb>> cerSampleTestTbListMap = cerSampleTestTbList.stream().collect(Collectors.groupingBy(CerSampleTestTb::getVectorTaskCode));
-            cerSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(cerSampleTestTbListMap.keySet()).replace("[","").replace("]","").replace("\"",""));
+            cerSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(cerSampleTestTbListMap.keySet()).replace("[", "").replace("]", "").replace("\"", ""));
             StringBuffer sampleCodeRangeBuff = new StringBuffer();
             if (SampleApplyTypeEnum.F.name().equals(cerSampleApplyTb.getApplyType())) {
                 cerSampleTestTbListMap.forEach((vectorTaskCode, sampleTestList) -> {
                     CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-                    sampleTestList = sampleTestList.stream().filter(sampleTest->sampleTest.getSampleCode().startsWith(cerSampleCodePrefixTb.getSampleCodePrefix())).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
-                    if(CollectionUtil.isNotEmpty(sampleTestList)){
+                    sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(cerSampleCodePrefixTb.getSampleCodePrefix())).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
+                    if (CollectionUtil.isNotEmpty(sampleTestList)) {
                         sampleCodeRangeBuff.append(sampleTestList.get(0).getSampleCode() + "-" + sampleTestList.get(sampleTestList.size() - 1).getSampleCode()).append(",");
                     }
                 });
-                if(StringUtils.isNotEmpty(sampleCodeRangeBuff.toString())){
+                if (StringUtils.isNotEmpty(sampleCodeRangeBuff.toString())) {
                     cerSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));
                 }
             }

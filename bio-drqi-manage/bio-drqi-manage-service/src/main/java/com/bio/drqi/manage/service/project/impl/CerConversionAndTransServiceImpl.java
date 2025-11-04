@@ -1,6 +1,8 @@
 package com.bio.drqi.manage.service.project.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.drqi.contents.CerProjectContents;
@@ -126,6 +128,9 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 cerConversionAndTransRef.setPlasmidName(transFormList.get(0).getPlasmidName());
                 cerConversionAndTransRef.setRemark(transFormList.get(0).getRemark());
                 cerConversionAndTransRef.setTaskNum(bioTaskDtlTb.getTaskNum());
+                cerConversionAndTransRef.setCreateTime(cerConversionAndTransTb.getCreateTime());
+                cerConversionAndTransRef.setCreateUserId(cerConversionAndTransTb.getCreateUserId());
+                cerConversionAndTransRef.setCreateUserName(cerConversionAndTransTb.getCreateUserName());
                 cerConversionAndTransRefMapper.insert(cerConversionAndTransRef);
 
                 //更新总移苗数量
@@ -159,6 +164,9 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 cerConversionAndTransRef.setAcceptorMaterial(sampleCodeList.get(0).getAcceptorMaterial());
                 cerConversionAndTransRef.setTaskNum(bioTaskDtlTb.getTaskNum());
                 cerConversionAndTransRef.setRemark(sampleCodeList.get(0).getRemark());
+                cerConversionAndTransRef.setCreateTime(cerConversionAndTransTb.getCreateTime());
+                cerConversionAndTransRef.setCreateUserId(cerConversionAndTransTb.getCreateUserId());
+                cerConversionAndTransRef.setCreateUserName(cerConversionAndTransTb.getCreateUserName());
                 cerConversionAndTransRefMapper.insert(cerConversionAndTransRef);
 
                 //更新总移苗数量
@@ -169,6 +177,7 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioTaskDtlTb.getTaskNum());
                 cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
                 cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
+                cerPlantDtlTb.setTransplantDate(DateUtil.format(new Date(), DatePattern.NORM_DATE_PATTERN));
                 if (Objects.isNull(cerPlantDtlTbMapper.selectOneByPlantCode(cerPlantDtlTb.getPlantCode()))) {
                     cerPlantDtlTbMapper.insert(cerPlantDtlTb);
                 }
@@ -188,8 +197,8 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
             cerConversionAndTransTb = new CerConversionAndTransTb();
             cerConversionAndTransTb.setHandoverDate(conversionAndTransDTO.getHandoverDate());
             cerConversionAndTransTb.setCreateTime(new Date());
-            cerConversionAndTransTb.setCreateUserId(bioTaskDtlTb.getApplyUserId());
-            cerConversionAndTransTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
+            cerConversionAndTransTb.setCreateUserId(SecurityContextHolder.getUserId());
+            cerConversionAndTransTb.setCreateUserName(SecurityContextHolder.getNickName());
             cerConversionAndTransTb.setTaskNum(bioTaskDtlTb.getTaskNum());
             cerConversionAndTransTb.setRemark(conversionAndTransDTO.getRemark());
             cerConversionAndTransTb.setTransNumber(0);

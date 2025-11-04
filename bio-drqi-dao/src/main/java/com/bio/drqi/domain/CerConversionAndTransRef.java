@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 转化疫苗取样编号关联表
@@ -58,6 +59,21 @@ public class CerConversionAndTransRef implements Serializable {
     private String remark;
 
     private String taskNum;
+
+    /**
+     * 提交日期
+     */
+    private Date createTime;
+
+    /**
+     * 提交人
+     */
+    private Integer createUserId;
+
+    /**
+     * 提交人名称
+     */
+    private String createUserName;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

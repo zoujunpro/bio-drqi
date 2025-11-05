@@ -336,7 +336,7 @@ public class SampleTestController {
      * @param applyNo
      * @return
      */
-    @GetMapping("countCheckResult")
+    @GetMapping("countTestResult")
     @WebLog(desc = "取样检测-统计检测结果")
     public ResponseResult<CountTestResultRspDTO> countTestResult(@RequestParam @Validated String applyNo) {
         return ResponseResult.getSuccess(sampleTestService.countTestResult(applyNo));

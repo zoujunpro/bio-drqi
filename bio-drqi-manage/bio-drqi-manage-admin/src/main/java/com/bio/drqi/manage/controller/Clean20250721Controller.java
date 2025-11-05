@@ -847,7 +847,7 @@ public class Clean20250721Controller {
         //回退入库的
         for (BmsProductStockInLog bmsProductStockInLog : bmsProductStockInLogList) {
             log.info("bmsProductStockInLog="+JSONUtil.toJsonStr(bmsProductStockInLog));
-            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsProductStockInLog.getProductInnerCode() + bmsProductStockInLog.getUnitCode() + bmsProductStockInLog.getBatchNo() + bmsProductStockInLog.getStockCode());
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsProductStockInLog.getProductInnerCode() + bmsProductStockInLog.getUnitCode() + bmsProductStockInLog.getBatchNo().trim() + bmsProductStockInLog.getStockCode());
             bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductStockInLog.getStoreNumber());
         }
         //回退调拨的

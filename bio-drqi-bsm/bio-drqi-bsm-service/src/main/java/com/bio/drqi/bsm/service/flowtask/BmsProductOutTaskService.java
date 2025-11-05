@@ -42,6 +42,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
             throw new BusinessException("请选择出库数据");
         }
         for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
+            BeanUtils.trimFiledSpace(bmsProductOutDTO);
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductOutDTO.getUniqueCode());
             if (bmsProductStockTb == null) {
                 throw new BusinessException("数据库中不存在此商品信息");

@@ -68,8 +68,8 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         }
 
         for (BmsProductInputDTO.OrderDetail orderDetail : bmsProductInputDTO.getOrderDetailList()) {
-            ValidatorUtil.validator(bmsProductInputDTO);
-            BeanUtils.trimFiledSpace(bmsProductInputDTO);
+            ValidatorUtil.validator(orderDetail);
+            BeanUtils.trimFiledSpace(orderDetail);
             BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectOneByOrderDetailNum(orderDetail.getOrderDetailNum());
             if (Objects.equals(bmsOrderDetailTb.getPurchaseNumber(), bmsOrderDetailTb.getReceiveNumber().intValue())) {
                 throw new BusinessException("该耗材已经全部到货");

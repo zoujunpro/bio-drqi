@@ -38,7 +38,7 @@ public class SampleTestController {
      */
     @PostMapping("listPage")
     @WebLog(desc = "取样检测-分页查询")
-    @RequirePermissions({"cer:sampleTest:listPage","cer:sampleApply:listPage"})
+    @RequirePermissions({"cer:sampleTest:listPage", "cer:sampleApply:listPage"})
     public ResponseResult<PageInfo<SampleTestListDetailRspDTO>> listPage(@Validated @RequestBody SampleTestListDetailReqDTO sampleTestListDetailReqDTO) {
         PageInfo<SampleTestListDetailRspDTO> resultList = sampleTestService.listPage(sampleTestListDetailReqDTO);
         return ResponseResult.getSuccess(resultList);
@@ -307,7 +307,6 @@ public class SampleTestController {
     }
 
 
-
     /**
      * 取样检测-模板检测结果模板上传
      */
@@ -320,13 +319,26 @@ public class SampleTestController {
 
 
     /**
+     * 取样检测-统计审核结果
+     *
+     * @param applyNo
+     * @return
+     */
+    @GetMapping("countCheckResult")
+    @WebLog(desc = "取样检测-统计审核结果")
+    public ResponseResult<List<CountCheckResultRspDTO>> countCheckResult(@RequestParam @Validated String applyNo) {
+        return ResponseResult.getSuccess(sampleTestService.countCheckResult(applyNo));
+    }
+
+    /**
      * 取样检测-统计检测结果
+     *
      * @param applyNo
      * @return
      */
     @GetMapping("countCheckResult")
     @WebLog(desc = "取样检测-统计检测结果")
-    public ResponseResult<List<CountCheckResultRspDTO>> countCheckResult(@RequestParam @Validated String applyNo){
-        return ResponseResult.getSuccess(sampleTestService.countCheckResult(applyNo));
+    public ResponseResult<CountTestResultRspDTO> countTestResult(@RequestParam @Validated String applyNo) {
+        return ResponseResult.getSuccess(sampleTestService.countTestResult(applyNo));
     }
 }

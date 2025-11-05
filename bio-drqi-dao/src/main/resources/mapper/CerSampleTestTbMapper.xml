@@ -159,10 +159,14 @@
             <if test="subProjectId != null">and sub_project_id=#{subProjectId,jdbcType=NUMERIC}</if>
             <if test="vectorTaskId != null">and vector_task_id=#{vectorTaskId,jdbcType=NUMERIC}</if>
             <if test="projectCode != null and projectCode!=''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
-            <if test="subProjectCode != null and subProjectCode!=''">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
+            <if test="subProjectCode != null and subProjectCode!=''">and
+                sub_project_code=#{subProjectCode,jdbcType=VARCHAR}
+            </if>
             <if test="vectorTaskCode != null">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
             <if test="plasmidName != null">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
-            <if test="transformCode != null and transformCode!=''">and transform_code=#{transformCode,jdbcType=VARCHAR}</if>
+            <if test="transformCode != null and transformCode!=''">and
+                transform_code=#{transformCode,jdbcType=VARCHAR}
+            </if>
             <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
             <if test="applyTime != null">and apply_time=#{applyTime,jdbcType=TIMESTAMP}</if>
             <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
@@ -200,10 +204,12 @@
             <if test="applyNo != null and applyNo!=''">and apply_no=#{applyNo,jdbcType=VARCHAR}</if>
             <if test="identifyPrimer != null">and identify_primer=#{identifyPrimer,jdbcType=VARCHAR}</if>
             <if test="targetFlag != null">and target_flag=#{targetFlag,jdbcType=VARCHAR}</if>
-            <if test="cloneSampleCode != null and cloneSampleCode!=''">and clone_sample_code=#{cloneSampleCode,jdbcType=VARCHAR}</if>
+            <if test="cloneSampleCode != null and cloneSampleCode!=''">and
+                clone_sample_code=#{cloneSampleCode,jdbcType=VARCHAR}
+            </if>
             <if test='cloneSampleFlag =="Y"'>and clone_sample_code is not null</if>
             <if test='cloneSampleFlag =="N"'>and clone_sample_code is null</if>
-            <if test='testFlag =="Y"'>and test_user_id is  null</if>
+            <if test='testFlag =="Y"'>and test_user_id is null</if>
         </where>
         order by id desc
     </select>
@@ -249,7 +255,7 @@
             #{item.subProjectCode,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},#{item.plasmidName,jdbcType=VARCHAR},
             #{item.transformCode,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},#{item.applyTime,jdbcType=TIMESTAMP},
             #{item.applyUserId,jdbcType=NUMERIC},#{item.applyUserName,jdbcType=VARCHAR},#{item.sampleTime,jdbcType=VARCHAR},
-             #{item.sampleRemark,jdbcType=VARCHAR},#{item.sampleGeneration,jdbcType=VARCHAR},
+            #{item.sampleRemark,jdbcType=VARCHAR},#{item.sampleGeneration,jdbcType=VARCHAR},
             #{item.sampleUserName,jdbcType=VARCHAR},#{item.sampleUserId,jdbcType=NUMERIC},
             #{item.testIdentifyPrimer,jdbcType=VARCHAR},#{item.testMethod,jdbcType=VARCHAR},#{item.testEditType,jdbcType=VARCHAR},
             #{item.testNoTransIdentityPrimer,jdbcType=VARCHAR},#{item.testIsGeneModifyPositive,jdbcType=VARCHAR},#{item.testIfFixedPoint,jdbcType=VARCHAR},
@@ -260,7 +266,7 @@
             #{item.checkUserId,jdbcType=NUMERIC},#{item.checkResult,jdbcType=VARCHAR},
             #{item.createTime,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP},
             #{item.applyNo,jdbcType=VARCHAR},#{item.identifyPrimer,jdbcType=VARCHAR},
-             #{item.uniqueCode,jdbcType=VARCHAR},#{item.cloneSampleCode,jdbcType=VARCHAR},#{item.targetFlag,jdbcType=VARCHAR})
+            #{item.uniqueCode,jdbcType=VARCHAR},#{item.cloneSampleCode,jdbcType=VARCHAR},#{item.targetFlag,jdbcType=VARCHAR})
         </foreach>
     </insert>
 
@@ -414,9 +420,8 @@
           AND check_result is null
     </update>
     <select id="selectCountNumByApplyNo" resultType="com.bio.drqi.domain.CerSampleTestTb">
-        select
-        check_result as checkResult,
-        count(*) as countNum
+        select check_result as checkResult,
+               count(*)     as countNum
         from cer_sample_test_tb
         where apply_no = #{applyNo,jdbcType=VARCHAR}
         group by check_result
@@ -440,7 +445,7 @@
         <include refid="Base_Column_List"/>
         from cer_sample_test_tb
         where
-        sample_code like  CONCAT('%',#{sampleCode,jdbcType=VARCHAR},'%')
+        sample_code like CONCAT('%',#{sampleCode,jdbcType=VARCHAR},'%')
     </select>
     <update id="updateTargetFlagByApplyNoAndSampleCodeIn">
         update cer_sample_test_tb
@@ -477,5 +482,27 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </update>
+    <select id="selectTestResultCount" resultType="java.lang.Integer">
+        select count(*)
+        from cer_sample_test_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+          and test_user_id is not null
+    </select>
+
+    <select id="selectNoTestResultCount" resultType="java.lang.Integer">
+        select count(*)
+        from cer_sample_test_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+          and test_user_id is null
+    </select>
+    <select id="selectTowTestResultCount" resultType="java.lang.Integer">
+        select count(*)
+        from (select apply_no, sample_code from cer_sample_test_tb where apply_no = #{applyNo,jdbcType=VARCHAR}) a
+                 INNER JOIN
+             (select apply_no, sample_code
+              from bio_sample_sample_two_result_detail_tb
+              where apply_no = #{applyNo,jdbcType=VARCHAR}) b
+             on a.apply_no = b.apply_no and a.sample_code = b.sample_code
+    </select>
 
 </mapper>

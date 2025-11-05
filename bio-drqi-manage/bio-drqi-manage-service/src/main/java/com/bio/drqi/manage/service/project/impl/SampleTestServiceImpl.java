@@ -732,5 +732,14 @@ public class SampleTestServiceImpl implements SampleTestService {
         return new ArrayList<>();
     }
 
+    @Override
+    public CountTestResultRspDTO countTestResult(String applyNo) {
+        CountTestResultRspDTO countTestResultRspDTO=new CountTestResultRspDTO();
+        countTestResultRspDTO.setCheckResultNum(cerSampleTestTbMapper.selectTestResultCount(applyNo));
+        countTestResultRspDTO.setTwoResultNum(cerSampleTestTbMapper.selectTowTestResultCount(applyNo));
+        countTestResultRspDTO.setNotResultNum(cerSampleTestTbMapper.selectNoTestResultCount(applyNo));
+        return countTestResultRspDTO;
+    }
+
 
 }

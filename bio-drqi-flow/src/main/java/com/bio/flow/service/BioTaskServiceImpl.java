@@ -105,6 +105,7 @@ public class BioTaskServiceImpl implements BioTaskService {
         bioTaskDtlTb.setTaskDesc(bioReStartTaskReqDTO.getTaskDesc());
         bioTaskDtlTb.setTaskForm(bioReStartTaskReqDTO.getFormObject());
         bioTaskDtlTb.setRefTaskNum(bioReStartTaskReqDTO.getRefTaskNum());
+        bioTaskDtlTb.setUpdateTime(new Date());
 
         /**
          * 个性化表单处理
@@ -160,7 +161,6 @@ public class BioTaskServiceImpl implements BioTaskService {
     public BioTaskDtlTb rejectTask(BioRejectTaskReqDTO bioRejectTaskReqDTO) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(bioRejectTaskReqDTO.getId());
         Assert.notNull(bioTaskDtlTb, "不存在此任务");
-
         FlowHisInstanceTb flowHisInstanceTb = flowService.reject(SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), bioTaskDtlTb.getInstanceId(), null, bioRejectTaskReqDTO.getReason());
         /**
          * 流程执行后判断流程状态
@@ -402,7 +402,7 @@ public class BioTaskServiceImpl implements BioTaskService {
             bioTaskDtlTb.setApplyUserName(SecurityContextHolder.getNickName());
             bioTaskDtlTb.setApplyTime(new Date());
             bioTaskDtlTb.setCreateTime(new Date());
-            bioTaskDtlTb.setUpdateTime(null);
+            bioTaskDtlTb.setUpdateTime(new Date());
             bioTaskDtlTb.setTaskForm(bioTaskStartReqDTO.getFormObject());
             bioTaskDtlTb.setRefTaskNum(bioTaskStartReqDTO.getRefTaskNum());
             bioTaskDtlTb.setTaskCategory(bioTaskConf.getTaskCategory());
@@ -427,6 +427,7 @@ public class BioTaskServiceImpl implements BioTaskService {
             bioTaskDtlTb.setTaskForm(bioTaskTemporarySaveReqDTO.getFormObject());
             bioTaskDtlTb.setTaskDesc(bioTaskTemporarySaveReqDTO.getTaskDesc());
             bioTaskDtlTb.setRefTaskNum(bioTaskTemporarySaveReqDTO.getRefTaskNum());
+            bioTaskDtlTb.setUpdateTime(new Date());
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
         } else {
             BioTaskConf bioTaskConf = bioTaskConfMapper.selectOneByTaskTypeCode(bioTaskTemporarySaveReqDTO.getTaskType());

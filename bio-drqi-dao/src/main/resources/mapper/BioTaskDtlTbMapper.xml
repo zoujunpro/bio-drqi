@@ -71,7 +71,7 @@
         <if test="taskDesc != null">
             and task_desc  like  CONCAT('%',#{taskDesc,jdbcType=VARCHAR},'%')
         </if>
-        order by id desc
+        order by update_time desc
     </select>
 
     <select id="selectForAlreadyApproval" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BioTaskDtlTb">
@@ -101,7 +101,7 @@
         <if test="taskDesc != null">
             and task_desc  like  CONCAT('%',#{taskDesc,jdbcType=VARCHAR},'%')
         </if>
-        order by id desc
+        order by update_time desc
     </select>
     <select id="selectSelectiveNoDraft" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BioTaskDtlTb">
         select
@@ -126,7 +126,7 @@
         <if test="instanceId != null">and instance_id=#{instanceId,jdbcType=NUMERIC}</if>
         <if test="refTaskNum != null">and ref_task_num=#{refTaskNum,jdbcType=VARCHAR}</if>
         <if test="taskCategory != null and taskCategory!=''">and task_category=#{taskCategory,jdbcType=VARCHAR}</if>
-        order by id desc
+        order by update_time desc
     </select>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BioTaskDtlTb">
         select
@@ -151,7 +151,7 @@
             <if test="refTaskNum != null">and ref_task_num=#{refTaskNum,jdbcType=VARCHAR}</if>
             <if test="taskCategory != null and taskCategory!=''">and task_category=#{taskCategory,jdbcType=VARCHAR}</if>
         </where>
-        order by id desc
+        order by update_time desc
     </select>
     <select id="selectAllByTaskTypeCodeAndApplyUserIdOrderByIdDesc" resultMap="BaseResultMap">
         select

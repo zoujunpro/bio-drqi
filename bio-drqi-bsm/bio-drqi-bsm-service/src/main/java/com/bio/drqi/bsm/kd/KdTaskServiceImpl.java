@@ -66,7 +66,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         Long startTime = System.currentTimeMillis();
         log.info("*****************项目同步开始**************************");
         List<BmsProjectDict> bmsProjectDictList = bmsProjectDictMapper.selectList(null);
-        Map<String, List<BmsProjectDict>> mapList = bmsProjectDictList.stream().collect(Collectors.groupingBy(BmsProjectDict::getKdProjectCode));
+        Map<String, List<BmsProjectDict>> mapList = bmsProjectDictList.stream().filter(bmsProjectDict -> StringUtils.isNotEmpty(bmsProjectDict.getKdProjectType())).collect(Collectors.groupingBy(BmsProjectDict::getKdProjectCode));
         mapList.forEach((kdProjectCode, list) -> {
             if (StringUtils.isNotEmpty(kdProjectCode)) {
                 BmsProjectDict bmsProjectDict = list.get(0);
@@ -222,9 +222,12 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         selectBmsProductStockInLog.setStartDate(startDate);
         selectBmsProductStockInLog.setEndDate(endDate);
         List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(selectBmsProductStockInLog);
+        //过滤出不需要同步的项目
+        List<String> projectCodeList = bmsProjectDictMapper.selectList(null).stream().filter(bmsProjectDict -> StringUtils.isNotEmpty(bmsProjectDict.getKdProjectCode())).map(BmsProjectDict::getProjectCode).collect(Collectors.toList());
         //过滤出不需要同步的耗材
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
-        bmsProductStockInLogList = bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductCategoryCodeList.contains(bmsProductStockInLog.getProductCategoryCode())).collect(Collectors.toList());
+
+        bmsProductStockInLogList = bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductCategoryCodeList.contains(bmsProductStockInLog.getProductCategoryCode())&&projectCodeList.contains(bmsProductStockInLog.getProjectCode())).collect(Collectors.toList());
         if (CollectionUtil.isEmpty(bmsProductStockInLogList)) {
             log.info("入库数据已经同步完毕，无需再次同步");
             return;
@@ -243,7 +246,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             bmsProductStockInLog.setKdNumber(Integer.valueOf(kdNumber));
             bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
         }
-        log.info("*****************入库数据同步结束，耗时={}ms**************************",System.currentTimeMillis()-startTime);
+        log.info("*****************入库数据同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
 
     }
 
@@ -294,8 +297,10 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         selectBmsReturnOrderDetailTb.setStartDate(startDate);
         selectBmsReturnOrderDetailTb.setEndDate(endDate);
         List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectSelective(selectBmsReturnOrderDetailTb);
+        //过滤出不需要同步的项目
+        List<String> projectCodeList = bmsProjectDictMapper.selectList(null).stream().filter(bmsProjectDict -> StringUtils.isNotEmpty(bmsProjectDict.getKdProjectCode())).map(BmsProjectDict::getProjectCode).collect(Collectors.toList());
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
-        bmsReturnOrderDetailTbList=bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsProductCategoryCodeList.contains(bmsReturnOrderDetailTb.getProductCategoryCode())).collect(Collectors.toList());
+        bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsProductCategoryCodeList.contains(bmsReturnOrderDetailTb.getProductCategoryCode())&&projectCodeList.contains(bmsReturnOrderDetailTb.getProjectCode())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)) {
             bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsReturnOrderDetailTb.getKdNumber() == null).sorted(Comparator.comparing(BmsReturnOrderDetailTb::getId)).collect(Collectors.toList());
             if (CollectionUtil.isEmpty(bmsReturnOrderDetailTbList)) {

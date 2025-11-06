@@ -43,5 +43,9 @@ public class CerSampleTwoResultListPageRspDTO {
      */
     private String testChannel;
 
+    private String synResult;
+
+    private String failMessage;
+
 
 }

@@ -4,14 +4,11 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
-import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.enums.BmsKdSynStatusEnum;
 import com.bio.drqi.bsm.enums.PurchaseUnitEnum;
 import com.bio.drqi.bsm.kd.dto.QuerySupplierDTO;
 import com.bio.drqi.bsm.kd.enums.OperateEnum;
-import com.bio.drqi.bsm.kd.enums.OrgEnum;
 import com.bio.drqi.bsm.kd.service.KdApiService;
-import com.bio.drqi.bsm.kd.util.KdRequestUtil;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -191,7 +187,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         Long startTime = System.currentTimeMillis();
         log.info("*****************材料同步开始**************************");
         checkBefSynMaterialTask();
-        List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectList(null);
+        List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
+        List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectList(null).stream().filter(bmsProductTb -> bmsProductCategoryCodeList.contains(bmsProductTb.getProductCategoryCode())).collect(Collectors.toList());
         for (BmsProductTb bmsProductTb : bmsProductTbList) {
             if (bmsProductTb.getKdNumber() != null && bmsProductTb.getKdNumber() > 0) {
                 kdApiService.execute(OperateEnum.materialModify, bmsProductTb, PurchaseUnitEnum.default_.name());
@@ -227,7 +224,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         //过滤出不需要同步的耗材
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
 
-        bmsProductStockInLogList = bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductCategoryCodeList.contains(bmsProductStockInLog.getProductCategoryCode())&&projectCodeList.contains(bmsProductStockInLog.getProjectCode())).collect(Collectors.toList());
+        bmsProductStockInLogList = bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductCategoryCodeList.contains(bmsProductStockInLog.getProductCategoryCode()) && projectCodeList.contains(bmsProductStockInLog.getProjectCode())).collect(Collectors.toList());
         if (CollectionUtil.isEmpty(bmsProductStockInLogList)) {
             log.info("入库数据已经同步完毕，无需再次同步");
             return;
@@ -300,7 +297,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         //过滤出不需要同步的项目
         List<String> projectCodeList = bmsProjectDictMapper.selectList(null).stream().filter(bmsProjectDict -> StringUtils.isNotEmpty(bmsProjectDict.getKdProjectCode())).map(BmsProjectDict::getProjectCode).collect(Collectors.toList());
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
-        bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsProductCategoryCodeList.contains(bmsReturnOrderDetailTb.getProductCategoryCode())&&projectCodeList.contains(bmsReturnOrderDetailTb.getProjectCode())).collect(Collectors.toList());
+        bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsProductCategoryCodeList.contains(bmsReturnOrderDetailTb.getProductCategoryCode()) && projectCodeList.contains(bmsReturnOrderDetailTb.getProjectCode())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)) {
             bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsReturnOrderDetailTb.getKdNumber() == null).sorted(Comparator.comparing(BmsReturnOrderDetailTb::getId)).collect(Collectors.toList());
             if (CollectionUtil.isEmpty(bmsReturnOrderDetailTbList)) {
@@ -388,6 +385,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
 
     private void checkAftSynMaterialTask() {
         List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectList(null);
+        List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
+        bmsProductTbList = bmsProductTbList.stream().filter(bmsProductTb -> bmsProductCategoryCodeList.contains(bmsProductTb.getProductCategoryCode())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(bmsProductTbList.stream().filter(bmsProductTb -> bmsProductTb.getKdNumber() == null).collect(Collectors.toList()))) {
             throw new BusinessException("有部分商品未同步到金蝶");
         }

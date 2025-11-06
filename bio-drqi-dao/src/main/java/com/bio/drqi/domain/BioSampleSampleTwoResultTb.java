@@ -57,6 +57,11 @@ public class BioSampleSampleTwoResultTb implements Serializable {
      */
     private String testChannel;
 
+    private String synResult;
+
+    private String failMessage;
+
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

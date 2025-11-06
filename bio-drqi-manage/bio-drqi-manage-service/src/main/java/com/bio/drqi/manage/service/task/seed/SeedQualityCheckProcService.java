@@ -71,7 +71,7 @@ public class SeedQualityCheckProcService extends AbstractSeedTaskService {
             if (Objects.isNull(seedNum)) {
                 throw new BusinessException("上传数据异常，无种子编号");
             }
-            SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum.toString());
+            SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum.toString().trim());
             if (seedStockTb == null) {
                 throw new BusinessException(seedNum + "种子编号不存在");
             }

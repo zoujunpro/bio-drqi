@@ -17,6 +17,7 @@ public interface BioSampleSampleTwoResultTbMapper extends BaseMapper<BioSampleSa
     int deleteByApplyNo(@Param("applyNo") String applyNo);
 
     List<BioSampleSampleTwoResultTb> selectSelective(BioSampleSampleTwoResultTb bioSampleSampleTwoResultTb);
+
     int insertBatch(@Param("bioSampleSampleTwoResultTbCollection") Collection<BioSampleSampleTwoResultTb> bioSampleSampleTwoResultTbCollection);
 
     BioSampleSampleTwoResultTb selectOneByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);

@@ -3,6 +3,7 @@ package com.bio.drqi.manage.service.task.seed;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.enums.GenerationEnum;
@@ -72,6 +73,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
         for (SeedInStoreDTO.ExecuteFormContent executeFormContent : seedInStoreDTO.getExecuteForm().getExecuteFormContentList()) {
             log.info("种子入库 executeFormContent={}", JSONUtil.toJsonStr(executeFormContent));
             ValidatorUtil.validator(executeFormContent);
+            BeanUtils.trimFiledSpace(executeFormContent);
             //通用校验
             if (StringUtils.isNotEmpty(executeFormContent.getHarvestTime())) {
                 if (!validateDateFormat(executeFormContent.getHarvestTime())) {

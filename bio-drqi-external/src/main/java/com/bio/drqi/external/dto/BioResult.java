@@ -9,6 +9,8 @@ public class BioResult<T> {
 
     private T data;
 
+    private String message;
+
     public boolean isSuccess() {
         if ("200".equals(code)) {
             return true;

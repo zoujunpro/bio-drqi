@@ -615,10 +615,11 @@ public class SampleTestServiceImpl implements SampleTestService {
 
         //更新检测结果
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultTbList)) {
-            bioSampleSampleTwoResultTbMapper.insertBatch(bioSampleSampleTwoResultTbList);
-            cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
             //异步同步结果
             List<BioSampleSampleTwoResultDetailTb> cerSampleTestBioInfoResultTbList = synSampleTestResultService.synBioResult(bioSampleSampleTwoResultTbList);
+
+            bioSampleSampleTwoResultTbMapper.insertBatch(bioSampleSampleTwoResultTbList);
+            cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
             if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
                 bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
                 bioSampleSampleTwoResultDetailTbMapper.insertBatch(cerSampleTestBioInfoResultTbList);
@@ -675,6 +676,10 @@ public class SampleTestServiceImpl implements SampleTestService {
                 bioSampleSampleTwoResultDetailTbMapper.insert(cerSampleTestBioInfoResultTb);
             }
         }
+        //更新结果状态
+        bioSampleSampleTwoResultTbMapper.updateById(bioSampleSampleTwoResultTb);
+
+
 
     }
     @Override

@@ -174,12 +174,17 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                     }
                 }
             }
-            //更新文件中的测序信息（有效信息）
-            bioSampleSampleTwoResultTbMapper.insertBatch(bioSampleTwoResultTbList);
+
+
+            //异步同步结果 这个需要放到前面调用
+            List<BioSampleSampleTwoResultDetailTb> bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(bioSampleTwoResultTbList);
+
             //更新检测结果标识（取样信息上加入检测人）
             cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
-            //异步同步结果
-            List<BioSampleSampleTwoResultDetailTb> bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(bioSampleTwoResultTbList);
+
+            //更新文件中的测序信息（有效信息）
+            bioSampleSampleTwoResultTbMapper.insertBatch(bioSampleTwoResultTbList);
+
             //更新同步的结果，更新前旧的需要删除
             if (CollectionUtil.isNotEmpty(bioSampleTwoResultDetailTbList)) {
                 bioSampleSampleTwoResultDetailTbMapper.insertBatch(bioSampleTwoResultDetailTbList);

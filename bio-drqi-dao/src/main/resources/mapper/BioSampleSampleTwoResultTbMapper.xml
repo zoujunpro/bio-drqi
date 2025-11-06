@@ -13,28 +13,21 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="uploadNum" column="upload_num" jdbcType="VARCHAR"/>
         <result property="testChannel" column="test_channel" jdbcType="VARCHAR"/>
+        <result property="synResult" column="syn_result" jdbcType="VARCHAR"/>
+        <result property="failMessage" column="fail_message" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
         id
         ,apply_no,sample_code,sample_id,run_id,
-        create_time,upload_num,test_channel
+        create_time,upload_num,test_channel,fail_message
     </sql>
     <delete id="deleteByApplyNo">
         delete
         from bio_sample_sample_two_result_tb
         where apply_no = #{applyNo,jdbcType=VARCHAR}
     </delete>
-    <insert id="insertBatch">
-        insert into bio_sample_sample_two_result_tb(id,apply_no,sample_code,sample_id,run_id,
-        create_time,upload_num,test_channel)
-        values
-        <foreach collection="bioSampleSampleTwoResultTbCollection" item="item" separator=",">
-            (#{item.id,jdbcType=NUMERIC},#{item.applyNo,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},
-            #{item.sampleId,jdbcType=VARCHAR},#{item.runId,jdbcType=VARCHAR},
-            #{item.createTime,jdbcType=TIMESTAMP},#{item.uploadNum,jdbcType=VARCHAR},#{item.testChannel,jdbcType=VARCHAR})
-        </foreach>
-    </insert>
     <select id="selectOneByApplyNoAndSampleCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -58,4 +51,17 @@
         </where>
         order by id desc
     </select>
+    <insert id="insertBatch">
+        insert into bio_sample_sample_two_result_tb(id,apply_no,sample_code,
+        sample_id,run_id,create_time,
+        upload_num,test_channel,syn_result,
+        fail_message)
+        values
+        <foreach collection="bioSampleSampleTwoResultTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.applyNo,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},
+            #{item.sampleId,jdbcType=VARCHAR},#{item.runId,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},
+            #{item.uploadNum,jdbcType=VARCHAR},#{item.testChannel,jdbcType=VARCHAR},#{item.synResult,jdbcType=VARCHAR},
+            #{item.failMessage,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
 </mapper>

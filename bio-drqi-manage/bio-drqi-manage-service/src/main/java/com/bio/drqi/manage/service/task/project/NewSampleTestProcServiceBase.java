@@ -157,10 +157,10 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
             //首次取样，且已经发生过移苗
             if (SampleApplyTypeEnum.F.name().equals(cerSampleApplyTb.getApplyType())) {
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(cerSampleApplyTb.getApplyNo()).stream().filter(cerSampleTestTb -> "传代".equals(cerSampleTestTb.getCheckResult()) || "留种".equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
-                if(CollectionUtil.isNotEmpty(cerSampleTestTbList)){
-                    for (CerSampleTestTb cerSampleTestTb:cerSampleTestTbList){
+                if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
+                    for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
                         List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectAllByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
-                        if(CollectionUtil.isNotEmpty(cerConversionAndTransRefList)){
+                        if (CollectionUtil.isNotEmpty(cerConversionAndTransRefList)) {
                             CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioTaskDtlTb.getTaskNum());
                             cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
                             cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
@@ -301,6 +301,12 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 log.error("取样申请异常", e);
                 throw new BusinessException("取样编号有重复");
             }
+            //更新实施方案编号到申请表
+            List<String> vectorTaskList = targetCerSampleTestTbList.stream().map(CerSampleTestTb::getVectorTaskCode).distinct().collect(Collectors.toList());
+            cerSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(vectorTaskList).replace("[", "").replace("]", "").replace("\"", ""));
+            cerSampleApplyTbMapper.updateById(cerSampleApplyTb);
+
+
             newSampleTestDTO.getRepeatSampleApplyList().stream().map(NewSampleTestDTO.RepeatSampleApply::getVectorTaskCode).distinct().forEach(vectorTaskCode -> {
                 /**
                  * 更新当前执行步骤

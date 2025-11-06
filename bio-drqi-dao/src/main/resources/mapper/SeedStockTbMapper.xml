@@ -116,6 +116,7 @@
             <if test="materialType != null and materialType!=''">and material_type=#{materialType,jdbcType=VARCHAR}</if>
             <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
             <if test="matherSeedNum != null and matherSeedNum!=''">and mather_seed_num=#{matherSeedNum,jdbcType=VARCHAR}</if>
+            <if test="matherSingleNum != null and matherSingleNum!=''">and mather_single_num=#{matherSingleNum,jdbcType=VARCHAR}</if>
             <if test="beginDate != null and beginDate != ''">
                 and date_format(create_time,'%Y%m%d') &gt;= #{beginDate,jdbcType=VARCHAR}
             </if>

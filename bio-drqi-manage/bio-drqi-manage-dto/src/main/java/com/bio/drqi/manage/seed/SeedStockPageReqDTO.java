@@ -125,6 +125,9 @@ public class SeedStockPageReqDTO extends PageDTO {
     private String matherSeedNum;
 
 
+    private String matherSingleNum;
+
+
     /**
      * 备注
      */

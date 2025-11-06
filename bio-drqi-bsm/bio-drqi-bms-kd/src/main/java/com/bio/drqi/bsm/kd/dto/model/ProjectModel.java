@@ -31,7 +31,7 @@ public class ProjectModel extends KdModel {
     @Override
     public List<String> buildModifyFields() {
         List<String> list=new ArrayList<>();
-        list.add("FDataValue");
+        list.add("Fname");
         list.add("Fnumber");
         return list;
     }

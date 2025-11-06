@@ -2,9 +2,11 @@ package com.bio.drqi.bsm.service.flowtask;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.bsm.contents.BioBsmContents;
@@ -214,6 +216,12 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 }
                 product.setProductName(bmsProductTb.getProductName());
                 product.setProductSpecs(bmsProductTb.getProductSpecs());
+                if(!StrUtil.equals(product.getProductCategoryCode(),bmsProductTb.getProductCategoryCode())){
+                    throw new BusinessException("常规采购的商品类别选择错误");
+                }
+                if(!StrUtil.equals(product.getBrandCode(),bmsProductTb.getBrandCode())){
+                    throw new BusinessException("常规采购的商品品牌选择错误");
+                }
             } else if (PurchaseTypeEnum.TYPE_2.code.equals(purchaseTypeCode)) {
                 //非常规采购
                 product.setProductName(product.getProductName().trim());

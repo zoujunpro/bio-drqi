@@ -220,7 +220,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         selectBmsProductStockInLog.setEndDate(endDate);
         List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(selectBmsProductStockInLog);
         //过滤出不需要同步的项目
-        List<String> projectCodeList = bmsProjectDictMapper.selectList(null).stream().filter(bmsProjectDict -> StringUtils.isNotEmpty(bmsProjectDict.getKdProjectCode())).map(BmsProjectDict::getProjectCode).collect(Collectors.toList());
+        List<String> projectCodeList = bmsProjectDictMapper.selectList(null).stream().filter(bmsProjectDict ->StringUtils.isNotEmpty(bmsProjectDict.getKdNumber())).map(BmsProjectDict::getProjectCode).collect(Collectors.toList());
         //过滤出不需要同步的耗材
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
 
@@ -362,11 +362,11 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
     @Override
     public void executeSynKd(BmsSynKdTaskLog bmsSynKdTaskLog) {
         try {
-            synStockTask();
-            synMaterialGroupTask();
-            synSupplierTask();
-            synProjectTask();
-            synMaterialTask();
+            //synStockTask();
+           // synMaterialGroupTask();
+           // synSupplierTask();
+           // synProjectTask();
+          //  synMaterialTask();
             synInStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
             synMoveStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
             synReturnStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());

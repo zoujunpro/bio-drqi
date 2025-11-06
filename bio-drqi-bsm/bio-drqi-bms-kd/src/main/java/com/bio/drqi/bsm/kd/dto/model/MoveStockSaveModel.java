@@ -64,6 +64,9 @@ public class MoveStockSaveModel extends KdModel {
 
     private List<FBillEntryModel> FBillEntry;
 
+    private String FNote;
+
+
 
     public MoveStockSaveModel(String f_WAUJ_UUID, String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String productInnerCode, BigDecimal moveNumber, String srcStockId, String destStockId) {
         F_WAUJ_UUID = f_WAUJ_UUID;
@@ -78,6 +81,7 @@ public class MoveStockSaveModel extends KdModel {
         this.FOwnerTypeIdHead = "BD_OwnerOrg";
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
         this.FBillEntry = Arrays.asList(new FBillEntryModel(productInnerCode, moveNumber, srcStockId, destStockId, orgCode));
+        this.FNote="";
     }
 
     @Data

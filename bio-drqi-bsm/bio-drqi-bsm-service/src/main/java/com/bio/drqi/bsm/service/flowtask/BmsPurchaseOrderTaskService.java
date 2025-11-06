@@ -223,6 +223,15 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                     throw new BusinessException("常规采购的商品品牌选择错误");
                 }
             } else if (PurchaseTypeEnum.TYPE_2.code.equals(purchaseTypeCode)) {
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(product.getProductName(), product.getBrandCode(), product.getProductSpecs());
+                if(bmsProductTb!=null){
+                    if(!StrUtil.equals(product.getProductCategoryCode(),bmsProductTb.getProductCategoryCode())){
+                        throw new BusinessException("常规采购的商品类别选择错误");
+                    }
+                    if(!StrUtil.equals(product.getBrandCode(),bmsProductTb.getBrandCode())){
+                        throw new BusinessException("常规采购的商品品牌选择错误");
+                    }
+                }
                 //非常规采购
                 product.setProductName(product.getProductName().trim());
                 product.setProductSpecs(product.getProductSpecs().trim());

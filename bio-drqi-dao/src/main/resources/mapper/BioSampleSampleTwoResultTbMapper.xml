@@ -21,7 +21,7 @@
     <sql id="Base_Column_List">
         id
         ,apply_no,sample_code,sample_id,run_id,
-        create_time,upload_num,test_channel,fail_message
+        create_time,upload_num,test_channel,fail_message,syn_result
     </sql>
     <delete id="deleteByApplyNo">
         delete

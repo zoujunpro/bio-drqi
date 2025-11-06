@@ -119,6 +119,11 @@ public class SeedStockPageReqDTO extends PageDTO {
      */
     private String filterNullFlag;
 
+    /**
+     * 母本种子编号
+     */
+    private String matherSeedNum;
+
 
     /**
      * 备注

@@ -291,6 +291,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         seedStockTb.setProjectCode(seedStockPageReqDTO.getProjectCode());
         seedStockTb.setMaterialType(seedStockPageReqDTO.getMaterialType());
         seedStockTb.setRemarks(seedStockPageReqDTO.getRemarks());
+        seedStockTb.setMatherSeedNum(seedStockPageReqDTO.getMatherSeedNum());
         if (seedStockPageReqDTO.getOrder() != null) {
             seedStockTb.setOrderField(seedStockPageReqDTO.getOrder().getFieldName());
             seedStockTb.setOrderType(seedStockPageReqDTO.getOrder().getOrderType());

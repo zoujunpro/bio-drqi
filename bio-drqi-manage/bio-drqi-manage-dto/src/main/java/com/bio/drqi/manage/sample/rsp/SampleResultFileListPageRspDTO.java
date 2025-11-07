@@ -37,4 +37,24 @@ public class SampleResultFileListPageRspDTO {
      * 上传编号
      */
     private String uploadNum;
+
+    /**
+     * 总数量
+     */
+    private Integer totalNum;
+
+    /**
+     * 有效数量
+     */
+    private Integer effectiveNum;
+
+    /**
+     * ngs匹配成功数量
+     */
+    private Integer ngsSuccessNum;
+
+    /**
+     * ngs匹配失败数量
+     */
+    private Integer ngsFailNum;
 }

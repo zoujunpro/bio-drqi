@@ -5,21 +5,26 @@
 <mapper namespace="com.bio.drqi.mapper.CerSampleTestResultFileTbMapper">
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerSampleTestResultFileTb">
-        <id property="id" column="id" jdbcType="INTEGER"/>
-        <result property="fileUrl" column="file_url" jdbcType="VARCHAR"/>
-        <result property="resultType" column="result_type" jdbcType="VARCHAR"/>
-        <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
-        <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-        <result property="uploadNum" column="upload_num" jdbcType="VARCHAR"/>
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="fileUrl" column="file_url" jdbcType="VARCHAR"/>
+            <result property="resultType" column="result_type" jdbcType="VARCHAR"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="uploadNum" column="upload_num" jdbcType="VARCHAR"/>
+            <result property="totalNum" column="total_num" jdbcType="VARCHAR"/>
+            <result property="effectiveNum" column="effective_num" jdbcType="INTEGER"/>
+            <result property="ngsSuccessNum" column="ngs_success_num" jdbcType="INTEGER"/>
+            <result property="ngsFailNum" column="ngs_fail_num" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id
-        ,file_url,result_type,
+        id,file_url,result_type,
         create_user_id,create_user_name,create_time,
-        upload_num
+        upload_num,total_num,effective_num,
+        ngs_success_num,ngs_fail_num
     </sql>
+
     <select id="selectSelective" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

@@ -10,6 +10,7 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.TestChannelEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SampleResultFileTypeENum;
@@ -99,8 +100,10 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
         cerSampleTestResultFileTb.setUploadNum(DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN));
         cerSampleTestResultFileTbMapper.insert(cerSampleTestResultFileTb);
 
+
         //一代测序
         if (SampleResultFileTypeENum.TYPE_1.code.equals(sampleResultFileUploadFileReqDTO.getResultType())) {
+
             List<TestExcelDTO> testExcelDTOList = ExcelUtil.readExcel(tempFilePath, TestExcelDTO.class);
             if (CollectionUtil.isEmpty(testExcelDTOList)) {
                 throw new BusinessException("没有读取到一代测序结果excel中数据");
@@ -128,11 +131,17 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                         updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTest.getId(),cerSampleTest.getSampleCode()));
                     }
                 }
+                cerSampleTestResultFileTb.setEffectiveNum(cerSampleTestResultFileTb.getEffectiveNum()==null?1:cerSampleTestResultFileTb.getEffectiveNum()+1);
             }
+
+            cerSampleTestResultFileTb.setTotalNum(testExcelDTOList.size());
             //更新检测结果到检测表
             bioSampleSampleOneResultTbMapper.insertBatch(bioSampleSampleOneResultTbList);
             //更新最新的检测结果到取样数据中
             cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
+
+            //更新文件数量和有效数量
+            cerSampleTestResultFileTbMapper.updateById(cerSampleTestResultFileTb);
 
         }
         //NGS测序（二代测序）
@@ -147,6 +156,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                     log.info("取样不存在项目管理系统：" + sampleTestBioInfoExcelDTO.getSampleCode());
+                    continue;
                 }
                 cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isEmpty(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
@@ -173,12 +183,20 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
 
                     }
                 }
+                //更新有效数量
+                cerSampleTestResultFileTb.setEffectiveNum(cerSampleTestResultFileTb.getEffectiveNum()==null?1:cerSampleTestResultFileTb.getEffectiveNum()+1);
             }
 
 
             //异步同步结果 这个需要放到前面调用
             List<BioSampleSampleTwoResultDetailTb> bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(bioSampleTwoResultTbList);
 
+            cerSampleTestResultFileTb.setTotalNum(sampleTestBioInfoExcelDTOList.size());
+
+            cerSampleTestResultFileTb.setNgsSuccessNum(bioSampleTwoResultTbList.stream().filter(sampleSampleTwoResultTb -> BioDrQiContents.Y.equals(sampleSampleTwoResultTb.getSynResult())).collect(Collectors.toList()).size());
+            cerSampleTestResultFileTb.setNgsFailNum(bioSampleTwoResultTbList.stream().filter(sampleSampleTwoResultTb -> BioDrQiContents.N.equals(sampleSampleTwoResultTb.getSynResult())).collect(Collectors.toList()).size());
+
+            cerSampleTestResultFileTbMapper.updateById(cerSampleTestResultFileTb);
             //更新检测结果标识（取样信息上加入检测人）
             cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
 

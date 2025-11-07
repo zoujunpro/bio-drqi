@@ -19,7 +19,7 @@ public class CerSampleTestResultFileTb implements Serializable {
     /**
      * 主键ID
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -52,8 +52,27 @@ public class CerSampleTestResultFileTb implements Serializable {
      */
     private String uploadNum;
 
+    /**
+     * 总数量
+     */
+    private Integer totalNum;
+
+    /**
+     * 有效数量
+     */
+    private Integer effectiveNum;
+
+    /**
+     * ngs匹配成功数量
+     */
+    private Integer ngsSuccessNum;
+
+    /**
+     * ngs匹配失败数量
+     */
+    private Integer ngsFailNum;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
-
 
 }

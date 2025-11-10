@@ -37,6 +37,11 @@ public class OutStockSaveModel extends KdModel {
      */
     private FRequireOrgIdModel FRequireOrgId;
 
+
+    /**
+     * 库存组织
+     */
+    private FStockOrgIdModel FStockOrgId;
     /**
      * 货主类型
      */
@@ -64,17 +69,27 @@ public class OutStockSaveModel extends KdModel {
     public OutStockSaveModel(String outDetailId, String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdMaterialId, BigDecimal FQty, String stockId) {
         this.F_WAUJ_UUID = outDetailId;
         this.FDate = FDate;
-        this.F_WAUJ_CRKLX=kdParentGroupEnum.type;
+        this.F_WAUJ_CRKLX = kdParentGroupEnum.type;
         this.fFBillTypeID = new FBillTypeIDModel(KdFBillTypeIDEnum.ofKdParentGroupEnum(kdParentGroupEnum).code);
         this.FRequireOrgId = new FRequireOrgIdModel(orgCode);
+        this.FStockOrgId=new FStockOrgIdModel(orgCode);
         this.FOwnerTypeIdHead = KdContents.OWNER;
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
         this.FEntity = Arrays.asList(new FEntityModel(kdMaterialId, FQty, stockId, orgCode));
         this.FDeptId = new FDeptIdModel("BM000008");
-        this.FNote=" ";
+        this.FNote = " ";
     }
 
+
+    @Data
+    private class FStockOrgIdModel {
+        private String FNumber;
+
+        public FStockOrgIdModel(String FNumber) {
+            this.FNumber = FNumber;
+        }
+    }
 
     @Data
     private class FDeptIdModel {

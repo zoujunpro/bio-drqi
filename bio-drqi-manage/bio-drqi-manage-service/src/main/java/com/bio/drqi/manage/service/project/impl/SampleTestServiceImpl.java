@@ -13,6 +13,7 @@ import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.CheckResultEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.common.enums.TestChannelEnum;
 import com.bio.drqi.domain.*;
@@ -267,7 +268,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             updateCerSampleTestTb.setTestElisaResult(testExcelDTO.getElisaResult());
             updateCerSampleTestTb.setTestQbzrSeq(testExcelDTO.getQbzrSeq());
             updateCerSampleTestTb.setTestEditResidueInfo(testExcelDTO.getEditResidueInfo());
-            if(updateCerSampleTestTb.ifHaveTestResult()){
+            if (updateCerSampleTestTb.ifHaveTestResult()) {
                 updateCerSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
                 updateCerSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
                 updateCerSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
@@ -682,6 +683,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         bioSampleSampleTwoResultTbMapper.updateById(bioSampleSampleTwoResultTb);
 
     }
+
     @Override
     public void remark(SampleRemarkReqDTO sampleRemarkReqDTO) {
         CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectById(sampleRemarkReqDTO.getId());
@@ -716,8 +718,8 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
         cerSampleTestTbMapper.updateTargetFlagByApplyNo(null, sampleTestUploadTargetResultTemplateReqDTO.getTaskNum());
         cerSampleTestTbMapper.updateTargetFlagByApplyNoAndSampleCodeIn(BioDrQiContents.Y, sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
-        cerSampleTestTbMapper.updateCheckResultByApplyNoAndSampleCodeIn("留种", sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
-        cerSampleTestTbMapper.updateCheckResultByApplyNoAndSampleCodeNotIn("舍弃", sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
+        cerSampleTestTbMapper.updateCheckResultByApplyNoAndSampleCodeIn(CheckResultEnum.stay.name(), sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
+        cerSampleTestTbMapper.updateCheckResultByApplyNoAndSampleCodeNotIn(CheckResultEnum.remove.name(), sampleTestUploadTargetResultTemplateReqDTO.getTaskNum(), sampleCodeList);
     }
 
     @Override
@@ -739,7 +741,7 @@ public class SampleTestServiceImpl implements SampleTestService {
 
     @Override
     public CountTestResultRspDTO countTestResult(String applyNo) {
-        CountTestResultRspDTO countTestResultRspDTO=new CountTestResultRspDTO();
+        CountTestResultRspDTO countTestResultRspDTO = new CountTestResultRspDTO();
         countTestResultRspDTO.setCheckResultNum(cerSampleTestTbMapper.selectTestResultCount(applyNo));
         countTestResultRspDTO.setTwoResultNum(cerSampleTestTbMapper.selectTowTestResultCount(applyNo));
         countTestResultRspDTO.setNotResultNum(cerSampleTestTbMapper.selectNoTestResultCount(applyNo));

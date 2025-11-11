@@ -198,7 +198,7 @@
             <if test="testTime != null">and test_time=#{testTime,jdbcType=VARCHAR}</if>
             <if test="checkUserName != null">and check_user_name=#{checkUserName,jdbcType=VARCHAR}</if>
             <if test="checkUserId != null">and check_user_id=#{checkUserId,jdbcType=NUMERIC}</if>
-            <if test="checkResult != null">and check_result=#{checkResult,jdbcType=VARCHAR}</if>
+            <if test="checkResult != null and checkResult!=''">and check_result=#{checkResult,jdbcType=VARCHAR}</if>
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
             <if test="applyNo != null and applyNo!=''">and apply_no=#{applyNo,jdbcType=VARCHAR}</if>

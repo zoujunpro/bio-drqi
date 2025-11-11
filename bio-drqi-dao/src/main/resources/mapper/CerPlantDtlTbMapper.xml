@@ -80,7 +80,7 @@
             <if test="vernalizationEndDate != null">and  vernalization_end_date=#{vernalizationEndDate,jdbcType=VARCHAR}
             </if>
             <if test="pollinationMethod != null">and  pollination_method=#{pollinationMethod,jdbcType=VARCHAR}</if>
-            <if test="plantStatus != null">and  plant_status=#{plantStatus,jdbcType=VARCHAR}</if>
+            <if test="plantStatus != null and plantStatus!=''">and  plant_status=#{plantStatus,jdbcType=VARCHAR}</if>
             <if test="fatherInfo != null">and  father_info=#{fatherInfo,jdbcType=VARCHAR}</if>
             <if test="motherInfo != null">and  mother_info=#{motherInfo,jdbcType=VARCHAR}</if>
             <if test="pollinationDate != null">and  pollination_date=#{pollinationDate,jdbcType=VARCHAR}</if>

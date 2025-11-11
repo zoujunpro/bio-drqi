@@ -40,6 +40,8 @@ public class PlantDtlListReqDTO extends PageDTO {
      */
     private String speciesCode;
 
+    private String plantStatus;
+
 
 
 }

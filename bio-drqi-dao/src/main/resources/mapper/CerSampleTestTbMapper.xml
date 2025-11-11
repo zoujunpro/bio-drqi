@@ -210,6 +210,7 @@
             <if test='cloneSampleFlag =="Y"'>and clone_sample_code is not null</if>
             <if test='cloneSampleFlag =="N"'>and clone_sample_code is null</if>
             <if test='testFlag =="Y"'>and test_user_id is null</if>
+            <if test='testFlag =="N"'>and test_user_id is not  null</if>
         </where>
         order by id desc
     </select>

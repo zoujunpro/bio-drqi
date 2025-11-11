@@ -30,11 +30,11 @@
         from cer_project_tb
         <where>
             <if test="actorId != null">
-                and id in (select DISTINCT project_id from cer_project_task_tb where  instance_id in(select instance_id from flow_his_task_actor_tb where actor_id =#{actorId,jdbcType=INTEGER}
+                and task_num in
+                (select a.task_num from bio_task_dtl_tb a inner JOIN
+                (select instance_id from flow_his_task_actor_tb where actor_id =#{actorId,jdbcType=INTEGER}
                 UNION ALL
-                select instance_id from flow_task_actor_tb where actor_id =#{actorId,jdbcType=INTEGER})
-                UNION ALL
-                select DISTINCT project_id from cer_project_task_tb where  instance_id is null)
+                select instance_id from flow_task_actor_tb where actor_id =#{actorId,jdbcType=INTEGER}) b on a.instance_id=b.instance_id)
             </if>
             <if test="projectName != null and projectName != ''">
                 and project_name = #{projectName,jdbcType=VARCHAR}
@@ -177,13 +177,13 @@
         from cer_project_tb order by id desc
     </select>
     <select id="selectAllByOwnerUserIdIsNotNull" resultMap="BaseResultMap">
-        select
-         distinct owner_user_id, owner_user_name
+        select distinct owner_user_id,
+                        owner_user_name
         from cer_project_tb
-        where
-        owner_user_id is not null
+        where owner_user_id is not null
     </select>
     <select id="selectAllCount" resultType="java.lang.Integer">
-        select  count(*) as num  from cer_project_tb
+        select count(*) as num
+        from cer_project_tb
     </select>
 </mapper>

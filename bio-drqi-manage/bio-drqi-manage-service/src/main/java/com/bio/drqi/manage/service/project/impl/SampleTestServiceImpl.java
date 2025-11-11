@@ -267,9 +267,11 @@ public class SampleTestServiceImpl implements SampleTestService {
             updateCerSampleTestTb.setTestElisaResult(testExcelDTO.getElisaResult());
             updateCerSampleTestTb.setTestQbzrSeq(testExcelDTO.getQbzrSeq());
             updateCerSampleTestTb.setTestEditResidueInfo(testExcelDTO.getEditResidueInfo());
-            updateCerSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
-            updateCerSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
-            updateCerSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
+            if(updateCerSampleTestTb.ifHaveTestResult()){
+                updateCerSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
+                updateCerSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
+                updateCerSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
+            }
             updateCerSampleTestTb.setUpdateTime(new Date());
             updateList.add(updateCerSampleTestTb);
             bioSampleSampleOneResultTbList.add(BioSampleSampleOneResultTb.of(updateCerSampleTestTb, TestChannelEnum.project.name(), uploadTestTemplateReqDTO.getApplyNo(), null));

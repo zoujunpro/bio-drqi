@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -15,9 +16,10 @@ import java.util.Date;
 
 /**
  * 取样检测信息表
+ *
  * @TableName cer_sample_test_tb
  */
-@TableName(value ="cer_sample_test_tb")
+@TableName(value = "cer_sample_test_tb")
 @Data
 @Builder
 @AllArgsConstructor
@@ -252,6 +254,50 @@ public class CerSampleTestTb implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+
+    public boolean ifHaveTestResult() {
+        if (this.testIdentifyPrimer != null && !"".equals(this.testIdentifyPrimer)) {
+            return true;
+        }
+        if (this.testMethod != null && !"".equals(this.testMethod)) {
+            return true;
+        }
+        if (this.testEditType != null && !"".equals(this.testEditType)) {
+            return true;
+        }
+        if (this.testNoTransIdentityPrimer != null && !"".equals(this.testNoTransIdentityPrimer)) {
+            return true;
+        }
+        if (this.testIsGeneModifyPositive != null && !"".equals(this.testIsGeneModifyPositive)) {
+            return true;
+        }
+        if (this.testIfFixedPoint != null && !"".equals(this.testIfFixedPoint)) {
+            return true;
+        }
+        if (this.testIfCopyInsert != null && !"".equals(this.testIfCopyInsert)) {
+            return true;
+        }
+        if (this.testFixedPointType != null && !"".equals(this.testFixedPointType)) {
+            return true;
+        }
+        if (this.testDonorResidueInfo != null && !"".equals(this.testDonorResidueInfo)) {
+            return true;
+        }
+        if (this.testInsertionSite != null && !"".equals(this.testInsertionSite)) {
+            return true;
+        }
+        if (this.testElisaResult != null && !"".equals(this.testElisaResult)) {
+            return true;
+        }
+        if (this.testQbzrSeq != null && !"".equals(this.testQbzrSeq)) {
+            return true;
+        }
+        if (this.testEditResidueInfo != null && !"".equals(this.testEditResidueInfo)) {
+            return true;
+        }
+        return false;
+    }
 
 
 }

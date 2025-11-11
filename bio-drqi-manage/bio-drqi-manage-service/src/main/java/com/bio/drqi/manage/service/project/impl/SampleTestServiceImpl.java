@@ -681,8 +681,6 @@ public class SampleTestServiceImpl implements SampleTestService {
         //更新结果状态
         bioSampleSampleTwoResultTbMapper.updateById(bioSampleSampleTwoResultTb);
 
-
-
     }
     @Override
     public void remark(SampleRemarkReqDTO sampleRemarkReqDTO) {

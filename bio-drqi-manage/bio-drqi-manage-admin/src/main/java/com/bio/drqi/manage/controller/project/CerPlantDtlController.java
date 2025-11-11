@@ -77,7 +77,7 @@ public class CerPlantDtlController {
     /**
      * 种植明细-数据统计
      */
-    @PostMapping("count")
+    @GetMapping("count")
     @WebLog(desc = "种植明细-数据统计")
     public ResponseResult<PlantDtlCountRspDTO> count(@RequestParam String vectorTaskCode) {
         return ResponseResult.getSuccess(cerPlantDtlService.count(vectorTaskCode));

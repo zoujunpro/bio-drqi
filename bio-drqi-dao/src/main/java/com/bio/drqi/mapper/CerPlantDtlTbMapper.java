@@ -5,6 +5,7 @@ import com.bio.drqi.domain.CerPlantDtlTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author zou'jun
@@ -19,6 +20,8 @@ public interface CerPlantDtlTbMapper extends BaseMapper<CerPlantDtlTb> {
     int deleteByTaskNum(@Param("taskNum") String taskNum);
 
     CerPlantDtlTb selectOneByPlantCode(@Param("plantCode") String plantCode);
+
+   List<CerPlantDtlTb> selectCountGroupByPlantStatus(@Param("vectorTaskCode") String vectorTaskCode);
 }
 
 

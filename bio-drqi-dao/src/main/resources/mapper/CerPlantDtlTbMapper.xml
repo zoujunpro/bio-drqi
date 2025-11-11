@@ -109,4 +109,11 @@
         where
         plant_code = #{plantCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectCountGroupByPlantStatus" resultMap="BaseResultMap">
+    select count(*) as countNum , plant_status  as plantStatus from cer_plant_dtl_tb
+    <where>
+        <if test="vectorTaskCode != null and vectorTaskCode!=''">and  vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+    </where>
+    group by plant_status
+    </select>
 </mapper>

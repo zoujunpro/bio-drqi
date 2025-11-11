@@ -6,6 +6,7 @@ import com.bio.common.oss.service.OssService;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.plant.req.PlantDtlListDetailReqDTO;
+import com.bio.drqi.manage.plant.rsp.PlantDtlCountRspDTO;
 import com.bio.drqi.manage.plant.rsp.PlantDtlListDetailRspDTO;
 import com.bio.drqi.manage.sample.req.DownloadSampleTemplateReqDTO;
 import com.bio.drqi.manage.sample.req.SampleTestListDetailReqDTO;
@@ -15,10 +16,7 @@ import com.bio.drqi.manage.plant.req.PlantDtlListReqDTO;
 import com.bio.drqi.manage.plant.rsp.PlantDtlListRspDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +37,7 @@ public class CerPlantDtlController {
 
     /**
      * 种植明细-分页查询
+     *
      * @param plantDtlListReqDTO
      * @return
      */
@@ -68,12 +67,20 @@ public class CerPlantDtlController {
      */
     @PostMapping("downSampleTemplate")
     @WebLog(desc = "种植明细-种植模板")
-    public void downSampleTemplate( HttpServletResponse response) {
+    public void downSampleTemplate(HttpServletResponse response) {
         try {
             ossService.downloadFile(response, "template", "CER种植结果上传数据模板_V1.xlsx");
         } catch (Exception e) {
             throw new BusinessException("CER种植结果上传数据模板下载失败，请联系管理员检测模板配置");
         }
+    }
+    /**
+     * 种植明细-数据统计
+     */
+    @GetMapping("count")
+    @WebLog(desc = "种植明细-数据统计")
+    public ResponseResult<PlantDtlCountRspDTO> count(@RequestParam String vectorTaskCode) {
+        return ResponseResult.getSuccess(cerPlantDtlService.count(vectorTaskCode));
     }
 
 }

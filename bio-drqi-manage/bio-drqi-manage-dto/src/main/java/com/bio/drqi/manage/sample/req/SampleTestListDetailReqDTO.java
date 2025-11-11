@@ -51,4 +51,6 @@ public class SampleTestListDetailReqDTO extends PageDTO {
      */
     private String testFlag;
 
+    private String checkResult;
+
 }

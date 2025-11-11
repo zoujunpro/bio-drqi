@@ -42,12 +42,13 @@ public class CerSampleTwoResultController {
 
     /**
      * 二代测序-列表简述
+     *
      * @param id
      * @return
      */
     @GetMapping("listDetail")
     @WebLog(desc = "一代测序-结果详情查询")
-    public ResponseResult<List<CerSampleTwoResultListDetailRspDTO>>  listDetail(@RequestParam Integer id){
+    public ResponseResult<List<CerSampleTwoResultListDetailRspDTO>> listDetail(@RequestParam Integer id) {
         return ResponseResult.getSuccess(cerSampleTwoResultService.listDetail(id));
     }
 
@@ -58,8 +59,20 @@ public class CerSampleTwoResultController {
      * @return
      */
     @GetMapping("detail")
-    @WebLog(desc = "取样检测-生信检测结果数据详情")
+    @WebLog(desc = "二代测序-结果详情")
     public ResponseResult<Object> detail(@RequestParam Integer detailId) {
         return ResponseResult.getSuccess(cerSampleTwoResultService.detail(detailId));
+    }
+
+    /**
+     * 二代测序-同步某一个生信结果
+     * @param id
+     * @return
+     */
+    @GetMapping("synOne")
+    @WebLog(desc = "二代测序-同步某一个生信结果")
+    public ResponseResult<String> synOne(@RequestParam Integer id) {
+        cerSampleTwoResultService.synOne(id);
+    return ResponseResult.getSuccess("成功");
     }
 }

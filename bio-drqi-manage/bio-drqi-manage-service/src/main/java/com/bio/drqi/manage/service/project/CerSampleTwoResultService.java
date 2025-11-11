@@ -20,4 +20,6 @@ public interface CerSampleTwoResultService {
 
    Object detail( Integer detailId);
 
+    void synOne(@RequestParam Integer id);
+
 }

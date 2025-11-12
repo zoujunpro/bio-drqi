@@ -729,7 +729,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
             cerSampleTestTbList.forEach(cerSampleTestTb -> {
                 CountCheckResultRspDTO countCheckResultRspDTO = new CountCheckResultRspDTO();
-                countCheckResultRspDTO.setCheckResult(StringUtils.isEmpty(cerSampleTestTb.getCheckResult()) ? "未处理" : cerSampleTestTb.getCheckResult());
+                countCheckResultRspDTO.setCheckResult(cerSampleTestTb.getCheckResult());
                 countCheckResultRspDTO.setCountNum(cerSampleTestTb.getCountNum() == null ? 0 : cerSampleTestTb.getCountNum());
                 list.add(countCheckResultRspDTO);
             });

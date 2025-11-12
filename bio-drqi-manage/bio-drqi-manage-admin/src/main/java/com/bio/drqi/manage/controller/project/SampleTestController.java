@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -345,7 +346,7 @@ public class SampleTestController {
     @GetMapping("deleteNgsResult")
     @WebLog(desc = "取样检测-删除无效的NGS结果")
     @RequestLog("取样检测-删除无效的NGS结果")
-    public ResponseResult<String> deleteNgsResult(String uniqueDbCode){
+    public ResponseResult<String> deleteNgsResult(@RequestParam @Validated @NotBlank(message = "参数缺失：uniqueDbCode") String uniqueDbCode){
         sampleTestService.deleteNgsResult(uniqueDbCode);
         return ResponseResult.getSuccess("ok");
     }

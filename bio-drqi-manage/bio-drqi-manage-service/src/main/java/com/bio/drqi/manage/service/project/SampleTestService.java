@@ -66,4 +66,6 @@ public interface SampleTestService {
     List<CountCheckResultRspDTO> countCheckResult(String applyNo);
 
     CountTestResultRspDTO countTestResult( String applyNo);
+
+    void deleteNgsResult(String uniqueDbCode);
 }

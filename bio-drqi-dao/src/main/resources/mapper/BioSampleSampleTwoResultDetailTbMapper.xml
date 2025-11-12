@@ -76,4 +76,19 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </select>
+    <select id="selectAllByUniqueDbCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_sample_two_result_detail_tb
+        where
+        unique_db_code = #{uniqueDbCode,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByIdIn">
+        delete from bio_sample_sample_two_result_detail_tb
+        where
+        id in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+    </delete>
 </mapper>

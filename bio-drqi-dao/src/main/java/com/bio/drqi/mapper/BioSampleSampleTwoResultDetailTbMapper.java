@@ -21,6 +21,10 @@ public interface BioSampleSampleTwoResultDetailTbMapper extends BaseMapper<BioSa
     List<BioSampleSampleTwoResultDetailTb> selectAllByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
 
 
+    int deleteByIdIn(@Param("idList") Collection<Integer> idList);
+
+    List<BioSampleSampleTwoResultDetailTb> selectAllByUniqueDbCode(@Param("uniqueDbCode") String uniqueDbCode);
+
     int insertBatch(@Param("bioSampleSampleTwoResultDetailTbCollection") Collection<BioSampleSampleTwoResultDetailTb> bioSampleSampleTwoResultDetailTbCollection);
 
     List<BioSampleSampleTwoResultDetailTb> selectAllBySampleCodeIn(@Param("sampleCodeList") Collection<String> sampleCodeList);

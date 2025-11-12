@@ -90,6 +90,9 @@ public interface CerSampleTestTbMapper extends BaseMapper<CerSampleTestTb> {
 
     //查询二代检测结果
     int selectTowTestResultCount(@Param("applyNo") String applyNo);
+
+
+    int updateTestUserIdAndTestUserName(@Param("testUserId") Integer testUserId, @Param("testUserName") String testUserName);
 }
 
 

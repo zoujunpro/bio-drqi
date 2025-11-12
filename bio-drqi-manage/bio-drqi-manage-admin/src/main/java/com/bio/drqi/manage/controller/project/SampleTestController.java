@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.controller.project;
 
 
+import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.manage.sample.req.*;
 import com.bio.drqi.manage.sample.rsp.*;
 import com.bio.common.core.dto.BusinessException;
@@ -340,5 +341,12 @@ public class SampleTestController {
     @WebLog(desc = "取样检测-统计检测结果")
     public ResponseResult<CountTestResultRspDTO> countTestResult(@RequestParam @Validated String applyNo) {
         return ResponseResult.getSuccess(sampleTestService.countTestResult(applyNo));
+    }
+    @GetMapping("deleteNgsResult")
+    @WebLog(desc = "取样检测-删除无效的NGS结果")
+    @RequestLog("取样检测-删除无效的NGS结果")
+    public ResponseResult<String> deleteNgsResult(String uniqueDbCode){
+        sampleTestService.deleteNgsResult(uniqueDbCode);
+        return ResponseResult.getSuccess("ok");
     }
 }

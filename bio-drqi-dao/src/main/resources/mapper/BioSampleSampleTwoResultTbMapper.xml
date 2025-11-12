@@ -48,6 +48,7 @@
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="uploadNum != null and uploadNum!=''">and upload_num=#{uploadNum,jdbcType=VARCHAR}</if>
             <if test="testChannel != null and testChannel!=''">and test_channel=#{testChannel,jdbcType=VARCHAR}</if>
+            <if test="synResult != null and synResult!=''">and syn_result=#{synResult,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

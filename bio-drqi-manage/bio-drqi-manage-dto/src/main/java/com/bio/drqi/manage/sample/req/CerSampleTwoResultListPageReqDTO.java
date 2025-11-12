@@ -37,6 +37,9 @@ public class CerSampleTwoResultListPageReqDTO extends PageDTO {
      */
     private String testChannel;
 
+    private String synResult;
+
+
 
 
 

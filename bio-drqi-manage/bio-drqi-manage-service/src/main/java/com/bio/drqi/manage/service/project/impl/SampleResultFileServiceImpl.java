@@ -83,7 +83,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
     @Transactional(rollbackFor = Exception.class)
     public void uploadFile(SampleResultFileUploadFileReqDTO sampleResultFileUploadFileReqDTO) {
         List<CerSampleTestTb> updateCerSampleTestTbList = new ArrayList<>();
-        List<BioSampleSampleOneResultTb> bioSampleSampleOneResultTbList=new ArrayList<>();
+        List<BioSampleSampleOneResultTb> bioSampleSampleOneResultTbList = new ArrayList<>();
         String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + sampleResultFileUploadFileReqDTO.getExcelUrl();
         try {
             ossService.downloadPath(tempFilePath, sampleResultFileUploadFileReqDTO.getExcelUrl());
@@ -122,20 +122,20 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 }
                 cerSampleTestTbList = cerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId).reversed()).collect(Collectors.toList());
                 //第一个的一定更新
-                updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(),cerSampleTestTbList.get(0).getSampleCode()));
-                bioSampleSampleOneResultTbList.add(BioSampleSampleOneResultTb.of(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(),cerSampleTestTbList.get(0).getSampleCode()), TestChannelEnum.project.name(),cerSampleTestTbList.get(0).getApplyNo(),cerSampleTestResultFileTb.getUploadNum()));
+                updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(), cerSampleTestTbList.get(0).getSampleCode()));
+                bioSampleSampleOneResultTbList.add(BioSampleSampleOneResultTb.of(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(), cerSampleTestTbList.get(0).getSampleCode()), TestChannelEnum.project.name(), cerSampleTestTbList.get(0).getApplyNo(), cerSampleTestResultFileTb.getUploadNum()));
 
                 //剩下的，如果没有上传过结果，则补更新结果
                 for (int i = 1; i < cerSampleTestTbList.size(); i++) {
                     CerSampleTestTb cerSampleTest = cerSampleTestTbList.get(i);
                     if (cerSampleTest.getTestUserId() == null) {
-                        updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTest.getId(),cerSampleTest.getSampleCode()));
+                        updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTest.getId(), cerSampleTest.getSampleCode()));
                     }
                 }
-                cerSampleTestResultFileTb.setEffectiveNum(cerSampleTestResultFileTb.getEffectiveNum()==null?1:cerSampleTestResultFileTb.getEffectiveNum()+1);
+                cerSampleTestResultFileTb.setEffectiveNum(cerSampleTestResultFileTb.getEffectiveNum() == null ? 1 : cerSampleTestResultFileTb.getEffectiveNum() + 1);
             }
 
-            if(CollectionUtil.isEmpty(updateCerSampleTestTbList)){
+            if (CollectionUtil.isEmpty(updateCerSampleTestTbList)) {
                 throw new BusinessException("根据取样编号为匹配到数据");
             }
             cerSampleTestResultFileTb.setTotalNum(testExcelDTOList.size());
@@ -155,8 +155,8 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
             if (CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)) {
                 throw new BusinessException("excel中二代测序结果读取为空");
             }
-            if(sampleTestBioInfoExcelDTOList.stream().map(SampleTestBioInfoExcelDTO::getSampleCode).collect(Collectors.toList()).size()==sampleTestBioInfoExcelDTOList.size()){
-                throw  new BusinessException("数据文件中有重复的取样编号");
+            if (sampleTestBioInfoExcelDTOList.stream().map(SampleTestBioInfoExcelDTO::getSampleCode).collect(Collectors.toList()).size() == sampleTestBioInfoExcelDTOList.size()) {
+                throw new BusinessException("数据文件中有重复的取样编号");
             }
             sampleTestBioInfoExcelDTOList = sampleTestBioInfoExcelDTOList.stream().filter(sampleTestBioInfoExcelDTO -> StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getSampleId()) && StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getRunId())).collect(Collectors.toList());
             for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
@@ -187,10 +187,10 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                     }
                 }
                 //更新有效数量
-                cerSampleTestResultFileTb.setEffectiveNum(cerSampleTestResultFileTb.getEffectiveNum()==null?1:cerSampleTestResultFileTb.getEffectiveNum()+1);
+                cerSampleTestResultFileTb.setEffectiveNum(cerSampleTestResultFileTb.getEffectiveNum() == null ? 1 : cerSampleTestResultFileTb.getEffectiveNum() + 1);
             }
 
-            if(CollectionUtil.isEmpty(bioSampleTwoResultTbList)){
+            if (CollectionUtil.isEmpty(bioSampleTwoResultTbList)) {
                 throw new BusinessException("根据取样编号为匹配到数据");
             }
             //异步同步结果 这个需要放到前面调用
@@ -203,6 +203,10 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
 
             cerSampleTestResultFileTbMapper.updateById(cerSampleTestResultFileTb);
             //更新检测结果标识（取样信息上加入检测人）
+
+            List<String> synNgsSuccessList = bioSampleTwoResultTbList.stream().filter(bioSampleSampleOneResultTb -> BioDrQiContents.Y.equals(bioSampleSampleOneResultTb.getSynResult())).map(sampleSampleTwoResultTb -> sampleSampleTwoResultTb.getApplyNo() + sampleSampleTwoResultTb.getSampleCode()).collect(Collectors.toList());
+            //只有匹配成功的才认为审核成功
+            updateCerSampleTestTbList = updateCerSampleTestTbList.stream().filter(cerSampleTestTb -> synNgsSuccessList.equals(cerSampleTestTb.getApplyNo() + cerSampleTestTb.getSampleCode())).collect(Collectors.toList());
             cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
 
             //更新文件中的测序信息（有效信息）
@@ -228,7 +232,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
     }
 
     @NotNull
-    private static CerSampleTestTb buildUpdateCerSampleTestTb(TestExcelDTO testExcelDTO, Integer id,String sampleCode) {
+    private static CerSampleTestTb buildUpdateCerSampleTestTb(TestExcelDTO testExcelDTO, Integer id, String sampleCode) {
         CerSampleTestTb updateCerSampleTestTb = new CerSampleTestTb();
         updateCerSampleTestTb.setId(id);
         updateCerSampleTestTb.setSampleCode(sampleCode);

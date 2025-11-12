@@ -38,7 +38,7 @@ public class SampleTestCodeScanService extends AbstractBaseCodeScanService<Sampl
     private CerSampleTestTbMapper cerSampleTestTbMapper;
 
     @Resource
-    private BioSampleSampleTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
+    private BioSampleTestTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
 
     @Override
     public SampleTestUniqueReqDTO parseUniqueCode(String uniqueCode) {
@@ -61,7 +61,7 @@ public class SampleTestCodeScanService extends AbstractBaseCodeScanService<Sampl
         CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByUniqueCode(cerVectorTaskTb.getProjectCode() + sampleTestUniqueReqDTO.getSampleCode());
         CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
         CerVectorGroupTb cerVectorGroupTb = cerVectorGroupTbMapper.selectOneByGroupNameAndVectorTaskId(cerTransformTb.getPlasmidName(), cerVectorTaskTb.getId());
-        List<BioSampleSampleTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
+        List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
         ScanCodeSampleTestRspDTO scanCodeSampleTestRspDTO = new ScanCodeSampleTestRspDTO();
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbList)) {
             List<ScanCodeSampleTestRspDTO.BioInfo> bioInfoList = BeanUtil.copyToList(bioSampleSampleTwoResultDetailTbList, ScanCodeSampleTestRspDTO.BioInfo.class);

@@ -3,7 +3,6 @@ package com.bio.drqi.manage.service.project.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
@@ -15,8 +14,6 @@ import com.bio.drqi.common.enums.CheckResultEnum;
 import com.bio.drqi.common.enums.TestChannelEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SampleResultFileTypeENum;
-import com.bio.drqi.external.client.BioInfoClientApi;
-import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
 import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
 import com.bio.drqi.manage.dto.project.TestExcelDTO;
 import com.bio.drqi.manage.sample.req.SampleResultFileListPageReqDTO;
@@ -38,8 +35,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,11 +49,11 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
 
 
     @Resource
-    private BioSampleSampleTwoResultTbMapper bioSampleSampleTwoResultTbMapper;
+    private BioSampleTestTwoResultTbMapper bioSampleTestTwoResultTbMapper;
 
 
     @Resource
-    private BioSampleSampleTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
+    private BioSampleTestTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
 
     @Resource
     private OssService ossService;
@@ -68,7 +63,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
     private SynSampleTestResultService synSampleTestResultService;
 
     @Resource
-    private BioSampleSampleOneResultTbMapper bioSampleSampleOneResultTbMapper;
+    private BioSampleTestOneResultTbMapper bioSampleTestOneResultTbMapper;
 
 
     @Override
@@ -83,7 +78,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
     @Transactional(rollbackFor = Exception.class)
     public void uploadFile(SampleResultFileUploadFileReqDTO sampleResultFileUploadFileReqDTO) {
         List<CerSampleTestTb> updateCerSampleTestTbList = new ArrayList<>();
-        List<BioSampleSampleOneResultTb> bioSampleSampleOneResultTbList = new ArrayList<>();
+        List<BioSampleTestOneResultTb> bioSampleSampleOneResultTbList = new ArrayList<>();
         String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + sampleResultFileUploadFileReqDTO.getExcelUrl();
         try {
             ossService.downloadPath(tempFilePath, sampleResultFileUploadFileReqDTO.getExcelUrl());
@@ -123,7 +118,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 cerSampleTestTbList = cerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId).reversed()).collect(Collectors.toList());
                 //第一个的一定更新
                 updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(), cerSampleTestTbList.get(0).getSampleCode()));
-                bioSampleSampleOneResultTbList.add(BioSampleSampleOneResultTb.of(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(), cerSampleTestTbList.get(0).getSampleCode()), TestChannelEnum.project.name(), cerSampleTestTbList.get(0).getApplyNo(), cerSampleTestResultFileTb.getUploadNum()));
+                bioSampleSampleOneResultTbList.add(BioSampleTestOneResultTb.of(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(), cerSampleTestTbList.get(0).getSampleCode()), TestChannelEnum.project.name(), cerSampleTestTbList.get(0).getApplyNo(), cerSampleTestResultFileTb.getUploadNum()));
 
                 //剩下的，如果没有上传过结果，则补更新结果
                 for (int i = 1; i < cerSampleTestTbList.size(); i++) {
@@ -140,7 +135,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
             }
             cerSampleTestResultFileTb.setTotalNum(testExcelDTOList.size());
             //更新检测结果到检测表
-            bioSampleSampleOneResultTbMapper.insertBatch(bioSampleSampleOneResultTbList);
+            bioSampleTestOneResultTbMapper.insertBatch(bioSampleSampleOneResultTbList);
             //更新最新的检测结果到取样数据中
             cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
 
@@ -150,7 +145,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
         }
         //NGS测序（二代测序）
         if (SampleResultFileTypeENum.TYPE_2.code.equals(sampleResultFileUploadFileReqDTO.getResultType())) {
-            List<BioSampleSampleTwoResultTb> bioSampleTwoResultTbList = new ArrayList<>();
+            List<BioSampleTestTwoResultTb> bioSampleTwoResultTbList = new ArrayList<>();
             List<SampleTestBioInfoExcelDTO> sampleTestBioInfoExcelDTOList = ExcelUtil.readExcel(tempFilePath, SampleTestBioInfoExcelDTO.class);
             if (CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)) {
                 throw new BusinessException("excel中二代测序结果读取为空");
@@ -174,8 +169,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 //第一个取样一定更新
                 CerSampleTestTb firstCerSampleTestTb = cerSampleTestTbList.get(0);
                 updateCerSampleTestTbList.add(CerSampleTestTb.builder().id(firstCerSampleTestTb.getId()).sampleCode(firstCerSampleTestTb.getSampleCode()).applyNo(firstCerSampleTestTb.getApplyNo()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getUserName()).build());
-                //清空同步结果的旧数据（不能清空上传的原始数据）
-                bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(firstCerSampleTestTb.getApplyNo(), firstCerSampleTestTb.getSampleCode());
+
                 bioSampleTwoResultTbList.add(buildBioSampleSampleTwoResultTb(sampleTestBioInfoExcelDTO, firstCerSampleTestTb, cerSampleTestResultFileTb.getUploadNum()));
                 //剩下的，如果没有上传过结果，则补更新结果
                 for (int i = 1; i < cerSampleTestTbList.size(); i++) {
@@ -194,7 +188,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 throw new BusinessException("根据取样编号为匹配到数据");
             }
             //异步同步结果 这个需要放到前面调用
-            List<BioSampleSampleTwoResultDetailTb> bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(bioSampleTwoResultTbList);
+            List<BioSampleTestTwoResultDetailTb> bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(bioSampleTwoResultTbList);
 
             cerSampleTestResultFileTb.setTotalNum(sampleTestBioInfoExcelDTOList.size());
 
@@ -212,17 +206,20 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
             }
             //更新文件中的测序信息（有效信息）
-            bioSampleSampleTwoResultTbMapper.insertBatch(bioSampleTwoResultTbList);
+            bioSampleTestTwoResultTbMapper.insertBatch(bioSampleTwoResultTbList);
 
             //更新同步的结果，更新前旧的需要删除
             if (CollectionUtil.isNotEmpty(bioSampleTwoResultDetailTbList)) {
+                bioSampleTwoResultDetailTbList.forEach(bioSampleSampleTwoResultDetailTb -> {
+                    bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCodeAndUniqueDbCode(bioSampleSampleTwoResultDetailTb.getApplyNo(),bioSampleSampleTwoResultDetailTb.getSampleCode(),bioSampleSampleTwoResultDetailTb.getUniqueDbCode());
+                });
                 bioSampleSampleTwoResultDetailTbMapper.insertBatch(bioSampleTwoResultDetailTbList);
             }
         }
     }
 
-    private BioSampleSampleTwoResultTb buildBioSampleSampleTwoResultTb(SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO, CerSampleTestTb firstCerSampleTestTb, String uploadNo) {
-        BioSampleSampleTwoResultTb bioSampleSampleTwoResultTb = new BioSampleSampleTwoResultTb();
+    private BioSampleTestTwoResultTb buildBioSampleSampleTwoResultTb(SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO, CerSampleTestTb firstCerSampleTestTb, String uploadNo) {
+        BioSampleTestTwoResultTb bioSampleSampleTwoResultTb = new BioSampleTestTwoResultTb();
         bioSampleSampleTwoResultTb.setApplyNo(firstCerSampleTestTb.getApplyNo());
         bioSampleSampleTwoResultTb.setSampleCode(firstCerSampleTestTb.getSampleCode());
         bioSampleSampleTwoResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());

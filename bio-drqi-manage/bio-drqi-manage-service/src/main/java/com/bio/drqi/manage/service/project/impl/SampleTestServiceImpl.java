@@ -17,8 +17,6 @@ import com.bio.drqi.common.enums.CheckResultEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.common.enums.TestChannelEnum;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.external.client.BioInfoClientApi;
-import com.bio.drqi.external.dto.BioResult;
 import com.bio.drqi.manage.base.SampleUnitDTO;
 import com.bio.drqi.manage.dto.project.*;
 import com.bio.drqi.manage.sample.req.*;
@@ -39,7 +37,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,13 +69,13 @@ public class SampleTestServiceImpl implements SampleTestService {
 
 
     @Resource
-    private BioSampleSampleTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
+    private BioSampleTestTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
 
     @Resource
-    private BioSampleSampleTwoResultTbMapper bioSampleSampleTwoResultTbMapper;
+    private BioSampleTestTwoResultTbMapper bioSampleTestTwoResultTbMapper;
 
     @Resource
-    private BioSampleSampleOneResultTbMapper bioSampleSampleOneResultTbMapper;
+    private BioSampleTestOneResultTbMapper bioSampleTestOneResultTbMapper;
 
 
     @Resource
@@ -96,7 +93,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         PageInfo<SampleTestListDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, SampleTestListDetailRspDTO.class);
         targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
             sampleTestListDetailRspDTO.setSampleGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getSampleGeneration()));
-            List<BioSampleSampleTwoResultDetailTb> cerSampleTestBioInfoResultTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(sampleTestListDetailRspDTO.getApplyNo(), sampleTestListDetailRspDTO.getSampleCode());
+            List<BioSampleTestTwoResultDetailTb> cerSampleTestBioInfoResultTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(sampleTestListDetailRspDTO.getApplyNo(), sampleTestListDetailRspDTO.getSampleCode());
             if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
                 cerSampleTestBioInfoResultTbList.forEach(cerSampleTestBioInfoResultTb -> {
                     sampleTestListDetailRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
@@ -248,7 +245,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
 
         List<CerSampleTestTb> updateList = new ArrayList<>();
-        List<BioSampleSampleOneResultTb> bioSampleSampleOneResultTbList = new ArrayList<>();
+        List<BioSampleTestOneResultTb> bioSampleSampleOneResultTbList = new ArrayList<>();
         Map<String, CerSampleTestTb> cerSampleTestTbMap = cerSampleTestTbList.stream().collect(Collectors.toMap(CerSampleTestTb::getSampleCode, cerSampleTestTb -> cerSampleTestTb));
         for (TestExcelDTO testExcelDTO : testExcelDTOList) {
             log.info("检测数据上送 数据处理中：" + testExcelDTO.getSampleCode());
@@ -276,7 +273,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             }
             updateCerSampleTestTb.setUpdateTime(new Date());
             updateList.add(updateCerSampleTestTb);
-            bioSampleSampleOneResultTbList.add(BioSampleSampleOneResultTb.of(updateCerSampleTestTb, TestChannelEnum.project.name(), uploadTestTemplateReqDTO.getApplyNo(), null));
+            bioSampleSampleOneResultTbList.add(BioSampleTestOneResultTb.of(updateCerSampleTestTb, TestChannelEnum.project.name(), uploadTestTemplateReqDTO.getApplyNo(), null));
 
         }
 
@@ -286,10 +283,10 @@ public class SampleTestServiceImpl implements SampleTestService {
         newSampleTestDTO.setTestDataExcelUrl(uploadTestTemplateReqDTO.getExcelUrl());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
         //清空旧数据
-        bioSampleSampleOneResultTbMapper.deleteByTaskNum(uploadTestTemplateReqDTO.getApplyNo());
+        bioSampleTestOneResultTbMapper.deleteByTaskNum(uploadTestTemplateReqDTO.getApplyNo());
 
         //插入新数据
-        bioSampleSampleOneResultTbMapper.insertBatch(bioSampleSampleOneResultTbList);
+        bioSampleTestOneResultTbMapper.insertBatch(bioSampleSampleOneResultTbList);
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
         cerSampleTestTbMapper.updateBatchById(updateList);
         cerSampleApplyTbMapper.updateById(cerSampleApplyTb);
@@ -595,10 +592,10 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
 
         //删除旧数据
-        bioSampleSampleTwoResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
+        bioSampleTestTwoResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
         List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
         Map<String, CerSampleTestTb> stringCerSampleTestTbMap = cerSampleTestTbList.stream().collect(Collectors.toMap(CerSampleTestTb::getSampleCode, cerSampleTestTb -> cerSampleTestTb));
-        List<BioSampleSampleTwoResultTb> bioSampleSampleTwoResultTbList = new ArrayList<>();
+        List<BioSampleTestTwoResultTb> bioSampleSampleTwoResultTbList = new ArrayList<>();
         List<CerSampleTestTb> updateCerSampleTestTbList = new ArrayList<>();
 
         //组装BioSampleSampleTwoResultTb数据
@@ -607,7 +604,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             if (cerSampleTestTb == null) {
                 continue;
             }
-            BioSampleSampleTwoResultTb bioSampleSampleTwoResultTb = new BioSampleSampleTwoResultTb();
+            BioSampleTestTwoResultTb bioSampleSampleTwoResultTb = new BioSampleTestTwoResultTb();
             bioSampleSampleTwoResultTb.setApplyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
             bioSampleSampleTwoResultTb.setUploadNum(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
             bioSampleSampleTwoResultTb.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
@@ -618,19 +615,21 @@ public class SampleTestServiceImpl implements SampleTestService {
             bioSampleSampleTwoResultTbList.add(bioSampleSampleTwoResultTb);
             //更新检测人（检测标志）
             updateCerSampleTestTbList.add(CerSampleTestTb.builder().id(cerSampleTestTb.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
-
-            bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(bioTaskDtlTb.getTaskNum(), bioSampleSampleTwoResultTb.getSampleCode());
         }
 
         //更新检测结果
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultTbList)) {
             //异步同步结果
-            List<BioSampleSampleTwoResultDetailTb> cerSampleTestBioInfoResultTbList = synSampleTestResultService.synBioResult(bioSampleSampleTwoResultTbList);
+            List<BioSampleTestTwoResultDetailTb> bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(bioSampleSampleTwoResultTbList);
 
-            bioSampleSampleTwoResultTbMapper.insertBatch(bioSampleSampleTwoResultTbList);
+            bioSampleTestTwoResultTbMapper.insertBatch(bioSampleSampleTwoResultTbList);
             cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
-            if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
-                bioSampleSampleTwoResultDetailTbMapper.insertBatch(cerSampleTestBioInfoResultTbList);
+            if (CollectionUtil.isNotEmpty(bioSampleTwoResultDetailTbList)) {
+
+                bioSampleTwoResultDetailTbList.forEach(bioSampleSampleTwoResultDetailTb -> {
+                    bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCodeAndUniqueDbCode(bioSampleSampleTwoResultDetailTb.getApplyNo(),bioSampleSampleTwoResultDetailTb.getSampleCode(),bioSampleSampleTwoResultDetailTb.getUniqueDbCode());
+                });
+                bioSampleSampleTwoResultDetailTbMapper.insertBatch(bioSampleTwoResultDetailTbList);
             }
 
         }
@@ -647,7 +646,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         if (cerSampleTestTb == null) {
             throw new BusinessException("参数错误，找不到此取样信息：" + id);
         }
-        List<BioSampleSampleTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
+        List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
         return BeanUtils.copyListProperties(bioSampleSampleTwoResultDetailTbList, QueryBioInfoSampleTestResultRspDTO.class);
     }
 
@@ -660,7 +659,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
             throw new BusinessException("非执行中任务，无法进行操作");
         }
-        List<BioSampleSampleTwoResultDetailTb> cerSampleTestBioInfoResultTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
+        List<BioSampleTestTwoResultDetailTb> cerSampleTestBioInfoResultTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
         cerSampleTestBioInfoResultTbList.forEach(cerSampleTestBioInfoResultTb -> {
             if (!bioInfoSampleTestResultConfirmReqDTO.getBioInfoIdList().contains(cerSampleTestBioInfoResultTb.getId())) {
                 bioSampleSampleTwoResultDetailTbMapper.deleteById(cerSampleTestBioInfoResultTb.getId());
@@ -673,19 +672,18 @@ public class SampleTestServiceImpl implements SampleTestService {
     @Transactional(rollbackFor = Exception.class)
     public void synBioInfoSampleTestResult(Integer id) {
         CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectById(id);
-        List<BioSampleSampleTwoResultTb> bioSampleSampleTwoResultTbList = bioSampleSampleTwoResultTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
+        List<BioSampleTestTwoResultTb> bioSampleSampleTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
         if (CollectionUtil.isEmpty(bioSampleSampleTwoResultTbList)) {
             throw new BusinessException("excel没匹配到该生信检测数据");
         }
-        bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
-        List<BioSampleSampleTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(Arrays.asList(bioSampleSampleTwoResultTbList.get(0)));
+        List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(Arrays.asList(bioSampleSampleTwoResultTbList.get(0)));
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbList)) {
-            for (BioSampleSampleTwoResultDetailTb cerSampleTestBioInfoResultTb : bioSampleSampleTwoResultDetailTbList) {
+            for (BioSampleTestTwoResultDetailTb cerSampleTestBioInfoResultTb : bioSampleSampleTwoResultDetailTbList) {
                 bioSampleSampleTwoResultDetailTbMapper.insert(cerSampleTestBioInfoResultTb);
             }
         }
         //更新结果状态
-        bioSampleSampleTwoResultTbMapper.updateById(bioSampleSampleTwoResultTbList.get(0));
+        bioSampleTestTwoResultTbMapper.updateById(bioSampleSampleTwoResultTbList.get(0));
 
     }
 
@@ -756,9 +754,9 @@ public class SampleTestServiceImpl implements SampleTestService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteNgsResult(String uniqueDbCode) {
-        List<BioSampleSampleTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByUniqueDbCode(uniqueDbCode);
+        List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByUniqueDbCode(uniqueDbCode);
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbList)) {
-            Map<String, List<BioSampleSampleTwoResultDetailTb>> bioSampleSampleTwoResultDetailTbListMap = bioSampleSampleTwoResultDetailTbList.stream().collect(Collectors.groupingBy(bioSampleSampleTwoResultDetailTb -> bioSampleSampleTwoResultDetailTb.getApplyNo() + "|" + bioSampleSampleTwoResultDetailTb.getSampleCode()));
+            Map<String, List<BioSampleTestTwoResultDetailTb>> bioSampleSampleTwoResultDetailTbListMap = bioSampleSampleTwoResultDetailTbList.stream().collect(Collectors.groupingBy(bioSampleSampleTwoResultDetailTb -> bioSampleSampleTwoResultDetailTb.getApplyNo() + "|" + bioSampleSampleTwoResultDetailTb.getSampleCode()));
             bioSampleSampleTwoResultDetailTbListMap.forEach((applyAndSampleCode, bioSampleSampleTwoResultDetailTbs) -> {
                 String applyNo = applyAndSampleCode.split("\\|")[0];
                 String sampleCode = applyAndSampleCode.split("\\|")[1];
@@ -771,7 +769,7 @@ public class SampleTestServiceImpl implements SampleTestService {
                 }
             });
             //删除所有
-            bioSampleSampleTwoResultDetailTbMapper.deleteByIdIn(bioSampleSampleTwoResultDetailTbList.stream().map(BioSampleSampleTwoResultDetailTb::getId).collect(Collectors.toList()));
+            bioSampleSampleTwoResultDetailTbMapper.deleteByIdIn(bioSampleSampleTwoResultDetailTbList.stream().map(BioSampleTestTwoResultDetailTb::getId).collect(Collectors.toList()));
             //重新更新检测结果
             bioSampleSampleTwoResultDetailTbListMap.keySet().forEach(applyAndSampleCode -> {
                 String applyNo = applyAndSampleCode.split("\\|")[0];

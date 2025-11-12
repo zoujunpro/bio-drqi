@@ -10,20 +10,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
  * 一代测序结果
  *
- * @TableName bio_sample_sample_one_result_tb
+ * @TableName bio_sample_test_one_result_tb
  */
-@TableName(value = "bio_sample_sample_one_result_tb")
+@TableName(value = "bio_sample_test_one_result_tb")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BioSampleSampleOneResultTb implements Serializable {
+public class BioSampleTestOneResultTb implements Serializable {
     /**
      * 主键ID
      */
@@ -139,8 +138,8 @@ public class BioSampleSampleOneResultTb implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
-    public static BioSampleSampleOneResultTb of(CerSampleTestTb cerSampleTestTb, String channel, String taskNum, String uploadNum) {
-        BioSampleSampleOneResultTb bioSampleSampleOneResultTb = new BioSampleSampleOneResultTb();
+    public static BioSampleTestOneResultTb of(CerSampleTestTb cerSampleTestTb, String channel, String taskNum, String uploadNum) {
+        BioSampleTestOneResultTb bioSampleSampleOneResultTb = new BioSampleTestOneResultTb();
         bioSampleSampleOneResultTb.setSampleCode(cerSampleTestTb.getSampleCode());
         bioSampleSampleOneResultTb.setTestIdentifyPrimer(cerSampleTestTb.getTestIdentifyPrimer());
         bioSampleSampleOneResultTb.setTestMethod(cerSampleTestTb.getTestMethod());

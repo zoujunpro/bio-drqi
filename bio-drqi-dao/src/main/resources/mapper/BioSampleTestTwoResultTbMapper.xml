@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bio.drqi.mapper.BioSampleSampleTwoResultTbMapper">
+<mapper namespace="com.bio.drqi.mapper.BioSampleTestTwoResultTbMapper">
 
-    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioSampleSampleTwoResultTb">
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioSampleTestTwoResultTb">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
         <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
@@ -25,21 +25,21 @@
     </sql>
     <delete id="deleteByApplyNo">
         delete
-        from bio_sample_sample_two_result_tb
+        from bio_sample_test_two_result_tb
         where apply_no = #{applyNo,jdbcType=VARCHAR}
     </delete>
     <select id="selectOneByApplyNoAndSampleCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from bio_sample_sample_two_result_tb
+        from bio_sample_test_two_result_tb
         where
         apply_no = #{applyNo,jdbcType=VARCHAR}
         AND sample_code = #{sampleCode,jdbcType=VARCHAR}
     </select>
-    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BioSampleSampleTwoResultTb">
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BioSampleTestTwoResultTb">
         select
         <include refid="Base_Column_List"/>
-        from bio_sample_sample_two_result_tb
+        from bio_sample_test_two_result_tb
         <where>
             <if test="applyNo != null and applyNo!=''">and apply_no=#{applyNo,jdbcType=VARCHAR}</if>
             <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
@@ -53,7 +53,7 @@
         order by id desc
     </select>
     <insert id="insertBatch">
-        insert into bio_sample_sample_two_result_tb(id,apply_no,sample_code,
+        insert into bio_sample_test_two_result_tb(id,apply_no,sample_code,
         sample_id,run_id,create_time,
         upload_num,test_channel,syn_result,
         fail_message)
@@ -67,13 +67,13 @@
     </insert>
     <delete id="deleteByUploadNum">
         delete
-        from bio_sample_sample_two_result_tb
+        from bio_sample_test_two_result_tb
         where upload_num = #{uploadNum,jdbcType=VARCHAR}
     </delete>
     <select id="selectAllByApplyNoAndSampleCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from bio_sample_sample_two_result_tb
+        from bio_sample_test_two_result_tb
         where
         apply_no = #{applyNo,jdbcType=VARCHAR}
         AND sample_code = #{sampleCode,jdbcType=VARCHAR}
@@ -82,7 +82,7 @@
     <select id="selectAllByUploadNum" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from bio_sample_sample_two_result_tb
+        from bio_sample_test_two_result_tb
         where
         upload_num = #{uploadNum,jdbcType=VARCHAR}
     </select>

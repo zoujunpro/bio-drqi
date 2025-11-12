@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bio.drqi.mapper.BioSampleSampleTwoResultDetailTbMapper">
+<mapper namespace="com.bio.drqi.mapper.BioSampleTestTwoResultDetailTbMapper">
 
-    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioSampleSampleTwoResultDetailTb">
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioSampleTestTwoResultDetailTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
             <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
@@ -27,16 +27,10 @@
         mutate,ratio,create_time,
         confirm_status,result_key,match_flag
     </sql>
-    <delete id="deleteByApplyNoAndSampleCode">
-        delete
-        from bio_sample_sample_two_result_detail_tb
-        where apply_no = #{applyNo,jdbcType=VARCHAR}
-          AND sample_code = #{sampleCode,jdbcType=VARCHAR}
-    </delete>
     <select id="selectAllByIdIn" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from bio_sample_sample_two_result_detail_tb
+        from bio_sample_test_two_result_detail_tb
         where
         id in
         <foreach collection="idList" item="item" open="(" close=")" separator=",">
@@ -46,13 +40,13 @@
     <select id="selectAllByApplyNoAndSampleCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from bio_sample_sample_two_result_detail_tb
+        from bio_sample_test_two_result_detail_tb
         where
         apply_no = #{applyNo,jdbcType=VARCHAR}
         AND sample_code = #{sampleCode,jdbcType=VARCHAR}
     </select>
     <insert id="insertBatch">
-        insert into bio_sample_sample_two_result_detail_tb(id,apply_no,sample_code,
+        insert into bio_sample_test_two_result_detail_tb(id,apply_no,sample_code,
         sample_id,unique_db_code,run_id,
         hap_id,var_type,mutate,
         ratio,create_time,confirm_status,
@@ -69,7 +63,7 @@
     <select id="selectAllBySampleCodeIn" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from bio_sample_sample_two_result_detail_tb
+        from bio_sample_test_two_result_detail_tb
         where
         sample_code in
         <foreach collection="sampleCodeList" item="item" open="(" close=")" separator=",">
@@ -79,7 +73,7 @@
     <select id="selectAllByUniqueDbCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from bio_sample_sample_two_result_detail_tb
+        from bio_sample_test_two_result_detail_tb
         where
         unique_db_code = #{uniqueDbCode,jdbcType=VARCHAR}
     </select>
@@ -91,4 +85,12 @@
             #{item,jdbcType=NUMERIC}
         </foreach>
     </delete>
+    <delete id="deleteByApplyNoAndSampleCodeAndUniqueDbCode">
+        delete
+        from bio_sample_test_two_result_detail_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+          AND sample_code = #{sampleCode,jdbcType=VARCHAR}
+          AND unique_db_code = #{uniqueDbCode,jdbcType=VARCHAR}
+    </delete>
+
 </mapper>

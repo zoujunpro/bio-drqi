@@ -1,9 +1,9 @@
 package com.bio.drqi.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.bio.drqi.domain.BioSampleSampleTwoResultTb;
+import com.bio.drqi.domain.BioSampleTestTwoResultTb;
 import com.bio.drqi.service.BioSampleSampleTwoResultTbService;
-import com.bio.drqi.mapper.BioSampleSampleTwoResultTbMapper;
+import com.bio.drqi.mapper.BioSampleTestTwoResultTbMapper;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2025-10-30 09:22:06
 */
 @Service
-public class BioSampleSampleTwoResultTbServiceImpl extends ServiceImpl<BioSampleSampleTwoResultTbMapper, BioSampleSampleTwoResultTb>
+public class BioSampleSampleTwoResultTbServiceImpl extends ServiceImpl<BioSampleTestTwoResultTbMapper, BioSampleTestTwoResultTb>
     implements BioSampleSampleTwoResultTbService{
 
 }

@@ -11,11 +11,11 @@ import java.util.Date;
 
 /**
  * 
- * @TableName bio_sample_sample_two_result_tb
+ * @TableName bio_sample_test_two_result_tb
  */
-@TableName(value ="bio_sample_sample_two_result_tb")
+@TableName(value ="bio_sample_test_two_result_tb")
 @Data
-public class BioSampleSampleTwoResultTb implements Serializable {
+public class BioSampleTestTwoResultTb implements Serializable {
     /**
      * 主键ID
      */

@@ -3,8 +3,8 @@ package com.bio.drqi.manage.service.common;
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.contents.BioDrQiContents;
-import com.bio.drqi.domain.BioSampleSampleTwoResultDetailTb;
-import com.bio.drqi.domain.BioSampleSampleTwoResultTb;
+import com.bio.drqi.domain.BioSampleTestTwoResultDetailTb;
+import com.bio.drqi.domain.BioSampleTestTwoResultTb;
 import com.bio.drqi.external.client.BioInfoClientApi;
 import com.bio.drqi.external.dto.BioResult;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +28,10 @@ public class SynSampleTestResultService {
     @Resource
     private BioInfoClientApi bioInfoClientApi;
 
-    public List<BioSampleSampleTwoResultDetailTb> synBioResult(List<BioSampleSampleTwoResultTb> bioSampleSampleTwoResultTbList) {
-        List<BioSampleSampleTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = new ArrayList<>();
+    public List<BioSampleTestTwoResultDetailTb> synBioResult(List<BioSampleTestTwoResultTb> bioSampleSampleTwoResultTbList) {
+        List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = new ArrayList<>();
         AtomicInteger executeNum = new AtomicInteger(0);
-        for (BioSampleSampleTwoResultTb bioSampleSampleTwoResultTb : bioSampleSampleTwoResultTbList) {
+        for (BioSampleTestTwoResultTb bioSampleSampleTwoResultTb : bioSampleSampleTwoResultTbList) {
             while (threadPool.getPoolSize() > 1000) {
                 try {
                     Thread.sleep(1000);
@@ -39,10 +39,10 @@ public class SynSampleTestResultService {
                 }
             }
 
-            Future<List<BioSampleSampleTwoResultDetailTb>> future = threadPool.submit(() -> {
+            Future<List<BioSampleTestTwoResultDetailTb>> future = threadPool.submit(() -> {
                 return synBioInfoResult(executeNum, bioSampleSampleTwoResultTb);
             });
-            List<BioSampleSampleTwoResultDetailTb> currentBioSampleSampleTwoResultDetailTbList = null;
+            List<BioSampleTestTwoResultDetailTb> currentBioSampleSampleTwoResultDetailTbList = null;
             try {
                 currentBioSampleSampleTwoResultDetailTbList = future.get();
             } catch (Exception e) {
@@ -57,9 +57,9 @@ public class SynSampleTestResultService {
         return bioSampleSampleTwoResultDetailTbList;
     }
 
-    private List<BioSampleSampleTwoResultDetailTb> synBioInfoResult(AtomicInteger executeNum, BioSampleSampleTwoResultTb bioSampleSampleTwoResultTb) {
+    private List<BioSampleTestTwoResultDetailTb> synBioInfoResult(AtomicInteger executeNum, BioSampleTestTwoResultTb bioSampleSampleTwoResultTb) {
         log.info("获取生信检测结果 当前处理第{}数据 sampleCode={}", executeNum.get(), bioSampleSampleTwoResultTb.getSampleCode());
-        List<BioSampleSampleTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = new ArrayList<>();
+        List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = new ArrayList<>();
         if (StringUtils.isEmpty(bioSampleSampleTwoResultTb.getSampleId()) || StringUtils.isEmpty(bioSampleSampleTwoResultTb.getRunId())) {
             return null;
         }
@@ -69,7 +69,7 @@ public class SynSampleTestResultService {
         BioResult<List<Map<String, String>>> bioInfoResultRspDTOBioResult = bioInfoClientApi.sampleTestBioInfoResult(paramMap);
         if(bioInfoResultRspDTOBioResult.isSuccess()){
             for (Map<String, String> map : bioInfoResultRspDTOBioResult.getData()) {
-                BioSampleSampleTwoResultDetailTb bioSampleSampleTwoResultDetailTb = new BioSampleSampleTwoResultDetailTb();
+                BioSampleTestTwoResultDetailTb bioSampleSampleTwoResultDetailTb = new BioSampleTestTwoResultDetailTb();
                 bioSampleSampleTwoResultDetailTb.setApplyNo(bioSampleSampleTwoResultTb.getApplyNo());
                 bioSampleSampleTwoResultDetailTb.setSampleCode(bioSampleSampleTwoResultTb.getSampleCode());
                 bioSampleSampleTwoResultDetailTb.setSampleId(map.get("sampleID"));

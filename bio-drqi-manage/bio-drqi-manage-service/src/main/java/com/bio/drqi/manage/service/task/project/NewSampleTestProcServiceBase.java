@@ -55,10 +55,10 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     private CerSampleLayoutTbMapper cerSampleLayoutTbMapper;
 
     @Resource
-    private BioSampleSampleTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
+    private BioSampleTestTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
 
     @Resource
-    private BioSampleSampleTwoResultTbMapper bioSampleSampleTwoResultTbMapper;
+    private BioSampleTestTwoResultTbMapper bioSampleTestTwoResultTbMapper;
 
     @Resource
     private CerPlantDtlTbMapper cerPlantDtlTbMapper;
@@ -67,7 +67,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     private CerConversionAndTransRefMapper cerConversionAndTransRefMapper;
 
     @Resource
-    private BioSampleSampleOneResultTbMapper bioSampleSampleOneResultTbMapper;
+    private BioSampleTestOneResultTbMapper bioSampleTestOneResultTbMapper;
 
 
     @Override
@@ -199,16 +199,16 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         cerSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
-        List<BioSampleSampleTwoResultTb> bioSampleSampleTwoResultTbList = bioSampleSampleTwoResultTbMapper.selectAllByUploadNum(bioTaskDtlTb.getTaskNum());
+        List<BioSampleTestTwoResultTb> bioSampleSampleTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByUploadNum(bioTaskDtlTb.getTaskNum());
         if(CollectionUtil.isNotEmpty(bioSampleSampleTwoResultTbList)){
-            bioSampleSampleTwoResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
+            bioSampleTestTwoResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
             bioSampleSampleTwoResultTbList.forEach(bioSampleSampleTwoResultTb->{
                 bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(bioSampleSampleTwoResultTb.getApplyNo(),bioSampleSampleTwoResultTb.getSampleCode());
             });
         }
 
         cerPlantDtlTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
-        bioSampleSampleOneResultTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
+        bioSampleTestOneResultTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.cer_plant.name());
         cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.sample_and_test.name());
 

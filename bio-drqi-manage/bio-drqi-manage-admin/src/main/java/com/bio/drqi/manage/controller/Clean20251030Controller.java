@@ -1,28 +1,19 @@
 package com.bio.drqi.manage.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
-import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
-import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
-import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SampleApplyTypeEnum;
 import com.bio.drqi.enums.VectorTaskStatusEnum;
 import com.bio.drqi.manage.dto.project.*;
-import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
-import com.bio.drqi.manage.sample.rsp.SampleTestListDetailRspDTO;
 import com.bio.drqi.mapper.*;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -147,7 +138,7 @@ public class Clean20251030Controller {
     private CerSampleApplyTbMapper cerSampleApplyTbMapper;
 
     @Resource
-    private BioSampleSampleTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
+    private BioSampleTestTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
 
 
 

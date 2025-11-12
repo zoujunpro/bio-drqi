@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bio.drqi.mapper.BioSampleSampleOneResultTbMapper">
+<mapper namespace="com.bio.drqi.mapper.BioSampleTestOneResultTbMapper">
 
-    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioSampleSampleOneResultTb">
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioSampleTestOneResultTb">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
         <result property="testIdentifyPrimer" column="test_identify_primer" jdbcType="VARCHAR"/>
@@ -41,7 +41,7 @@
         upload_num,test_org_result
     </sql>
     <insert id="insertBatch">
-        insert into bio_sample_sample_one_result_tb(id,sample_code,test_identify_primer,
+        insert into bio_sample_test_one_result_tb(id,sample_code,test_identify_primer,
         test_method,test_edit_type,test_no_trans_identity_primer,
         test_is_gene_modify_positive,test_if_fixed_point,test_if_copy_insert,
         test_fixed_point_type,test_donor_residue_info,test_insertion_site,
@@ -63,14 +63,14 @@
     </insert>
     <delete id="deleteByTaskNum">
         delete
-        from bio_sample_sample_one_result_tb
+        from bio_sample_test_one_result_tb
         where task_num = #{taskNum,jdbcType=VARCHAR}
     </delete>
     <select id="selectSelective" resultMap="BaseResultMap"
-            parameterType="com.bio.drqi.domain.BioSampleSampleOneResultTb">
+            parameterType="com.bio.drqi.domain.BioSampleTestOneResultTb">
         select
         <include refid="Base_Column_List"/>
-        from bio_sample_sample_one_result_tb
+        from bio_sample_test_one_result_tb
         <where>
             <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
             <if test="testIdentifyPrimer != null">and test_identify_primer=#{testIdentifyPrimer,jdbcType=VARCHAR}</if>

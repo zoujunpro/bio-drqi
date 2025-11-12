@@ -1,6 +1,6 @@
 package com.bio.drqi.service;
 
-import com.bio.drqi.domain.BioSampleSampleTwoResultTb;
+import com.bio.drqi.domain.BioSampleTestTwoResultTb;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -8,6 +8,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @description 针对表【bio_sample_sample_two_result_tb】的数据库操作Service
 * @createDate 2025-10-30 09:22:06
 */
-public interface BioSampleSampleTwoResultTbService extends IService<BioSampleSampleTwoResultTb> {
+public interface BioSampleSampleTwoResultTbService extends IService<BioSampleTestTwoResultTb> {
 
 }

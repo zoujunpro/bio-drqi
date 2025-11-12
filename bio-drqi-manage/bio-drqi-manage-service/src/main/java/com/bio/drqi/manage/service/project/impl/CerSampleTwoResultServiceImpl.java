@@ -47,7 +47,6 @@ public class CerSampleTwoResultServiceImpl implements CerSampleTwoResultService 
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
 
-
     @Override
     public PageInfo<CerSampleTwoResultListPageRspDTO> listPage(CerSampleTwoResultListPageReqDTO cerSampleTwoResultListPageReqDTO) {
         PageHelper.startPage(cerSampleTwoResultListPageReqDTO.getPageNum(), cerSampleTwoResultListPageReqDTO.getPageSize());
@@ -84,7 +83,7 @@ public class CerSampleTwoResultServiceImpl implements CerSampleTwoResultService 
         List<BioSampleTestTwoResultDetailTb> bioSampleTestTwoResultDetailTbList = synSampleTestResultService.synBioResult(Arrays.asList(bioSampleTestTwoResultTb));
         if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultDetailTbList)) {
             for (BioSampleTestTwoResultDetailTb bioSampleTestTwoResultDetailTb : bioSampleTestTwoResultDetailTbList) {
-                bioSampleTestTwoResultDetailTbMapper.deleteByApplyNoAndSampleCodeAndUniqueDbCode(bioSampleTestTwoResultDetailTb.getApplyNo(), bioSampleTestTwoResultDetailTb.getSampleCode(),bioSampleTestTwoResultDetailTb.getUniqueDbCode());
+                bioSampleTestTwoResultDetailTbMapper.deleteByApplyNoAndSampleCodeAndUniqueDbCode(bioSampleTestTwoResultDetailTb.getApplyNo(), bioSampleTestTwoResultDetailTb.getSampleCode(), bioSampleTestTwoResultDetailTb.getUniqueDbCode());
                 bioSampleTestTwoResultDetailTbMapper.insert(bioSampleTestTwoResultDetailTb);
             }
         }
@@ -97,6 +96,10 @@ public class CerSampleTwoResultServiceImpl implements CerSampleTwoResultService 
     @Transactional(rollbackFor = Exception.class)
     public void deleteNgsResult(String uniqueDbCode) {
         List<BioSampleTestTwoResultDetailTb> bioSampleTestTwoResultDetailTbList = bioSampleTestTwoResultDetailTbMapper.selectAllByUniqueDbCode(uniqueDbCode);
+        //删除所有
+        bioSampleTestTwoResultDetailTbMapper.deleteByIdIn(bioSampleTestTwoResultDetailTbList.stream().map(BioSampleTestTwoResultDetailTb::getId).collect(Collectors.toList()));
+
+
         if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultDetailTbList)) {
             Map<String, List<BioSampleTestTwoResultDetailTb>> bioSampleSampleTwoResultDetailTbListMap = bioSampleTestTwoResultDetailTbList.stream().collect(Collectors.groupingBy(bioSampleSampleTwoResultDetailTb -> bioSampleSampleTwoResultDetailTb.getApplyNo() + "|" + bioSampleSampleTwoResultDetailTb.getSampleCode()));
             bioSampleSampleTwoResultDetailTbListMap.forEach((applyAndSampleCode, bioSampleSampleTwoResultDetailTbs) -> {
@@ -109,13 +112,6 @@ public class CerSampleTwoResultServiceImpl implements CerSampleTwoResultService 
                 if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskNum())) {
                     throw new BusinessException("齐博士业务流程不允许删除，该NGS结果所对应的取样编号：" + sampleCode + "所在的申请工单：" + applyNo + "流程已经完成，无法删除");
                 }
-            });
-            //删除所有
-            bioSampleTestTwoResultDetailTbMapper.deleteByIdIn(bioSampleTestTwoResultDetailTbList.stream().map(BioSampleTestTwoResultDetailTb::getId).collect(Collectors.toList()));
-            //重新更新检测结果
-            bioSampleSampleTwoResultDetailTbListMap.keySet().forEach(applyAndSampleCode -> {
-                String applyNo = applyAndSampleCode.split("\\|")[0];
-                String sampleCode = applyAndSampleCode.split("\\|")[1];
                 if (CollectionUtil.isEmpty(bioSampleTestTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(applyNo, sampleCode))) {
                     CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByApplyNoAndSampleCode(applyNo, sampleCode);
                     if (cerSampleTestTb == null) {
@@ -123,8 +119,8 @@ public class CerSampleTwoResultServiceImpl implements CerSampleTwoResultService 
                     }
                     cerSampleTestTbMapper.updateTestUserIdAndTestUserName(null, null);
                 }
-            });
 
+            });
         }
 
     }

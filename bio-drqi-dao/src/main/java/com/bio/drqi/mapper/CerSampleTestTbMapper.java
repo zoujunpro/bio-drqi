@@ -92,7 +92,7 @@ public interface CerSampleTestTbMapper extends BaseMapper<CerSampleTestTb> {
     int selectTowTestResultCount(@Param("applyNo") String applyNo);
 
 
-    int updateTestUserIdAndTestUserName(@Param("testUserId") Integer testUserId, @Param("testUserName") String testUserName);
+    int updateTestUserIdAndTestUserNameById(@Param("testUserId") Integer testUserId, @Param("testUserName") String testUserName, @Param("id") Integer id);
 }
 
 

@@ -115,7 +115,7 @@ public class CerSampleTwoResultServiceImpl implements CerSampleTwoResultService 
                     if (cerSampleTestTb == null) {
                         throw new BusinessException("齐博士数据异常，请联系相关人员，错误原因，找不到申请工单下" + applyNo + "的取样编号" + sampleCode);
                     }
-                    cerSampleTestTbMapper.updateTestUserIdAndTestUserName(null, null);
+                    cerSampleTestTbMapper.updateTestUserIdAndTestUserNameById(null, null,cerSampleTestTb.getId());
                 }
 
             });

@@ -505,10 +505,11 @@
               where apply_no = #{applyNo,jdbcType=VARCHAR}) b
              on a.apply_no = b.apply_no and a.sample_code = b.sample_code
     </select>
-    <update id="updateTestUserIdAndTestUserName">
+    <update id="updateTestUserIdAndTestUserNameById">
         update cer_sample_test_tb
         set test_user_id   = #{testUserId,jdbcType=NUMERIC},
             test_user_name = #{testUserName,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=NUMERIC}
     </update>
 
 </mapper>

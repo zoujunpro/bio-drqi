@@ -155,7 +155,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
             if (CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)) {
                 throw new BusinessException("excel中二代测序结果读取为空");
             }
-            if (sampleTestBioInfoExcelDTOList.stream().map(SampleTestBioInfoExcelDTO::getSampleCode).collect(Collectors.toList()).size() == sampleTestBioInfoExcelDTOList.size()) {
+            if (sampleTestBioInfoExcelDTOList.stream().map(SampleTestBioInfoExcelDTO::getSampleCode).collect(Collectors.toList()).size() != sampleTestBioInfoExcelDTOList.size()) {
                 throw new BusinessException("数据文件中有重复的取样编号");
             }
             sampleTestBioInfoExcelDTOList = sampleTestBioInfoExcelDTOList.stream().filter(sampleTestBioInfoExcelDTO -> StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getSampleId()) && StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getRunId())).collect(Collectors.toList());

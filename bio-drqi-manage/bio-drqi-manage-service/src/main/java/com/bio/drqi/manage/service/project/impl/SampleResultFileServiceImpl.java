@@ -11,6 +11,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.contents.BioDrQiContents;
+import com.bio.drqi.common.enums.CheckResultEnum;
 import com.bio.drqi.common.enums.TestChannelEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SampleResultFileTypeENum;
@@ -134,6 +135,9 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 cerSampleTestResultFileTb.setEffectiveNum(cerSampleTestResultFileTb.getEffectiveNum()==null?1:cerSampleTestResultFileTb.getEffectiveNum()+1);
             }
 
+            if(CollectionUtil.isEmpty(updateCerSampleTestTbList)){
+                throw new BusinessException("根据取样编号为匹配到数据");
+            }
             cerSampleTestResultFileTb.setTotalNum(testExcelDTOList.size());
             //更新检测结果到检测表
             bioSampleSampleOneResultTbMapper.insertBatch(bioSampleSampleOneResultTbList);
@@ -158,7 +162,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                     log.info("取样不存在项目管理系统：" + sampleTestBioInfoExcelDTO.getSampleCode());
                     continue;
                 }
-                cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isEmpty(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
+                cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> CheckResultEnum.noCheck.name().equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                     log.info("取样已经审批完成：" + sampleTestBioInfoExcelDTO.getSampleCode());
                     continue;
@@ -187,7 +191,9 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 cerSampleTestResultFileTb.setEffectiveNum(cerSampleTestResultFileTb.getEffectiveNum()==null?1:cerSampleTestResultFileTb.getEffectiveNum()+1);
             }
 
-
+            if(CollectionUtil.isEmpty(bioSampleTwoResultTbList)){
+                throw new BusinessException("根据取样编号为匹配到数据");
+            }
             //异步同步结果 这个需要放到前面调用
             List<BioSampleSampleTwoResultDetailTb> bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(bioSampleTwoResultTbList);
 

@@ -43,11 +43,6 @@
             #{item,jdbcType=NUMERIC}
         </foreach>
     </select>
-    <delete id="deleteByApplyNo">
-        delete
-        from bio_sample_sample_two_result_detail_tb
-        where apply_no = #{applyNo,jdbcType=VARCHAR}
-    </delete>
     <select id="selectAllByApplyNoAndSampleCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

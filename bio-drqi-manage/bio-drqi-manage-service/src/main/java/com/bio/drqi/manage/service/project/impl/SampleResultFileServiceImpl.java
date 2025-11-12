@@ -155,6 +155,9 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
             if (CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)) {
                 throw new BusinessException("excel中二代测序结果读取为空");
             }
+            if(sampleTestBioInfoExcelDTOList.stream().map(SampleTestBioInfoExcelDTO::getSampleCode).collect(Collectors.toList()).size()==sampleTestBioInfoExcelDTOList.size()){
+                throw  new BusinessException("数据文件中有重复的取样编号");
+            }
             sampleTestBioInfoExcelDTOList = sampleTestBioInfoExcelDTOList.stream().filter(sampleTestBioInfoExcelDTO -> StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getSampleId()) && StringUtils.isNotEmpty(sampleTestBioInfoExcelDTO.getRunId())).collect(Collectors.toList());
             for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
@@ -171,12 +174,8 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 //第一个取样一定更新
                 CerSampleTestTb firstCerSampleTestTb = cerSampleTestTbList.get(0);
                 updateCerSampleTestTbList.add(CerSampleTestTb.builder().id(firstCerSampleTestTb.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getUserName()).build());
-                //清空旧数据，如果有
-                BioSampleSampleTwoResultTb bioSampleSampleTwoResultTb = bioSampleSampleTwoResultTbMapper.selectOneByApplyNoAndSampleCode(firstCerSampleTestTb.getApplyNo(), firstCerSampleTestTb.getSampleCode());
-                if (bioSampleSampleTwoResultTb != null) {
-                    bioSampleSampleTwoResultTbMapper.deleteById(bioSampleSampleTwoResultTb.getId());
-                    bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(firstCerSampleTestTb.getApplyNo(), firstCerSampleTestTb.getSampleCode());
-                }
+                //清空同步结果的旧数据（不能清空上传的原始数据）
+                bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(firstCerSampleTestTb.getApplyNo(), firstCerSampleTestTb.getSampleCode());
                 bioSampleTwoResultTbList.add(buildBioSampleSampleTwoResultTb(sampleTestBioInfoExcelDTO, firstCerSampleTestTb, cerSampleTestResultFileTb.getUploadNum()));
                 //剩下的，如果没有上传过结果，则补更新结果
                 for (int i = 1; i < cerSampleTestTbList.size(); i++) {

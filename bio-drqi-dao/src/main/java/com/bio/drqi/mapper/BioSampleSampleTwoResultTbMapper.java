@@ -16,11 +16,12 @@ import java.util.List;
 public interface BioSampleSampleTwoResultTbMapper extends BaseMapper<BioSampleSampleTwoResultTb> {
     int deleteByApplyNo(@Param("applyNo") String applyNo);
 
+    int deleteByUploadNum(@Param("uploadNum") String uploadNum);
+
     List<BioSampleSampleTwoResultTb> selectSelective(BioSampleSampleTwoResultTb bioSampleSampleTwoResultTb);
 
     int insertBatch(@Param("bioSampleSampleTwoResultTbCollection") Collection<BioSampleSampleTwoResultTb> bioSampleSampleTwoResultTbCollection);
-
-    BioSampleSampleTwoResultTb selectOneByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
+    List<BioSampleSampleTwoResultTb> selectAllByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
 }
 
 

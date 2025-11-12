@@ -589,9 +589,12 @@ public class SampleTestServiceImpl implements SampleTestService {
         if (CollectionUtil.isEmpty(sampleTestBioInfoExcelDTOList)) {
             throw new BusinessException("excel数据异常或者格式不对");
         }
-        //删除旧数据
-        bioSampleSampleTwoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+       if( sampleTestBioInfoExcelDTOList.stream().map(SampleTestBioInfoExcelDTO::getSampleCode).collect(Collectors.toList()).size()!=sampleTestBioInfoExcelDTOList.size()){
+           throw new BusinessException("excel中有重复取样编号");
+       }
 
+        //删除旧数据
+        bioSampleSampleTwoResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
         List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
         Map<String, CerSampleTestTb> stringCerSampleTestTbMap = cerSampleTestTbList.stream().collect(Collectors.toMap(CerSampleTestTb::getSampleCode, cerSampleTestTb -> cerSampleTestTb));
         List<BioSampleSampleTwoResultTb> bioSampleSampleTwoResultTbList = new ArrayList<>();
@@ -605,6 +608,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             }
             BioSampleSampleTwoResultTb bioSampleSampleTwoResultTb = new BioSampleSampleTwoResultTb();
             bioSampleSampleTwoResultTb.setApplyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
+            bioSampleSampleTwoResultTb.setUploadNum(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
             bioSampleSampleTwoResultTb.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
             bioSampleSampleTwoResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
             bioSampleSampleTwoResultTb.setRunId(sampleTestBioInfoExcelDTO.getRunId());
@@ -614,6 +618,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             //更新检测人（检测标志）
             updateCerSampleTestTbList.add(CerSampleTestTb.builder().id(cerSampleTestTb.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
 
+            bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(bioTaskDtlTb.getTaskNum(),bioSampleSampleTwoResultTb.getSampleCode());
         }
 
         //更新检测结果
@@ -624,7 +629,6 @@ public class SampleTestServiceImpl implements SampleTestService {
             bioSampleSampleTwoResultTbMapper.insertBatch(bioSampleSampleTwoResultTbList);
             cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
             if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
-                bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
                 bioSampleSampleTwoResultDetailTbMapper.insertBatch(cerSampleTestBioInfoResultTbList);
             }
 
@@ -668,19 +672,19 @@ public class SampleTestServiceImpl implements SampleTestService {
     @Transactional(rollbackFor = Exception.class)
     public void synBioInfoSampleTestResult(Integer id) {
         CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectById(id);
-        BioSampleSampleTwoResultTb bioSampleSampleTwoResultTb = bioSampleSampleTwoResultTbMapper.selectOneByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
-        if (bioSampleSampleTwoResultTb == null) {
+        List<BioSampleSampleTwoResultTb> bioSampleSampleTwoResultTbList = bioSampleSampleTwoResultTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
+        if (CollectionUtil.isEmpty(bioSampleSampleTwoResultTbList)) {
             throw new BusinessException("excel没匹配到该生信检测数据");
         }
         bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
-        List<BioSampleSampleTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(Arrays.asList(bioSampleSampleTwoResultTb));
+        List<BioSampleSampleTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(Arrays.asList(bioSampleSampleTwoResultTbList.get(0)));
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbList)) {
             for (BioSampleSampleTwoResultDetailTb cerSampleTestBioInfoResultTb : bioSampleSampleTwoResultDetailTbList) {
                 bioSampleSampleTwoResultDetailTbMapper.insert(cerSampleTestBioInfoResultTb);
             }
         }
         //更新结果状态
-        bioSampleSampleTwoResultTbMapper.updateById(bioSampleSampleTwoResultTb);
+        bioSampleSampleTwoResultTbMapper.updateById(bioSampleSampleTwoResultTbList.get(0));
 
     }
 

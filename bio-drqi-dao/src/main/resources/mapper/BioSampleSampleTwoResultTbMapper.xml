@@ -65,4 +65,19 @@
             #{item.failMessage,jdbcType=VARCHAR})
         </foreach>
     </insert>
+    <delete id="deleteByUploadNum">
+        delete
+        from bio_sample_sample_two_result_tb
+        where upload_num = #{uploadNum,jdbcType=VARCHAR}
+    </delete>
+    <select id="selectAllByApplyNoAndSampleCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_sample_two_result_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+        AND sample_code = #{sampleCode,jdbcType=VARCHAR}
+        order by id desc
+    </select>
+
 </mapper>

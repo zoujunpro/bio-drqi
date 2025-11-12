@@ -22,4 +22,6 @@ public interface CerSampleTwoResultService {
 
     void synOne(@RequestParam Integer id);
 
+
+    void deleteNgsResult(String uniqueDbCode);
 }

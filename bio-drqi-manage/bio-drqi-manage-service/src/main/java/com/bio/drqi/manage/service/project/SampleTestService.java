@@ -67,5 +67,4 @@ public interface SampleTestService {
 
     CountTestResultRspDTO countTestResult( String applyNo);
 
-    void deleteNgsResult(String uniqueDbCode);
 }

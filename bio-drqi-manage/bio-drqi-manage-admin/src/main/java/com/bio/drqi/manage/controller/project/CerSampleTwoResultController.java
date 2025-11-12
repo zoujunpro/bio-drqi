@@ -4,6 +4,7 @@ package com.bio.drqi.manage.controller.project;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.manage.sample.req.CerSampleOneResultListPageReqDTO;
 import com.bio.drqi.manage.sample.req.CerSampleTwoResultListPageReqDTO;
 import com.bio.drqi.manage.sample.rsp.CerSampleOneResultListPageRspDTO;
@@ -12,9 +13,11 @@ import com.bio.drqi.manage.sample.rsp.CerSampleTwoResultListPageRspDTO;
 import com.bio.drqi.manage.service.project.CerSampleOneResultService;
 import com.bio.drqi.manage.service.project.CerSampleTwoResultService;
 import com.github.pagehelper.PageInfo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -74,5 +77,13 @@ public class CerSampleTwoResultController {
     public ResponseResult<String> synOne(@RequestParam Integer id) {
         cerSampleTwoResultService.synOne(id);
     return ResponseResult.getSuccess("成功");
+    }
+
+    @GetMapping("deleteNgsResult")
+    @WebLog(desc = "取样检测-删除无效的NGS结果")
+    @RequestLog("取样检测-删除无效的NGS结果")
+    public ResponseResult<String> deleteNgsResult(@RequestParam @Validated @NotBlank(message = "参数缺失：uniqueDbCode") String uniqueDbCode){
+        cerSampleTwoResultService.deleteNgsResult(uniqueDbCode);
+        return ResponseResult.getSuccess("ok");
     }
 }

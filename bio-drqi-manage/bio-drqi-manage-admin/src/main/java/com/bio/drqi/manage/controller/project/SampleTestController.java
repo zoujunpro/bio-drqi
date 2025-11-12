@@ -343,11 +343,5 @@ public class SampleTestController {
     public ResponseResult<CountTestResultRspDTO> countTestResult(@RequestParam @Validated String applyNo) {
         return ResponseResult.getSuccess(sampleTestService.countTestResult(applyNo));
     }
-    @GetMapping("deleteNgsResult")
-    @WebLog(desc = "取样检测-删除无效的NGS结果")
-    @RequestLog("取样检测-删除无效的NGS结果")
-    public ResponseResult<String> deleteNgsResult(@RequestParam @Validated @NotBlank(message = "参数缺失：uniqueDbCode") String uniqueDbCode){
-        sampleTestService.deleteNgsResult(uniqueDbCode);
-        return ResponseResult.getSuccess("ok");
-    }
+
 }

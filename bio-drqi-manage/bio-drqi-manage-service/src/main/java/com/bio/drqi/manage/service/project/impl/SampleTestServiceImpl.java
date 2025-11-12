@@ -751,41 +751,6 @@ public class SampleTestServiceImpl implements SampleTestService {
         return countTestResultRspDTO;
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void deleteNgsResult(String uniqueDbCode) {
-        List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByUniqueDbCode(uniqueDbCode);
-        if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbList)) {
-            Map<String, List<BioSampleTestTwoResultDetailTb>> bioSampleSampleTwoResultDetailTbListMap = bioSampleSampleTwoResultDetailTbList.stream().collect(Collectors.groupingBy(bioSampleSampleTwoResultDetailTb -> bioSampleSampleTwoResultDetailTb.getApplyNo() + "|" + bioSampleSampleTwoResultDetailTb.getSampleCode()));
-            bioSampleSampleTwoResultDetailTbListMap.forEach((applyAndSampleCode, bioSampleSampleTwoResultDetailTbs) -> {
-                String applyNo = applyAndSampleCode.split("\\|")[0];
-                String sampleCode = applyAndSampleCode.split("\\|")[1];
-                BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(applyNo);
-                if (bioTaskDtlTb == null) {
-                    throw new BusinessException("齐博士数据异常，请联系相关人员，未找到该检测所对应的齐博士申请工单：" + applyNo);
-                }
-                if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskNum())) {
-                    throw new BusinessException("齐博士业务流程不允许删除，该NGS结果所对应的取样编号：" + sampleCode + "所在的申请工单：" + applyNo + "流程已经完成，无法删除");
-                }
-            });
-            //删除所有
-            bioSampleSampleTwoResultDetailTbMapper.deleteByIdIn(bioSampleSampleTwoResultDetailTbList.stream().map(BioSampleTestTwoResultDetailTb::getId).collect(Collectors.toList()));
-            //重新更新检测结果
-            bioSampleSampleTwoResultDetailTbListMap.keySet().forEach(applyAndSampleCode -> {
-                String applyNo = applyAndSampleCode.split("\\|")[0];
-                String sampleCode = applyAndSampleCode.split("\\|")[1];
-                if (CollectionUtil.isEmpty(bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(applyNo, sampleCode))) {
-                    CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByApplyNoAndSampleCode(applyNo, sampleCode);
-                    if (cerSampleTestTb == null) {
-                        throw new BusinessException("齐博士数据异常，请联系相关人员，错误原因，找不到申请工单下" + applyNo + "的取样编号" + sampleCode);
-                    }
-                    cerSampleTestTbMapper.updateTestUserIdAndTestUserName(null, null);
-                }
-            });
-
-        }
-
-    }
 
 
 }

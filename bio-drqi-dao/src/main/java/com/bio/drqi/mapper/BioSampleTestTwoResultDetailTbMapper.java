@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * @author zou'jun
- * @description 针对表【bio_sample_sample_two_result_detail_tb】的数据库操作Mapper
+ * @description 针对表【bio_sample_test_two_result_detail_tb】的数据库操作Mapper
  * @createDate 2025-10-30 09:22:06
  * @Entity com.bio.drqi.domain.BioSampleSampleTwoResultDetailTb
  */

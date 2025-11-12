@@ -501,7 +501,7 @@
         from (select apply_no, sample_code from cer_sample_test_tb where apply_no = #{applyNo,jdbcType=VARCHAR}) a
                  INNER JOIN
              (select apply_no, sample_code
-              from bio_sample_sample_two_result_detail_tb
+              from bio_sample_test_two_result_detail_tb
               where apply_no = #{applyNo,jdbcType=VARCHAR}) b
              on a.apply_no = b.apply_no and a.sample_code = b.sample_code
     </select>

@@ -131,7 +131,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
             }
 
             if (CollectionUtil.isEmpty(updateCerSampleTestTbList)) {
-                throw new BusinessException("根据取样编号为匹配到数据");
+                throw new BusinessException("根据取样编号未匹配到数据");
             }
             cerSampleTestResultFileTb.setTotalNum(testExcelDTOList.size());
             //更新检测结果到检测表
@@ -185,7 +185,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
             }
 
             if (CollectionUtil.isEmpty(bioSampleTwoResultTbList)) {
-                throw new BusinessException("根据取样编号为匹配到数据");
+                throw new BusinessException("根据取样编号未匹配到数据");
             }
             //异步同步结果 这个需要放到前面调用
             List<BioSampleTestTwoResultDetailTb> bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(bioSampleTwoResultTbList);

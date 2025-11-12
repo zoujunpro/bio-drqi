@@ -96,11 +96,9 @@ public class CerSampleTwoResultServiceImpl implements CerSampleTwoResultService 
     @Transactional(rollbackFor = Exception.class)
     public void deleteNgsResult(String uniqueDbCode) {
         List<BioSampleTestTwoResultDetailTb> bioSampleTestTwoResultDetailTbList = bioSampleTestTwoResultDetailTbMapper.selectAllByUniqueDbCode(uniqueDbCode);
-        //删除所有
-        bioSampleTestTwoResultDetailTbMapper.deleteByIdIn(bioSampleTestTwoResultDetailTbList.stream().map(BioSampleTestTwoResultDetailTb::getId).collect(Collectors.toList()));
-
-
         if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultDetailTbList)) {
+            //删除所有
+            bioSampleTestTwoResultDetailTbMapper.deleteByIdIn(bioSampleTestTwoResultDetailTbList.stream().map(BioSampleTestTwoResultDetailTb::getId).collect(Collectors.toList()));
             Map<String, List<BioSampleTestTwoResultDetailTb>> bioSampleSampleTwoResultDetailTbListMap = bioSampleTestTwoResultDetailTbList.stream().collect(Collectors.groupingBy(bioSampleSampleTwoResultDetailTb -> bioSampleSampleTwoResultDetailTb.getApplyNo() + "|" + bioSampleSampleTwoResultDetailTb.getSampleCode()));
             bioSampleSampleTwoResultDetailTbListMap.forEach((applyAndSampleCode, bioSampleSampleTwoResultDetailTbs) -> {
                 String applyNo = applyAndSampleCode.split("\\|")[0];

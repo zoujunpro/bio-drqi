@@ -18,7 +18,6 @@ public interface BioSampleSampleTwoResultDetailTbMapper extends BaseMapper<BioSa
 
     List<BioSampleSampleTwoResultDetailTb> selectAllByIdIn(@Param("idList") Collection<Integer> idList);
 
-
     List<BioSampleSampleTwoResultDetailTb> selectAllByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
 
 

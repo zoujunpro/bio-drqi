@@ -18,6 +18,8 @@ public interface BioSampleSampleTwoResultTbMapper extends BaseMapper<BioSampleSa
 
     int deleteByUploadNum(@Param("uploadNum") String uploadNum);
 
+    List<BioSampleSampleTwoResultTb> selectAllByUploadNum(@Param("uploadNum") String uploadNum);
+
     List<BioSampleSampleTwoResultTb> selectSelective(BioSampleSampleTwoResultTb bioSampleSampleTwoResultTb);
 
     int insertBatch(@Param("bioSampleSampleTwoResultTbCollection") Collection<BioSampleSampleTwoResultTb> bioSampleSampleTwoResultTbCollection);

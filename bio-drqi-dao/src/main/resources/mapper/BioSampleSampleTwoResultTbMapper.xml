@@ -79,5 +79,12 @@
         AND sample_code = #{sampleCode,jdbcType=VARCHAR}
         order by id desc
     </select>
+    <select id="selectAllByUploadNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_sample_two_result_tb
+        where
+        upload_num = #{uploadNum,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

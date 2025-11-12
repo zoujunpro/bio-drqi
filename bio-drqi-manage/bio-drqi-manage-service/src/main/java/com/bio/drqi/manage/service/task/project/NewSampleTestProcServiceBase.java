@@ -10,7 +10,6 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
-import com.bio.drqi.common.enums.CheckResultEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.*;
 import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
@@ -20,7 +19,6 @@ import com.bio.drqi.mapper.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
@@ -155,10 +153,10 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         CerSampleApplyTb cerSampleApplyTb = cerSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-            cerSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull(CheckResultEnum.remove.name(), cerSampleApplyTb.getApplyNo());
+            cerSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull("舍弃", cerSampleApplyTb.getApplyNo());
             //首次取样，且已经发生过移苗
             if (SampleApplyTypeEnum.F.name().equals(cerSampleApplyTb.getApplyType())) {
-                List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(cerSampleApplyTb.getApplyNo()).stream().filter(cerSampleTestTb -> CheckResultEnum.stay.name().equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
+                List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(cerSampleApplyTb.getApplyNo()).stream().filter(cerSampleTestTb -> "传代".equals(cerSampleTestTb.getCheckResult()) || "留种".equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
                     for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
                         List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectAllByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
@@ -201,8 +199,14 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         cerSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
-        bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
-        bioSampleSampleTwoResultTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        List<BioSampleSampleTwoResultTb> bioSampleSampleTwoResultTbList = bioSampleSampleTwoResultTbMapper.selectAllByUploadNum(bioTaskDtlTb.getTaskNum());
+        if(CollectionUtil.isNotEmpty(bioSampleSampleTwoResultTbList)){
+            bioSampleSampleTwoResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
+            bioSampleSampleTwoResultTbList.forEach(bioSampleSampleTwoResultTb->{
+                bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(bioSampleSampleTwoResultTb.getApplyNo(),bioSampleSampleTwoResultTb.getSampleCode());
+            });
+        }
+
         cerPlantDtlTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         bioSampleSampleOneResultTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.cer_plant.name());
@@ -262,7 +266,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         repeatCerSampleTestTb.setApplyNo(cerSampleApplyTb.getApplyNo());
                         repeatCerSampleTestTb.setSampleTime(repeatSampleApply.getSampleTime());
                         repeatCerSampleTestTb.setSampleGeneration(cerSampleTestTbList.get(0).getSampleGeneration());
-                        repeatCerSampleTestTb.setCheckResult(CheckResultEnum.noCheck.name());
                         repeatCerSampleTestTb.setCloneSampleCode(repeatSampleApply.getSampleCode());
                         repeatCerSampleTestTb.setUniqueCode(repeatCerSampleTestTb.getProjectCode() + repeatCerSampleTestTb.getSampleCode());
                         targetCerSampleTestTbList.add(repeatCerSampleTestTb);
@@ -291,7 +294,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     repeatCerSampleTestTb.setApplyUserId(SecurityContextHolder.getUserId());
                     repeatCerSampleTestTb.setApplyUserName(SecurityContextHolder.getNickName());
                     repeatCerSampleTestTb.setAcceptorMaterial(orgCerSampleTestTb.getAcceptorMaterial());
-                    repeatCerSampleTestTb.setCheckResult(CheckResultEnum.noCheck.name());
                     repeatCerSampleTestTb.setCreateTime(new Date());
                     repeatCerSampleTestTb.setApplyNo(cerSampleApplyTb.getApplyNo());
                     repeatCerSampleTestTb.setSampleTime(repeatSampleApply.getSampleTime());
@@ -305,12 +307,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 log.error("取样申请异常", e);
                 throw new BusinessException("取样编号有重复");
             }
-            //更新实施方案编号到申请表
-            List<String> vectorTaskList = targetCerSampleTestTbList.stream().map(CerSampleTestTb::getVectorTaskCode).distinct().collect(Collectors.toList());
-            cerSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(vectorTaskList).replace("[", "").replace("]", "").replace("\"", ""));
-            cerSampleApplyTbMapper.updateById(cerSampleApplyTb);
-
-
             newSampleTestDTO.getRepeatSampleApplyList().stream().map(NewSampleTestDTO.RepeatSampleApply::getVectorTaskCode).distinct().forEach(vectorTaskCode -> {
                 /**
                  * 更新当前执行步骤
@@ -346,7 +342,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     cerSampleTestTb.setUniqueCode(cerTransformTb.getProjectCode() + cerSampleTestTb.getSampleCode());
                     cerSampleTestTb.setSampleGeneration(firstSampleApply.getSampleGeneration());
                     cerSampleTestTb.setSampleTime(firstSampleApply.getSampleTime());
-                    cerSampleTestTb.setCheckResult(CheckResultEnum.noCheck.name());
                     targetCerSampleTestTbList.add(cerSampleTestTb);
                 }
 

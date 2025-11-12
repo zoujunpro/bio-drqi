@@ -14,12 +14,13 @@ import java.util.List;
  * @Entity com.bio.drqi.domain.BioSampleSampleTwoResultDetailTb
  */
 public interface BioSampleTestTwoResultDetailTbMapper extends BaseMapper<BioSampleTestTwoResultDetailTb> {
+
+    int deleteByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
     int deleteByApplyNoAndSampleCodeAndUniqueDbCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode, @Param("uniqueDbCode") String uniqueDbCode);
 
     List<BioSampleTestTwoResultDetailTb> selectAllByIdIn(@Param("idList") Collection<Integer> idList);
 
     List<BioSampleTestTwoResultDetailTb> selectAllByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
-
 
     int deleteByIdIn(@Param("idList") Collection<Integer> idList);
 

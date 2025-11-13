@@ -9,6 +9,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.CheckResultEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SampleApplyTypeEnum;
 import com.bio.drqi.enums.VectorTaskStatusEnum;
@@ -299,7 +300,7 @@ public class Clean20251030Controller {
                     cerSampleTestTb.setTestUserName("张立肖");
                     cerSampleTestTbMapper.updateById(cerSampleTestTb);
                 }
-            } else if (StringUtils.isNotEmpty(cerSampleTestTb.getCheckResult())) {
+            } else if (!CheckResultEnum.noCheck.name().equals(cerSampleTestTb.getCheckResult())) {
                 if (cerSampleTestTb.getTestUserId() == null) {
                     cerSampleTestTb.setTestUserId(117);
                     cerSampleTestTb.setTestUserName("张立肖");

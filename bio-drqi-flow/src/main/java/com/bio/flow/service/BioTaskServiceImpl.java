@@ -362,7 +362,7 @@ public class BioTaskServiceImpl implements BioTaskService {
         bioTaskDtlTb.setApplyUserName(SecurityContextHolder.getNickName());
         bioTaskDtlTb.setApplyTime(new Date());
         bioTaskDtlTb.setCreateTime(new Date());
-        bioTaskDtlTb.setUpdateTime(null);
+        bioTaskDtlTb.setUpdateTime(new Date());
         bioTaskDtlTb.setTaskForm(bioTaskTemporarySaveReqDTO.getFormObject());
         bioTaskDtlTb.setRefTaskNum(bioTaskTemporarySaveReqDTO.getRefTaskNum());
         bioTaskDtlTb.setTaskCategory(bioTaskConf.getTaskCategory());

@@ -10,6 +10,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.CheckResultEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.*;
 import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
@@ -267,6 +268,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         repeatCerSampleTestTb.setSampleTime(repeatSampleApply.getSampleTime());
                         repeatCerSampleTestTb.setSampleGeneration(cerSampleTestTbList.get(0).getSampleGeneration());
                         repeatCerSampleTestTb.setCloneSampleCode(repeatSampleApply.getSampleCode());
+                        repeatCerSampleTestTb.setCheckResult(CheckResultEnum.noCheck.name());
                         repeatCerSampleTestTb.setUniqueCode(repeatCerSampleTestTb.getProjectCode() + repeatCerSampleTestTb.getSampleCode());
                         targetCerSampleTestTbList.add(repeatCerSampleTestTb);
                     }
@@ -298,6 +300,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     repeatCerSampleTestTb.setApplyNo(cerSampleApplyTb.getApplyNo());
                     repeatCerSampleTestTb.setSampleTime(repeatSampleApply.getSampleTime());
                     repeatCerSampleTestTb.setSampleGeneration(orgCerSampleTestTb.getSampleGeneration());
+                    repeatCerSampleTestTb.setCheckResult(CheckResultEnum.noCheck.name());
                     targetCerSampleTestTbList.add(repeatCerSampleTestTb);
                 }
             }
@@ -342,6 +345,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     cerSampleTestTb.setUniqueCode(cerTransformTb.getProjectCode() + cerSampleTestTb.getSampleCode());
                     cerSampleTestTb.setSampleGeneration(firstSampleApply.getSampleGeneration());
                     cerSampleTestTb.setSampleTime(firstSampleApply.getSampleTime());
+                    cerSampleTestTb.setCheckResult(CheckResultEnum.noCheck.name());
                     targetCerSampleTestTbList.add(cerSampleTestTb);
                 }
 

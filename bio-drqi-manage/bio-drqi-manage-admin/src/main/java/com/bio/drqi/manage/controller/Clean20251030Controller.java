@@ -306,6 +306,12 @@ public class Clean20251030Controller {
                     cerSampleTestTb.setTestUserName("张立肖");
                     cerSampleTestTbMapper.updateById(cerSampleTestTb);
                 }
+            }else if(cerSampleTestTb.ifHaveTestResult()){
+                if (cerSampleTestTb.getTestUserId() == null) {
+                    cerSampleTestTb.setTestUserId(117);
+                    cerSampleTestTb.setTestUserName("张立肖");
+                    cerSampleTestTbMapper.updateById(cerSampleTestTb);
+                }
             } else if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode()))) {
                 if (cerSampleTestTb.getTestUserId() == null) {
                     cerSampleTestTb.setTestUserId(117);

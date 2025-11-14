@@ -84,7 +84,6 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
 
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
-
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             ExperimentTaskDTO experimentTaskDTO = BeanUtils.toBean(bioTaskDtlTb.getTaskForm(), ExperimentTaskDTO.class);
             List<ExperimentExcelDTO> experimentExcelDTOList = getExperimentExcelDTOS(experimentTaskDTO);

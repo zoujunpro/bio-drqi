@@ -11,16 +11,16 @@
             <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
             <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
             <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
-            <result property="plantNum" column="plant_num" jdbcType="VARCHAR"/>
+            <result property="plantCode" column="plant_code" jdbcType="VARCHAR"/>
             <result property="generationCode" column="generation_code" jdbcType="VARCHAR"/>
             <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
-            <result property="seedingTime" column="seeding_time" jdbcType="VARCHAR"/>
-            <result property="seedingNumber" column="seeding_number" jdbcType="INTEGER"/>
-            <result property="seedingUnit" column="seeding_unit" jdbcType="VARCHAR"/>
+            <result property="plantTime" column="plant_time" jdbcType="VARCHAR"/>
+            <result property="plantNumber" column="plant_number" jdbcType="INTEGER"/>
             <result property="experimentAddressCode" column="experiment_address_code" jdbcType="VARCHAR"/>
+            <result property="plantUnit" column="plant_unit" jdbcType="VARCHAR"/>
             <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
             <result property="geneType" column="gene_type" jdbcType="VARCHAR"/>
-            <result property="createUserId" column="create_user_id" jdbcType="VARCHAR"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
             <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -28,9 +28,26 @@
     <sql id="Base_Column_List">
         id,pd_num,experiment_num,
         region_num,vector_task_code,seed_num,
-        plant_num,generation_code,species_code,
-        seeding_time,seeding_number,seeding_unit,
-        experiment_address_code,remarks,gene_type,
+        plant_code,generation_code,species_code,
+        plant_time,plant_number,experiment_address_code,
+        plant_unit,remarks,gene_type,
         create_user_id,create_user_name,create_time
     </sql>
+    <insert id="insertBatch">
+        insert into plant_experiment_detail_tb(id,pd_num,experiment_num,
+        region_num,vector_task_code,seed_num,
+        plant_code,generation_code,species_code,
+        plant_time,plant_number,experiment_address_code,
+        plant_unit,remarks,gene_type,
+        create_user_id,create_user_name,create_time)
+        values
+        <foreach collection="plantExperimentDetailTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.pdNum,jdbcType=VARCHAR},#{item.experimentNum,jdbcType=VARCHAR},
+            #{item.regionNum,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},#{item.seedNum,jdbcType=VARCHAR},
+            #{item.plantCode,jdbcType=VARCHAR},#{item.generationCode,jdbcType=VARCHAR},#{item.speciesCode,jdbcType=VARCHAR},
+            #{item.plantTime,jdbcType=VARCHAR},#{item.plantNumber,jdbcType=NUMERIC},#{item.experimentAddressCode,jdbcType=VARCHAR},
+            #{item.plantUnit,jdbcType=VARCHAR},#{item.remarks,jdbcType=VARCHAR},#{item.geneType,jdbcType=VARCHAR},
+            #{item.createUserId,jdbcType=NUMERIC},#{item.createUserName,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
 </mapper>

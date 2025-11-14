@@ -47,7 +47,7 @@ public class PlantExperimentDetailTb implements Serializable {
     /**
      * 种植编号
      */
-    private String plantNum;
+    private String plantCode;
 
     /**
      * 代次编号
@@ -62,22 +62,22 @@ public class PlantExperimentDetailTb implements Serializable {
     /**
      * 播种时间
      */
-    private String seedingTime;
+    private String plantTime;
 
     /**
      * 播种数量
      */
-    private Integer seedingNumber;
-
-    /**
-     * 播种单位
-     */
-    private String seedingUnit;
+    private Integer plantNumber;
 
     /**
      * 实验地点
      */
     private String experimentAddressCode;
+
+    /**
+     * 播种单位
+     */
+    private String plantUnit;
 
     /**
      * 备注
@@ -92,7 +92,7 @@ public class PlantExperimentDetailTb implements Serializable {
     /**
      * 创建人ID
      */
-    private String createUserId;
+    private Integer createUserId;
 
     /**
      * 创建人名称
@@ -194,15 +194,15 @@ public class PlantExperimentDetailTb implements Serializable {
     /**
      * 种植编号
      */
-    public String getPlantNum() {
-        return plantNum;
+    public String getPlantCode() {
+        return plantCode;
     }
 
     /**
      * 种植编号
      */
-    public void setPlantNum(String plantNum) {
-        this.plantNum = plantNum;
+    public void setPlantCode(String plantCode) {
+        this.plantCode = plantCode;
     }
 
     /**
@@ -236,43 +236,29 @@ public class PlantExperimentDetailTb implements Serializable {
     /**
      * 播种时间
      */
-    public String getSeedingTime() {
-        return seedingTime;
+    public String getPlantTime() {
+        return plantTime;
     }
 
     /**
      * 播种时间
      */
-    public void setSeedingTime(String seedingTime) {
-        this.seedingTime = seedingTime;
+    public void setPlantTime(String plantTime) {
+        this.plantTime = plantTime;
     }
 
     /**
      * 播种数量
      */
-    public Integer getSeedingNumber() {
-        return seedingNumber;
+    public Integer getPlantNumber() {
+        return plantNumber;
     }
 
     /**
      * 播种数量
      */
-    public void setSeedingNumber(Integer seedingNumber) {
-        this.seedingNumber = seedingNumber;
-    }
-
-    /**
-     * 播种单位
-     */
-    public String getSeedingUnit() {
-        return seedingUnit;
-    }
-
-    /**
-     * 播种单位
-     */
-    public void setSeedingUnit(String seedingUnit) {
-        this.seedingUnit = seedingUnit;
+    public void setPlantNumber(Integer plantNumber) {
+        this.plantNumber = plantNumber;
     }
 
     /**
@@ -287,6 +273,20 @@ public class PlantExperimentDetailTb implements Serializable {
      */
     public void setExperimentAddressCode(String experimentAddressCode) {
         this.experimentAddressCode = experimentAddressCode;
+    }
+
+    /**
+     * 播种单位
+     */
+    public String getPlantUnit() {
+        return plantUnit;
+    }
+
+    /**
+     * 播种单位
+     */
+    public void setPlantUnit(String plantUnit) {
+        this.plantUnit = plantUnit;
     }
 
     /**
@@ -320,14 +320,14 @@ public class PlantExperimentDetailTb implements Serializable {
     /**
      * 创建人ID
      */
-    public String getCreateUserId() {
+    public Integer getCreateUserId() {
         return createUserId;
     }
 
     /**
      * 创建人ID
      */
-    public void setCreateUserId(String createUserId) {
+    public void setCreateUserId(Integer createUserId) {
         this.createUserId = createUserId;
     }
 
@@ -377,13 +377,13 @@ public class PlantExperimentDetailTb implements Serializable {
             && (this.getRegionNum() == null ? other.getRegionNum() == null : this.getRegionNum().equals(other.getRegionNum()))
             && (this.getVectorTaskCode() == null ? other.getVectorTaskCode() == null : this.getVectorTaskCode().equals(other.getVectorTaskCode()))
             && (this.getSeedNum() == null ? other.getSeedNum() == null : this.getSeedNum().equals(other.getSeedNum()))
-            && (this.getPlantNum() == null ? other.getPlantNum() == null : this.getPlantNum().equals(other.getPlantNum()))
+            && (this.getPlantCode() == null ? other.getPlantCode() == null : this.getPlantCode().equals(other.getPlantCode()))
             && (this.getGenerationCode() == null ? other.getGenerationCode() == null : this.getGenerationCode().equals(other.getGenerationCode()))
             && (this.getSpeciesCode() == null ? other.getSpeciesCode() == null : this.getSpeciesCode().equals(other.getSpeciesCode()))
-            && (this.getSeedingTime() == null ? other.getSeedingTime() == null : this.getSeedingTime().equals(other.getSeedingTime()))
-            && (this.getSeedingNumber() == null ? other.getSeedingNumber() == null : this.getSeedingNumber().equals(other.getSeedingNumber()))
-            && (this.getSeedingUnit() == null ? other.getSeedingUnit() == null : this.getSeedingUnit().equals(other.getSeedingUnit()))
+            && (this.getPlantTime() == null ? other.getPlantTime() == null : this.getPlantTime().equals(other.getPlantTime()))
+            && (this.getPlantNumber() == null ? other.getPlantNumber() == null : this.getPlantNumber().equals(other.getPlantNumber()))
             && (this.getExperimentAddressCode() == null ? other.getExperimentAddressCode() == null : this.getExperimentAddressCode().equals(other.getExperimentAddressCode()))
+            && (this.getPlantUnit() == null ? other.getPlantUnit() == null : this.getPlantUnit().equals(other.getPlantUnit()))
             && (this.getRemarks() == null ? other.getRemarks() == null : this.getRemarks().equals(other.getRemarks()))
             && (this.getGeneType() == null ? other.getGeneType() == null : this.getGeneType().equals(other.getGeneType()))
             && (this.getCreateUserId() == null ? other.getCreateUserId() == null : this.getCreateUserId().equals(other.getCreateUserId()))
@@ -401,13 +401,13 @@ public class PlantExperimentDetailTb implements Serializable {
         result = prime * result + ((getRegionNum() == null) ? 0 : getRegionNum().hashCode());
         result = prime * result + ((getVectorTaskCode() == null) ? 0 : getVectorTaskCode().hashCode());
         result = prime * result + ((getSeedNum() == null) ? 0 : getSeedNum().hashCode());
-        result = prime * result + ((getPlantNum() == null) ? 0 : getPlantNum().hashCode());
+        result = prime * result + ((getPlantCode() == null) ? 0 : getPlantCode().hashCode());
         result = prime * result + ((getGenerationCode() == null) ? 0 : getGenerationCode().hashCode());
         result = prime * result + ((getSpeciesCode() == null) ? 0 : getSpeciesCode().hashCode());
-        result = prime * result + ((getSeedingTime() == null) ? 0 : getSeedingTime().hashCode());
-        result = prime * result + ((getSeedingNumber() == null) ? 0 : getSeedingNumber().hashCode());
-        result = prime * result + ((getSeedingUnit() == null) ? 0 : getSeedingUnit().hashCode());
+        result = prime * result + ((getPlantTime() == null) ? 0 : getPlantTime().hashCode());
+        result = prime * result + ((getPlantNumber() == null) ? 0 : getPlantNumber().hashCode());
         result = prime * result + ((getExperimentAddressCode() == null) ? 0 : getExperimentAddressCode().hashCode());
+        result = prime * result + ((getPlantUnit() == null) ? 0 : getPlantUnit().hashCode());
         result = prime * result + ((getRemarks() == null) ? 0 : getRemarks().hashCode());
         result = prime * result + ((getGeneType() == null) ? 0 : getGeneType().hashCode());
         result = prime * result + ((getCreateUserId() == null) ? 0 : getCreateUserId().hashCode());
@@ -428,13 +428,13 @@ public class PlantExperimentDetailTb implements Serializable {
         sb.append(", regionNum=").append(regionNum);
         sb.append(", vectorTaskCode=").append(vectorTaskCode);
         sb.append(", seedNum=").append(seedNum);
-        sb.append(", plantNum=").append(plantNum);
+        sb.append(", plantCode=").append(plantCode);
         sb.append(", generationCode=").append(generationCode);
         sb.append(", speciesCode=").append(speciesCode);
-        sb.append(", seedingTime=").append(seedingTime);
-        sb.append(", seedingNumber=").append(seedingNumber);
-        sb.append(", seedingUnit=").append(seedingUnit);
+        sb.append(", plantTime=").append(plantTime);
+        sb.append(", plantNumber=").append(plantNumber);
         sb.append(", experimentAddressCode=").append(experimentAddressCode);
+        sb.append(", plantUnit=").append(plantUnit);
         sb.append(", remarks=").append(remarks);
         sb.append(", geneType=").append(geneType);
         sb.append(", createUserId=").append(createUserId);

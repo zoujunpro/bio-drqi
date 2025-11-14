@@ -33,7 +33,6 @@ public class PlantExperimentController {
     @GetMapping("/listPage")
     @WebLog(desc = "CER试验管理-分页查询")
     public ResponseResult<PageInfo<PlantExperimentRspDTO>> listPage(@RequestBody PlantExperimentReqDTO plantExperimentReqDTO) {
-
         return ResponseResult.getSuccess(plantExperimentService.listPage(plantExperimentReqDTO));
     }
 

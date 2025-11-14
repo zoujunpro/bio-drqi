@@ -47,6 +47,9 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
 
+    @Resource
+    private PlantMultipleStockTbMapper plantMultipleStockTbMapper;
+
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -111,6 +114,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
                 plantExperimentDetailTb.setPlantCode(seedStockTb.getPlantCode());
                 plantExperimentDetailTb.setGenerationCode(seedStockTb.getGeneration());
                 plantExperimentDetailTb.setSpeciesCode(seedStockTb.getSpeciesCode());
+                plantExperimentDetailTb.setBreedCode(seedStockTb.getBreedCode());
                 plantExperimentDetailTb.setPlantTime(experimentExcelDTO.getPlantTime());
                 plantExperimentDetailTb.setPlantNumber(experimentExcelDTO.getPlantNumber());
                 plantExperimentDetailTb.setPlantUnit("粒");
@@ -121,10 +125,11 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
                 plantExperimentDetailTb.setCreateUserName(SecurityContextHolder.getNickName());
                 plantExperimentDetailTb.setCreateTime(new Date());
                 plantExperimentDetailTbList.add(plantExperimentDetailTb);
-
             }
+            List<PlantMultipleStockTb> plantMultipleStockTbList = plantExperimentDetailTbList.stream().map(plantExperimentDetailTb -> PlantMultipleStockTb.of(plantExperimentDetailTb)).collect(Collectors.toList());
             plantExperimentTbMapper.insert(plantExperimentTb);
             plantExperimentDetailTbMapper.insertBatch(plantExperimentDetailTbList);
+            plantMultipleStockTbMapper.insertBatch(plantMultipleStockTbList);
         }
 
     }

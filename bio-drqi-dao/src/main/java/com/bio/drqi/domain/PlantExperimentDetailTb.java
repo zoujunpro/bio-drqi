@@ -45,6 +45,11 @@ public class PlantExperimentDetailTb implements Serializable {
     private String seedNum;
 
     /**
+     * 品种
+     */
+    private String breedCode;
+
+    /**
      * 种植编号
      */
     private String plantCode;
@@ -189,6 +194,20 @@ public class PlantExperimentDetailTb implements Serializable {
      */
     public void setSeedNum(String seedNum) {
         this.seedNum = seedNum;
+    }
+
+    /**
+     * 品种
+     */
+    public String getBreedCode() {
+        return breedCode;
+    }
+
+    /**
+     * 品种
+     */
+    public void setBreedCode(String breedCode) {
+        this.breedCode = breedCode;
     }
 
     /**
@@ -377,6 +396,7 @@ public class PlantExperimentDetailTb implements Serializable {
             && (this.getRegionNum() == null ? other.getRegionNum() == null : this.getRegionNum().equals(other.getRegionNum()))
             && (this.getVectorTaskCode() == null ? other.getVectorTaskCode() == null : this.getVectorTaskCode().equals(other.getVectorTaskCode()))
             && (this.getSeedNum() == null ? other.getSeedNum() == null : this.getSeedNum().equals(other.getSeedNum()))
+            && (this.getBreedCode() == null ? other.getBreedCode() == null : this.getBreedCode().equals(other.getBreedCode()))
             && (this.getPlantCode() == null ? other.getPlantCode() == null : this.getPlantCode().equals(other.getPlantCode()))
             && (this.getGenerationCode() == null ? other.getGenerationCode() == null : this.getGenerationCode().equals(other.getGenerationCode()))
             && (this.getSpeciesCode() == null ? other.getSpeciesCode() == null : this.getSpeciesCode().equals(other.getSpeciesCode()))
@@ -401,6 +421,7 @@ public class PlantExperimentDetailTb implements Serializable {
         result = prime * result + ((getRegionNum() == null) ? 0 : getRegionNum().hashCode());
         result = prime * result + ((getVectorTaskCode() == null) ? 0 : getVectorTaskCode().hashCode());
         result = prime * result + ((getSeedNum() == null) ? 0 : getSeedNum().hashCode());
+        result = prime * result + ((getBreedCode() == null) ? 0 : getBreedCode().hashCode());
         result = prime * result + ((getPlantCode() == null) ? 0 : getPlantCode().hashCode());
         result = prime * result + ((getGenerationCode() == null) ? 0 : getGenerationCode().hashCode());
         result = prime * result + ((getSpeciesCode() == null) ? 0 : getSpeciesCode().hashCode());
@@ -428,6 +449,7 @@ public class PlantExperimentDetailTb implements Serializable {
         sb.append(", regionNum=").append(regionNum);
         sb.append(", vectorTaskCode=").append(vectorTaskCode);
         sb.append(", seedNum=").append(seedNum);
+        sb.append(", breedCode=").append(breedCode);
         sb.append(", plantCode=").append(plantCode);
         sb.append(", generationCode=").append(generationCode);
         sb.append(", speciesCode=").append(speciesCode);

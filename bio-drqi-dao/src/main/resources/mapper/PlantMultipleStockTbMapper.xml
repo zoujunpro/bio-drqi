@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.PlantMultipleStockTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="seedNum" column="seed_num" jdbcType="INTEGER"/>
+            <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
             <result property="transformCode" column="transform_code" jdbcType="VARCHAR"/>
             <result property="plantNumber" column="plant_number" jdbcType="INTEGER"/>
             <result property="sourceCode" column="source_code" jdbcType="VARCHAR"/>
@@ -17,12 +17,30 @@
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
             <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
             <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
+            <result property="sampleNumber" column="sample_number" jdbcType="INTEGER"/>
+            <result property="currentNumber" column="current_number" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,seed_num,transform_code,
         plant_number,source_code,remark,
         create_time,create_user_id,create_user_name,
-        task_num,species_code,breed_code
+        task_num,species_code,breed_code,
+        sample_number,current_number
     </sql>
+    <insert id="insertBatch">
+        insert into plant_multiple_stock_tb(id,seed_num,transform_code,
+        plant_number,source_code,remark,
+        create_time,create_user_id,create_user_name,
+        task_num,species_code,breed_code,
+        sample_number,current_number)
+        values
+        <foreach collection="plantMultipleStockTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.seedNum,jdbcType=VARCHAR},#{item.transformCode,jdbcType=VARCHAR},
+            #{item.plantNumber,jdbcType=NUMERIC},#{item.sourceCode,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP},#{item.createUserId,jdbcType=NUMERIC},#{item.createUserName,jdbcType=VARCHAR},
+            #{item.taskNum,jdbcType=VARCHAR},#{item.speciesCode,jdbcType=VARCHAR},#{item.breedCode,jdbcType=VARCHAR},
+            #{item.sampleNumber,jdbcType=NUMERIC},#{item.currentNumber,jdbcType=NUMERIC})
+        </foreach>
+    </insert>
 </mapper>

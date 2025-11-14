@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.PlantSingleStockTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.PlantSingleStockTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="plantCode" column="plant_code" jdbcType="VARCHAR"/>
+            <result property="generation" column="generation" jdbcType="VARCHAR"/>
+            <result property="plantNumber" column="plant_number" jdbcType="INTEGER"/>
+            <result property="plantDate" column="plant_date" jdbcType="VARCHAR"/>
+            <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
+            <result property="transplantDate" column="transplant_date" jdbcType="VARCHAR"/>
+            <result property="vernalizationBeginDate" column="vernalization_begin_date" jdbcType="VARCHAR"/>
+            <result property="vernalizationEndDate" column="vernalization_end_date" jdbcType="VARCHAR"/>
+            <result property="pollinationMethod" column="pollination_method" jdbcType="VARCHAR"/>
+            <result property="plantStatus" column="plant_status" jdbcType="VARCHAR"/>
+            <result property="pollinationDate" column="pollination_date" jdbcType="VARCHAR"/>
+            <result property="harvestDate" column="harvest_date" jdbcType="VARCHAR"/>
+            <result property="harvestType" column="harvest_type" jdbcType="VARCHAR"/>
+            <result property="otherField" column="other_field" jdbcType="OTHER"/>
+            <result property="editType" column="edit_type" jdbcType="VARCHAR"/>
+            <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+            <result property="acceptorMaterial" column="acceptor_material" jdbcType="VARCHAR"/>
+            <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+            <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
+            <result property="sourceCode" column="source_code" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,plant_code,generation,
+        plant_number,plant_date,sample_code,
+        transplant_date,vernalization_begin_date,vernalization_end_date,
+        pollination_method,plant_status,pollination_date,
+        harvest_date,harvest_type,other_field,
+        edit_type,species_code,acceptor_material,
+        create_date,update_time,create_user_id,
+        create_user_name,task_num,breed_code,
+        source_code,remark
+    </sql>
+</mapper>

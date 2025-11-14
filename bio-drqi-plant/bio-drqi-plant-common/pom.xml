@@ -5,16 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>bio.drqi</groupId>
-        <artifactId>bio-drqi</artifactId>
+        <artifactId>bio-drqi-plant</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bio-drqi-plant</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>bio-drqi-plant-admin</module>
-        <module>bio-drqi-plant-service</module>
-        <module>bio-drqi-plant-dto</module>
-        <module>bio-drqi-plant-common</module>
-    </modules>
+    <artifactId>bio-drqi-plant-common</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
 </project>

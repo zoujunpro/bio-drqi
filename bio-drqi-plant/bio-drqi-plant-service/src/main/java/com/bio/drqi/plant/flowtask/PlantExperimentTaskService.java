@@ -1,5 +1,6 @@
 package com.bio.drqi.plant.flowtask;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
@@ -53,7 +54,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
-        PlantExperimentTaskDTO plantExperimentTaskDTO = BeanUtils.toBean(bioTaskDtlTb.getTaskForm(), PlantExperimentTaskDTO.class);
+        PlantExperimentTaskDTO plantExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantExperimentTaskDTO.class);
         ValidatorUtil.validator(plantExperimentTaskDTO);
         //校验内容
         CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(plantExperimentTaskDTO.getSpeciesCode());
@@ -83,7 +84,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-            PlantExperimentTaskDTO plantExperimentTaskDTO = BeanUtils.toBean(bioTaskDtlTb.getTaskForm(), PlantExperimentTaskDTO.class);
+            PlantExperimentTaskDTO plantExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantExperimentTaskDTO.class);
             List<ExperimentExcelDTO> experimentExcelDTOList = getExperimentExcelDTOS(plantExperimentTaskDTO);
             List<String> vectorTaskCodeList = experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).collect(Collectors.toList());
             PlantExperimentTb plantExperimentTb = new PlantExperimentTb();

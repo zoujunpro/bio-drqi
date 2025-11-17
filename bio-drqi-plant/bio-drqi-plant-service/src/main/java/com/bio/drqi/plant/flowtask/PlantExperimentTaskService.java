@@ -86,7 +86,6 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             PlantExperimentTaskDTO plantExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantExperimentTaskDTO.class);
             List<ExperimentExcelDTO> experimentExcelDTOList = getExperimentExcelDTOS(plantExperimentTaskDTO);
-            List<String> vectorTaskCodeList = experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).collect(Collectors.toList());
             PlantExperimentTb plantExperimentTb = new PlantExperimentTb();
             plantExperimentTb.setSpeciesCode(plantExperimentTaskDTO.getSpeciesCode());
             plantExperimentTb.setExperimentType(plantExperimentTaskDTO.getExperimentType());
@@ -97,14 +96,14 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
             plantExperimentTb.setCreateTime(new Date());
             plantExperimentTb.setCreateUserId(SecurityContextHolder.getUserId());
             plantExperimentTb.setCreateUserName(SecurityContextHolder.getNickName());
-            plantExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(vectorTaskCodeList));
-
+            plantExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).collect(Collectors.toList())));
+            plantExperimentTb.setPdNumbers(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdNumber).filter(pdNumber -> StringUtils.isNotEmpty(pdNumber)).collect(Collectors.toList())));
             List<PlantExperimentDetailTb> plantExperimentDetailTbList = new ArrayList<>();
             for (ExperimentExcelDTO experimentExcelDTO : experimentExcelDTOList) {
                 SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(experimentExcelDTO.getSeedNum());
                 SeedProduceAddressDict seedProduceAddressDict = seedProduceAddressDictMapper.selectOneByAddressName(experimentExcelDTO.getExperimentAddressName());
                 PlantExperimentDetailTb plantExperimentDetailTb = new PlantExperimentDetailTb();
-                plantExperimentDetailTb.setPdNum(null);
+                plantExperimentDetailTb.setPdNum(experimentExcelDTO.getPdNumber());
                 plantExperimentDetailTb.setExperimentNum(plantExperimentTb.getExperimentNum());
                 plantExperimentDetailTb.setRegionNum(experimentExcelDTO.getRegionNum());
                 plantExperimentDetailTb.setVectorTaskCode(experimentExcelDTO.getVectorTaskCode());

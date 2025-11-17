@@ -136,6 +136,8 @@ public class BioSampleTestOneResultTb implements Serializable {
 
     private String remark;
 
+    @TableField(exist = false)
+    private String noMatchFlag;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

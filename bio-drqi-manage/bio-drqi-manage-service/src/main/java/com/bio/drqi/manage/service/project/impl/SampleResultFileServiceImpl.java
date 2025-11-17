@@ -170,11 +170,27 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                     log.info("取样不存在项目管理系统：" + sampleTestBioInfoExcelDTO.getSampleCode());
+                    BioSampleTestTwoResultTb bioSampleTestOneResultTb=new BioSampleTestTwoResultTb();
+                    bioSampleTestOneResultTb.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
+                    bioSampleTestOneResultTb.setUploadNum(cerSampleTestResultFileTb.getUploadNum());
+                    bioSampleTestOneResultTb.setTestChannel(TestChannelEnum.project.name());
+                    bioSampleTestOneResultTb.setRunId(sampleTestBioInfoExcelDTO.getRunId());
+                    bioSampleTestOneResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
+                    bioSampleTestOneResultTb.setFailMessage("取样编号错误或者取样编号不属于T0代取样");
+                    bioSampleTwoResultTbList.add(bioSampleTestOneResultTb);
                     continue;
                 }
                 cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> CheckResultEnum.noCheck.name().equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                     log.info("取样已经审批完成：" + sampleTestBioInfoExcelDTO.getSampleCode());
+                    BioSampleTestTwoResultTb bioSampleTestOneResultTb=new BioSampleTestTwoResultTb();
+                    bioSampleTestOneResultTb.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
+                    bioSampleTestOneResultTb.setUploadNum(cerSampleTestResultFileTb.getUploadNum());
+                    bioSampleTestOneResultTb.setTestChannel(TestChannelEnum.project.name());
+                    bioSampleTestOneResultTb.setRunId(sampleTestBioInfoExcelDTO.getRunId());
+                    bioSampleTestOneResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
+                    bioSampleTestOneResultTb.setFailMessage("取样已经审批完成");
+                    bioSampleTwoResultTbList.add(bioSampleTestOneResultTb);
                     continue;
                 }
                 cerSampleTestTbList = cerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId).reversed()).collect(Collectors.toList());

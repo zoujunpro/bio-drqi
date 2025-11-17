@@ -29,4 +29,6 @@ public class CerSampleOneResultListPageReqDTO extends PageDTO {
      */
     private String uploadNum;
 
+    private String noMatchFlag;
+
 }

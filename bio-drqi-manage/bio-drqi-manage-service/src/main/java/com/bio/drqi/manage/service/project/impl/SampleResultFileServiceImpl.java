@@ -177,6 +177,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                     bioSampleTestOneResultTb.setRunId(sampleTestBioInfoExcelDTO.getRunId());
                     bioSampleTestOneResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
                     bioSampleTestOneResultTb.setFailMessage("取样编号错误或者取样编号不属于T0代取样");
+                    bioSampleTestOneResultTb.setSynResult(BioDrQiContents.O);
                     bioSampleTwoResultTbList.add(bioSampleTestOneResultTb);
                     continue;
                 }
@@ -189,6 +190,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                     bioSampleTestOneResultTb.setTestChannel(TestChannelEnum.project.name());
                     bioSampleTestOneResultTb.setRunId(sampleTestBioInfoExcelDTO.getRunId());
                     bioSampleTestOneResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
+                    bioSampleTestOneResultTb.setSynResult(BioDrQiContents.O);
                     bioSampleTestOneResultTb.setFailMessage("取样已经审批完成");
                     bioSampleTwoResultTbList.add(bioSampleTestOneResultTb);
                     continue;
@@ -212,11 +214,9 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 cerSampleTestResultFileTb.setEffectiveNum(cerSampleTestResultFileTb.getEffectiveNum() == null ? 1 : cerSampleTestResultFileTb.getEffectiveNum() + 1);
             }
 
-            if (CollectionUtil.isEmpty(bioSampleTwoResultTbList)) {
-                throw new BusinessException("根据取样编号未匹配到数据");
-            }
+
             //异步同步结果 这个需要放到前面调用
-            List<BioSampleTestTwoResultDetailTb> bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(bioSampleTwoResultTbList);
+            List<BioSampleTestTwoResultDetailTb> bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(bioSampleTwoResultTbList.stream().filter(bioSampleTestTwoResultTb -> !BioDrQiContents.O.equals(bioSampleTestTwoResultTb.getSynResult())).collect(Collectors.toList()));
 
             cerSampleTestResultFileTb.setTotalNum(sampleTestBioInfoExcelDTOList.size());
 

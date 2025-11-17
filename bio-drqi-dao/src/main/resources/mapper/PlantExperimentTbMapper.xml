@@ -16,14 +16,14 @@
             <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
             <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
             <result property="vectorTaskCodes" column="vector_task_codes" jdbcType="VARCHAR"/>
-             <result property="pdNumbers" column="pd_numbers" jdbcType="VARCHAR"/>
+             <result property="pdNums" column="pd_nums" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,species_code,experiment_type,
         experiment_target,design_url,file_url,
         experiment_num,create_time,create_user_id,
-        create_user_name,vector_task_codes,pd_numbers
+        create_user_name,vector_task_codes,pd_nums
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.PlantExperimentTb" resultMap="BaseResultMap">
         select

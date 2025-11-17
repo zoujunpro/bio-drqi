@@ -135,7 +135,7 @@ public class PlantSingleStockTb implements Serializable {
     private String breedCode;
 
     /**
-     * 来源渠道 1项目 2组培，3外部，4种子库
+     * 来源渠道 1项目，4种子库
      */
     private String sourceCode;
 
@@ -484,14 +484,14 @@ public class PlantSingleStockTb implements Serializable {
     }
 
     /**
-     * 来源渠道 1项目 2组培，3外部，4种子库
+     * 来源渠道 1项目，4种子库
      */
     public String getSourceCode() {
         return sourceCode;
     }
 
     /**
-     * 来源渠道 1项目 2组培，3外部，4种子库
+     * 来源渠道 1项目，4种子库
      */
     public void setSourceCode(String sourceCode) {
         this.sourceCode = sourceCode;

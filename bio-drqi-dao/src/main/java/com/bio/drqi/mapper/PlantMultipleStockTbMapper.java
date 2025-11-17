@@ -8,12 +8,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
 * @author zou'jun
 * @description 针对表【plant_multiple_stock_tb】的数据库操作Mapper
-* @createDate 2025-11-14 16:10:04
+* @createDate 2025-11-17 16:48:24
 * @Entity com.bio.drqi.domain.PlantMultipleStockTb
 */
 public interface PlantMultipleStockTbMapper extends BaseMapper<PlantMultipleStockTb> {
     int insertBatch(@Param("plantMultipleStockTbCollection") Collection<PlantMultipleStockTb> plantMultipleStockTbCollection);
-
 }
 
 

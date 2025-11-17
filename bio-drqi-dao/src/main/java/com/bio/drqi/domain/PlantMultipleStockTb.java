@@ -87,6 +87,12 @@ public class PlantMultipleStockTb implements Serializable {
      */
     private Integer currentNumber;
 
+    private String vectorTaskCode;
+
+    private String pdNum;
+
+    private String regionNum;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -105,6 +111,9 @@ public class PlantMultipleStockTb implements Serializable {
         plantMultipleStockTb.setTaskNum(plantExperimentDetailTb.getExperimentNum());
         plantMultipleStockTb.setSpeciesCode(plantExperimentDetailTb.getSpeciesCode());
         plantMultipleStockTb.setBreedCode(plantExperimentDetailTb.getBreedCode());
+        plantMultipleStockTb.setVectorTaskCode(plantExperimentDetailTb.getVectorTaskCode());
+        plantMultipleStockTb.setPdNum(plantExperimentDetailTb.getPdNum());
+        plantMultipleStockTb.setRegionNum(plantExperimentDetailTb.getRegionNum());
         plantMultipleStockTb.setSampleNumber(0);
         plantMultipleStockTb.setCurrentNumber(0);
         return plantMultipleStockTb;

@@ -52,6 +52,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
     private PlantMultipleStockTbMapper plantMultipleStockTbMapper;
 
 
+
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         PlantExperimentTaskDTO plantExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantExperimentTaskDTO.class);
@@ -97,7 +98,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
             plantExperimentTb.setCreateUserId(SecurityContextHolder.getUserId());
             plantExperimentTb.setCreateUserName(SecurityContextHolder.getNickName());
             plantExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).collect(Collectors.toList())));
-            plantExperimentTb.setPdNumbers(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdNumber).filter(pdNumber -> StringUtils.isNotEmpty(pdNumber)).collect(Collectors.toList())));
+            plantExperimentTb.setPdNums(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdNumber).filter(pdNumber -> StringUtils.isNotEmpty(pdNumber)).collect(Collectors.toList())));
             List<PlantExperimentDetailTb> plantExperimentDetailTbList = new ArrayList<>();
             for (ExperimentExcelDTO experimentExcelDTO : experimentExcelDTOList) {
                 SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(experimentExcelDTO.getSeedNum());

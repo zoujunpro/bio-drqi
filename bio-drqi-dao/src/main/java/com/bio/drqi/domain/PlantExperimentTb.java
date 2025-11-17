@@ -73,7 +73,7 @@ public class PlantExperimentTb implements Serializable {
     private String vectorTaskCodes;
 
 
-    private String pdNumbers;
+    private String pdNums;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

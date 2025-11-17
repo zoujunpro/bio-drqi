@@ -93,6 +93,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
         cerSampleTestResultFileTb.setCreateUserId(SecurityContextHolder.getUserId());
         cerSampleTestResultFileTb.setCreateUserName(SecurityContextHolder.getNickName());
         cerSampleTestResultFileTb.setCreateTime(new Date());
+        cerSampleTestResultFileTb.setEffectiveNum(0);
         cerSampleTestResultFileTb.setUploadNum(DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN));
         cerSampleTestResultFileTbMapper.insert(cerSampleTestResultFileTb);
 
@@ -139,17 +140,17 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                         updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTest.getId(), cerSampleTest.getSampleCode()));
                     }
                 }
-                cerSampleTestResultFileTb.setEffectiveNum(cerSampleTestResultFileTb.getEffectiveNum() == null ? 1 : cerSampleTestResultFileTb.getEffectiveNum() + 1);
+                cerSampleTestResultFileTb.setEffectiveNum(cerSampleTestResultFileTb.getEffectiveNum() + 1);
             }
 
-            if (CollectionUtil.isEmpty(updateCerSampleTestTbList)) {
-                throw new BusinessException("根据取样编号未匹配到数据");
+            if (CollectionUtil.isNotEmpty(updateCerSampleTestTbList)) {
+                //更新最新的检测结果到取样数据中
+                cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
             }
             cerSampleTestResultFileTb.setTotalNum(testExcelDTOList.size());
             //更新检测结果到检测表
             bioSampleTestOneResultTbMapper.insertBatch(bioSampleSampleOneResultTbList);
-            //更新最新的检测结果到取样数据中
-            cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
+
 
             //更新文件数量和有效数量
             cerSampleTestResultFileTbMapper.updateById(cerSampleTestResultFileTb);

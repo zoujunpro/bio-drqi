@@ -49,7 +49,7 @@
         test_elisa_result,test_qbzr_seq,test_edit_residue_info,
         test_user_id,test_user_name,test_time,
         create_time,test_channel,task_num,
-        upload_num)
+        upload_num,remark)
         values
         <foreach collection="bioSampleSampleOneResultTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.sampleCode,jdbcType=VARCHAR},#{item.testIdentifyPrimer,jdbcType=VARCHAR},
@@ -59,7 +59,7 @@
             #{item.testElisaResult,jdbcType=VARCHAR},#{item.testQbzrSeq,jdbcType=VARCHAR},#{item.testEditResidueInfo,jdbcType=VARCHAR},
             #{item.testUserId,jdbcType=NUMERIC},#{item.testUserName,jdbcType=VARCHAR},#{item.testTime,jdbcType=VARCHAR},
             #{item.createTime,jdbcType=TIMESTAMP},#{item.testChannel,jdbcType=VARCHAR},#{item.taskNum,jdbcType=VARCHAR},
-            #{item.uploadNum,jdbcType=VARCHAR})
+            #{item.uploadNum,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR})
         </foreach>
     </insert>
     <delete id="deleteByTaskNum">

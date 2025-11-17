@@ -104,6 +104,7 @@ public class KdApiServiceImpl implements KdApiService {
                 throw new BusinessException("数据异常，请检查金蝶配置");
         }
     }
+
     private String moveStockQuery(Object obj) {
         BmsMoveOrderDetailTb bmsMoveOrderDetailTb = (BmsMoveOrderDetailTb) obj;
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
@@ -117,6 +118,7 @@ public class KdApiServiceImpl implements KdApiService {
         }
         return null;
     }
+
     private String returnStockQuery(Object obj) {
         BmsReturnOrderDetailTb bmsReturnOrderDetailTb = (BmsReturnOrderDetailTb) obj;
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
@@ -413,20 +415,29 @@ public class KdApiServiceImpl implements KdApiService {
         if (bmsSupplierTb == null) {
             throw new BusinessException("供应商不存在" + bmsProductStockInLog.getSupplierCode());
         }
-        if (bmsSupplierTb.getKdNumber() == null) {
+        if (StringUtils.isEmpty(bmsSupplierTb.getKdNumber() )) {
             throw new BusinessException("供应商未同步金蝶" + bmsProductStockInLog.getSupplierCode());
         }
         BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsProductStockInLog.getProductInnerCode());
         if (bmsProductTb == null) {
             throw new BusinessException("耗材库中不存在此耗材：" + bmsProductStockInLog.getProductInnerCode());
         }
-        if (bmsProductTb.getKdNumber() == null) {
+        if (StringUtils.isEmpty(bmsProductTb.getKdNumber())) {
             throw new BusinessException("耗材还未同步到金蝶" + bmsProductStockInLog.getProductInnerCode());
         }
+        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsProductStockInLog.getStockCode());
+        if(bmsStockDict==null){
+            throw new BusinessException("仓库找不到");
+        }
+        if(StringUtils.isEmpty(bmsStockDict.getKdNumber())){
+            throw new BusinessException("仓库未同步到金蝶："+bmsStockDict.getStockName());
+        }
+
+
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
 
-        InStockSaveModel inStockSaveModel = new InStockSaveModel(bmsProjectDict.getKdProjectType(), bmsProductStockInLog.getId().toString(), inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber().toString(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()), bmsProductStockInLog.getProjectCode(), bmsProductStockInLog.getStockCode(), new BigDecimal(bmsProductStockInLog.getTaxRate() == null ? "0" : bmsProductStockInLog.getTaxRate()));
+        InStockSaveModel inStockSaveModel = new InStockSaveModel(bmsProjectDict.getKdProjectType(), bmsProductStockInLog.getId().toString(), inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()), bmsProductStockInLog.getProjectCode(), bmsStockDict.getKdNumber(), new BigDecimal(bmsProductStockInLog.getTaxRate() == null ? "0" : bmsProductStockInLog.getTaxRate()));
 
         return KdRequestUtil.save(FormIdEnum.STK_InStock, KdApiBaseSaveRequestDTO.buildOfSave(inStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 
@@ -464,10 +475,9 @@ public class KdApiServiceImpl implements KdApiService {
         if (bmsStockDict.getKdNumber() == null) {
             throw new BusinessException("库房未同步到金蝶" + bmsStockDict.getKdNumber());
         }
-
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
-        OutStockSaveModel outStockSaveModel = new OutStockSaveModel(bmsProductStockOutLog.getId().toString(), outDate, kdParentGroupEnum, orgCode, bmsProductTb.getProductInnerCode(), new BigDecimal(bmsProductStockOutLog.getOutNumber()), bmsStockDict.getStockCode());
+        OutStockSaveModel outStockSaveModel = new OutStockSaveModel(bmsProductStockOutLog.getId().toString(), outDate, kdParentGroupEnum, orgCode, bmsProductTb.getProductInnerCode(), new BigDecimal(bmsProductStockOutLog.getOutNumber()), bmsStockDict.getKdNumber());
         return KdRequestUtil.save(FormIdEnum.STK_MisDelivery, KdApiBaseSaveRequestDTO.buildOfSave(outStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 
     }
@@ -495,12 +505,19 @@ public class KdApiServiceImpl implements KdApiService {
         if (bmsSupplierTb.getKdNumber() == null) {
             throw new BusinessException("供应商未同步金蝶" + bmsReturnOrderDetailTb.getSupplierCode());
         }
+        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsReturnOrderDetailTb.getStockCode());
+        if (bmsStockDict == null) {
+            throw new BusinessException("库房异常，找不到此库房" + bmsReturnOrderDetailTb.getStockCode());
+        }
+        if (bmsStockDict.getKdNumber() == null) {
+            throw new BusinessException("库房未同步到金蝶" + bmsStockDict.getKdNumber());
+        }
         String returnDate = DateUtil.format(bmsReturnOrderDetailTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
 
 
-        ReturnStockSaveModel returnStockSaveModel = new ReturnStockSaveModel(bmsReturnOrderDetailTb.getId().toString(), kdParentGroupEnum, orgCode, returnDate, bmsSupplierTb.getKdNumber().toString(), bmsReturnOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber()), bmsReturnOrderDetailTb.getStockCode(), bmsReturnOrderDetailTb.getProjectCode(), new BigDecimal(bmsReturnOrderDetailTb.getTaxRate() == null ? "0" : bmsReturnOrderDetailTb.getTaxRate()));
+        ReturnStockSaveModel returnStockSaveModel = new ReturnStockSaveModel(bmsReturnOrderDetailTb.getId().toString(), kdParentGroupEnum, orgCode, returnDate, bmsSupplierTb.getKdNumber().toString(), bmsReturnOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber()), bmsStockDict.getKdNumber(), bmsReturnOrderDetailTb.getProjectCode(), new BigDecimal(bmsReturnOrderDetailTb.getTaxRate() == null ? "0" : bmsReturnOrderDetailTb.getTaxRate()));
         return KdRequestUtil.save(FormIdEnum.PUR_MRB, KdApiBaseSaveRequestDTO.buildOfSave(returnStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 
     }
@@ -548,7 +565,7 @@ public class KdApiServiceImpl implements KdApiService {
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
 
-        MoveStockSaveModel moveStockSaveModel = new MoveStockSaveModel(bmsMoveOrderDetailTb.getId().toString(), moveDate, kdParentGroupEnum, orgCode, bmsMoveOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsMoveOrderDetailTb.getMoveNumber()), bmsMoveOrderDetailTb.getFromStockCode(), bmsMoveOrderDetailTb.getToStockCode());
+        MoveStockSaveModel moveStockSaveModel = new MoveStockSaveModel(bmsMoveOrderDetailTb.getId().toString(), moveDate, kdParentGroupEnum, orgCode, bmsMoveOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsMoveOrderDetailTb.getMoveNumber()), srcBmsStockDict.getKdNumber(), targetBmsStockDict.getKdNumber());
         return KdRequestUtil.save(FormIdEnum.STK_TransferDirect, KdApiBaseSaveRequestDTO.buildOfModify(moveStockSaveModel));
     }
 

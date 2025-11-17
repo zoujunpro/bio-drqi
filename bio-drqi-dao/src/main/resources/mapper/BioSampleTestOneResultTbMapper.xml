@@ -27,6 +27,7 @@
         <result property="testChannel" column="test_channel" jdbcType="VARCHAR"/>
         <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
         <result property="uploadNum" column="upload_num" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -38,7 +39,7 @@
         test_elisa_result,test_qbzr_seq,test_edit_residue_info,
         test_user_id,test_user_name,test_time,
         create_time,test_channel,task_num,
-        upload_num,test_org_result
+        upload_num,test_org_result,remark
     </sql>
     <insert id="insertBatch">
         insert into bio_sample_test_one_result_tb(id,sample_code,test_identify_primer,
@@ -97,6 +98,8 @@
             <if test="testChannel != null and testChannel!=''">and test_channel=#{testChannel,jdbcType=VARCHAR}</if>
             <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="uploadNum != null and uploadNum!=''">and upload_num=#{uploadNum,jdbcType=VARCHAR}</if>
+            <if test='noMatchFlag == "Y"'>and remark is not null</if>
+
         </where>
         order by id desc
     </select>

@@ -15,7 +15,7 @@
         <result property="kdCategoryCode" column="kd_category_code" jdbcType="VARCHAR"/>
         <result property="kdCategoryName" column="kd_category_name" jdbcType="VARCHAR"/>
         <result property="kdParentName" column="kd_parent_name" jdbcType="VARCHAR"/>
-        <result property="kdNumber" column="kd_number" jdbcType="INTEGER"/>
+        <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
 
     </resultMap>
 

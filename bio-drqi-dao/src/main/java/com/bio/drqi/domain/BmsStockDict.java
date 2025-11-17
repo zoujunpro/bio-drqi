@@ -40,7 +40,7 @@ public class BmsStockDict implements Serializable {
     /**
      * 金蝶编号
      */
-    private Integer kdNumber;
+    private String kdNumber;
 
     /**
      * 创建时间

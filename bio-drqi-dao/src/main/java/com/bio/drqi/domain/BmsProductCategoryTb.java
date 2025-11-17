@@ -57,7 +57,7 @@ public class BmsProductCategoryTb implements Serializable {
 
     private String kdParentName;
 
-    private Integer kdNumber;
+    private String kdNumber;
 
     private String kdCategoryCode;
 

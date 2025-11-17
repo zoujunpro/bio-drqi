@@ -148,7 +148,7 @@ public class BmsReturnOrderDetailTb implements Serializable {
     @TableField(exist = false)
     private String endDate;
 
-    private Integer kdNumber;
+    private String kdNumber;
 
     private String productCategoryCode;
 

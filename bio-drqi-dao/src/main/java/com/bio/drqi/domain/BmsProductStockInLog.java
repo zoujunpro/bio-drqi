@@ -167,7 +167,7 @@ public class BmsProductStockInLog implements Serializable {
     @TableField(exist = false)
     private String endDate;
 
-    private Integer kdNumber;
+    private String kdNumber;
 
 
     @TableField(exist = false)

@@ -15,7 +15,7 @@ public class MaterialSaveModel extends KdModel {
     /**
      * 实体主键
      */
-    private Integer FMATERIALID;
+    private String FMATERIALID;
 
     /**
      * 编码
@@ -52,7 +52,7 @@ public class MaterialSaveModel extends KdModel {
     }
 
     public MaterialSaveModel(String fnumber, String fname, String fspecification, String f_WAUJ_PP, String kdMaterialGroupId, String kdCategoryCode) {
-        this.FMATERIALID = 0;
+        this.FMATERIALID = "0";
         Fnumber = fnumber;
         Fname = fname;
         Fspecification = fspecification;

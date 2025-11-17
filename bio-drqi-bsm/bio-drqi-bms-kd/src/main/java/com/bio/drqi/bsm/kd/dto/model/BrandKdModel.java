@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class BrandKdModel extends KdModel {
-    private Integer FID;
+    private String FID;
     private String Fnumber;
     private String Fname;
     private String Fdescription;

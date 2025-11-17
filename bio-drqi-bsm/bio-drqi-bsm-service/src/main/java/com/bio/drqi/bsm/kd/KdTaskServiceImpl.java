@@ -95,7 +95,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
         for (BmsStockDict bmsStockDict : bmsStockDictList) {
             String kdNumber = null;
-            if (bmsStockDict.getKdNumber() != null && bmsStockDict.getKdNumber() > 0) {
+            if (StringUtils.isNotEmpty(bmsStockDict.getKdNumber())) {
                 kdNumber = kdApiService.execute(OperateEnum.stockModify, bmsStockDict, bmsStockDict.getUnitCode());
             } else {
                 try {
@@ -107,7 +107,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                         throw new BusinessException(e.getMessage());
                     }
                 }
-                bmsStockDict.setKdNumber(Integer.valueOf(kdNumber));
+                bmsStockDict.setKdNumber(kdNumber);
                 bmsStockDictMapper.updateById(bmsStockDict);
             }
         }
@@ -145,7 +145,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                     }
 
                 }
-                bmsProductCategoryTb.setKdNumber(Integer.valueOf(idStr));
+                bmsProductCategoryTb.setKdNumber(idStr);
                 bmsProductCategoryTbMapper.updateById(bmsProductCategoryTb);
             }
         }
@@ -190,7 +190,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
         List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectList(null).stream().filter(bmsProductTb -> bmsProductCategoryCodeList.contains(bmsProductTb.getProductCategoryCode())).collect(Collectors.toList());
         for (BmsProductTb bmsProductTb : bmsProductTbList) {
-            if (bmsProductTb.getKdNumber() != null && bmsProductTb.getKdNumber() > 0) {
+            if (StringUtils.isNotEmpty(bmsProductTb.getKdNumber())) {
                 kdApiService.execute(OperateEnum.materialModify, bmsProductTb, PurchaseUnitEnum.default_.name());
             } else {
                 String kdNumber = null;
@@ -203,7 +203,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                         throw new BusinessException(e.getMessage());
                     }
                 }
-                bmsProductTb.setKdNumber(Integer.valueOf(kdNumber));
+                bmsProductTb.setKdNumber(kdNumber);
                 bmsProductTbMapper.updateById(bmsProductTb);
             }
         }
@@ -240,7 +240,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                     throw new BusinessException(e.getMessage());
                 }
             }
-            bmsProductStockInLog.setKdNumber(Integer.valueOf(kdNumber));
+            bmsProductStockInLog.setKdNumber(kdNumber);
             bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
         }
         log.info("*****************入库数据同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
@@ -277,7 +277,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                     }
 
                 }
-                bmsProductStockOutLog.setKdNumber(Integer.valueOf(kdNumber));
+                bmsProductStockOutLog.setKdNumber(kdNumber);
                 bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
             }
 
@@ -315,7 +315,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                         throw new BusinessException(e.getMessage());
                     }
                 }
-                bmsReturnOrderDetailTb.setKdNumber(Integer.valueOf(kdNumber));
+                bmsReturnOrderDetailTb.setKdNumber(kdNumber);
                 bmsReturnOrderDetailTbMapper.updateById(bmsReturnOrderDetailTb);
             }
         }

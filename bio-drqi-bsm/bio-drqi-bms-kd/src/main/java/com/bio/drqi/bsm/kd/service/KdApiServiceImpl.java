@@ -232,7 +232,7 @@ public class KdApiServiceImpl implements KdApiService {
     private String executeBrandSave(Object obj, String unitCode) {
         BmsBrandTb bmsBrandTb = (BmsBrandTb) obj;
         BrandKdModel brandKdModel = new BrandKdModel();
-        brandKdModel.setFID(0);
+        brandKdModel.setFID("0");
         brandKdModel.setFnumber(bmsBrandTb.getBrandCode());
         brandKdModel.setFname(bmsBrandTb.getBrandName());
         return KdRequestUtil.save(FormIdEnum.CMK_BD_Brand, KdApiBaseSaveRequestDTO.buildOfSave(brandKdModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
@@ -322,7 +322,7 @@ public class KdApiServiceImpl implements KdApiService {
     private String executeStockSave(Object obj, String unitCode) {
         BmsStockDict bmsStockDict = (BmsStockDict) obj;
         StockModel stockModel = new StockModel();
-        stockModel.setFStockId(0);
+        stockModel.setFStockId("0");
         stockModel.setFnumber(bmsStockDict.getStockCode());
         stockModel.setFname(bmsStockDict.getStockName());
         stockModel.setFStockProperty("1");

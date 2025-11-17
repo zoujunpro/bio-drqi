@@ -56,8 +56,6 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
         ExperimentTaskDTO experimentTaskDTO = BeanUtils.toBean(bioTaskDtlTb.getTaskForm(), ExperimentTaskDTO.class);
         ValidatorUtil.validator(experimentTaskDTO);
         //校验内容
-
-
         CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(experimentTaskDTO.getSpeciesCode());
         if (cerSpeciesConf == null) {
             throw new BusinessException("物种找不到");

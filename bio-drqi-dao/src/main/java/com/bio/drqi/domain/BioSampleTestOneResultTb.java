@@ -134,9 +134,12 @@ public class BioSampleTestOneResultTb implements Serializable {
      */
     private String uploadNum;
 
+    private String remark;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
 
     public static BioSampleTestOneResultTb of(CerSampleTestTb cerSampleTestTb, String channel, String taskNum, String uploadNum) {
         BioSampleTestOneResultTb bioSampleSampleOneResultTb = new BioSampleTestOneResultTb();

@@ -108,11 +108,23 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(testExcelDTO.getSampleCode());
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                     log.info("取样不存在项目管理系统：" + testExcelDTO.getSampleCode());
+                    BioSampleTestOneResultTb bioSampleTestOneResultTb=new BioSampleTestOneResultTb();
+                    bioSampleTestOneResultTb.setSampleCode(testExcelDTO.getSampleCode());
+                    bioSampleTestOneResultTb.setUploadNum(cerSampleTestResultFileTb.getUploadNum());
+                    bioSampleTestOneResultTb.setTestChannel(TestChannelEnum.project.name());
+                    bioSampleTestOneResultTb.setRemark("取样编号错误或者取样编号不属于T0代取样");
+                    bioSampleSampleOneResultTbList.add(bioSampleTestOneResultTb);
                     continue;
                 }
                 cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isEmpty(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                     log.info("取样已经审批完成：" + testExcelDTO.getSampleCode());
+                    BioSampleTestOneResultTb bioSampleTestOneResultTb=new BioSampleTestOneResultTb();
+                    bioSampleTestOneResultTb.setSampleCode(testExcelDTO.getSampleCode());
+                    bioSampleTestOneResultTb.setUploadNum(cerSampleTestResultFileTb.getUploadNum());
+                    bioSampleTestOneResultTb.setTestChannel(TestChannelEnum.project.name());
+                    bioSampleTestOneResultTb.setRemark("取样已经审批完成");
+                    bioSampleSampleOneResultTbList.add(bioSampleTestOneResultTb);
                     continue;
                 }
                 cerSampleTestTbList = cerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId).reversed()).collect(Collectors.toList());

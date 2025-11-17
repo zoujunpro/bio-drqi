@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class ExperimentTaskDTO {
+public class PlantExperimentTaskDTO {
 
 
     @NotBlank(message = "物种必填")

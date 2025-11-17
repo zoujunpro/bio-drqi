@@ -82,8 +82,8 @@ public class CerSampleTwoResultServiceImpl implements CerSampleTwoResultService 
         }
         List<BioSampleTestTwoResultDetailTb> bioSampleTestTwoResultDetailTbList = synSampleTestResultService.synBioResult(Arrays.asList(bioSampleTestTwoResultTb));
         if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultDetailTbList)) {
+            bioSampleTestTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(bioSampleTestTwoResultTb.getApplyNo(), bioSampleTestTwoResultTb.getSampleCode());
             for (BioSampleTestTwoResultDetailTb bioSampleTestTwoResultDetailTb : bioSampleTestTwoResultDetailTbList) {
-                bioSampleTestTwoResultDetailTbMapper.deleteByApplyNoAndSampleCodeAndUniqueDbCode(bioSampleTestTwoResultDetailTb.getApplyNo(), bioSampleTestTwoResultDetailTb.getSampleCode(), bioSampleTestTwoResultDetailTb.getUniqueDbCode());
                 bioSampleTestTwoResultDetailTbMapper.insert(bioSampleTestTwoResultDetailTb);
             }
         }

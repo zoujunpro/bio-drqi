@@ -193,7 +193,7 @@ public class KdApiServiceImpl implements KdApiService {
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.BD_STOCK.name());
         executeBillQueryModelDTO.setFieldKeys("FNUMBER");
-        String filterString = "FNUMBER='%s' and FCreateOrgId.FNumber ='%s' and  FUseOrgId.FNumber='%s' and  FDocumentStatus='C' and FForbidStatus='A'";
+        String filterString = "F_WAUJ_UUID='%s' and FCreateOrgId.FNumber ='%s' and  FUseOrgId.FNumber='%s' and  FDocumentStatus='C' and FForbidStatus='A'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsStockDict.getStockCode(), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
         if (CollectionUtil.isNotEmpty(result) && CollectionUtil.isNotEmpty(result.get(0))) {
@@ -323,7 +323,7 @@ public class KdApiServiceImpl implements KdApiService {
         BmsStockDict bmsStockDict = (BmsStockDict) obj;
         StockModel stockModel = new StockModel();
         stockModel.setFStockId("0");
-        stockModel.setFnumber(bmsStockDict.getStockCode());
+        stockModel.setF_WAUJ_UUID(bmsStockDict.getStockCode());
         stockModel.setFname(bmsStockDict.getStockName());
         stockModel.setFStockProperty("1");
         stockModel.setFStockStatusType("0,1,2,3,4,5,6,7,8");
@@ -340,7 +340,7 @@ public class KdApiServiceImpl implements KdApiService {
         BmsStockDict bmsStockDict = (BmsStockDict) obj;
         StockModel stockModel = new StockModel();
         stockModel.setFStockId(bmsStockDict.getKdNumber());
-        stockModel.setFnumber(bmsStockDict.getStockCode());
+        stockModel.setF_WAUJ_UUID(bmsStockDict.getStockCode());
         stockModel.setFname(bmsStockDict.getStockName());
         return KdRequestUtil.save(FormIdEnum.BD_STOCK, KdApiBaseSaveRequestDTO.buildOfModify(stockModel));
 

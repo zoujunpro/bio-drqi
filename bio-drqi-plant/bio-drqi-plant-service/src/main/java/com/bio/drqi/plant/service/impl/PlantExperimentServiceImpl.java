@@ -4,13 +4,17 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.drqi.domain.PlantExperimentDetailTb;
 import com.bio.drqi.domain.PlantExperimentTb;
+import com.bio.drqi.mapper.PlantExperimentDetailTbMapper;
 import com.bio.drqi.mapper.PlantExperimentTbMapper;
 import com.bio.drqi.plant.dto.ExperimentExcelDTO;
-import com.bio.drqi.plant.req.PlantExperimentReqDTO;
-import com.bio.drqi.plant.rsp.PlantExperimentRspDTO;
+import com.bio.drqi.plant.req.PlantExperimentListPageDetailReqDTO;
+import com.bio.drqi.plant.req.PlantExperimentListPageReqDTO;
+import com.bio.drqi.plant.rsp.PlantExperimentListPageDetailRspDTO;
+import com.bio.drqi.plant.rsp.PlantExperimentListPageRspDTO;
 import com.bio.drqi.plant.service.PlantExperimentService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -24,15 +28,25 @@ public class PlantExperimentServiceImpl implements PlantExperimentService {
     @Resource
     private PlantExperimentTbMapper plantExperimentTbMapper;
 
+    private PlantExperimentDetailTbMapper plantExperimentDetailTbMapper;
+
     @Override
-    public PageInfo<PlantExperimentRspDTO> listPage(PlantExperimentReqDTO plantExperimentReqDTO) {
-        PageHelper.startPage(plantExperimentReqDTO.getPageNum(), plantExperimentReqDTO.getPageSize());
-        PlantExperimentTb plantExperimentTb = BeanUtils.copyProperties(plantExperimentReqDTO, PlantExperimentTb.class);
-        plantExperimentTb.setVectorTaskCodes(plantExperimentReqDTO.getVectorTaskCode());
-        plantExperimentTb.setPdNums(plantExperimentReqDTO.getPdNum());
+    public PageInfo<PlantExperimentListPageRspDTO> listPage(PlantExperimentListPageReqDTO plantExperimentListPageReqDTO) {
+        PageHelper.startPage(plantExperimentListPageReqDTO.getPageNum(), plantExperimentListPageReqDTO.getPageSize());
+        PlantExperimentTb plantExperimentTb = BeanUtils.copyProperties(plantExperimentListPageReqDTO, PlantExperimentTb.class);
+        plantExperimentTb.setVectorTaskCodes(plantExperimentListPageReqDTO.getVectorTaskCode());
+        plantExperimentTb.setPdNums(plantExperimentListPageReqDTO.getPdNum());
         List<PlantExperimentTb> plantExperimentTbList = plantExperimentTbMapper.selectSelective(plantExperimentTb);
         PageInfo<PlantExperimentTb> srcPageInfo = new PageInfo<>(plantExperimentTbList);
-        return BeanUtils.copyPageInfoProperties(srcPageInfo, PlantExperimentRspDTO.class);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo, PlantExperimentListPageRspDTO.class);
+    }
+
+    @Override
+    public PageInfo<PlantExperimentListPageDetailRspDTO> listPageDetail(PlantExperimentListPageDetailReqDTO plantExperimentListPageDetailReqDTO) {
+        PageHelper.startPage(plantExperimentListPageDetailReqDTO.getPageNum(), plantExperimentListPageDetailReqDTO.getPageSize());
+        List<PlantExperimentDetailTb> plantExperimentDetailTbList = plantExperimentDetailTbMapper.selectSelective(BeanUtils.copyProperties(plantExperimentListPageDetailReqDTO, PlantExperimentDetailTb.class));
+        PageInfo<PlantExperimentDetailTb> srcPageInfo=new PageInfo<>(plantExperimentDetailTbList);
+        return BeanUtils.copyPageInfoProperties(srcPageInfo, PlantExperimentListPageDetailRspDTO.class);
     }
 
     @Override

@@ -2,8 +2,10 @@ package com.bio.drqi.plant.controller;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.plant.req.PlantExperimentReqDTO;
-import com.bio.drqi.plant.rsp.PlantExperimentRspDTO;
+import com.bio.drqi.plant.req.PlantExperimentListPageDetailReqDTO;
+import com.bio.drqi.plant.req.PlantExperimentListPageReqDTO;
+import com.bio.drqi.plant.rsp.PlantExperimentListPageDetailRspDTO;
+import com.bio.drqi.plant.rsp.PlantExperimentListPageRspDTO;
 import com.bio.drqi.plant.service.PlantExperimentService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +26,13 @@ public class PlantExperimentController {
     /**
      * CER试验管理-分页查询
      *
-     * @param plantExperimentReqDTO
+     * @param plantExperimentListPageReqDTO
      * @return
      */
     @PostMapping("/listPage")
     @WebLog(desc = "CER试验管理-分页查询")
-    public ResponseResult<PageInfo<PlantExperimentRspDTO>> listPage(@RequestBody PlantExperimentReqDTO plantExperimentReqDTO) {
-        return ResponseResult.getSuccess(plantExperimentService.listPage(plantExperimentReqDTO));
+    public ResponseResult<PageInfo<PlantExperimentListPageRspDTO>> listPage(@RequestBody PlantExperimentListPageReqDTO plantExperimentListPageReqDTO) {
+        return ResponseResult.getSuccess(plantExperimentService.listPage(plantExperimentListPageReqDTO));
     }
 
     /**
@@ -44,5 +46,16 @@ public class PlantExperimentController {
         plantExperimentService.downloadTemplate(httpServletResponse);
     }
 
+    /**
+     * CER试验管理-分页查询试验详情
+     *
+     * @param plantExperimentListPageDetailReqDTO
+     * @return
+     */
+    @PostMapping("/listPageDetail")
+    @WebLog(desc = "CER试验管理-分页查询试验详情")
+    public ResponseResult<PageInfo<PlantExperimentListPageDetailRspDTO>> listPageDetail(@RequestBody PlantExperimentListPageDetailReqDTO plantExperimentListPageDetailReqDTO) {
+        return ResponseResult.getSuccess(plantExperimentService.listPageDetail(plantExperimentListPageDetailReqDTO));
+    }
 
 }

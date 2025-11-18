@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class PlantExperimentRspDTO {
+public class PlantExperimentListPageRspDTO {
     private Integer id;
 
     /**

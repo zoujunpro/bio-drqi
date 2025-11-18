@@ -1,7 +1,9 @@
 package com.bio.drqi.plant.service;
 
-import com.bio.drqi.plant.req.PlantExperimentReqDTO;
-import com.bio.drqi.plant.rsp.PlantExperimentRspDTO;
+import com.bio.drqi.plant.req.PlantExperimentListPageDetailReqDTO;
+import com.bio.drqi.plant.req.PlantExperimentListPageReqDTO;
+import com.bio.drqi.plant.rsp.PlantExperimentListPageDetailRspDTO;
+import com.bio.drqi.plant.rsp.PlantExperimentListPageRspDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -12,10 +14,12 @@ public interface PlantExperimentService {
     /**
      * CER试验管理-分页查询
      *
-     * @param plantExperimentReqDTO
+     * @param plantExperimentListPageReqDTO
      * @return
      */
-    PageInfo<PlantExperimentRspDTO> listPage(@RequestBody PlantExperimentReqDTO plantExperimentReqDTO);
+    PageInfo<PlantExperimentListPageRspDTO> listPage(@RequestBody PlantExperimentListPageReqDTO plantExperimentListPageReqDTO);
+
+    PageInfo<PlantExperimentListPageDetailRspDTO> listPageDetail(@RequestBody PlantExperimentListPageDetailReqDTO plantExperimentListPageDetailReqDTO);
 
     /**
      * CER试验管理-下载模板

@@ -6,13 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NotBlank
-public class PlantExperimentReqDTO extends PageDTO {
+public class PlantExperimentListPageReqDTO extends PageDTO {
 
     /**
      * 物种

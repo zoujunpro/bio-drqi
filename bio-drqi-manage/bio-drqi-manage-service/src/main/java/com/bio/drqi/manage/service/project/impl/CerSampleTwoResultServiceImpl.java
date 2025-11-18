@@ -3,6 +3,7 @@ package com.bio.drqi.manage.service.project.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.external.client.BioInfoClientApi;
@@ -79,6 +80,9 @@ public class CerSampleTwoResultServiceImpl implements CerSampleTwoResultService 
         BioSampleTestTwoResultTb bioSampleTestTwoResultTb = bioSampleTestTwoResultTbMapper.selectById(id);
         if (Objects.isNull(bioSampleTestTwoResultTb)) {
             throw new BusinessException("excel没匹配到该生信检测数据");
+        }
+        if(BioDrQiContents.O.equals(bioSampleTestTwoResultTb.getSynResult())){
+            throw new BusinessException(bioSampleTestTwoResultTb.getSynResult());
         }
         List<BioSampleTestTwoResultDetailTb> bioSampleTestTwoResultDetailTbList = synSampleTestResultService.synBioResult(Arrays.asList(bioSampleTestTwoResultTb));
         if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultDetailTbList)) {

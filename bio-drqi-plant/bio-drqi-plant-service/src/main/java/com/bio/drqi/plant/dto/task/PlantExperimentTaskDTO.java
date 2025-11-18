@@ -10,6 +10,9 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class PlantExperimentTaskDTO {
 
+
+    private String sampleCodePrefix;
+
     @NotBlank(message = "物种必填")
     private String speciesCode;
 

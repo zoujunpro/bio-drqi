@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 @Service("plant_sample_test_task")
@@ -94,14 +95,57 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
             }
             for (PlantSampleTestTaskDTO.RepeatSampleTest repeatSampleTest : plantExperimentTaskDTO.getRepeatSampleTestList()) {
                 PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(repeatSampleTest.getSampleCode());
-                if(plantSingleStockTb==null){
-                    throw new BusinessException("CER中无此种植编号苗信息："+repeatSampleTest.getSampleCode());
+                if (plantSingleStockTb == null) {
+                    throw new BusinessException("CER中无此种植编号苗信息：" + repeatSampleTest.getSampleCode());
                 }
                 //todo 需要校验状态
+                PlantSampleTestTb plantSampleTestTb=new PlantSampleTestTb();
+                plantSampleTestTb.setVectorTaskCode(null);
+                plantSampleTestTb.setSampleCode(plantSingleStockTb.getSampleCode());
+                plantSampleTestTb.setApplyTime(bioTaskDtlTb.getApplyTime());
+                plantSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
+                plantSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
+                plantSampleTestTb.setTestIdentifyPrimer(null);
+                plantSampleTestTb.setTestMethod(null);
+                plantSampleTestTb.setTestEditType(null);
+                plantSampleTestTb.setTestNoTransIdentityPrimer(null);
+                plantSampleTestTb.setTestIsGeneModifyPositive(null);
+                plantSampleTestTb.setTestIfFixedPoint(null);
+                plantSampleTestTb.setTestIfCopyInsert(null);
+                plantSampleTestTb.setTestFixedPointType(null);
+                plantSampleTestTb.setTestDonorResidueInfo(null);
+                plantSampleTestTb.setTestInsertionSite(null);
+                plantSampleTestTb.setTestElisaResult(null);
+                plantSampleTestTb.setTestQbzrSeq(null);
+                plantSampleTestTb.setTestEditResidueInfo(null);
+                plantSampleTestTb.setTestUserId(null);
+                plantSampleTestTb.setTestUserName(null);
+                plantSampleTestTb.setTestTime(null);
+                plantSampleTestTb.setCheckUserName(null);
+                plantSampleTestTb.setCheckUserId(null);
+                plantSampleTestTb.setCheckResult(null);
+                plantSampleTestTb.setCreateTime(new Date());
+                plantSampleTestTb.setUpdateTime(new Date());
+                plantSampleTestTb.setApplyNo(bioTaskDtlTb.getTaskNum());
+                plantSampleTestTb.setIdentifyPrimer(null);
+                plantSampleTestTb.setUniqueCode(null);
+                plantSampleTestTb.setRemark(null);
+                plantSampleTestTb.setCloneSampleCode(null);
+                plantSampleTestTb.setTestOrgResult(null);
+
+
             }
         }
-        //生成种植数据
+        //重复取样
+        if (CollectionUtil.isEmpty(plantExperimentTaskDTO.getRepeatSampleTestList())) {
+            for (PlantSampleTestTaskDTO.RepeatSampleTest repeatSampleTest : plantExperimentTaskDTO.getRepeatSampleTestList()) {
+                PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(repeatSampleTest.getSampleCode());
+            }
+        }
+        //首次取样
+        if (CollectionUtil.isEmpty(plantExperimentTaskDTO.getFirstSampleApplyList())) {
 
+        }
 
 
     }

@@ -141,6 +141,9 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
             plantExperimentTbMapper.insert(plantExperimentTb);
             plantExperimentDetailTbMapper.insertBatch(plantExperimentDetailTbList);
             plantMultipleStockTbMapper.insertBatch(plantMultipleStockTbList);
+
+            plantExperimentTaskDTO.setSampleCodePrefix(plantExperimentTb.getSampleCodePrefix());
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plantExperimentTaskDTO));
         }
 
     }

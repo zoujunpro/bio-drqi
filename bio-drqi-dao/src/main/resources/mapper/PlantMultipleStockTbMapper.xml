@@ -38,7 +38,7 @@
         create_time,create_user_id,create_user_name,
         task_num,species_code,breed_code,
         sample_number,current_number,region_num,
-        vector_task_code,pd_number)
+        vector_task_code,pd_num)
         values
         <foreach collection="plantMultipleStockTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.seedNum,jdbcType=VARCHAR},#{item.transformCode,jdbcType=VARCHAR},
@@ -46,7 +46,7 @@
             #{item.createTime,jdbcType=TIMESTAMP},#{item.createUserId,jdbcType=NUMERIC},#{item.createUserName,jdbcType=VARCHAR},
             #{item.taskNum,jdbcType=VARCHAR},#{item.speciesCode,jdbcType=VARCHAR},#{item.breedCode,jdbcType=VARCHAR},
             #{item.sampleNumber,jdbcType=NUMERIC},#{item.currentNumber,jdbcType=NUMERIC},#{item.regionNum,jdbcType=VARCHAR},
-            #{item.vectorTaskCode,jdbcType=VARCHAR},#{item.pdNumber,jdbcType=VARCHAR})
+            #{item.vectorTaskCode,jdbcType=VARCHAR},#{item.pdNum,jdbcType=VARCHAR})
         </foreach>
     </insert>
 </mapper>

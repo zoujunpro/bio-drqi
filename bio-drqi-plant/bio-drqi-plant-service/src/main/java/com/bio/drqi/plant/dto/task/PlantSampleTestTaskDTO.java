@@ -59,14 +59,10 @@ public class PlantSampleTestTaskDTO {
     @Data
     public static class RepeatSampleApply{
 
-        private String sampleCode;
-
         private String sourceCode;
 
-        /**
-         * 小区编号
-         */
-        private String regionNum;
+
+
         /**
          * 种子编号
          */

@@ -27,7 +27,10 @@ public class PlantExperimentServiceImpl implements PlantExperimentService {
     @Override
     public PageInfo<PlantExperimentRspDTO> listPage(PlantExperimentReqDTO plantExperimentReqDTO) {
         PageHelper.startPage(plantExperimentReqDTO.getPageNum(), plantExperimentReqDTO.getPageNum());
-        List<PlantExperimentTb> plantExperimentTbList = plantExperimentTbMapper.selectSelective(BeanUtils.copyProperties(plantExperimentReqDTO, PlantExperimentTb.class));
+        PlantExperimentTb plantExperimentTb = BeanUtils.copyProperties(plantExperimentReqDTO, PlantExperimentTb.class);
+        plantExperimentTb.setVectorTaskCodes(plantExperimentReqDTO.getVectorTaskCode());
+        plantExperimentTb.setPdNums(plantExperimentReqDTO.getPdNum());
+        List<PlantExperimentTb> plantExperimentTbList = plantExperimentTbMapper.selectSelective(plantExperimentTb);
         PageInfo<PlantExperimentTb> srcPageInfo = new PageInfo<>(plantExperimentTbList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, PlantExperimentRspDTO.class);
     }

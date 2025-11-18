@@ -60,4 +60,6 @@ public class PlantExperimentListPageRspDTO {
 
 
     private String pdNums;
+
+    private String sampleCodePrefix;
 }

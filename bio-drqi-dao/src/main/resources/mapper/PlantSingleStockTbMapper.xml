@@ -44,4 +44,11 @@
         create_user_name,task_num,breed_code,
         source_code,remark
     </sql>
+    <select id="selectOneByPlantCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_single_stock_tb
+        where
+        plant_code = #{plantCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

@@ -83,5 +83,12 @@
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
         </where>
     </select>
+    <select id="selectAllByRegionNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_experiment_detail_tb
+        where
+        region_num = #{regionNum,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

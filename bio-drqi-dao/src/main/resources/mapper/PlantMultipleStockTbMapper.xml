@@ -49,4 +49,20 @@
             #{item.vectorTaskCode,jdbcType=VARCHAR},#{item.pdNum,jdbcType=VARCHAR})
         </foreach>
     </insert>
+    <select id="selectOneByVectorTaskCodeAndTransformCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_multiple_stock_tb
+        where
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+        AND transform_code = #{transformCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOneByRegionNumAndSeedNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_multiple_stock_tb
+        where
+        region_num = #{regionNum,jdbcType=VARCHAR}
+        AND seed_num = #{seedNum,jdbcType=VARCHAR}
+    </select>
 </mapper>

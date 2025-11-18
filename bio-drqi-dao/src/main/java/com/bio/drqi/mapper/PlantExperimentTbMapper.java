@@ -14,6 +14,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface PlantExperimentTbMapper extends BaseMapper<PlantExperimentTb> {
 
     List<PlantExperimentTb> selectSelective(PlantExperimentTb plantExperimentTb);
+
+    String selectMaxSampleCodePrefix();
 }
 
 

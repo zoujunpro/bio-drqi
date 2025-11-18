@@ -1,6 +1,7 @@
 package com.bio.drqi.plant.flowtask;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
@@ -10,6 +11,8 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.SampleGroupPergixEnum;
+import com.bio.drqi.common.util.LetterUtil;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.plant.dto.ExperimentExcelDTO;
@@ -52,7 +55,6 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
     private PlantMultipleStockTbMapper plantMultipleStockTbMapper;
 
 
-
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         PlantExperimentTaskDTO plantExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantExperimentTaskDTO.class);
@@ -64,6 +66,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
         }
 
         List<ExperimentExcelDTO> experimentExcelDTOList = getExperimentExcelDTOS(plantExperimentTaskDTO);
+        List<String> checkReginCodeAndSeedNumList = new ArrayList<>();
         for (ExperimentExcelDTO experimentExcelDTO : experimentExcelDTOList) {
             BeanUtils.trimFiledSpace(experimentExcelDTO);
             ValidatorUtil.validator(plantExperimentTaskDTO);
@@ -78,6 +81,15 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
             if (!cerSpeciesConf.getSpeciesCode().equals(seedStockTb.getSpeciesCode())) {
                 throw new BusinessException("所选种子物种不匹配");
             }
+            List<PlantExperimentDetailTb> plantExperimentDetailTbList = plantExperimentDetailTbMapper.selectAllByRegionNum(experimentExcelDTO.getRegionNum());
+            if(CollectionUtil.isNotEmpty(plantExperimentDetailTbList)){
+                throw new BusinessException("小区编号"+experimentExcelDTO.getRegionNum()+"已经存在其他试验中");
+            }
+            if (checkReginCodeAndSeedNumList.contains(experimentExcelDTO.getRegionNum() + experimentExcelDTO.getSeedNum())) {
+                throw new BusinessException("CER试验小区" + experimentExcelDTO.getRegionNum() + "中存在重复种子编号" + experimentExcelDTO.getSeedNum());
+            }
+            checkReginCodeAndSeedNumList.add(experimentExcelDTO.getRegionNum() + experimentExcelDTO.getSeedNum());
+
         }
     }
 
@@ -97,6 +109,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
             plantExperimentTb.setCreateTime(new Date());
             plantExperimentTb.setCreateUserId(SecurityContextHolder.getUserId());
             plantExperimentTb.setCreateUserName(SecurityContextHolder.getNickName());
+            plantExperimentTb.setSampleCodePrefix(createSampleCode());
             plantExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).collect(Collectors.toList())));
             plantExperimentTb.setPdNums(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdNumber).filter(pdNumber -> StringUtils.isNotEmpty(pdNumber)).collect(Collectors.toList())));
             List<PlantExperimentDetailTb> plantExperimentDetailTbList = new ArrayList<>();
@@ -148,5 +161,14 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
         }
         List<ExperimentExcelDTO> experimentExcelDTOList = ExcelUtil.readExcel(tempFilePath, ExperimentExcelDTO.class);
         return experimentExcelDTOList;
+    }
+
+    private String createSampleCode() {
+        String maxSampleCodePrefix = plantExperimentTbMapper.selectMaxSampleCodePrefix();
+        if (StringUtils.isEmpty(maxSampleCodePrefix)) {
+            return "CAA";
+        } else {
+            return SampleGroupPergixEnum.C.name() + LetterUtil.nextLetterForInstantVerify(maxSampleCodePrefix.substring(1));
+        }
     }
 }

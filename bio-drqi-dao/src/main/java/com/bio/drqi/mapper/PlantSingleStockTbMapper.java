@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.PlantSingleStockTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -10,6 +11,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.drqi.domain.PlantSingleStockTb
 */
 public interface PlantSingleStockTbMapper extends BaseMapper<PlantSingleStockTb> {
+
+    PlantSingleStockTb selectOneByPlantCode(@Param("plantCode") String plantCode);
 
 }
 

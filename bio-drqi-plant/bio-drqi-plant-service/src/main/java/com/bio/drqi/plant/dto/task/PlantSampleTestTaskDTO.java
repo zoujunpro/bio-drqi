@@ -1,5 +1,6 @@
 package com.bio.drqi.plant.dto.task;
 
+import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -18,12 +19,13 @@ public class PlantSampleTestTaskDTO {
     /**
      * 取样类型 首次取样 重复取样
      */
+    @EnumValue(message = "取样类型参数错误", strValues = {"F", "R"})
     private String applyType;
 
     /**
      * one 单管检测   more 96孔板检测
      */
-    @NotBlank(message = "参数缺失：testType")
+    @EnumValue(message = "参数缺失：testType", strValues = {"one", "more"})
     private String testType;
 
 
@@ -37,7 +39,7 @@ public class PlantSampleTestTaskDTO {
     /**
      * 重复申请取样编号
      */
-    private List<String> repeatSampleTestList;
+    private List<RepeatSampleTest> repeatSampleTestList;
 
     /**
      * 重复取样excel
@@ -61,6 +63,26 @@ public class PlantSampleTestTaskDTO {
      */
     private String cancelTaskSampleList;
 
+    @Data
+    public static class RepeatSampleTest {
+        private String sourceCode;
+
+        private String sampleCode;
+
+        private String breedCode;
+
+        private String breedName;
+
+        private String speciesCode;
+
+        private String speciesName;
+
+        private String vectorTaskCode;
+
+        private String regionNum;
+
+        private String seedNum;
+    }
 
     @Data
     public static class FirstSampleApply {
@@ -92,9 +114,8 @@ public class PlantSampleTestTaskDTO {
         private String transformCode;
 
 
-
         @NotNull(message = "取样数量必填")
-        private Integer sampleNum;
+        private Integer sampleNumber;
 
     }
 }

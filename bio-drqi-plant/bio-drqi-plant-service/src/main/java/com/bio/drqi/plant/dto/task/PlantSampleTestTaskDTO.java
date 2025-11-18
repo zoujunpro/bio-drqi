@@ -9,6 +9,12 @@ import java.util.List;
 @Data
 public class PlantSampleTestTaskDTO {
 
+
+    /**
+     * 物种编号
+     */
+    private String speciesCode;
+
     /**
      * 取样类型 首次取样 重复取样
      */
@@ -31,7 +37,7 @@ public class PlantSampleTestTaskDTO {
     /**
      * 重复申请取样编号
      */
-    private List<RepeatSampleApply> repeatSampleApplyList;
+    private List<String> repeatSampleTestList;
 
     /**
      * 重复取样excel
@@ -57,48 +63,14 @@ public class PlantSampleTestTaskDTO {
 
 
     @Data
-    public static class RepeatSampleApply{
-
-        private String sourceCode;
-
-        /**
-         * 种子编号
-         */
-        private String seedNum;
-
-        /**
-         * 实施方案编号
-         */
-        private String vectorTaskCode;
-
-        /**
-         * 物种编号
-         */
-        private String speciesCode;
-        /**
-         * 物种编号
-         */
-        private String speciesName;
-        /**
-         * 品种
-         */
-        private String breedName;
-
-        /**
-         * 品种
-         */
-        private String breedCode;
-        /**
-         * 代次编号
-         */
-        private String generationName;
-
-    }
-
-    @Data
     public static class FirstSampleApply {
 
+
         private String sourceCode;
+        /**
+         * CER试验编号
+         */
+        private String plantExperimentNum;
         /**
          * 小区编号
          */
@@ -109,26 +81,15 @@ public class PlantSampleTestTaskDTO {
          */
         private String seedNum;
 
-
         /**
          * 实施方案编号
          */
         private String vectorTaskCode;
-        /**
-         * 物种编号
-         */
-        private String speciesCode;
 
         /**
-         * 品种code
+         * 实施方案编号
          */
-        private String breedCode;
-
-        /**
-         * 品种
-         */
-        private String breedName;
-
+        private String transformCode;
 
 
 

@@ -37,7 +37,7 @@ public class PlantExperimentListPageDetailRspDTO {
      * 品种
      */
     private String breedCode;
-
+    private String breedName;
     /**
      * 种植编号
      */
@@ -53,6 +53,7 @@ public class PlantExperimentListPageDetailRspDTO {
      */
     private String speciesCode;
 
+    private String speciesName;
     /**
      * 播种时间
      */

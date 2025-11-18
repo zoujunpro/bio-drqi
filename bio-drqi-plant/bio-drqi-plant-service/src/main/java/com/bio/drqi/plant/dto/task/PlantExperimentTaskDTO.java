@@ -1,6 +1,7 @@
 package com.bio.drqi.plant.dto.task;
 
 import cn.hutool.json.JSONUtil;
+import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 import org.apache.tomcat.Jar;
 
@@ -12,7 +13,7 @@ public class PlantExperimentTaskDTO {
     @NotBlank(message = "物种必填")
     private String speciesCode;
 
-    @NotBlank(message = "试验类型必填")
+    @EnumValue(message = "试验类型必填",strValues = {"1","2","3","4","5"})
     private String experimentType;
 
     private String experimentTarget;

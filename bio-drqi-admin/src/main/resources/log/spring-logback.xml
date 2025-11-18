@@ -142,7 +142,7 @@
         <logger name="com.bio.cer.api" level="DEBUG" additivity="false"/>
 
 
-    <root level="${log.level}">
+    <root level="debug">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="DEBUG_FILE"/>
         <appender-ref ref="INFO_FILE"/>

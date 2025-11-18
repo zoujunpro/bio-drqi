@@ -61,8 +61,6 @@ public class PlantSampleTestTaskDTO {
 
         private String sourceCode;
 
-
-
         /**
          * 种子编号
          */
@@ -111,15 +109,16 @@ public class PlantSampleTestTaskDTO {
          */
         private String seedNum;
 
+
         /**
          * 实施方案编号
          */
         private String vectorTaskCode;
-
         /**
          * 物种编号
          */
         private String speciesCode;
+
         /**
          * 品种code
          */

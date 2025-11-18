@@ -1,5 +1,6 @@
 package com.bio.drqi.plant.flowtask;
 
+import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
@@ -9,6 +10,7 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.plant.dto.ExperimentExcelDTO;
 import com.bio.drqi.plant.dto.task.PlantExperimentTaskDTO;
+import com.bio.drqi.plant.dto.task.PlantSampleTestTaskDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -46,32 +48,13 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
-        PlantExperimentTaskDTO plantExperimentTaskDTO = BeanUtils.toBean(bioTaskDtlTb.getTaskForm(), PlantExperimentTaskDTO.class);
+        PlantSampleTestTaskDTO plantExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantSampleTestTaskDTO.class);
         ValidatorUtil.validator(plantExperimentTaskDTO);
         //校验内容
 
 
-        CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(plantExperimentTaskDTO.getSpeciesCode());
-        if (cerSpeciesConf == null) {
-            throw new BusinessException("物种找不到");
-        }
 
-        List<ExperimentExcelDTO> experimentExcelDTOList = getExperimentExcelDTOS(plantExperimentTaskDTO);
-        for (ExperimentExcelDTO experimentExcelDTO : experimentExcelDTOList) {
-            BeanUtils.trimFiledSpace(experimentExcelDTO);
-            ValidatorUtil.validator(plantExperimentTaskDTO);
-            SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(experimentExcelDTO.getSeedNum());
-            if (seedStockTb == null) {
-                throw new BusinessException("上传数据在种子库中找不到材料信息" + experimentExcelDTO.getSeedNum());
-            }
-            SeedProduceAddressDict seedProduceAddressDict = seedProduceAddressDictMapper.selectOneByAddressName(experimentExcelDTO.getExperimentAddressName());
-            if (seedProduceAddressDict == null) {
-                throw new BusinessException("试验地点不正确");
-            }
-            if (!cerSpeciesConf.getSpeciesCode().equals(seedStockTb.getSpeciesCode())) {
-                throw new BusinessException("所选种子物种不匹配");
-            }
-        }
+
     }
 
 

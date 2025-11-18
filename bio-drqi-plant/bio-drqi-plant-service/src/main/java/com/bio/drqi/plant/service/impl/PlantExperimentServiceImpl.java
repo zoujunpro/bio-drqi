@@ -28,6 +28,7 @@ public class PlantExperimentServiceImpl implements PlantExperimentService {
     @Resource
     private PlantExperimentTbMapper plantExperimentTbMapper;
 
+    @Resource
     private PlantExperimentDetailTbMapper plantExperimentDetailTbMapper;
 
     @Override

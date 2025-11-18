@@ -46,7 +46,7 @@
     </select>
 
     <select id="selectMaxSampleCodePrefix" resultType="java.lang.String">
-        select max(sample_code_prefix) from tc_experiment_tb
+        select max(sample_code_prefix) from plant_experiment_tb
     </select>
 
 </mapper>

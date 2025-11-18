@@ -117,7 +117,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                     bioSampleSampleOneResultTbList.add(bioSampleTestOneResultTb);
                     continue;
                 }
-                cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isEmpty(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
+           /*     cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> StringUtils.isEmpty(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                     log.info("取样已经审批完成：" + testExcelDTO.getSampleCode());
                     BioSampleTestOneResultTb bioSampleTestOneResultTb=new BioSampleTestOneResultTb();
@@ -127,7 +127,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                     bioSampleTestOneResultTb.setRemark("取样已经审批完成");
                     bioSampleSampleOneResultTbList.add(bioSampleTestOneResultTb);
                     continue;
-                }
+                }*/
                 cerSampleTestTbList = cerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId).reversed()).collect(Collectors.toList());
                 //第一个的一定更新
                 updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(), cerSampleTestTbList.get(0).getSampleCode()));
@@ -182,7 +182,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                     bioSampleTwoResultTbList.add(bioSampleTestOneResultTb);
                     continue;
                 }
-                cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> CheckResultEnum.noCheck.name().equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
+      /*          cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> CheckResultEnum.noCheck.name().equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                     log.info("取样已经审批完成：" + sampleTestBioInfoExcelDTO.getSampleCode());
                     BioSampleTestTwoResultTb bioSampleTestOneResultTb=new BioSampleTestTwoResultTb();
@@ -195,7 +195,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
                     bioSampleTestOneResultTb.setFailMessage("取样已经审批完成");
                     bioSampleTwoResultTbList.add(bioSampleTestOneResultTb);
                     continue;
-                }
+                }*/
                 cerSampleTestTbList = cerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId).reversed()).collect(Collectors.toList());
                 //第一个取样一定更新
                 CerSampleTestTb firstCerSampleTestTb = cerSampleTestTbList.get(0);

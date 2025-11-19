@@ -59,7 +59,7 @@ public class CerSampleTwoResultServiceImpl implements CerSampleTwoResultService 
     @Override
     public List<CerSampleTwoResultListDetailRspDTO> listDetail(Integer id) {
         BioSampleTestTwoResultTb bioSampleTestTwoResultTb = bioSampleTestTwoResultTbMapper.selectById(id);
-        List<BioSampleTestTwoResultDetailTb> bioSampleTestTwoResultDetailTbList = bioSampleTestTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(bioSampleTestTwoResultTb.getApplyNo(), bioSampleTestTwoResultTb.getSampleCode());
+        List<BioSampleTestTwoResultDetailTb> bioSampleTestTwoResultDetailTbList = bioSampleTestTwoResultDetailTbMapper.selectAllBySampleIdAndRunId(bioSampleTestTwoResultTb.getSampleId(), bioSampleTestTwoResultTb.getRunId());
         return BeanUtils.copyListProperties(bioSampleTestTwoResultDetailTbList, CerSampleTwoResultListDetailRspDTO.class);
     }
 

@@ -646,7 +646,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         if (cerSampleTestTb == null) {
             throw new BusinessException("参数错误，找不到此取样信息：" + id);
         }
-        List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
+        List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCodeAndConfirmStatus(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode(),"checked");
         return BeanUtils.copyListProperties(bioSampleSampleTwoResultDetailTbList, QueryBioInfoSampleTestResultRspDTO.class);
     }
 

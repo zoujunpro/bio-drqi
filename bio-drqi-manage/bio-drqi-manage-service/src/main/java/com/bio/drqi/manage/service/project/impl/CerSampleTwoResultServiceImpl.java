@@ -59,7 +59,7 @@ public class CerSampleTwoResultServiceImpl implements CerSampleTwoResultService 
     @Override
     public List<CerSampleTwoResultListDetailRspDTO> listDetail(Integer id) {
         BioSampleTestTwoResultTb bioSampleTestTwoResultTb = bioSampleTestTwoResultTbMapper.selectById(id);
-        List<BioSampleTestTwoResultDetailTb> bioSampleTestTwoResultDetailTbList = bioSampleTestTwoResultDetailTbMapper.selectAllBySampleIdAndRunId(bioSampleTestTwoResultTb.getSampleId(), bioSampleTestTwoResultTb.getRunId());
+        List<BioSampleTestTwoResultDetailTb> bioSampleTestTwoResultDetailTbList = bioSampleTestTwoResultDetailTbMapper.selectAllByTwoResultId(bioSampleTestTwoResultTb.getId());
         return BeanUtils.copyListProperties(bioSampleTestTwoResultDetailTbList, CerSampleTwoResultListDetailRspDTO.class);
     }
 
@@ -86,7 +86,7 @@ public class CerSampleTwoResultServiceImpl implements CerSampleTwoResultService 
         }
         List<BioSampleTestTwoResultDetailTb> bioSampleTestTwoResultDetailTbList = synSampleTestResultService.synBioResult(Arrays.asList(bioSampleTestTwoResultTb));
         if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultDetailTbList)) {
-            bioSampleTestTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(bioSampleTestTwoResultTb.getApplyNo(), bioSampleTestTwoResultTb.getSampleCode());
+            bioSampleTestTwoResultDetailTbMapper.deleteByTwoResultId(bioSampleTestTwoResultTb.getId());
             for (BioSampleTestTwoResultDetailTb bioSampleTestTwoResultDetailTb : bioSampleTestTwoResultDetailTbList) {
                 bioSampleTestTwoResultDetailTbMapper.insert(bioSampleTestTwoResultDetailTb);
             }

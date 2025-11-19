@@ -81,6 +81,7 @@ public class SynSampleTestResultService {
                 bioSampleSampleTwoResultDetailTb.setRatio(map.get("ratio"));
                 bioSampleSampleTwoResultDetailTb.setConfirmStatus(map.get("ConfirmStatus"));
                 bioSampleSampleTwoResultDetailTb.setResultKey(map.get("ResultKey"));
+                bioSampleSampleTwoResultDetailTb.setTwoResultId(bioSampleSampleTwoResultTb.getId());
                 bioSampleSampleTwoResultDetailTbList.add(bioSampleSampleTwoResultDetailTb);
             }
             bioSampleSampleTwoResultTb.setSynResult(BioDrQiContents.Y);

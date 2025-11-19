@@ -88,6 +88,9 @@ public class BioSampleTestTwoResultDetailTb implements Serializable {
     private String matchFlag;
 
 
+    private Integer twoResultId;
+
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

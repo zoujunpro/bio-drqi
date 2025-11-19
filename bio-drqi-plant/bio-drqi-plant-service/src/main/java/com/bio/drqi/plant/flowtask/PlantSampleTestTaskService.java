@@ -35,19 +35,6 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     private OssService ossService;
 
     @Resource
-    private SeedStockTbMapper seedStockTbMapper;
-
-    @Resource
-    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
-
-    @Resource
-    private PlantExperimentTbMapper plantExperimentTbMapper;
-
-
-    @Resource
-    private PlantExperimentDetailTbMapper plantExperimentDetailTbMapper;
-
-    @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
 
     @Resource
@@ -55,6 +42,9 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
     @Resource
     private PlantSingleStockTbMapper plantSingleStockTbMapper;
+
+    @Resource
+    private PlantSampleCoodePrefixTbMapper plantSampleCoodePrefixTbMapper;
 
 
     @Override
@@ -84,6 +74,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         plantSampleApplyTb.setSampleCodeRange(null);
 
 
+        //首次取样
         if (SampleTestApplyTypeEnum.F.name().equals(plantExperimentTaskDTO.getApplyType())) {
             if (CollectionUtil.isEmpty(plantExperimentTaskDTO.getFirstSampleApplyList())) {
                 throw new BusinessException("无取样数据");
@@ -106,6 +97,9 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                         throw new BusinessException("转化编号：" + firstSampleApply.getVectorTaskCode() + "的苗库存不足,当前库存苗数量:" + plantMultipleStockTb.getPlantNumber());
                     }
                 }
+                //找到取样编号前缀
+
+
                 for (int i = 0; i < firstSampleApply.getSampleNumber(); i++) {
                     PlantSampleTestTb plantSampleTestTb = new PlantSampleTestTb();
                     plantSampleTestTb.setVectorTaskCode(firstSampleApply.getVectorTaskCode());

@@ -240,7 +240,7 @@ public class SampleResultFileServiceImpl implements SampleResultFileService {
             //更新同步的结果，更新前旧的需要删除
             if (CollectionUtil.isNotEmpty(bioSampleTwoResultDetailTbList)) {
                 bioSampleTwoResultDetailTbList.forEach(bioSampleSampleTwoResultDetailTb -> {
-                    bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCodeAndUniqueDbCode(bioSampleSampleTwoResultDetailTb.getApplyNo(),bioSampleSampleTwoResultDetailTb.getSampleCode(),bioSampleSampleTwoResultDetailTb.getUniqueDbCode());
+                    bioSampleSampleTwoResultDetailTbMapper.deleteByTwoResultId(bioSampleSampleTwoResultDetailTb.getTwoResultId());
                 });
                 bioSampleSampleTwoResultDetailTbMapper.insertBatch(bioSampleTwoResultDetailTbList);
             }

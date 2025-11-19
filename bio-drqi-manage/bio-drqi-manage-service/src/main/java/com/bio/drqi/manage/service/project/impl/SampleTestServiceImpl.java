@@ -678,6 +678,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
         List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(Arrays.asList(bioSampleSampleTwoResultTbList.get(0)));
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbList)) {
+            bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(),cerSampleTestTb.getSampleCode());
             for (BioSampleTestTwoResultDetailTb cerSampleTestBioInfoResultTb : bioSampleSampleTwoResultDetailTbList) {
                 bioSampleSampleTwoResultDetailTbMapper.insert(cerSampleTestBioInfoResultTb);
             }

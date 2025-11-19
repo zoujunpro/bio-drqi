@@ -103,7 +103,7 @@
         <include refid="Base_Column_List"/>
         from bio_sample_test_two_result_detail_tb
         where
-        sample_id = like  CONCAT('%',#{sampleId,jdbcType=VARCHAR},'%')
+        sample_id  like  CONCAT('%',#{sampleId,jdbcType=VARCHAR},'%')
         AND run_id = #{runId,jdbcType=VARCHAR}
     </select>
 

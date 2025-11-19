@@ -28,7 +28,7 @@
             <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
             <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
             <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
-            <result property="kdNumber" column="kd_number" jdbcType="INTEGER"/>
+            <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">

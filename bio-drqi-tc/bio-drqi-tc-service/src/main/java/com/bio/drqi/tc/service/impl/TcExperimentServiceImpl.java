@@ -60,7 +60,7 @@ public class TcExperimentServiceImpl implements TcExperimentService {
 
     @Override
     public PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
-        PageHelper.startPage(tcExperimentListPageReqDTO.getPageNum(), tcExperimentListPageReqDTO.getPageSize());
+
         List<TcHarvestSeedApplyTb> tcHarvestSeedApplyTbList = tcHarvestSeedApplyTbMapper.selectSelective(null);
         List<TcPollinationApplyTb> tcPollinationApplyTbList = tcPollinationApplyTbMapper.selectSelective(null);
         Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
@@ -68,6 +68,7 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         tcExperimentTb.setVectorTaskCodes(tcExperimentListPageReqDTO.getVectorTaskCode());
         tcExperimentTb.setSpeciesCode(tcExperimentListPageReqDTO.getSpeciesCode());
         tcExperimentTb.setExperimentNum(tcExperimentListPageReqDTO.getExperimentNum());
+        PageHelper.startPage(tcExperimentListPageReqDTO.getPageNum(), tcExperimentListPageReqDTO.getPageSize());
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectSelective(tcExperimentTb);
         PageInfo<TcExperimentTb> srcPageInfo = new PageInfo<>(tcExperimentTbList);
         PageInfo<TcExperimentListPageRspDTO> resultPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, TcExperimentListPageRspDTO.class);

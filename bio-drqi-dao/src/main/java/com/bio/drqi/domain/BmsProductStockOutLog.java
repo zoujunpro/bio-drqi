@@ -141,7 +141,7 @@ public class BmsProductStockOutLog implements Serializable {
     @TableField(exist = false)
     private String endDate;
 
-    private Integer kdNumber;
+    private String kdNumber;
 
 
 

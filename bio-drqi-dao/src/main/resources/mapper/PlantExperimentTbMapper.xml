@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.PlantExperimentTbMapper">
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.PlantExperimentTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+            <result property="experimentType" column="experiment_type" jdbcType="VARCHAR"/>
+            <result property="experimentTarget" column="experiment_target" jdbcType="VARCHAR"/>
+            <result property="designUrl" column="design_url" jdbcType="VARCHAR"/>
+            <result property="fileUrl" column="file_url" jdbcType="VARCHAR"/>
+            <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+            <result property="vectorTaskCodes" column="vector_task_codes" jdbcType="VARCHAR"/>
+            <result property="pdNums" column="pd_nums" jdbcType="VARCHAR"/>
+            <result property="sampleCodePrefix" column="sample_code_prefix" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,species_code,experiment_type,
+        experiment_target,design_url,file_url,
+        experiment_num,create_time,create_user_id,
+        create_user_name,vector_task_codes,pd_nums,sample_code_prefix
+    </sql>
+    <select id="selectSelective" parameterType="com.bio.drqi.domain.PlantExperimentTb" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_experiment_tb
+        <where>
+            <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
+            <if test="experimentType != null and experimentType!=''">and experiment_type=#{experimentType,jdbcType=VARCHAR}</if>
+            <if test="experimentTarget != null">and experiment_target=#{experimentTarget,jdbcType=VARCHAR}</if>
+            <if test="designUrl != null">and design_url=#{designUrl,jdbcType=VARCHAR}</if>
+            <if test="fileUrl != null">and file_url=#{fileUrl,jdbcType=VARCHAR}</if>
+            <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCodes != null and vectorTaskCodes!=''">and vector_task_codes like  CONCAT('%',#{vectorTaskCodes,jdbcType=VARCHAR},'%')</if>
+            <if test="pdNums != null and pdNums!=''">and pd_nums like  CONCAT('%',#{pdNums,jdbcType=VARCHAR},'%')</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectMaxSampleCodePrefix" resultType="java.lang.String">
+        select max(sample_code_prefix) from plant_experiment_tb
+    </select>
+
+</mapper>

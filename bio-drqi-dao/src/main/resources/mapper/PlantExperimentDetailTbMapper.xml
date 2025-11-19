@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.PlantExperimentDetailTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.PlantExperimentDetailTb">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="pdNum" column="pd_num" jdbcType="VARCHAR"/>
+        <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
+        <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
+        <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+        <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
+        <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
+        <result property="plantCode" column="plant_code" jdbcType="VARCHAR"/>
+        <result property="generationCode" column="generation_code" jdbcType="VARCHAR"/>
+        <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+        <result property="plantTime" column="plant_time" jdbcType="VARCHAR"/>
+        <result property="plantNumber" column="plant_number" jdbcType="INTEGER"/>
+        <result property="experimentAddressCode" column="experiment_address_code" jdbcType="VARCHAR"/>
+        <result property="plantUnit" column="plant_unit" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="geneType" column="gene_type" jdbcType="VARCHAR"/>
+        <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+        <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,pd_num,experiment_num,
+        region_num,vector_task_code,seed_num,
+        breed_code,plant_code,generation_code,
+        species_code,plant_time,plant_number,
+        experiment_address_code,plant_unit,remarks,
+        gene_type,create_user_id,create_user_name,
+        create_time
+    </sql>
+    <insert id="insertBatch">
+        insert into plant_experiment_detail_tb(id,pd_num,experiment_num,
+        region_num,vector_task_code,seed_num,
+        breed_code,plant_code,generation_code,
+        species_code,plant_time,plant_number,
+        experiment_address_code,plant_unit,remarks,
+        gene_type,create_user_id,create_user_name,
+        create_time)
+        values
+        <foreach collection="plantExperimentDetailTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.pdNum,jdbcType=VARCHAR},#{item.experimentNum,jdbcType=VARCHAR},
+            #{item.regionNum,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},#{item.seedNum,jdbcType=VARCHAR},
+            #{item.breedCode,jdbcType=VARCHAR},#{item.plantCode,jdbcType=VARCHAR},#{item.generationCode,jdbcType=VARCHAR},
+            #{item.speciesCode,jdbcType=VARCHAR},#{item.plantTime,jdbcType=VARCHAR},#{item.plantNumber,jdbcType=NUMERIC},
+            #{item.experimentAddressCode,jdbcType=VARCHAR},#{item.plantUnit,jdbcType=VARCHAR},#{item.remarks,jdbcType=VARCHAR},
+            #{item.geneType,jdbcType=VARCHAR},#{item.createUserId,jdbcType=NUMERIC},#{item.createUserName,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+    <select id="selectSelective" resultType="com.bio.drqi.domain.PlantExperimentDetailTb">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_experiment_detail_tb
+        <where>
+            <if test="pdNum != null and pdNum!=''">and pd_num=#{pdNum,jdbcType=VARCHAR}</if>
+            <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
+            <if test="regionNum != null and regionNum!=''">and region_num=#{regionNum,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null and vectorTaskCode!=''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="seedNum != null and seedNum!=''">and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
+            <if test="breedCode != null and breedCode!=''">and breed_code=#{breedCode,jdbcType=VARCHAR}</if>
+            <if test="plantCode != null and plantCode!=''">and plant_code=#{plantCode,jdbcType=VARCHAR},</if>
+            <if test="generationCode != null and generationCode!=''">and generation_code=#{generationCode,jdbcType=VARCHAR}</if>
+            <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
+            <if test="plantTime != null">and plant_time=#{plantTime,jdbcType=VARCHAR}</if>
+            <if test="plantNumber != null">and plant_number=#{plantNumber,jdbcType=NUMERIC}</if>
+            <if test="experimentAddressCode != null">
+                and   experiment_address_code=#{experimentAddressCode,jdbcType=VARCHAR}
+            </if>
+            <if test="plantUnit != null">and plant_unit=#{plantUnit,jdbcType=VARCHAR}</if>
+            <if test="remarks != null">and remarks=#{remarks,jdbcType=VARCHAR}</if>
+            <if test="geneType != null">and gene_type=#{geneType,jdbcType=VARCHAR}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+        </where>
+    </select>
+    <select id="selectAllByRegionNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_experiment_detail_tb
+        where
+        region_num = #{regionNum,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

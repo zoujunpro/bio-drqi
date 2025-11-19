@@ -8,6 +8,7 @@ import com.bio.drqi.bsm.kd.dto.*;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
 import com.bio.drqi.bsm.kd.properties.KdProperties;
 import com.google.gson.Gson;
+import com.kingdee.bos.webapi.entity.RepoResult;
 import com.kingdee.bos.webapi.entity.RepoRet;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +40,9 @@ public class KdRequestUtil {
         }
         log.info("调用金蝶保存接口save结束，返回={},耗时={}ms", result, (System.currentTimeMillis() - start));
         Gson gson = new Gson();
-        RepoRet sRet = gson.fromJson(result, RepoRet.class);
+        RepoRet<RepoResult> sRet = gson.fromJson(result, RepoRet.class);
         if (sRet.isSuccessfully()) {
-            return sRet.getResult().getId();
+            return sRet.getResult().getResponseStatus().getSuccessEntitys().get(0).getNumber();
         } else {
             throw new BusinessException("调用金蝶保存接口save失败: " + gson.toJson(sRet.getResult()));
         }
@@ -65,24 +66,6 @@ public class KdRequestUtil {
         }
     }
 
-
-    private static String getIdFromNeedReturnData(FormIdEnum formIdEnum, String result) {
-        JSON json = JSONUtil.parse(result);
-        switch (formIdEnum) {
-            case BD_STOCK:
-                Object fStockId = json.getByPath("Result.NeedReturnData[0].FStockId");
-                return fStockId == null ? null : fStockId.toString();
-            case BOS_ASSISTANTDATA_DETAIL:
-                Object fEntryID = json.getByPath("Result.NeedReturnData[0].FEntryID");
-                return fEntryID == null ? null : fEntryID.toString();
-            default:
-                return null;
-
-        }
-
-
-    }
-
     public static String disable(FormIdEnum formIdEnum, KdApiBaseDisableRequestDTO kdApiBaseDisableRequestDTO) {
         K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
         try {
@@ -91,9 +74,9 @@ public class KdRequestUtil {
             String result = k3CloudApi.excuteOperation(formIdEnum.name(), "Forbid", JSONUtil.toJsonStr(kdApiBaseDisableRequestDTO));
             log.info("调用金蝶禁用接口disable结束，返回={},耗时={}ms", result, (System.currentTimeMillis() - start));
             Gson gson = new Gson();
-            RepoRet sRet = gson.fromJson(result, RepoRet.class);
+            RepoRet<RepoResult> sRet = gson.fromJson(result, RepoRet.class);
             if (sRet.isSuccessfully()) {
-                return sRet.getResult().getId();
+                return sRet.getResult().getResponseStatus().getSuccessEntitys().get(0).getNumber();
             } else {
                 throw new BusinessException("金蝶禁用接口disable调用失败: " + gson.toJson(sRet.getResult()));
             }
@@ -103,7 +86,7 @@ public class KdRequestUtil {
         }
     }
 
-    public static String groupSave(FormIdEnum formIdEnum, GroupSaveDTO groupSaveDTO)  {
+    public static String groupSave(FormIdEnum formIdEnum, GroupSaveDTO groupSaveDTO) {
         K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
         Long start = System.currentTimeMillis();
         log.info("调用金蝶分组接口groupSave开始, formid={},参数={}", formIdEnum, JSONUtil.toJsonStr(groupSaveDTO));
@@ -117,7 +100,7 @@ public class KdRequestUtil {
         Gson gson = new Gson();
         RepoRet sRet = gson.fromJson(result, RepoRet.class);
         if (sRet.isSuccessfully()) {
-            return sRet.getResult().getResponseStatus().getSuccessEntitys().get(0).getId();
+            return sRet.getResult().getResponseStatus().getSuccessEntitys().get(0).getNumber();
         } else {
             throw new BusinessException("金蝶分组接口groupSave调用失败: " + gson.toJson(sRet.getResult()));
         }

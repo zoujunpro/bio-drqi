@@ -35,7 +35,7 @@
             <result property="taxRate" column="tax_rate" jdbcType="VARCHAR"/>
             <result property="returnNumber" column="return_number" jdbcType="INTEGER"/>
             <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
-            <result property="kdNumber" column="kd_number" jdbcType="INTEGER"/>
+            <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">

@@ -104,11 +104,12 @@ public class KdApiServiceImpl implements KdApiService {
                 throw new BusinessException("数据异常，请检查金蝶配置");
         }
     }
+
     private String moveStockQuery(Object obj) {
         BmsMoveOrderDetailTb bmsMoveOrderDetailTb = (BmsMoveOrderDetailTb) obj;
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.STK_TransferDirect.name());
-        executeBillQueryModelDTO.setFieldKeys("FID,FBillno,FDocumentStatus");
+        executeBillQueryModelDTO.setFieldKeys("FBillno");
         String filterString = "F_WAUJ_UUID='%s' and  FBillTypeID.FNumber ='ZJDB01_SYS'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsMoveOrderDetailTb.getId().toString()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
@@ -117,11 +118,12 @@ public class KdApiServiceImpl implements KdApiService {
         }
         return null;
     }
+
     private String returnStockQuery(Object obj) {
         BmsReturnOrderDetailTb bmsReturnOrderDetailTb = (BmsReturnOrderDetailTb) obj;
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.PUR_MRB.name());
-        executeBillQueryModelDTO.setFieldKeys("FID,FBillno,FDocumentStatus");
+        executeBillQueryModelDTO.setFieldKeys("FBillno");
         String filterString = "F_WAUJ_UUID='%s' and FBillTypeID.FNumber ='TLD01_SYS'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsReturnOrderDetailTb.getId().toString()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
@@ -135,7 +137,7 @@ public class KdApiServiceImpl implements KdApiService {
         BmsProductStockOutLog bmsProductStockOutLog = (BmsProductStockOutLog) obj;
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.STK_MisDelivery.name());
-        executeBillQueryModelDTO.setFieldKeys("FID,FBillno,FDocumentStatus");
+        executeBillQueryModelDTO.setFieldKeys("FBillno");
         String filterString = "F_WAUJ_UUID='%s' and FBillTypeID.FNumber ='QTCKD01_SYS'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsProductStockOutLog.getId().toString()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
@@ -149,7 +151,7 @@ public class KdApiServiceImpl implements KdApiService {
         BmsProductStockInLog bmsProductStockInLog = (BmsProductStockInLog) obj;
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.STK_InStock.name());
-        executeBillQueryModelDTO.setFieldKeys("FID,FBillno,FDocumentStatus");
+        executeBillQueryModelDTO.setFieldKeys("FBillno");
         String filterString = "F_WAUJ_UUID='%s' and FBillTypeID.FNumber ='RKD01_SYS'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsProductStockInLog.getId().toString()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
@@ -163,7 +165,7 @@ public class KdApiServiceImpl implements KdApiService {
         BmsProjectDict bmsProjectDict = (BmsProjectDict) obj;
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.BOS_ASSISTANTDATA_DETAIL.name());
-        executeBillQueryModelDTO.setFieldKeys("FEntryID,FNUMBER,FDataValue");
+        executeBillQueryModelDTO.setFieldKeys("FNUMBER");
         String filterString = "FId.FNUMBER='XM' and Fnumber='%s'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsProjectDict.getKdProjectCode()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
@@ -174,26 +176,11 @@ public class KdApiServiceImpl implements KdApiService {
     }
 
 
-    private String executeStockQuery(Object obj, String unitCode) {
-        BmsStockDict bmsStockDict = (BmsStockDict) obj;
-        ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
-        executeBillQueryModelDTO.setFormId(FormIdEnum.BD_STOCK.name());
-        executeBillQueryModelDTO.setFieldKeys("FSTOCKID,FNUMBER,FNAME,FDocumentStatus,FForbidStatus");
-        String filterString = "FNUMBER='%s' and FCreateOrgId.FNumber ='%s' and  FUseOrgId.FNumber='%s' and  FDocumentStatus='C' and FForbidStatus='A'";
-        executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsStockDict.getStockCode(), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
-        List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
-        if (CollectionUtil.isNotEmpty(result) && CollectionUtil.isNotEmpty(result.get(0))) {
-            return result.get(0).get(0).toString();
-        }
-        return null;
-
-    }
-
     private String materialQuery(Object obj, String unitCode) {
         BmsProductTb bmsProductTb = (BmsProductTb) obj;
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.BD_MATERIAL.name());
-        executeBillQueryModelDTO.setFieldKeys("FMATERIALID,FNUMBER,FNAME,FDocumentStatus,FForbidStatus");
+        executeBillQueryModelDTO.setFieldKeys("FNUMBER");
         String filterString = "FNUMBER='%s' and FCreateOrgId.FNumber = '%s' and FUseOrgId.FNumber = '%s' and FDocumentStatus = 'C' and FForbidStatus = 'A' ";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsProductTb.getProductInnerCode(), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
@@ -203,11 +190,26 @@ public class KdApiServiceImpl implements KdApiService {
         return null;
     }
 
+    private String executeStockQuery(Object obj, String unitCode) {
+        BmsStockDict bmsStockDict = (BmsStockDict) obj;
+        ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
+        executeBillQueryModelDTO.setFormId(FormIdEnum.BD_STOCK.name());
+        executeBillQueryModelDTO.setFieldKeys("FNUMBER");
+        String filterString = "F_WAUJ_UUID='%s' and FCreateOrgId.FNumber ='%s' and  FUseOrgId.FNumber='%s' and  FDocumentStatus='C' and FForbidStatus='A'";
+        executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsStockDict.getStockCode(), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
+        List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
+        if (CollectionUtil.isNotEmpty(result) && CollectionUtil.isNotEmpty(result.get(0))) {
+            return result.get(0).get(0).toString();
+        }
+        return null;
+
+    }
+
     private String groupQuery(Object obj) {
         BmsProductCategoryTb bmsProductCategoryTb = (BmsProductCategoryTb) obj;
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.Sal_MATERIALGROUP.name());
-        executeBillQueryModelDTO.setFieldKeys("FID,FNUMBER,FNAME,FPARENTID");
+        executeBillQueryModelDTO.setFieldKeys("FNUMBER");
         executeBillQueryModelDTO.setFilterString(String.format("FNUMBER='%s'", bmsProductCategoryTb.getProductCategoryCode()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
         if (CollectionUtil.isNotEmpty(result) && CollectionUtil.isNotEmpty(result.get(0))) {
@@ -232,7 +234,7 @@ public class KdApiServiceImpl implements KdApiService {
     private String executeBrandSave(Object obj, String unitCode) {
         BmsBrandTb bmsBrandTb = (BmsBrandTb) obj;
         BrandKdModel brandKdModel = new BrandKdModel();
-        brandKdModel.setFID(0);
+        brandKdModel.setFID("0");
         brandKdModel.setFnumber(bmsBrandTb.getBrandCode());
         brandKdModel.setFname(bmsBrandTb.getBrandName());
         return KdRequestUtil.save(FormIdEnum.CMK_BD_Brand, KdApiBaseSaveRequestDTO.buildOfSave(brandKdModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
@@ -322,8 +324,8 @@ public class KdApiServiceImpl implements KdApiService {
     private String executeStockSave(Object obj, String unitCode) {
         BmsStockDict bmsStockDict = (BmsStockDict) obj;
         StockModel stockModel = new StockModel();
-        stockModel.setFStockId(0);
-        stockModel.setFnumber(bmsStockDict.getStockCode());
+        stockModel.setFStockId("0");
+        stockModel.setF_WAUJ_UUID(bmsStockDict.getStockCode());
         stockModel.setFname(bmsStockDict.getStockName());
         stockModel.setFStockProperty("1");
         stockModel.setFStockStatusType("0,1,2,3,4,5,6,7,8");
@@ -340,7 +342,7 @@ public class KdApiServiceImpl implements KdApiService {
         BmsStockDict bmsStockDict = (BmsStockDict) obj;
         StockModel stockModel = new StockModel();
         stockModel.setFStockId(bmsStockDict.getKdNumber());
-        stockModel.setFnumber(bmsStockDict.getStockCode());
+        stockModel.setF_WAUJ_UUID(bmsStockDict.getStockCode());
         stockModel.setFname(bmsStockDict.getStockName());
         return KdRequestUtil.save(FormIdEnum.BD_STOCK, KdApiBaseSaveRequestDTO.buildOfModify(stockModel));
 
@@ -413,20 +415,29 @@ public class KdApiServiceImpl implements KdApiService {
         if (bmsSupplierTb == null) {
             throw new BusinessException("供应商不存在" + bmsProductStockInLog.getSupplierCode());
         }
-        if (bmsSupplierTb.getKdNumber() == null) {
+        if (StringUtils.isEmpty(bmsSupplierTb.getKdNumber() )) {
             throw new BusinessException("供应商未同步金蝶" + bmsProductStockInLog.getSupplierCode());
         }
         BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsProductStockInLog.getProductInnerCode());
         if (bmsProductTb == null) {
             throw new BusinessException("耗材库中不存在此耗材：" + bmsProductStockInLog.getProductInnerCode());
         }
-        if (bmsProductTb.getKdNumber() == null) {
+        if (StringUtils.isEmpty(bmsProductTb.getKdNumber())) {
             throw new BusinessException("耗材还未同步到金蝶" + bmsProductStockInLog.getProductInnerCode());
         }
+        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsProductStockInLog.getStockCode());
+        if(bmsStockDict==null){
+            throw new BusinessException("仓库找不到");
+        }
+        if(StringUtils.isEmpty(bmsStockDict.getKdNumber())){
+            throw new BusinessException("仓库未同步到金蝶："+bmsStockDict.getStockName());
+        }
+
+
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
 
-        InStockSaveModel inStockSaveModel = new InStockSaveModel(bmsProjectDict.getKdProjectType(), bmsProductStockInLog.getId().toString(), inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber().toString(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()), bmsProductStockInLog.getProjectCode(), bmsProductStockInLog.getStockCode(), new BigDecimal(bmsProductStockInLog.getTaxRate() == null ? "0" : bmsProductStockInLog.getTaxRate()));
+        InStockSaveModel inStockSaveModel = new InStockSaveModel(bmsProjectDict.getKdProjectType(), bmsProductStockInLog.getId().toString(), inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), new BigDecimal(bmsProductStockInLog.getStoreNumber()), bmsProductStockInLog.getProjectCode(), bmsStockDict.getKdNumber(), new BigDecimal(bmsProductStockInLog.getTaxRate() == null ? "0" : bmsProductStockInLog.getTaxRate()));
 
         return KdRequestUtil.save(FormIdEnum.STK_InStock, KdApiBaseSaveRequestDTO.buildOfSave(inStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 
@@ -464,10 +475,9 @@ public class KdApiServiceImpl implements KdApiService {
         if (bmsStockDict.getKdNumber() == null) {
             throw new BusinessException("库房未同步到金蝶" + bmsStockDict.getKdNumber());
         }
-
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
-        OutStockSaveModel outStockSaveModel = new OutStockSaveModel(bmsProductStockOutLog.getId().toString(), outDate, kdParentGroupEnum, orgCode, bmsProductTb.getProductInnerCode(), new BigDecimal(bmsProductStockOutLog.getOutNumber()), bmsStockDict.getStockCode());
+        OutStockSaveModel outStockSaveModel = new OutStockSaveModel(bmsProductStockOutLog.getId().toString(), outDate, kdParentGroupEnum, orgCode, bmsProductTb.getProductInnerCode(), new BigDecimal(bmsProductStockOutLog.getOutNumber()), bmsStockDict.getKdNumber());
         return KdRequestUtil.save(FormIdEnum.STK_MisDelivery, KdApiBaseSaveRequestDTO.buildOfSave(outStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 
     }
@@ -495,12 +505,19 @@ public class KdApiServiceImpl implements KdApiService {
         if (bmsSupplierTb.getKdNumber() == null) {
             throw new BusinessException("供应商未同步金蝶" + bmsReturnOrderDetailTb.getSupplierCode());
         }
+        BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsReturnOrderDetailTb.getStockCode());
+        if (bmsStockDict == null) {
+            throw new BusinessException("库房异常，找不到此库房" + bmsReturnOrderDetailTb.getStockCode());
+        }
+        if (bmsStockDict.getKdNumber() == null) {
+            throw new BusinessException("库房未同步到金蝶" + bmsStockDict.getKdNumber());
+        }
         String returnDate = DateUtil.format(bmsReturnOrderDetailTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN);
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
 
 
-        ReturnStockSaveModel returnStockSaveModel = new ReturnStockSaveModel(bmsReturnOrderDetailTb.getId().toString(), kdParentGroupEnum, orgCode, returnDate, bmsSupplierTb.getKdNumber().toString(), bmsReturnOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber()), bmsReturnOrderDetailTb.getStockCode(), bmsReturnOrderDetailTb.getProjectCode(), new BigDecimal(bmsReturnOrderDetailTb.getTaxRate() == null ? "0" : bmsReturnOrderDetailTb.getTaxRate()));
+        ReturnStockSaveModel returnStockSaveModel = new ReturnStockSaveModel(bmsReturnOrderDetailTb.getId().toString(), kdParentGroupEnum, orgCode, returnDate, bmsSupplierTb.getKdNumber(), bmsReturnOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber()), bmsStockDict.getKdNumber(), bmsReturnOrderDetailTb.getProjectCode(), new BigDecimal(bmsReturnOrderDetailTb.getTaxRate() == null ? "0" : bmsReturnOrderDetailTb.getTaxRate()));
         return KdRequestUtil.save(FormIdEnum.PUR_MRB, KdApiBaseSaveRequestDTO.buildOfSave(returnStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 
     }
@@ -548,7 +565,7 @@ public class KdApiServiceImpl implements KdApiService {
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
 
-        MoveStockSaveModel moveStockSaveModel = new MoveStockSaveModel(bmsMoveOrderDetailTb.getId().toString(), moveDate, kdParentGroupEnum, orgCode, bmsMoveOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsMoveOrderDetailTb.getMoveNumber()), bmsMoveOrderDetailTb.getFromStockCode(), bmsMoveOrderDetailTb.getToStockCode());
+        MoveStockSaveModel moveStockSaveModel = new MoveStockSaveModel(bmsMoveOrderDetailTb.getId().toString(), moveDate, kdParentGroupEnum, orgCode, bmsMoveOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsMoveOrderDetailTb.getMoveNumber()), srcBmsStockDict.getKdNumber(), targetBmsStockDict.getKdNumber());
         return KdRequestUtil.save(FormIdEnum.STK_TransferDirect, KdApiBaseSaveRequestDTO.buildOfModify(moveStockSaveModel));
     }
 

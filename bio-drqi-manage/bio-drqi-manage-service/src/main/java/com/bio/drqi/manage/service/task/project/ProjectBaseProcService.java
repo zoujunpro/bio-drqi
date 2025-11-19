@@ -13,6 +13,7 @@ import com.bio.drqi.domain.CerProjectTb;
 import com.bio.drqi.manage.dto.project.ProjectAddDTO;
 import com.bio.drqi.mapper.CerProjectTbMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class ProjectBaseProcService extends AbstractProjectBaseTaskService {
 
 
     @Override
-    public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
+    public void taskApply(@NotNull BioTaskDtlTb bioTaskDtlTb) {
         ProjectAddDTO projectAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), ProjectAddDTO.class);
         ValidatorUtil.validator(projectAddDTO);
         BeanUtils.trimFiledSpace(projectAddDTO);

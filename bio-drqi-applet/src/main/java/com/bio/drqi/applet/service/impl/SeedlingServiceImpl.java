@@ -15,7 +15,7 @@ import com.bio.drqi.applet.service.SeedlingService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.CerPlantFixedFieldEnum;
 import com.bio.drqi.enums.PlantOperateEnum;
-import com.bio.drqi.enums.PlantStatusEnum;
+import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.PlantSampleTestTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.PlantSampleTestTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+            <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
+            <result property="applyTime" column="apply_time" jdbcType="TIMESTAMP"/>
+            <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
+            <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
+            <result property="testIdentifyPrimer" column="test_identify_primer" jdbcType="VARCHAR"/>
+            <result property="testMethod" column="test_method" jdbcType="VARCHAR"/>
+            <result property="testEditType" column="test_edit_type" jdbcType="VARCHAR"/>
+            <result property="testNoTransIdentityPrimer" column="test_no_trans_identity_primer" jdbcType="VARCHAR"/>
+            <result property="testIsGeneModifyPositive" column="test_is_gene_modify_positive" jdbcType="VARCHAR"/>
+            <result property="testIfFixedPoint" column="test_if_fixed_point" jdbcType="VARCHAR"/>
+            <result property="testIfCopyInsert" column="test_if_copy_insert" jdbcType="VARCHAR"/>
+            <result property="testFixedPointType" column="test_fixed_point_type" jdbcType="VARCHAR"/>
+            <result property="testDonorResidueInfo" column="test_donor_residue_info" jdbcType="VARCHAR"/>
+            <result property="testInsertionSite" column="test_insertion_site" jdbcType="VARCHAR"/>
+            <result property="testElisaResult" column="test_elisa_result" jdbcType="VARCHAR"/>
+            <result property="testQbzrSeq" column="test_qbzr_seq" jdbcType="VARCHAR"/>
+            <result property="testEditResidueInfo" column="test_edit_residue_info" jdbcType="VARCHAR"/>
+            <result property="testUserId" column="test_user_id" jdbcType="INTEGER"/>
+            <result property="testUserName" column="test_user_name" jdbcType="VARCHAR"/>
+            <result property="testTime" column="test_time" jdbcType="VARCHAR"/>
+            <result property="checkUserName" column="check_user_name" jdbcType="VARCHAR"/>
+            <result property="checkUserId" column="check_user_id" jdbcType="INTEGER"/>
+            <result property="checkResult" column="check_result" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="acceptorMaterial" column="acceptor_material" jdbcType="VARCHAR"/>
+            <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
+            <result property="identifyPrimer" column="identify_primer" jdbcType="VARCHAR"/>
+            <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="cloneSampleCode" column="clone_sample_code" jdbcType="VARCHAR"/>
+            <result property="sourceCode" column="source_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,vector_task_code,sample_code,
+        apply_time,apply_user_id,apply_user_name,
+        test_identify_primer,test_method,test_edit_type,
+        test_no_trans_identity_primer,test_is_gene_modify_positive,test_if_fixed_point,
+        test_if_copy_insert,test_fixed_point_type,test_donor_residue_info,
+        test_insertion_site,test_elisa_result,test_qbzr_seq,
+        test_edit_residue_info,test_user_id,test_user_name,
+        test_time,check_user_name,check_user_id,
+        check_result,create_time,update_time,
+        acceptor_material,apply_no,identify_primer,
+        unique_code,remark,clone_sample_code,
+        source_code,test_org_result
+    </sql>
+</mapper>

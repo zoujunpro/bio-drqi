@@ -98,5 +98,13 @@
         where apply_no = #{applyNo,jdbcType=VARCHAR}
           AND sample_code = #{sampleCode,jdbcType=VARCHAR}
     </delete>
+    <select id="selectAllBySampleIdAndRunId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_test_two_result_detail_tb
+        where
+        sample_id  like  CONCAT('%',#{sampleId,jdbcType=VARCHAR},'%')
+        AND run_id = #{runId,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

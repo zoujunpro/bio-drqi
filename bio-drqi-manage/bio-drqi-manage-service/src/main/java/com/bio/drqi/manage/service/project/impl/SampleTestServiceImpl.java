@@ -627,7 +627,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             if (CollectionUtil.isNotEmpty(bioSampleTwoResultDetailTbList)) {
 
                 bioSampleTwoResultDetailTbList.forEach(bioSampleSampleTwoResultDetailTb -> {
-                    bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCodeAndUniqueDbCode(bioSampleSampleTwoResultDetailTb.getApplyNo(), bioSampleSampleTwoResultDetailTb.getSampleCode(), bioSampleSampleTwoResultDetailTb.getUniqueDbCode());
+                    bioSampleSampleTwoResultDetailTbMapper.deleteByTwoResultId(bioSampleSampleTwoResultDetailTb.getTwoResultId());
                 });
                 bioSampleSampleTwoResultDetailTbMapper.insertBatch(bioSampleTwoResultDetailTbList);
             }

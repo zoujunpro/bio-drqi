@@ -9,7 +9,7 @@ import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.enums.ConversionAndTransTypeEnum;
-import com.bio.drqi.enums.PlantStatusEnum;
+import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.manage.dto.project.ConversionAndTransDTO;
 import com.bio.drqi.manage.service.project.CerConversionAndTransService;
 import com.bio.drqi.mapper.*;

@@ -38,7 +38,7 @@
             <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="cloneSampleCode" column="clone_sample_code" jdbcType="VARCHAR"/>
-            <result property="targetFlag" column="target_flag" jdbcType="VARCHAR"/>
+            <result property="sourceCode" column="source_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -53,6 +53,6 @@
         check_result,create_time,update_time,
         acceptor_material,apply_no,identify_primer,
         unique_code,remark,clone_sample_code,
-        target_flag,test_org_result
+        source_code,test_org_result
     </sql>
 </mapper>

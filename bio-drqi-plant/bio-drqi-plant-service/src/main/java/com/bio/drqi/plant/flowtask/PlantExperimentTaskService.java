@@ -54,6 +54,8 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
     @Resource
     private PlantMultipleStockTbMapper plantMultipleStockTbMapper;
 
+    @Resource
+    private PlantSampleCoodePrefixTbMapper plantSampleCoodePrefixTbMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -82,8 +84,8 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
                 throw new BusinessException("所选种子物种不匹配");
             }
             List<PlantExperimentDetailTb> plantExperimentDetailTbList = plantExperimentDetailTbMapper.selectAllByRegionNum(experimentExcelDTO.getRegionNum());
-            if(CollectionUtil.isNotEmpty(plantExperimentDetailTbList)){
-                throw new BusinessException("小区编号"+experimentExcelDTO.getRegionNum()+"已经存在其他试验中");
+            if (CollectionUtil.isNotEmpty(plantExperimentDetailTbList)) {
+                throw new BusinessException("小区编号" + experimentExcelDTO.getRegionNum() + "已经存在其他试验中");
             }
             if (checkReginCodeAndSeedNumList.contains(experimentExcelDTO.getRegionNum() + experimentExcelDTO.getSeedNum())) {
                 throw new BusinessException("CER试验小区" + experimentExcelDTO.getRegionNum() + "中存在重复种子编号" + experimentExcelDTO.getSeedNum());
@@ -141,6 +143,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
             plantExperimentTbMapper.insert(plantExperimentTb);
             plantExperimentDetailTbMapper.insertBatch(plantExperimentDetailTbList);
             plantMultipleStockTbMapper.insertBatch(plantMultipleStockTbList);
+            plantSampleCoodePrefixTbMapper.insert(new PlantSampleCoodePrefixTb(plantExperimentTb.getSampleCodePrefix()));
 
             plantExperimentTaskDTO.setSampleCodePrefix(plantExperimentTb.getSampleCodePrefix());
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plantExperimentTaskDTO));

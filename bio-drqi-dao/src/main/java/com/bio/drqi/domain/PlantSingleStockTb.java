@@ -144,6 +144,11 @@ public class PlantSingleStockTb implements Serializable {
      */
     private String remark;
 
+    /**
+     * 实施方案编号
+     */
+    private String vectorTaskCode;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -511,6 +516,20 @@ public class PlantSingleStockTb implements Serializable {
         this.remark = remark;
     }
 
+    /**
+     * 实施方案编号
+     */
+    public String getVectorTaskCode() {
+        return vectorTaskCode;
+    }
+
+    /**
+     * 实施方案编号
+     */
+    public void setVectorTaskCode(String vectorTaskCode) {
+        this.vectorTaskCode = vectorTaskCode;
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -548,7 +567,8 @@ public class PlantSingleStockTb implements Serializable {
             && (this.getTaskNum() == null ? other.getTaskNum() == null : this.getTaskNum().equals(other.getTaskNum()))
             && (this.getBreedCode() == null ? other.getBreedCode() == null : this.getBreedCode().equals(other.getBreedCode()))
             && (this.getSourceCode() == null ? other.getSourceCode() == null : this.getSourceCode().equals(other.getSourceCode()))
-            && (this.getRemark() == null ? other.getRemark() == null : this.getRemark().equals(other.getRemark()));
+            && (this.getRemark() == null ? other.getRemark() == null : this.getRemark().equals(other.getRemark()))
+            && (this.getVectorTaskCode() == null ? other.getVectorTaskCode() == null : this.getVectorTaskCode().equals(other.getVectorTaskCode()));
     }
 
     @Override
@@ -581,6 +601,7 @@ public class PlantSingleStockTb implements Serializable {
         result = prime * result + ((getBreedCode() == null) ? 0 : getBreedCode().hashCode());
         result = prime * result + ((getSourceCode() == null) ? 0 : getSourceCode().hashCode());
         result = prime * result + ((getRemark() == null) ? 0 : getRemark().hashCode());
+        result = prime * result + ((getVectorTaskCode() == null) ? 0 : getVectorTaskCode().hashCode());
         return result;
     }
 
@@ -616,6 +637,7 @@ public class PlantSingleStockTb implements Serializable {
         sb.append(", breedCode=").append(breedCode);
         sb.append(", sourceCode=").append(sourceCode);
         sb.append(", remark=").append(remark);
+        sb.append(", vectorTaskCode=").append(vectorTaskCode);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

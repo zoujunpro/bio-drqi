@@ -2,13 +2,16 @@ package com.bio.drqi.plant.flowtask;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.PlantSourceCodeEnum;
+import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
@@ -64,6 +67,23 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         if (cerSpeciesConf == null) {
             throw new BusinessException("物种找不到");
         }
+
+        PlantSampleApplyTb plantSampleApplyTb = new PlantSampleApplyTb();
+        plantSampleApplyTb.setApplyNo(bioTaskDtlTb.getTaskNum());
+        plantSampleApplyTb.setApplyNumber(0);
+        plantSampleApplyTb.setApplyTime(new Date());
+        plantSampleApplyTb.setApplyUserId(SecurityContextHolder.getUserId());
+        plantSampleApplyTb.setApplyUserName(SecurityContextHolder.getNickName());
+        plantSampleApplyTb.setApplyDesc(bioTaskDtlTb.getTaskDesc());
+        plantSampleApplyTb.setApplyType(plantExperimentTaskDTO.getApplyType());
+        plantSampleApplyTb.setIdentifyExcelUrl(null);
+        plantSampleApplyTb.setOneTestExcelUrl(null);
+        plantSampleApplyTb.setNgsExcelUrl(null);
+        plantSampleApplyTb.setLayoutFlag(plantExperimentTaskDTO.getTestType());
+        plantSampleApplyTb.setVectorTaskCodes(null);
+        plantSampleApplyTb.setSampleCodeRange(null);
+
+
         if (SampleTestApplyTypeEnum.F.name().equals(plantExperimentTaskDTO.getApplyType())) {
             if (CollectionUtil.isEmpty(plantExperimentTaskDTO.getFirstSampleApplyList())) {
                 throw new BusinessException("无取样数据");
@@ -86,8 +106,45 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                         throw new BusinessException("转化编号：" + firstSampleApply.getVectorTaskCode() + "的苗库存不足,当前库存苗数量:" + plantMultipleStockTb.getPlantNumber());
                     }
                 }
+                for (int i = 0; i < firstSampleApply.getSampleNumber(); i++) {
+                    PlantSampleTestTb plantSampleTestTb = new PlantSampleTestTb();
+                    plantSampleTestTb.setVectorTaskCode(firstSampleApply.getVectorTaskCode());
+                    plantSampleTestTb.setSampleCode(null);
+                    plantSampleTestTb.setApplyTime(bioTaskDtlTb.getApplyTime());
+                    plantSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
+                    plantSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
+                    plantSampleTestTb.setSourceCode(firstSampleApply.getSourceCode());
+                    plantSampleTestTb.setTestIdentifyPrimer(null);
+                    plantSampleTestTb.setTestMethod(null);
+                    plantSampleTestTb.setTestEditType(null);
+                    plantSampleTestTb.setTestNoTransIdentityPrimer(null);
+                    plantSampleTestTb.setTestIsGeneModifyPositive(null);
+                    plantSampleTestTb.setTestIfFixedPoint(null);
+                    plantSampleTestTb.setTestIfCopyInsert(null);
+                    plantSampleTestTb.setTestFixedPointType(null);
+                    plantSampleTestTb.setTestDonorResidueInfo(null);
+                    plantSampleTestTb.setTestInsertionSite(null);
+                    plantSampleTestTb.setTestElisaResult(null);
+                    plantSampleTestTb.setTestQbzrSeq(null);
+                    plantSampleTestTb.setTestEditResidueInfo(null);
+                    plantSampleTestTb.setTestUserId(null);
+                    plantSampleTestTb.setTestUserName(null);
+                    plantSampleTestTb.setTestTime(null);
+                    plantSampleTestTb.setCheckUserName(null);
+                    plantSampleTestTb.setCheckUserId(null);
+                    plantSampleTestTb.setCheckResult(null);
+                    plantSampleTestTb.setCreateTime(new Date());
+                    plantSampleTestTb.setUpdateTime(new Date());
+                    plantSampleTestTb.setApplyNo(bioTaskDtlTb.getTaskNum());
+                    plantSampleTestTb.setIdentifyPrimer(null);
+                    plantSampleTestTb.setUniqueCode(null);
+                    plantSampleTestTb.setRemark(null);
+                    plantSampleTestTb.setCloneSampleCode(null);
+                    plantSampleTestTb.setTestOrgResult(null);
+                }
             }
         }
+
 
         if (SampleTestApplyTypeEnum.R.name().equals(plantExperimentTaskDTO.getApplyType())) {
             if (CollectionUtil.isEmpty(plantExperimentTaskDTO.getRepeatSampleTestList())) {
@@ -98,13 +155,18 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 if (plantSingleStockTb == null) {
                     throw new BusinessException("CER中无此种植编号苗信息：" + repeatSampleTest.getSampleCode());
                 }
-                //todo 需要校验状态
-                PlantSampleTestTb plantSampleTestTb=new PlantSampleTestTb();
-                plantSampleTestTb.setVectorTaskCode(null);
+                //校验苗状态
+                if (!PlantStatusEnum.STATUS_1.code.equals(plantSingleStockTb.getPlantStatus()) && !PlantStatusEnum.STATUS_2.code.equals(plantSingleStockTb.getPlantStatus())) {
+                    throw new BusinessException("只有正常或者异常苗方可进行取样");
+                }
+
+                PlantSampleTestTb plantSampleTestTb = new PlantSampleTestTb();
+                plantSampleTestTb.setVectorTaskCode(plantSingleStockTb.getVectorTaskCode());
                 plantSampleTestTb.setSampleCode(plantSingleStockTb.getSampleCode());
                 plantSampleTestTb.setApplyTime(bioTaskDtlTb.getApplyTime());
                 plantSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
                 plantSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
+                plantSampleTestTb.setSourceCode(plantSingleStockTb.getSourceCode());
                 plantSampleTestTb.setTestIdentifyPrimer(null);
                 plantSampleTestTb.setTestMethod(null);
                 plantSampleTestTb.setTestEditType(null);
@@ -136,17 +198,6 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
             }
         }
-        //重复取样
-        if (CollectionUtil.isEmpty(plantExperimentTaskDTO.getRepeatSampleTestList())) {
-            for (PlantSampleTestTaskDTO.RepeatSampleTest repeatSampleTest : plantExperimentTaskDTO.getRepeatSampleTestList()) {
-                PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(repeatSampleTest.getSampleCode());
-            }
-        }
-        //首次取样
-        if (CollectionUtil.isEmpty(plantExperimentTaskDTO.getFirstSampleApplyList())) {
-
-        }
-
 
     }
 

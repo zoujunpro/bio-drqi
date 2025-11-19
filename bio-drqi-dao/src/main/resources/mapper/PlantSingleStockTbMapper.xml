@@ -31,6 +31,7 @@
             <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
             <result property="sourceCode" column="source_code" jdbcType="VARCHAR"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -42,7 +43,7 @@
         edit_type,species_code,acceptor_material,
         create_date,update_time,create_user_id,
         create_user_name,task_num,breed_code,
-        source_code,remark
+        source_code,remark,vector_task_code
     </sql>
     <select id="selectOneByPlantCode" resultMap="BaseResultMap">
         select

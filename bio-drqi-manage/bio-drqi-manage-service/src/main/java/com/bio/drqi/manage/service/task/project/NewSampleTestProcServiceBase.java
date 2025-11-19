@@ -11,6 +11,7 @@ import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.CheckResultEnum;
+import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.*;
 import com.bio.drqi.manage.dto.project.NewSampleTestDTO;

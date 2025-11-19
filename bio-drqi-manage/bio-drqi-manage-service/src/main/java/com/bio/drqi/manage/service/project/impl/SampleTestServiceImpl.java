@@ -93,11 +93,11 @@ public class SampleTestServiceImpl implements SampleTestService {
         PageInfo<SampleTestListDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, SampleTestListDetailRspDTO.class);
         targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
             sampleTestListDetailRspDTO.setSampleGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getSampleGeneration()));
-            List<BioSampleTestTwoResultDetailTb> cerSampleTestBioInfoResultTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(sampleTestListDetailRspDTO.getApplyNo(), sampleTestListDetailRspDTO.getSampleCode());
-            if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultTbList)) {
-                cerSampleTestBioInfoResultTbList.forEach(cerSampleTestBioInfoResultTb -> {
-                    sampleTestListDetailRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
-                });
+            List<BioSampleTestTwoResultDetailTb> cerSampleTestBioInfoResultDetailList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCodeAndConfirmStatus(sampleTestListDetailRspDTO.getApplyNo(), sampleTestListDetailRspDTO.getSampleCode(),"checked");
+            if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultDetailList)) {
+                    cerSampleTestBioInfoResultDetailList.forEach(cerSampleTestBioInfoResultTb -> {
+                        sampleTestListDetailRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
+                    });
             }
             sampleTestListDetailRspDTO.setMatchNum(CollectionUtil.isNotEmpty(sampleTestListDetailRspDTO.getBioInfoResultList()) ? sampleTestListDetailRspDTO.getBioInfoResultList().size() : 0);
         });
@@ -627,7 +627,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             if (CollectionUtil.isNotEmpty(bioSampleTwoResultDetailTbList)) {
 
                 bioSampleTwoResultDetailTbList.forEach(bioSampleSampleTwoResultDetailTb -> {
-                    bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCodeAndUniqueDbCode(bioSampleSampleTwoResultDetailTb.getApplyNo(),bioSampleSampleTwoResultDetailTb.getSampleCode(),bioSampleSampleTwoResultDetailTb.getUniqueDbCode());
+                    bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCodeAndUniqueDbCode(bioSampleSampleTwoResultDetailTb.getApplyNo(), bioSampleSampleTwoResultDetailTb.getSampleCode(), bioSampleSampleTwoResultDetailTb.getUniqueDbCode());
                 });
                 bioSampleSampleTwoResultDetailTbMapper.insertBatch(bioSampleTwoResultDetailTbList);
             }
@@ -678,7 +678,7 @@ public class SampleTestServiceImpl implements SampleTestService {
         }
         List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(Arrays.asList(bioSampleSampleTwoResultTbList.get(0)));
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbList)) {
-            bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(),cerSampleTestTb.getSampleCode());
+            bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
             for (BioSampleTestTwoResultDetailTb cerSampleTestBioInfoResultTb : bioSampleSampleTwoResultDetailTbList) {
                 bioSampleSampleTwoResultDetailTbMapper.insert(cerSampleTestBioInfoResultTb);
             }
@@ -751,7 +751,6 @@ public class SampleTestServiceImpl implements SampleTestService {
         countTestResultRspDTO.setNotResultNum(cerSampleTestTbMapper.selectNoTestResultCount(applyNo));
         return countTestResultRspDTO;
     }
-
 
 
 }

@@ -93,12 +93,16 @@ public class SampleTestServiceImpl implements SampleTestService {
         PageInfo<SampleTestListDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, SampleTestListDetailRspDTO.class);
         targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
             sampleTestListDetailRspDTO.setSampleGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getSampleGeneration()));
-            List<BioSampleTestTwoResultDetailTb> cerSampleTestBioInfoResultDetailList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCodeAndConfirmStatus(sampleTestListDetailRspDTO.getApplyNo(), sampleTestListDetailRspDTO.getSampleCode(),"checked");
-            if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultDetailList)) {
+            List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByApplyNoAndSampleCodeOrderByIdDesc(sampleTestListDetailRspDTO.getApplyNo(), sampleTestListDetailRspDTO.getSampleCode());
+            if(CollectionUtil.isNotEmpty(bioSampleTestTwoResultTbList)){
+                List<BioSampleTestTwoResultDetailTb> cerSampleTestBioInfoResultDetailList = bioSampleSampleTwoResultDetailTbMapper.selectAllByTwoResultIdAndConfirmStatus(bioSampleTestTwoResultTbList.get(0).getId(), "checked");
+                if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultDetailList)) {
                     cerSampleTestBioInfoResultDetailList.forEach(cerSampleTestBioInfoResultTb -> {
                         sampleTestListDetailRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
                     });
+                }
             }
+
             sampleTestListDetailRspDTO.setMatchNum(CollectionUtil.isNotEmpty(sampleTestListDetailRspDTO.getBioInfoResultList()) ? sampleTestListDetailRspDTO.getBioInfoResultList().size() : 0);
         });
         return targetPageInfo;
@@ -646,7 +650,11 @@ public class SampleTestServiceImpl implements SampleTestService {
         if (cerSampleTestTb == null) {
             throw new BusinessException("参数错误，找不到此取样信息：" + id);
         }
-        List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCodeAndConfirmStatus(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode(),"checked");
+        List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByApplyNoAndSampleCodeOrderByIdDesc(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
+        if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultTbList)) {
+            throw new BusinessException("没有上传NGS检测结果");
+        }
+        List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByTwoResultIdAndConfirmStatus(bioSampleTestTwoResultTbList.get(0).getId(), "checked");
         return BeanUtils.copyListProperties(bioSampleSampleTwoResultDetailTbList, QueryBioInfoSampleTestResultRspDTO.class);
     }
 

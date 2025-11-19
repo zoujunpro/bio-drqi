@@ -17,12 +17,11 @@ public interface BioSampleTestTwoResultDetailTbMapper extends BaseMapper<BioSamp
 
     int deleteByTwoResultId(@Param("twoResultId") Integer twoResultId);
 
+    List<BioSampleTestTwoResultDetailTb> selectAllByTwoResultIdAndConfirmStatus(@Param("twoResultId") Integer twoResultId, @Param("confirmStatus") String confirmStatus);
     List<BioSampleTestTwoResultDetailTb> selectAllByTwoResultId(@Param("twoResultId") Integer twoResultId);
     int deleteByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
 
     List<BioSampleTestTwoResultDetailTb> selectAllByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
-
-    List<BioSampleTestTwoResultDetailTb> selectAllByApplyNoAndSampleCodeAndConfirmStatus(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode, @Param("confirmStatus") String confirmStatus);
 
     int deleteByIdIn(@Param("idList") Collection<Integer> idList);
 

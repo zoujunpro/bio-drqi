@@ -82,15 +82,6 @@
         where apply_no = #{applyNo,jdbcType=VARCHAR}
           AND sample_code = #{sampleCode,jdbcType=VARCHAR}
     </delete>
-    <select id="selectAllByApplyNoAndSampleCodeAndConfirmStatus" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from bio_sample_test_two_result_detail_tb
-        where
-        apply_no = #{applyNo,jdbcType=VARCHAR}
-        AND sample_code = #{sampleCode,jdbcType=VARCHAR}
-        AND confirm_status = #{confirmStatus,jdbcType=VARCHAR}
-    </select>
     <delete id="deleteByTwoResultId">
         delete
         from bio_sample_test_two_result_detail_tb
@@ -102,6 +93,14 @@
         from bio_sample_test_two_result_detail_tb
         where
         two_result_id = #{twoResultId,jdbcType=NUMERIC}
+    </select>
+    <select id="selectAllByTwoResultIdAndConfirmStatus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_test_two_result_detail_tb
+        where
+        two_result_id = #{twoResultId,jdbcType=NUMERIC}
+        AND confirm_status = #{confirmStatus,jdbcType=VARCHAR}
     </select>
 
 </mapper>

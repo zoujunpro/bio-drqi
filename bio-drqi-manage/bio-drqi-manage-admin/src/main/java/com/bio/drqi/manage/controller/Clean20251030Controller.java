@@ -14,6 +14,7 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SampleApplyTypeEnum;
 import com.bio.drqi.enums.VectorTaskStatusEnum;
 import com.bio.drqi.manage.dto.project.*;
+import com.bio.drqi.manage.service.project.CerSampleTwoResultService;
 import com.bio.drqi.mapper.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -141,7 +142,23 @@ public class Clean20251030Controller {
     @Resource
     private BioSampleTestTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
 
+    @Resource
+    private BioSampleTestTwoResultTbMapper bioSampleTestTwoResultTbMapper;
 
+
+    @Resource
+    private CerSampleTwoResultService cerSampleTwoResultService;
+
+
+    @GetMapping("/cleanNGS")
+    public ResponseResult<String> cleanNGS() {
+        List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectSelective(null).stream().filter(bioSampleTestTwoResultTb -> !BioDrQiContents.O.equals(bioSampleTestTwoResultTb.getSynResult())).collect(Collectors.toList());
+        for (BioSampleTestTwoResultTb bioSampleTestTwoResultTb : bioSampleTestTwoResultTbList) {
+            log.info("bioSampleTestTwoResultTb={}"+JSONUtil.toJsonStr(bioSampleTestTwoResultTb));
+            cerSampleTwoResultService.synOne(bioSampleTestTwoResultTb.getId());
+        }
+        return ResponseResult.getSuccess("ok");
+    }
 
 
     @GetMapping("createExcel")
@@ -159,7 +176,7 @@ public class Clean20251030Controller {
             List<CerPlasmidQualityTb> cerPlasmidQualityTbList = cerPlasmidQualityTbMapper.selectAllByVectorTaskCodeAndPlasmidName(cerVectorTaskTb.getVectorTaskCode(), cerVectorTb.getPlasmidName());
             Vector vector = new Vector();
             vector.setProjectCode(cerVectorTaskTb.getProjectCode());
-            vector.setProjectType("1".equals(cerProjectTb.getProjectType())?"正常项目":"自研项目");
+            vector.setProjectType("1".equals(cerProjectTb.getProjectType()) ? "正常项目" : "自研项目");
             vector.setSubProjectCode(cerVectorTaskTb.getSubProjectCode());
             vector.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
             vector.setPlasmidName(cerVectorTb.getPlasmidName());
@@ -306,7 +323,7 @@ public class Clean20251030Controller {
                     cerSampleTestTb.setTestUserName("张立肖");
                     cerSampleTestTbMapper.updateById(cerSampleTestTb);
                 }
-            }else if(cerSampleTestTb.ifHaveTestResult()){
+            } else if (cerSampleTestTb.ifHaveTestResult()) {
                 if (cerSampleTestTb.getTestUserId() == null) {
                     cerSampleTestTb.setTestUserId(117);
                     cerSampleTestTb.setTestUserName("张立肖");

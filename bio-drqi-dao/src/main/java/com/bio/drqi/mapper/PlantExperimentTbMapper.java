@@ -15,6 +15,8 @@ public interface PlantExperimentTbMapper extends BaseMapper<PlantExperimentTb> {
 
     List<PlantExperimentTb> selectSelective(PlantExperimentTb plantExperimentTb);
 
+    PlantExperimentTb selectOneByExperimentNum(@Param("experimentNum") String experimentNum);
+
     String selectMaxSampleCodePrefix();
 }
 

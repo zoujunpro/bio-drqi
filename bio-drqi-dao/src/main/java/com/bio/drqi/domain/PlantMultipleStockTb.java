@@ -1,10 +1,9 @@
 package com.bio.drqi.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.bio.drqi.common.enums.PlantSourceCodeEnum;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -103,7 +102,7 @@ public class PlantMultipleStockTb implements Serializable {
         plantMultipleStockTb.setSeedNum(plantExperimentDetailTb.getSeedNum());
         plantMultipleStockTb.setTransformCode(null);
         plantMultipleStockTb.setPlantNumber(plantExperimentDetailTb.getPlantNumber());
-        plantMultipleStockTb.setSourceCode(PlantSourceCodeEnum.project.name());
+        plantMultipleStockTb.setSourceCode(SourceCodeEnum.project.name());
         plantMultipleStockTb.setRemark(plantExperimentDetailTb.getRemarks());
         plantMultipleStockTb.setCreateTime(plantExperimentDetailTb.getCreateTime());
         plantMultipleStockTb.setCreateUserId(plantExperimentDetailTb.getCreateUserId());

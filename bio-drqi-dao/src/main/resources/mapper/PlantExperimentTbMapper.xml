@@ -48,5 +48,12 @@
     <select id="selectMaxSampleCodePrefix" resultType="java.lang.String">
         select max(sample_code_prefix) from plant_experiment_tb
     </select>
+    <select id="selectOneByExperimentNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_experiment_tb
+        where
+        experiment_num = #{experimentNum,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

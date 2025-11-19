@@ -11,11 +11,11 @@ import java.util.Date;
 
 /**
  * 
- * @TableName plant_sample_coode_prefix_tb
+ * @TableName plant_sample_code_prefix_tb
  */
-@TableName(value ="plant_sample_coode_prefix_tb")
+@TableName(value ="plant_sample_code_prefix_tb")
 @Data
-public class PlantSampleCoodePrefixTb implements Serializable {
+public class PlantSampleCodePrefixTb implements Serializable {
     /**
      * 
      */
@@ -40,7 +40,7 @@ public class PlantSampleCoodePrefixTb implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
-    public PlantSampleCoodePrefixTb(String sampleCodePrefix) {
+    public PlantSampleCodePrefixTb(String sampleCodePrefix) {
         this.sampleCodePrefix = sampleCodePrefix;
         this.currentIndex=0;
         this.createTime=new Date();

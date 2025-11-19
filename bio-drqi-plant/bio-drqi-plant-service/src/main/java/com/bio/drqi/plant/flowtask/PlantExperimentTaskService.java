@@ -1,6 +1,5 @@
 package com.bio.drqi.plant.flowtask;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
@@ -55,7 +54,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
     private PlantMultipleStockTbMapper plantMultipleStockTbMapper;
 
     @Resource
-    private PlantSampleCoodePrefixTbMapper plantSampleCoodePrefixTbMapper;
+    private PlantSampleCodePrefixTbMapper plantSampleCodePrefixTbMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -143,7 +142,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
             plantExperimentTbMapper.insert(plantExperimentTb);
             plantExperimentDetailTbMapper.insertBatch(plantExperimentDetailTbList);
             plantMultipleStockTbMapper.insertBatch(plantMultipleStockTbList);
-            plantSampleCoodePrefixTbMapper.insert(new PlantSampleCoodePrefixTb(plantExperimentTb.getSampleCodePrefix()));
+            plantSampleCodePrefixTbMapper.insert(new PlantSampleCodePrefixTb(plantExperimentTb.getSampleCodePrefix()));
 
             plantExperimentTaskDTO.setSampleCodePrefix(plantExperimentTb.getSampleCodePrefix());
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plantExperimentTaskDTO));

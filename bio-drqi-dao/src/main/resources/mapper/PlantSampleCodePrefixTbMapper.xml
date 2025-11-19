@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bio.drqi.mapper.PlantSampleCoodePrefixTbMapper">
+<mapper namespace="com.bio.drqi.mapper.PlantSampleCodePrefixTbMapper">
 
-    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.PlantSampleCoodePrefixTb">
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.PlantSampleCodePrefixTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="sampleCodePrefix" column="sample_code_prefix" jdbcType="VARCHAR"/>
             <result property="currentIndex" column="current_index" jdbcType="INTEGER"/>
@@ -15,4 +15,11 @@
         id,sample_code_prefix,current_index,
         create_time
     </sql>
+    <select id="selectOneBySampleCodePrefix" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_sample_code_prefix_tb
+        where
+        sample_code_prefix = #{sampleCodePrefix,jdbcType=VARCHAR}
+    </select>
 </mapper>

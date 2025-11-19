@@ -9,8 +9,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
-import com.bio.drqi.common.contents.BioDrQiContents;
-import com.bio.drqi.common.enums.PlantSourceCodeEnum;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.domain.*;
@@ -44,7 +43,10 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
     @Resource
-    private PlantSampleCoodePrefixTbMapper plantSampleCoodePrefixTbMapper;
+    private PlantSampleCodePrefixTbMapper plantSampleCodePrefixTbMapper;
+
+    @Resource
+    private PlantExperimentTbMapper plantExperimentTbMapper;
 
 
     @Override
@@ -82,7 +84,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
             for (PlantSampleTestTaskDTO.FirstSampleApply firstSampleApply : plantExperimentTaskDTO.getFirstSampleApplyList()) {
                 ValidatorUtil.validator(firstSampleApply);
                 BeanUtils.trimFiledSpace(firstSampleApply);
-                if (PlantSourceCodeEnum.project.name().equals(firstSampleApply.getSourceCode())) {
+                if (SourceCodeEnum.project.name().equals(firstSampleApply.getSourceCode())) {
                     if (StringUtils.isEmpty(firstSampleApply.getVectorTaskCode())) {
                         throw new BusinessException("实施方案编号缺失");
                     }
@@ -98,12 +100,27 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     }
                 }
                 //找到取样编号前缀
+                PlantSampleCodePrefixTb plantSampleCodePrefixTb = null;
+                if (SourceCodeEnum.project.name().equals(firstSampleApply.getSourceCode())) {
+                    //项目的取样数据占时不在这
+                } else if (SourceCodeEnum.cer.name().equals(firstSampleApply.getSourceCode())) {
+                    PlantExperimentTb plantExperimentTb = plantExperimentTbMapper.selectOneByExperimentNum(firstSampleApply.getPlantExperimentNum());
+                    if (plantExperimentTb == null) {
+                        throw new BusinessException("数据异常，找不到CER试验：" + firstSampleApply.getPlantExperimentNum());
+                    }
+                    if (StringUtils.isEmpty(plantExperimentTb.getSampleCodePrefix())) {
+                        throw new BusinessException("CER试验" + plantExperimentTb.getSampleCodePrefix() + "找不到取样编号前缀");
+                    }
+                    plantSampleCodePrefixTb = plantSampleCodePrefixTbMapper.selectOneBySampleCodePrefix(plantExperimentTb.getSampleCodePrefix());
+                    if (plantSampleCodePrefixTb == null) {
+                        throw new BusinessException("CER试验" + plantExperimentTb.getSampleCodePrefix() + "找不到取样编号前缀");
+                    }
 
-
-                for (int i = 0; i < firstSampleApply.getSampleNumber(); i++) {
+                }
+                for (int i = 1; i <= firstSampleApply.getSampleNumber(); i++) {
                     PlantSampleTestTb plantSampleTestTb = new PlantSampleTestTb();
                     plantSampleTestTb.setVectorTaskCode(firstSampleApply.getVectorTaskCode());
-                    plantSampleTestTb.setSampleCode(null);
+                    plantSampleTestTb.setSampleCode(plantSampleCodePrefixTb.getSampleCodePrefix() + (plantSampleCodePrefixTb.getCurrentIndex()+i));
                     plantSampleTestTb.setApplyTime(bioTaskDtlTb.getApplyTime());
                     plantSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
                     plantSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
@@ -136,6 +153,8 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     plantSampleTestTb.setCloneSampleCode(null);
                     plantSampleTestTb.setTestOrgResult(null);
                 }
+                plantSampleCodePrefixTb.setCurrentIndex(plantSampleCodePrefixTb.getCurrentIndex() + firstSampleApply.getSampleNumber());
+                plantSampleCodePrefixTbMapper.updateById(plantSampleCodePrefixTb);
             }
         }
 

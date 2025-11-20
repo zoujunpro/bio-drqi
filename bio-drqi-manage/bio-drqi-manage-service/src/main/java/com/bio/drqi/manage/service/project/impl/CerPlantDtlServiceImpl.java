@@ -65,7 +65,21 @@ public class CerPlantDtlServiceImpl implements CerPlantDtlService {
         PageHelper.startPage(plantDtlListDetailReqDTO.getPageNum(), plantDtlListDetailReqDTO.getPageSize());
         List<CerPlantDtlTb> cerPlantDtlTbList = cerPlantDtlTbMapper.selectSelective(BeanUtils.copyProperties(plantDtlListDetailReqDTO, CerPlantDtlTb.class));
         PageInfo<CerPlantDtlTb> srcPageInfo = new PageInfo<>(cerPlantDtlTbList);
-        return BeanUtils.copyPageInfoProperties(srcPageInfo, PlantDtlListDetailRspDTO.class);
+        PageInfo<PlantDtlListDetailRspDTO> result = BeanUtils.copyPageInfoProperties(srcPageInfo, PlantDtlListDetailRspDTO.class);
+        if (CollectionUtil.isNotEmpty(result.getList())) {
+            List<BioDict> bioDictList = bioDictMapper.selectAll();
+            Map<String, BioDict> bioDictMap = bioDictList.stream().collect(Collectors.toMap(bioDict -> bioDict.getDictType() + ":" + bioDict.getDictValueCode(), bioDict -> bioDict));
+            result.getList().forEach(plantDtlListRspDTO -> {
+                if (StringUtils.isNotEmpty(plantDtlListRspDTO.getPollinationMethod())) {
+                    BioDict pollinationMethodBioDict = bioDictMap.get(BioDictTypeEnum.POLLINATE_TYPE + ":" + plantDtlListRspDTO.getPollinationMethod());
+                    if (pollinationMethodBioDict == null) {
+                        throw new BusinessException("授粉方式填写错误：" + plantDtlListRspDTO.getPollinationMethod());
+                    }
+                    plantDtlListRspDTO.setPollinationMethodName(pollinationMethodBioDict.getDictValueName());
+                }
+            });
+        }
+        return result;
     }
 
     @Override

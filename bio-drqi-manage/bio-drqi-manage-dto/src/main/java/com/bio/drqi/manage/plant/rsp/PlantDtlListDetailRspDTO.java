@@ -101,6 +101,8 @@ public class PlantDtlListDetailRspDTO {
      */
     private String pollinationMethod;
 
+    private String pollinationMethodName;
+
     /**
      * 植株状态 1正常，2异常, 3已剔除
      */

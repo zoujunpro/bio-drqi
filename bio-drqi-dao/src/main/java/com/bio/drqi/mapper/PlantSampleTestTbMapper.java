@@ -1,4 +1,6 @@
 package com.bio.drqi.mapper;
+import org.apache.ibatis.annotations.Param;
+import java.util.Collection;
 
 import com.bio.drqi.domain.PlantSampleTestTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -11,6 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface PlantSampleTestTbMapper extends BaseMapper<PlantSampleTestTb> {
 
+    int insertBatch(@Param("plantSampleTestTbCollection") Collection<PlantSampleTestTb> plantSampleTestTbCollection);
 }
 
 

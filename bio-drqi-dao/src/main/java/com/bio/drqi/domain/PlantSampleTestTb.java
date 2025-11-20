@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.bio.common.core.util.StringUtils;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,9 +13,10 @@ import java.util.Date;
 
 /**
  * 取样检测信息表
+ *
  * @TableName plant_sample_test_tb
  */
-@TableName(value ="plant_sample_test_tb")
+@TableName(value = "plant_sample_test_tb")
 @Data
 public class PlantSampleTestTb implements Serializable {
     /**
@@ -191,9 +193,50 @@ public class PlantSampleTestTb implements Serializable {
     /**
      * 检测原始结果
      */
-    private byte[] testOrgResult;
+    private String testOrgResult;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+
+    public static PlantSampleTestTb of(String vectorTaskCode, String sampleCode, BioTaskDtlTb bioTaskDtlTb, String sourceCode,String uniqueCode) {
+        PlantSampleTestTb plantSampleTestTb = new PlantSampleTestTb();
+        plantSampleTestTb.setVectorTaskCode(vectorTaskCode);
+        plantSampleTestTb.setSampleCode(sampleCode);
+        plantSampleTestTb.setApplyTime(bioTaskDtlTb.getApplyTime());
+        plantSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
+        plantSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
+        plantSampleTestTb.setSourceCode(sourceCode);
+        plantSampleTestTb.setTestIdentifyPrimer(null);
+        plantSampleTestTb.setTestMethod(null);
+        plantSampleTestTb.setTestEditType(null);
+        plantSampleTestTb.setTestNoTransIdentityPrimer(null);
+        plantSampleTestTb.setTestIsGeneModifyPositive(null);
+        plantSampleTestTb.setTestIfFixedPoint(null);
+        plantSampleTestTb.setTestIfCopyInsert(null);
+        plantSampleTestTb.setTestFixedPointType(null);
+        plantSampleTestTb.setTestDonorResidueInfo(null);
+        plantSampleTestTb.setTestInsertionSite(null);
+        plantSampleTestTb.setTestElisaResult(null);
+        plantSampleTestTb.setTestQbzrSeq(null);
+        plantSampleTestTb.setTestEditResidueInfo(null);
+        plantSampleTestTb.setTestUserId(null);
+        plantSampleTestTb.setTestUserName(null);
+        plantSampleTestTb.setTestTime(null);
+        plantSampleTestTb.setCheckUserName(null);
+        plantSampleTestTb.setCheckUserId(null);
+        plantSampleTestTb.setCheckResult(null);
+        plantSampleTestTb.setCreateTime(new Date());
+        plantSampleTestTb.setUpdateTime(new Date());
+        plantSampleTestTb.setApplyNo(bioTaskDtlTb.getTaskNum());
+        plantSampleTestTb.setIdentifyPrimer(null);
+        if(StringUtils.isNotEmpty(uniqueCode)){
+            plantSampleTestTb.setUniqueCode(uniqueCode);
+        }
+        plantSampleTestTb.setRemark(null);
+        plantSampleTestTb.setCloneSampleCode(null);
+        plantSampleTestTb.setTestOrgResult(null);
+        return plantSampleTestTb;
+    }
 
 }

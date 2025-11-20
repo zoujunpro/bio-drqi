@@ -178,7 +178,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         }
 
                     }
-
                 }
             }
 

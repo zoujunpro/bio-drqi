@@ -32,6 +32,11 @@ public class PlantMultipleStockTb implements Serializable {
     private String transformCode;
 
     /**
+     * 代次
+     */
+    private String generation;
+
+    /**
      * 数量
      */
     private Integer plantNumber;

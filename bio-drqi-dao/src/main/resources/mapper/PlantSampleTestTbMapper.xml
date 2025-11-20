@@ -8,6 +8,7 @@
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
             <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
+            <result property="generation" column="generation" jdbcType="VARCHAR"/>
             <result property="applyTime" column="apply_time" jdbcType="TIMESTAMP"/>
             <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
             <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
@@ -32,7 +33,6 @@
             <result property="checkResult" column="check_result" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="acceptorMaterial" column="acceptor_material" jdbcType="VARCHAR"/>
             <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
             <result property="identifyPrimer" column="identify_primer" jdbcType="VARCHAR"/>
             <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
@@ -42,7 +42,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,vector_task_code,sample_code,
+        id,vector_task_code,sample_code,generation,
         apply_time,apply_user_id,apply_user_name,
         test_identify_primer,test_method,test_edit_type,
         test_no_trans_identity_primer,test_is_gene_modify_positive,test_if_fixed_point,
@@ -50,13 +50,12 @@
         test_insertion_site,test_elisa_result,test_qbzr_seq,
         test_edit_residue_info,test_user_id,test_user_name,
         test_time,check_user_name,check_user_id,
-        check_result,create_time,update_time,
-        acceptor_material,apply_no,identify_primer,
+        check_result,create_time,update_time,apply_no,identify_primer,
         unique_code,remark,clone_sample_code,
         source_code,test_org_result
     </sql>
     <insert id="insertBatch">
-        insert into plant_sample_test_tb(id,vector_task_code,sample_code,
+        insert into plant_sample_test_tb(id,vector_task_code,sample_code,generation,
         apply_time,apply_user_id,apply_user_name,
         test_identify_primer,test_method,test_edit_type,
         test_no_trans_identity_primer,test_is_gene_modify_positive,test_if_fixed_point,
@@ -64,13 +63,12 @@
         test_insertion_site,test_elisa_result,test_qbzr_seq,
         test_edit_residue_info,test_user_id,test_user_name,
         test_time,check_user_name,check_user_id,
-        check_result,create_time,update_time,
-        acceptor_material,apply_no,identify_primer,
+        check_result,create_time,update_time,apply_no,identify_primer,
         unique_code,remark,clone_sample_code,
         source_code,test_org_result)
         values
         <foreach collection="plantSampleTestTbCollection" item="item" separator=",">
-            (#{item.id,jdbcType=NUMERIC},#{item.vectorTaskCode,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},
+            (#{item.id,jdbcType=NUMERIC},#{item.vectorTaskCode,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},#{item.generation,jdbcType=VARCHAR},
             #{item.applyTime,jdbcType=TIMESTAMP},#{item.applyUserId,jdbcType=NUMERIC},#{item.applyUserName,jdbcType=VARCHAR},
             #{item.testIdentifyPrimer,jdbcType=VARCHAR},#{item.testMethod,jdbcType=VARCHAR},#{item.testEditType,jdbcType=VARCHAR},
             #{item.testNoTransIdentityPrimer,jdbcType=VARCHAR},#{item.testIsGeneModifyPositive,jdbcType=VARCHAR},#{item.testIfFixedPoint,jdbcType=VARCHAR},
@@ -79,7 +77,7 @@
             #{item.testEditResidueInfo,jdbcType=VARCHAR},#{item.testUserId,jdbcType=NUMERIC},#{item.testUserName,jdbcType=VARCHAR},
             #{item.testTime,jdbcType=VARCHAR},#{item.checkUserName,jdbcType=VARCHAR},#{item.checkUserId,jdbcType=NUMERIC},
             #{item.checkResult,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP},
-            #{item.acceptorMaterial,jdbcType=VARCHAR},#{item.applyNo,jdbcType=VARCHAR},#{item.identifyPrimer,jdbcType=VARCHAR},
+            #{item.applyNo,jdbcType=VARCHAR},#{item.identifyPrimer,jdbcType=VARCHAR},
             #{item.uniqueCode,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},#{item.cloneSampleCode,jdbcType=VARCHAR},
             #{item.sourceCode,jdbcType=VARCHAR},#{item.testOrgResult,jdbcType=VARCHAR})
         </foreach>

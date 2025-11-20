@@ -19,6 +19,8 @@ public interface PlantExperimentDetailTbMapper extends BaseMapper<PlantExperimen
 
     List<PlantExperimentDetailTb> selectAllByRegionNum(@Param("regionNum") String regionNum);
 
+    PlantExperimentDetailTb selectOneByRegionNumAndSeedNum(@Param("regionNum") String regionNum, @Param("seedNum") String seedNum);
+
 
 }
 

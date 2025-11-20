@@ -22,7 +22,6 @@
             <result property="otherField" column="other_field" jdbcType="OTHER"/>
             <result property="editType" column="edit_type" jdbcType="VARCHAR"/>
             <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
-            <result property="acceptorMaterial" column="acceptor_material" jdbcType="VARCHAR"/>
             <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
@@ -40,7 +39,7 @@
         transplant_date,vernalization_begin_date,vernalization_end_date,
         pollination_method,plant_status,pollination_date,
         harvest_date,harvest_type,other_field,
-        edit_type,species_code,acceptor_material,
+        edit_type,species_code,
         create_date,update_time,create_user_id,
         create_user_name,task_num,breed_code,
         source_code,remark,vector_task_code
@@ -52,4 +51,27 @@
         where
         plant_code = #{plantCode,jdbcType=VARCHAR}
     </select>
+    <insert id="insertBatch">
+        insert into plant_single_stock_tb(id,plant_code,generation,
+        plant_number,plant_date,sample_code,
+        transplant_date,vernalization_begin_date,vernalization_end_date,
+        pollination_method,plant_status,pollination_date,
+        harvest_date,harvest_type,other_field,
+        edit_type,species_code,acceptor_material,
+        create_date,update_time,create_user_id,
+        create_user_name,task_num,breed_code,
+        source_code,remark,vector_task_code)
+        values
+        <foreach collection="plantSingleStockTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.plantCode,jdbcType=VARCHAR},#{item.generation,jdbcType=VARCHAR},
+            #{item.plantNumber,jdbcType=NUMERIC},#{item.plantDate,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},
+            #{item.transplantDate,jdbcType=VARCHAR},#{item.vernalizationBeginDate,jdbcType=VARCHAR},#{item.vernalizationEndDate,jdbcType=VARCHAR},
+            #{item.pollinationMethod,jdbcType=VARCHAR},#{item.plantStatus,jdbcType=VARCHAR},#{item.pollinationDate,jdbcType=VARCHAR},
+            #{item.harvestDate,jdbcType=VARCHAR},#{item.harvestType,jdbcType=VARCHAR},#{item.otherField},
+            #{item.editType,jdbcType=VARCHAR},#{item.speciesCode,jdbcType=VARCHAR},#{item.acceptorMaterial,jdbcType=VARCHAR},
+            #{item.createDate,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP},#{item.createUserId,jdbcType=NUMERIC},
+            #{item.createUserName,jdbcType=VARCHAR},#{item.taskNum,jdbcType=VARCHAR},#{item.breedCode,jdbcType=VARCHAR},
+            #{item.sourceCode,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
 </mapper>

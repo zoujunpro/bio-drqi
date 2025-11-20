@@ -160,7 +160,7 @@ public class PlantSingleStockTb implements Serializable {
     public static PlantSingleStockTb of(PlantSampleTestTb plantSampleTestTb){
         PlantSingleStockTb plantSingleStockTb=new PlantSingleStockTb();
         plantSingleStockTb.setPlantCode(plantSampleTestTb.getSampleCode());
-        plantSingleStockTb.setGeneration(null);
+        plantSingleStockTb.setGeneration(plantSampleTestTb.getGeneration());
         plantSingleStockTb.setPlantNumber(null);
         plantSingleStockTb.setPlantDate(null);
         plantSingleStockTb.setSampleCode(plantSampleTestTb.getSampleCode());
@@ -174,17 +174,17 @@ public class PlantSingleStockTb implements Serializable {
         plantSingleStockTb.setHarvestType(null);
         plantSingleStockTb.setOtherField(null);
         plantSingleStockTb.setEditType(null);
-        plantSingleStockTb.setSpeciesCode(plantSampleTestTb.getSampleCode());
+        plantSingleStockTb.setSpeciesCode(plantSampleTestTb.getSpeciesCode());
         plantSingleStockTb.setCreateDate(new Date());
         plantSingleStockTb.setUpdateTime(new Date());
         plantSingleStockTb.setCreateUserId(plantSampleTestTb.getApplyUserId());
         plantSingleStockTb.setCreateUserName(plantSampleTestTb.getApplyUserName());
         plantSingleStockTb.setTaskNum(plantSampleTestTb.getApplyNo());
-        plantSingleStockTb.setBreedCode(null);
+        plantSingleStockTb.setBreedCode(plantSampleTestTb.getBreedCode());
         plantSingleStockTb.setSourceCode(plantSampleTestTb.getSourceCode());
         plantSingleStockTb.setRemark(null);
         plantSingleStockTb.setVectorTaskCode(plantSampleTestTb.getVectorTaskCode());
-        return null;
+        return plantSingleStockTb;
 
     }
 }

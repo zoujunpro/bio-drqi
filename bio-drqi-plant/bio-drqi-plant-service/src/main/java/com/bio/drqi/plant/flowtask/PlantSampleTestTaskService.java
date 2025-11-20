@@ -33,9 +33,6 @@ import java.util.stream.Collectors;
 public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
     @Resource
-    private OssService ossService;
-
-    @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
 
     @Resource
@@ -55,6 +52,10 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
     @Resource
     private PlantSampleTestTbMapper plantSampleTestTbMapper;
+
+    @Resource
+    private PlantExperimentDetailTbMapper plantExperimentDetailTbMapper;
+
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -78,6 +79,10 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
             for (PlantSampleTestTaskDTO.FirstSampleApply firstSampleApply : plantExperimentTaskDTO.getFirstSampleApplyList()) {
                 ValidatorUtil.validator(firstSampleApply);
                 BeanUtils.trimFiledSpace(firstSampleApply);
+                //如果是转化苗
+                String generation = null;
+                String speciesCode = null;
+                String breedCode = null;
                 if (SourceCodeEnum.project.name().equals(firstSampleApply.getSourceCode())) {
                     if (StringUtils.isEmpty(firstSampleApply.getVectorTaskCode())) {
                         throw new BusinessException("实施方案编号缺失");
@@ -92,13 +97,22 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     if (plantMultipleStockTb.getPlantNumber() < firstSampleApply.getSampleNumber()) {
                         throw new BusinessException("转化编号：" + firstSampleApply.getVectorTaskCode() + "的苗库存不足,当前库存苗数量:" + plantMultipleStockTb.getPlantNumber());
                     }
+                    generation = plantMultipleStockTb.getGeneration();
+                    speciesCode = plantMultipleStockTb.getSpeciesCode();
+                    breedCode = plantMultipleStockTb.getBreedCode();
+                    //如果是CER试验苗
+                } else {
+                    PlantExperimentDetailTb plantExperimentDetailTb = plantExperimentDetailTbMapper.selectOneByRegionNumAndSeedNum(firstSampleApply.getRegionNum(), firstSampleApply.getSeedNum());
+                    if (plantExperimentDetailTb == null) {
+                        throw new BusinessException("CER试验中无此小区:" + firstSampleApply.getRegionNum() + "和种子编号：" + firstSampleApply.getSeedNum());
+                    }
+                    generation = plantExperimentDetailTb.getGenerationCode();
                 }
                 //找到取样编号前缀
                 PlantSampleCodePrefixTb plantSampleCodePrefixTb = getPlantSampleCodePrefixTb(firstSampleApply);
-
                 for (int i = 1; i <= firstSampleApply.getSampleNumber(); i++) {
                     String sampleCode = plantSampleCodePrefixTb.getSampleCodePrefix() + (plantSampleCodePrefixTb.getCurrentIndex() + i - 1);
-                    PlantSampleTestTb plantSampleTestTb = PlantSampleTestTb.of(firstSampleApply.getVectorTaskCode(), sampleCode, bioTaskDtlTb, firstSampleApply.getSourceCode(), sampleCode);
+                    PlantSampleTestTb plantSampleTestTb = PlantSampleTestTb.of(firstSampleApply.getVectorTaskCode(), generation, breedCode, speciesCode, sampleCode, bioTaskDtlTb, firstSampleApply.getSourceCode(), sampleCode);
                     sampleTestTbList.add(plantSampleTestTb);
                 }
                 plantSampleApplyTb.setApplyNumber(firstSampleApply.getSampleNumber() + plantSampleApplyTb.getApplyNumber());
@@ -120,7 +134,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 if (!PlantStatusEnum.STATUS_1.code.equals(plantSingleStockTb.getPlantStatus()) && !PlantStatusEnum.STATUS_2.code.equals(plantSingleStockTb.getPlantStatus())) {
                     throw new BusinessException("只有正常或者异常苗方可进行取样");
                 }
-                PlantSampleTestTb plantSampleTestTb = PlantSampleTestTb.of(repeatSampleTest.getVectorTaskCode(), repeatSampleTest.getSampleCode(), bioTaskDtlTb, repeatSampleTest.getSourceCode(), null);
+                PlantSampleTestTb plantSampleTestTb = PlantSampleTestTb.of(repeatSampleTest.getVectorTaskCode(), plantSingleStockTb.getGeneration(), plantSingleStockTb.getBreedCode(), plantSingleStockTb.getSpeciesCode(), repeatSampleTest.getSampleCode(), bioTaskDtlTb, repeatSampleTest.getSourceCode(), null);
                 sampleTestTbList.add(plantSampleTestTb);
             }
             plantSampleApplyTb.setApplyNumber(plantExperimentTaskDTO.getRepeatSampleTestList().size());
@@ -202,15 +216,16 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
             //首次取样，且已经发生过移苗
             if (SampleTestApplyTypeEnum.F.name().equals(plantSampleApplyTb.getApplyType())) {
-                List<PlantSampleTestTb> plantSampleTestTbList = plantSampleTestTbMapper.selectAllByApplyNo(plantSampleApplyTb.getApplyNo()).stream().filter(plantSampleTestTb -> CheckResultEnum.stay.name().equals(plantSampleTestTb.getCheckResult()) ).collect(Collectors.toList());
+                List<PlantSingleStockTb> plantSingleStockTbList = new ArrayList<>();
+                List<PlantSampleTestTb> plantSampleTestTbList = plantSampleTestTbMapper.selectAllByApplyNo(plantSampleApplyTb.getApplyNo()).stream().filter(plantSampleTestTb -> CheckResultEnum.stay.name().equals(plantSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {
                     for (PlantSampleTestTb plantSampleTestTb : plantSampleTestTbList) {
-                        PlantSingleStockTb plantSingleStockTb=new PlantSingleStockTb();
-
-
+                        PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(plantSampleTestTb);
+                        plantSingleStockTbList.add(plantSingleStockTb);
                     }
 
                 }
+                plantSingleStockTbMapper.insertBatch(plantSingleStockTbList);
 
             }
 

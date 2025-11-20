@@ -195,14 +195,23 @@ public class PlantSampleTestTb implements Serializable {
      */
     private String testOrgResult;
 
+    private String generation;
+
+    private String speciesCode;
+
+    private String breedCode;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
 
-    public static PlantSampleTestTb of(String vectorTaskCode, String sampleCode, BioTaskDtlTb bioTaskDtlTb, String sourceCode,String uniqueCode) {
+    public static PlantSampleTestTb of(String vectorTaskCode,String generation, String breedCode,String speciesCode,String sampleCode, BioTaskDtlTb bioTaskDtlTb, String sourceCode,String uniqueCode) {
         PlantSampleTestTb plantSampleTestTb = new PlantSampleTestTb();
         plantSampleTestTb.setVectorTaskCode(vectorTaskCode);
         plantSampleTestTb.setSampleCode(sampleCode);
+        plantSampleTestTb.setGeneration(generation);
+        plantSampleTestTb.setBreedCode(breedCode);
+        plantSampleTestTb.setSpeciesCode(speciesCode);
         plantSampleTestTb.setApplyTime(bioTaskDtlTb.getApplyTime());
         plantSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
         plantSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());

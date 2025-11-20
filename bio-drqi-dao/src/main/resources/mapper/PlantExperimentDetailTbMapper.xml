@@ -90,5 +90,13 @@
         where
         region_num = #{regionNum,jdbcType=VARCHAR}
     </select>
+    <select id="selectOneByRegionNumAndSeedNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_experiment_detail_tb
+        where
+        region_num = #{regionNum,jdbcType=VARCHAR}
+        AND seed_num = #{seedNum,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

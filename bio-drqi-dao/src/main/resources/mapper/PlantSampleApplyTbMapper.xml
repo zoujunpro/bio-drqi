@@ -31,4 +31,11 @@
         layout_flag,vector_task_codes,sample_code_range,
         task_status
     </sql>
+    <select id="selectOneByApplyNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_sample_apply_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+    </select>
 </mapper>

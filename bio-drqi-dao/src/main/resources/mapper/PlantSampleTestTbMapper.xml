@@ -84,4 +84,17 @@
             #{item.sourceCode,jdbcType=VARCHAR},#{item.testOrgResult,jdbcType=VARCHAR})
         </foreach>
     </insert>
+    <update id="updateCheckResultByApplyNoAndCheckResultIsNull">
+        update plant_sample_test_tb
+        set check_result = #{checkResult,jdbcType=VARCHAR}
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+          AND check_result is null
+    </update>
+    <select id="selectAllByApplyNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_sample_test_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+    </select>
 </mapper>

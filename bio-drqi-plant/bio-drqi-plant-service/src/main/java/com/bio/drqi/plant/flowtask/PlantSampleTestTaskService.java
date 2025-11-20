@@ -9,10 +9,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
-import com.bio.drqi.common.enums.BioTaskStatusEnum;
-import com.bio.drqi.common.enums.SourceCodeEnum;
-import com.bio.drqi.common.enums.PlantStatusEnum;
-import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
+import com.bio.drqi.common.enums.*;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.plant.dto.ExperimentExcelDTO;
@@ -197,6 +194,16 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            PlantSampleApplyTb plantSampleApplyTb = plantSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
+
+            plantSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull(CheckResultEnum.remove.name(), plantSampleApplyTb.getApplyNo());
+
+            //首次取样，且已经发生过移苗
+            if (SampleTestApplyTypeEnum.F.name().equals(plantSampleApplyTb.getApplyType())) {
+                List<PlantSampleTestTb> plantSampleTestTbList = plantSampleTestTbMapper.selectAllByApplyNo(plantSampleApplyTb.getApplyNo()).stream().filter(plantSampleTestTb -> CheckResultEnum.stay.name().equals(plantSampleTestTb.getCheckResult()) ).collect(Collectors.toList());
+
+
+            }
 
         }
 

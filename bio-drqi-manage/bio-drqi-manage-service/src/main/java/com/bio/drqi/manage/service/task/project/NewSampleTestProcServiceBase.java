@@ -158,7 +158,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
             cerSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull(CheckResultEnum.remove.name(), cerSampleApplyTb.getApplyNo());
             //首次取样，且已经发生过移苗
             if (SampleApplyTypeEnum.F.name().equals(cerSampleApplyTb.getApplyType())) {
-                List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(cerSampleApplyTb.getApplyNo()).stream().filter(cerSampleTestTb -> "传代".equals(cerSampleTestTb.getCheckResult()) || "留种".equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
+                List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(cerSampleApplyTb.getApplyNo()).stream().filter(cerSampleTestTb -> CheckResultEnum.stay.name().equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
                     for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
                         List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectAllByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
@@ -202,10 +202,10 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         cerSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         List<BioSampleTestTwoResultTb> bioSampleSampleTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByUploadNum(bioTaskDtlTb.getTaskNum());
-        if(CollectionUtil.isNotEmpty(bioSampleSampleTwoResultTbList)){
+        if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultTbList)) {
             bioSampleTestTwoResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
-            bioSampleSampleTwoResultTbList.forEach(bioSampleSampleTwoResultTb->{
-                bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(bioSampleSampleTwoResultTb.getApplyNo(),bioSampleSampleTwoResultTb.getSampleCode());
+            bioSampleSampleTwoResultTbList.forEach(bioSampleSampleTwoResultTb -> {
+                bioSampleSampleTwoResultDetailTbMapper.deleteByApplyNoAndSampleCode(bioSampleSampleTwoResultTb.getApplyNo(), bioSampleSampleTwoResultTb.getSampleCode());
             });
         }
 

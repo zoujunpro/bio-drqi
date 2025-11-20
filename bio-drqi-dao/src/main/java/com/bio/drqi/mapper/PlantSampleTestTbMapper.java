@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import java.util.Collection;
 
@@ -14,6 +15,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface PlantSampleTestTbMapper extends BaseMapper<PlantSampleTestTb> {
 
     int insertBatch(@Param("plantSampleTestTbCollection") Collection<PlantSampleTestTb> plantSampleTestTbCollection);
+
+    int updateCheckResultByApplyNoAndCheckResultIsNull(@Param("checkResult") String checkResult, @Param("applyNo") String applyNo);
+
+    List<PlantSampleTestTb> selectAllByApplyNo(@Param("applyNo") String applyNo);
 }
 
 

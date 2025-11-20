@@ -1,6 +1,8 @@
 package com.bio.drqi.plant.flowtask;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
@@ -201,7 +203,14 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
             //首次取样，且已经发生过移苗
             if (SampleTestApplyTypeEnum.F.name().equals(plantSampleApplyTb.getApplyType())) {
                 List<PlantSampleTestTb> plantSampleTestTbList = plantSampleTestTbMapper.selectAllByApplyNo(plantSampleApplyTb.getApplyNo()).stream().filter(plantSampleTestTb -> CheckResultEnum.stay.name().equals(plantSampleTestTb.getCheckResult()) ).collect(Collectors.toList());
+                if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {
+                    for (PlantSampleTestTb plantSampleTestTb : plantSampleTestTbList) {
+                        PlantSingleStockTb plantSingleStockTb=new PlantSingleStockTb();
 
+
+                    }
+
+                }
 
             }
 

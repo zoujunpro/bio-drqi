@@ -9,6 +9,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
@@ -195,7 +196,9 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
-        //todo
+        if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
+
+        }
 
     }
 

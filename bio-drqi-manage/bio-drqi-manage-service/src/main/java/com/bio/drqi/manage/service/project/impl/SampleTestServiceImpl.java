@@ -94,13 +94,16 @@ public class SampleTestServiceImpl implements SampleTestService {
         targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
             sampleTestListDetailRspDTO.setSampleGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getSampleGeneration()));
             List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByApplyNoAndSampleCodeOrderByIdDesc(sampleTestListDetailRspDTO.getApplyNo(), sampleTestListDetailRspDTO.getSampleCode());
-            if(CollectionUtil.isNotEmpty(bioSampleTestTwoResultTbList)){
-                List<BioSampleTestTwoResultDetailTb> cerSampleTestBioInfoResultDetailList = bioSampleSampleTwoResultDetailTbMapper.selectAllByTwoResultIdAndConfirmStatus(bioSampleTestTwoResultTbList.get(0).getId(), "checked");
-                if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultDetailList)) {
-                    cerSampleTestBioInfoResultDetailList.forEach(cerSampleTestBioInfoResultTb -> {
-                        sampleTestListDetailRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
-                    });
-                }
+            if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultTbList)) {
+                Map<String, List<BioSampleTestTwoResultTb>> bioSampleTestTwoResultTbListMap = bioSampleTestTwoResultTbList.stream().collect(Collectors.groupingBy(bioSampleTestTwoResultTb -> bioSampleTestTwoResultTb.getRunId() + bioSampleTestTwoResultTb.getSampleId()));
+                bioSampleTestTwoResultTbListMap.forEach((key, bioSampleTestTwoResultTbs) -> {
+                    List<BioSampleTestTwoResultDetailTb> cerSampleTestBioInfoResultDetailList = bioSampleSampleTwoResultDetailTbMapper.selectAllByTwoResultIdAndConfirmStatus(bioSampleTestTwoResultTbs.get(0).getId(), "checked");
+                    if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultDetailList)) {
+                        cerSampleTestBioInfoResultDetailList.forEach(cerSampleTestBioInfoResultTb -> {
+                            sampleTestListDetailRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
+                        });
+                    }
+                });
             }
 
             sampleTestListDetailRspDTO.setMatchNum(CollectionUtil.isNotEmpty(sampleTestListDetailRspDTO.getBioInfoResultList()) ? sampleTestListDetailRspDTO.getBioInfoResultList().size() : 0);
@@ -654,8 +657,18 @@ public class SampleTestServiceImpl implements SampleTestService {
         if (CollectionUtil.isEmpty(bioSampleTestTwoResultTbList)) {
             throw new BusinessException("没有上传NGS检测结果");
         }
-        List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByTwoResultIdAndConfirmStatus(bioSampleTestTwoResultTbList.get(0).getId(), "checked");
-        return BeanUtils.copyListProperties(bioSampleSampleTwoResultDetailTbList, QueryBioInfoSampleTestResultRspDTO.class);
+        List<BioSampleTestTwoResultDetailTb> resultDetailTbs = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultTbList)) {
+            Map<String, List<BioSampleTestTwoResultTb>> bioSampleTestTwoResultTbListMap = bioSampleTestTwoResultTbList.stream().collect(Collectors.groupingBy(bioSampleTestTwoResultTb -> bioSampleTestTwoResultTb.getRunId() + bioSampleTestTwoResultTb.getSampleId()));
+            bioSampleTestTwoResultTbListMap.forEach((key, bioSampleTestTwoResultTbs) -> {
+                List<BioSampleTestTwoResultDetailTb> cerSampleTestBioInfoResultDetailList = bioSampleSampleTwoResultDetailTbMapper.selectAllByTwoResultIdAndConfirmStatus(bioSampleTestTwoResultTbs.get(0).getId(), "checked");
+                if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultDetailList)) {
+                    resultDetailTbs.addAll(cerSampleTestBioInfoResultDetailList);
+
+                }
+            });
+        }
+        return BeanUtils.copyListProperties(resultDetailTbs, QueryBioInfoSampleTestResultRspDTO.class);
     }
 
     @Override

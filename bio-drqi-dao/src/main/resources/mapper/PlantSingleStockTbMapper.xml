@@ -74,4 +74,16 @@
             #{item.sourceCode,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR})
         </foreach>
     </insert>
+    <select id="selectAllBySampleCodeLike" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_single_stock_tb
+        where
+        sample_code like CONCAT('%',#{sampleCode,jdbcType=VARCHAR},'%')
+    </select>
+    <delete id="deleteByTaskNum">
+        delete
+        from plant_single_stock_tb
+        where task_num = #{taskNum,jdbcType=VARCHAR}
+    </delete>
 </mapper>

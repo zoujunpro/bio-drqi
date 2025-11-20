@@ -38,4 +38,9 @@
         where
         apply_no = #{applyNo,jdbcType=VARCHAR}
     </select>
+    <delete id="deleteByApplyNo">
+        delete
+        from plant_sample_apply_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+    </delete>
 </mapper>

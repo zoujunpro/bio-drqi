@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface CerSampleCodePrefixTbMapper extends BaseMapper<CerSampleCodePrefixTb> {
     CerSampleCodePrefixTb selectOneByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
 
-    List<CerSampleCodePrefixTb> selectAllByPlantExperimentCode(@Param("plantExperimentCode") String plantExperimentCode);
+    CerSampleCodePrefixTb selectOneByPlantExperimentCode(@Param("plantExperimentCode") String plantExperimentCode);
 
     int deleteByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
 }

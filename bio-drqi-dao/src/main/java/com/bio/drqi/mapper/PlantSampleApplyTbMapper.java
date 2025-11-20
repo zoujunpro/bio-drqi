@@ -12,6 +12,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface PlantSampleApplyTbMapper extends BaseMapper<PlantSampleApplyTb> {
     PlantSampleApplyTb selectOneByApplyNo(@Param("applyNo") String applyNo);
+
+    int deleteByApplyNo(@Param("applyNo") String applyNo);
 }
 
 

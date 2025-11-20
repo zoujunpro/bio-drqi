@@ -19,6 +19,8 @@ public interface PlantSampleTestTbMapper extends BaseMapper<PlantSampleTestTb> {
     int updateCheckResultByApplyNoAndCheckResultIsNull(@Param("checkResult") String checkResult, @Param("applyNo") String applyNo);
 
     List<PlantSampleTestTb> selectAllByApplyNo(@Param("applyNo") String applyNo);
+
+    int deleteByApplyNo(@Param("applyNo") String applyNo);
 }
 
 

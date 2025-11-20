@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.bio.drqi.common.enums.PlantStatusEnum;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,6 +19,9 @@ import java.util.Date;
  */
 @TableName(value ="plant_single_stock_tb")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PlantSingleStockTb implements Serializable {
     /**
      * 主键ID

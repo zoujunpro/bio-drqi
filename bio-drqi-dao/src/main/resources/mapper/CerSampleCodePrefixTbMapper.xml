@@ -29,7 +29,7 @@
         from cer_sample_code_prefix_tb
         where vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
     </delete>
-    <select id="selectAllByPlantExperimentCode" resultMap="BaseResultMap">
+    <select id="selectOneByPlantExperimentCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from cer_sample_code_prefix_tb

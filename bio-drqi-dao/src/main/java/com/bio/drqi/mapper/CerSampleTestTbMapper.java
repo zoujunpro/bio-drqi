@@ -24,6 +24,8 @@ public interface CerSampleTestTbMapper extends BaseMapper<CerSampleTestTb> {
 
     List<CerSampleTestTb> selectSelective(CerSampleTestTb cerSampleTestTb);
 
+    List<CerSampleTestTb> selectAllByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
+
     List<CerSampleTestTb> selectAllByVectorTaskIdAndSampleCodeIn(@Param("vectorTaskId") Integer vectorTaskId, @Param("sampleCodeList") Collection<String> sampleCodeList);
 
     List<CerSampleTestTb> selectAllByVectorTaskId(@Param("vectorTaskId") Integer vectorTaskId);

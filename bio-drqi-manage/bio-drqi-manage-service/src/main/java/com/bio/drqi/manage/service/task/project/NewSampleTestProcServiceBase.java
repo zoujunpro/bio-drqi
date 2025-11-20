@@ -325,7 +325,14 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(), firstSampleApply.getVectorTaskCode());
                 CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerTransformTb.getVectorTaskCode());
                 CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+                List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByVectorTaskCode(firstSampleApply.getVectorTaskCode());
+                Integer maxSampleNumber=null;
+                if(CollectionUtil.isNotEmpty(cerSampleTestTbList)){
+                    cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> !cerSampleTestTb.getSampleCode().contains("-") && cerSampleTestTb.getSampleCode().startsWith(cerSampleCodePrefixTb.getSampleCodePrefix())).collect(Collectors.toList());
+                    maxSampleNumber =cerSampleTestTbList.stream().map(cerSampleTestTb -> Integer.valueOf(cerSampleTestTb.getSampleCode().substring(2))).max(Integer::compare).get();
+                }
                 for (int i = 1; i <= firstSampleApply.getSampleNum(); i++) {
+                    maxSampleNumber = maxSampleNumber == null ? 1 : maxSampleNumber + 1;
                     CerSampleTestTb cerSampleTestTb = new CerSampleTestTb();
                     cerSampleTestTb.setProjectId(cerTransformTb.getProjectId());
                     cerSampleTestTb.setSubProjectId(cerTransformTb.getSubProjectId());
@@ -335,7 +342,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     cerSampleTestTb.setVectorTaskCode(cerTransformTb.getVectorTaskCode());
                     cerSampleTestTb.setPlasmidName(cerTransformTb.getPlasmidName());
                     cerSampleTestTb.setTransformCode(cerTransformTb.getTransformCode());
-                    cerSampleTestTb.setSampleCode(cerSampleCodePrefixTb.getSampleCodePrefix() + (cerSampleCodePrefixTb.getCurrentIndex() + i - 1));
+                    cerSampleTestTb.setSampleCode(cerSampleCodePrefixTb.getSampleCodePrefix() +maxSampleNumber);
                     cerSampleTestTb.setApplyTime(new Date());
                     cerSampleTestTb.setApplyUserId(SecurityContextHolder.getUserId());
                     cerSampleTestTb.setApplyUserName(SecurityContextHolder.getNickName());
@@ -348,9 +355,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     cerSampleTestTb.setCheckResult(CheckResultEnum.noCheck.name());
                     targetCerSampleTestTbList.add(cerSampleTestTb);
                 }
-
-                cerSampleCodePrefixTb.setCurrentIndex(cerSampleCodePrefixTb.getCurrentIndex() + firstSampleApply.getSampleNum());
-                cerSampleCodePrefixTbMapper.updateById(cerSampleCodePrefixTb);
                 logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test, bioTaskDtlTb.getTaskNum());
                 try {
                     cerSampleTestTbMapper.insertBatch(targetCerSampleTestTbList);

@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.CerSampleCodePrefixTb;
@@ -12,6 +13,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface CerSampleCodePrefixTbMapper extends BaseMapper<CerSampleCodePrefixTb> {
     CerSampleCodePrefixTb selectOneByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
+
+    List<CerSampleCodePrefixTb> selectAllByPlantExperimentCode(@Param("plantExperimentCode") String plantExperimentCode);
 
     int deleteByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
 }

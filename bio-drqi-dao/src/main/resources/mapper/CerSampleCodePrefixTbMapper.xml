@@ -9,12 +9,13 @@
             <result property="sampleCodePrefix" column="sample_code_prefix" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
-            <result property="currentIndex" column="current_index" jdbcType="INTEGER"/>
+            <result property="plantExperimentCode" column="plant_experiment_code" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
         id,sample_code_prefix,create_time,
-        vector_task_code,current_index
+        vector_task_code
     </sql>
     <select id="selectOneByVectorTaskCode" resultMap="BaseResultMap">
         select
@@ -28,4 +29,11 @@
         from cer_sample_code_prefix_tb
         where vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
     </delete>
+    <select id="selectAllByPlantExperimentCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cer_sample_code_prefix_tb
+        where
+        plant_experiment_code = #{plantExperimentCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

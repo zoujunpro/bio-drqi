@@ -651,7 +651,7 @@ public class SampleTestServiceImpl implements SampleTestService {
             throw new BusinessException("参数错误，找不到此取样信息：" + id);
         }
         List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByApplyNoAndSampleCodeOrderByIdDesc(cerSampleTestTb.getApplyNo(), cerSampleTestTb.getSampleCode());
-        if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultTbList)) {
+        if (CollectionUtil.isEmpty(bioSampleTestTwoResultTbList)) {
             throw new BusinessException("没有上传NGS检测结果");
         }
         List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByTwoResultIdAndConfirmStatus(bioSampleTestTwoResultTbList.get(0).getId(), "checked");

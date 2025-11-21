@@ -263,6 +263,6 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         }
 
         plantSingleStockTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
-        bioSampleTestOneResultTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
+        bioSampleTestOneResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
     }
 }

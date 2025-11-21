@@ -14,7 +14,7 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SampleApplyTypeEnum;
 import com.bio.drqi.enums.VectorTaskStatusEnum;
 import com.bio.drqi.manage.dto.project.*;
-import com.bio.drqi.manage.service.project.CerSampleTwoResultService;
+import com.bio.drqi.manage.service.bio.BioSampleTwoResultService;
 import com.bio.drqi.mapper.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -147,7 +147,7 @@ public class Clean20251030Controller {
 
 
     @Resource
-    private CerSampleTwoResultService cerSampleTwoResultService;
+    private BioSampleTwoResultService bioSampleTwoResultService;
 
 
     @GetMapping("/cleanNGS")
@@ -155,7 +155,7 @@ public class Clean20251030Controller {
         List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectSelective(null).stream().filter(bioSampleTestTwoResultTb -> !BioDrQiContents.O.equals(bioSampleTestTwoResultTb.getSynResult())).collect(Collectors.toList());
         for (BioSampleTestTwoResultTb bioSampleTestTwoResultTb : bioSampleTestTwoResultTbList) {
             log.info("bioSampleTestTwoResultTb={}"+JSONUtil.toJsonStr(bioSampleTestTwoResultTb));
-            cerSampleTwoResultService.synOne(bioSampleTestTwoResultTb.getId());
+            bioSampleTwoResultService.synOne(bioSampleTestTwoResultTb.getId());
         }
         return ResponseResult.getSuccess("ok");
     }

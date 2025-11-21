@@ -1,6 +1,5 @@
 package com.bio.drqi.manage.service.project.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.manage.transform.req.ApprovePassTransformQueryReqDTO;
@@ -15,7 +14,6 @@ import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.manage.service.project.TransformService;
 import com.bio.drqi.manage.transform.rsp.TransformListPageRspDTO;
 import com.bio.drqi.mapper.CerBreedDictMapper;
-import com.bio.drqi.mapper.CerSpeciesConfMapper;
 import com.bio.drqi.mapper.CerTransformTbMapper;
 import com.bio.drqi.mapper.CerVectorTaskTbMapper;
 import com.github.pagehelper.PageHelper;

@@ -1,0 +1,81 @@
+package com.bio.drqi.manage.flowtask.seed;
+
+
+import com.bio.common.core.dto.BusinessException;
+import com.bio.drqi.domain.BioTaskDtlTb;
+import com.bio.drqi.domain.SeedStockOutLog;
+import com.bio.drqi.domain.SeedStockTb;
+import com.bio.drqi.mapper.SeedStockOutLogMapper;
+import com.bio.drqi.mapper.SeedStockTbMapper;
+import com.bio.flow.service.BaseTaskService;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.Date;
+
+@Slf4j
+public abstract class AbstractSeedTaskService implements BaseTaskService {
+
+    @Resource
+    private SeedStockTbMapper seedStockTbMapper;
+
+    @Resource
+    private SeedStockOutLogMapper seedStockOutLogMapper;
+
+
+    protected void checkSeedStock(String seedNum, BigDecimal num) {
+        log.info("出库校验库存：seedNum={}，num={}", seedNum, num);
+        SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum);
+        if (seedStockTb == null) {
+            throw new BusinessException("不存在此种子号：" + seedNum);
+        }
+        if (seedStockTb.getSeedNumber().compareTo(num) < 0) {
+            log.error("出库校验：{}种子当前库存={},出库库存={}", seedNum, seedStockTb.getSeedNum(), num);
+            throw new BusinessException("种子" + seedStockTb.getSeedNum() + "库存不足, 当前库存：" + seedStockTb.getSeedNumber() + seedStockTb.getUnit());
+        }
+
+    }
+
+    /**
+     * 直接扣减库存
+     *
+     * @param seedNum
+     * @param bioTaskDtlTb
+     * @param num
+     * @param remarks
+     * @param n
+     */
+    protected void reduceSeedStock(String seedNum, BioTaskDtlTb bioTaskDtlTb, BigDecimal num, String remarks, int n, String useToDesc) {
+        log.info("扣减库存 seedNum={}，num={}", seedNum, num);
+        SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum);
+        if (seedStockTb == null) {
+            throw new BusinessException("不存在此种子号：" + seedNum);
+        }
+        if (seedStockTb.getSeedNumber().compareTo(num) < 0) {
+            log.error("扣减库存：{}种子当前库存={},出库库存={}", seedNum, seedStockTb.getSeedNum(), num);
+            throw new BusinessException("种子" + seedStockTb.getSeedNum() + "库存不足, 当前库存：" + seedStockTb.getSeedNumber() + seedStockTb.getUnit());
+        }
+
+        //减库存
+        seedStockTb.setSeedNumber(seedStockTb.getSeedNumber().subtract(num));
+        seedStockTbMapper.updateById(seedStockTb);
+
+        //记录日志
+        SeedStockOutLog seedStockOutLog = new SeedStockOutLog();
+        seedStockOutLog.setSeedNum(seedStockTb.getSeedNum());
+        seedStockOutLog.setUseToCode(bioTaskDtlTb.getTaskTypeCode());
+        seedStockOutLog.setUnit(seedStockTb.getUnit());
+        seedStockOutLog.setSeedNumber(num);
+        seedStockOutLog.setRemarks(remarks);
+        seedStockOutLog.setCreateTime(new Date());
+        seedStockOutLog.setApplyUserId(bioTaskDtlTb.getApplyUserId());
+        seedStockOutLog.setApplyUserName(bioTaskDtlTb.getApplyUserName());
+        seedStockOutLog.setTaskNum(bioTaskDtlTb.getTaskNum());
+        seedStockOutLog.setOutTaskNum(bioTaskDtlTb.getTaskNum() + n);
+        seedStockOutLog.setUseToDesc(useToDesc);
+        seedStockOutLogMapper.insert(seedStockOutLog);
+    }
+
+
+}

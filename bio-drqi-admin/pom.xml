@@ -29,11 +29,6 @@
             <artifactId>bio-drqi-tc-admin</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>bio.drqi</groupId>
-            <artifactId>bio-drqi-plant-admin</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <build>

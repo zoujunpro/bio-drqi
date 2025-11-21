@@ -1,16 +1,9 @@
 package com.bio.drqi.manage.service.project.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.PageUtil;
-import com.bio.common.core.util.StringUtils;
-import com.bio.drqi.domain.CerVectorGroupTb;
-import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.domain.CerVectorTb;
 import com.bio.drqi.manage.service.project.CerVectorBuildService;
 import com.bio.drqi.manage.vector.req.CerVectorBuildListPageReqDTO;
 import com.bio.drqi.manage.vector.rsp.CerVectorBuildListPageRspDTO;
-import com.bio.drqi.mapper.CerVectorGroupTbMapper;
-import com.bio.drqi.mapper.CerVectorTaskTbMapper;
 import com.bio.drqi.mapper.CerVectorTbMapper;
 import com.bio.drqi.manage.vector.rsp.VectorBuildDetailRspDTO;
 import com.bio.common.core.util.BeanUtils;

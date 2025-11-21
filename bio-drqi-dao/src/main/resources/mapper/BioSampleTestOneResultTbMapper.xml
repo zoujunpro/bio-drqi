@@ -62,11 +62,7 @@
             #{item.uploadNum,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR})
         </foreach>
     </insert>
-    <delete id="deleteByTaskNum">
-        delete
-        from bio_sample_test_one_result_tb
-        where task_num = #{taskNum,jdbcType=VARCHAR}
-    </delete>
+
     <select id="selectSelective" resultMap="BaseResultMap"
             parameterType="com.bio.drqi.domain.BioSampleTestOneResultTb">
         select
@@ -103,4 +99,9 @@
         </where>
         order by id desc
     </select>
+    <delete id="deleteByUploadNum">
+        delete
+        from bio_sample_test_one_result_tb
+        where upload_num = #{uploadNum,jdbcType=VARCHAR}
+    </delete>
 </mapper>

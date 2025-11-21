@@ -2,6 +2,7 @@ package com.bio.drqi.mapper;
 
 import com.bio.drqi.domain.BioSampleTestTwoResultDetailTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.bio.drqi.domain.CerSampleTestTb;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
@@ -30,6 +31,7 @@ public interface BioSampleTestTwoResultDetailTbMapper extends BaseMapper<BioSamp
     int insertBatch(@Param("bioSampleSampleTwoResultDetailTbCollection") Collection<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbCollection);
 
     List<BioSampleTestTwoResultDetailTb> selectAllBySampleCodeIn(@Param("sampleCodeList") Collection<String> sampleCodeList);
+
 }
 
 

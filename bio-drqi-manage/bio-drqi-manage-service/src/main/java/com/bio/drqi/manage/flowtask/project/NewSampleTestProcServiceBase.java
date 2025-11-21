@@ -209,7 +209,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         }
 
         cerPlantDtlTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
-        bioSampleTestOneResultTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
+        bioSampleTestOneResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
         cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.cer_plant.name());
         cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.sample_and_test.name());
 

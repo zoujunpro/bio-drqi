@@ -18,6 +18,7 @@ import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.common.enums.TestChannelEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.base.SampleUnitDTO;
+import com.bio.drqi.manage.dto.bio.DownLoadIdentifyPrimerTemplateExcelDTO;
 import com.bio.drqi.manage.dto.project.*;
 import com.bio.drqi.manage.sample.req.*;
 import com.bio.drqi.manage.sample.rsp.*;
@@ -290,7 +291,7 @@ public class CerSampleTestServiceImpl implements CerSampleTestService {
         newSampleTestDTO.setTestDataExcelUrl(uploadTestTemplateReqDTO.getExcelUrl());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
         //清空旧数据
-        bioSampleTestOneResultTbMapper.deleteByTaskNum(uploadTestTemplateReqDTO.getApplyNo());
+        bioSampleTestOneResultTbMapper.deleteByUploadNum(uploadTestTemplateReqDTO.getApplyNo());
 
         //插入新数据
         bioSampleTestOneResultTbMapper.insertBatch(bioSampleSampleOneResultTbList);
@@ -348,19 +349,19 @@ public class CerSampleTestServiceImpl implements CerSampleTestService {
     public void downIdentifyPrimerTemplate(HttpServletResponse response, String applyNo) {
         try {
             List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(applyNo);
-            List<IdentifyPrimerTemplateExcelDTO> identifyPrimerTemplateExcelDTOList = new ArrayList<IdentifyPrimerTemplateExcelDTO>();
+            List<DownLoadIdentifyPrimerTemplateExcelDTO> downLoadIdentifyPrimerTemplateExcelDTOList = new ArrayList<DownLoadIdentifyPrimerTemplateExcelDTO>();
             for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
-                IdentifyPrimerTemplateExcelDTO identifyPrimerTemplateExcelDTO = new IdentifyPrimerTemplateExcelDTO();
-                identifyPrimerTemplateExcelDTO.setTransformCode(cerSampleTestTb.getTransformCode());
-                identifyPrimerTemplateExcelDTO.setSampleCode(cerSampleTestTb.getSampleCode());
-                identifyPrimerTemplateExcelDTO.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
-                identifyPrimerTemplateExcelDTOList.add(identifyPrimerTemplateExcelDTO);
+                DownLoadIdentifyPrimerTemplateExcelDTO downLoadIdentifyPrimerTemplateExcelDTO = new DownLoadIdentifyPrimerTemplateExcelDTO();
+                downLoadIdentifyPrimerTemplateExcelDTO.setTransformCode(cerSampleTestTb.getTransformCode());
+                downLoadIdentifyPrimerTemplateExcelDTO.setSampleCode(cerSampleTestTb.getSampleCode());
+                downLoadIdentifyPrimerTemplateExcelDTO.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
+                downLoadIdentifyPrimerTemplateExcelDTOList.add(downLoadIdentifyPrimerTemplateExcelDTO);
 
             }
             String excelTemplateName = "鉴定引物填写模板V1.0.xlsx";
             String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
             ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
-            ExcelUtil.fillExcel(templateDir, identifyPrimerTemplateExcelDTOList, IdentifyPrimerTemplateExcelDTO.class, response);
+            ExcelUtil.fillExcel(templateDir, downLoadIdentifyPrimerTemplateExcelDTOList, DownLoadIdentifyPrimerTemplateExcelDTO.class, response);
         } catch (Exception e) {
             log.error("模板下载失败，", e);
             throw new BusinessException("鉴定引物填写模板下载失败，请联系管理员检测模板配置");
@@ -389,14 +390,14 @@ public class CerSampleTestServiceImpl implements CerSampleTestService {
             log.error("【鉴定引物文件】文件从oss下载失败", e);
             throw new BusinessException("文件处理异常");
         }
-        List<IdentifyPrimerTemplateExcelDTO> identifyPrimerTemplateExcelDTOList = ExcelUtil.readExcel(tempFilePath, IdentifyPrimerTemplateExcelDTO.class);
+        List<DownLoadIdentifyPrimerTemplateExcelDTO> downLoadIdentifyPrimerTemplateExcelDTOList = ExcelUtil.readExcel(tempFilePath, DownLoadIdentifyPrimerTemplateExcelDTO.class);
 
-        if (CollectionUtil.isNotEmpty(identifyPrimerTemplateExcelDTOList)) {
-            for (IdentifyPrimerTemplateExcelDTO identifyPrimerTemplateExcelDTO : identifyPrimerTemplateExcelDTOList) {
-                CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByApplyNoAndSampleCode(uploadIdentifyPrimerTemplateReqDTO.getApplyNo(), identifyPrimerTemplateExcelDTO.getSampleCode());
+        if (CollectionUtil.isNotEmpty(downLoadIdentifyPrimerTemplateExcelDTOList)) {
+            for (DownLoadIdentifyPrimerTemplateExcelDTO downLoadIdentifyPrimerTemplateExcelDTO : downLoadIdentifyPrimerTemplateExcelDTOList) {
+                CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByApplyNoAndSampleCode(uploadIdentifyPrimerTemplateReqDTO.getApplyNo(), downLoadIdentifyPrimerTemplateExcelDTO.getSampleCode());
                 if (cerSampleTestTb != null) {
-                    cerSampleTestTb.setIdentifyPrimer(identifyPrimerTemplateExcelDTO.getIdentifyPrimer());
-                    cerSampleTestTbMapper.updateIdentifyPrimerById(identifyPrimerTemplateExcelDTO.getIdentifyPrimer(), cerSampleTestTb.getId());
+                    cerSampleTestTb.setIdentifyPrimer(downLoadIdentifyPrimerTemplateExcelDTO.getIdentifyPrimer());
+                    cerSampleTestTbMapper.updateIdentifyPrimerById(downLoadIdentifyPrimerTemplateExcelDTO.getIdentifyPrimer(), cerSampleTestTb.getId());
                 }
             }
         }

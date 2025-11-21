@@ -1,4 +1,4 @@
-package com.bio.drqi.manage.dto.project;
+package com.bio.drqi.manage.dto.bio;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class IdentifyPrimerTemplateExcelDTO {
+public class DownLoadIdentifyPrimerTemplateExcelDTO {
     @ExcelProperty(value = "实施方案编号", index = 0)
     @NotBlank(message = "数据不全：实施方案编号")
     private String vectorTaskCode;

@@ -1,5 +1,7 @@
 package com.bio.drqi.mapper;
 import java.util.List;
+
+import com.bio.drqi.domain.CerSampleTestTb;
 import org.apache.ibatis.annotations.Param;
 import java.util.Collection;
 
@@ -23,6 +25,31 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
     List<BioSampleTestTb> selectAllByApplyNo(@Param("applyNo") String applyNo);
 
     int deleteByApplyNo(@Param("applyNo") String applyNo);
+
+    List<BioSampleTestTb> selectAllByApplyNoAndSampleCodeIn(@Param("applyNo") String applyNo, @Param("sampleCodeList") Collection<String> sampleCodeList);
+
+    int updateBatchById(@Param("list") List<BioSampleTestTb> bioSampleTestTbList);
+
+    BioSampleTestTb selectOneByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
+
+    int updateIdentifyPrimerById(@Param("identifyPrimer") String identifyPrimer, @Param("id") Integer id);
+
+    Integer selectCountByApplyNo(@Param("applyNo") String applyNo);
+
+    Integer selectCountByApplyNoAndCheckResultIsNotNull(@Param("applyNo") String applyNo);
+
+    Integer selectCountNum();
+
+
+    List<BioSampleTestTb> selectCountNumByApplyNo(@Param("applyNo") String applyNo);
+
+
+    int selectTestResultCount(@Param("applyNo") String applyNo);
+
+    int selectNoTestResultCount(@Param("applyNo") String applyNo);
+
+    //查询二代检测结果
+    int selectTowTestResultCount(@Param("applyNo") String applyNo);
 }
 
 

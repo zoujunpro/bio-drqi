@@ -201,6 +201,10 @@ public class BioSampleTestTb implements Serializable {
 
     private String seedNum;
 
+
+    @TableField(exist = false)
+    private Integer countNum;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -249,6 +253,51 @@ public class BioSampleTestTb implements Serializable {
         bioSampleTestTb.setCloneSampleCode(null);
         bioSampleTestTb.setTestOrgResult(null);
         return bioSampleTestTb;
+    }
+
+
+
+    public boolean ifHaveTestResult() {
+        if (this.testIdentifyPrimer != null && !"".equals(this.testIdentifyPrimer)) {
+            return true;
+        }
+        if (this.testMethod != null && !"".equals(this.testMethod)) {
+            return true;
+        }
+        if (this.testEditType != null && !"".equals(this.testEditType)) {
+            return true;
+        }
+        if (this.testNoTransIdentityPrimer != null && !"".equals(this.testNoTransIdentityPrimer)) {
+            return true;
+        }
+        if (this.testIsGeneModifyPositive != null && !"".equals(this.testIsGeneModifyPositive)) {
+            return true;
+        }
+        if (this.testIfFixedPoint != null && !"".equals(this.testIfFixedPoint)) {
+            return true;
+        }
+        if (this.testIfCopyInsert != null && !"".equals(this.testIfCopyInsert)) {
+            return true;
+        }
+        if (this.testFixedPointType != null && !"".equals(this.testFixedPointType)) {
+            return true;
+        }
+        if (this.testDonorResidueInfo != null && !"".equals(this.testDonorResidueInfo)) {
+            return true;
+        }
+        if (this.testInsertionSite != null && !"".equals(this.testInsertionSite)) {
+            return true;
+        }
+        if (this.testElisaResult != null && !"".equals(this.testElisaResult)) {
+            return true;
+        }
+        if (this.testQbzrSeq != null && !"".equals(this.testQbzrSeq)) {
+            return true;
+        }
+        if (this.testEditResidueInfo != null && !"".equals(this.testEditResidueInfo)) {
+            return true;
+        }
+        return false;
     }
 
 }

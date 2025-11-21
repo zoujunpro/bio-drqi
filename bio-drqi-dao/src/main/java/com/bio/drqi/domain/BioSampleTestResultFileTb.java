@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.bio.common.core.context.SecurityContextHolder;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,11 +12,11 @@ import java.util.Date;
 
 /**
  * 取样检测结果文件
- * @TableName cer_sample_test_result_file_tb
+ * @TableName bio_sample_test_result_file_tb
  */
-@TableName(value ="cer_sample_test_result_file_tb")
+@TableName(value ="bio_sample_test_result_file_tb")
 @Data
-public class CerSampleTestResultFileTb implements Serializable {
+public class BioSampleTestResultFileTb implements Serializable {
     /**
      * 主键ID
      */
@@ -74,5 +75,6 @@ public class CerSampleTestResultFileTb implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
 
 }

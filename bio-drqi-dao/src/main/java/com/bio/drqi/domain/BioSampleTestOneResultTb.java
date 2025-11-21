@@ -169,4 +169,30 @@ public class BioSampleTestOneResultTb implements Serializable {
         return bioSampleSampleOneResultTb;
     }
 
+    public static BioSampleTestOneResultTb of(BioSampleTestTb bioSampleTestTb, String channel, String taskNum, String uploadNum) {
+        BioSampleTestOneResultTb bioSampleSampleOneResultTb = new BioSampleTestOneResultTb();
+        bioSampleSampleOneResultTb.setSampleCode(bioSampleTestTb.getSampleCode());
+        bioSampleSampleOneResultTb.setTestIdentifyPrimer(bioSampleTestTb.getTestIdentifyPrimer());
+        bioSampleSampleOneResultTb.setTestMethod(bioSampleTestTb.getTestMethod());
+        bioSampleSampleOneResultTb.setTestEditType(bioSampleTestTb.getTestEditType());
+        bioSampleSampleOneResultTb.setTestNoTransIdentityPrimer(bioSampleTestTb.getTestNoTransIdentityPrimer());
+        bioSampleSampleOneResultTb.setTestIsGeneModifyPositive(bioSampleTestTb.getTestIsGeneModifyPositive());
+        bioSampleSampleOneResultTb.setTestIfFixedPoint(bioSampleTestTb.getTestIfFixedPoint());
+        bioSampleSampleOneResultTb.setTestIfCopyInsert(bioSampleTestTb.getTestIfCopyInsert());
+        bioSampleSampleOneResultTb.setTestFixedPointType(bioSampleTestTb.getTestFixedPointType());
+        bioSampleSampleOneResultTb.setTestDonorResidueInfo(bioSampleTestTb.getTestDonorResidueInfo());
+        bioSampleSampleOneResultTb.setTestInsertionSite(bioSampleTestTb.getTestInsertionSite());
+        bioSampleSampleOneResultTb.setTestElisaResult(bioSampleTestTb.getTestElisaResult());
+        bioSampleSampleOneResultTb.setTestQbzrSeq(bioSampleTestTb.getTestQbzrSeq());
+        bioSampleSampleOneResultTb.setTestEditResidueInfo(bioSampleTestTb.getTestEditResidueInfo());
+        bioSampleSampleOneResultTb.setTestUserId(bioSampleTestTb.getTestUserId());
+        bioSampleSampleOneResultTb.setTestUserName(bioSampleTestTb.getTestUserName());
+        bioSampleSampleOneResultTb.setTestTime(bioSampleTestTb.getTestTime());
+        bioSampleSampleOneResultTb.setCreateTime(new Date());
+        bioSampleSampleOneResultTb.setTestChannel(channel);
+        bioSampleSampleOneResultTb.setTaskNum(taskNum);
+        bioSampleSampleOneResultTb.setUploadNum(uploadNum);
+        return bioSampleSampleOneResultTb;
+    }
+
 }

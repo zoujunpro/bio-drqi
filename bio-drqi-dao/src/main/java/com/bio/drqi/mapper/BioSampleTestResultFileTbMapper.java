@@ -2,7 +2,7 @@ package com.bio.drqi.mapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
-import com.bio.drqi.domain.CerSampleTestResultFileTb;
+import com.bio.drqi.domain.BioSampleTestResultFileTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,9 +11,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2025-10-24 17:58:43
 * @Entity com.bio.drqi.domain.CerSampleTestResultFileTb
 */
-public interface CerSampleTestResultFileTbMapper extends BaseMapper<CerSampleTestResultFileTb> {
+public interface BioSampleTestResultFileTbMapper extends BaseMapper<BioSampleTestResultFileTb> {
 
-    List<CerSampleTestResultFileTb> selectSelective(CerSampleTestResultFileTb cerSampleTestResultFileTb);
+    List<BioSampleTestResultFileTb> selectSelective(BioSampleTestResultFileTb bioSampleTestResultFileTb);
+
+    int deleteByUploadNum(@Param("uploadNum") String uploadNum);
 
 }
 

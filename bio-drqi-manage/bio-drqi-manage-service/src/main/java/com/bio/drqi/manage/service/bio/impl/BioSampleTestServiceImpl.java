@@ -25,7 +25,6 @@ import com.bio.drqi.manage.sample.req.UploadIdentifyPrimerTemplateReqDTO;
 import com.bio.drqi.manage.sample.rsp.*;
 import com.bio.drqi.manage.service.bio.BioSampleTestService;
 import com.bio.drqi.manage.service.common.SynSampleTestResultService;
-import com.bio.drqi.manage.util.LayoutUtil;
 import com.bio.drqi.manage.util.SampleExcelUtil;
 import com.bio.drqi.manage.util.SampleLayoutUtil;
 import com.bio.drqi.mapper.*;
@@ -65,7 +64,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
     private BioSampleTestResultFileTbMapper bioSampleTestResultFileTbMapper;
 
     @Resource
-    private CerSampleLayoutTbMapper cerSampleLayoutTbMapper;
+    private BioSampleLayoutTbMapper bioSampleLayoutTbMapper;
 
     @Resource
     private BioSampleTestTwoResultTbMapper bioSampleTestTwoResultTbMapper;
@@ -246,13 +245,13 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
     @Override
     public LayoutPreviewRspDTO layoutPreview(String applyNo) {
 
-        CerSampleLayoutTb cerSampleLayoutTb = cerSampleLayoutTbMapper.selectOneByApplyNo(applyNo);
-        if (cerSampleLayoutTb == null) {
+        BioSampleLayoutTb bioSampleLayoutTb = bioSampleLayoutTbMapper.selectOneByApplyNo(applyNo);
+        if (bioSampleLayoutTb == null) {
             return getLayoutPreviewRspDTO(applyNo);
         } else {
             LayoutPreviewRspDTO layoutPreviewRspDTO = new LayoutPreviewRspDTO();
-            layoutPreviewRspDTO.setSingleList(JSONUtil.toList(cerSampleLayoutTb.getSingleContent(), SampleUnitDTO.class));
-            JSONArray layoutListJsonArray = JSONUtil.parseArray(cerSampleLayoutTb.getPlateContent());
+            layoutPreviewRspDTO.setSingleList(JSONUtil.toList(bioSampleLayoutTb.getSingleContent(), SampleUnitDTO.class));
+            JSONArray layoutListJsonArray = JSONUtil.parseArray(bioSampleLayoutTb.getPlateContent());
             List<List<List<SampleUnitDTO>>> ninetySixList = new ArrayList<>();
             //版list
             for (int i = 0; i < layoutListJsonArray.size(); i++) {
@@ -276,11 +275,11 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void dowLayoutExcel(String applyNo, HttpServletResponse httpServletResponse) {
-        CerSampleLayoutTb cerSampleLayoutTb = cerSampleLayoutTbMapper.selectOneByApplyNo(applyNo);
+        BioSampleLayoutTb bioSampleLayoutTb = bioSampleLayoutTbMapper.selectOneByApplyNo(applyNo);
         List<List<List<SampleUnitDTO>>> layoutList = null;
-        if (cerSampleLayoutTb != null) {
-            List<SampleUnitDTO> singleSampleUnitDTOList = JSONUtil.toList(cerSampleLayoutTb.getSingleContent(), SampleUnitDTO.class);
-            JSONArray layoutListJsonArray = JSONUtil.parseArray(cerSampleLayoutTb.getPlateContent());
+        if (bioSampleLayoutTb != null) {
+            List<SampleUnitDTO> singleSampleUnitDTOList = JSONUtil.toList(bioSampleLayoutTb.getSingleContent(), SampleUnitDTO.class);
+            JSONArray layoutListJsonArray = JSONUtil.parseArray(bioSampleLayoutTb.getPlateContent());
             if (!layoutListJsonArray.isEmpty()) {
                 layoutList = new ArrayList<>();
                 for (int i = 0; i < layoutListJsonArray.size(); i++) {
@@ -435,19 +434,19 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
 
     @Override
     public void layoutConfirm(LayoutConfirmReqDTO layoutConfirmReqDTO) {
-        CerSampleLayoutTb cerSampleLayoutTb = cerSampleLayoutTbMapper.selectOneByApplyNo(layoutConfirmReqDTO.getApplyNo());
-        if (cerSampleLayoutTb != null) {
-            cerSampleLayoutTb.setSingleContent(JSONUtil.toJsonStr(layoutConfirmReqDTO.getSingleList()));
-            cerSampleLayoutTb.setPlateContent(JSONUtil.toJsonStr(layoutConfirmReqDTO.getNinetySixList()));
-            cerSampleLayoutTb.setCreateTime(new Date());
-            cerSampleLayoutTbMapper.updateById(cerSampleLayoutTb);
+        BioSampleLayoutTb bioSampleLayoutTb = bioSampleLayoutTbMapper.selectOneByApplyNo(layoutConfirmReqDTO.getApplyNo());
+        if (bioSampleLayoutTb != null) {
+            bioSampleLayoutTb.setSingleContent(JSONUtil.toJsonStr(layoutConfirmReqDTO.getSingleList()));
+            bioSampleLayoutTb.setPlateContent(JSONUtil.toJsonStr(layoutConfirmReqDTO.getNinetySixList()));
+            bioSampleLayoutTb.setCreateTime(new Date());
+            bioSampleLayoutTbMapper.updateById(bioSampleLayoutTb);
         } else {
-            cerSampleLayoutTb = new CerSampleLayoutTb();
-            cerSampleLayoutTb.setSingleContent(JSONUtil.toJsonStr(layoutConfirmReqDTO.getSingleList()));
-            cerSampleLayoutTb.setPlateContent(JSONUtil.toJsonStr(layoutConfirmReqDTO.getNinetySixList()));
-            cerSampleLayoutTb.setCreateTime(new Date());
-            cerSampleLayoutTb.setApplyNo(layoutConfirmReqDTO.getApplyNo());
-            cerSampleLayoutTbMapper.insert(cerSampleLayoutTb);
+            bioSampleLayoutTb = new BioSampleLayoutTb();
+            bioSampleLayoutTb.setSingleContent(JSONUtil.toJsonStr(layoutConfirmReqDTO.getSingleList()));
+            bioSampleLayoutTb.setPlateContent(JSONUtil.toJsonStr(layoutConfirmReqDTO.getNinetySixList()));
+            bioSampleLayoutTb.setCreateTime(new Date());
+            bioSampleLayoutTb.setApplyNo(layoutConfirmReqDTO.getApplyNo());
+            bioSampleLayoutTbMapper.insert(bioSampleLayoutTb);
         }
     }
 }

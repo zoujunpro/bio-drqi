@@ -49,7 +49,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     private BioHisSampleTestTbMapper bioHisSampleTestTbMapper;
 
     @Resource
-    private CerSampleLayoutTbMapper cerSampleLayoutTbMapper;
+    private BioSampleLayoutTbMapper bioSampleLayoutTbMapper;
 
     @Resource
     private BioSampleTestTwoResultTbMapper bioSampleTestTwoResultTbMapper;
@@ -253,7 +253,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         }
         plantSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         bioSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
-        cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        bioSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         List<BioSampleTestTwoResultTb> bioSampleSampleTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByUploadNum(bioTaskDtlTb.getTaskNum());
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultTbList)) {
             bioSampleTestTwoResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());

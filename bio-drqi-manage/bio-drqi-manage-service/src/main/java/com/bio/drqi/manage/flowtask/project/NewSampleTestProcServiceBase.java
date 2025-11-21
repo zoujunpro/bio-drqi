@@ -54,7 +54,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     private CerSampleTestService cerSampleTestService;
 
     @Resource
-    private CerSampleLayoutTbMapper cerSampleLayoutTbMapper;
+    private BioSampleLayoutTbMapper bioSampleLayoutTbMapper;
 
     @Resource
     private BioSampleTestTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
@@ -199,7 +199,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         }
         cerSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
-        cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        bioSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         List<BioSampleTestTwoResultTb> bioSampleSampleTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByUploadNum(bioTaskDtlTb.getTaskNum());
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultTbList)) {
             bioSampleTestTwoResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());

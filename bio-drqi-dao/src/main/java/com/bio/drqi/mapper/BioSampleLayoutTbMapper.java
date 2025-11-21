@@ -1,7 +1,7 @@
 package com.bio.drqi.mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.bio.drqi.domain.CerSampleLayoutTb;
+import com.bio.drqi.domain.BioSampleLayoutTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -10,9 +10,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2024-10-11 14:23:40
 * @Entity com.bio.cer.domain.CerSampleLayoutTb
 */
-public interface CerSampleLayoutTbMapper extends BaseMapper<CerSampleLayoutTb> {
+public interface BioSampleLayoutTbMapper extends BaseMapper<BioSampleLayoutTb> {
 
-    CerSampleLayoutTb selectOneByApplyNo(@Param("applyNo") String applyNo);
+    BioSampleLayoutTb selectOneByApplyNo(@Param("applyNo") String applyNo);
 
     int deleteByApplyNo(@Param("applyNo") String applyNo);
 

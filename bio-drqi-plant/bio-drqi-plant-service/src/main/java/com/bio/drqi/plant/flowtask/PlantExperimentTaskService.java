@@ -11,6 +11,7 @@ import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.SampleGroupPergixEnum;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.common.util.LetterUtil;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
@@ -138,7 +139,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
                 plantExperimentDetailTb.setCreateTime(new Date());
                 plantExperimentDetailTbList.add(plantExperimentDetailTb);
             }
-            List<PlantMultipleStockTb> plantMultipleStockTbList = plantExperimentDetailTbList.stream().map(plantExperimentDetailTb -> PlantMultipleStockTb.of(plantExperimentDetailTb)).collect(Collectors.toList());
+            List<PlantMultipleStockTb> plantMultipleStockTbList = plantExperimentDetailTbList.stream().map(plantExperimentDetailTb -> PlantMultipleStockTb.of(plantExperimentDetailTb,bioTaskDtlTb, SourceCodeEnum.cer)).collect(Collectors.toList());
             plantExperimentTbMapper.insert(plantExperimentTb);
             plantExperimentDetailTbMapper.insertBatch(plantExperimentDetailTbList);
             plantMultipleStockTbMapper.insertBatch(plantMultipleStockTbList);

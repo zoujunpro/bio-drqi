@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.Collection;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,7 +16,11 @@ public interface PlantMultipleStockTbMapper extends BaseMapper<PlantMultipleStoc
 
     List<PlantMultipleStockTb> selectAllByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
 
+    PlantMultipleStockTb selectOneByVectorTaskCodeAndTransformCode(@Param("vectorTaskCode") String vectorTaskCode, @Param("transformCode") String transformCode);
+
     List<PlantMultipleStockTb>  selectSelective(PlantMultipleStockTb plantMultipleStockTb);
+
+    int insertBatch(@Param("plantMultipleStockTbCollection") Collection<PlantMultipleStockTb> plantMultipleStockTbCollection);
 
 }
 

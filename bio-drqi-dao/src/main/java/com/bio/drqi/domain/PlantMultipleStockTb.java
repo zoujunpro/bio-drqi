@@ -4,16 +4,16 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 
  * @TableName plant_multiple_stock_tb
  */
-@TableName(value ="plant_multiple_stock_tb")
+@TableName(value = "plant_multiple_stock_tb")
 @Data
 public class PlantMultipleStockTb implements Serializable {
     /**
@@ -113,5 +113,28 @@ public class PlantMultipleStockTb implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+
+    public static PlantMultipleStockTb of(PlantExperimentDetailTb plantExperimentDetailTb, BioTaskDtlTb bioTaskDtlTb, SourceCodeEnum sourceCodeEnum) {
+        PlantMultipleStockTb plantMultipleStockTb = new PlantMultipleStockTb();
+        plantMultipleStockTb.setSeedNum(plantExperimentDetailTb.getSeedNum());
+        plantMultipleStockTb.setTransformCode(null);
+        plantMultipleStockTb.setGeneration(plantExperimentDetailTb.getGenerationCode());
+        plantMultipleStockTb.setPlantNumber(plantExperimentDetailTb.getPlantNumber());
+        plantMultipleStockTb.setSourceCode(sourceCodeEnum.name());
+        plantMultipleStockTb.setRemark(plantExperimentDetailTb.getRemarks());
+        plantMultipleStockTb.setCreateTime(bioTaskDtlTb.getCreateTime());
+        plantMultipleStockTb.setCreateUserId(bioTaskDtlTb.getApplyUserId());
+        plantMultipleStockTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
+        plantMultipleStockTb.setTaskNum(bioTaskDtlTb.getTaskNum());
+        plantMultipleStockTb.setSpeciesCode(plantExperimentDetailTb.getSpeciesCode());
+        plantMultipleStockTb.setBreedCode(plantExperimentDetailTb.getBreedCode());
+        plantMultipleStockTb.setSampleNumber(0);
+        plantMultipleStockTb.setCurrentNumber(0);
+        plantMultipleStockTb.setRegionNum(plantExperimentDetailTb.getRegionNum());
+        plantMultipleStockTb.setVectorTaskCode(plantExperimentDetailTb.getVectorTaskCode());
+        plantMultipleStockTb.setPdNum(plantExperimentDetailTb.getPdNum());
+        return plantMultipleStockTb;
+    }
 
 }

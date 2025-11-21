@@ -3,7 +3,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import java.util.Collection;
 
-import com.bio.drqi.domain.PlantSampleTestTb;
+import com.bio.drqi.domain.BioSampleTestTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -12,13 +12,15 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2025-11-19 10:41:36
 * @Entity com.bio.drqi.domain.PlantSampleTestTb
 */
-public interface PlantSampleTestTbMapper extends BaseMapper<PlantSampleTestTb> {
+public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
-    int insertBatch(@Param("plantSampleTestTbCollection") Collection<PlantSampleTestTb> plantSampleTestTbCollection);
+    int insertBatch(@Param("plantSampleTestTbCollection") Collection<BioSampleTestTb> plantSampleTestTbCollection);
+
+    BioSampleTestTb selectOneBySampleCodeOrderByIdDesc(@Param("sampleCode") String sampleCode);
 
     int updateCheckResultByApplyNoAndCheckResultIsNull(@Param("checkResult") String checkResult, @Param("applyNo") String applyNo);
 
-    List<PlantSampleTestTb> selectAllByApplyNo(@Param("applyNo") String applyNo);
+    List<BioSampleTestTb> selectAllByApplyNo(@Param("applyNo") String applyNo);
 
     int deleteByApplyNo(@Param("applyNo") String applyNo);
 }

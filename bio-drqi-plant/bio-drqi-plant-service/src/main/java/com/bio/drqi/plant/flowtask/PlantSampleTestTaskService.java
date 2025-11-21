@@ -1,32 +1,22 @@
 package com.bio.drqi.plant.flowtask;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
-import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
-import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.*;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
-import com.bio.drqi.plant.dto.ExperimentExcelDTO;
-import com.bio.drqi.plant.dto.task.PlantExperimentTaskDTO;
 import com.bio.drqi.plant.dto.task.PlantSampleTestTaskDTO;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,7 +40,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     private PlantSampleApplyTbMapper plantSampleApplyTbMapper;
 
     @Resource
-    private PlantSampleTestTbMapper plantSampleTestTbMapper;
+    private BioSampleTestTbMapper bioSampleTestTbMapper;
 
     @Resource
     private PlantExperimentDetailTbMapper plantExperimentDetailTbMapper;
@@ -83,7 +73,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         //初始化取样申请工单
         PlantSampleApplyTb plantSampleApplyTb = initPlantSampleApplyTb(bioTaskDtlTb, plantExperimentTaskDTO);
 
-        List<PlantSampleTestTb> sampleTestTbList = new ArrayList<>();
+        List<BioSampleTestTb> sampleTestTbList = new ArrayList<>();
         //首次取样
         if (SampleTestApplyTypeEnum.F.name().equals(plantExperimentTaskDTO.getApplyType())) {
             if (CollectionUtil.isEmpty(plantExperimentTaskDTO.getFirstSampleApplyList())) {
@@ -113,7 +103,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     if (plantMultipleStockTb.getPlantNumber() < firstSampleApply.getSampleNumber()) {
                         throw new BusinessException("转化编号：" + firstSampleApply.getVectorTaskCode() + "的苗库存不足,当前库存苗数量:" + plantMultipleStockTb.getPlantNumber());
                     }
-                     cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(firstSampleApply.getVectorTaskCode());
+                    cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(firstSampleApply.getVectorTaskCode());
                     if (cerSampleCodePrefixTb == null) {
                         throw new BusinessException("实施方案编号未配置取样编号前缀：" + firstSampleApply.getVectorTaskCode());
                     }
@@ -126,7 +116,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     if (plantExperimentDetailTb == null) {
                         throw new BusinessException("CER试验中无此小区:" + firstSampleApply.getRegionNum() + "和种子编号：" + firstSampleApply.getSeedNum());
                     }
-                     cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByPlantExperimentCode(plantExperimentDetailTb.getExperimentAddressCode());
+                    cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByPlantExperimentCode(plantExperimentDetailTb.getExperimentAddressCode());
                     if (cerSampleCodePrefixTb == null) {
                         throw new BusinessException("CER试验未配置取样编号前缀：" + firstSampleApply.getVectorTaskCode());
                     }
@@ -135,7 +125,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     breedCode = plantExperimentDetailTb.getBreedCode();
                 }
                 //获取取样编号前缀
-                String sampleCodePrefix=cerSampleCodePrefixTb.getSampleCodePrefix();
+                String sampleCodePrefix = cerSampleCodePrefixTb.getSampleCodePrefix();
                 List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectAllBySampleCodeLike(sampleCodePrefix);
                 //获取当前库存中最大取样编号序号
                 Integer maxSampleNumber = null;
@@ -146,12 +136,12 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 for (int i = 1; i <= firstSampleApply.getSampleNumber(); i++) {
                     maxSampleNumber = maxSampleNumber == null ? 1 : maxSampleNumber + 1;
                     String sampleCode = sampleCodePrefix + maxSampleNumber;
-                    PlantSampleTestTb plantSampleTestTb = PlantSampleTestTb.of(firstSampleApply.getVectorTaskCode(), generation, breedCode, speciesCode, sampleCode, bioTaskDtlTb, firstSampleApply.getSourceCode(), sampleCode);
+                    BioSampleTestTb plantSampleTestTb = BioSampleTestTb.of(firstSampleApply.getSeedNum(), firstSampleApply.getRegionNum(), firstSampleApply.getPlantExperimentNum(), firstSampleApply.getVectorTaskCode(), generation, breedCode, speciesCode, sampleCode, bioTaskDtlTb, firstSampleApply.getSourceCode(), sampleCode);
                     sampleTestTbList.add(plantSampleTestTb);
                 }
                 //插入数据
                 try {
-                    plantSampleTestTbMapper.insertBatch(sampleTestTbList);
+                    bioSampleTestTbMapper.insertBatch(sampleTestTbList);
                 } catch (DuplicateKeyException e) {
                     log.error("取样申请异常", e);
                     throw new BusinessException("取样编号有重复");
@@ -171,17 +161,18 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 if (plantSingleStockTb == null) {
                     throw new BusinessException("CER中无此种植编号苗信息：" + repeatSampleTest.getSampleCode());
                 }
+                BioSampleTestTb bioSampleTestTb = bioSampleTestTbMapper.selectOneBySampleCodeOrderByIdDesc(repeatSampleTest.getSampleCode());
                 //校验苗状态
                 if (!PlantStatusEnum.STATUS_1.code.equals(plantSingleStockTb.getPlantStatus()) && !PlantStatusEnum.STATUS_2.code.equals(plantSingleStockTb.getPlantStatus())) {
                     throw new BusinessException("只有正常或者异常苗方可进行取样");
                 }
-                PlantSampleTestTb plantSampleTestTb = PlantSampleTestTb.of(repeatSampleTest.getVectorTaskCode(), plantSingleStockTb.getGeneration(), plantSingleStockTb.getBreedCode(), plantSingleStockTb.getSpeciesCode(), repeatSampleTest.getSampleCode(), bioTaskDtlTb, repeatSampleTest.getSourceCode(), null);
+                BioSampleTestTb plantSampleTestTb = BioSampleTestTb.of(bioSampleTestTb.getSeedNum(), bioSampleTestTb.getRegionNum(), bioSampleTestTb.getExperimentNum(), repeatSampleTest.getVectorTaskCode(), plantSingleStockTb.getGeneration(), plantSingleStockTb.getBreedCode(), plantSingleStockTb.getSpeciesCode(), repeatSampleTest.getSampleCode(), bioTaskDtlTb, repeatSampleTest.getSourceCode(), null);
                 sampleTestTbList.add(plantSampleTestTb);
             }
             plantSampleApplyTb.setApplyNumber(plantExperimentTaskDTO.getRepeatSampleTestList().size());
 
             try {
-                plantSampleTestTbMapper.insertBatch(sampleTestTbList);
+                bioSampleTestTbMapper.insertBatch(sampleTestTbList);
             } catch (DuplicateKeyException e) {
                 log.error("取样申请异常", e);
                 throw new BusinessException("取样编号有重复");
@@ -191,7 +182,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         //如果是首次取样，更新取样区间
         if (SampleTestApplyTypeEnum.F.name().equals(plantExperimentTaskDTO.getApplyType())) {
             StringBuffer sampleCodeRangeBuff = new StringBuffer();
-            Map<String, List<PlantSampleTestTb>> plantSampleTestTbMap = sampleTestTbList.stream().collect(Collectors.groupingBy(sampleTestTb -> sampleTestTb.getSampleCode().replaceAll("\\\\d", "")));
+            Map<String, List<BioSampleTestTb>> plantSampleTestTbMap = sampleTestTbList.stream().collect(Collectors.groupingBy(sampleTestTb -> sampleTestTb.getSampleCode().replaceAll("\\\\d", "")));
             plantSampleTestTbMap.forEach((sampleCodePrefix, sampleTestList) -> {
                 sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(sampleCodePrefix)).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(sampleTestList)) {
@@ -200,7 +191,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
             });
             if (StringUtils.isNotEmpty(sampleCodeRangeBuff.toString())) {
                 plantSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));
-                plantSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(sampleTestTbList.stream().filter(plantSampleTestTb -> StringUtils.isNotEmpty(plantSampleTestTb.getVectorTaskCode())).map(PlantSampleTestTb::getVectorTaskCode).collect(Collectors.toList())).replace("[", "").replace("]", "").replace("\"", ""));
+                plantSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(sampleTestTbList.stream().filter(plantSampleTestTb -> StringUtils.isNotEmpty(plantSampleTestTb.getVectorTaskCode())).map(BioSampleTestTb::getVectorTaskCode).collect(Collectors.toList())).replace("[", "").replace("]", "").replace("\"", ""));
             }
         }
         //更新数据
@@ -232,17 +223,17 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             PlantSampleApplyTb plantSampleApplyTb = plantSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
 
-            plantSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull(CheckResultEnum.remove.name(), plantSampleApplyTb.getApplyNo());
+            bioSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull(CheckResultEnum.remove.name(), plantSampleApplyTb.getApplyNo());
 
             //首次取样，且已经发生过移苗
             if (SampleTestApplyTypeEnum.F.name().equals(plantSampleApplyTb.getApplyType())) {
                 List<PlantSingleStockTb> plantSingleStockTbList = new ArrayList<>();
-                List<PlantSampleTestTb> plantSampleTestTbList = plantSampleTestTbMapper.selectAllByApplyNo(plantSampleApplyTb.getApplyNo()).stream().filter(plantSampleTestTb -> CheckResultEnum.stay.name().equals(plantSampleTestTb.getCheckResult())).collect(Collectors.toList());
+                List<BioSampleTestTb> plantSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(plantSampleApplyTb.getApplyNo()).stream().filter(plantSampleTestTb -> CheckResultEnum.stay.name().equals(plantSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {
-                    for (PlantSampleTestTb plantSampleTestTb : plantSampleTestTbList) {
-                        PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(plantSampleTestTb);
+                    for (BioSampleTestTb plantSampleTestTb : plantSampleTestTbList) {
+                        PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(plantSampleTestTb, PlantStatusEnum.STATUS_1);
                         plantSingleStockTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
-                       // plantSingleStockTb.setTransplantDate(DateUtil.format(cerConversionAndTransRefList.get(0).getCreateTime(), DatePattern.NORM_DATE_PATTERN));
+                        // plantSingleStockTb.setTransplantDate(DateUtil.format(cerConversionAndTransRefList.get(0).getCreateTime(), DatePattern.NORM_DATE_PATTERN));
                         plantSingleStockTbList.add(plantSingleStockTb);
                     }
                 }
@@ -256,12 +247,12 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
-        List<PlantSampleTestTb> plantSampleTestTbList = plantSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
+        List<BioSampleTestTb> plantSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
         if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {
-            plantHisSampleTestTbMapper.insertBatch(BeanUtils.copyListProperties(plantSampleTestTbList,PlantHisSampleTestTb.class));
+            plantHisSampleTestTbMapper.insertBatch(BeanUtils.copyListProperties(plantSampleTestTbList, PlantHisSampleTestTb.class));
         }
         plantSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
-        plantSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        bioSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         List<BioSampleTestTwoResultTb> bioSampleSampleTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByUploadNum(bioTaskDtlTb.getTaskNum());
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultTbList)) {

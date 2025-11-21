@@ -8,17 +8,16 @@ import com.bio.common.core.util.StringUtils;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
  * 取样检测信息表
  *
- * @TableName plant_sample_test_tb
+ * @TableName bio_sample_test_tb
  */
-@TableName(value = "plant_sample_test_tb")
+@TableName(value = "bio_sample_test_tb")
 @Data
-public class PlantSampleTestTb implements Serializable {
+public class BioSampleTestTb implements Serializable {
     /**
      * 主键ID
      */
@@ -156,11 +155,6 @@ public class PlantSampleTestTb implements Serializable {
     private Date updateTime;
 
     /**
-     * 受体材料
-     */
-    private String acceptorMaterial;
-
-    /**
      * 取样申请编号
      */
     private String applyNo;
@@ -201,51 +195,60 @@ public class PlantSampleTestTb implements Serializable {
 
     private String breedCode;
 
+    private String experimentNum;
+
+    private String regionNum;
+
+    private String seedNum;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
 
-    public static PlantSampleTestTb of(String vectorTaskCode,String generation, String breedCode,String speciesCode,String sampleCode, BioTaskDtlTb bioTaskDtlTb, String sourceCode,String uniqueCode) {
-        PlantSampleTestTb plantSampleTestTb = new PlantSampleTestTb();
-        plantSampleTestTb.setVectorTaskCode(vectorTaskCode);
-        plantSampleTestTb.setSampleCode(sampleCode);
-        plantSampleTestTb.setGeneration(generation);
-        plantSampleTestTb.setBreedCode(breedCode);
-        plantSampleTestTb.setSpeciesCode(speciesCode);
-        plantSampleTestTb.setApplyTime(bioTaskDtlTb.getApplyTime());
-        plantSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
-        plantSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
-        plantSampleTestTb.setSourceCode(sourceCode);
-        plantSampleTestTb.setTestIdentifyPrimer(null);
-        plantSampleTestTb.setTestMethod(null);
-        plantSampleTestTb.setTestEditType(null);
-        plantSampleTestTb.setTestNoTransIdentityPrimer(null);
-        plantSampleTestTb.setTestIsGeneModifyPositive(null);
-        plantSampleTestTb.setTestIfFixedPoint(null);
-        plantSampleTestTb.setTestIfCopyInsert(null);
-        plantSampleTestTb.setTestFixedPointType(null);
-        plantSampleTestTb.setTestDonorResidueInfo(null);
-        plantSampleTestTb.setTestInsertionSite(null);
-        plantSampleTestTb.setTestElisaResult(null);
-        plantSampleTestTb.setTestQbzrSeq(null);
-        plantSampleTestTb.setTestEditResidueInfo(null);
-        plantSampleTestTb.setTestUserId(null);
-        plantSampleTestTb.setTestUserName(null);
-        plantSampleTestTb.setTestTime(null);
-        plantSampleTestTb.setCheckUserName(null);
-        plantSampleTestTb.setCheckUserId(null);
-        plantSampleTestTb.setCheckResult(null);
-        plantSampleTestTb.setCreateTime(new Date());
-        plantSampleTestTb.setUpdateTime(new Date());
-        plantSampleTestTb.setApplyNo(bioTaskDtlTb.getTaskNum());
-        plantSampleTestTb.setIdentifyPrimer(null);
+    public static BioSampleTestTb of(String seedNum,String regionNum,String experimentNum,String vectorTaskCode, String generation, String breedCode, String speciesCode, String sampleCode, BioTaskDtlTb bioTaskDtlTb, String sourceCode, String uniqueCode) {
+        BioSampleTestTb bioSampleTestTb = new BioSampleTestTb();
+        bioSampleTestTb.setVectorTaskCode(vectorTaskCode);
+        bioSampleTestTb.setSampleCode(sampleCode);
+        bioSampleTestTb.setGeneration(generation);
+        bioSampleTestTb.setBreedCode(breedCode);
+        bioSampleTestTb.setSpeciesCode(speciesCode);
+        bioSampleTestTb.setSeedNum(seedNum);
+        bioSampleTestTb.setExperimentNum(regionNum);
+        bioSampleTestTb.setRegionNum(experimentNum);
+        bioSampleTestTb.setApplyTime(bioTaskDtlTb.getApplyTime());
+        bioSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
+        bioSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
+        bioSampleTestTb.setSourceCode(sourceCode);
+        bioSampleTestTb.setTestIdentifyPrimer(null);
+        bioSampleTestTb.setTestMethod(null);
+        bioSampleTestTb.setTestEditType(null);
+        bioSampleTestTb.setTestNoTransIdentityPrimer(null);
+        bioSampleTestTb.setTestIsGeneModifyPositive(null);
+        bioSampleTestTb.setTestIfFixedPoint(null);
+        bioSampleTestTb.setTestIfCopyInsert(null);
+        bioSampleTestTb.setTestFixedPointType(null);
+        bioSampleTestTb.setTestDonorResidueInfo(null);
+        bioSampleTestTb.setTestInsertionSite(null);
+        bioSampleTestTb.setTestElisaResult(null);
+        bioSampleTestTb.setTestQbzrSeq(null);
+        bioSampleTestTb.setTestEditResidueInfo(null);
+        bioSampleTestTb.setTestUserId(null);
+        bioSampleTestTb.setTestUserName(null);
+        bioSampleTestTb.setTestTime(null);
+        bioSampleTestTb.setCheckUserName(null);
+        bioSampleTestTb.setCheckUserId(null);
+        bioSampleTestTb.setCheckResult(null);
+        bioSampleTestTb.setCreateTime(new Date());
+        bioSampleTestTb.setUpdateTime(new Date());
+        bioSampleTestTb.setApplyNo(bioTaskDtlTb.getTaskNum());
+        bioSampleTestTb.setIdentifyPrimer(null);
         if(StringUtils.isNotEmpty(uniqueCode)){
-            plantSampleTestTb.setUniqueCode(uniqueCode);
+            bioSampleTestTb.setUniqueCode(uniqueCode);
         }
-        plantSampleTestTb.setRemark(null);
-        plantSampleTestTb.setCloneSampleCode(null);
-        plantSampleTestTb.setTestOrgResult(null);
-        return plantSampleTestTb;
+        bioSampleTestTb.setRemark(null);
+        bioSampleTestTb.setCloneSampleCode(null);
+        bioSampleTestTb.setTestOrgResult(null);
+        return bioSampleTestTb;
     }
 
 }

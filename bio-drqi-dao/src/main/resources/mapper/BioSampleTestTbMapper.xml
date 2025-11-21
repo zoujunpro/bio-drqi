@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bio.drqi.mapper.PlantSampleTestTbMapper">
+<mapper namespace="com.bio.drqi.mapper.BioSampleTestTbMapper">
 
-    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.PlantSampleTestTb">
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioSampleTestTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
             <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
@@ -100,4 +100,12 @@
         from plant_sample_test_tb
         where apply_no = #{applyNo,jdbcType=VARCHAR}
     </delete>
+    <select id="selectOneBySampleCodeOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_test_tb
+        where
+        sample_code = #{sampleCode,jdbcType=VARCHAR}
+        order by id desc limit 1
+    </select>
 </mapper>

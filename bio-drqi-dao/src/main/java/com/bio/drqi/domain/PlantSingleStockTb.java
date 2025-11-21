@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.bio.drqi.common.enums.PlantStatusEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,9 +12,10 @@ import java.util.Date;
 
 /**
  * cer种植表
+ *
  * @TableName plant_single_stock_tb
  */
-@TableName(value ="plant_single_stock_tb")
+@TableName(value = "plant_single_stock_tb")
 @Data
 public class PlantSingleStockTb implements Serializable {
     /**
@@ -150,5 +152,38 @@ public class PlantSingleStockTb implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
+
+    public static PlantSingleStockTb of(BioSampleTestTb bioSampleTestTb, PlantStatusEnum plantStatusEnum) {
+        PlantSingleStockTb plantSingleStockTb = new PlantSingleStockTb();
+        plantSingleStockTb.setPlantCode(bioSampleTestTb.getSampleCode());
+        plantSingleStockTb.setGeneration(bioSampleTestTb.getGeneration());
+        plantSingleStockTb.setPlantNumber(null);
+        plantSingleStockTb.setPlantDate(null);
+        plantSingleStockTb.setSampleCode(bioSampleTestTb.getSampleCode());
+        plantSingleStockTb.setTransplantDate(null);
+        plantSingleStockTb.setVernalizationBeginDate(null);
+        plantSingleStockTb.setVernalizationEndDate(null);
+        plantSingleStockTb.setPollinationMethod(null);
+        plantSingleStockTb.setPlantStatus(plantStatusEnum.code);
+        plantSingleStockTb.setPollinationDate(null);
+        plantSingleStockTb.setHarvestDate(null);
+        plantSingleStockTb.setHarvestType(null);
+        plantSingleStockTb.setOtherField(null);
+        plantSingleStockTb.setEditType(null);
+        plantSingleStockTb.setSpeciesCode(bioSampleTestTb.getSampleCode());
+        plantSingleStockTb.setSpeciesCode(bioSampleTestTb.getSpeciesCode());
+        plantSingleStockTb.setCreateDate(new Date());
+        plantSingleStockTb.setUpdateTime(new Date());
+        plantSingleStockTb.setCreateUserId(bioSampleTestTb.getApplyUserId());
+        plantSingleStockTb.setCreateUserName(bioSampleTestTb.getApplyUserName());
+        plantSingleStockTb.setTaskNum(bioSampleTestTb.getApplyNo());
+        plantSingleStockTb.setBreedCode(null);
+        plantSingleStockTb.setBreedCode(bioSampleTestTb.getBreedCode());
+        plantSingleStockTb.setSourceCode(bioSampleTestTb.getSourceCode());
+        plantSingleStockTb.setRemark(null);
+        plantSingleStockTb.setVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
+        return plantSingleStockTb;
+
+    }
 
 }

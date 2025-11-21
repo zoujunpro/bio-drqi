@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.Collection;
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.PlantSingleStockTb;
@@ -17,6 +18,14 @@ public interface PlantSingleStockTbMapper extends BaseMapper<PlantSingleStockTb>
     PlantSingleStockTb selectOneByPlantCode(@Param("plantCode") String plantCode);
 
     List<PlantSingleStockTb> selectSelective(PlantSingleStockTb plantSingleStockTb);
+
+    List<PlantSingleStockTb> selectAllBySampleCodeIn(@Param("sampleCodeList") Collection<String> sampleCodeList);
+
+    List<PlantSingleStockTb> selectAllBySampleCodeLike(@Param("sampleCode") String sampleCode);
+
+    int insertBatch(@Param("plantSingleStockTbCollection") Collection<PlantSingleStockTb> plantSingleStockTbCollection);
+
+    int deleteByTaskNum(@Param("taskNum") String taskNum);
 
 }
 

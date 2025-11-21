@@ -65,6 +65,7 @@ public class PlantSampleTestTaskDTO {
 
     @Data
     public static class RepeatSampleTest {
+
         private String sourceCode;
 
         private String sampleCode;

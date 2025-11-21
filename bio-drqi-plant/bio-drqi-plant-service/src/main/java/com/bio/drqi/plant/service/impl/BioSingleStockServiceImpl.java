@@ -9,8 +9,10 @@ import com.bio.drqi.mapper.CerBreedDictMapper;
 import com.bio.drqi.mapper.CerSpeciesConfMapper;
 import com.bio.drqi.mapper.PlantSingleStockTbMapper;
 import com.bio.drqi.plant.req.PlantSingleStockListPageReqDTO;
+import com.bio.drqi.plant.req.PlantSingleStockQueryBySampleCodeListReqDTO;
 import com.bio.drqi.plant.req.PlantSingleStockQueryListReqDTO;
 import com.bio.drqi.plant.rsp.PlantSingleStockListPageRspDTO;
+import com.bio.drqi.plant.rsp.PlantSingleStockQueryBySampleCodeListRspDTO;
 import com.bio.drqi.plant.rsp.PlantSingleStockQueryListRspDTO;
 import com.bio.drqi.plant.service.PlantSingleStockService;
 import com.github.pagehelper.PageHelper;
@@ -25,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class PlantSingleStockServiceImpl implements PlantSingleStockService {
+public class BioSingleStockServiceImpl implements PlantSingleStockService {
 
     @Resource
     private PlantSingleStockTbMapper plantSingleStockTbMapper;
@@ -57,7 +59,7 @@ public class PlantSingleStockServiceImpl implements PlantSingleStockService {
     public List<PlantSingleStockQueryListRspDTO> queryList(PlantSingleStockQueryListReqDTO plantSingleStockListPageReqDTO) {
         List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectSelective(BeanUtils.copyProperties(plantSingleStockListPageReqDTO, PlantSingleStockTb.class));
         List<PlantSingleStockQueryListRspDTO> resultList = BeanUtils.copyListProperties(plantSingleStockTbList, PlantSingleStockQueryListRspDTO.class);
-        if(CollectionUtil.isNotEmpty(resultList)){
+        if (CollectionUtil.isNotEmpty(resultList)) {
             Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
             Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
             resultList.forEach(plantSingleStockQueryListRspDTO -> {
@@ -67,5 +69,20 @@ public class PlantSingleStockServiceImpl implements PlantSingleStockService {
         }
         return resultList;
 
+    }
+
+    @Override
+    public List<PlantSingleStockQueryBySampleCodeListRspDTO> queryBySampleCodeList(PlantSingleStockQueryBySampleCodeListReqDTO plantSingleStockQueryBySampleCodeListReqDTO) {
+        List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectAllBySampleCodeIn(plantSingleStockQueryBySampleCodeListReqDTO.getSampleCodeList());
+        List<PlantSingleStockQueryBySampleCodeListRspDTO> result = BeanUtils.copyListProperties(plantSingleStockTbList, PlantSingleStockQueryBySampleCodeListRspDTO.class);
+        if(CollectionUtil.isNotEmpty(result)){
+            Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+            Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
+            result.forEach(plantSingleStockQueryBySampleCodeListRspDTO -> {
+                plantSingleStockQueryBySampleCodeListRspDTO.setBreedName(cerBreedDictMap.get(plantSingleStockQueryBySampleCodeListRspDTO.getBreedCode()));
+                plantSingleStockQueryBySampleCodeListRspDTO.setSpeciesCode(cerSpeciesConfMap.get(plantSingleStockQueryBySampleCodeListRspDTO.getSpeciesCode()));
+            });
+        }
+        return result;
     }
 }

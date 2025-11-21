@@ -17,6 +17,7 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.base.SampleUnitDTO;
 import com.bio.drqi.manage.bio.req.BioSampleTestUploadTestTemplateReqDTO;
 import com.bio.drqi.manage.dto.bio.DownLoadIdentifyPrimerTemplateExcelDTO;
+import com.bio.drqi.manage.dto.plant.SampleTestDownRepeatSampleTemplateExcelDTO;
 import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
 import com.bio.drqi.manage.dto.project.TestExcelDTO;
 import com.bio.drqi.manage.sample.req.DownTestTemplateReqDTO;
@@ -75,6 +76,12 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
 
     @Resource
     private SynSampleTestResultService synSampleTestResultService;
+
+    @Override
+    public void downRepeatSampleTemplate(HttpServletResponse httpServletResponse) {
+        ExcelUtil.writeExcel("重复取样模板","sheet1",null, SampleTestDownRepeatSampleTemplateExcelDTO.class,httpServletResponse);
+    }
+
     @Override
     public void downTestTemplate(DownTestTemplateReqDTO downTestTemplateReqDTO, HttpServletResponse response) {
         try {

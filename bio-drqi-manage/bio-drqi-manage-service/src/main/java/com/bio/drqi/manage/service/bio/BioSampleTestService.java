@@ -12,15 +12,12 @@ import org.springframework.stereotype.Service;
 
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public interface BioSampleTestService {
+
+    void downRepeatSampleTemplate(HttpServletResponse httpServletResponse);;
 
     void downTestTemplate(DownTestTemplateReqDTO downTestTemplateReqDTO, HttpServletResponse response);
 

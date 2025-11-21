@@ -27,6 +27,13 @@ public class BioSampleTestController {
     @Resource
     private OssService ossService;
 
+    @GetMapping("downRepeatSampleTemplate")
+    @WebLog(desc = "分子取样检测-下载重复取样模板")
+    public void downRepeatSampleTemplate(HttpServletResponse httpServletResponse) {
+        bioSampleTestService.downRepeatSampleTemplate(httpServletResponse);
+    }
+
+
     /**
      * 取样检测-检测数据模板下载
      */

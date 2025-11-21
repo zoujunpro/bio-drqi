@@ -1,25 +1,12 @@
-package com.bio.drqi.domain;
+package com.bio.drqi.plant.rsp;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 
- * @TableName plant_multiple_stock_tb
- */
-@TableName(value ="plant_multiple_stock_tb")
 @Data
-public class PlantMultipleStockTb implements Serializable {
-    /**
-     * 主键ID
-     */
-    @TableId(type = IdType.AUTO)
+public class PlantMultipleStockListPageRspDTO {
+
     private Integer id;
 
     /**
@@ -77,10 +64,14 @@ public class PlantMultipleStockTb implements Serializable {
      */
     private String speciesCode;
 
+    private String speciesName;
+
     /**
      * 品种
      */
     private String breedCode;
+
+    private String breedName;
 
     /**
      * 取样数量
@@ -106,12 +97,5 @@ public class PlantMultipleStockTb implements Serializable {
      * PD编号
      */
     private String pdNum;
-
-
-    @TableField(exist = false)
-    private String stockNumberNotNullFlag;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 
 }

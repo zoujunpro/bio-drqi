@@ -39,10 +39,10 @@
         transplant_date,vernalization_begin_date,vernalization_end_date,
         pollination_method,plant_status,pollination_date,
         harvest_date,harvest_type,other_field,
-        edit_type,species_code,
-        create_date,update_time,create_user_id,
-        create_user_name,task_num,breed_code,
-        source_code,remark,vector_task_code
+        edit_type,species_code,create_date,
+        update_time,create_user_id,create_user_name,
+        task_num,breed_code,source_code,
+        remark,vector_task_code
     </sql>
     <select id="selectOneByPlantCode" resultMap="BaseResultMap">
         select
@@ -51,39 +51,40 @@
         where
         plant_code = #{plantCode,jdbcType=VARCHAR}
     </select>
-    <insert id="insertBatch">
-        insert into plant_single_stock_tb(id,plant_code,generation,
-        plant_number,plant_date,sample_code,
-        transplant_date,vernalization_begin_date,vernalization_end_date,
-        pollination_method,plant_status,pollination_date,
-        harvest_date,harvest_type,other_field,
-        edit_type,species_code,acceptor_material,
-        create_date,update_time,create_user_id,
-        create_user_name,task_num,breed_code,
-        source_code,remark,vector_task_code)
-        values
-        <foreach collection="plantSingleStockTbCollection" item="item" separator=",">
-            (#{item.id,jdbcType=NUMERIC},#{item.plantCode,jdbcType=VARCHAR},#{item.generation,jdbcType=VARCHAR},
-            #{item.plantNumber,jdbcType=NUMERIC},#{item.plantDate,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},
-            #{item.transplantDate,jdbcType=VARCHAR},#{item.vernalizationBeginDate,jdbcType=VARCHAR},#{item.vernalizationEndDate,jdbcType=VARCHAR},
-            #{item.pollinationMethod,jdbcType=VARCHAR},#{item.plantStatus,jdbcType=VARCHAR},#{item.pollinationDate,jdbcType=VARCHAR},
-            #{item.harvestDate,jdbcType=VARCHAR},#{item.harvestType,jdbcType=VARCHAR},#{item.otherField},
-            #{item.editType,jdbcType=VARCHAR},#{item.speciesCode,jdbcType=VARCHAR},#{item.acceptorMaterial,jdbcType=VARCHAR},
-            #{item.createDate,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP},#{item.createUserId,jdbcType=NUMERIC},
-            #{item.createUserName,jdbcType=VARCHAR},#{item.taskNum,jdbcType=VARCHAR},#{item.breedCode,jdbcType=VARCHAR},
-            #{item.sourceCode,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR})
-        </foreach>
-    </insert>
-    <select id="selectAllBySampleCodeLike" resultMap="BaseResultMap">
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.PlantSingleStockTb">
         select
         <include refid="Base_Column_List"/>
         from plant_single_stock_tb
-        where
-        sample_code like CONCAT('%',#{sampleCode,jdbcType=VARCHAR},'%')
+        <where>
+            <if test="plantCode != null and plantCode!=''">and plant_code=#{plantCode,jdbcType=VARCHAR}</if>
+            <if test="generation != null and generation!=''">and generation=#{generation,jdbcType=VARCHAR}</if>
+            <if test="plantNumber != null">and plant_number=#{plantNumber,jdbcType=NUMERIC}</if>
+            <if test="plantDate != null">and plant_date=#{plantDate,jdbcType=VARCHAR}</if>
+            <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
+            <if test="transplantDate != null and transplantDate!=''">and transplant_date=#{transplantDate,jdbcType=VARCHAR}</if>
+            <if test="vernalizationBeginDate != null">
+                and  vernalization_begin_date=#{vernalizationBeginDate,jdbcType=VARCHAR}
+            </if>
+            <if test="vernalizationEndDate != null">and vernalization_end_date=#{vernalizationEndDate,jdbcType=VARCHAR}
+            </if>
+            <if test="pollinationMethod != null">and pollination_method=#{pollinationMethod,jdbcType=VARCHAR}</if>
+            <if test="plantStatus != null and plantStatus!=''">and plant_status=#{plantStatus,jdbcType=VARCHAR}</if>
+            <if test="pollinationDate != null">and pollination_date=#{pollinationDate,jdbcType=VARCHAR}</if>
+            <if test="harvestDate != null">and harvest_date=#{harvestDate,jdbcType=VARCHAR}</if>
+            <if test="harvestType != null">and harvest_type=#{harvestType,jdbcType=VARCHAR}</if>
+            <if test="otherField != null">and other_field=#{otherField}</if>
+            <if test="editType != null">and edit_type=#{editType,jdbcType=VARCHAR}</if>
+            <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
+            <if test="createDate != null">and create_date=#{createDate,jdbcType=TIMESTAMP}</if>
+            <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="breedCode != null">and breed_code=#{breedCode,jdbcType=VARCHAR}</if>
+            <if test="sourceCode != null and sourceCode!=''">and source_code=#{sourceCode,jdbcType=VARCHAR}</if>
+            <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null and vectorTaskCode!=''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
     </select>
-    <delete id="deleteByTaskNum">
-        delete
-        from plant_single_stock_tb
-        where task_num = #{taskNum,jdbcType=VARCHAR}
-    </delete>
 </mapper>

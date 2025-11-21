@@ -46,7 +46,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     private PlantExperimentDetailTbMapper plantExperimentDetailTbMapper;
 
     @Resource
-    private PlantHisSampleTestTbMapper plantHisSampleTestTbMapper;
+    private BioHisSampleTestTbMapper bioHisSampleTestTbMapper;
 
     @Resource
     private CerSampleLayoutTbMapper cerSampleLayoutTbMapper;
@@ -249,7 +249,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
         List<BioSampleTestTb> plantSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
         if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {
-            plantHisSampleTestTbMapper.insertBatch(BeanUtils.copyListProperties(plantSampleTestTbList, PlantHisSampleTestTb.class));
+            bioHisSampleTestTbMapper.insertBatch(BeanUtils.copyListProperties(plantSampleTestTbList, BioHisSampleTestTb.class));
         }
         plantSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         bioSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());

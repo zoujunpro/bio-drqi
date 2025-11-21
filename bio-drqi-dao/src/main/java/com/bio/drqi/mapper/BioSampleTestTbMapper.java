@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
-    int insertBatch(@Param("plantSampleTestTbCollection") Collection<BioSampleTestTb> plantSampleTestTbCollection);
+    int insertBatch(@Param("bioSampleTestTbCollection") Collection<BioSampleTestTb> bioSampleTestTbCollection);
 
     BioSampleTestTb selectOneBySampleCodeOrderByIdDesc(@Param("sampleCode") String sampleCode);
 

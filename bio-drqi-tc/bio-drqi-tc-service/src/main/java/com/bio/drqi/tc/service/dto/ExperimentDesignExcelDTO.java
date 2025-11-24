@@ -1,5 +1,6 @@
 package com.bio.drqi.tc.service.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
@@ -23,7 +24,7 @@ public class ExperimentDesignExcelDTO {
     @NotBlank(message = "种子编号必填")
     private String seedNum;
 
-
+    @ExcelIgnore
     private String breedCode;
     /**
      * 品种

@@ -4,6 +4,8 @@ import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Data
 public class PlantExperimentTaskDTO {
@@ -14,8 +16,8 @@ public class PlantExperimentTaskDTO {
     @NotBlank(message = "物种必填")
     private String speciesCode;
 
-    @EnumValue(message = "试验类型必填",strValues = {"1","2","3","4","5"})
-    private String experimentType;
+    @NotEmpty(message = "试验类型必填")
+    private List<String> experimentType;
 
     private String experimentTarget;
 

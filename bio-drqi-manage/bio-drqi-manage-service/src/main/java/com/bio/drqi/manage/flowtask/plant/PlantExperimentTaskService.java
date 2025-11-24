@@ -103,7 +103,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
             List<ExperimentExcelDTO> experimentExcelDTOList = getExperimentExcelDTOS(plantExperimentTaskDTO);
             PlantExperimentTb plantExperimentTb = new PlantExperimentTb();
             plantExperimentTb.setSpeciesCode(plantExperimentTaskDTO.getSpeciesCode());
-            plantExperimentTb.setExperimentType(plantExperimentTaskDTO.getExperimentType());
+            plantExperimentTb.setExperimentType(JSONUtil.toJsonStr(plantExperimentTaskDTO.getExperimentType()));
             plantExperimentTb.setExperimentTarget(plantExperimentTaskDTO.getExperimentTarget());
             plantExperimentTb.setDesignUrl(plantExperimentTaskDTO.getDesignUrl());
             plantExperimentTb.setFileUrl(plantExperimentTaskDTO.getFileUrl());

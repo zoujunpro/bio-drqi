@@ -18,7 +18,7 @@ public class PlantSampleTestTaskDTO {
     /**
      * 取样类型 首次取样 重复取样
      */
-    @EnumValue(message = "取样类型参数错误", strValues = {"F", "R"})
+    @EnumValue(message = "取样类型参数错误", strValues = {"first", "repeat"})
     private String applyType;
 
     /**

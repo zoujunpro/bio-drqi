@@ -10,6 +10,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.CheckResultEnum;
+import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.VectorTaskStatusEnum;
 import com.bio.drqi.manage.dto.project.*;
@@ -355,7 +356,7 @@ public class Clean20251030Controller {
             cerSampleApplyTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
             cerSampleApplyTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
             cerSampleApplyTb.setApplyDesc(bioTaskDtlTb.getTaskDesc());
-            cerSampleApplyTb.setApplyType(CollectionUtil.isNotEmpty(newSampleTestDTO.getRepeatSampleApplyList()) ? SampleApplyTypeEnum.R.name() : SampleApplyTypeEnum.F.name());
+            cerSampleApplyTb.setApplyType(CollectionUtil.isNotEmpty(newSampleTestDTO.getRepeatSampleApplyList()) ? SampleTestApplyTypeEnum.repeat.name() : SampleTestApplyTypeEnum.first.name());
             cerSampleApplyTb.setIdentifyExcelUrl(newSampleTestDTO.getIdentifyPrimerTemplateExcelUrl());
             cerSampleApplyTb.setOneTestExcelUrl(newSampleTestDTO.getTestDataExcelUrl());
             cerSampleApplyTb.setNgsExcelUrl(newSampleTestDTO.getBioInfoResultExcelUrl());
@@ -370,7 +371,7 @@ public class Clean20251030Controller {
             Map<String, List<CerSampleTestTb>> cerSampleTestTbListMap = cerSampleTestTbList.stream().collect(Collectors.groupingBy(CerSampleTestTb::getVectorTaskCode));
             cerSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(cerSampleTestTbListMap.keySet()).replace("[", "").replace("]", "").replace("\"", ""));
             StringBuffer sampleCodeRangeBuff = new StringBuffer();
-            if (SampleApplyTypeEnum.F.name().equals(cerSampleApplyTb.getApplyType())) {
+            if (SampleTestApplyTypeEnum.first.name().equals(cerSampleApplyTb.getApplyType())) {
                 cerSampleTestTbListMap.forEach((vectorTaskCode, sampleTestList) -> {
                     CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
                     sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(cerSampleCodePrefixTb.getSampleCodePrefix())).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());

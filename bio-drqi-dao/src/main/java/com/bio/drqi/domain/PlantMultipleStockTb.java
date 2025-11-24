@@ -130,7 +130,7 @@ public class PlantMultipleStockTb implements Serializable {
         plantMultipleStockTb.setSpeciesCode(plantExperimentDetailTb.getSpeciesCode());
         plantMultipleStockTb.setBreedCode(plantExperimentDetailTb.getBreedCode());
         plantMultipleStockTb.setSampleNumber(0);
-        plantMultipleStockTb.setCurrentNumber(0);
+        plantMultipleStockTb.setCurrentNumber(plantExperimentDetailTb.getPlantNumber());
         plantMultipleStockTb.setRegionNum(plantExperimentDetailTb.getRegionNum());
         plantMultipleStockTb.setVectorTaskCode(plantExperimentDetailTb.getVectorTaskCode());
         plantMultipleStockTb.setPdNum(plantExperimentDetailTb.getPdNum());

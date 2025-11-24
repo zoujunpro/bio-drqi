@@ -11,11 +11,11 @@ import java.util.Date;
 
 /**
  * 取样编号前缀表
- * @TableName cer_sample_code_prefix_tb
+ * @TableName bio_sample_code_prefix_tb
  */
-@TableName(value ="cer_sample_code_prefix_tb")
+@TableName(value ="bio_sample_code_prefix_tb")
 @Data
-public class CerSampleCodePrefixTb implements Serializable {
+public class BioSampleCodePrefixTb implements Serializable {
     /**
      * 主键ID
      */

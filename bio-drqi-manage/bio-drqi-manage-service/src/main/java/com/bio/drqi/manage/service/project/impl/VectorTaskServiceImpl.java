@@ -60,7 +60,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     private CerInstantVerifyTaskTbMapper cerInstantVerifyTaskTbMapper;
 
     @Resource
-    private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
+    private BioSampleCodePrefixTbMapper bioSampleCodePrefixTbMapper;
 
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
@@ -227,9 +227,9 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
         CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerVectorTaskTb.getSubProjectCode());
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerSubProjectTb.getTaskNum());
-        CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+        BioSampleCodePrefixTb bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         CerImplementationPlanBaseInfoRspDTO cerImplementationPlanBaseInfoRspDTO = BeanUtils.copyProperties(cerVectorTaskTb, CerImplementationPlanBaseInfoRspDTO.class);
-        cerImplementationPlanBaseInfoRspDTO.setSampleCodePrefix(cerSampleCodePrefixTb.getSampleCodePrefix());
+        cerImplementationPlanBaseInfoRspDTO.setSampleCodePrefix(bioSampleCodePrefixTb.getSampleCodePrefix());
         if (StringUtils.isEmpty(cerImplementationPlanBaseInfoRspDTO.getAcceptorMaterial())) {
             CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(cerImplementationPlanBaseInfoRspDTO.getBreedCode());
             if (cerBreedDict != null) {
@@ -324,7 +324,7 @@ public class VectorTaskServiceImpl implements VectorTaskService {
             throw new BusinessException("该实施方案已有后续步骤进行，无法删除");
         }
         cerVectorTaskTbMapper.deleteById(id);
-        cerSampleCodePrefixTbMapper.deleteByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+        bioSampleCodePrefixTbMapper.deleteByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         bioTaskDtlTbMapper.deleteByTaskNum(cerVectorTaskTb.getTaskNum());
     }
 
@@ -352,12 +352,12 @@ public class VectorTaskServiceImpl implements VectorTaskService {
         }
 
         //必须先更新
-        CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-        if (cerSampleCodePrefixTb == null) {
+        BioSampleCodePrefixTb bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+        if (bioSampleCodePrefixTb == null) {
             throw new BusinessException("数据异常，找不到该实施方案的取样编号前缀记录信息");
         }
-        cerSampleCodePrefixTb.setVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode());
-        cerSampleCodePrefixTbMapper.updateById(cerSampleCodePrefixTb);
+        bioSampleCodePrefixTb.setVectorTaskCode(vectorTaskModifyVectorTaskCodeReqDTO.getVectorTaskCode());
+        bioSampleCodePrefixTbMapper.updateById(bioSampleCodePrefixTb);
 
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerVectorTaskTb.getTaskNum());
         if (bioTaskDtlTb == null) {

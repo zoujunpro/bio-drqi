@@ -34,10 +34,10 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
     @Resource
-    private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
+    private BioSampleCodePrefixTbMapper bioSampleCodePrefixTbMapper;
 
     @Resource
-    private PlantSampleApplyTbMapper plantSampleApplyTbMapper;
+    private BioSampleApplyTbMapper bioSampleApplyTbMapper;
 
     @Resource
     private BioSampleTestTbMapper bioSampleTestTbMapper;
@@ -71,7 +71,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
             throw new BusinessException("物种找不到");
         }
         //初始化取样申请工单
-        PlantSampleApplyTb plantSampleApplyTb = initPlantSampleApplyTb(bioTaskDtlTb, plantExperimentTaskDTO);
+        BioSampleApplyTb bioSampleApplyTb = initPlantSampleApplyTb(bioTaskDtlTb, plantExperimentTaskDTO);
 
         List<BioSampleTestTb> sampleTestTbList = new ArrayList<>();
         //首次取样
@@ -88,7 +88,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 String generation = null;
                 String speciesCode = null;
                 String breedCode = null;
-                CerSampleCodePrefixTb cerSampleCodePrefixTb = null;
+                BioSampleCodePrefixTb bioSampleCodePrefixTb = null;
                 if (SourceCodeEnum.project.name().equals(firstSampleApply.getSourceCode())) {
                     if (StringUtils.isEmpty(firstSampleApply.getVectorTaskCode())) {
                         throw new BusinessException("实施方案编号缺失");
@@ -103,8 +103,8 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     if (plantMultipleStockTb.getPlantNumber() < firstSampleApply.getSampleNumber()) {
                         throw new BusinessException("转化编号：" + firstSampleApply.getVectorTaskCode() + "的苗库存不足,当前库存苗数量:" + plantMultipleStockTb.getPlantNumber());
                     }
-                    cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(firstSampleApply.getVectorTaskCode());
-                    if (cerSampleCodePrefixTb == null) {
+                    bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByVectorTaskCode(firstSampleApply.getVectorTaskCode());
+                    if (bioSampleCodePrefixTb == null) {
                         throw new BusinessException("实施方案编号未配置取样编号前缀：" + firstSampleApply.getVectorTaskCode());
                     }
                     generation = plantMultipleStockTb.getGeneration();
@@ -116,8 +116,8 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     if (plantExperimentDetailTb == null) {
                         throw new BusinessException("CER试验中无此小区:" + firstSampleApply.getRegionNum() + "和种子编号：" + firstSampleApply.getSeedNum());
                     }
-                    cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByPlantExperimentCode(plantExperimentDetailTb.getExperimentAddressCode());
-                    if (cerSampleCodePrefixTb == null) {
+                    bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByPlantExperimentCode(plantExperimentDetailTb.getExperimentNum());
+                    if (bioSampleCodePrefixTb == null) {
                         throw new BusinessException("CER试验未配置取样编号前缀：" + firstSampleApply.getVectorTaskCode());
                     }
                     generation = plantExperimentDetailTb.getGenerationCode();
@@ -125,7 +125,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     breedCode = plantExperimentDetailTb.getBreedCode();
                 }
                 //获取取样编号前缀
-                String sampleCodePrefix = cerSampleCodePrefixTb.getSampleCodePrefix();
+                String sampleCodePrefix = bioSampleCodePrefixTb.getSampleCodePrefix();
                 List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectAllBySampleCodeLike(sampleCodePrefix);
                 //获取当前库存中最大取样编号序号
                 Integer maxSampleNumber = null;
@@ -146,7 +146,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     log.error("取样申请异常", e);
                     throw new BusinessException("取样编号有重复");
                 }
-                plantSampleApplyTb.setApplyNumber(firstSampleApply.getSampleNumber() + plantSampleApplyTb.getApplyNumber());
+                bioSampleApplyTb.setApplyNumber(firstSampleApply.getSampleNumber() + bioSampleApplyTb.getApplyNumber());
             }
 
 
@@ -169,7 +169,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 BioSampleTestTb plantSampleTestTb = BioSampleTestTb.of(bioSampleTestTb.getSeedNum(), bioSampleTestTb.getRegionNum(), bioSampleTestTb.getExperimentNum(), repeatSampleTest.getVectorTaskCode(), plantSingleStockTb.getGeneration(), plantSingleStockTb.getBreedCode(), plantSingleStockTb.getSpeciesCode(), repeatSampleTest.getSampleCode(), bioTaskDtlTb, repeatSampleTest.getSourceCode(), null);
                 sampleTestTbList.add(plantSampleTestTb);
             }
-            plantSampleApplyTb.setApplyNumber(plantExperimentTaskDTO.getRepeatSampleTestList().size());
+            bioSampleApplyTb.setApplyNumber(plantExperimentTaskDTO.getRepeatSampleTestList().size());
 
             try {
                 bioSampleTestTbMapper.insertBatch(sampleTestTbList);
@@ -190,45 +190,43 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 }
             });
             if (StringUtils.isNotEmpty(sampleCodeRangeBuff.toString())) {
-                plantSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));
-                plantSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(sampleTestTbList.stream().filter(plantSampleTestTb -> StringUtils.isNotEmpty(plantSampleTestTb.getVectorTaskCode())).map(BioSampleTestTb::getVectorTaskCode).collect(Collectors.toList())).replace("[", "").replace("]", "").replace("\"", ""));
+                bioSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));
+                bioSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(sampleTestTbList.stream().filter(plantSampleTestTb -> StringUtils.isNotEmpty(plantSampleTestTb.getVectorTaskCode())).map(BioSampleTestTb::getVectorTaskCode).collect(Collectors.toList())).replace("[", "").replace("]", "").replace("\"", ""));
             }
         }
         //更新数据
-        plantSampleApplyTbMapper.insert(plantSampleApplyTb);
+        bioSampleApplyTbMapper.insert(bioSampleApplyTb);
     }
 
     @NotNull
-    private static PlantSampleApplyTb initPlantSampleApplyTb(BioTaskDtlTb bioTaskDtlTb, PlantSampleTestTaskDTO plantExperimentTaskDTO) {
-        PlantSampleApplyTb plantSampleApplyTb = new PlantSampleApplyTb();
-        plantSampleApplyTb.setApplyNo(bioTaskDtlTb.getTaskNum());
-        plantSampleApplyTb.setApplyNumber(0);
-        plantSampleApplyTb.setApplyTime(new Date());
-        plantSampleApplyTb.setApplyUserId(SecurityContextHolder.getUserId());
-        plantSampleApplyTb.setApplyUserName(SecurityContextHolder.getNickName());
-        plantSampleApplyTb.setApplyDesc(bioTaskDtlTb.getTaskDesc());
-        plantSampleApplyTb.setApplyType(plantExperimentTaskDTO.getApplyType());
-        plantSampleApplyTb.setIdentifyExcelUrl(null);
-        plantSampleApplyTb.setOneTestExcelUrl(null);
-        plantSampleApplyTb.setNgsExcelUrl(null);
-        plantSampleApplyTb.setLayoutFlag(plantExperimentTaskDTO.getTestType());
-        plantSampleApplyTb.setVectorTaskCodes(null);
-        plantSampleApplyTb.setSampleCodeRange(null);
-        return plantSampleApplyTb;
+    private static BioSampleApplyTb initPlantSampleApplyTb(BioTaskDtlTb bioTaskDtlTb, PlantSampleTestTaskDTO plantExperimentTaskDTO) {
+        BioSampleApplyTb bioSampleApplyTb = new BioSampleApplyTb();
+        bioSampleApplyTb.setApplyNo(bioTaskDtlTb.getTaskNum());
+        bioSampleApplyTb.setApplyNumber(0);
+        bioSampleApplyTb.setApplyTime(new Date());
+        bioSampleApplyTb.setApplyUserId(SecurityContextHolder.getUserId());
+        bioSampleApplyTb.setApplyUserName(SecurityContextHolder.getNickName());
+        bioSampleApplyTb.setApplyDesc(bioTaskDtlTb.getTaskDesc());
+        bioSampleApplyTb.setApplyType(plantExperimentTaskDTO.getApplyType());
+        bioSampleApplyTb.setNgsExcelUrl(null);
+        bioSampleApplyTb.setLayoutFlag(plantExperimentTaskDTO.getTestType());
+        bioSampleApplyTb.setVectorTaskCodes(null);
+        bioSampleApplyTb.setSampleCodeRange(null);
+        return bioSampleApplyTb;
     }
 
 
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-            PlantSampleApplyTb plantSampleApplyTb = plantSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
+            BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
 
-            bioSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull(CheckResultEnum.remove.name(), plantSampleApplyTb.getApplyNo());
+            bioSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull(CheckResultEnum.remove.name(), bioSampleApplyTb.getApplyNo());
 
             //首次取样，且已经发生过移苗
-            if (SampleTestApplyTypeEnum.first.name().equals(plantSampleApplyTb.getApplyType())) {
+            if (SampleTestApplyTypeEnum.first.name().equals(bioSampleApplyTb.getApplyType())) {
                 List<PlantSingleStockTb> plantSingleStockTbList = new ArrayList<>();
-                List<BioSampleTestTb> plantSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(plantSampleApplyTb.getApplyNo()).stream().filter(plantSampleTestTb -> CheckResultEnum.stay.name().equals(plantSampleTestTb.getCheckResult())).collect(Collectors.toList());
+                List<BioSampleTestTb> plantSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(bioSampleApplyTb.getApplyNo()).stream().filter(plantSampleTestTb -> CheckResultEnum.stay.name().equals(plantSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {
                     for (BioSampleTestTb plantSampleTestTb : plantSampleTestTbList) {
                         PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(plantSampleTestTb, PlantStatusEnum.STATUS_1);
@@ -251,7 +249,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {
             bioHisSampleTestTbMapper.insertBatch(BeanUtils.copyListProperties(plantSampleTestTbList, BioHisSampleTestTb.class));
         }
-        plantSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        bioSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         bioSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         bioSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         List<BioSampleTestTwoResultTb> bioSampleSampleTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByUploadNum(bioTaskDtlTb.getTaskNum());

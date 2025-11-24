@@ -43,7 +43,7 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
     private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
     @Resource
-    private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
+    private BioSampleCodePrefixTbMapper bioSampleCodePrefixTbMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -102,20 +102,20 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                     } catch (DuplicateKeyException e) {
                         throw new BusinessException("任务编号重复：" + cerVectorTaskTb.getVectorTaskCode());
                     }
-                    CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-                    if (cerSampleCodePrefixTb == null) {
+                    BioSampleCodePrefixTb bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+                    if (bioSampleCodePrefixTb == null) {
                         //生成sampleCodePrefix
-                        cerSampleCodePrefixTb = new CerSampleCodePrefixTb();
-                        cerSampleCodePrefixTb.setSampleCodePrefix(createSampleCode());
-                        cerSampleCodePrefixTb.setVectorTaskCode(implementPlanAddDTO.getVectorTaskCode());
-                        cerSampleCodePrefixTb.setCreateTime(new Date());
+                        bioSampleCodePrefixTb = new BioSampleCodePrefixTb();
+                        bioSampleCodePrefixTb.setSampleCodePrefix(createSampleCode());
+                        bioSampleCodePrefixTb.setVectorTaskCode(implementPlanAddDTO.getVectorTaskCode());
+                        bioSampleCodePrefixTb.setCreateTime(new Date());
                         try {
-                            cerSampleCodePrefixTbMapper.insert(cerSampleCodePrefixTb);
+                            bioSampleCodePrefixTbMapper.insert(bioSampleCodePrefixTb);
                         } catch (DuplicateKeyException e) {
-                            throw new BusinessException("取样编号前缀重复：" + cerSampleCodePrefixTb.getSampleCodePrefix());
+                            throw new BusinessException("取样编号前缀重复：" + bioSampleCodePrefixTb.getSampleCodePrefix());
                         }
                     }
-                    implementPlanAddDTO.setSampleCodePrefix(cerSampleCodePrefixTb.getSampleCodePrefix());
+                    implementPlanAddDTO.setSampleCodePrefix(bioSampleCodePrefixTb.getSampleCodePrefix());
 
                 }
             }
@@ -144,13 +144,13 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
         cerVectorTaskTbMapper.deleteById(cerVectorTaskTb.getId());
         cerVectorTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());
         cerVectorGroupTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());
-        cerSampleCodePrefixTbMapper.deleteByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+        bioSampleCodePrefixTbMapper.deleteByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
     }
 
     private String createSampleCode() {
         String sampleCodePrefix = LetterUtil.randomLetter(2);
-        List<CerSampleCodePrefixTb> cerSampleCodePrefixTbList = cerSampleCodePrefixTbMapper.selectList(null);
-        List<String> sampleCodePrefixList = cerSampleCodePrefixTbList.stream().map(CerSampleCodePrefixTb::getSampleCodePrefix).collect(Collectors.toList());
+        List<BioSampleCodePrefixTb> bioSampleCodePrefixTbList = bioSampleCodePrefixTbMapper.selectList(null);
+        List<String> sampleCodePrefixList = bioSampleCodePrefixTbList.stream().map(BioSampleCodePrefixTb::getSampleCodePrefix).collect(Collectors.toList());
         if (CollectionUtil.isEmpty(sampleCodePrefixList)) {
             return sampleCodePrefix;
         }

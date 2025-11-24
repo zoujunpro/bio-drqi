@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BioSampleApplyTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioSampleApplyTb">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
+        <result property="applyNumber" column="apply_number" jdbcType="INTEGER"/>
+        <result property="applyTime" column="apply_time" jdbcType="TIMESTAMP"/>
+        <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
+        <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
+        <result property="applyDesc" column="apply_desc" jdbcType="VARCHAR"/>
+        <result property="applyType" column="apply_type" jdbcType="VARCHAR"/>
+        <result property="ngsExcelUrl" column="ngs_excel_url" jdbcType="VARCHAR"/>
+        <result property="cloneFlag" column="clone_flag" jdbcType="VARCHAR"/>
+        <result property="layoutFlag" column="layout_flag" jdbcType="VARCHAR"/>
+        <result property="vectorTaskCodes" column="vector_task_codes" jdbcType="VARCHAR"/>
+        <result property="sampleCodeRange" column="sample_code_range" jdbcType="VARCHAR"/>
+        <result property="taskStatus" column="task_status" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,apply_no,apply_number, apply_desc,
+        apply_time,apply_user_id,apply_user_name,
+        one_test_excel_url,ngs_excel_url,clone_flag,
+        layout_flag,vector_task_codes,sample_code_range,
+        task_status
+    </sql>
+    <select id="selectOneByApplyNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_apply_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByApplyNo">
+        delete
+        from bio_sample_apply_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+    </delete>
+</mapper>

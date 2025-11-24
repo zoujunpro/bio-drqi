@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bio.drqi.mapper.CerSampleCodePrefixTbMapper">
+<mapper namespace="com.bio.drqi.mapper.BioSampleCodePrefixTbMapper">
 
-    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerSampleCodePrefixTb">
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioSampleCodePrefixTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="sampleCodePrefix" column="sample_code_prefix" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -20,19 +20,19 @@
     <select id="selectOneByVectorTaskCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from cer_sample_code_prefix_tb
+        from bio_sample_code_prefix_tb
         where
         vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByVectorTaskCode">
         delete
-        from cer_sample_code_prefix_tb
+        from bio_sample_code_prefix_tb
         where vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
     </delete>
     <select id="selectOneByPlantExperimentCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from cer_sample_code_prefix_tb
+        from bio_sample_code_prefix_tb
         where
         plant_experiment_code = #{plantExperimentCode,jdbcType=VARCHAR}
     </select>

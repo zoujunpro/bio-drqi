@@ -134,7 +134,7 @@ public class Clean20251030Controller {
 
 
     @Resource
-    private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
+    private BioSampleCodePrefixTbMapper bioSampleCodePrefixTbMapper;
 
     @Resource
     private CerSampleApplyTbMapper cerSampleApplyTbMapper;
@@ -373,8 +373,8 @@ public class Clean20251030Controller {
             StringBuffer sampleCodeRangeBuff = new StringBuffer();
             if (SampleTestApplyTypeEnum.first.name().equals(cerSampleApplyTb.getApplyType())) {
                 cerSampleTestTbListMap.forEach((vectorTaskCode, sampleTestList) -> {
-                    CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-                    sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(cerSampleCodePrefixTb.getSampleCodePrefix())).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
+                    BioSampleCodePrefixTb bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+                    sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(bioSampleCodePrefixTb.getSampleCodePrefix())).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
                     if (CollectionUtil.isNotEmpty(sampleTestList)) {
                         sampleCodeRangeBuff.append(sampleTestList.get(0).getSampleCode() + "-" + sampleTestList.get(sampleTestList.size() - 1).getSampleCode()).append(",");
                     }

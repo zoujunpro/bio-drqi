@@ -49,7 +49,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
     @Resource
-    private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
+    private BioSampleCodePrefixTbMapper bioSampleCodePrefixTbMapper;
 
     @Resource
     private CerSampleTestService cerSampleTestService;
@@ -325,11 +325,11 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 List<CerSampleTestTb> targetCerSampleTestTbList = new ArrayList<>();
                 CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(), firstSampleApply.getVectorTaskCode());
                 CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerTransformTb.getVectorTaskCode());
-                CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+                BioSampleCodePrefixTb bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByVectorTaskCode(firstSampleApply.getVectorTaskCode());
                 Integer maxSampleNumber=null;
                 if(CollectionUtil.isNotEmpty(cerSampleTestTbList)){
-                    cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> !cerSampleTestTb.getSampleCode().contains("-") && cerSampleTestTb.getSampleCode().startsWith(cerSampleCodePrefixTb.getSampleCodePrefix())).collect(Collectors.toList());
+                    cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> !cerSampleTestTb.getSampleCode().contains("-") && cerSampleTestTb.getSampleCode().startsWith(bioSampleCodePrefixTb.getSampleCodePrefix())).collect(Collectors.toList());
                     maxSampleNumber =cerSampleTestTbList.stream().map(cerSampleTestTb -> Integer.valueOf(cerSampleTestTb.getSampleCode().substring(2))).max(Integer::compare).get();
                 }
                 for (int i = 1; i <= firstSampleApply.getSampleNum(); i++) {
@@ -343,7 +343,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     cerSampleTestTb.setVectorTaskCode(cerTransformTb.getVectorTaskCode());
                     cerSampleTestTb.setPlasmidName(cerTransformTb.getPlasmidName());
                     cerSampleTestTb.setTransformCode(cerTransformTb.getTransformCode());
-                    cerSampleTestTb.setSampleCode(cerSampleCodePrefixTb.getSampleCodePrefix() +maxSampleNumber);
+                    cerSampleTestTb.setSampleCode(bioSampleCodePrefixTb.getSampleCodePrefix() +maxSampleNumber);
                     cerSampleTestTb.setApplyTime(new Date());
                     cerSampleTestTb.setApplyUserId(SecurityContextHolder.getUserId());
                     cerSampleTestTb.setApplyUserName(SecurityContextHolder.getNickName());
@@ -372,8 +372,8 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
             StringBuffer sampleCodeRangeBuff = new StringBuffer();
             if (SampleTestApplyTypeEnum.first.name().equals(cerSampleApplyTb.getApplyType())) {
                 cerSampleTestTbListMap.forEach((vectorTaskCode, sampleTestList) -> {
-                    CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-                    sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(cerSampleCodePrefixTb.getSampleCodePrefix())).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
+                    BioSampleCodePrefixTb bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+                    sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(bioSampleCodePrefixTb.getSampleCodePrefix())).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
                     if (CollectionUtil.isNotEmpty(sampleTestList)) {
                         sampleCodeRangeBuff.append(sampleTestList.get(0).getSampleCode() + "-" + sampleTestList.get(sampleTestList.size() - 1).getSampleCode()).append(",");
                     }

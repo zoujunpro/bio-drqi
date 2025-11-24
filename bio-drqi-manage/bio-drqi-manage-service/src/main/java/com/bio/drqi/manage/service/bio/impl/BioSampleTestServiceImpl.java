@@ -11,11 +11,13 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.common.enums.TestChannelEnum;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.base.SampleUnitDTO;
 import com.bio.drqi.manage.bio.req.BioSampleTestUploadTestTemplateReqDTO;
+import com.bio.drqi.manage.bio.rsp.BioSampleTestQuerySpeciesByApplyTypeRspDTO;
 import com.bio.drqi.manage.dto.bio.DownLoadIdentifyPrimerTemplateExcelDTO;
 import com.bio.drqi.manage.dto.plant.SampleTestDownRepeatSampleTemplateExcelDTO;
 import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
@@ -77,9 +79,41 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
     @Resource
     private SynSampleTestResultService synSampleTestResultService;
 
+    @Resource
+    private PlantMultipleStockTbMapper plantMultipleStockTbMapper;
+
+    @Resource
+    private PlantSingleStockTbMapper plantSingleStockTbMapper;
+
+    @Resource
+    private CerSpeciesConfMapper cerSpeciesConfMapper;
+
+
+    @Override
+    public List<BioSampleTestQuerySpeciesByApplyTypeRspDTO> querySpeciesByApplyType(String applyType) {
+        List<BioSampleTestQuerySpeciesByApplyTypeRspDTO> bioSampleTestQuerySpeciesByApplyTypeRspDTOS = new ArrayList<>();
+        Map<String, String> map = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
+        List<String> speciesCodeList = null;
+        if (SampleTestApplyTypeEnum.F.name().equals(applyType)) {
+            speciesCodeList = plantMultipleStockTbMapper.selectSpeciesCode();
+        } else {
+            speciesCodeList = plantSingleStockTbMapper.selectSpeciesCode();
+        }
+        if (CollectionUtil.isNotEmpty(speciesCodeList)) {
+            speciesCodeList.forEach(speciesCode -> {
+                BioSampleTestQuerySpeciesByApplyTypeRspDTO bioSampleTestQuerySpeciesByApplyTypeRspDTO = new BioSampleTestQuerySpeciesByApplyTypeRspDTO();
+                bioSampleTestQuerySpeciesByApplyTypeRspDTO.setSpeciesCode(speciesCode);
+                bioSampleTestQuerySpeciesByApplyTypeRspDTO.setSpeciesName(map.get(speciesCode));
+                bioSampleTestQuerySpeciesByApplyTypeRspDTOS.add(bioSampleTestQuerySpeciesByApplyTypeRspDTO);
+
+            });
+        }
+        return bioSampleTestQuerySpeciesByApplyTypeRspDTOS;
+    }
+
     @Override
     public void downRepeatSampleTemplate(HttpServletResponse httpServletResponse) {
-        ExcelUtil.writeExcel("重复取样模板","sheet1",null, SampleTestDownRepeatSampleTemplateExcelDTO.class,httpServletResponse);
+        ExcelUtil.writeExcel("重复取样模板", "sheet1", null, SampleTestDownRepeatSampleTemplateExcelDTO.class, httpServletResponse);
     }
 
     @Override
@@ -164,7 +198,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         //插入新数据
         bioSampleTestOneResultTbMapper.insertBatch(bioSampleSampleOneResultTbList);
 
-        BioSampleTestResultFileTb bioSampleTestResultFileTb=new BioSampleTestResultFileTb();
+        BioSampleTestResultFileTb bioSampleTestResultFileTb = new BioSampleTestResultFileTb();
         bioSampleTestResultFileTb.setFileUrl(bioSampleTestUploadTestTemplateReqDTO.getExcelUrl());
         bioSampleTestResultFileTb.setResultType(CerProjectContents.TEST_ONE);
         bioSampleTestResultFileTb.setCreateUserId(SecurityContextHolder.getUserId());
@@ -193,7 +227,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                 downLoadIdentifyPrimerTemplateExcelDTO.setVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
                 downLoadIdentifyPrimerTemplateExcelDTOList.add(downLoadIdentifyPrimerTemplateExcelDTO);
             }
-            ExcelUtil.writeExcel("下载引物模板","sheet1", downLoadIdentifyPrimerTemplateExcelDTOList, DownLoadIdentifyPrimerTemplateExcelDTO.class, response);
+            ExcelUtil.writeExcel("下载引物模板", "sheet1", downLoadIdentifyPrimerTemplateExcelDTOList, DownLoadIdentifyPrimerTemplateExcelDTO.class, response);
         } catch (Exception e) {
             log.error("模板下载失败，", e);
             throw new BusinessException("鉴定引物填写模板下载失败，请联系管理员检测模板配置");
@@ -276,7 +310,6 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         }
 
     }
-
 
 
     @Override
@@ -387,6 +420,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
 
         return new ArrayList<>();
     }
+
     @Override
     public CountTestResultRspDTO countTestResult(String applyNo) {
         CountTestResultRspDTO countTestResultRspDTO = new CountTestResultRspDTO();

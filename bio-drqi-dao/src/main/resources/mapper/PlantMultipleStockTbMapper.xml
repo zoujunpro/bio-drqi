@@ -93,4 +93,8 @@
             #{item.stockNumberNotNullFlag,jdbcType=VARCHAR})
         </foreach>
     </insert>
+    <select id="selectSpeciesCode" resultType="java.lang.String">
+        select distinct species_code
+        from plant_multiple_stock_tb where current_number>0
+    </select>
 </mapper>

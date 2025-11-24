@@ -132,4 +132,8 @@
         from plant_single_stock_tb
         where task_num = #{taskNum,jdbcType=VARCHAR}
     </delete>
+    <select id="selectSpeciesCode" resultType="java.lang.String">
+        select species_code
+        from plant_single_stock_tb
+    </select>
 </mapper>

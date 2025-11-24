@@ -14,6 +14,7 @@ import java.util.List;
 * @Entity com.bio.drqi.domain.PlantSingleStockTb
 */
 public interface PlantSingleStockTbMapper extends BaseMapper<PlantSingleStockTb> {
+    List<String> selectSpeciesCode();
 
     PlantSingleStockTb selectOneByPlantCode(@Param("plantCode") String plantCode);
 

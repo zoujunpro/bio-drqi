@@ -3,6 +3,7 @@ package com.bio.drqi.manage.service.bio;
 
 import com.bio.drqi.manage.bio.req.BioSampleTestUploadTestTemplateReqDTO;
 
+import com.bio.drqi.manage.bio.rsp.BioSampleTestQuerySpeciesByApplyTypeRspDTO;
 import com.bio.drqi.manage.sample.req.DownTestTemplateReqDTO;
 
 import com.bio.drqi.manage.sample.req.LayoutConfirmReqDTO;
@@ -17,6 +18,7 @@ import java.util.List;
 @Service
 public interface BioSampleTestService {
 
+    List<BioSampleTestQuerySpeciesByApplyTypeRspDTO> querySpeciesByApplyType(String applyType);
     void downRepeatSampleTemplate(HttpServletResponse httpServletResponse);;
 
     void downTestTemplate(DownTestTemplateReqDTO downTestTemplateReqDTO, HttpServletResponse response);

@@ -20,6 +20,9 @@ public class TcExperimentTaskDTO {
 
     private String experimentAddressName;
 
+    /**
+     * 试验类型，多选
+     */
     private String experimentType;
     /**
      * 实验方案附件

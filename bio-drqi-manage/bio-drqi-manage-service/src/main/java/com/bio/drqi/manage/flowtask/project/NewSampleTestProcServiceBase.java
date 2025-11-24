@@ -12,6 +12,7 @@ import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.CheckResultEnum;
 import com.bio.drqi.common.enums.PlantStatusEnum;
+import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.*;
 import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
@@ -157,7 +158,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             cerSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull(CheckResultEnum.remove.name(), cerSampleApplyTb.getApplyNo());
             //首次取样，且已经发生过移苗
-            if (SampleApplyTypeEnum.F.name().equals(cerSampleApplyTb.getApplyType())) {
+            if (SampleTestApplyTypeEnum.first.name().equals(cerSampleApplyTb.getApplyType())) {
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(cerSampleApplyTb.getApplyNo()).stream().filter(cerSampleTestTb -> CheckResultEnum.stay.name().equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
                     for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
@@ -230,7 +231,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         cerSampleApplyTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
         cerSampleApplyTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
         cerSampleApplyTb.setApplyDesc(bioTaskDtlTb.getTaskDesc());
-        cerSampleApplyTb.setApplyType(CollectionUtil.isNotEmpty(newSampleTestDTO.getRepeatSampleApplyList()) ? SampleApplyTypeEnum.R.name() : SampleApplyTypeEnum.F.name());
+        cerSampleApplyTb.setApplyType(CollectionUtil.isNotEmpty(newSampleTestDTO.getRepeatSampleApplyList()) ? SampleTestApplyTypeEnum.repeat.name() : SampleTestApplyTypeEnum.first.name());
         cerSampleApplyTb.setIdentifyExcelUrl(null);
         cerSampleApplyTb.setOneTestExcelUrl(null);
         cerSampleApplyTb.setNgsExcelUrl(null);
@@ -369,7 +370,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
             Map<String, List<CerSampleTestTb>> cerSampleTestTbListMap = cerSampleTestTbList.stream().collect(Collectors.groupingBy(CerSampleTestTb::getVectorTaskCode));
             cerSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(cerSampleTestTbListMap.keySet()).replace("[", "").replace("]", "").replace("\"", ""));
             StringBuffer sampleCodeRangeBuff = new StringBuffer();
-            if (SampleApplyTypeEnum.F.name().equals(cerSampleApplyTb.getApplyType())) {
+            if (SampleTestApplyTypeEnum.first.name().equals(cerSampleApplyTb.getApplyType())) {
                 cerSampleTestTbListMap.forEach((vectorTaskCode, sampleTestList) -> {
                     CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
                     sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(cerSampleCodePrefixTb.getSampleCodePrefix())).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());

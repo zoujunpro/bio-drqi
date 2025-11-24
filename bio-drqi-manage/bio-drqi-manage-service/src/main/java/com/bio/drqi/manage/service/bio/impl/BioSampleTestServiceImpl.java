@@ -94,7 +94,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         List<BioSampleTestQuerySpeciesByApplyTypeRspDTO> bioSampleTestQuerySpeciesByApplyTypeRspDTOS = new ArrayList<>();
         Map<String, String> map = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
         List<String> speciesCodeList = null;
-        if (SampleTestApplyTypeEnum.F.name().equals(applyType)) {
+        if (SampleTestApplyTypeEnum.first.name().equals(applyType)) {
             speciesCodeList = plantMultipleStockTbMapper.selectSpeciesCode();
         } else {
             speciesCodeList = plantSingleStockTbMapper.selectSpeciesCode();

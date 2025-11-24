@@ -2,10 +2,10 @@ package com.bio.drqi.tc.util;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.domain.TcExperimentTb;
 import com.bio.drqi.domain.TcSampleTestApplyTb;
 import com.bio.drqi.tc.SampleUnitDTO;
-import com.bio.drqi.tc.enums.SampleTestApplyTypeEnum;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFCell;

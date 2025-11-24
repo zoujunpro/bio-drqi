@@ -11,7 +11,6 @@ import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.CheckResultEnum;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.SampleApplyTypeEnum;
 import com.bio.drqi.enums.VectorTaskStatusEnum;
 import com.bio.drqi.manage.dto.project.*;
 import com.bio.drqi.manage.service.bio.BioSampleTwoResultService;

@@ -75,7 +75,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
         List<BioSampleTestTb> sampleTestTbList = new ArrayList<>();
         //首次取样
-        if (SampleTestApplyTypeEnum.F.name().equals(plantExperimentTaskDTO.getApplyType())) {
+        if (SampleTestApplyTypeEnum.first.name().equals(plantExperimentTaskDTO.getApplyType())) {
             if (CollectionUtil.isEmpty(plantExperimentTaskDTO.getFirstSampleApplyList())) {
                 throw new BusinessException("无取样数据");
             }
@@ -152,7 +152,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
         }
         //重复取样
-        if (SampleTestApplyTypeEnum.R.name().equals(plantExperimentTaskDTO.getApplyType())) {
+        if (SampleTestApplyTypeEnum.repeat.name().equals(plantExperimentTaskDTO.getApplyType())) {
             if (CollectionUtil.isEmpty(plantExperimentTaskDTO.getRepeatSampleTestList())) {
                 throw new BusinessException("无取样数据");
             }
@@ -180,7 +180,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         }
 
         //如果是首次取样，更新取样区间
-        if (SampleTestApplyTypeEnum.F.name().equals(plantExperimentTaskDTO.getApplyType())) {
+        if (SampleTestApplyTypeEnum.first.name().equals(plantExperimentTaskDTO.getApplyType())) {
             StringBuffer sampleCodeRangeBuff = new StringBuffer();
             Map<String, List<BioSampleTestTb>> plantSampleTestTbMap = sampleTestTbList.stream().collect(Collectors.groupingBy(sampleTestTb -> sampleTestTb.getSampleCode().replaceAll("\\\\d", "")));
             plantSampleTestTbMap.forEach((sampleCodePrefix, sampleTestList) -> {
@@ -226,7 +226,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
             bioSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull(CheckResultEnum.remove.name(), plantSampleApplyTb.getApplyNo());
 
             //首次取样，且已经发生过移苗
-            if (SampleTestApplyTypeEnum.F.name().equals(plantSampleApplyTb.getApplyType())) {
+            if (SampleTestApplyTypeEnum.first.name().equals(plantSampleApplyTb.getApplyType())) {
                 List<PlantSingleStockTb> plantSingleStockTbList = new ArrayList<>();
                 List<BioSampleTestTb> plantSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(plantSampleApplyTb.getApplyNo()).stream().filter(plantSampleTestTb -> CheckResultEnum.stay.name().equals(plantSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {

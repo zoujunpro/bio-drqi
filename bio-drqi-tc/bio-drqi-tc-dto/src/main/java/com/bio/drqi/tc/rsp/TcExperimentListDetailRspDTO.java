@@ -148,4 +148,6 @@ public class TcExperimentListDetailRspDTO {
      * 移栽时间
      */
     private String transplantTime;
+
+    private String pdNum;
 }

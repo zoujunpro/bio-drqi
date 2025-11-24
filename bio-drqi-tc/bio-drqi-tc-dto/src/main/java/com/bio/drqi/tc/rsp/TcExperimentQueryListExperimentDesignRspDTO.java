@@ -64,4 +64,6 @@ public class TcExperimentQueryListExperimentDesignRspDTO {
      * 保留苗数量
      */
     private Integer stayNumber;
+
+    private String pdNum;
 }

@@ -92,7 +92,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             tcExperimentTb.setSampleCodePrefix(createSampleCode());
             tcExperimentTb.setNextSampleNumber(1);
             tcExperimentTb.setExperimentStatus(ExperimentStatusEnum.INIT.status);
-            tcExperimentTb.setExperimentType(tcExperimentTaskDTO.getExperimentType());
+            tcExperimentTb.setExperimentType(JSONUtil.toJsonStr(tcExperimentTaskDTO.getExperimentType()));
             tcExperimentTb.setBreedingFlag(tcExperimentTaskDTO.getBreedingFlag());
             tcExperimentTbMapper.insert(tcExperimentTb);
 

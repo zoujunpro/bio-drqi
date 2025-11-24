@@ -23,7 +23,7 @@ public class TcExperimentTaskDTO {
     /**
      * 试验类型，多选
      */
-    private String experimentType;
+    private List<String> experimentType;
     /**
      * 实验方案附件
      */

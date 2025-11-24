@@ -221,6 +221,7 @@ public class BioTaskServiceImpl implements BioTaskService {
     public BioTaskDetailRspDTO detail(Integer id) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(id);
         BioTaskDetailRspDTO bioTaskDetailRspDTO = BeanUtil.copyProperties(bioTaskDtlTb, BioTaskDetailRspDTO.class);
+        bioTaskDetailRspDTO.setTaskForm(bioTaskDtlTb.getTaskForm());
         bioTaskDetailRspDTO.setInstanceId(bioTaskDtlTb.getInstanceId() != null ? String.valueOf(bioTaskDtlTb.getInstanceId()) : null);
         if (StringUtils.isNotEmpty(bioTaskDetailRspDTO.getRefTaskNum())) {
             BioTaskDtlTb refBioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(bioTaskDetailRspDTO.getRefTaskNum());

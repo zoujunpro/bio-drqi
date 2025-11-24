@@ -80,22 +80,22 @@ public class PlantMultipleStockServiceImpl implements PlantMultipleStockService 
             List<String> vectorTaskCodeList = plantMultipleStockTbMapper.selectVectorTaskCodeBySourceCodeAndSpeciesCode(plantMultipleStockQueryListForTaskReqDTO.getSourceCode(), plantMultipleStockQueryListForTaskReqDTO.getSpeciesCode());
             if (CollectionUtil.isNotEmpty(vectorTaskCodeList)) {
                 vectorTaskCodeList.forEach(vectorTaskCode -> {
-                    List<String> transformCodeList = plantMultipleStockTbMapper.selectTransformCodeBySourceCodeAndVectorTaskCodeAndSpeciesCode(plantMultipleStockQueryListForTaskReqDTO.getSourceCode(), vectorTaskCode, plantMultipleStockQueryListForTaskReqDTO.getSpeciesCode());
+                    List<PlantMultipleStockTb> plantMultipleStockTbList = plantMultipleStockTbMapper.selectSelective(PlantMultipleStockTb.builder().vectorTaskCode(vectorTaskCode).sourceCode(plantMultipleStockQueryListForTaskReqDTO.getSourceCode()).speciesCode(plantMultipleStockQueryListForTaskReqDTO.getSpeciesCode()).build());
                     PlantMultipleStockQueryListForTaskRspDTO.PlantMultipleStockQueryListForProjectTaskRspDTO plantMultipleStockQueryListForProjectTaskRspDTO = new PlantMultipleStockQueryListForTaskRspDTO.PlantMultipleStockQueryListForProjectTaskRspDTO();
                     plantMultipleStockQueryListForProjectTaskRspDTO.setVectorTaskCode(vectorTaskCode);
-                    plantMultipleStockQueryListForProjectTaskRspDTO.setTransformCodeList(transformCodeList);
+                    plantMultipleStockQueryListForProjectTaskRspDTO.setPlantMultipleStockDTOList(BeanUtils.copyToList(plantMultipleStockTbList, PlantMultipleStockQueryListForTaskRspDTO.PlantMultipleStockDTO.class));
                     result.add(plantMultipleStockQueryListForProjectTaskRspDTO);
                 });
-
             }
         }else if(SourceCodeEnum.cer.name().equals(plantMultipleStockQueryListForTaskReqDTO.getSourceCode())){
             List<String> regionCodeList = plantMultipleStockTbMapper.selectRegionNumBySourceCodeAndSpeciesCode(plantMultipleStockQueryListForTaskReqDTO.getSourceCode(), plantMultipleStockQueryListForTaskReqDTO.getSpeciesCode());
             if (CollectionUtil.isNotEmpty(regionCodeList)) {
+               ;
                 regionCodeList.forEach(regionCode -> {
-                    List<String> seedNumList = plantMultipleStockTbMapper.selectSeedNumBySourceCodeAndRegionNumAndSpeciesCode(plantMultipleStockQueryListForTaskReqDTO.getSourceCode(), regionCode, plantMultipleStockQueryListForTaskReqDTO.getSpeciesCode());
+                    List<PlantMultipleStockTb> plantMultipleStockTbList = plantMultipleStockTbMapper.selectSelective(PlantMultipleStockTb.builder().regionNum(regionCode).sourceCode(plantMultipleStockQueryListForTaskReqDTO.getSourceCode()).speciesCode(plantMultipleStockQueryListForTaskReqDTO.getSpeciesCode()).build());
                     PlantMultipleStockQueryListForTaskRspDTO.PlantMultipleStockQueryListForCerTaskRspDTO plantMultipleStockQueryListForCerTaskRspDTO = new PlantMultipleStockQueryListForTaskRspDTO.PlantMultipleStockQueryListForCerTaskRspDTO();
                     plantMultipleStockQueryListForCerTaskRspDTO.setRegionMum(regionCode);
-                    plantMultipleStockQueryListForCerTaskRspDTO.setSeedNumList(seedNumList);
+                    plantMultipleStockQueryListForCerTaskRspDTO.setPlantMultipleStockDTOList(BeanUtils.copyToList(plantMultipleStockTbList, PlantMultipleStockQueryListForTaskRspDTO.PlantMultipleStockDTO.class));
                     result.add(plantMultipleStockQueryListForCerTaskRspDTO);
                 });
             }

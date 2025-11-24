@@ -101,37 +101,19 @@
     <select id="selectSpeciesCode" resultType="java.lang.String">
         select distinct species_code
         from plant_multiple_stock_tb
-        where current_number > 0
-    </select>
-
-    <select id="selectSeedNumBySourceCodeAndRegionNumAndSpeciesCode" resultType="java.lang.String">>
-    select  distinct seed_num
-    from plant_multiple_stock_tb
-    where source_code = #{sourceCode,jdbcType=VARCHAR}
-      AND region_num = #{regionNum,jdbcType=VARCHAR}
-      AND species_code = #{speciesCode,jdbcType=VARCHAR}
-      AND current_number > 0
-    </select>
-    <select id="selectTransformCodeBySourceCodeAndVectorTaskCodeAndSpeciesCode" resultType="java.lang.String">
-        select distinct transform_code
-        from plant_multiple_stock_tb
-        where source_code = #{sourceCode,jdbcType=VARCHAR}
-          AND vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
-          AND species_code = #{speciesCode,jdbcType=VARCHAR}
-          AND current_number > 0
     </select>
     <select id="selectRegionNumBySourceCodeAndSpeciesCode" resultType="java.lang.String">
         select distinct region_num
         from plant_multiple_stock_tb
         where source_code = #{sourceCode,jdbcType=VARCHAR}
           AND species_code = #{speciesCode,jdbcType=VARCHAR}
-          AND current_number > 0
+
     </select>
     <select id="selectVectorTaskCodeBySourceCodeAndSpeciesCode" resultType="java.lang.String">
         select distinct vector_task_code
         from plant_multiple_stock_tb
         where source_code = #{sourceCode,jdbcType=VARCHAR}
           AND species_code = #{speciesCode,jdbcType=VARCHAR}
-          AND current_number > 0
+
     </select>
 </mapper>

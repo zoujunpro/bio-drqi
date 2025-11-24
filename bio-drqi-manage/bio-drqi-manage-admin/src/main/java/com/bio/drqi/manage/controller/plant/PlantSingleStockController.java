@@ -39,7 +39,7 @@ public class PlantSingleStockController {
 
     @PostMapping("/listPage")
     @WebLog(desc = "cer苗库管理（有具体种植编号苗库）-分页查询")
-    public ResponseResult<PageInfo<PlantSingleStockListPageRspDTO>> listPage(PlantSingleStockListPageReqDTO plantSingleStockListPageReqDTO) {
+    public ResponseResult<PageInfo<PlantSingleStockListPageRspDTO>> listPage(@RequestBody  PlantSingleStockListPageReqDTO plantSingleStockListPageReqDTO) {
         return ResponseResult.getSuccess(plantSingleStockService.listPage(plantSingleStockListPageReqDTO));
     }
 
@@ -51,7 +51,7 @@ public class PlantSingleStockController {
 
     @PostMapping("/queryList")
     @WebLog(desc = "cer苗库管理（有具体种植编号苗库）-条件查询")
-    public ResponseResult<List<PlantSingleStockQueryListRspDTO>> queryList(PlantSingleStockQueryListReqDTO plantSingleStockListPageReqDTO) {
+    public ResponseResult<List<PlantSingleStockQueryListRspDTO>> queryList(@RequestBody  PlantSingleStockQueryListReqDTO plantSingleStockListPageReqDTO) {
         return ResponseResult.getSuccess(plantSingleStockService.queryList(plantSingleStockListPageReqDTO));
     }
 

@@ -12,9 +12,7 @@ import com.bio.drqi.manage.plant.rsp.PlantMultipleStockQueryListForTaskRspDTO;
 import com.bio.drqi.manage.plant.rsp.PlantMultipleStockQueryListRspDTO;
 import com.bio.drqi.manage.service.plant.PlantMultipleStockService;
 import com.github.pagehelper.PageInfo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -37,7 +35,7 @@ public class PlantMultipleStockController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "cer苗库管理（无具体种植编号苗库）-分页查询")
-    public ResponseResult<PageInfo<PlantMultipleStockListPageRspDTO>> listPage(PlantMultipleStockListPageReqDTO plantMultipleStockListPageReqDTO) {
+    public ResponseResult<PageInfo<PlantMultipleStockListPageRspDTO>> listPage(@RequestBody PlantMultipleStockListPageReqDTO plantMultipleStockListPageReqDTO) {
         return ResponseResult.getSuccess(plantMultipleStockService.listPage(plantMultipleStockListPageReqDTO));
     }
 
@@ -49,7 +47,7 @@ public class PlantMultipleStockController {
      */
     @PostMapping("/queryList")
     @WebLog(desc = "cer苗库管理（无具体种植编号苗库）-条件查询")
-    public ResponseResult<List<PlantMultipleStockQueryListRspDTO>> queryList(PlantMultipleStockQueryListReqDTO plantMultipleStockQueryListReqDTO) {
+    public ResponseResult<List<PlantMultipleStockQueryListRspDTO>> queryList(@RequestBody PlantMultipleStockQueryListReqDTO plantMultipleStockQueryListReqDTO) {
         return ResponseResult.getSuccess(plantMultipleStockService.queryList(plantMultipleStockQueryListReqDTO));
     }
 
@@ -61,7 +59,7 @@ public class PlantMultipleStockController {
      */
     @PostMapping("/queryListForTask")
     @WebLog(desc = "cer苗库管理（无具体种植编号苗库）-根据来源查询取样检测首次取样可选条件")
-    public ResponseResult<List<PlantMultipleStockQueryListForTaskRspDTO>> queryListForTask(PlantMultipleStockQueryListForTaskReqDTO plantMultipleStockQueryListForTaskReqDTO) {
+    public ResponseResult<List<PlantMultipleStockQueryListForTaskRspDTO>> queryListForTask(@RequestBody  PlantMultipleStockQueryListForTaskReqDTO plantMultipleStockQueryListForTaskReqDTO) {
         return ResponseResult.getSuccess(plantMultipleStockService.queryListForTask(plantMultipleStockQueryListForTaskReqDTO));
     }
 

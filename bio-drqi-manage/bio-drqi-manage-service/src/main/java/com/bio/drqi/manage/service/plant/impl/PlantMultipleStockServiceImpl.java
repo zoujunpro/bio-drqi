@@ -2,6 +2,7 @@ package com.bio.drqi.manage.service.plant.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.CerSpeciesConf;
@@ -19,6 +20,7 @@ import com.bio.drqi.manage.service.plant.PlantMultipleStockService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.util.StringUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -75,9 +77,10 @@ public class PlantMultipleStockServiceImpl implements PlantMultipleStockService 
 
     @Override
     public List<PlantMultipleStockQueryListForTaskRspDTO> queryListForTask(PlantMultipleStockQueryListForTaskReqDTO plantMultipleStockQueryListForTaskReqDTO) {
-        List<PlantMultipleStockQueryListForTaskRspDTO> result=new ArrayList<>();
+        List<PlantMultipleStockQueryListForTaskRspDTO> result = new ArrayList<>();
         if (SourceCodeEnum.project.name().equals(plantMultipleStockQueryListForTaskReqDTO.getSourceCode())) {
             List<String> vectorTaskCodeList = plantMultipleStockTbMapper.selectVectorTaskCodeBySourceCodeAndSpeciesCode(plantMultipleStockQueryListForTaskReqDTO.getSourceCode(), plantMultipleStockQueryListForTaskReqDTO.getSpeciesCode());
+            vectorTaskCodeList = vectorTaskCodeList.stream().filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).collect(Collectors.toList());
             if (CollectionUtil.isNotEmpty(vectorTaskCodeList)) {
                 vectorTaskCodeList.forEach(vectorTaskCode -> {
                     List<PlantMultipleStockTb> plantMultipleStockTbList = plantMultipleStockTbMapper.selectSelective(PlantMultipleStockTb.builder().vectorTaskCode(vectorTaskCode).sourceCode(plantMultipleStockQueryListForTaskReqDTO.getSourceCode()).speciesCode(plantMultipleStockQueryListForTaskReqDTO.getSpeciesCode()).build());
@@ -87,10 +90,10 @@ public class PlantMultipleStockServiceImpl implements PlantMultipleStockService 
                     result.add(plantMultipleStockQueryListForProjectTaskRspDTO);
                 });
             }
-        }else if(SourceCodeEnum.cer.name().equals(plantMultipleStockQueryListForTaskReqDTO.getSourceCode())){
+        } else if (SourceCodeEnum.cer.name().equals(plantMultipleStockQueryListForTaskReqDTO.getSourceCode())) {
             List<String> regionCodeList = plantMultipleStockTbMapper.selectRegionNumBySourceCodeAndSpeciesCode(plantMultipleStockQueryListForTaskReqDTO.getSourceCode(), plantMultipleStockQueryListForTaskReqDTO.getSpeciesCode());
+            regionCodeList = regionCodeList.stream().filter(regionCode -> StringUtils.isNotEmpty(regionCode)).collect(Collectors.toList());
             if (CollectionUtil.isNotEmpty(regionCodeList)) {
-               ;
                 regionCodeList.forEach(regionCode -> {
                     List<PlantMultipleStockTb> plantMultipleStockTbList = plantMultipleStockTbMapper.selectSelective(PlantMultipleStockTb.builder().regionNum(regionCode).sourceCode(plantMultipleStockQueryListForTaskReqDTO.getSourceCode()).speciesCode(plantMultipleStockQueryListForTaskReqDTO.getSpeciesCode()).build());
                     PlantMultipleStockQueryListForTaskRspDTO.PlantMultipleStockQueryListForCerTaskRspDTO plantMultipleStockQueryListForCerTaskRspDTO = new PlantMultipleStockQueryListForTaskRspDTO.PlantMultipleStockQueryListForCerTaskRspDTO();

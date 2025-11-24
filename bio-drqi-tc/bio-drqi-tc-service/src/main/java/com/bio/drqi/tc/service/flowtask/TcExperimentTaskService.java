@@ -54,9 +54,14 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         TcExperimentTaskDTO tcExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcExperimentTaskDTO.class);
         ValidatorUtil.validator(tcExperimentTaskDTO);
+        List<ExperimentDesignExcelDTO> experimentDesignExcelDTOList = null;
         if (StringUtils.isNotEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {
-            validatorExcel(tcExperimentTaskDTO);
+            experimentDesignExcelDTOList =   validatorExcel(tcExperimentTaskDTO);
         }
+
+        tcExperimentTaskDTO.setVectorTaskCodeList(experimentDesignExcelDTOList.stream().map(ExperimentDesignExcelDTO::getVectorTaskCode).filter(vectorTaskCode->StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList()));
+        tcExperimentTaskDTO.setPdNumList(experimentDesignExcelDTOList.stream().map(ExperimentDesignExcelDTO::getPdNum).filter(pdNum->StringUtils.isNotEmpty(pdNum)).distinct().collect(Collectors.toList()));
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcExperimentTaskDTO));
     }
 
 

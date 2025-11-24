@@ -40,5 +40,9 @@ public class TcExperimentTaskDTO {
 
     private String sampleCodePrefix;
 
+    private List<String> vectorTaskCodeList;
+
+    private List<String> pdNumList;
+
 
 }

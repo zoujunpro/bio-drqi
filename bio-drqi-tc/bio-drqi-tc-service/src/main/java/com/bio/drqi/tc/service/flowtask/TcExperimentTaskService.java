@@ -130,6 +130,8 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             tcExperimentTbMapper.insert(tcExperimentTb);
             tcExperimentDesignTbMapper.insertBatch(tcExperimentDesignTbList);
             tcExperimentTaskDTO.setSampleCodePrefix(tcExperimentTb.getSampleCodePrefix());
+            tcExperimentTaskDTO.setVectorTaskCodeList(JSONUtil.toList(tcExperimentTb.getVectorTaskCodes(),String.class));
+            tcExperimentTaskDTO.setPdNumList(JSONUtil.toList(tcExperimentTb.getPdNums(),String.class));
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcExperimentTaskDTO));
         }
     }

@@ -48,8 +48,10 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
     int selectNoTestResultCount(@Param("applyNo") String applyNo);
 
-    //查询二代检测结果
+    //查询二代检测结String果
     int selectTowTestResultCount(@Param("applyNo") String applyNo);
+
+    List<BioSampleTestTb> selectAllBySampleCodeLike(@Param("sampleCode") String sampleCode);
 }
 
 

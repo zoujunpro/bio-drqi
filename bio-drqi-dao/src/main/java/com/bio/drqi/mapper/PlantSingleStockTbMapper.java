@@ -22,8 +22,6 @@ public interface PlantSingleStockTbMapper extends BaseMapper<PlantSingleStockTb>
 
     List<PlantSingleStockTb> selectAllBySampleCodeIn(@Param("sampleCodeList") Collection<String> sampleCodeList);
 
-    List<PlantSingleStockTb> selectAllBySampleCodeLike(@Param("sampleCode") String sampleCode);
-
     int insertBatch(@Param("plantSingleStockTbCollection") Collection<PlantSingleStockTb> plantSingleStockTbCollection);
 
     int deleteByTaskNum(@Param("taskNum") String taskNum);

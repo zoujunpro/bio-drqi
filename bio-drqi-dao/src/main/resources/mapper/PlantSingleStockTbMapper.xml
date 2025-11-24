@@ -97,13 +97,6 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </select>
-    <select id="selectAllBySampleCodeLike" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from plant_single_stock_tb
-        where
-        sample_code like  CONCAT('%',#{sampleCode,jdbcType=VARCHAR},'%')
-    </select>
     <insert id="insertBatch">
         insert into plant_single_stock_tb(id,plant_code,generation,
         plant_number,plant_date,sample_code,

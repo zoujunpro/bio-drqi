@@ -242,5 +242,12 @@
               where apply_no = #{applyNo,jdbcType=VARCHAR}) b
              on a.apply_no = b.apply_no and a.sample_code = b.sample_code
     </select>
+    <select id="selectAllBySampleCodeLike" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_test_tb
+        where
+        sample_code like  CONCAT('%',#{sampleCode,jdbcType=VARCHAR},'%')
+    </select>
 
 </mapper>

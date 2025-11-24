@@ -126,12 +126,12 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 }
                 //获取取样编号前缀
                 String sampleCodePrefix = bioSampleCodePrefixTb.getSampleCodePrefix();
-                List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectAllBySampleCodeLike(sampleCodePrefix);
+                List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCodeLike(sampleCodePrefix);
                 //获取当前库存中最大取样编号序号
                 Integer maxSampleNumber = null;
-                if (CollectionUtil.isNotEmpty(plantSingleStockTbList)) {
-                    plantSingleStockTbList = plantSingleStockTbList.stream().filter(plantSingleStockTb -> !plantSingleStockTb.getSampleCode().contains("-") && plantSingleStockTb.getSampleCode().startsWith(sampleCodePrefix)).collect(Collectors.toList());
-                    maxSampleNumber = plantSingleStockTbList.stream().map(plantSingleStockTb -> Integer.valueOf(plantSingleStockTb.getSampleCode().substring(sampleCodePrefix.length()))).max(Integer::compare).get();
+                if (CollectionUtil.isNotEmpty(bioSampleTestTbList)) {
+                    bioSampleTestTbList = bioSampleTestTbList.stream().filter(bioSampleTestTb -> !bioSampleTestTb.getSampleCode().contains("-") && bioSampleTestTb.getSampleCode().startsWith(sampleCodePrefix)).collect(Collectors.toList());
+                    maxSampleNumber = bioSampleTestTbList.stream().map(bioSampleTestTb -> Integer.valueOf(bioSampleTestTb.getSampleCode().substring(sampleCodePrefix.length()))).max(Integer::compare).get();
                 }
                 for (int i = 1; i <= firstSampleApply.getSampleNumber(); i++) {
                     maxSampleNumber = maxSampleNumber == null ? 1 : maxSampleNumber + 1;

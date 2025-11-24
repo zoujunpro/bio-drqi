@@ -5,28 +5,29 @@
 <mapper namespace="com.bio.drqi.mapper.PlantMultipleStockTbMapper">
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.PlantMultipleStockTb">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
-            <result property="transformCode" column="transform_code" jdbcType="VARCHAR"/>
-            <result property="generation" column="generation" jdbcType="VARCHAR"/>
-            <result property="plantNumber" column="plant_number" jdbcType="INTEGER"/>
-            <result property="sourceCode" column="source_code" jdbcType="VARCHAR"/>
-            <result property="remark" column="remark" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
-            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
-            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
-            <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
-            <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
-            <result property="sampleNumber" column="sample_number" jdbcType="INTEGER"/>
-            <result property="currentNumber" column="current_number" jdbcType="INTEGER"/>
-            <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
-            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
-            <result property="pdNum" column="pd_num" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
+        <result property="transformCode" column="transform_code" jdbcType="VARCHAR"/>
+        <result property="generation" column="generation" jdbcType="VARCHAR"/>
+        <result property="plantNumber" column="plant_number" jdbcType="INTEGER"/>
+        <result property="sourceCode" column="source_code" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+        <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+        <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+        <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+        <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
+        <result property="sampleNumber" column="sample_number" jdbcType="INTEGER"/>
+        <result property="currentNumber" column="current_number" jdbcType="INTEGER"/>
+        <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
+        <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+        <result property="pdNum" column="pd_num" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,seed_num,transform_code,
+        id
+        ,seed_num,transform_code,
         generation,plant_number,source_code,
         remark,create_time,create_user_id,
         create_user_name,task_num,species_code,
@@ -46,7 +47,9 @@
         from plant_multiple_stock_tb
         <where>
             <if test="seedNum != null and seedNum!=''">and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
-            <if test="transformCode != null and transformCode!=''">and transform_code=#{transformCode,jdbcType=VARCHAR}</if>
+            <if test="transformCode != null and transformCode!=''">and
+                transform_code=#{transformCode,jdbcType=VARCHAR}
+            </if>
             <if test="generation != null and generation!=''">and generation=#{generation,jdbcType=VARCHAR}</if>
             <if test="plantNumber != null">and plant_number=#{plantNumber,jdbcType=NUMERIC}</if>
             <if test="sourceCode != null and sourceCode!=''">and source_code=#{sourceCode,jdbcType=VARCHAR}</if>
@@ -60,9 +63,11 @@
             <if test="sampleNumber != null">and sample_number=#{sampleNumber,jdbcType=NUMERIC}</if>
             <if test="currentNumber != null">and current_number=#{currentNumber,jdbcType=NUMERIC}</if>
             <if test="regionNum != null and regionNum!=''">and region_num=#{regionNum,jdbcType=VARCHAR},</if>
-            <if test="vectorTaskCode != null and vectorTaskCode!=''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null and vectorTaskCode!=''">and
+                vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}
+            </if>
             <if test="pdNum != null and pdNum!=''">and pd_num=#{pdNum,jdbcType=VARCHAR}</if>
-            <if test='stockNumberNotNullFlag!="Y"'> and plant_number>0</if>
+            <if test='stockNumberNotNullFlag!="Y"'>and plant_number>0</if>
         </where>
         order by id desc
     </select>
@@ -86,7 +91,7 @@
         <foreach collection="plantMultipleStockTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.seedNum,jdbcType=VARCHAR},#{item.transformCode,jdbcType=VARCHAR},
             #{item.generation,jdbcType=VARCHAR},#{item.plantNumber,jdbcType=NUMERIC},#{item.sourceCode,jdbcType=VARCHAR},
-            #{item.remark,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.createUserId,jdbcType=NUMERIC},
+            #{item.remark,jdbcType=VARCHAR},item.createTime,jdbcType=TIMESTAMP},#{item.createUserId,jdbcType=NUMERIC},
             #{item.createUserName,jdbcType=VARCHAR},#{item.taskNum,jdbcType=VARCHAR},#{item.speciesCode,jdbcType=VARCHAR},
             #{item.breedCode,jdbcType=VARCHAR},#{item.sampleNumber,jdbcType=NUMERIC},#{item.currentNumber,jdbcType=NUMERIC},
             #{item.regionNum,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},#{item.pdNum,jdbcType=VARCHAR},
@@ -95,6 +100,38 @@
     </insert>
     <select id="selectSpeciesCode" resultType="java.lang.String">
         select distinct species_code
-        from plant_multiple_stock_tb where current_number>0
+        from plant_multiple_stock_tb
+        where current_number > 0
+    </select>
+
+    <select id="selectSeedNumBySourceCodeAndRegionNumAndSpeciesCode" resultType="java.lang.String">>
+    select  distinct seed_num
+    from plant_multiple_stock_tb
+    where source_code = #{sourceCode,jdbcType=VARCHAR}
+      AND region_num = #{regionNum,jdbcType=VARCHAR}
+      AND species_code = #{speciesCode,jdbcType=VARCHAR}
+      AND current_number > 0
+    </select>
+    <select id="selectTransformCodeBySourceCodeAndVectorTaskCodeAndSpeciesCode" resultType="java.lang.String">
+        select distinct transform_code
+        from plant_multiple_stock_tb
+        where source_code = #{sourceCode,jdbcType=VARCHAR}
+          AND vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+          AND species_code = #{speciesCode,jdbcType=VARCHAR}
+          AND current_number > 0
+    </select>
+    <select id="selectRegionNumBySourceCodeAndSpeciesCode" resultType="java.lang.String">
+        select distinct region_num
+        from plant_multiple_stock_tb
+        where source_code = #{sourceCode,jdbcType=VARCHAR}
+          AND species_code = #{speciesCode,jdbcType=VARCHAR}
+          AND current_number > 0
+    </select>
+    <select id="selectVectorTaskCodeBySourceCodeAndSpeciesCode" resultType="java.lang.String">
+        select distinct vector_task_code
+        from plant_multiple_stock_tb
+        where source_code = #{sourceCode,jdbcType=VARCHAR}
+          AND species_code = #{speciesCode,jdbcType=VARCHAR}
+          AND current_number > 0
     </select>
 </mapper>

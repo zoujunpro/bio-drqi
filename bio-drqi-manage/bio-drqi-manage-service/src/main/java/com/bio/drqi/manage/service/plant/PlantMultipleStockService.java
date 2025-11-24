@@ -1,8 +1,10 @@
 package com.bio.drqi.manage.service.plant;
 
 import com.bio.drqi.manage.plant.req.PlantMultipleStockListPageReqDTO;
+import com.bio.drqi.manage.plant.req.PlantMultipleStockQueryListForTaskReqDTO;
 import com.bio.drqi.manage.plant.req.PlantMultipleStockQueryListReqDTO;
 import com.bio.drqi.manage.plant.rsp.PlantMultipleStockListPageRspDTO;
+import com.bio.drqi.manage.plant.rsp.PlantMultipleStockQueryListForTaskRspDTO;
 import com.bio.drqi.manage.plant.rsp.PlantMultipleStockQueryListRspDTO;
 import com.github.pagehelper.PageInfo;
 
@@ -26,4 +28,7 @@ public interface PlantMultipleStockService {
      * @return
      */
     List<PlantMultipleStockQueryListRspDTO> queryList(PlantMultipleStockQueryListReqDTO plantMultipleStockQueryListReqDTO);
+
+
+    List<PlantMultipleStockQueryListForTaskRspDTO> queryListForTask(PlantMultipleStockQueryListForTaskReqDTO plantMultipleStockQueryListForTaskReqDTO);
 }

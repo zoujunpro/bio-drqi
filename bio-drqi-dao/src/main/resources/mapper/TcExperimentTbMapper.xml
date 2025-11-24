@@ -24,12 +24,13 @@
             <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
             <result property="experimentType" column="experiment_type" jdbcType="VARCHAR"/>
             <result property="breedingFlag" column="breeding_flag" jdbcType="VARCHAR"/>
+            <result property="pdNums" column="pd_nums" jdbcType="VARCHAR"/>
 
 
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,vector_task_codes,
+        id,vector_task_codes,pd_nums,
         species_code,species_name,file_url,
         experiment_goal,experiment_address_code,apply_user_name,
         apply_user_id,create_time,experiment_num,

@@ -77,7 +77,6 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             }
 
             TcExperimentTb tcExperimentTb = new TcExperimentTb();
-            tcExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(tcExperimentTaskDTO.getVectorTaskCodeList()));
             tcExperimentTb.setSpeciesCode(tcExperimentTaskDTO.getSpeciesCode());
             tcExperimentTb.setSpeciesName(tcExperimentTaskDTO.getSpeciesName());
             tcExperimentTb.setFileUrl(tcExperimentTaskDTO.getFileUrl());
@@ -93,8 +92,6 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             tcExperimentTb.setNextSampleNumber(1);
             tcExperimentTb.setExperimentStatus(ExperimentStatusEnum.INIT.status);
             tcExperimentTb.setExperimentType(JSONUtil.toJsonStr(tcExperimentTaskDTO.getExperimentType()));
-            tcExperimentTb.setBreedingFlag(tcExperimentTaskDTO.getBreedingFlag());
-            tcExperimentTbMapper.insert(tcExperimentTb);
 
             List<TcExperimentDesignTb> tcExperimentDesignTbList = new ArrayList<TcExperimentDesignTb>();
             for (ExperimentDesignExcelDTO experimentDesignExcelDTO : experimentDesignExcelDTOList) {
@@ -125,8 +122,12 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
                 tcExperimentDesignTb.setCreateTime(new Date());
                 tcExperimentDesignTb.setEmergenceRate(experimentDesignExcelDTO.getEmergenceRate());
                 tcExperimentDesignTb.setTransplantTime(experimentDesignExcelDTO.getTransplantTime());
+                tcExperimentDesignTb.setPdNum(experimentDesignExcelDTO.getPdNum());
                 tcExperimentDesignTbList.add(tcExperimentDesignTb);
             }
+            tcExperimentTb.setPdNums(JSONUtil.toJsonStr(tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getPdNum).filter(pdNum->StringUtils.isNotEmpty(pdNum)).distinct().collect(Collectors.toList())));
+            tcExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getVectorTaskCode).filter(vectorTaskCode->StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList())));
+            tcExperimentTbMapper.insert(tcExperimentTb);
             tcExperimentDesignTbMapper.insertBatch(tcExperimentDesignTbList);
             tcExperimentTaskDTO.setSampleCodePrefix(tcExperimentTb.getSampleCodePrefix());
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcExperimentTaskDTO));
@@ -156,23 +157,9 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             throw new BusinessException("该物种下无品种配置项");
         }
 
-        if (BioDrQiContents.N.equals(tcExperimentTaskDTO.getBreedingFlag())) {
-            if (CollectionUtil.isEmpty(tcExperimentTaskDTO.getVectorTaskCodeList())) {
-                throw new BusinessException("不是扩繁试验，实施方案必填");
-            }
-        }
         Map<String, String> breedNameCodeMap = breedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedName, CerBreedDict::getBreedCode));
         for (ExperimentDesignExcelDTO experimentDesignExcelDTO : experimentDesignExcelDTOList) {
             ValidatorUtil.validator(experimentDesignExcelDTO);
-            //如果是扩繁试验，无需校验实施方案编号
-            if (BioDrQiContents.N.equals(tcExperimentTaskDTO.getBreedingFlag())) {
-                if (StringUtils.isEmpty(experimentDesignExcelDTO.getVectorTaskCode())) {
-                    throw new BusinessException("非扩繁试验，实施方案编号必填");
-                }
-                if (!tcExperimentTaskDTO.getVectorTaskCodeList().contains(experimentDesignExcelDTO.getVectorTaskCode())) {
-                    throw new BusinessException("excel大田设计文件中实验方案编号不正确，必须归属所选方案中");
-                }
-            }
             if (breedNameCodeMap.get(experimentDesignExcelDTO.getBreedName()) == null) {
                 throw new BusinessException("物种下无此品种配置" + experimentDesignExcelDTO.getBreedName());
             } else {

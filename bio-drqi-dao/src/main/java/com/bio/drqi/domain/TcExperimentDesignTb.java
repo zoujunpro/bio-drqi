@@ -157,6 +157,11 @@ public class TcExperimentDesignTb implements Serializable {
      */
     private String transplantTime;
 
+    /**
+     * PD编号
+     */
+    private String pdNum;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

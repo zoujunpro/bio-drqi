@@ -35,6 +35,11 @@ public class ExperimentDesignExcelDTO {
     @NotBlank(message = "品种必填")
     private String breedName;
     /**
+     * PD编号
+     */
+    @ExcelProperty("PD编号")
+    private String pdNum;
+    /**
      * 实施方案编号
      */
     @ExcelProperty("实施方案编号")

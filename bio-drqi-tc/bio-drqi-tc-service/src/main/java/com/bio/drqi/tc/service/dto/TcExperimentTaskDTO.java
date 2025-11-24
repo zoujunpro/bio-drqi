@@ -10,9 +10,6 @@ import java.util.List;
 @Data
 public class TcExperimentTaskDTO {
 
-
-    private List<String> vectorTaskCodeList;
-
     private String experimentGoal;
 
     @NotEmpty(message = "参数缺失：试验地点")
@@ -42,9 +39,6 @@ public class TcExperimentTaskDTO {
 
 
     private String sampleCodePrefix;
-
-    @EnumValue(strValues = {"Y", "N"}, message = "扩繁入参异常")
-    private String breedingFlag;
 
 
 }

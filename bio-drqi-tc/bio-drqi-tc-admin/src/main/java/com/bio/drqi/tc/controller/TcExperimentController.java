@@ -91,11 +91,12 @@ public class TcExperimentController {
      */
     @GetMapping("/downTemplate")
     public void downTemplate(HttpServletResponse httpServletResponse) {
-        try {
+        tcExperimentService.downTemplate(httpServletResponse);
+    /*    try {
             ossService.downloadFile(httpServletResponse, "template", "田间设计方案模板V1.0.xlsx");
         } catch (Exception e) {
             throw new BusinessException("田间设计方案模板下载失败，请联系管理员检测模板配置");
-        }
+        }*/
     }
 
     /**

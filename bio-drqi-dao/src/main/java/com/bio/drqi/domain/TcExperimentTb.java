@@ -100,6 +100,8 @@ public class TcExperimentTb implements Serializable {
 
     private String breedingFlag;
 
+    private String pdNums;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

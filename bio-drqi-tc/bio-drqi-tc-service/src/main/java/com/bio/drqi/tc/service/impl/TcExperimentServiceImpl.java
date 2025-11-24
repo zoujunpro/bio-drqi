@@ -15,6 +15,7 @@ import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
 import com.bio.drqi.tc.req.TcExperimentQueryListExperimentDesignReqDTO;
 import com.bio.drqi.tc.rsp.*;
 import com.bio.drqi.tc.service.TcExperimentService;
+import com.bio.drqi.tc.service.dto.ExperimentDesignExcelDTO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -88,7 +89,7 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     public List<TcExperimentListAllRspDTO> listAll() {
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByExperimentStatusOrderByIdDesc(ExperimentStatusEnum.INIT.status);
         Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
-        List<TcExperimentListAllRspDTO> tcExperimentListAllRspDTOList= BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListAllRspDTO.class);
+        List<TcExperimentListAllRspDTO> tcExperimentListAllRspDTOList = BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListAllRspDTO.class);
         tcExperimentListAllRspDTOList.forEach(tcExperimentListAllRspDTO -> {
             tcExperimentListAllRspDTO.setExperimentAddressName(seedProduceAddressDictMap.get(tcExperimentListAllRspDTO.getExperimentAddressCode()));
         });
@@ -98,8 +99,8 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     @Override
     public List<TcExperimentListNoHarvestRspDTO> listNoHarvest() {
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByExperimentStatusAndHarvestApplyNumIsNullOrderByIdDesc(ExperimentStatusEnum.INIT.status);
-        List<TcExperimentListNoHarvestRspDTO>  tcExperimentListNoHarvestRspDTOList= BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListNoHarvestRspDTO.class);
-        if(CollectionUtil.isNotEmpty(tcExperimentListNoHarvestRspDTOList)){
+        List<TcExperimentListNoHarvestRspDTO> tcExperimentListNoHarvestRspDTOList = BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListNoHarvestRspDTO.class);
+        if (CollectionUtil.isNotEmpty(tcExperimentListNoHarvestRspDTOList)) {
             Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
             tcExperimentListNoHarvestRspDTOList.forEach(tcExperimentListNoHarvestRspDTO -> {
                 tcExperimentListNoHarvestRspDTO.setExperimentAddressName(seedProduceAddressDictMap.get(tcExperimentListNoHarvestRspDTO.getExperimentAddressCode()));
@@ -107,6 +108,11 @@ public class TcExperimentServiceImpl implements TcExperimentService {
             });
         }
         return tcExperimentListNoHarvestRspDTOList;
+    }
+
+    @Override
+    public void downTemplate(HttpServletResponse httpServletResponse) {
+        ExcelUtil.writeExcel("田间设计方案模板", "sheet1", null, ExperimentDesignExcelDTO.class, httpServletResponse);
     }
 
     @Override

@@ -26,6 +26,7 @@ public interface TcExperimentService {
 
     List<TcExperimentListNoHarvestRspDTO> listNoHarvest();
 
+    void downTemplate(HttpServletResponse httpServletResponse);
 
     List<TcExperimentQueryListExperimentDesignRspDTO> queryListExperimentDesign(TcExperimentQueryListExperimentDesignReqDTO tcExperimentQueryListExperimentDesignReqDTO);
 

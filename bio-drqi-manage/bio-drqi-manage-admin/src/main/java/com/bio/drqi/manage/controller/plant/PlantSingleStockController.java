@@ -59,7 +59,7 @@ public class PlantSingleStockController {
      * cer苗库管理（有具体种植编号苗库）-根据取样编号批次查询
      * @return
      */
-    @PostMapping("/queryList")
+    @PostMapping("/queryBySampleCodeList")
     @WebLog(desc = "cer苗库管理（有具体种植编号苗库）-根据取样编号批次查询")
     public ResponseResult<List<PlantSingleStockQueryBySampleCodeListRspDTO>>  queryBySampleCodeList(@RequestBody @Validated PlantSingleStockQueryBySampleCodeListReqDTO plantSingleStockQueryBySampleCodeListReqDTO){
         return ResponseResult.getSuccess(plantSingleStockService.queryBySampleCodeList(plantSingleStockQueryBySampleCodeListReqDTO));

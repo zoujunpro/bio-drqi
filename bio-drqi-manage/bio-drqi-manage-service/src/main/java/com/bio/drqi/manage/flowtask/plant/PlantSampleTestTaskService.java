@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.flowtask.plant;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
@@ -208,7 +209,6 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         bioSampleApplyTb.setApplyUserName(SecurityContextHolder.getNickName());
         bioSampleApplyTb.setApplyDesc(bioTaskDtlTb.getTaskDesc());
         bioSampleApplyTb.setApplyType(plantExperimentTaskDTO.getApplyType());
-        bioSampleApplyTb.setNgsExcelUrl(null);
         bioSampleApplyTb.setLayoutFlag(plantExperimentTaskDTO.getTestType());
         bioSampleApplyTb.setVectorTaskCodes(null);
         bioSampleApplyTb.setSampleCodeRange(null);
@@ -231,7 +231,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     for (BioSampleTestTb plantSampleTestTb : plantSampleTestTbList) {
                         PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(plantSampleTestTb, PlantStatusEnum.STATUS_1);
                         plantSingleStockTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
-                        // plantSingleStockTb.setTransplantDate(DateUtil.format(cerConversionAndTransRefList.get(0).getCreateTime(), DatePattern.NORM_DATE_PATTERN));
+                        //plantSingleStockTb.setPlantDate(DateUtil.format(cerConversionAndTransRefList.get(0).getCreateTime(), DatePattern.NORM_DATE_PATTERN));
                         plantSingleStockTbList.add(plantSingleStockTb);
                     }
                 }

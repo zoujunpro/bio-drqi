@@ -58,11 +58,6 @@ public class BioSampleApplyTb implements Serializable {
     private String applyType;
 
     /**
-     * NGS测序文件地址
-     */
-    private String ngsExcelUrl;
-
-    /**
      * 是否是克隆苗取样 Y N
      */
     private String cloneFlag;

@@ -3,14 +3,19 @@ package com.bio.drqi.manage.controller.bio;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.oss.service.OssService;
+import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.manage.bio.req.BioSampleTestListDetailReqDTO;
 import com.bio.drqi.manage.bio.req.BioSampleTestUploadTestTemplateReqDTO;
+import com.bio.drqi.manage.bio.rsp.BioSampleTestListDetailRspDTO;
 import com.bio.drqi.manage.bio.rsp.BioSampleTestQuerySpeciesByApplyTypeRspDTO;
 import com.bio.drqi.manage.sample.req.DownTestTemplateReqDTO;
 import com.bio.drqi.manage.sample.req.LayoutConfirmReqDTO;
+import com.bio.drqi.manage.sample.req.SampleTestListDetailReqDTO;
 import com.bio.drqi.manage.sample.req.UploadIdentifyPrimerTemplateReqDTO;
 import com.bio.drqi.manage.sample.rsp.*;
 import com.bio.drqi.manage.service.bio.BioSampleTestService;
+import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +35,18 @@ public class BioSampleTestController {
 
     @Resource
     private OssService ossService;
-
+    /**
+     * 取样检测-分页查询
+     *
+     * @param bioSampleTestListDetailReqDTO
+     * @return
+     */
+    @PostMapping("listPage")
+    @WebLog(desc = "取样检测-分页查询")
+    public ResponseResult<PageInfo<BioSampleTestListDetailRspDTO>> listPage(@Validated @RequestBody BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO) {
+        PageInfo<BioSampleTestListDetailRspDTO> resultList = bioSampleTestService.listPage(bioSampleTestListDetailReqDTO);
+        return ResponseResult.getSuccess(resultList);
+    }
 
     /**
      * 分子取样检测-查询物种

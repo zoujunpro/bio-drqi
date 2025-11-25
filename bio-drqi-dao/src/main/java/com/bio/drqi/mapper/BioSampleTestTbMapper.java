@@ -16,6 +16,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
+    List<BioSampleTestTb> selectSelective(BioSampleTestTb bioSampleTestTb);
+
     int insertBatch(@Param("bioSampleTestTbCollection") Collection<BioSampleTestTb> bioSampleTestTbCollection);
 
     BioSampleTestTb selectOneBySampleCodeOrderByIdDesc(@Param("sampleCode") String sampleCode);

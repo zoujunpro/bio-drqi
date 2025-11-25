@@ -1,14 +1,18 @@
 package com.bio.drqi.manage.service.bio;
 
 
+import com.bio.drqi.manage.bio.req.BioSampleTestListDetailReqDTO;
 import com.bio.drqi.manage.bio.req.BioSampleTestUploadTestTemplateReqDTO;
 
+import com.bio.drqi.manage.bio.rsp.BioSampleTestListDetailRspDTO;
 import com.bio.drqi.manage.bio.rsp.BioSampleTestQuerySpeciesByApplyTypeRspDTO;
 import com.bio.drqi.manage.sample.req.DownTestTemplateReqDTO;
 
 import com.bio.drqi.manage.sample.req.LayoutConfirmReqDTO;
+import com.bio.drqi.manage.sample.req.SampleTestListDetailReqDTO;
 import com.bio.drqi.manage.sample.req.UploadIdentifyPrimerTemplateReqDTO;
 import com.bio.drqi.manage.sample.rsp.*;
+import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 
 
@@ -18,8 +22,13 @@ import java.util.List;
 @Service
 public interface BioSampleTestService {
 
+    PageInfo<BioSampleTestListDetailRspDTO> listPage(BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO);
+
     List<BioSampleTestQuerySpeciesByApplyTypeRspDTO> querySpeciesByApplyType(String applyType);
-    void downRepeatSampleTemplate(HttpServletResponse httpServletResponse);;
+
+    void downRepeatSampleTemplate(HttpServletResponse httpServletResponse);
+
+    ;
 
     void downTestTemplate(DownTestTemplateReqDTO downTestTemplateReqDTO, HttpServletResponse response);
 

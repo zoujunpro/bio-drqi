@@ -11,12 +11,15 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.common.enums.TestChannelEnum;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.base.SampleUnitDTO;
+import com.bio.drqi.manage.bio.req.BioSampleTestListDetailReqDTO;
 import com.bio.drqi.manage.bio.req.BioSampleTestUploadTestTemplateReqDTO;
+import com.bio.drqi.manage.bio.rsp.BioSampleTestListDetailRspDTO;
 import com.bio.drqi.manage.bio.rsp.BioSampleTestQuerySpeciesByApplyTypeRspDTO;
 import com.bio.drqi.manage.dto.bio.DownLoadIdentifyPrimerTemplateExcelDTO;
 import com.bio.drqi.manage.dto.plant.SampleTestDownRepeatSampleTemplateExcelDTO;
@@ -24,6 +27,7 @@ import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
 import com.bio.drqi.manage.dto.project.TestExcelDTO;
 import com.bio.drqi.manage.sample.req.DownTestTemplateReqDTO;
 import com.bio.drqi.manage.sample.req.LayoutConfirmReqDTO;
+import com.bio.drqi.manage.sample.req.SampleTestListDetailReqDTO;
 import com.bio.drqi.manage.sample.req.UploadIdentifyPrimerTemplateReqDTO;
 import com.bio.drqi.manage.sample.rsp.*;
 import com.bio.drqi.manage.service.bio.BioSampleTestService;
@@ -31,6 +35,8 @@ import com.bio.drqi.manage.service.common.SynSampleTestResultService;
 import com.bio.drqi.manage.util.SampleExcelUtil;
 import com.bio.drqi.manage.util.SampleLayoutUtil;
 import com.bio.drqi.mapper.*;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -88,6 +94,37 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
 
+
+
+
+    @Override
+    public PageInfo<BioSampleTestListDetailRspDTO> listPage(BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO) {
+        PageHelper.startPage(bioSampleTestListDetailReqDTO.getPageNum(), bioSampleTestListDetailReqDTO.getPageSize());
+        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectSelective(BeanUtils.copyProperties(bioSampleTestListDetailReqDTO, BioSampleTestTb.class));
+        PageInfo<BioSampleTestTb> srcPageInfo = new PageInfo<>(bioSampleTestTbList);
+        if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
+            return new PageInfo<BioSampleTestListDetailRspDTO>();
+        }
+        PageInfo<BioSampleTestListDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, BioSampleTestListDetailRspDTO.class);
+        targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
+            sampleTestListDetailRspDTO.setGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getGeneration()));
+            List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByApplyNoAndSampleCodeOrderByIdDesc(sampleTestListDetailRspDTO.getApplyNo(), sampleTestListDetailRspDTO.getSampleCode());
+            if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultTbList)) {
+                Map<String, List<BioSampleTestTwoResultTb>> bioSampleTestTwoResultTbListMap = bioSampleTestTwoResultTbList.stream().collect(Collectors.groupingBy(bioSampleTestTwoResultTb -> bioSampleTestTwoResultTb.getRunId() + bioSampleTestTwoResultTb.getSampleId()));
+                bioSampleTestTwoResultTbListMap.forEach((key, bioSampleTestTwoResultTbs) -> {
+                    List<BioSampleTestTwoResultDetailTb> cerSampleTestBioInfoResultDetailList = bioSampleTestTwoResultDetailTbMapper.selectAllByTwoResultIdAndConfirmStatus(bioSampleTestTwoResultTbs.get(0).getId(), "checked");
+                    if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultDetailList)) {
+                        cerSampleTestBioInfoResultDetailList.forEach(cerSampleTestBioInfoResultTb -> {
+                            sampleTestListDetailRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
+                        });
+                    }
+                });
+            }
+
+            sampleTestListDetailRspDTO.setMatchNum(CollectionUtil.isNotEmpty(sampleTestListDetailRspDTO.getBioInfoResultList()) ? sampleTestListDetailRspDTO.getBioInfoResultList().size() : 0);
+        });
+        return targetPageInfo;
+    }
 
     @Override
     public List<BioSampleTestQuerySpeciesByApplyTypeRspDTO> querySpeciesByApplyType(String applyType) {

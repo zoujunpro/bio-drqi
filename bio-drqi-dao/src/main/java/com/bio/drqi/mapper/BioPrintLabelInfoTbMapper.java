@@ -17,6 +17,8 @@ public interface BioPrintLabelInfoTbMapper extends BaseMapper<BioPrintLabelInfoT
 
     List<BioPrintLabelInfoTb> searchAllByLabelType(@Param("labelType") String labelType);
 
+    List<Integer> selectIdByLabelTypeAndUniqueCodeLike(@Param("labelType") String labelType, @Param("uniqueCode") String uniqueCode);
+
 }
 
 

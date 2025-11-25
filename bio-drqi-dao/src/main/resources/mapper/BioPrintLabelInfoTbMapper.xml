@@ -33,4 +33,10 @@
         where
         label_type = #{labelType,jdbcType=VARCHAR}
     </select>
+    <select id="selectIdByLabelTypeAndUniqueCodeLike" resultType="java.lang.Integer">
+        select id
+        from bio_print_label_info_tb
+        where label_type = #{labelType,jdbcType=VARCHAR}
+          AND unique_code like   CONCAT('%',#{uniqueCode,jdbcType=VARCHAR},'%')
+    </select>
 </mapper>

@@ -28,8 +28,7 @@ public interface BioSampleTestTwoResultDetailTbMapper extends BaseMapper<BioSamp
 
     List<BioSampleTestTwoResultDetailTb> selectAllByUniqueDbCode(@Param("uniqueDbCode") String uniqueDbCode);
 
-    int insertBatch(@Param("bioSampleSampleTwoResultDetailTbCollection") Collection<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbCollection);
-
+    int insertBatch(@Param("bioSampleTestTwoResultDetailTbCollection") Collection<BioSampleTestTwoResultDetailTb> bioSampleTestTwoResultDetailTbCollection);
     List<BioSampleTestTwoResultDetailTb> selectAllBySampleCodeIn(@Param("sampleCodeList") Collection<String> sampleCodeList);
 
 }

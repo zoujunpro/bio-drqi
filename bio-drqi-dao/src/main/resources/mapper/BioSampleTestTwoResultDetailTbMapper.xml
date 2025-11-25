@@ -19,13 +19,14 @@
             <result property="confirmStatus" column="confirm_status" jdbcType="VARCHAR"/>
             <result property="resultKey" column="result_key" jdbcType="VARCHAR"/>
             <result property="matchFlag" column="match_flag" jdbcType="VARCHAR"/>
+             <result property="twoResultId" column="two_result_id" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,apply_no,sample_code,sample_id,unique_db_code,
         run_id,hap_id,var_type,
         mutate,ratio,create_time,
-        confirm_status,result_key,match_flag
+        confirm_status,result_key,match_flag,two_result_id
     </sql>
 
     <select id="selectAllByApplyNoAndSampleCode" resultMap="BaseResultMap">
@@ -36,21 +37,7 @@
         apply_no = #{applyNo,jdbcType=VARCHAR}
         AND sample_code = #{sampleCode,jdbcType=VARCHAR}
     </select>
-    <insert id="insertBatch">
-        insert into bio_sample_test_two_result_detail_tb(id,apply_no,sample_code,
-        sample_id,unique_db_code,run_id,
-        hap_id,var_type,mutate,
-        ratio,create_time,confirm_status,
-        result_key,match_flag)
-        values
-        <foreach collection="bioSampleSampleTwoResultDetailTbCollection" item="item" separator=",">
-            (#{item.id,jdbcType=NUMERIC},#{item.applyNo,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},
-            #{item.sampleId,jdbcType=VARCHAR},#{item.uniqueDbCode,jdbcType=VARCHAR},#{item.runId,jdbcType=VARCHAR},
-            #{item.hapId,jdbcType=VARCHAR},#{item.varType,jdbcType=VARCHAR},#{item.mutate,jdbcType=VARCHAR},
-            #{item.ratio,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.confirmStatus,jdbcType=VARCHAR},
-            #{item.resultKey,jdbcType=VARCHAR},#{item.matchFlag,jdbcType=VARCHAR})
-        </foreach>
-    </insert>
+
     <select id="selectAllBySampleCodeIn" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -102,5 +89,20 @@
         two_result_id = #{twoResultId,jdbcType=NUMERIC}
         AND confirm_status = #{confirmStatus,jdbcType=VARCHAR}
     </select>
+    <insert id="insertBatch">
+        insert into bio_sample_test_two_result_detail_tb(id,apply_no,sample_code,
+        sample_id,unique_db_code,run_id,
+        hap_id,var_type,mutate,
+        ratio,create_time,confirm_status,
+        result_key,match_flag,two_result_id)
+        values
+        <foreach collection="bioSampleTestTwoResultDetailTbCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.applyNo,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},
+            #{item.sampleId,jdbcType=VARCHAR},#{item.uniqueDbCode,jdbcType=VARCHAR},#{item.runId,jdbcType=VARCHAR},
+            #{item.hapId,jdbcType=VARCHAR},#{item.varType,jdbcType=VARCHAR},#{item.mutate,jdbcType=VARCHAR},
+            #{item.ratio,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.confirmStatus,jdbcType=VARCHAR},
+            #{item.resultKey,jdbcType=VARCHAR},#{item.matchFlag,jdbcType=VARCHAR},#{item.twoResultId,jdbcType=NUMERIC})
+        </foreach>
+    </insert>
 
 </mapper>

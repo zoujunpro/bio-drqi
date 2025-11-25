@@ -159,7 +159,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
             String excelTemplateName = "检测数据上传模板_V1.xlsx";
             String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
             ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
-            ExcelUtil.fillExcel(templateDir, null, TestExcelDTO.class, response);
+            ExcelUtil.fillExcel(templateDir, new ArrayList<>(), TestExcelDTO.class, response);
         } catch (Exception e) {
             log.error("模板下载失败，", e);
             throw new BusinessException("模板下载失败，请联系管理员检测模板配置");

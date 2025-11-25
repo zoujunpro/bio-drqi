@@ -204,7 +204,7 @@ public class BioSampleTestController {
     }
 
     /**
-     * 取样检测-上传生信检测结果数据核对模板
+     * 分子取样检测-上传生信检测结果数据核对模板
      *
      * @param uploadBioInfoSampleTestResultReqDTO
      * @return

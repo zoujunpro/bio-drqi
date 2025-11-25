@@ -167,7 +167,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                             CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioTaskDtlTb.getTaskNum());
                             cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
                             cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
-                            cerPlantDtlTb.setTransplantDate(DateUtil.format(cerConversionAndTransRefList.get(0).getCreateTime(), DatePattern.NORM_DATE_PATTERN));
+                            cerPlantDtlTb.setPlantDate(DateUtil.format(cerConversionAndTransRefList.get(0).getCreateTime(), DatePattern.NORM_DATE_PATTERN));
                             if (Objects.isNull(cerPlantDtlTbMapper.selectOneByPlantCode(cerPlantDtlTb.getPlantCode()))) {
                                 //更新种植信息
                                 cerPlantDtlTbMapper.insert(cerPlantDtlTb);

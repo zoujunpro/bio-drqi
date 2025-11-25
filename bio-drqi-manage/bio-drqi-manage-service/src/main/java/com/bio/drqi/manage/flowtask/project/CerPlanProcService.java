@@ -5,10 +5,12 @@ import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.domain.CerPlantDtlTb;
 import com.bio.drqi.manage.dto.project.CerPlantDTO;
 import com.bio.drqi.mapper.CerPlantDtlTbMapper;
+import com.github.pagehelper.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,12 @@ public class CerPlanProcService extends AbstractProjectBaseTaskService {
         for (CerPlantDTO.Content content : cerPlantDTO.getContentList()) {
             CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(content.getPlantCode());
             if (cerPlantDtlTb == null) {
-                throw new BusinessException("找不到此种植编号:"+content.getPlantCode());
+                throw new BusinessException("找不到此种植编号:" + content.getPlantCode());
+            }
+            if (StringUtil.isNotEmpty(content.getPlantStatus())) {
+                if (PlantStatusEnum.getCodeByDesc(content.getPlantStatus()) == null) {
+                    throw new BusinessException("植株状态异常：" + content.getPlantStatus());
+                }
             }
         }
     }
@@ -45,7 +52,7 @@ public class CerPlanProcService extends AbstractProjectBaseTaskService {
             for (CerPlantDTO.Content content : cerPlantDTO.getContentList()) {
                 CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(content.getPlantCode());
                 if (cerPlantDtlTb == null) {
-                    throw new BusinessException("找不到此种植编号:"+content.getPlantCode());
+                    throw new BusinessException("找不到此种植编号:" + content.getPlantCode());
                 }
                 cerPlantDtlTb.setPollinationDate(content.getPollinationDate());
                 cerPlantDtlTb.setVernalizationEndDate(content.getVernalizationEndDate());
@@ -54,7 +61,9 @@ public class CerPlanProcService extends AbstractProjectBaseTaskService {
                 cerPlantDtlTb.setPlantDate(content.getPlantDate());
                 cerPlantDtlTb.setPollinationMethod(content.getPollinationMethod());
                 cerPlantDtlTb.setHarvestDate(content.getHarvestDate());
-                cerPlantDtlTb.setPlantStatus(content.getPlantStatus());
+                if (StringUtil.isNotEmpty(content.getPlantStatus())) {
+                    cerPlantDtlTb.setPlantStatus(PlantStatusEnum.getCodeByDesc(content.getPlantStatus()));
+                }
                 cerPlantDtlTbMapper.updateById(cerPlantDtlTb);
             }
         }

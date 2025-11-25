@@ -13,7 +13,6 @@
         <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
         <result property="applyDesc" column="apply_desc" jdbcType="VARCHAR"/>
         <result property="applyType" column="apply_type" jdbcType="VARCHAR"/>
-        <result property="ngsExcelUrl" column="ngs_excel_url" jdbcType="VARCHAR"/>
         <result property="cloneFlag" column="clone_flag" jdbcType="VARCHAR"/>
         <result property="layoutFlag" column="layout_flag" jdbcType="VARCHAR"/>
         <result property="vectorTaskCodes" column="vector_task_codes" jdbcType="VARCHAR"/>

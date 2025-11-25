@@ -170,15 +170,15 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                     log.info("取样不存在项目管理系统：" + sampleTestBioInfoExcelDTO.getSampleCode());
-                    BioSampleTestTwoResultTb bioSampleTestOneResultTb=new BioSampleTestTwoResultTb();
-                    bioSampleTestOneResultTb.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
-                    bioSampleTestOneResultTb.setUploadNum(bioSampleTestResultFileTb.getUploadNum());
-                    bioSampleTestOneResultTb.setTestChannel(TestChannelEnum.project.name());
-                    bioSampleTestOneResultTb.setRunId(sampleTestBioInfoExcelDTO.getRunId());
-                    bioSampleTestOneResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
-                    bioSampleTestOneResultTb.setFailMessage("取样编号错误或者取样编号不属于T0代取样");
-                    bioSampleTestOneResultTb.setSynResult(BioDrQiContents.O);
-                    bioSampleTwoResultTbList.add(bioSampleTestOneResultTb);
+                    BioSampleTestTwoResultTb bioSampleTestTwoResultTb=new BioSampleTestTwoResultTb();
+                    bioSampleTestTwoResultTb.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
+                    bioSampleTestTwoResultTb.setUploadNum(bioSampleTestResultFileTb.getUploadNum());
+                    bioSampleTestTwoResultTb.setTestChannel(TestChannelEnum.project.name());
+                    bioSampleTestTwoResultTb.setRunId(sampleTestBioInfoExcelDTO.getRunId());
+                    bioSampleTestTwoResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
+                    bioSampleTestTwoResultTb.setFailMessage("取样编号错误或者取样编号不属于T0代取样");
+                    bioSampleTestTwoResultTb.setSynResult(BioDrQiContents.O);
+                    bioSampleTwoResultTbList.add(bioSampleTestTwoResultTb);
                     continue;
                 }
       /*          cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> CheckResultEnum.noCheck.name().equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());

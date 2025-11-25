@@ -9,10 +9,7 @@ import com.bio.drqi.manage.bio.req.BioSampleTestListDetailReqDTO;
 import com.bio.drqi.manage.bio.req.BioSampleTestUploadTestTemplateReqDTO;
 import com.bio.drqi.manage.bio.rsp.BioSampleTestListDetailRspDTO;
 import com.bio.drqi.manage.bio.rsp.BioSampleTestQuerySpeciesByApplyTypeRspDTO;
-import com.bio.drqi.manage.sample.req.DownTestTemplateReqDTO;
-import com.bio.drqi.manage.sample.req.LayoutConfirmReqDTO;
-import com.bio.drqi.manage.sample.req.SampleTestListDetailReqDTO;
-import com.bio.drqi.manage.sample.req.UploadIdentifyPrimerTemplateReqDTO;
+import com.bio.drqi.manage.sample.req.*;
 import com.bio.drqi.manage.sample.rsp.*;
 import com.bio.drqi.manage.service.bio.BioSampleTestService;
 import com.github.pagehelper.PageInfo;
@@ -206,6 +203,18 @@ public class BioSampleTestController {
         return ResponseResult.getSuccess("ok");
     }
 
+    /**
+     * 取样检测-上传生信检测结果数据核对模板
+     *
+     * @param uploadBioInfoSampleTestResultReqDTO
+     * @return
+     */
+    @PostMapping("uploadBioInfoSampleTestResult")
+    @WebLog(desc = "分子取样检测-上传生信检测结果数据核对模板")
+    public ResponseResult<String> uploadBioInfoSampleTestResult(@RequestBody UploadBioInfoSampleTestResultReqDTO uploadBioInfoSampleTestResultReqDTO) {
+        bioSampleTestService.uploadBioInfoSampleTestResult(uploadBioInfoSampleTestResultReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
     /**
      * 分子取样检测-统计审核结果
      *

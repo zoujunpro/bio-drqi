@@ -6,11 +6,8 @@ import com.bio.drqi.manage.bio.req.BioSampleTestUploadTestTemplateReqDTO;
 
 import com.bio.drqi.manage.bio.rsp.BioSampleTestListDetailRspDTO;
 import com.bio.drqi.manage.bio.rsp.BioSampleTestQuerySpeciesByApplyTypeRspDTO;
-import com.bio.drqi.manage.sample.req.DownTestTemplateReqDTO;
+import com.bio.drqi.manage.sample.req.*;
 
-import com.bio.drqi.manage.sample.req.LayoutConfirmReqDTO;
-import com.bio.drqi.manage.sample.req.SampleTestListDetailReqDTO;
-import com.bio.drqi.manage.sample.req.UploadIdentifyPrimerTemplateReqDTO;
 import com.bio.drqi.manage.sample.rsp.*;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
@@ -52,6 +49,9 @@ public interface BioSampleTestService {
     List<QueryBioInfoSampleTestResultRspDTO> queryBioInfoSampleTestResult(Integer id);
 
     void synBioInfoSampleTestResult(Integer id);
+
+
+    void uploadBioInfoSampleTestResult(UploadBioInfoSampleTestResultReqDTO uploadBioInfoSampleTestResultReqDTO);
 
 
     List<CountCheckResultRspDTO> countCheckResult(String applyNo);

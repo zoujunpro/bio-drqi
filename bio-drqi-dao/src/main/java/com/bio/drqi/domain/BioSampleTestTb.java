@@ -5,8 +5,12 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.bio.common.core.util.StringUtils;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,6 +21,9 @@ import java.util.Date;
  */
 @TableName(value = "bio_sample_test_tb")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class BioSampleTestTb implements Serializable {
     /**
      * 主键ID

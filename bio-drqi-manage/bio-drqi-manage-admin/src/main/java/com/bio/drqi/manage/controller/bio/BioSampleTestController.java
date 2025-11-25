@@ -85,8 +85,9 @@ public class BioSampleTestController {
      */
     @PostMapping("uploadTestTemplate")
     @WebLog(desc = "分子取样检测-检测数据模板上传")
-    public void uploadTestTemplate(@Validated @RequestBody BioSampleTestUploadTestTemplateReqDTO bioSampleTestUploadTestTemplateReqDTO) {
+    public ResponseResult<String> uploadTestTemplate(@Validated @RequestBody BioSampleTestUploadTestTemplateReqDTO bioSampleTestUploadTestTemplateReqDTO) {
         bioSampleTestService.uploadTestTemplate(bioSampleTestUploadTestTemplateReqDTO);
+        return ResponseResult.getSuccess("ok");
     }
 
 

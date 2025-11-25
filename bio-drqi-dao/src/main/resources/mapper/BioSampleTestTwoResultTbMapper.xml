@@ -52,7 +52,7 @@
         </where>
         order by id desc
     </select>
-    <insert id="insertBatch">
+    <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
         insert into bio_sample_test_two_result_tb(id,apply_no,sample_code,
         sample_id,run_id,create_time,
         upload_num,test_channel,syn_result,

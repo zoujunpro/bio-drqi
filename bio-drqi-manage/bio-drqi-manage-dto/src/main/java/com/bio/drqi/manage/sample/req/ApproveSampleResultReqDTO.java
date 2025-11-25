@@ -21,8 +21,6 @@ public class ApproveSampleResultReqDTO {
         @NotBlank(message = "参数缺失：sampleCode")
         private String sampleCode;
 
-        @NotBlank(message = "参数缺失：vectorTaskCode")
-        private String vectorTaskCode;
 
         @NotBlank(message = "参数缺失：checkResult")
         private String checkResult;

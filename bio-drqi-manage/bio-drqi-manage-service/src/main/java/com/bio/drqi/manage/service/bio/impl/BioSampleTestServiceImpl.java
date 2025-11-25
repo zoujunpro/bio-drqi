@@ -299,9 +299,9 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                 }
             }
         }
-        NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
-        newSampleTestDTO.setIdentifyPrimerTemplateExcelUrl(uploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
-        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
+        PlantSampleTestTaskDTO plantSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantSampleTestTaskDTO.class);
+        plantSampleTestTaskDTO.setIdentifyPrimerTemplateExcelUrl(uploadIdentifyPrimerTemplateReqDTO.getExcelUrl());
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plantSampleTestTaskDTO));
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
         //默认排版
         LayoutConfirmReqDTO layoutConfirmReqDTO = getLayoutConfirmReqDTO(bioTaskDtlTb.getTaskNum());

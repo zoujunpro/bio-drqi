@@ -479,10 +479,9 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         List<BioSampleTestTwoResultTb> bioSampleSampleTwoResultTbList = new ArrayList<>();
         List<BioSampleTestTb> updateBioSampleTestTbList = new ArrayList<>();
 
-        //组装BioSampleSampleTwoResultTb数据
+        //解析二代测序文件
         for (SampleTestBioInfoExcelDTO sampleTestBioInfoExcelDTO : sampleTestBioInfoExcelDTOList) {
             BioSampleTestTb bioSampleTestTb = stringBioSampleTestTbMap.get(sampleTestBioInfoExcelDTO.getSampleCode());
-
             BioSampleTestTwoResultTb bioSampleSampleTwoResultTb = new BioSampleTestTwoResultTb();
             bioSampleSampleTwoResultTb.setApplyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
             bioSampleSampleTwoResultTb.setUploadNum(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
@@ -500,15 +499,6 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
             }
             bioSampleSampleTwoResultTbList.add(bioSampleSampleTwoResultTb);
         }
-        //删除旧文件数据
-        bioSampleTestTwoResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
-        bioSampleTestResultFileTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
-        List<BioSampleTestTwoResultTb> oldBioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByUploadNum(bioTaskDtlTb.getTaskNum());
-        if (CollectionUtil.isNotEmpty(oldBioSampleTestTwoResultTbList)) {
-            oldBioSampleTestTwoResultTbList.forEach(oldSampleTestTwoResultTb -> {
-                bioSampleTestTwoResultDetailTbMapper.deleteByTwoResultId(oldSampleTestTwoResultTb.getId());
-            });
-        }
         //生成新的上传记录
         BioSampleTestResultFileTb bioSampleTestResultFileTb = new BioSampleTestResultFileTb();
         bioSampleTestResultFileTb.setFileUrl(uploadBioInfoSampleTestResultReqDTO.getExcelUrl());
@@ -521,11 +511,21 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         bioSampleTestResultFileTb.setEffectiveNum(0);
         bioSampleTestResultFileTb.setNgsSuccessNum(0);
         bioSampleTestResultFileTb.setNgsFailNum(0);
-        bioSampleTestResultFileTbMapper.insert(bioSampleTestResultFileTb);
-        bioSampleTestTwoResultTbMapper.insertBatch(bioSampleSampleTwoResultTbList);
 
+        //删除旧文件数据
+        bioSampleTestTwoResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
+        bioSampleTestResultFileTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
+        List<BioSampleTestTwoResultTb> oldBioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByUploadNum(bioTaskDtlTb.getTaskNum());
+        if (CollectionUtil.isNotEmpty(oldBioSampleTestTwoResultTbList)) {
+            oldBioSampleTestTwoResultTbList.forEach(oldSampleTestTwoResultTb -> {
+                bioSampleTestTwoResultDetailTbMapper.deleteByTwoResultId(oldSampleTestTwoResultTb.getId());
+            });
+        }
         //有效数据
         List<BioSampleTestTwoResultTb> effectiveNumBioSampleTestTwoResultTbList = bioSampleSampleTwoResultTbList.stream().filter(bioSampleTestTwoResultTb -> !BioDrQiContents.O.equals(bioSampleTestTwoResultTb.getSynResult())).collect(Collectors.toList());
+        bioSampleTestResultFileTb.setEffectiveNum(effectiveNumBioSampleTestTwoResultTbList.size());
+        //生成新文件数据
+        bioSampleTestTwoResultTbMapper.insertBatch(bioSampleSampleTwoResultTbList);
 
         //更新检测结果
         List<BioSampleTestTwoResultDetailTb> bioSampleTwoResultDetailTbList = null;
@@ -534,17 +534,26 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
             bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(effectiveNumBioSampleTestTwoResultTbList);
             bioSampleTestResultFileTb.setNgsSuccessNum(effectiveNumBioSampleTestTwoResultTbList.stream().filter(sampleTestTwoResultTb -> BioDrQiContents.Y.equals(sampleTestTwoResultTb.getSynResult())).collect(Collectors.toList()).size());
             bioSampleTestResultFileTb.setNgsFailNum(effectiveNumBioSampleTestTwoResultTbList.stream().filter(sampleTestTwoResultTb -> BioDrQiContents.N.equals(sampleTestTwoResultTb.getSynResult())).collect(Collectors.toList()).size());
+            //更新同步结果状态和异常信息
+            effectiveNumBioSampleTestTwoResultTbList.forEach(effectiveNumBioSampleTestTwoResultTb -> {
+                bioSampleTestTwoResultTbMapper.updateById(effectiveNumBioSampleTestTwoResultTb);
+            });
         }
-
+        //只有NGS匹配成功的时候才更新检测人
+        List<String> successSampleCodeList = effectiveNumBioSampleTestTwoResultTbList.stream().filter(sampleTestTwoResultTb -> BioDrQiContents.Y.equals(sampleTestTwoResultTb.getSynResult())).map(BioSampleTestTwoResultTb::getSampleCode).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(updateBioSampleTestTbList)) {
-            bioSampleTestTbMapper.updateBatchById(updateBioSampleTestTbList);
+            updateBioSampleTestTbList = updateBioSampleTestTbList.stream().filter(bioSampleTestTb -> successSampleCodeList.contains(bioSampleTestTb.getSampleCode())).collect(Collectors.toList());
+            if (CollectionUtil.isNotEmpty(updateBioSampleTestTbList)) {
+                bioSampleTestTbMapper.updateBatchById(updateBioSampleTestTbList);
+            }
+
         }
         if (CollectionUtil.isNotEmpty(bioSampleTwoResultDetailTbList)) {
             bioSampleTestTwoResultDetailTbMapper.insertBatch(bioSampleTwoResultDetailTbList);
         }
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
-        bioSampleTestResultFileTbMapper.updateById(bioSampleTestResultFileTb);
+        bioSampleTestResultFileTbMapper.insert(bioSampleTestResultFileTb);
     }
 
     @Override

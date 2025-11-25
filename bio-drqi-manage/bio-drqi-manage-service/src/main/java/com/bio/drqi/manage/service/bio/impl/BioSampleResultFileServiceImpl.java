@@ -108,7 +108,7 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(testExcelDTO.getSampleCode());
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                     log.info("取样不存在项目管理系统：" + testExcelDTO.getSampleCode());
-                    BioSampleTestOneResultTb bioSampleTestOneResultTb=new BioSampleTestOneResultTb();
+                    BioSampleTestOneResultTb bioSampleTestOneResultTb = new BioSampleTestOneResultTb();
                     bioSampleTestOneResultTb.setSampleCode(testExcelDTO.getSampleCode());
                     bioSampleTestOneResultTb.setUploadNum(bioSampleTestResultFileTb.getUploadNum());
                     bioSampleTestOneResultTb.setTestChannel(TestChannelEnum.project.name());
@@ -170,7 +170,7 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
                 if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
                     log.info("取样不存在项目管理系统：" + sampleTestBioInfoExcelDTO.getSampleCode());
-                    BioSampleTestTwoResultTb bioSampleTestTwoResultTb=new BioSampleTestTwoResultTb();
+                    BioSampleTestTwoResultTb bioSampleTestTwoResultTb = new BioSampleTestTwoResultTb();
                     bioSampleTestTwoResultTb.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
                     bioSampleTestTwoResultTb.setUploadNum(bioSampleTestResultFileTb.getUploadNum());
                     bioSampleTestTwoResultTb.setTestChannel(TestChannelEnum.project.name());
@@ -210,38 +210,36 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
 
                     }
                 }
-                //更新有效数量
-                bioSampleTestResultFileTb.setEffectiveNum(bioSampleTestResultFileTb.getEffectiveNum() == null ? 1 : bioSampleTestResultFileTb.getEffectiveNum() + 1);
             }
 
+            //找出文件中有效的数据
+            List<BioSampleTestTwoResultTb> effectiveNumBioSampleTestTwoResultTbList = bioSampleTwoResultTbList.stream().filter(bioSampleTestTwoResultTb -> !BioDrQiContents.O.equals(bioSampleTestTwoResultTb.getSynResult())).collect(Collectors.toList());
 
-            //异步同步结果 这个需要放到前面调用
-            List<BioSampleTestTwoResultDetailTb> bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(bioSampleTwoResultTbList.stream().filter(bioSampleTestTwoResultTb -> !BioDrQiContents.O.equals(bioSampleTestTwoResultTb.getSynResult())).collect(Collectors.toList()));
+            //更新文件中的测序信息（有效信息） 先更新生成主键ID
+            bioSampleTestTwoResultTbMapper.insertBatch(bioSampleTwoResultTbList);
 
+            //异步同步有效数据的结果并更新同步状态
+            if(CollectionUtil.isNotEmpty(effectiveNumBioSampleTestTwoResultTbList)){
+                List<BioSampleTestTwoResultDetailTb> bioSampleTwoResultDetailTbList = synSampleTestResultService.synBioResult(effectiveNumBioSampleTestTwoResultTbList);
+                bioSampleSampleTwoResultDetailTbMapper.insertBatch(bioSampleTwoResultDetailTbList);
+                effectiveNumBioSampleTestTwoResultTbList.forEach(effectiveNumBioSampleTestTwoResultTb->{
+                    bioSampleTestTwoResultTbMapper.updateById(effectiveNumBioSampleTestTwoResultTb);
+                });
+
+            }
+            //记录文件上传的具体信息
             bioSampleTestResultFileTb.setTotalNum(sampleTestBioInfoExcelDTOList.size());
-
             bioSampleTestResultFileTb.setNgsSuccessNum(bioSampleTwoResultTbList.stream().filter(sampleSampleTwoResultTb -> BioDrQiContents.Y.equals(sampleSampleTwoResultTb.getSynResult())).collect(Collectors.toList()).size());
             bioSampleTestResultFileTb.setNgsFailNum(bioSampleTwoResultTbList.stream().filter(sampleSampleTwoResultTb -> BioDrQiContents.N.equals(sampleSampleTwoResultTb.getSynResult())).collect(Collectors.toList()).size());
-
+            bioSampleTestResultFileTb.setEffectiveNum(effectiveNumBioSampleTestTwoResultTbList.size());
             bioSampleTestResultFileTbMapper.updateById(bioSampleTestResultFileTb);
             //更新检测结果标识（取样信息上加入检测人）
-
             List<String> synNgsSuccessList = bioSampleTwoResultTbList.stream().filter(bioSampleSampleOneResultTb -> BioDrQiContents.Y.equals(bioSampleSampleOneResultTb.getSynResult())).map(sampleSampleTwoResultTb -> sampleSampleTwoResultTb.getApplyNo() + sampleSampleTwoResultTb.getSampleCode()).collect(Collectors.toList());
             //只有匹配成功的才认为审核成功
             updateCerSampleTestTbList = updateCerSampleTestTbList.stream().filter(cerSampleTestTb -> synNgsSuccessList.equals(cerSampleTestTb.getApplyNo() + cerSampleTestTb.getSampleCode())).collect(Collectors.toList());
 
-            if(CollectionUtil.isNotEmpty(updateCerSampleTestTbList)){
+            if (CollectionUtil.isNotEmpty(updateCerSampleTestTbList)) {
                 cerSampleTestTbMapper.updateBatchById(updateCerSampleTestTbList);
-            }
-            //更新文件中的测序信息（有效信息）
-            bioSampleTestTwoResultTbMapper.insertBatch(bioSampleTwoResultTbList);
-
-            //更新同步的结果，更新前旧的需要删除
-            if (CollectionUtil.isNotEmpty(bioSampleTwoResultDetailTbList)) {
-                bioSampleTwoResultDetailTbList.forEach(bioSampleSampleTwoResultDetailTb -> {
-                    bioSampleSampleTwoResultDetailTbMapper.deleteByTwoResultId(bioSampleSampleTwoResultDetailTb.getTwoResultId());
-                });
-                bioSampleSampleTwoResultDetailTbMapper.insertBatch(bioSampleTwoResultDetailTbList);
             }
         }
     }

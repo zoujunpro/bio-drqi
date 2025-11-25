@@ -42,7 +42,7 @@ public class BioSampleTestController {
      * @return
      */
     @PostMapping("listPage")
-    @WebLog(desc = "取样检测-分页查询")
+    @WebLog(desc = "分子取样检测-分页查询")
     public ResponseResult<PageInfo<BioSampleTestListDetailRspDTO>> listPage(@Validated @RequestBody BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO) {
         PageInfo<BioSampleTestListDetailRspDTO> resultList = bioSampleTestService.listPage(bioSampleTestListDetailReqDTO);
         return ResponseResult.getSuccess(resultList);
@@ -81,10 +81,10 @@ public class BioSampleTestController {
     }
 
     /**
-     * 分子取样检测-检测数据模板下载
+     * 分子取样检测-检测数据模板上传
      */
     @PostMapping("uploadTestTemplate")
-    @WebLog(desc = "分子取样检测-检测数据模板下载")
+    @WebLog(desc = "分子取样检测-检测数据模板上传")
     public void uploadTestTemplate(@Validated @RequestBody BioSampleTestUploadTestTemplateReqDTO bioSampleTestUploadTestTemplateReqDTO) {
         bioSampleTestService.uploadTestTemplate(bioSampleTestUploadTestTemplateReqDTO);
     }

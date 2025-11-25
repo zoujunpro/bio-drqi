@@ -57,4 +57,6 @@ public interface BioSampleTestService {
     List<CountCheckResultRspDTO> countCheckResult(String applyNo);
 
     CountTestResultRspDTO countTestResult(String applyNo);
+
+    void approveSampleResult(ApproveSampleResultReqDTO approveSampleResultReqDTO);
 }

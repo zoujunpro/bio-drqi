@@ -573,6 +573,27 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         return countTestResultRspDTO;
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void approveSampleResult(ApproveSampleResultReqDTO approveSampleResultReqDTO) {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(approveSampleResultReqDTO.getTaskNum());
+        if (!BioTaskStatusEnum.TASK_STATUS_1.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            throw new BusinessException("不是执行中工单");
+        }
+        for (ApproveSampleResultReqDTO.Content content : approveSampleResultReqDTO.getContentList()) {
+            BioSampleTestTb bioSampleTestTb = bioSampleTestTbMapper.selectOneByApplyNoAndSampleCode(approveSampleResultReqDTO.getTaskNum(), content.getSampleCode());
+            if (Objects.isNull(bioSampleTestTb)) {
+                log.error("approveSampleResult content={}", content);
+                throw new BusinessException("此工单中无此取样编号:" + content.getSampleCode() + ", 工单：" + approveSampleResultReqDTO.getTaskNum());
+            }
+            bioSampleTestTb.setCheckResult(content.getCheckResult());
+            bioSampleTestTb.setCheckUserName(SecurityContextHolder.getNickName());
+            bioSampleTestTb.setCheckUserId(SecurityContextHolder.getUserId());
+            bioSampleTestTb.setUpdateTime(new Date());
+            bioSampleTestTbMapper.updateById(bioSampleTestTb);
+        }
+    }
+
     private LayoutPreviewRspDTO getLayoutPreviewRspDTO(String applyNo) {
         LayoutPreviewRspDTO layoutPreviewRspDTO = new LayoutPreviewRspDTO();
         List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(applyNo);

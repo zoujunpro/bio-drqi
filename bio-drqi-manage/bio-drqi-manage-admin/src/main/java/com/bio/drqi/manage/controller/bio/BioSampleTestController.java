@@ -239,4 +239,16 @@ public class BioSampleTestController {
         return ResponseResult.getSuccess(bioSampleTestService.countTestResult(applyNo));
     }
 
+
+
+    /**
+     * 取样检测-取样检测审批
+     */
+    @PostMapping("approveSampleResult")
+    @WebLog(desc = "取样检测-取样结果审批")
+    public ResponseResult<String> approveSampleResult(@Validated @RequestBody ApproveSampleResultReqDTO approveSampleResultReqDTO) {
+        bioSampleTestService.approveSampleResult(approveSampleResultReqDTO);
+        return ResponseResult.getSuccess("成功");
+    }
+
 }

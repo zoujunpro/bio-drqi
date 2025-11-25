@@ -89,4 +89,17 @@
         AND region_num = #{regionNum,jdbcType=VARCHAR}
         AND seed_num = #{seedNum,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllBySeedNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_experiment_design_tb
+        where
+        seed_num = #{seedNum,jdbcType=VARCHAR}
+    </select>
+    <update id="updatePdNumAndVectorTaskCodeById">
+        update tc_experiment_design_tb
+        set pd_num           = #{pdNum,jdbcType=VARCHAR},
+            vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=NUMERIC}
+    </update>
 </mapper>

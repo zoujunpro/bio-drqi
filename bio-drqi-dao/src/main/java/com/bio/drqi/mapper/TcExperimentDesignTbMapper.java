@@ -17,6 +17,12 @@ public interface TcExperimentDesignTbMapper extends BaseMapper<TcExperimentDesig
 
     TcExperimentDesignTb selectOneByExperimentNumAndRegionNumAndSeedNum(@Param("experimentNum") String experimentNum, @Param("regionNum") String regionNum, @Param("seedNum") String seedNum);
     int insertBatch(@Param("tcExperimentDesignTbCollection") Collection<TcExperimentDesignTb> tcExperimentDesignTbCollection);
+
+    List<TcExperimentDesignTb> selectAllBySeedNum(@Param("seedNum") String seedNum);
+
+    int updatePdNumAndVectorTaskCodeById(@Param("pdNum") String pdNum, @Param("vectorTaskCode") String vectorTaskCode, @Param("id") Integer id);
+
+
 }
 
 

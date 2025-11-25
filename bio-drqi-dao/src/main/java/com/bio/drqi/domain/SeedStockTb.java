@@ -216,6 +216,8 @@ public class SeedStockTb implements Serializable {
      */
     private String matherSingleNum;
 
+    private String pdNum;
+
 
     /**
      * yyyyMMdd

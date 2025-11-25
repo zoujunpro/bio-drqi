@@ -1,4 +1,4 @@
-package com.bio.drqi.manage.service.task.project;
+package com.bio.drqi.manage.flowtask.project;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
@@ -12,11 +12,12 @@ import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.CheckResultEnum;
 import com.bio.drqi.common.enums.PlantStatusEnum;
+import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.*;
 import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
 import com.bio.drqi.manage.sample.req.LayoutConfirmReqDTO;
-import com.bio.drqi.manage.service.project.SampleTestService;
+import com.bio.drqi.manage.service.project.CerSampleTestService;
 import com.bio.drqi.mapper.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -48,13 +49,13 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
     @Resource
-    private CerSampleCodePrefixTbMapper cerSampleCodePrefixTbMapper;
+    private BioSampleCodePrefixTbMapper bioSampleCodePrefixTbMapper;
 
     @Resource
-    private SampleTestService sampleTestService;
+    private CerSampleTestService cerSampleTestService;
 
     @Resource
-    private CerSampleLayoutTbMapper cerSampleLayoutTbMapper;
+    private BioSampleLayoutTbMapper bioSampleLayoutTbMapper;
 
     @Resource
     private BioSampleTestTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
@@ -142,7 +143,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
                             layoutConfirmReqDTO.fillSampleToSingleList(cerSampleTestTb.getVectorTaskCode(), cerSampleTestTb.getTransformCode(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getIdentifyPrimer());
                         }
-                        sampleTestService.layoutConfirm(layoutConfirmReqDTO);
+                        cerSampleTestService.layoutConfirm(layoutConfirmReqDTO);
                     }
 
                 }
@@ -157,7 +158,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             cerSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull(CheckResultEnum.remove.name(), cerSampleApplyTb.getApplyNo());
             //首次取样，且已经发生过移苗
-            if (SampleApplyTypeEnum.F.name().equals(cerSampleApplyTb.getApplyType())) {
+            if (SampleTestApplyTypeEnum.first.name().equals(cerSampleApplyTb.getApplyType())) {
                 List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByApplyNo(cerSampleApplyTb.getApplyNo()).stream().filter(cerSampleTestTb -> CheckResultEnum.stay.name().equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
                     for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
@@ -178,7 +179,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         }
 
                     }
-
                 }
             }
 
@@ -200,7 +200,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         }
         cerSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         cerSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
-        cerSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
+        bioSampleLayoutTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         List<BioSampleTestTwoResultTb> bioSampleSampleTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByUploadNum(bioTaskDtlTb.getTaskNum());
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultTbList)) {
             bioSampleTestTwoResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
@@ -210,7 +210,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         }
 
         cerPlantDtlTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
-        bioSampleTestOneResultTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
+        bioSampleTestOneResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
         cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.cer_plant.name());
         cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.sample_and_test.name());
 
@@ -231,7 +231,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         cerSampleApplyTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
         cerSampleApplyTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
         cerSampleApplyTb.setApplyDesc(bioTaskDtlTb.getTaskDesc());
-        cerSampleApplyTb.setApplyType(CollectionUtil.isNotEmpty(newSampleTestDTO.getRepeatSampleApplyList()) ? SampleApplyTypeEnum.R.name() : SampleApplyTypeEnum.F.name());
+        cerSampleApplyTb.setApplyType(CollectionUtil.isNotEmpty(newSampleTestDTO.getRepeatSampleApplyList()) ? SampleTestApplyTypeEnum.repeat.name() : SampleTestApplyTypeEnum.first.name());
         cerSampleApplyTb.setIdentifyExcelUrl(null);
         cerSampleApplyTb.setOneTestExcelUrl(null);
         cerSampleApplyTb.setNgsExcelUrl(null);
@@ -325,8 +325,15 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 List<CerSampleTestTb> targetCerSampleTestTbList = new ArrayList<>();
                 CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(), firstSampleApply.getVectorTaskCode());
                 CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerTransformTb.getVectorTaskCode());
-                CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+                BioSampleCodePrefixTb bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+                List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByVectorTaskCode(firstSampleApply.getVectorTaskCode());
+                Integer maxSampleNumber = null;
+                if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
+                    cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> !cerSampleTestTb.getSampleCode().contains("-") && cerSampleTestTb.getSampleCode().startsWith(bioSampleCodePrefixTb.getSampleCodePrefix())).collect(Collectors.toList());
+                    maxSampleNumber = cerSampleTestTbList.stream().map(cerSampleTestTb -> Integer.valueOf(cerSampleTestTb.getSampleCode().substring(2))).max(Integer::compare).get();
+                }
                 for (int i = 1; i <= firstSampleApply.getSampleNum(); i++) {
+                    maxSampleNumber = maxSampleNumber == null ? 1 : maxSampleNumber + 1;
                     CerSampleTestTb cerSampleTestTb = new CerSampleTestTb();
                     cerSampleTestTb.setProjectId(cerTransformTb.getProjectId());
                     cerSampleTestTb.setSubProjectId(cerTransformTb.getSubProjectId());
@@ -336,7 +343,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     cerSampleTestTb.setVectorTaskCode(cerTransformTb.getVectorTaskCode());
                     cerSampleTestTb.setPlasmidName(cerTransformTb.getPlasmidName());
                     cerSampleTestTb.setTransformCode(cerTransformTb.getTransformCode());
-                    cerSampleTestTb.setSampleCode(cerSampleCodePrefixTb.getSampleCodePrefix() + (cerSampleCodePrefixTb.getCurrentIndex() + i - 1));
+                    cerSampleTestTb.setSampleCode(bioSampleCodePrefixTb.getSampleCodePrefix() + maxSampleNumber);
                     cerSampleTestTb.setApplyTime(new Date());
                     cerSampleTestTb.setApplyUserId(SecurityContextHolder.getUserId());
                     cerSampleTestTb.setApplyUserName(SecurityContextHolder.getNickName());
@@ -349,9 +356,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     cerSampleTestTb.setCheckResult(CheckResultEnum.noCheck.name());
                     targetCerSampleTestTbList.add(cerSampleTestTb);
                 }
-
-                cerSampleCodePrefixTb.setCurrentIndex(cerSampleCodePrefixTb.getCurrentIndex() + firstSampleApply.getSampleNum());
-                cerSampleCodePrefixTbMapper.updateById(cerSampleCodePrefixTb);
                 logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test, bioTaskDtlTb.getTaskNum());
                 try {
                     cerSampleTestTbMapper.insertBatch(targetCerSampleTestTbList);
@@ -366,10 +370,10 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         Map<String, List<CerSampleTestTb>> cerSampleTestTbListMap = cerSampleTestTbList.stream().collect(Collectors.groupingBy(CerSampleTestTb::getVectorTaskCode));
         cerSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(cerSampleTestTbListMap.keySet()).replace("[", "").replace("]", "").replace("\"", ""));
         StringBuffer sampleCodeRangeBuff = new StringBuffer();
-        if (SampleApplyTypeEnum.F.name().equals(cerSampleApplyTb.getApplyType())) {
+        if (SampleTestApplyTypeEnum.first.name().equals(cerSampleApplyTb.getApplyType())) {
             cerSampleTestTbListMap.forEach((vectorTaskCode, sampleTestList) -> {
-                CerSampleCodePrefixTb cerSampleCodePrefixTb = cerSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-                sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(cerSampleCodePrefixTb.getSampleCodePrefix())).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
+                BioSampleCodePrefixTb bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+                sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(bioSampleCodePrefixTb.getSampleCodePrefix())).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(sampleTestList)) {
                     sampleCodeRangeBuff.append(sampleTestList.get(0).getSampleCode() + "-" + sampleTestList.get(sampleTestList.size() - 1).getSampleCode()).append(",");
                 }

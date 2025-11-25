@@ -25,6 +25,7 @@ import com.bio.drqi.manage.bio.rsp.BioSampleTestQuerySpeciesByApplyTypeRspDTO;
 import com.bio.drqi.manage.dto.bio.BioSampleTestResultExcelDTO;
 import com.bio.drqi.manage.dto.bio.DownLoadIdentifyPrimerTemplateExcelDTO;
 import com.bio.drqi.manage.dto.plant.SampleTestDownRepeatSampleTemplateExcelDTO;
+import com.bio.drqi.manage.dto.plant.task.PlantSampleTestTaskDTO;
 import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
 import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
 import com.bio.drqi.manage.dto.project.TestExcelDTO;
@@ -225,9 +226,9 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
 
         }
 
-        NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
-        newSampleTestDTO.setTestDataExcelUrl(bioSampleTestUploadTestTemplateReqDTO.getExcelUrl());
-        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
+        PlantSampleTestTaskDTO plantSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantSampleTestTaskDTO.class);
+        plantSampleTestTaskDTO.setTestDataExcelUrl(bioSampleTestUploadTestTemplateReqDTO.getExcelUrl());
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plantSampleTestTaskDTO));
         //清空旧文件数据
         bioSampleTestOneResultTbMapper.deleteByUploadNum(bioSampleTestUploadTestTemplateReqDTO.getApplyNo());
         bioSampleTestResultFileTbMapper.deleteByUploadNum(bioSampleTestUploadTestTemplateReqDTO.getApplyNo());
@@ -451,8 +452,8 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         if (!uploadBioInfoSampleTestResultReqDTO.getExcelUrl().endsWith("xlsx")) {
             throw new BusinessException("文件格式错误");
         }
-        NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
-        newSampleTestDTO.setBioInfoResultExcelUrl(uploadBioInfoSampleTestResultReqDTO.getExcelUrl());
+        PlantSampleTestTaskDTO plantSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantSampleTestTaskDTO.class);
+        plantSampleTestTaskDTO.setBioInfoResultExcelUrl(uploadBioInfoSampleTestResultReqDTO.getExcelUrl());
 
         String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + uploadBioInfoSampleTestResultReqDTO.getExcelUrl();
         try {
@@ -551,7 +552,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         if (CollectionUtil.isNotEmpty(bioSampleTwoResultDetailTbList)) {
             bioSampleTestTwoResultDetailTbMapper.insertBatch(bioSampleTwoResultDetailTbList);
         }
-        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plantSampleTestTaskDTO));
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
         bioSampleTestResultFileTbMapper.insert(bioSampleTestResultFileTb);
     }

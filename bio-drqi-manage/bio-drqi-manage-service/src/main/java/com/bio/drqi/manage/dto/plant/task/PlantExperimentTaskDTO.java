@@ -26,4 +26,8 @@ public class PlantExperimentTaskDTO {
     @NotBlank(message = "试验方案设计必填")
     private String designUrl;
 
+    private List<String> pdNumList;
+
+    private List<String> vectorTaskCodeList;
+
 }

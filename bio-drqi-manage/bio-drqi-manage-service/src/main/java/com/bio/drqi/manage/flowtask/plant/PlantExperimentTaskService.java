@@ -91,8 +91,10 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
                 throw new BusinessException("CER试验小区" + experimentExcelDTO.getRegionNum() + "中存在重复种子编号" + experimentExcelDTO.getSeedNum());
             }
             checkReginCodeAndSeedNumList.add(experimentExcelDTO.getRegionNum() + experimentExcelDTO.getSeedNum());
-
         }
+        plantExperimentTaskDTO.setVectorTaskCodeList(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList()));
+        plantExperimentTaskDTO.setPdNumList(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdNumber).filter(pdNumber -> StringUtils.isNotEmpty(pdNumber)).distinct().collect(Collectors.toList()));
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plantExperimentTaskDTO));
     }
 
 
@@ -112,8 +114,8 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
             plantExperimentTb.setCreateUserId(SecurityContextHolder.getUserId());
             plantExperimentTb.setCreateUserName(SecurityContextHolder.getNickName());
             plantExperimentTb.setSampleCodePrefix(createSampleCode());
-            plantExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).collect(Collectors.toList())));
-            plantExperimentTb.setPdNums(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdNumber).filter(pdNumber -> StringUtils.isNotEmpty(pdNumber)).collect(Collectors.toList())));
+            plantExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList())));
+            plantExperimentTb.setPdNums(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdNumber).filter(pdNumber -> StringUtils.isNotEmpty(pdNumber)).distinct().collect(Collectors.toList())));
             List<PlantExperimentDetailTb> plantExperimentDetailTbList = new ArrayList<>();
             for (ExperimentExcelDTO experimentExcelDTO : experimentExcelDTOList) {
                 SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(experimentExcelDTO.getSeedNum());
@@ -139,7 +141,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
                 plantExperimentDetailTb.setCreateTime(new Date());
                 plantExperimentDetailTbList.add(plantExperimentDetailTb);
             }
-            List<PlantMultipleStockTb> plantMultipleStockTbList = plantExperimentDetailTbList.stream().map(plantExperimentDetailTb -> PlantMultipleStockTb.of(plantExperimentDetailTb,bioTaskDtlTb, SourceCodeEnum.cer)).collect(Collectors.toList());
+            List<PlantMultipleStockTb> plantMultipleStockTbList = plantExperimentDetailTbList.stream().map(plantExperimentDetailTb -> PlantMultipleStockTb.of(plantExperimentDetailTb, bioTaskDtlTb, SourceCodeEnum.cer)).collect(Collectors.toList());
             plantExperimentTbMapper.insert(plantExperimentTb);
             plantExperimentDetailTbMapper.insertBatch(plantExperimentDetailTbList);
             plantMultipleStockTbMapper.insertBatch(plantMultipleStockTbList);

@@ -222,6 +222,8 @@ public class SeedStockPageRspDTO {
      */
     private String fatherRegionNum;
 
+    private String pdNum;
+
 
 
 

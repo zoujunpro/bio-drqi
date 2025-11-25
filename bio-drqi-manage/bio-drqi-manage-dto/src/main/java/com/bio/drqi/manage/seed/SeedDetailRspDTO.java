@@ -227,5 +227,7 @@ public class SeedDetailRspDTO {
      */
     private String FatherRegionNum;
 
+    private String pdNum;
+
 
 }

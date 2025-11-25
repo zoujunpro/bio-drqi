@@ -474,7 +474,6 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         if (sampleTestBioInfoExcelDTOList.stream().map(SampleTestBioInfoExcelDTO::getSampleCode).collect(Collectors.toList()).size() != sampleTestBioInfoExcelDTOList.size()) {
             throw new BusinessException("excel中有重复取样编号");
         }
-
         List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo());
         Map<String, BioSampleTestTb> stringBioSampleTestTbMap = bioSampleTestTbList.stream().collect(Collectors.toMap(BioSampleTestTb::getSampleCode, bioSampleTestTb -> bioSampleTestTb));
         List<BioSampleTestTwoResultTb> bioSampleSampleTwoResultTbList = new ArrayList<>();
@@ -500,11 +499,8 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                 updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(bioSampleTestTb.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
             }
             bioSampleSampleTwoResultTbList.add(bioSampleSampleTwoResultTb);
-
-
         }
-        //删除旧数据
-
+        //删除旧文件数据
         bioSampleTestTwoResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
         bioSampleTestResultFileTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
         List<BioSampleTestTwoResultTb> oldBioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByUploadNum(bioTaskDtlTb.getTaskNum());

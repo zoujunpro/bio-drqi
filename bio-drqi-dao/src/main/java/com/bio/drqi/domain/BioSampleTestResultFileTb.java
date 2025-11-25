@@ -9,6 +9,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * 取样检测结果文件
@@ -72,6 +73,9 @@ public class BioSampleTestResultFileTb implements Serializable {
      * ngs匹配失败数量
      */
     private Integer ngsFailNum;
+
+    @TableField(exist = false)
+    private String uuid= UUID.randomUUID().toString();
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

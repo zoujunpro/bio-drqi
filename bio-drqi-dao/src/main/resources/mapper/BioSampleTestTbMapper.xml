@@ -139,7 +139,9 @@
                 <if test="item.applyTime != null">apply_time=#{item.applyTime,jdbcType=TIMESTAMP},</if>
                 <if test="item.applyUserId != null">apply_user_id=#{item.applyUserId,jdbcType=NUMERIC},</if>
                 <if test="item.applyUserName != null">apply_user_name=#{item.applyUserName,jdbcType=VARCHAR},</if>
-                <if test="item.testIdentifyPrimer != null">test_identify_primer=#{item.testIdentifyPrimer,jdbcType=VARCHAR},</if>
+                <if test="item.testIdentifyPrimer != null">
+                    test_identify_primer=#{item.testIdentifyPrimer,jdbcType=VARCHAR},
+                </if>
                 <if test="item.testMethod != null">test_method=#{item.testMethod,jdbcType=VARCHAR},</if>
                 <if test="item.testEditType != null">test_edit_type=#{item.testEditType,jdbcType=VARCHAR},</if>
                 <if test="item.testNoTransIdentityPrimer != null">
@@ -148,15 +150,26 @@
                 <if test="item.testIsGeneModifyPositive != null">
                     test_is_gene_modify_positive=#{item.testIsGeneModifyPositive,jdbcType=VARCHAR},
                 </if>
-                <if test="item.testIfFixedPoint != null">test_if_fixed_point=#{item.testIfFixedPoint,jdbcType=VARCHAR},</if>
-                <if test="item.testIfCopyInsert != null">test_if_copy_insert=#{item.testIfCopyInsert,jdbcType=VARCHAR},</if>
-                <if test="item.testFixedPointType != null">test_fixed_point_type=#{item.testFixedPointType,jdbcType=VARCHAR},</if>
-                <if test="item.testDonorResidueInfo != null">test_donor_residue_info=#{item.testDonorResidueInfo,jdbcType=VARCHAR},
+                <if test="item.testIfFixedPoint != null">
+                    test_if_fixed_point=#{item.testIfFixedPoint,jdbcType=VARCHAR},
                 </if>
-                <if test="item.testInsertionSite != null">test_insertion_site=#{item.testInsertionSite,jdbcType=VARCHAR},</if>
+                <if test="item.testIfCopyInsert != null">
+                    test_if_copy_insert=#{item.testIfCopyInsert,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testFixedPointType != null">
+                    test_fixed_point_type=#{item.testFixedPointType,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testDonorResidueInfo != null">
+                    test_donor_residue_info=#{item.testDonorResidueInfo,jdbcType=VARCHAR},
+                </if>
+                <if test="item.testInsertionSite != null">
+                    test_insertion_site=#{item.testInsertionSite,jdbcType=VARCHAR},
+                </if>
                 <if test="item.testElisaResult != null">test_elisa_result=#{item.testElisaResult,jdbcType=VARCHAR},</if>
                 <if test="item.testQbzrSeq != null">test_qbzr_seq=#{item.testQbzrSeq,jdbcType=VARCHAR},</if>
-                <if test="item.testEditResidueInfo != null">test_edit_residue_info=#{item.testEditResidueInfo,jdbcType=VARCHAR},</if>
+                <if test="item.testEditResidueInfo != null">
+                    test_edit_residue_info=#{item.testEditResidueInfo,jdbcType=VARCHAR},
+                </if>
                 <if test="item.testUserId != null">test_user_id=#{item.testUserId,jdbcType=NUMERIC},</if>
                 <if test="item.testUserName != null">test_user_name=#{item.testUserName,jdbcType=VARCHAR},</if>
                 <if test="item.testTime != null">test_time=#{item.testTime,jdbcType=VARCHAR},</if>
@@ -247,14 +260,16 @@
         <include refid="Base_Column_List"/>
         from bio_sample_test_tb
         where
-        sample_code like  CONCAT('%',#{sampleCode,jdbcType=VARCHAR},'%')
+        sample_code like CONCAT('%',#{sampleCode,jdbcType=VARCHAR},'%')
     </select>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BioSampleTestTb">
         select
         <include refid="Base_Column_List"/>
         from bio_sample_test_tb
         <where>
-            <if test="vectorTaskCode != null and vectorTaskCode!=''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null and vectorTaskCode!=''">and
+                vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}
+            </if>
             <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
             <if test="applyTime != null ">and apply_time=#{applyTime,jdbcType=TIMESTAMP}</if>
             <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC},</if>
@@ -263,10 +278,10 @@
             <if test="testMethod != null">and test_method=#{testMethod,jdbcType=VARCHAR}</if>
             <if test="testEditType != null">and test_edit_type=#{testEditType,jdbcType=VARCHAR}</if>
             <if test="testNoTransIdentityPrimer != null">
-                and  test_no_trans_identity_primer=#{testNoTransIdentityPrimer,jdbcType=VARCHAR}
+                and test_no_trans_identity_primer=#{testNoTransIdentityPrimer,jdbcType=VARCHAR}
             </if>
             <if test="testIsGeneModifyPositive != null">
-                and   test_is_gene_modify_positive=#{testIsGeneModifyPositive,jdbcType=VARCHAR}
+                and test_is_gene_modify_positive=#{testIsGeneModifyPositive,jdbcType=VARCHAR}
             </if>
             <if test="testIfFixedPoint != null">and test_if_fixed_point=#{testIfFixedPoint,jdbcType=VARCHAR}</if>
             <if test="testIfCopyInsert != null">and test_if_copy_insert=#{testIfCopyInsert,jdbcType=VARCHAR}</if>
@@ -276,7 +291,8 @@
             <if test="testInsertionSite != null">and test_insertion_site=#{testInsertionSite,jdbcType=VARCHAR}</if>
             <if test="testElisaResult != null">and test_elisa_result=#{testElisaResult,jdbcType=VARCHAR}</if>
             <if test="testQbzrSeq != null">and test_qbzr_seq=#{testQbzrSeq,jdbcType=VARCHAR}</if>
-            <if test="testEditResidueInfo != null">and test_edit_residue_info=#{testEditResidueInfo,jdbcType=VARCHAR}</if>
+            <if test="testEditResidueInfo != null">and test_edit_residue_info=#{testEditResidueInfo,jdbcType=VARCHAR}
+            </if>
             <if test="testUserId != null">and test_user_id=#{testUserId,jdbcType=NUMERIC}</if>
             <if test="testUserName != null">and test_user_name=#{testUserName,jdbcType=VARCHAR}</if>
             <if test="testTime != null">and test_time=#{testTime,jdbcType=VARCHAR}</if>
@@ -289,21 +305,25 @@
             <if test="identifyPrimer != null">and identify_primer=#{identifyPrimer,jdbcType=VARCHAR},</if>
             <if test="uniqueCode != null">and unique_code=#{uniqueCode,jdbcType=VARCHAR}</if>
             <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
-            <if test="cloneSampleCode != null and cloneSampleCode!=''">and clone_sample_code=#{cloneSampleCode,jdbcType=VARCHAR}</if>
+            <if test="cloneSampleCode != null and cloneSampleCode!=''">and
+                clone_sample_code=#{cloneSampleCode,jdbcType=VARCHAR}
+            </if>
             <if test="sourceCode != null and sourceCode!=''">and source_code=#{sourceCode,jdbcType=VARCHAR}</if>
             <if test="testOrgResult != null">and test_org_result=#{testOrgResult,jdbcType=VARCHAR}</if>
             <if test="generation != null and generation!=''">and generation=#{generation,jdbcType=VARCHAR}</if>
             <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
             <if test="breedCode != null and breedCode!=''">and breed_code=#{breedCode,jdbcType=VARCHAR}</if>
-            <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
+            <if test="experimentNum != null and experimentNum!=''">and
+                experiment_num=#{experimentNum,jdbcType=VARCHAR}
+            </if>
             <if test="regionNum != null and regionNum!=''">and region_num=#{regionNum,jdbcType=VARCHAR}</if>
             <if test="seedNum != null and seedNum!=''">and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
             <if test='cloneSampleFlag =="Y"'>and clone_sample_code is not null</if>
             <if test='cloneSampleFlag =="N"'>and clone_sample_code is null</if>
-            <if test='testFlag =="Y"'>and test_user_id is null</if>
-            <if test='testFlag =="N"'>and test_user_id is not  null</if>
+            <if test='testFlag =="Y"'>and test_user_id is not null</if>
+            <if test='testFlag =="N"'>and test_user_id is null</if>
         </where>
-            order by id desc
+        order by id desc
     </select>
 
 </mapper>

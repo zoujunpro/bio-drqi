@@ -226,8 +226,8 @@ public class BioSampleTestTb implements Serializable {
         bioSampleTestTb.setBreedCode(breedCode);
         bioSampleTestTb.setSpeciesCode(speciesCode);
         bioSampleTestTb.setSeedNum(seedNum);
-        bioSampleTestTb.setExperimentNum(regionNum);
-        bioSampleTestTb.setRegionNum(experimentNum);
+        bioSampleTestTb.setExperimentNum(experimentNum);
+        bioSampleTestTb.setRegionNum(regionNum);
         bioSampleTestTb.setApplyTime(bioTaskDtlTb.getApplyTime());
         bioSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
         bioSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());

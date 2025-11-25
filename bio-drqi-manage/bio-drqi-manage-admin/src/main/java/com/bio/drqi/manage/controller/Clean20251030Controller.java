@@ -16,6 +16,7 @@ import com.bio.drqi.enums.VectorTaskStatusEnum;
 import com.bio.drqi.manage.dto.project.*;
 import com.bio.drqi.manage.service.bio.BioSampleTwoResultService;
 import com.bio.drqi.mapper.*;
+import com.bio.print.PlantPrintData;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -154,10 +155,21 @@ public class Clean20251030Controller {
 
 
     @GetMapping("/cleanLabel")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanLabel() {
         List<BioPrintLabelInfoTb> printLabelInfoTbList = bioPrintLabelInfoTbMapper.searchAllByLabelType("plant_label_print");
         printLabelInfoTbList = printLabelInfoTbList.stream().filter(bioPrintLabelInfoTb -> bioPrintLabelInfoTb.getUniqueCode().contains("EK007")).collect(Collectors.toList());
-
+        for (BioPrintLabelInfoTb bioPrintLabelInfoTb : printLabelInfoTbList) {
+            log.info("bioPrintLabelInfoTb="+JSONUtil.toJsonStr(bioPrintLabelInfoTb));
+            PlantPrintData plantPrintData = JSONUtil.toBean(bioPrintLabelInfoTb.getLabelText(), PlantPrintData.class);
+            CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(plantPrintData.getTransformCode(),plantPrintData.getVectorTaskCode());
+            if(cerTransformTb==null){
+                throw new BusinessException("找不到转化信息");
+            }
+            plantPrintData.setBreedName(cerTransformTb.getAcceptorMaterial());
+            bioPrintLabelInfoTb.setLabelText(JSONUtil.toJsonStr(printLabelInfoTbList));
+            //bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
+        }
         return ResponseResult.getSuccess("ok");
     }
 

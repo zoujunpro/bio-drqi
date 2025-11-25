@@ -153,25 +153,16 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
 
     @Override
     public void downTestTemplate(DownTestTemplateReqDTO downTestTemplateReqDTO, HttpServletResponse response) {
-        List<BioSampleTestResultExcelDTO> testExcelDTOList = new ArrayList<>();
+        List<BioSampleTestResultExcelDTO> bioSampleTestResultExcelDTOList = new ArrayList<>();
         if (StringUtils.isNotEmpty(downTestTemplateReqDTO.getApplyNo())) {
             List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(downTestTemplateReqDTO.getApplyNo());
             for (BioSampleTestTb bioSampleTestTb : bioSampleTestTbList) {
                 BioSampleTestResultExcelDTO bioSampleTestResultExcelDTO = new BioSampleTestResultExcelDTO();
                 bioSampleTestResultExcelDTO.setSampleCode(bioSampleTestTb.getSampleCode());
-                testExcelDTOList.add(bioSampleTestResultExcelDTO);
+                bioSampleTestResultExcelDTOList.add(bioSampleTestResultExcelDTO);
             }
         }
-
-        try {
-            String excelTemplateName = "检测数据上传模板_V1.xlsx";
-            String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
-            ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
-            ExcelUtil.fillExcel(templateDir, testExcelDTOList, BioSampleTestResultExcelDTO.class, response);
-        } catch (Exception e) {
-            log.error("模板下载失败，", e);
-            throw new BusinessException("模板下载失败，请联系管理员检测模板配置");
-        }
+        ExcelUtil.writeExcel("检测数据上传模板", "sheet1", bioSampleTestResultExcelDTOList, BioSampleTestResultExcelDTO.class, response);
 
     }
 

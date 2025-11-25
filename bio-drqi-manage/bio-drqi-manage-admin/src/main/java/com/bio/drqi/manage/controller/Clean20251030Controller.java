@@ -149,12 +149,23 @@ public class Clean20251030Controller {
     @Resource
     private BioSampleTwoResultService bioSampleTwoResultService;
 
+    @Resource
+    private BioPrintLabelInfoTbMapper bioPrintLabelInfoTbMapper;
+
+
+    @GetMapping("/cleanLabel")
+    public ResponseResult<String> cleanLabel() {
+        List<BioPrintLabelInfoTb> printLabelInfoTbList = bioPrintLabelInfoTbMapper.searchAllByLabelType("plant_label_print");
+        printLabelInfoTbList = printLabelInfoTbList.stream().filter(bioPrintLabelInfoTb -> bioPrintLabelInfoTb.getUniqueCode().contains("EK007")).collect(Collectors.toList());
+
+        return ResponseResult.getSuccess("ok");
+    }
 
     @GetMapping("/cleanNGS")
     public ResponseResult<String> cleanNGS() {
         List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectSelective(null).stream().filter(bioSampleTestTwoResultTb -> !BioDrQiContents.O.equals(bioSampleTestTwoResultTb.getSynResult())).collect(Collectors.toList());
         for (BioSampleTestTwoResultTb bioSampleTestTwoResultTb : bioSampleTestTwoResultTbList) {
-            log.info("bioSampleTestTwoResultTb={}"+JSONUtil.toJsonStr(bioSampleTestTwoResultTb));
+            log.info("bioSampleTestTwoResultTb={}" + JSONUtil.toJsonStr(bioSampleTestTwoResultTb));
             bioSampleTwoResultService.synOne(bioSampleTestTwoResultTb.getId());
         }
         return ResponseResult.getSuccess("ok");

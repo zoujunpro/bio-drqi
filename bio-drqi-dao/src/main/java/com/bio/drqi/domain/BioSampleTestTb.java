@@ -206,6 +206,15 @@ public class BioSampleTestTb implements Serializable {
     private Integer countNum;
 
     @TableField(exist = false)
+    private String sampleMonth;
+
+    @TableField(exist = false)
+    private String cloneSampleFlag;
+
+    @TableField(exist = false)
+    private String testFlag;
+
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
 

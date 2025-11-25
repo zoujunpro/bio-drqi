@@ -66,6 +66,7 @@ public class BioSampleTwoResultController {
 
     /**
      * 二代测序-同步某一个生信结果
+     *
      * @param id
      * @return
      */
@@ -73,13 +74,13 @@ public class BioSampleTwoResultController {
     @WebLog(desc = "二代测序-同步某一个生信结果")
     public ResponseResult<String> synOne(@RequestParam Integer id) {
         bioSampleTwoResultService.synOne(id);
-    return ResponseResult.getSuccess("成功");
+        return ResponseResult.getSuccess("成功");
     }
 
     @GetMapping("deleteNgsResult")
     @WebLog(desc = "取样检测-删除无效的NGS结果")
     @RequestLog("取样检测-删除无效的NGS结果")
-    public ResponseResult<String> deleteNgsResult(@RequestParam @Validated @NotBlank(message = "参数缺失：uniqueDbCode") String uniqueDbCode){
+    public ResponseResult<String> deleteNgsResult(@RequestParam @Validated @NotBlank(message = "参数缺失：uniqueDbCode") String uniqueDbCode) {
         bioSampleTwoResultService.deleteNgsResult(uniqueDbCode);
         return ResponseResult.getSuccess("ok");
     }

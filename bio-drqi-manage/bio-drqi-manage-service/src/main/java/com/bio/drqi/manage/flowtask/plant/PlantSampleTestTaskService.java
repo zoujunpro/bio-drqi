@@ -220,7 +220,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
-
+            bioSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
             bioSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull(CheckResultEnum.remove.name(), bioSampleApplyTb.getApplyNo());
 
             //首次取样，且已经发生过移苗

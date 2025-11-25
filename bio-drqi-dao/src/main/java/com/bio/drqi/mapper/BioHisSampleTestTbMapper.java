@@ -13,6 +13,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface BioHisSampleTestTbMapper extends BaseMapper<BioHisSampleTestTb> {
 
+    int deleteByApplyNo(@Param("applyNo") String applyNo);
+
     int insertBatch(@Param("bioHisSampleTestTbCollection") Collection<BioHisSampleTestTb> bioHisSampleTestTbCollection);
 
 }

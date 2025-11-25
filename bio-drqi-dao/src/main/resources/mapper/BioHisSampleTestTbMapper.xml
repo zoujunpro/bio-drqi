@@ -95,4 +95,9 @@
             #{item.testOrgResult})
         </foreach>
     </insert>
+    <delete id="deleteByApplyNo">
+        delete
+        from bio_his_sample_test_tb
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+    </delete>
 </mapper>

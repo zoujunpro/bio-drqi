@@ -493,11 +493,11 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
             bioSampleSampleTwoResultTb.setCreateTime(currentDate);
             bioSampleSampleTwoResultTb.setTestChannel(TestChannelEnum.project.name());
             if (Objects.isNull(bioSampleTestTb)) {
-                //更新检测人（检测标志）
-                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(bioSampleTestTb.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
-            } else {
                 bioSampleSampleTwoResultTb.setFailMessage("取样编号错误，CER中无此取样编号");
                 bioSampleSampleTwoResultTb.setSynResult(BioDrQiContents.O);
+            } else {
+                //更新检测人（检测标志）
+                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(bioSampleTestTb.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
             }
             bioSampleSampleTwoResultTbList.add(bioSampleSampleTwoResultTb);
 
@@ -539,7 +539,9 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         }
         bioSampleTestResultFileTbMapper.insert(bioSampleTestResultFileTb);
         bioSampleTestTwoResultTbMapper.insertBatch(bioSampleSampleTwoResultTbList);
-        bioSampleTestTbMapper.updateBatchById(updateBioSampleTestTbList);
+        if (CollectionUtil.isNotEmpty(updateBioSampleTestTbList)) {
+            bioSampleTestTbMapper.updateBatchById(updateBioSampleTestTbList);
+        }
         if (CollectionUtil.isNotEmpty(bioSampleTwoResultDetailTbList)) {
             bioSampleTestTwoResultDetailTbMapper.insertBatch(bioSampleTwoResultDetailTbList);
         }

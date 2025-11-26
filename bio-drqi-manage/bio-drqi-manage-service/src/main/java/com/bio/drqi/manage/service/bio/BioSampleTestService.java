@@ -5,7 +5,8 @@ import com.bio.drqi.manage.bio.req.BioSampleTestListDetailReqDTO;
 import com.bio.drqi.manage.bio.req.BioSampleTestUploadTestTemplateReqDTO;
 
 import com.bio.drqi.manage.bio.rsp.BioSampleTestListDetailRspDTO;
-import com.bio.drqi.manage.bio.rsp.BioSampleTestQuerySpeciesByApplyTypeRspDTO;
+import com.bio.drqi.manage.bio.req.BioSampleTestQueryBySampleCodeListReqDTO;
+import com.bio.drqi.manage.bio.rsp.BioSampleTestQueryBySampleCodeListRspDTO;
 import com.bio.drqi.manage.sample.req.*;
 
 import com.bio.drqi.manage.sample.rsp.*;
@@ -21,6 +22,7 @@ public interface BioSampleTestService {
 
     PageInfo<BioSampleTestListDetailRspDTO> listPage(BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO);
 
+    List<BioSampleTestQueryBySampleCodeListRspDTO> queryBySampleCodeList(BioSampleTestQueryBySampleCodeListReqDTO bioSampleTestQueryBySampleCodeListReqDTO);
 
     void downRepeatSampleTemplate(HttpServletResponse httpServletResponse);
 

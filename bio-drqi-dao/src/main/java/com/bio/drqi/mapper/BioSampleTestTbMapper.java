@@ -26,6 +26,8 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
     List<BioSampleTestTb> selectAllByApplyNo(@Param("applyNo") String applyNo);
 
+    List<BioSampleTestTb> selectAllBySampleCodeIn(@Param("sampleCodeList") Collection<String> sampleCodeList);
+
     int deleteByApplyNo(@Param("applyNo") String applyNo);
 
     List<BioSampleTestTb> selectAllByApplyNoAndSampleCodeIn(@Param("applyNo") String applyNo, @Param("sampleCodeList") Collection<String> sampleCodeList);

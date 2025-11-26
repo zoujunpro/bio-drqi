@@ -2,10 +2,8 @@ package com.bio.drqi.manage.service.plant;
 
 
 import com.bio.drqi.manage.plant.req.PlantSingleStockListPageReqDTO;
-import com.bio.drqi.manage.plant.req.PlantSingleStockQueryBySampleCodeListReqDTO;
 import com.bio.drqi.manage.plant.req.PlantSingleStockQueryListReqDTO;
 import com.bio.drqi.manage.plant.rsp.PlantSingleStockListPageRspDTO;
-import com.bio.drqi.manage.plant.rsp.PlantSingleStockQueryBySampleCodeListRspDTO;
 import com.bio.drqi.manage.plant.rsp.PlantSingleStockQueryListRspDTO;
 import com.github.pagehelper.PageInfo;
 
@@ -18,5 +16,4 @@ public interface PlantSingleStockService {
     List<PlantSingleStockQueryListRspDTO> queryList(PlantSingleStockQueryListReqDTO plantSingleStockListPageReqDTO);
 
 
-    List<PlantSingleStockQueryBySampleCodeListRspDTO> queryBySampleCodeList(PlantSingleStockQueryBySampleCodeListReqDTO plantSingleStockQueryBySampleCodeListReqDTO);
 }

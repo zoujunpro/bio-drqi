@@ -1,5 +1,4 @@
-package com.bio.drqi.manage.service.bio.impl.impl;
-
+package com.bio.drqi.manage.service.bio.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
@@ -10,7 +9,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.contents.BioDrQiContents;
-import com.bio.drqi.common.enums.TestChannelEnum;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SampleResultFileTypeENum;
 import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
@@ -111,7 +110,7 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
                     BioSampleTestOneResultTb bioSampleTestOneResultTb = new BioSampleTestOneResultTb();
                     bioSampleTestOneResultTb.setSampleCode(testExcelDTO.getSampleCode());
                     bioSampleTestOneResultTb.setUploadNum(bioSampleTestResultFileTb.getUploadNum());
-                    bioSampleTestOneResultTb.setTestChannel(TestChannelEnum.project.name());
+                    bioSampleTestOneResultTb.setTestChannel(SourceCodeEnum.project.name());
                     bioSampleTestOneResultTb.setRemark("取样编号错误或者取样编号不属于T0代取样");
                     bioSampleSampleOneResultTbList.add(bioSampleTestOneResultTb);
                     continue;
@@ -130,7 +129,7 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
                 cerSampleTestTbList = cerSampleTestTbList.stream().sorted(Comparator.comparing(CerSampleTestTb::getId).reversed()).collect(Collectors.toList());
                 //第一个的一定更新
                 updateCerSampleTestTbList.add(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(), cerSampleTestTbList.get(0).getSampleCode()));
-                bioSampleSampleOneResultTbList.add(BioSampleTestOneResultTb.of(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(), cerSampleTestTbList.get(0).getSampleCode()), TestChannelEnum.project.name(), cerSampleTestTbList.get(0).getApplyNo(), bioSampleTestResultFileTb.getUploadNum()));
+                bioSampleSampleOneResultTbList.add(BioSampleTestOneResultTb.of(buildUpdateCerSampleTestTb(testExcelDTO, cerSampleTestTbList.get(0).getId(), cerSampleTestTbList.get(0).getSampleCode()), SourceCodeEnum.project.name(), cerSampleTestTbList.get(0).getApplyNo(), bioSampleTestResultFileTb.getUploadNum()));
 
                 //剩下的，如果没有上传过结果，则补更新结果
                 for (int i = 1; i < cerSampleTestTbList.size(); i++) {
@@ -173,7 +172,7 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
                     BioSampleTestTwoResultTb bioSampleTestTwoResultTb = new BioSampleTestTwoResultTb();
                     bioSampleTestTwoResultTb.setSampleCode(sampleTestBioInfoExcelDTO.getSampleCode());
                     bioSampleTestTwoResultTb.setUploadNum(bioSampleTestResultFileTb.getUploadNum());
-                    bioSampleTestTwoResultTb.setTestChannel(TestChannelEnum.project.name());
+                    bioSampleTestTwoResultTb.setTestChannel(SourceCodeEnum.project.name());
                     bioSampleTestTwoResultTb.setRunId(sampleTestBioInfoExcelDTO.getRunId());
                     bioSampleTestTwoResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
                     bioSampleTestTwoResultTb.setFailMessage("取样编号错误或者取样编号不属于T0代取样");
@@ -250,7 +249,7 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
         bioSampleSampleTwoResultTb.setSampleCode(firstCerSampleTestTb.getSampleCode());
         bioSampleSampleTwoResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
         bioSampleSampleTwoResultTb.setRunId(sampleTestBioInfoExcelDTO.getRunId());
-        bioSampleSampleTwoResultTb.setTestChannel(TestChannelEnum.project.name());
+        bioSampleSampleTwoResultTb.setTestChannel(SourceCodeEnum.project.name());
         bioSampleSampleTwoResultTb.setCreateTime(new Date());
         bioSampleSampleTwoResultTb.setUploadNum(uploadNo);
         return bioSampleSampleTwoResultTb;

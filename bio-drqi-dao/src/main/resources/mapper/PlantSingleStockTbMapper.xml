@@ -87,16 +87,6 @@
         </where>
         order by id desc
     </select>
-    <select id="selectAllBySampleCodeIn" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from plant_single_stock_tb
-        where
-        sample_code in
-        <foreach collection="sampleCodeList" item="item" open="(" close=")" separator=",">
-            #{item,jdbcType=VARCHAR}
-        </foreach>
-    </select>
     <insert id="insertBatch">
         insert into plant_single_stock_tb(id,plant_code,generation,
         plant_number,plant_date,sample_code,

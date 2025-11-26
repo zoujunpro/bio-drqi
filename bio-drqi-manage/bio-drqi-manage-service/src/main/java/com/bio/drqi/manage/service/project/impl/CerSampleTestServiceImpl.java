@@ -15,11 +15,14 @@ import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.CheckResultEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
-import com.bio.drqi.common.enums.TestChannelEnum;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.base.SampleUnitDTO;
 import com.bio.drqi.manage.dto.bio.DownLoadIdentifyPrimerTemplateExcelDTO;
-import com.bio.drqi.manage.dto.project.*;
+import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
+import com.bio.drqi.manage.dto.project.SampleExcelDTO;
+import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
+import com.bio.drqi.manage.dto.project.TestExcelDTO;
 import com.bio.drqi.manage.sample.req.*;
 import com.bio.drqi.manage.sample.rsp.*;
 import com.bio.drqi.manage.service.common.SynSampleTestResultService;
@@ -279,7 +282,7 @@ public class CerSampleTestServiceImpl implements CerSampleTestService {
             }
             updateCerSampleTestTb.setUpdateTime(new Date());
             updateList.add(updateCerSampleTestTb);
-            bioSampleSampleOneResultTbList.add(BioSampleTestOneResultTb.of(updateCerSampleTestTb, TestChannelEnum.project.name(), uploadTestTemplateReqDTO.getApplyNo(), null));
+            bioSampleSampleOneResultTbList.add(BioSampleTestOneResultTb.of(updateCerSampleTestTb, SourceCodeEnum.project.name(), uploadTestTemplateReqDTO.getApplyNo(), null));
 
         }
 
@@ -617,7 +620,7 @@ public class CerSampleTestServiceImpl implements CerSampleTestService {
             bioSampleSampleTwoResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
             bioSampleSampleTwoResultTb.setRunId(sampleTestBioInfoExcelDTO.getRunId());
             bioSampleSampleTwoResultTb.setCreateTime(currentDate);
-            bioSampleSampleTwoResultTb.setTestChannel(TestChannelEnum.project.name());
+            bioSampleSampleTwoResultTb.setTestChannel(SourceCodeEnum.project.name());
             bioSampleSampleTwoResultTbList.add(bioSampleSampleTwoResultTb);
             //更新检测人（检测标志）
             updateCerSampleTestTbList.add(CerSampleTestTb.builder().id(cerSampleTestTb.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());

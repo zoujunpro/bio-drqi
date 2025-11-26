@@ -3,12 +3,12 @@ package com.bio.drqi.manage.controller.bio;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.oss.service.OssService;
-import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.bio.req.BioSampleTestListDetailReqDTO;
 import com.bio.drqi.manage.bio.req.BioSampleTestUploadTestTemplateReqDTO;
 import com.bio.drqi.manage.bio.rsp.BioSampleTestListDetailRspDTO;
-import com.bio.drqi.manage.bio.rsp.BioSampleTestQuerySpeciesByApplyTypeRspDTO;
+import com.bio.drqi.manage.bio.req.BioSampleTestQueryBySampleCodeListReqDTO;
+import com.bio.drqi.manage.bio.rsp.BioSampleTestQueryBySampleCodeListRspDTO;
 import com.bio.drqi.manage.sample.req.*;
 import com.bio.drqi.manage.sample.rsp.*;
 import com.bio.drqi.manage.service.bio.BioSampleTestService;
@@ -33,7 +33,7 @@ public class BioSampleTestController {
     @Resource
     private OssService ossService;
     /**
-     * 取样检测-分页查询
+     * 分子取样检测-分页查询
      *
      * @param bioSampleTestListDetailReqDTO
      * @return
@@ -44,6 +44,20 @@ public class BioSampleTestController {
         PageInfo<BioSampleTestListDetailRspDTO> resultList = bioSampleTestService.listPage(bioSampleTestListDetailReqDTO);
         return ResponseResult.getSuccess(resultList);
     }
+
+
+
+    /**
+     * 分子取样检测-根据取样编号查询
+     * @return
+     */
+    @PostMapping("/queryBySampleCodeList")
+    @WebLog(desc = "cer苗库管理（有具体种植编号苗库）-根据取样编号批次查询")
+    public ResponseResult<List<BioSampleTestQueryBySampleCodeListRspDTO>>  queryBySampleCodeList(@RequestBody @Validated BioSampleTestQueryBySampleCodeListReqDTO bioSampleTestQueryBySampleCodeListReqDTO){
+        return ResponseResult.getSuccess(bioSampleTestService.queryBySampleCodeList(bioSampleTestQueryBySampleCodeListReqDTO));
+    }
+
+
 
     /**
      * 分子取样检测-下载重复取样模板

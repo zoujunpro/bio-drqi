@@ -9,10 +9,8 @@ import com.bio.drqi.mapper.CerBreedDictMapper;
 import com.bio.drqi.mapper.CerSpeciesConfMapper;
 import com.bio.drqi.mapper.PlantSingleStockTbMapper;
 import com.bio.drqi.manage.plant.req.PlantSingleStockListPageReqDTO;
-import com.bio.drqi.manage.plant.req.PlantSingleStockQueryBySampleCodeListReqDTO;
 import com.bio.drqi.manage.plant.req.PlantSingleStockQueryListReqDTO;
 import com.bio.drqi.manage.plant.rsp.PlantSingleStockListPageRspDTO;
-import com.bio.drqi.manage.plant.rsp.PlantSingleStockQueryBySampleCodeListRspDTO;
 import com.bio.drqi.manage.plant.rsp.PlantSingleStockQueryListRspDTO;
 import com.bio.drqi.manage.service.plant.PlantSingleStockService;
 import com.github.pagehelper.PageHelper;
@@ -37,6 +35,7 @@ public class BioSingleStockServiceImpl implements PlantSingleStockService {
 
     @Resource
     private CerBreedDictMapper cerBreedDictMapper;
+
 
     @Override
     public PageInfo<PlantSingleStockListPageRspDTO> listPage(PlantSingleStockListPageReqDTO plantSingleStockListPageReqDTO) {
@@ -71,18 +70,5 @@ public class BioSingleStockServiceImpl implements PlantSingleStockService {
 
     }
 
-    @Override
-    public List<PlantSingleStockQueryBySampleCodeListRspDTO> queryBySampleCodeList(PlantSingleStockQueryBySampleCodeListReqDTO plantSingleStockQueryBySampleCodeListReqDTO) {
-        List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectAllBySampleCodeIn(plantSingleStockQueryBySampleCodeListReqDTO.getSampleCodeList());
-        List<PlantSingleStockQueryBySampleCodeListRspDTO> result = BeanUtils.copyListProperties(plantSingleStockTbList, PlantSingleStockQueryBySampleCodeListRspDTO.class);
-        if(CollectionUtil.isNotEmpty(result)){
-            Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
-            Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
-            result.forEach(plantSingleStockQueryBySampleCodeListRspDTO -> {
-                plantSingleStockQueryBySampleCodeListRspDTO.setBreedName(cerBreedDictMap.get(plantSingleStockQueryBySampleCodeListRspDTO.getBreedCode()));
-                plantSingleStockQueryBySampleCodeListRspDTO.setSpeciesName(cerSpeciesConfMap.get(plantSingleStockQueryBySampleCodeListRspDTO.getSpeciesCode()));
-            });
-        }
-        return result;
-    }
+
 }

@@ -13,20 +13,20 @@ import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
-import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
-import com.bio.drqi.common.enums.TestChannelEnum;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.base.SampleUnitDTO;
 import com.bio.drqi.manage.bio.req.BioSampleTestListDetailReqDTO;
 import com.bio.drqi.manage.bio.req.BioSampleTestUploadTestTemplateReqDTO;
 import com.bio.drqi.manage.bio.rsp.BioSampleTestListDetailRspDTO;
-import com.bio.drqi.manage.bio.rsp.BioSampleTestQuerySpeciesByApplyTypeRspDTO;
 import com.bio.drqi.manage.dto.bio.BioSampleTestResultExcelDTO;
 import com.bio.drqi.manage.dto.bio.DownLoadIdentifyPrimerTemplateExcelDTO;
 import com.bio.drqi.manage.dto.plant.SampleTestDownRepeatSampleTemplateExcelDTO;
 import com.bio.drqi.manage.dto.plant.task.PlantSampleTestTaskDTO;
 import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
+import com.bio.drqi.manage.bio.req.BioSampleTestQueryBySampleCodeListReqDTO;
+import com.bio.drqi.manage.bio.rsp.BioSampleTestQueryBySampleCodeListRspDTO;
 import com.bio.drqi.manage.sample.req.*;
 import com.bio.drqi.manage.sample.rsp.*;
 import com.bio.drqi.manage.service.bio.BioSampleTestService;
@@ -88,7 +88,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
     private PlantMultipleStockTbMapper plantMultipleStockTbMapper;
 
     @Resource
-    private PlantSingleStockTbMapper plantSingleStockTbMapper;
+    private CerBreedDictMapper cerBreedDictMapper;
 
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
@@ -139,6 +139,24 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         }
     }
 
+    @Override
+    public List<BioSampleTestQueryBySampleCodeListRspDTO> queryBySampleCodeList(BioSampleTestQueryBySampleCodeListReqDTO bioSampleTestQueryBySampleCodeListReqDTO) {
+        List<BioSampleTestQueryBySampleCodeListRspDTO> result=new ArrayList<>();
+        Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+        Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
+        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCodeIn(bioSampleTestQueryBySampleCodeListReqDTO.getSampleCodeList());
+        Map<String, List<BioSampleTestTb>> bioSampleTestTbMap = bioSampleTestTbList.stream().collect(Collectors.groupingBy(BioSampleTestTb::getSampleCode));
+        bioSampleTestTbMap.forEach((sampleCode,list)->{
+            BioSampleTestTb bioSampleTestTb=list.get(0);
+            BioSampleTestQueryBySampleCodeListRspDTO bioSampleTestQueryBySampleCodeListRspDTO =BeanUtils.copyProperties(bioSampleTestTb, BioSampleTestQueryBySampleCodeListRspDTO.class);
+            bioSampleTestQueryBySampleCodeListRspDTO.setBreedName(cerBreedDictMap.get(bioSampleTestQueryBySampleCodeListRspDTO.getBreedCode()));
+            bioSampleTestQueryBySampleCodeListRspDTO.setSpeciesName(cerSpeciesConfMap.get(bioSampleTestQueryBySampleCodeListRspDTO.getSpeciesCode()));
+            result.add(bioSampleTestQueryBySampleCodeListRspDTO);
+        });
+
+        return result;
+    }
+
     private boolean checkTaskStatusIfRefuse(BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO) {
         if (StringUtils.isNotEmpty(bioSampleTestListDetailReqDTO.getApplyNo())) {
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(bioSampleTestListDetailReqDTO.getApplyNo());
@@ -148,7 +166,6 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         }
         return false;
     }
-
 
 
     @Override
@@ -226,7 +243,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                 updateBioSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
             }
             updateList.add(updateBioSampleTestTb);
-            bioSampleSampleOneResultTbList.add(BioSampleTestOneResultTb.of(updateBioSampleTestTb, TestChannelEnum.project.name(), updateBioSampleTestTb.getApplyNo(), null));
+            bioSampleSampleOneResultTbList.add(BioSampleTestOneResultTb.of(updateBioSampleTestTb, SourceCodeEnum.project.name(), updateBioSampleTestTb.getApplyNo(), null));
 
         }
 
@@ -494,7 +511,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
             bioSampleSampleTwoResultTb.setSampleId(sampleTestBioInfoExcelDTO.getSampleId());
             bioSampleSampleTwoResultTb.setRunId(sampleTestBioInfoExcelDTO.getRunId());
             bioSampleSampleTwoResultTb.setCreateTime(currentDate);
-            bioSampleSampleTwoResultTb.setTestChannel(TestChannelEnum.project.name());
+            bioSampleSampleTwoResultTb.setTestChannel(SourceCodeEnum.project.name());
             if (Objects.isNull(bioSampleTestTb)) {
                 bioSampleSampleTwoResultTb.setFailMessage("取样编号错误，CER中无此取样编号");
                 bioSampleSampleTwoResultTb.setSynResult(BioDrQiContents.O);

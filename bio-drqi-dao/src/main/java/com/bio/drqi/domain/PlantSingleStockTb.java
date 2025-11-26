@@ -157,9 +157,19 @@ public class PlantSingleStockTb implements Serializable {
         PlantSingleStockTb plantSingleStockTb = new PlantSingleStockTb();
         plantSingleStockTb.setPlantCode(bioSampleTestTb.getSampleCode());
         plantSingleStockTb.setGeneration(bioSampleTestTb.getGeneration());
+        plantSingleStockTb.setVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
+        plantSingleStockTb.setSampleCode(bioSampleTestTb.getSampleCode());
+        plantSingleStockTb.setSpeciesCode(bioSampleTestTb.getSpeciesCode());
+        plantSingleStockTb.setCreateDate(new Date());
+        plantSingleStockTb.setUpdateTime(new Date());
+        plantSingleStockTb.setCreateUserId(bioSampleTestTb.getApplyUserId());
+        plantSingleStockTb.setCreateUserName(bioSampleTestTb.getApplyUserName());
+        plantSingleStockTb.setTaskNum(bioSampleTestTb.getApplyNo());
+        plantSingleStockTb.setBreedCode(bioSampleTestTb.getBreedCode());
+        plantSingleStockTb.setSourceCode(bioSampleTestTb.getSourceCode());
+
         plantSingleStockTb.setPlantNumber(null);
         plantSingleStockTb.setPlantDate(null);
-        plantSingleStockTb.setSampleCode(bioSampleTestTb.getSampleCode());
         plantSingleStockTb.setTransplantDate(null);
         plantSingleStockTb.setVernalizationBeginDate(null);
         plantSingleStockTb.setVernalizationEndDate(null);
@@ -170,18 +180,9 @@ public class PlantSingleStockTb implements Serializable {
         plantSingleStockTb.setHarvestType(null);
         plantSingleStockTb.setOtherField(null);
         plantSingleStockTb.setEditType(null);
-        plantSingleStockTb.setSpeciesCode(bioSampleTestTb.getSampleCode());
-        plantSingleStockTb.setSpeciesCode(bioSampleTestTb.getSpeciesCode());
-        plantSingleStockTb.setCreateDate(new Date());
-        plantSingleStockTb.setUpdateTime(new Date());
-        plantSingleStockTb.setCreateUserId(bioSampleTestTb.getApplyUserId());
-        plantSingleStockTb.setCreateUserName(bioSampleTestTb.getApplyUserName());
-        plantSingleStockTb.setTaskNum(bioSampleTestTb.getApplyNo());
-        plantSingleStockTb.setBreedCode(null);
-        plantSingleStockTb.setBreedCode(bioSampleTestTb.getBreedCode());
-        plantSingleStockTb.setSourceCode(bioSampleTestTb.getSourceCode());
+
+
         plantSingleStockTb.setRemark(null);
-        plantSingleStockTb.setVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
         return plantSingleStockTb;
 
     }

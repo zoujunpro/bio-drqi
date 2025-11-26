@@ -285,7 +285,6 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
             for (BioSampleTestTb bioSampleTestTb : bioSampleTestTbList) {
                 DownLoadIdentifyPrimerTemplateExcelDTO downLoadIdentifyPrimerTemplateExcelDTO = new DownLoadIdentifyPrimerTemplateExcelDTO();
                 downLoadIdentifyPrimerTemplateExcelDTO.setSampleCode(bioSampleTestTb.getSampleCode());
-                downLoadIdentifyPrimerTemplateExcelDTO.setVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
                 downLoadIdentifyPrimerTemplateExcelDTOList.add(downLoadIdentifyPrimerTemplateExcelDTO);
             }
             ExcelUtil.writeExcel("下载引物模板", "sheet1", downLoadIdentifyPrimerTemplateExcelDTOList, DownLoadIdentifyPrimerTemplateExcelDTO.class, response);

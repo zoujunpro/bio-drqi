@@ -7,21 +7,13 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class DownLoadIdentifyPrimerTemplateExcelDTO {
-    @ExcelProperty(value = "实施方案编号", index = 0)
-    @NotBlank(message = "数据不全：实施方案编号")
-    private String vectorTaskCode;
 
-    @ExcelProperty(value = "转化编号", index = 1)
-    @NotBlank(message = "数据不全：缺失转化编号")
-    private String transformCode;
-
-
-    @ExcelProperty(value = "取样编号", index = 2)
+    @ExcelProperty(value = "取样编号")
     @NotBlank(message = "数据不全：缺失取样编号")
     private String sampleCode;
 
 
-    @ExcelProperty(value = "鉴定引物", index = 3)
+    @ExcelProperty(value = "鉴定引物")
     @NotBlank(message = "数据不全：缺失鉴定引物")
     private String identifyPrimer;
 }

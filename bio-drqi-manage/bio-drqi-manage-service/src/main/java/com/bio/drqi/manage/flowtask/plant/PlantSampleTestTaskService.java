@@ -180,7 +180,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         //如果是首次取样，更新取样区间
         if (SampleTestApplyTypeEnum.first.name().equals(plantExperimentTaskDTO.getApplyType())) {
             StringBuffer sampleCodeRangeBuff = new StringBuffer();
-            Map<String, List<BioSampleTestTb>> plantSampleTestTbMap = sampleTestTbList.stream().collect(Collectors.groupingBy(sampleTestTb -> sampleTestTb.getSampleCode().replaceAll("\\\\d", "")));
+            Map<String, List<BioSampleTestTb>> plantSampleTestTbMap = sampleTestTbList.stream().collect(Collectors.groupingBy(sampleTestTb -> sampleTestTb.getSampleCode().replaceAll("\\d", "")));
             plantSampleTestTbMap.forEach((sampleCodePrefix, sampleTestList) -> {
                 sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(sampleCodePrefix)).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(2)))).collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(sampleTestList)) {

@@ -78,6 +78,9 @@ public class CerSampleTestServiceImpl implements CerSampleTestService {
     @Resource
     private BioSampleTestOneResultTbMapper bioSampleTestOneResultTbMapper;
 
+    @Resource
+    private BioSampleTestHisTbMapper bioSampleTestHisTbMapper;
+
 
     @Resource
     private OssService ossService;
@@ -85,7 +88,14 @@ public class CerSampleTestServiceImpl implements CerSampleTestService {
 
     @Override
     public PageInfo<SampleTestListDetailRspDTO> listPage(SampleTestListDetailReqDTO sampleTestListDetailReqDTO) {
+        if (StringUtils.isNotEmpty(sampleTestListDetailReqDTO.getApplyNo())) {
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(sampleTestListDetailReqDTO.getApplyNo());
+            if (BioTaskStatusEnum.TASK_STATUS_3.status.equals(bioTaskDtlTb.getTaskStatus()) || BioTaskStatusEnum.TASK_STATUS_3.status.equals(bioTaskDtlTb.getTaskStatus())) {
+            }
+        }
+
         PageHelper.startPage(sampleTestListDetailReqDTO.getPageNum(), sampleTestListDetailReqDTO.getPageSize());
+
         List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectSelective(BeanUtils.copyProperties(sampleTestListDetailReqDTO, CerSampleTestTb.class));
         PageInfo<CerSampleTestTb> srcPageInfo = new PageInfo<>(cerSampleTestTbList);
         if (CollectionUtil.isEmpty(cerSampleTestTbList)) {

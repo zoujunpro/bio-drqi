@@ -149,7 +149,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
 
     @Override
     public void downRepeatSampleTemplate(HttpServletResponse httpServletResponse) {
-        ExcelUtil.writeExcel("重复取样模板", "sheet1", null, SampleTestDownRepeatSampleTemplateExcelDTO.class, httpServletResponse);
+        ExcelUtil.writeExcel("重复取样模板", "sheet1", new ArrayList<>(), SampleTestDownRepeatSampleTemplateExcelDTO.class, httpServletResponse);
     }
 
     @Override

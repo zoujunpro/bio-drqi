@@ -1,7 +1,6 @@
 package com.bio.drqi.manage.flowtask.plant;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
@@ -47,7 +46,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     private PlantExperimentDetailTbMapper plantExperimentDetailTbMapper;
 
     @Resource
-    private BioHisSampleTestTbMapper bioHisSampleTestTbMapper;
+    private BioSampleTestHisTbMapper bioSampleTestHisTbMapper;
 
     @Resource
     private BioSampleLayoutTbMapper bioSampleLayoutTbMapper;
@@ -247,7 +246,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
         List<BioSampleTestTb> plantSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
         if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {
-            bioHisSampleTestTbMapper.insertBatch(BeanUtils.copyListProperties(plantSampleTestTbList, BioHisSampleTestTb.class));
+            bioSampleTestHisTbMapper.insertBatch(BeanUtils.copyListProperties(plantSampleTestTbList, BioHisSampleTestTb.class));
         }
         bioSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         bioSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());

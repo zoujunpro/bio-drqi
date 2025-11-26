@@ -10,9 +10,9 @@ import java.util.Date;
 
 /**
  * 取样检测信息表
- * @TableName bio_his_sample_test_tb
+ * @TableName bio_sample_test_his_tb
  */
-@TableName(value ="bio_his_sample_test_tb")
+@TableName(value ="bio_sample_test_his_tb")
 public class BioHisSampleTestTb implements Serializable {
     /**
      * 主键ID

@@ -1,4 +1,4 @@
-package com.bio.drqi.manage.controller;
+package com.bio.drqi.tc.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
@@ -7,14 +7,9 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
-import com.bio.drqi.domain.CerVectorTaskTb;
-import com.bio.drqi.domain.SeedStockTb;
-import com.bio.drqi.domain.TcExperimentDesignTb;
-import com.bio.drqi.domain.TcExperimentTb;
-import com.bio.drqi.mapper.CerVectorTaskTbMapper;
-import com.bio.drqi.mapper.SeedStockTbMapper;
-import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
-import com.bio.drqi.mapper.TcExperimentTbMapper;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.*;
+import com.bio.drqi.tc.service.dto.TcExperimentTaskDTO;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.Jar;
@@ -43,6 +38,9 @@ public class TestPlantController {
 
     @Resource
     private TcExperimentTbMapper tcExperimentTbMapper;
+
+    @Resource
+    private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
 
     @GetMapping("cleanSeedAndTc")
@@ -79,9 +77,23 @@ public class TestPlantController {
 
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectList(null);
         for (TcExperimentTb tcExperimentTb : tcExperimentTbList) {
+            log.info("处理试验工单tcExperimentTb=" + JSONUtil.toJsonStr(tcExperimentTb));
             List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcExperimentTb.getExperimentNum());
-            List<String> pdNumList=tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getPdNum).filter(pdNum->StringUtils.isNotEmpty(pdNum)).distinct().collect(Collectors.toList());
-            List<String> vectorTaskCodeList=tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getVectorTaskCode).filter(vectorTaskCode->StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList());
+            List<String> pdNumList = tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getPdNum).filter(pdNum -> StringUtils.isNotEmpty(pdNum)).distinct().collect(Collectors.toList());
+            List<String> vectorTaskCodeList = tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList());
+            tcExperimentTb.setPdNums(JSONUtil.toJsonStr(pdNumList));
+            tcExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(vectorTaskCodeList));
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcExperimentTb.getTaskNum());
+            if (bioTaskDtlTb == null) {
+                throw new BusinessException("找不到申请工单");
+            }
+            TcExperimentTaskDTO tcExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcExperimentTaskDTO.class);
+            tcExperimentTaskDTO.setVectorTaskCodeList(vectorTaskCodeList);
+            tcExperimentTaskDTO.setPdNumList(pdNumList);
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcExperimentTaskDTO));
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+            tcExperimentTbMapper.updateById(tcExperimentTb);
+
 
         }
 

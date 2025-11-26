@@ -49,7 +49,7 @@ public class BioSingleStockServiceImpl implements PlantSingleStockService {
             Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
             targetPageInfo.getList().forEach(plantSingleStockListPageRspDTO -> {
                 plantSingleStockListPageRspDTO.setBreedName(cerBreedDictMap.get(plantSingleStockListPageRspDTO.getBreedCode()));
-                plantSingleStockListPageRspDTO.setSpeciesCode(cerSpeciesConfMap.get(plantSingleStockListPageRspDTO.getSpeciesCode()));
+                plantSingleStockListPageRspDTO.setSpeciesName(cerSpeciesConfMap.get(plantSingleStockListPageRspDTO.getSpeciesCode()));
             });
         }
         return targetPageInfo;
@@ -64,7 +64,7 @@ public class BioSingleStockServiceImpl implements PlantSingleStockService {
             Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
             resultList.forEach(plantSingleStockQueryListRspDTO -> {
                 plantSingleStockQueryListRspDTO.setBreedName(cerBreedDictMap.get(plantSingleStockQueryListRspDTO.getBreedCode()));
-                plantSingleStockQueryListRspDTO.setSpeciesCode(cerSpeciesConfMap.get(plantSingleStockQueryListRspDTO.getSpeciesCode()));
+                plantSingleStockQueryListRspDTO.setSpeciesName(cerSpeciesConfMap.get(plantSingleStockQueryListRspDTO.getSpeciesCode()));
             });
         }
         return resultList;
@@ -80,7 +80,7 @@ public class BioSingleStockServiceImpl implements PlantSingleStockService {
             Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
             result.forEach(plantSingleStockQueryBySampleCodeListRspDTO -> {
                 plantSingleStockQueryBySampleCodeListRspDTO.setBreedName(cerBreedDictMap.get(plantSingleStockQueryBySampleCodeListRspDTO.getBreedCode()));
-                plantSingleStockQueryBySampleCodeListRspDTO.setSpeciesCode(cerSpeciesConfMap.get(plantSingleStockQueryBySampleCodeListRspDTO.getSpeciesCode()));
+                plantSingleStockQueryBySampleCodeListRspDTO.setSpeciesName(cerSpeciesConfMap.get(plantSingleStockQueryBySampleCodeListRspDTO.getSpeciesCode()));
             });
         }
         return result;

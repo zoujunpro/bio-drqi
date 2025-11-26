@@ -54,7 +54,7 @@ public class PlantMultipleStockServiceImpl implements PlantMultipleStockService 
             Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
             targetPageInfo.getList().forEach(plantMultipleStockListPageRspDTO -> {
                 plantMultipleStockListPageRspDTO.setBreedName(cerBreedDictMap.get(plantMultipleStockListPageRspDTO.getBreedCode()));
-                plantMultipleStockListPageRspDTO.setSpeciesCode(cerSpeciesConfMap.get(plantMultipleStockListPageRspDTO.getSpeciesCode()));
+                plantMultipleStockListPageRspDTO.setSpeciesName(cerSpeciesConfMap.get(plantMultipleStockListPageRspDTO.getSpeciesCode()));
             });
         }
         return targetPageInfo;
@@ -69,7 +69,7 @@ public class PlantMultipleStockServiceImpl implements PlantMultipleStockService 
             Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
             targetList.forEach(plantMultipleStockQueryListRspDTO -> {
                 plantMultipleStockQueryListRspDTO.setBreedName(cerBreedDictMap.get(plantMultipleStockQueryListRspDTO.getBreedCode()));
-                plantMultipleStockQueryListRspDTO.setSpeciesCode(cerSpeciesConfMap.get(plantMultipleStockQueryListRspDTO.getSpeciesCode()));
+                plantMultipleStockQueryListRspDTO.setSpeciesName(cerSpeciesConfMap.get(plantMultipleStockQueryListRspDTO.getSpeciesCode()));
             });
         }
         return targetList;

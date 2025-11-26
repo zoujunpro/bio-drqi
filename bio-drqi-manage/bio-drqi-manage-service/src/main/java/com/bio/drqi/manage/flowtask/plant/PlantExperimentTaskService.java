@@ -55,7 +55,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
     private PlantMultipleStockTbMapper plantMultipleStockTbMapper;
 
     @Resource
-    private PlantSampleCodePrefixTbMapper plantSampleCodePrefixTbMapper;
+    private BioSampleCodePrefixTbMapper bioSampleCodePrefixTbMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -145,7 +145,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
             plantExperimentTbMapper.insert(plantExperimentTb);
             plantExperimentDetailTbMapper.insertBatch(plantExperimentDetailTbList);
             plantMultipleStockTbMapper.insertBatch(plantMultipleStockTbList);
-            plantSampleCodePrefixTbMapper.insert(new PlantSampleCodePrefixTb(plantExperimentTb.getSampleCodePrefix()));
+            bioSampleCodePrefixTbMapper.insert(new BioSampleCodePrefixTb(plantExperimentTb.getSampleCodePrefix(),null,plantExperimentTb.getExperimentNum()));
 
             plantExperimentTaskDTO.setSampleCodePrefix(plantExperimentTb.getSampleCodePrefix());
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plantExperimentTaskDTO));

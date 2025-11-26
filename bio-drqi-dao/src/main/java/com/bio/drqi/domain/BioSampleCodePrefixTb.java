@@ -43,4 +43,11 @@ public class BioSampleCodePrefixTb implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
+
+    public BioSampleCodePrefixTb(String sampleCodePrefix, String vectorTaskCode, String plantExperimentCode) {
+        this.sampleCodePrefix = sampleCodePrefix;
+        this.createTime = new Date();
+        this.vectorTaskCode = vectorTaskCode;
+        this.plantExperimentCode = plantExperimentCode;
+    }
 }

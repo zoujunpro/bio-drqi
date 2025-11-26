@@ -105,12 +105,8 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                     BioSampleCodePrefixTb bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
                     if (bioSampleCodePrefixTb == null) {
                         //生成sampleCodePrefix
-                        bioSampleCodePrefixTb = new BioSampleCodePrefixTb();
-                        bioSampleCodePrefixTb.setSampleCodePrefix(createSampleCode());
-                        bioSampleCodePrefixTb.setVectorTaskCode(implementPlanAddDTO.getVectorTaskCode());
-                        bioSampleCodePrefixTb.setCreateTime(new Date());
                         try {
-                            bioSampleCodePrefixTbMapper.insert(bioSampleCodePrefixTb);
+                            bioSampleCodePrefixTbMapper.insert(new BioSampleCodePrefixTb(createSampleCode(),implementPlanAddDTO.getVectorTaskCode(),null));
                         } catch (DuplicateKeyException e) {
                             throw new BusinessException("取样编号前缀重复：" + bioSampleCodePrefixTb.getSampleCodePrefix());
                         }

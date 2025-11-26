@@ -98,4 +98,6 @@ public class PlantMultipleStockListPageRspDTO {
      */
     private String pdNum;
 
+    private String plantDate;
+
 }

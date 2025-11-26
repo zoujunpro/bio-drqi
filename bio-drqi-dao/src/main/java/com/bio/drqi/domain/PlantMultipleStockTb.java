@@ -1,5 +1,7 @@
 package com.bio.drqi.domain;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -113,6 +115,8 @@ public class PlantMultipleStockTb implements Serializable {
      */
     private String pdNum;
 
+    private String plantDate;
+
 
     @TableField(exist = false)
     private String stockNumberNotNullFlag;
@@ -140,6 +144,7 @@ public class PlantMultipleStockTb implements Serializable {
         plantMultipleStockTb.setRegionNum(plantExperimentDetailTb.getRegionNum());
         plantMultipleStockTb.setVectorTaskCode(plantExperimentDetailTb.getVectorTaskCode());
         plantMultipleStockTb.setPdNum(plantExperimentDetailTb.getPdNum());
+        plantMultipleStockTb.setPlantDate(DateUtil.format(new Date(), DatePattern.NORM_DATE_PATTERN));
         return plantMultipleStockTb;
     }
 

@@ -97,4 +97,6 @@ public class PlantMultipleStockQueryListRspDTO {
      * PD编号
      */
     private String pdNum;
+
+    private String plantDate;
 }

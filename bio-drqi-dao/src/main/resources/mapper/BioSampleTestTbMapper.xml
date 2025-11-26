@@ -9,6 +9,8 @@
         <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
         <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
         <result property="generation" column="generation" jdbcType="VARCHAR"/>
+        <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
+        <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
         <result property="applyTime" column="apply_time" jdbcType="TIMESTAMP"/>
         <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
         <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
@@ -46,7 +48,7 @@
 
     <sql id="Base_Column_List">
         id
-        ,vector_task_code,sample_code,generation,
+        ,vector_task_code,sample_code,generation,species_code,breed_code,
         apply_time,apply_user_id,apply_user_name,
         test_identify_primer,test_method,test_edit_type,
         test_no_trans_identity_primer,test_is_gene_modify_positive,test_if_fixed_point,

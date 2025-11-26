@@ -146,6 +146,9 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
         List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCodeIn(bioSampleTestQueryBySampleCodeListReqDTO.getSampleCodeList());
         Map<String, List<BioSampleTestTb>> bioSampleTestTbMap = bioSampleTestTbList.stream().collect(Collectors.groupingBy(BioSampleTestTb::getSampleCode));
+        if(bioSampleTestTbMap.keySet().size()!=bioSampleTestQueryBySampleCodeListReqDTO.getSampleCodeList().size()){
+            throw new BusinessException("有部分取样编号不存在，不能发起取样"+JSONUtil.toJsonStr(bioSampleTestTbMap.keySet().removeAll(bioSampleTestQueryBySampleCodeListReqDTO.getSampleCodeList())).replace("[","").replace("]",""));
+        }
         bioSampleTestTbMap.forEach((sampleCode,list)->{
             BioSampleTestTb bioSampleTestTb=list.get(0);
             BioSampleTestQueryBySampleCodeListRspDTO bioSampleTestQueryBySampleCodeListRspDTO =BeanUtils.copyProperties(bioSampleTestTb, BioSampleTestQueryBySampleCodeListRspDTO.class);

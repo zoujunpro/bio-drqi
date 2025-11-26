@@ -48,11 +48,11 @@ public class BioSampleTestController {
 
 
     /**
-     * 分子取样检测-根据取样编号查询
+     * 分子取样检测-根据取样编号查询重复取样信息
      * @return
      */
     @PostMapping("/queryBySampleCodeList")
-    @WebLog(desc = "cer苗库管理（有具体种植编号苗库）-根据取样编号批次查询")
+    @WebLog(desc = "分子取样检测-根据取样编号查询重复取样信息")
     public ResponseResult<List<BioSampleTestQueryBySampleCodeListRspDTO>>  queryBySampleCodeList(@RequestBody @Validated BioSampleTestQueryBySampleCodeListReqDTO bioSampleTestQueryBySampleCodeListReqDTO){
         return ResponseResult.getSuccess(bioSampleTestService.queryBySampleCodeList(bioSampleTestQueryBySampleCodeListReqDTO));
     }

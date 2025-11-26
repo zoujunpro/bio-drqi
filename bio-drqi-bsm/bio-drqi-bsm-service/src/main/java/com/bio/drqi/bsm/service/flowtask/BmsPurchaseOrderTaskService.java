@@ -117,8 +117,8 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 //非常规采购进行商品创建
                 if (PurchaseTypeEnum.TYPE_2.code.equals(bmsOrderTb.getPurchaseTypeCode())) {
                     BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(product.getProductName(), product.getBrandCode(), product.getProductSpecs());
-                    if(bmsProductTb==null){
-                         bmsProductTb = bmsProductService.add(BeanUtils.copyProperties(product, BmsProductAddReqDTO.class));
+                    if (bmsProductTb == null) {
+                        bmsProductTb = bmsProductService.add(BeanUtils.copyProperties(product, BmsProductAddReqDTO.class));
                     }
                     product.setProductInnerCode(bmsProductTb.getProductInnerCode());
                 }
@@ -207,6 +207,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
         }
         for (BmsPurchaseOrderDTO.Product product : bmsPurchaseOrderDTO.getProductList()) {
             BeanUtils.trimFiledSpace(product);
+            ValidatorUtil.validator(bmsPurchaseOrderDTO);
             //常规采购
             if (PurchaseTypeEnum.TYPE_1.code.equals(purchaseTypeCode)) {
                 BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(product.getProductInnerCode());
@@ -216,19 +217,37 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 }
                 product.setProductName(bmsProductTb.getProductName());
                 product.setProductSpecs(bmsProductTb.getProductSpecs());
-                if(!StrUtil.equals(product.getProductCategoryCode(),bmsProductTb.getProductCategoryCode())){
+                if (!StrUtil.equals(product.getProductCategoryCode(), bmsProductTb.getProductCategoryCode())) {
                     throw new BusinessException("常规采购的商品类别选择错误");
                 }
-                if(!StrUtil.equals(product.getBrandCode(),bmsProductTb.getBrandCode())){
+                if (!StrUtil.equals(product.getBrandCode(), bmsProductTb.getBrandCode())) {
                     throw new BusinessException("常规采购的商品品牌选择错误");
                 }
+                if (StringUtils.isNotEmpty(product.getBrandCode())) {
+                    throw new BusinessException("常规采购的品牌必填");
+                }
+                BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
+                if (bmsBrandTb == null) {
+                    throw new BusinessException("数据异常，品牌找不到：" + product.getBrandCode());
+                }
+
+
             } else if (PurchaseTypeEnum.TYPE_2.code.equals(purchaseTypeCode)) {
+                if (StringUtils.isEmpty(product.getBrandName()) && StringUtils.isEmpty(product.getBrandCode())) {
+                    throw new BusinessException("非仓管采购时，品牌必填");
+                }
+                if (StringUtils.isEmpty(product.getProductSpecs())) {
+                    throw new BusinessException("商品规格必填");
+                }
+                if (StringUtils.isEmpty(product.getProductOutCode())) {
+                    throw new BusinessException("商品编码必填");
+                }
                 BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(product.getProductName(), product.getBrandCode(), product.getProductSpecs());
-                if(bmsProductTb!=null){
-                    if(!StrUtil.equals(product.getProductCategoryCode(),bmsProductTb.getProductCategoryCode())){
+                if (bmsProductTb != null) {
+                    if (!StrUtil.equals(product.getProductCategoryCode(), bmsProductTb.getProductCategoryCode())) {
                         throw new BusinessException("非常规采购的商品类别选择错误");
                     }
-                    if(!StrUtil.equals(product.getBrandCode(),bmsProductTb.getBrandCode())){
+                    if (!StrUtil.equals(product.getBrandCode(), bmsProductTb.getBrandCode())) {
                         throw new BusinessException("非常规采购的商品品牌选择错误");
                     }
                 }
@@ -250,8 +269,8 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
             }
 
             BmsProjectDict bmsProjectDict = bmsProjectDictMapper.selectOneByProjectCode(product.getProjectCode());
-            if(bmsProjectDict==null){
-                throw new BusinessException("项目不存在:"+product.getProjectCode());
+            if (bmsProjectDict == null) {
+                throw new BusinessException("项目不存在:" + product.getProjectCode());
             }
         }
     }

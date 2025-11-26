@@ -10,9 +10,11 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.domain.SeedStockTb;
 import com.bio.drqi.domain.TcExperimentDesignTb;
+import com.bio.drqi.domain.TcExperimentTb;
 import com.bio.drqi.mapper.CerVectorTaskTbMapper;
 import com.bio.drqi.mapper.SeedStockTbMapper;
 import com.bio.drqi.mapper.TcExperimentDesignTbMapper;
+import com.bio.drqi.mapper.TcExperimentTbMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.Jar;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -37,6 +40,9 @@ public class TestPlantController {
 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
+
+    @Resource
+    private TcExperimentTbMapper tcExperimentTbMapper;
 
 
     @GetMapping("cleanSeedAndTc")
@@ -70,6 +76,16 @@ public class TestPlantController {
 
 
         }
+
+        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectList(null);
+        for (TcExperimentTb tcExperimentTb : tcExperimentTbList) {
+            List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcExperimentTb.getExperimentNum());
+            List<String> pdNumList=tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getPdNum).filter(pdNum->StringUtils.isNotEmpty(pdNum)).distinct().collect(Collectors.toList());
+            List<String> vectorTaskCodeList=tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getVectorTaskCode).filter(vectorTaskCode->StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList());
+
+        }
+
+
         return ResponseResult.getSuccess("pok");
     }
 

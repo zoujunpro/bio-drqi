@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bio.drqi.mapper.BioSampleTestHisTbMapper">
 
-    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioHisSampleTestTb">
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BioSampleTestHisTb">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
             <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
@@ -100,4 +100,11 @@
         from bio_sample_test_his_tb
         where apply_no = #{applyNo,jdbcType=VARCHAR}
     </delete>
+    <select id="selectAllByApplyNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_test_his_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+    </select>
 </mapper>

@@ -26,9 +26,7 @@ import com.bio.drqi.manage.dto.bio.BioSampleTestResultExcelDTO;
 import com.bio.drqi.manage.dto.bio.DownLoadIdentifyPrimerTemplateExcelDTO;
 import com.bio.drqi.manage.dto.plant.SampleTestDownRepeatSampleTemplateExcelDTO;
 import com.bio.drqi.manage.dto.plant.task.PlantSampleTestTaskDTO;
-import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
 import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
-import com.bio.drqi.manage.dto.project.TestExcelDTO;
 import com.bio.drqi.manage.sample.req.*;
 import com.bio.drqi.manage.sample.rsp.*;
 import com.bio.drqi.manage.service.bio.BioSampleTestService;
@@ -96,33 +94,59 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
     private CerSpeciesConfMapper cerSpeciesConfMapper;
 
 
+    @Resource
+    private BioSampleTestHisTbMapper bioSampleTestHisTbMapper;
+
+
     @Override
     public PageInfo<BioSampleTestListDetailRspDTO> listPage(BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO) {
-        PageHelper.startPage(bioSampleTestListDetailReqDTO.getPageNum(), bioSampleTestListDetailReqDTO.getPageSize());
-        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectSelective(BeanUtils.copyProperties(bioSampleTestListDetailReqDTO, BioSampleTestTb.class));
-        PageInfo<BioSampleTestTb> srcPageInfo = new PageInfo<>(bioSampleTestTbList);
-        if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
-            return new PageInfo<BioSampleTestListDetailRspDTO>();
-        }
-        PageInfo<BioSampleTestListDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, BioSampleTestListDetailRspDTO.class);
-        targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
-            sampleTestListDetailRspDTO.setGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getGeneration()));
-            List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByApplyNoAndSampleCodeOrderByIdDesc(sampleTestListDetailRspDTO.getApplyNo(), sampleTestListDetailRspDTO.getSampleCode());
-            if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultTbList)) {
-                Map<String, List<BioSampleTestTwoResultTb>> bioSampleTestTwoResultTbListMap = bioSampleTestTwoResultTbList.stream().collect(Collectors.groupingBy(bioSampleTestTwoResultTb -> bioSampleTestTwoResultTb.getRunId() + bioSampleTestTwoResultTb.getSampleId()));
-                bioSampleTestTwoResultTbListMap.forEach((key, bioSampleTestTwoResultTbs) -> {
-                    List<BioSampleTestTwoResultDetailTb> cerSampleTestBioInfoResultDetailList = bioSampleTestTwoResultDetailTbMapper.selectAllByTwoResultIdAndConfirmStatus(bioSampleTestTwoResultTbs.get(0).getId(), "checked");
-                    if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultDetailList)) {
-                        cerSampleTestBioInfoResultDetailList.forEach(cerSampleTestBioInfoResultTb -> {
-                            sampleTestListDetailRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
-                        });
-                    }
-                });
-            }
 
-            sampleTestListDetailRspDTO.setMatchNum(CollectionUtil.isNotEmpty(sampleTestListDetailRspDTO.getBioInfoResultList()) ? sampleTestListDetailRspDTO.getBioInfoResultList().size() : 0);
-        });
-        return targetPageInfo;
+        //先判断是否是取消的工单
+        if (checkTaskStatusIfRefuse(bioSampleTestListDetailReqDTO)) {
+            PageHelper.startPage(bioSampleTestListDetailReqDTO.getPageNum(), bioSampleTestListDetailReqDTO.getPageSize());
+            List<BioSampleTestHisTb> bioSampleTestHisTbList = bioSampleTestHisTbMapper.selectAllByApplyNo(bioSampleTestListDetailReqDTO.getApplyNo());
+            if (CollectionUtil.isEmpty(bioSampleTestHisTbList)) {
+                return new PageInfo<BioSampleTestListDetailRspDTO>();
+            }
+            PageInfo<BioSampleTestHisTb> srcPageInfo = new PageInfo<>(bioSampleTestHisTbList);
+            return BeanUtils.copyPageInfoProperties(srcPageInfo, BioSampleTestListDetailRspDTO.class);
+        } else {
+            PageHelper.startPage(bioSampleTestListDetailReqDTO.getPageNum(), bioSampleTestListDetailReqDTO.getPageSize());
+            List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectSelective(BeanUtils.copyProperties(bioSampleTestListDetailReqDTO, BioSampleTestTb.class));
+            PageInfo<BioSampleTestTb> srcPageInfo = new PageInfo<>(bioSampleTestTbList);
+            if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
+                return new PageInfo<BioSampleTestListDetailRspDTO>();
+            }
+            PageInfo<BioSampleTestListDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, BioSampleTestListDetailRspDTO.class);
+            targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
+                sampleTestListDetailRspDTO.setGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getGeneration()));
+                List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByApplyNoAndSampleCodeOrderByIdDesc(sampleTestListDetailRspDTO.getApplyNo(), sampleTestListDetailRspDTO.getSampleCode());
+                if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultTbList)) {
+                    Map<String, List<BioSampleTestTwoResultTb>> bioSampleTestTwoResultTbListMap = bioSampleTestTwoResultTbList.stream().collect(Collectors.groupingBy(bioSampleTestTwoResultTb -> bioSampleTestTwoResultTb.getRunId() + bioSampleTestTwoResultTb.getSampleId()));
+                    bioSampleTestTwoResultTbListMap.forEach((key, bioSampleTestTwoResultTbs) -> {
+                        List<BioSampleTestTwoResultDetailTb> cerSampleTestBioInfoResultDetailList = bioSampleTestTwoResultDetailTbMapper.selectAllByTwoResultIdAndConfirmStatus(bioSampleTestTwoResultTbs.get(0).getId(), "checked");
+                        if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultDetailList)) {
+                            cerSampleTestBioInfoResultDetailList.forEach(cerSampleTestBioInfoResultTb -> {
+                                sampleTestListDetailRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
+                            });
+                        }
+                    });
+                }
+
+                sampleTestListDetailRspDTO.setMatchNum(CollectionUtil.isNotEmpty(sampleTestListDetailRspDTO.getBioInfoResultList()) ? sampleTestListDetailRspDTO.getBioInfoResultList().size() : 0);
+            });
+            return targetPageInfo;
+        }
+    }
+
+    private boolean checkTaskStatusIfRefuse(BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO) {
+        if (StringUtils.isNotEmpty(bioSampleTestListDetailReqDTO.getApplyNo())) {
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(bioSampleTestListDetailReqDTO.getApplyNo());
+            if (BioTaskStatusEnum.TASK_STATUS_3.status.equals(bioTaskDtlTb.getTaskStatus()) || BioTaskStatusEnum.TASK_STATUS_3.status.equals(bioTaskDtlTb.getTaskStatus())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

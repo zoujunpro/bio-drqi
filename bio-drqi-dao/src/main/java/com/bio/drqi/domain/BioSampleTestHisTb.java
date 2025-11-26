@@ -13,7 +13,7 @@ import java.util.Date;
  * @TableName bio_sample_test_his_tb
  */
 @TableName(value ="bio_sample_test_his_tb")
-public class BioHisSampleTestTb implements Serializable {
+public class BioSampleTestHisTb implements Serializable {
     /**
      * 主键ID
      */
@@ -789,7 +789,7 @@ public class BioHisSampleTestTb implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        BioHisSampleTestTb other = (BioHisSampleTestTb) that;
+        BioSampleTestHisTb other = (BioSampleTestHisTb) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getVectorTaskCode() == null ? other.getVectorTaskCode() == null : this.getVectorTaskCode().equals(other.getVectorTaskCode()))
             && (this.getSampleCode() == null ? other.getSampleCode() == null : this.getSampleCode().equals(other.getSampleCode()))

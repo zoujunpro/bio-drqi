@@ -1,8 +1,9 @@
 package com.bio.drqi.mapper;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import java.util.Collection;
 
-import com.bio.drqi.domain.BioHisSampleTestTb;
+import com.bio.drqi.domain.BioSampleTestHisTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,11 +12,13 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2025-11-21 14:13:42
 * @Entity com.bio.drqi.domain.BioSampleTestHisTb
 */
-public interface BioSampleTestHisTbMapper extends BaseMapper<BioHisSampleTestTb> {
+public interface BioSampleTestHisTbMapper extends BaseMapper<BioSampleTestHisTb> {
 
     int deleteByApplyNo(@Param("applyNo") String applyNo);
 
-    int insertBatch(@Param("bioHisSampleTestTbCollection") Collection<BioHisSampleTestTb> bioHisSampleTestTbCollection);
+    List<BioSampleTestHisTb> selectAllByApplyNo(@Param("applyNo") String applyNo);
+
+    int insertBatch(@Param("bioHisSampleTestTbCollection") Collection<BioSampleTestHisTb> bioHisSampleTestTbCollection);
 
 }
 

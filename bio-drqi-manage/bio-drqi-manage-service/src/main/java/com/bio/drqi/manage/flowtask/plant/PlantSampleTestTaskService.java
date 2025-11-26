@@ -246,7 +246,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
         List<BioSampleTestTb> plantSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
         if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {
-            bioSampleTestHisTbMapper.insertBatch(BeanUtils.copyListProperties(plantSampleTestTbList, BioHisSampleTestTb.class));
+            bioSampleTestHisTbMapper.insertBatch(BeanUtils.copyListProperties(plantSampleTestTbList, BioSampleTestHisTb.class));
         }
         bioSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
         bioSampleTestTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());

@@ -21,7 +21,6 @@ public interface BioSampleTestService {
 
     PageInfo<BioSampleTestListDetailRspDTO> listPage(BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO);
 
-    List<BioSampleTestQuerySpeciesByApplyTypeRspDTO> querySpeciesByApplyType(String applyType);
 
     void downRepeatSampleTemplate(HttpServletResponse httpServletResponse);
 

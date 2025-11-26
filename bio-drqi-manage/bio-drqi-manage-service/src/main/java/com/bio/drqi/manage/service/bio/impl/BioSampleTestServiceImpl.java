@@ -149,27 +149,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         return false;
     }
 
-    @Override
-    public List<BioSampleTestQuerySpeciesByApplyTypeRspDTO> querySpeciesByApplyType(String applyType) {
-        List<BioSampleTestQuerySpeciesByApplyTypeRspDTO> bioSampleTestQuerySpeciesByApplyTypeRspDTOS = new ArrayList<>();
-        Map<String, String> map = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
-        List<String> speciesCodeList = null;
-        if (SampleTestApplyTypeEnum.first.name().equals(applyType)) {
-            speciesCodeList = plantMultipleStockTbMapper.selectSpeciesCode();
-        } else {
-            speciesCodeList = plantSingleStockTbMapper.selectSpeciesCode();
-        }
-        if (CollectionUtil.isNotEmpty(speciesCodeList)) {
-            speciesCodeList.forEach(speciesCode -> {
-                BioSampleTestQuerySpeciesByApplyTypeRspDTO bioSampleTestQuerySpeciesByApplyTypeRspDTO = new BioSampleTestQuerySpeciesByApplyTypeRspDTO();
-                bioSampleTestQuerySpeciesByApplyTypeRspDTO.setSpeciesCode(speciesCode);
-                bioSampleTestQuerySpeciesByApplyTypeRspDTO.setSpeciesName(map.get(speciesCode));
-                bioSampleTestQuerySpeciesByApplyTypeRspDTOS.add(bioSampleTestQuerySpeciesByApplyTypeRspDTO);
 
-            });
-        }
-        return bioSampleTestQuerySpeciesByApplyTypeRspDTOS;
-    }
 
     @Override
     public void downRepeatSampleTemplate(HttpServletResponse httpServletResponse) {

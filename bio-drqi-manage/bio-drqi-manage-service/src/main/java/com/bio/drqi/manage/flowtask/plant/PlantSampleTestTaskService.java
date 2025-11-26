@@ -146,7 +146,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     log.error("取样申请异常", e);
                     throw new BusinessException("取样编号有重复");
                 }
-                bioSampleApplyTb.setApplyNumber(firstSampleApply.getSampleNumber() + bioSampleApplyTb.getApplyNumber());
+
             }
 
 
@@ -161,16 +161,14 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 if (plantSingleStockTb == null) {
                     throw new BusinessException("CER中无此种植编号苗信息：" + repeatSampleTest.getSampleCode());
                 }
-                BioSampleTestTb bioSampleTestTb = bioSampleTestTbMapper.selectOneBySampleCodeOrderByIdDesc(repeatSampleTest.getSampleCode());
                 //校验苗状态
                 if (!PlantStatusEnum.STATUS_1.code.equals(plantSingleStockTb.getPlantStatus()) && !PlantStatusEnum.STATUS_2.code.equals(plantSingleStockTb.getPlantStatus())) {
                     throw new BusinessException("只有正常或者异常苗方可进行取样");
                 }
-                BioSampleTestTb plantSampleTestTb = BioSampleTestTb.of(bioSampleTestTb.getSeedNum(), bioSampleTestTb.getRegionNum(), bioSampleTestTb.getExperimentNum(), repeatSampleTest.getVectorTaskCode(), plantSingleStockTb.getGeneration(), plantSingleStockTb.getBreedCode(), plantSingleStockTb.getSpeciesCode(), repeatSampleTest.getSampleCode(), bioTaskDtlTb, repeatSampleTest.getSourceCode(), null);
+                BioSampleTestTb bioSampleTestTb = bioSampleTestTbMapper.selectOneBySampleCodeOrderByIdDesc(repeatSampleTest.getSampleCode());
+                BioSampleTestTb plantSampleTestTb = BioSampleTestTb.of(bioSampleTestTb.getSeedNum(), bioSampleTestTb.getRegionNum(), bioSampleTestTb.getExperimentNum(), bioSampleTestTb.getVectorTaskCode(), bioSampleTestTb.getGeneration(), bioSampleTestTb.getBreedCode(), bioSampleTestTb.getSpeciesCode(), bioSampleTestTb.getSampleCode(), bioTaskDtlTb, bioSampleTestTb.getSourceCode(), null);
                 sampleTestTbList.add(plantSampleTestTb);
             }
-            bioSampleApplyTb.setApplyNumber(plantExperimentTaskDTO.getRepeatSampleTestList().size());
-
             try {
                 bioSampleTestTbMapper.insertBatch(sampleTestTbList);
             } catch (DuplicateKeyException e) {
@@ -193,6 +191,9 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 bioSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));
                 bioSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(sampleTestTbList.stream().filter(plantSampleTestTb -> StringUtils.isNotEmpty(plantSampleTestTb.getVectorTaskCode())).map(BioSampleTestTb::getVectorTaskCode).collect(Collectors.toList())).replace("[", "").replace("]", "").replace("\"", ""));
             }
+            bioSampleApplyTb.setApplyNumber(plantExperimentTaskDTO.getFirstSampleApplyList().stream().map(PlantSampleTestTaskDTO.FirstSampleApply::getSampleNumber).mapToInt(Integer::intValue).sum());
+        }else {
+            bioSampleApplyTb.setApplyNumber(plantExperimentTaskDTO.getRepeatSampleTestList().size());
         }
         //更新数据
         bioSampleApplyTbMapper.insert(bioSampleApplyTb);

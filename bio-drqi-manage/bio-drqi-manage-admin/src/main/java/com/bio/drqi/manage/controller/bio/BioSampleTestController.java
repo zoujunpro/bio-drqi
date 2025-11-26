@@ -46,18 +46,6 @@ public class BioSampleTestController {
     }
 
     /**
-     * 分子取样检测-查询物种
-     * @param applyType
-     * @return
-     */
-    @GetMapping("querySpeciesByApplyType")
-    @WebLog(desc = "分子取样检测-查询物种")
-    public ResponseResult<List<BioSampleTestQuerySpeciesByApplyTypeRspDTO>> querySpeciesByApplyType(String applyType) {
-        return ResponseResult.getSuccess(bioSampleTestService.querySpeciesByApplyType(applyType));
-    }
-
-
-    /**
      * 分子取样检测-下载重复取样模板
      * @param httpServletResponse
      */

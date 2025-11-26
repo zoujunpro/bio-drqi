@@ -353,16 +353,10 @@ public class CerSampleTestServiceImpl implements CerSampleTestService {
             List<DownLoadIdentifyPrimerTemplateExcelDTO> downLoadIdentifyPrimerTemplateExcelDTOList = new ArrayList<DownLoadIdentifyPrimerTemplateExcelDTO>();
             for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
                 DownLoadIdentifyPrimerTemplateExcelDTO downLoadIdentifyPrimerTemplateExcelDTO = new DownLoadIdentifyPrimerTemplateExcelDTO();
-                downLoadIdentifyPrimerTemplateExcelDTO.setTransformCode(cerSampleTestTb.getTransformCode());
                 downLoadIdentifyPrimerTemplateExcelDTO.setSampleCode(cerSampleTestTb.getSampleCode());
-                downLoadIdentifyPrimerTemplateExcelDTO.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
                 downLoadIdentifyPrimerTemplateExcelDTOList.add(downLoadIdentifyPrimerTemplateExcelDTO);
-
             }
-            String excelTemplateName = "鉴定引物填写模板V1.0.xlsx";
-            String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
-            ossService.downloadPath(templateDir, excelTemplatePath, excelTemplateName);
-            ExcelUtil.fillExcel(templateDir, downLoadIdentifyPrimerTemplateExcelDTOList, DownLoadIdentifyPrimerTemplateExcelDTO.class, response);
+            ExcelUtil.writeExcel("下载引物模板", "sheet1", downLoadIdentifyPrimerTemplateExcelDTOList, DownLoadIdentifyPrimerTemplateExcelDTO.class, response);
         } catch (Exception e) {
             log.error("模板下载失败，", e);
             throw new BusinessException("鉴定引物填写模板下载失败，请联系管理员检测模板配置");

@@ -67,11 +67,11 @@
             </if>
             <if test="vernalizationEndDate != null">and vernalization_end_date=#{vernalizationEndDate,jdbcType=VARCHAR}
             </if>
-            <if test="pollinationMethod != null">and pollination_method=#{pollinationMethod,jdbcType=VARCHAR}</if>
+            <if test="pollinationMethod != null and pollinationMethod!=''">and pollination_method=#{pollinationMethod,jdbcType=VARCHAR}</if>
             <if test="plantStatus != null and plantStatus!=''">and plant_status=#{plantStatus,jdbcType=VARCHAR}</if>
             <if test="pollinationDate != null">and pollination_date=#{pollinationDate,jdbcType=VARCHAR}</if>
             <if test="harvestDate != null">and harvest_date=#{harvestDate,jdbcType=VARCHAR}</if>
-            <if test="harvestType != null">and harvest_type=#{harvestType,jdbcType=VARCHAR}</if>
+            <if test="harvestType != null and harvestType!=''">and harvest_type=#{harvestType,jdbcType=VARCHAR}</if>
             <if test="otherField != null">and other_field=#{otherField}</if>
             <if test="editType != null">and edit_type=#{editType,jdbcType=VARCHAR}</if>
             <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>

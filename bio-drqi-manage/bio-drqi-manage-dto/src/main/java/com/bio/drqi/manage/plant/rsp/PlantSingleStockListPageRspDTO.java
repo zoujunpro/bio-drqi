@@ -55,6 +55,11 @@ public class PlantSingleStockListPageRspDTO {
     private String pollinationMethod;
 
     /**
+     * 授粉方式
+     */
+    private String pollinationMethodName;
+
+    /**
      * 植株状态 1正常，2异常, 3已剔除，4已收获
      */
     private String plantStatus;
@@ -73,6 +78,11 @@ public class PlantSingleStockListPageRspDTO {
      * 收获方式
      */
     private String harvestType;
+
+    /**
+     * 授粉方式
+     */
+    private String harvestTypeName;
 
     /**
      * 其他字段

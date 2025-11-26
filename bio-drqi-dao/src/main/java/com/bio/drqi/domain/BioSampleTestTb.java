@@ -208,6 +208,8 @@ public class BioSampleTestTb implements Serializable {
 
     private String seedNum;
 
+    private String transformCode;
+
 
     @TableField(exist = false)
     private Integer countNum;
@@ -225,13 +227,14 @@ public class BioSampleTestTb implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    public static BioSampleTestTb of(String seedNum,String regionNum,String experimentNum,String vectorTaskCode, String generation, String breedCode, String speciesCode, String sampleCode, BioTaskDtlTb bioTaskDtlTb, String sourceCode, String uniqueCode) {
+    public static BioSampleTestTb of(String seedNum,String regionNum,String experimentNum,String vectorTaskCode,String transformCode, String generation, String breedCode, String speciesCode, String sampleCode, BioTaskDtlTb bioTaskDtlTb, String sourceCode, String uniqueCode) {
         BioSampleTestTb bioSampleTestTb = new BioSampleTestTb();
         bioSampleTestTb.setVectorTaskCode(vectorTaskCode);
         bioSampleTestTb.setSampleCode(sampleCode);
         bioSampleTestTb.setGeneration(generation);
         bioSampleTestTb.setBreedCode(breedCode);
         bioSampleTestTb.setSpeciesCode(speciesCode);
+        bioSampleTestTb.setTransformCode(transformCode);
         bioSampleTestTb.setSeedNum(seedNum);
         bioSampleTestTb.setExperimentNum(experimentNum);
         bioSampleTestTb.setRegionNum(regionNum);

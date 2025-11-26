@@ -44,6 +44,7 @@
             <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
             <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
             <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
+              <result property="transformCode" column="transform_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -59,7 +60,7 @@
         check_result,create_time,update_time,
         apply_no,identify_primer,unique_code,
         remark,clone_sample_code,source_code,
-        experiment_num,region_num,seed_num,
+        experiment_num,region_num,seed_num,transform_code,
         test_org_result
     </sql>
     <insert id="insertBatch">
@@ -75,7 +76,7 @@
         check_result,create_time,update_time,
         apply_no,identify_primer,unique_code,
         remark,clone_sample_code,source_code,
-        experiment_num,region_num,seed_num,
+        experiment_num,region_num,seed_num,transform_code,
         test_org_result)
         values
         <foreach collection="bioHisSampleTestTbCollection" item="item" separator=",">
@@ -91,7 +92,7 @@
             #{item.checkResult,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP},
             #{item.applyNo,jdbcType=VARCHAR},#{item.identifyPrimer,jdbcType=VARCHAR},#{item.uniqueCode,jdbcType=VARCHAR},
             #{item.remark,jdbcType=VARCHAR},#{item.cloneSampleCode,jdbcType=VARCHAR},#{item.sourceCode,jdbcType=VARCHAR},
-            #{item.experimentNum,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},#{item.seedNum,jdbcType=VARCHAR},
+            #{item.experimentNum,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},#{item.seedNum,jdbcType=VARCHAR},#{item.transformCode,jdbcType=VARCHAR},
             #{item.testOrgResult})
         </foreach>
     </insert>

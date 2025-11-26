@@ -14,6 +14,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface PlantMultipleStockTbMapper extends BaseMapper<PlantMultipleStockTb> {
 
+    PlantMultipleStockTb selectOneByRegionNumAndSeedNum(@Param("regionNum") String regionNum, @Param("seedNum") String seedNum);
+
     List<String> selectVectorTaskCodeBySourceCodeAndSpeciesCode(@Param("sourceCode") String sourceCode, @Param("speciesCode") String speciesCode);
 
     List<String> selectRegionNumBySourceCodeAndSpeciesCode(@Param("sourceCode") String sourceCode, @Param("speciesCode") String speciesCode);

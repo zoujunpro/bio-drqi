@@ -58,7 +58,7 @@ public class PlantApplyListPageRspDTO {
     private String vectorTaskCodes;
 
 
-    private String pdImplementCodeList;
+    private String pdImplementCodes;
 
     private String sampleCodePrefix;
 }

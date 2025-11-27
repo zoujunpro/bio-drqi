@@ -107,7 +107,7 @@ public class PlantApplyTaskService extends AbstractPlantBaseTaskService {
             plantApplyTb.setCreateUserName(SecurityContextHolder.getNickName());
             plantApplyTb.setSampleCodePrefix(createSampleCode());
             plantApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList())));
-            plantApplyTb.setPdNums(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdImplementCode).filter(pdImplementCode -> StringUtils.isNotEmpty(pdImplementCode)).distinct().collect(Collectors.toList())));
+            plantApplyTb.setPdImplementCodes(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdImplementCode).filter(pdImplementCode -> StringUtils.isNotEmpty(pdImplementCode)).distinct().collect(Collectors.toList())));
             List<PlantApplyDetailTb> plantExperimentDetailTbList = new ArrayList<>();
             for (ExperimentExcelDTO experimentExcelDTO : experimentExcelDTOList) {
                 SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(experimentExcelDTO.getSeedNum());

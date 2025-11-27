@@ -1,4 +1,4 @@
-package com.bio.drqi.tc.service.flowtask;
+package com.bio.drqi.tc.flowtask;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
@@ -10,7 +10,6 @@ import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.enums.ExperimentStatusEnum;
-import com.bio.drqi.tc.enums.SampleTestTypeEnum;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service("tc_sample_test_task_apply")
 public class TcSampleTestTaskService extends AbstractTcBaseTaskService {

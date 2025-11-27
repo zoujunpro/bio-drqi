@@ -1,4 +1,4 @@
-package com.bio.drqi.tc.service.flowtask;
+package com.bio.drqi.tc.flowtask;
 
 import com.bio.drqi.domain.BioTaskDtlTb;
 import org.springframework.stereotype.Service;

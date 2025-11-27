@@ -1,4 +1,4 @@
-package com.bio.drqi.tc.service.flowtask;
+package com.bio.drqi.tc.flowtask;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
@@ -7,7 +7,6 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
-import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.SampleGroupPergixEnum;
 import com.bio.drqi.common.util.LetterUtil;

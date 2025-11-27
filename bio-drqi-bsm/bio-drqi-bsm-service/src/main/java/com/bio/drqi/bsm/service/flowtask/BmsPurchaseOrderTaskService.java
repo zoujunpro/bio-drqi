@@ -220,11 +220,11 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 if (!StrUtil.equals(product.getProductCategoryCode(), bmsProductTb.getProductCategoryCode())) {
                     throw new BusinessException("常规采购的商品类别选择错误");
                 }
+                if (StringUtils.isEmpty(product.getBrandCode())) {
+                    throw new BusinessException("常规采购的品牌必填");
+                }
                 if (!StrUtil.equals(product.getBrandCode(), bmsProductTb.getBrandCode())) {
                     throw new BusinessException("常规采购的商品品牌选择错误");
-                }
-                if (StringUtils.isNotEmpty(product.getBrandCode())) {
-                    throw new BusinessException("常规采购的品牌必填");
                 }
                 BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
                 if (bmsBrandTb == null) {

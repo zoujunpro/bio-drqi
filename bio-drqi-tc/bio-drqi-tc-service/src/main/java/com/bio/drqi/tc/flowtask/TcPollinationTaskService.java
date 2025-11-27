@@ -1,4 +1,4 @@
-package com.bio.drqi.tc.service.flowtask;
+package com.bio.drqi.tc.flowtask;
 
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;

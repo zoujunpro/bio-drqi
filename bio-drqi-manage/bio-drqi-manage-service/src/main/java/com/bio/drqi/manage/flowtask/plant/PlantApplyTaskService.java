@@ -28,18 +28,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service("plant_experiment_task")
+@Service("plant_apply_task")
 @Slf4j
-public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
+public class PlantApplyTaskService extends AbstractPlantBaseTaskService {
 
     @Resource
     private OssService ossService;
 
     @Resource
     private SeedStockTbMapper seedStockTbMapper;
-
-    @Resource
-    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
 
     @Resource
     private PlantApplyTbMapper plantApplyTbMapper;

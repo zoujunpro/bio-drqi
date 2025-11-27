@@ -1,4 +1,4 @@
-package com.bio.drqi.manage.flowtask.project;
+package com.bio.drqi.manage.flowtask.plant;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
@@ -8,8 +8,12 @@ import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.domain.CerPlantDtlTb;
+import com.bio.drqi.domain.PlantSingleStockTb;
 import com.bio.drqi.manage.dto.project.CerPlantDTO;
+import com.bio.drqi.manage.flowtask.project.AbstractProjectBaseTaskService;
+import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.drqi.mapper.CerPlantDtlTbMapper;
+import com.bio.drqi.mapper.PlantSingleStockTbMapper;
 import com.github.pagehelper.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,13 +22,10 @@ import javax.annotation.Resource;
 
 @Service("cer_plant")
 @Slf4j
-public class CerPlanProcService extends AbstractProjectBaseTaskService {
+public class CerPlanProcService extends AbstractPlantBaseTaskService {
 
     @Resource
-    private OssService ossService;
-
-    @Resource
-    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+    private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -33,8 +34,8 @@ public class CerPlanProcService extends AbstractProjectBaseTaskService {
             throw new BusinessException("excel中没有数据");
         }
         for (CerPlantDTO.Content content : cerPlantDTO.getContentList()) {
-            CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(content.getPlantCode());
-            if (cerPlantDtlTb == null) {
+            PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(content.getPlantCode());
+            if (plantSingleStockTb == null) {
                 throw new BusinessException("找不到此种植编号:" + content.getPlantCode());
             }
             if (StringUtil.isNotEmpty(content.getPlantStatus())) {
@@ -50,21 +51,21 @@ public class CerPlanProcService extends AbstractProjectBaseTaskService {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             CerPlantDTO cerPlantDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), CerPlantDTO.class);
             for (CerPlantDTO.Content content : cerPlantDTO.getContentList()) {
-                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(content.getPlantCode());
-                if (cerPlantDtlTb == null) {
+                PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(content.getPlantCode());
+                if (plantSingleStockTb == null) {
                     throw new BusinessException("找不到此种植编号:" + content.getPlantCode());
                 }
-                cerPlantDtlTb.setPollinationDate(content.getPollinationDate());
-                cerPlantDtlTb.setVernalizationEndDate(content.getVernalizationEndDate());
-                cerPlantDtlTb.setVernalizationBeginDate(content.getVernalizationBeginDate());
-                cerPlantDtlTb.setTransplantDate(content.getTransplantDate());
-                cerPlantDtlTb.setPlantDate(content.getPlantDate());
-                cerPlantDtlTb.setPollinationMethod(content.getPollinationMethod());
-                cerPlantDtlTb.setHarvestDate(content.getHarvestDate());
+                plantSingleStockTb.setPollinationDate(content.getPollinationDate());
+                plantSingleStockTb.setVernalizationEndDate(content.getVernalizationEndDate());
+                plantSingleStockTb.setVernalizationBeginDate(content.getVernalizationBeginDate());
+                plantSingleStockTb.setTransplantDate(content.getTransplantDate());
+                plantSingleStockTb.setPlantDate(content.getPlantDate());
+                plantSingleStockTb.setPollinationMethod(content.getPollinationMethod());
+                plantSingleStockTb.setHarvestDate(content.getHarvestDate());
                 if (StringUtil.isNotEmpty(content.getPlantStatus())) {
-                    cerPlantDtlTb.setPlantStatus(PlantStatusEnum.getCodeByDesc(content.getPlantStatus()));
+                    plantSingleStockTb.setPlantStatus(PlantStatusEnum.getCodeByDesc(content.getPlantStatus()));
                 }
-                cerPlantDtlTbMapper.updateById(cerPlantDtlTb);
+                plantSingleStockTbMapper.updateById(plantSingleStockTb);
             }
         }
 

@@ -149,5 +149,5 @@ public class TcExperimentListDetailRspDTO {
      */
     private String transplantTime;
 
-    private String pdNum;
+    private String pdImplementCode;
 }

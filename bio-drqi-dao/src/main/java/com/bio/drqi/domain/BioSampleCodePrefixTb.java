@@ -38,16 +38,16 @@ public class BioSampleCodePrefixTb implements Serializable {
     private String vectorTaskCode;
 
 
-    private String plantExperimentCode;
+    private String taskNum;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
 
-    public BioSampleCodePrefixTb(String sampleCodePrefix, String vectorTaskCode, String plantExperimentCode) {
+    public BioSampleCodePrefixTb(String sampleCodePrefix, String vectorTaskCode, String taskNum) {
         this.sampleCodePrefix = sampleCodePrefix;
         this.createTime = new Date();
         this.vectorTaskCode = vectorTaskCode;
-        this.plantExperimentCode = plantExperimentCode;
+        this.taskNum = taskNum;
     }
 }

@@ -13,7 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface BioSampleCodePrefixTbMapper extends BaseMapper<BioSampleCodePrefixTb> {
     BioSampleCodePrefixTb selectOneByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
 
-    BioSampleCodePrefixTb selectOneByPlantExperimentCode(@Param("plantExperimentCode") String plantExperimentCode);
+    BioSampleCodePrefixTb selectOneByTaskNum(@Param("taskNum") String taskNum);
 
     int deleteByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
 }

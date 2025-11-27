@@ -1,11 +1,25 @@
-package com.bio.drqi.manage.plant.rsp;
+package com.bio.drqi.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 
+ * @TableName plant_apply_detail_tb
+ */
+@TableName(value ="plant_apply_detail_tb")
 @Data
-public class PlantExperimentListPageDetailRspDTO {
+public class PlantApplyDetailTb implements Serializable {
+    /**
+     * 主键ID
+     */
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -14,9 +28,9 @@ public class PlantExperimentListPageDetailRspDTO {
     private String pdNum;
 
     /**
-     * 试验编号
+     * 种植申请编号
      */
-    private String experimentNum;
+    private String plantApplyNum;
 
     /**
      * 区域
@@ -37,7 +51,7 @@ public class PlantExperimentListPageDetailRspDTO {
      * 品种
      */
     private String breedCode;
-    private String breedName;
+
     /**
      * 种植编号
      */
@@ -53,7 +67,6 @@ public class PlantExperimentListPageDetailRspDTO {
      */
     private String speciesCode;
 
-    private String speciesName;
     /**
      * 播种时间
      */
@@ -64,10 +77,6 @@ public class PlantExperimentListPageDetailRspDTO {
      */
     private Integer plantNumber;
 
-    /**
-     * 实验地点
-     */
-    private String experimentAddressCode;
 
     /**
      * 播种单位
@@ -98,4 +107,9 @@ public class PlantExperimentListPageDetailRspDTO {
      * 创建时间
      */
     private Date createTime;
+
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
+
+
 }

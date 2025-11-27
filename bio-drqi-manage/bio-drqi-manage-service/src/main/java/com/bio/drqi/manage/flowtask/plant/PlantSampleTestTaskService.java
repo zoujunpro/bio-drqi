@@ -43,7 +43,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     private BioSampleTestTbMapper bioSampleTestTbMapper;
 
     @Resource
-    private PlantExperimentDetailTbMapper plantExperimentDetailTbMapper;
+    private PlantApplyDetailTbMapper plantApplyDetailTbMapper;
 
     @Resource
     private BioSampleTestHisTbMapper bioSampleTestHisTbMapper;
@@ -113,17 +113,17 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     breedCode = plantMultipleStockTb.getBreedCode();
                     //如果是CER试验苗
                 } else {
-                    PlantExperimentDetailTb plantExperimentDetailTb = plantExperimentDetailTbMapper.selectOneByRegionNumAndSeedNum(firstSampleApply.getRegionNum(), firstSampleApply.getSeedNum());
-                    if (plantExperimentDetailTb == null) {
+                    PlantApplyDetailTb plantApplyDetailTb = plantApplyDetailTbMapper.selectOneByRegionNumAndSeedNum(firstSampleApply.getRegionNum(), firstSampleApply.getSeedNum());
+                    if (plantApplyDetailTb == null) {
                         throw new BusinessException("CER试验中无此小区:" + firstSampleApply.getRegionNum() + "和种子编号：" + firstSampleApply.getSeedNum());
                     }
-                    bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByPlantExperimentCode(plantExperimentDetailTb.getExperimentNum());
+                    bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByTaskNum(plantApplyDetailTb.getPlantApplyNum());
                     if (bioSampleCodePrefixTb == null) {
                         throw new BusinessException("CER试验未配置取样编号前缀：" + firstSampleApply.getVectorTaskCode());
                     }
-                    generation = plantExperimentDetailTb.getGenerationCode();
-                    speciesCode = plantExperimentDetailTb.getSpeciesCode();
-                    breedCode = plantExperimentDetailTb.getBreedCode();
+                    generation = plantApplyDetailTb.getGenerationCode();
+                    speciesCode = plantApplyDetailTb.getSpeciesCode();
+                    breedCode = plantApplyDetailTb.getBreedCode();
                 }
                 //获取取样编号前缀
                 String sampleCodePrefix = bioSampleCodePrefixTb.getSampleCodePrefix();

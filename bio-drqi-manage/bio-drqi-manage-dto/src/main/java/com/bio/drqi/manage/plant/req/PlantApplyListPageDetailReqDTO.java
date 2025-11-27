@@ -6,13 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NotBlank
-public class PlantExperimentListPageDetailReqDTO extends PageDTO {
+public class PlantApplyListPageDetailReqDTO extends PageDTO {
 
 
     /**
@@ -21,12 +20,12 @@ public class PlantExperimentListPageDetailReqDTO extends PageDTO {
     private String pdNum;
 
     /**
-     * 试验编号
+     * 种植申请编号
      */
-    private String experimentNum;
+    private String plantApplyNum;
 
     /**
-     * 区域
+     * 小区编号
      */
     private String regionNum;
 

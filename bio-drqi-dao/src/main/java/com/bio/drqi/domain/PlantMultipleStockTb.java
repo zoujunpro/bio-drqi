@@ -125,7 +125,7 @@ public class PlantMultipleStockTb implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    public static PlantMultipleStockTb of(PlantExperimentDetailTb plantExperimentDetailTb, BioTaskDtlTb bioTaskDtlTb, SourceCodeEnum sourceCodeEnum) {
+    public static PlantMultipleStockTb of(PlantApplyDetailTb plantExperimentDetailTb, BioTaskDtlTb bioTaskDtlTb, SourceCodeEnum sourceCodeEnum) {
         PlantMultipleStockTb plantMultipleStockTb = new PlantMultipleStockTb();
         plantMultipleStockTb.setSeedNum(plantExperimentDetailTb.getSeedNum());
         plantMultipleStockTb.setTransformCode(null);

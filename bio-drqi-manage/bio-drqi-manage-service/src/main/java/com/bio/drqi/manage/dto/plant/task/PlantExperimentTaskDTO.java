@@ -19,12 +19,12 @@ public class PlantExperimentTaskDTO {
     @NotEmpty(message = "试验类型必填")
     private List<String> experimentType;
 
-    private String experimentTarget;
+    private String plantTarget;
 
     private String fileUrl;
 
-    @NotBlank(message = "试验方案设计必填")
-    private String designUrl;
+    @NotBlank(message = "种植明细缺失")
+    private String plantDetailUrl;
 
     private List<String> pdNumList;
 

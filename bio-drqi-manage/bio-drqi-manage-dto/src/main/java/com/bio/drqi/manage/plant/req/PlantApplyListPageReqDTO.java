@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @AllArgsConstructor
 @NotBlank
-public class PlantExperimentListPageReqDTO extends PageDTO {
+public class PlantApplyListPageReqDTO extends PageDTO {
 
     /**
      * 物种

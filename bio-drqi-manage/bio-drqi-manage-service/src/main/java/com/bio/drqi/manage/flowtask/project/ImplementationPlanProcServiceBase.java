@@ -106,7 +106,7 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                     if (bioSampleCodePrefixTb == null) {
                         //生成sampleCodePrefix
                         try {
-                            bioSampleCodePrefixTbMapper.insert(new BioSampleCodePrefixTb(createSampleCode(),implementPlanAddDTO.getVectorTaskCode(),null));
+                            bioSampleCodePrefixTbMapper.insert(new BioSampleCodePrefixTb(createSampleCode(),implementPlanAddDTO.getVectorTaskCode(),bioTaskDtlTb.getTaskNum()));
                         } catch (DuplicateKeyException e) {
                             throw new BusinessException("取样编号前缀重复：" + bioSampleCodePrefixTb.getSampleCodePrefix());
                         }

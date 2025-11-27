@@ -42,11 +42,11 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
     private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
 
     @Resource
-    private PlantExperimentTbMapper plantExperimentTbMapper;
+    private PlantApplyTbMapper plantApplyTbMapper;
 
 
     @Resource
-    private PlantExperimentDetailTbMapper plantExperimentDetailTbMapper;
+    private PlantApplyDetailTbMapper plantApplyDetailTbMapper;
 
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
@@ -66,7 +66,6 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
         if (cerSpeciesConf == null) {
             throw new BusinessException("物种找不到");
         }
-
         List<ExperimentExcelDTO> experimentExcelDTOList = getExperimentExcelDTOS(plantExperimentTaskDTO);
         List<String> checkReginCodeAndSeedNumList = new ArrayList<>();
         for (ExperimentExcelDTO experimentExcelDTO : experimentExcelDTOList) {
@@ -76,14 +75,10 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
             if (seedStockTb == null) {
                 throw new BusinessException("上传数据在种子库中找不到材料信息" + experimentExcelDTO.getSeedNum());
             }
-            SeedProduceAddressDict seedProduceAddressDict = seedProduceAddressDictMapper.selectOneByAddressName(experimentExcelDTO.getExperimentAddressName());
-            if (seedProduceAddressDict == null) {
-                throw new BusinessException("试验地点不正确");
-            }
             if (!cerSpeciesConf.getSpeciesCode().equals(seedStockTb.getSpeciesCode())) {
                 throw new BusinessException("所选种子物种不匹配");
             }
-            List<PlantExperimentDetailTb> plantExperimentDetailTbList = plantExperimentDetailTbMapper.selectAllByRegionNum(experimentExcelDTO.getRegionNum());
+            List<PlantApplyDetailTb> plantExperimentDetailTbList = plantApplyDetailTbMapper.selectAllByRegionNum(experimentExcelDTO.getRegionNum());
             if (CollectionUtil.isNotEmpty(plantExperimentDetailTbList)) {
                 throw new BusinessException("小区编号" + experimentExcelDTO.getRegionNum() + "已经存在其他试验中");
             }
@@ -103,51 +98,48 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             PlantExperimentTaskDTO plantExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantExperimentTaskDTO.class);
             List<ExperimentExcelDTO> experimentExcelDTOList = getExperimentExcelDTOS(plantExperimentTaskDTO);
-            PlantExperimentTb plantExperimentTb = new PlantExperimentTb();
-            plantExperimentTb.setSpeciesCode(plantExperimentTaskDTO.getSpeciesCode());
-            plantExperimentTb.setExperimentType(JSONUtil.toJsonStr(plantExperimentTaskDTO.getExperimentType()));
-            plantExperimentTb.setExperimentTarget(plantExperimentTaskDTO.getExperimentTarget());
-            plantExperimentTb.setDesignUrl(plantExperimentTaskDTO.getDesignUrl());
-            plantExperimentTb.setFileUrl(plantExperimentTaskDTO.getFileUrl());
-            plantExperimentTb.setExperimentNum(bioTaskDtlTb.getTaskNum());
-            plantExperimentTb.setCreateTime(new Date());
-            plantExperimentTb.setCreateUserId(SecurityContextHolder.getUserId());
-            plantExperimentTb.setCreateUserName(SecurityContextHolder.getNickName());
-            plantExperimentTb.setSampleCodePrefix(createSampleCode());
-            plantExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList())));
-            plantExperimentTb.setPdNums(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdNumber).filter(pdNumber -> StringUtils.isNotEmpty(pdNumber)).distinct().collect(Collectors.toList())));
-            List<PlantExperimentDetailTb> plantExperimentDetailTbList = new ArrayList<>();
+            PlantApplyTb plantApplyTb = new PlantApplyTb();
+            plantApplyTb.setSpeciesCode(plantExperimentTaskDTO.getSpeciesCode());
+            plantApplyTb.setExperimentType(JSONUtil.toJsonStr(plantExperimentTaskDTO.getExperimentType()));
+            plantApplyTb.setPlantTarget(plantExperimentTaskDTO.getPlantTarget());
+            plantApplyTb.setPlantDetailUrl(plantExperimentTaskDTO.getPlantDetailUrl());
+            plantApplyTb.setFileUrl(plantExperimentTaskDTO.getFileUrl());
+            plantApplyTb.setPlantApplyNum(bioTaskDtlTb.getTaskNum());
+            plantApplyTb.setCreateTime(new Date());
+            plantApplyTb.setCreateUserId(SecurityContextHolder.getUserId());
+            plantApplyTb.setCreateUserName(SecurityContextHolder.getNickName());
+            plantApplyTb.setSampleCodePrefix(createSampleCode());
+            plantApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList())));
+            plantApplyTb.setPdNums(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdNumber).filter(pdNumber -> StringUtils.isNotEmpty(pdNumber)).distinct().collect(Collectors.toList())));
+            List<PlantApplyDetailTb> plantExperimentDetailTbList = new ArrayList<>();
             for (ExperimentExcelDTO experimentExcelDTO : experimentExcelDTOList) {
                 SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(experimentExcelDTO.getSeedNum());
-                SeedProduceAddressDict seedProduceAddressDict = seedProduceAddressDictMapper.selectOneByAddressName(experimentExcelDTO.getExperimentAddressName());
-                PlantExperimentDetailTb plantExperimentDetailTb = new PlantExperimentDetailTb();
-                plantExperimentDetailTb.setPdNum(experimentExcelDTO.getPdNumber());
-                plantExperimentDetailTb.setExperimentNum(plantExperimentTb.getExperimentNum());
-                plantExperimentDetailTb.setRegionNum(experimentExcelDTO.getRegionNum());
-                plantExperimentDetailTb.setVectorTaskCode(experimentExcelDTO.getVectorTaskCode());
-                plantExperimentDetailTb.setSeedNum(experimentExcelDTO.getSeedNum());
-                plantExperimentDetailTb.setPlantCode(seedStockTb.getPlantCode());
-                plantExperimentDetailTb.setGenerationCode(seedStockTb.getGeneration());
-                plantExperimentDetailTb.setSpeciesCode(seedStockTb.getSpeciesCode());
-                plantExperimentDetailTb.setBreedCode(seedStockTb.getBreedCode());
-                plantExperimentDetailTb.setPlantTime(experimentExcelDTO.getPlantTime());
-                plantExperimentDetailTb.setPlantNumber(experimentExcelDTO.getPlantNumber());
-                plantExperimentDetailTb.setPlantUnit("粒");
-                plantExperimentDetailTb.setExperimentAddressCode(seedProduceAddressDict.getAddressCode());
-                plantExperimentDetailTb.setRemarks(experimentExcelDTO.getRemark());
-                plantExperimentDetailTb.setGeneType(seedStockTb.getGeneType());
-                plantExperimentDetailTb.setCreateUserId(SecurityContextHolder.getUserId());
-                plantExperimentDetailTb.setCreateUserName(SecurityContextHolder.getNickName());
-                plantExperimentDetailTb.setCreateTime(new Date());
-                plantExperimentDetailTbList.add(plantExperimentDetailTb);
+                PlantApplyDetailTb plantApplyDetailTb = new PlantApplyDetailTb();
+                plantApplyDetailTb.setPdNum(experimentExcelDTO.getPdNumber());
+                plantApplyDetailTb.setPlantApplyNum(plantApplyTb.getPlantApplyNum());
+                plantApplyDetailTb.setRegionNum(experimentExcelDTO.getRegionNum());
+                plantApplyDetailTb.setVectorTaskCode(experimentExcelDTO.getVectorTaskCode());
+                plantApplyDetailTb.setSeedNum(experimentExcelDTO.getSeedNum());
+                plantApplyDetailTb.setPlantCode(seedStockTb.getPlantCode());
+                plantApplyDetailTb.setGenerationCode(seedStockTb.getGeneration());
+                plantApplyDetailTb.setSpeciesCode(seedStockTb.getSpeciesCode());
+                plantApplyDetailTb.setBreedCode(seedStockTb.getBreedCode());
+                plantApplyDetailTb.setPlantTime(experimentExcelDTO.getPlantTime());
+                plantApplyDetailTb.setPlantNumber(experimentExcelDTO.getPlantNumber());
+                plantApplyDetailTb.setPlantUnit("粒");
+                plantApplyDetailTb.setRemarks(experimentExcelDTO.getRemark());
+                plantApplyDetailTb.setGeneType(seedStockTb.getGeneType());
+                plantApplyDetailTb.setCreateUserId(SecurityContextHolder.getUserId());
+                plantApplyDetailTb.setCreateUserName(SecurityContextHolder.getNickName());
+                plantApplyDetailTb.setCreateTime(new Date());
+                plantExperimentDetailTbList.add(plantApplyDetailTb);
             }
             List<PlantMultipleStockTb> plantMultipleStockTbList = plantExperimentDetailTbList.stream().map(plantExperimentDetailTb -> PlantMultipleStockTb.of(plantExperimentDetailTb, bioTaskDtlTb, SourceCodeEnum.cer)).collect(Collectors.toList());
-            plantExperimentTbMapper.insert(plantExperimentTb);
-            plantExperimentDetailTbMapper.insertBatch(plantExperimentDetailTbList);
+            plantApplyTbMapper.insert(plantApplyTb);
+            plantApplyDetailTbMapper.insertBatch(plantExperimentDetailTbList);
             plantMultipleStockTbMapper.insertBatch(plantMultipleStockTbList);
-            bioSampleCodePrefixTbMapper.insert(new BioSampleCodePrefixTb(plantExperimentTb.getSampleCodePrefix(),null,plantExperimentTb.getExperimentNum()));
-
-            plantExperimentTaskDTO.setSampleCodePrefix(plantExperimentTb.getSampleCodePrefix());
+            bioSampleCodePrefixTbMapper.insert(new BioSampleCodePrefixTb(plantApplyTb.getSampleCodePrefix(),null, plantApplyTb.getPlantApplyNum()));
+            plantExperimentTaskDTO.setSampleCodePrefix(plantApplyTb.getSampleCodePrefix());
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plantExperimentTaskDTO));
         }
 
@@ -160,9 +152,9 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
 
     @NotNull
     private List<ExperimentExcelDTO> getExperimentExcelDTOS(PlantExperimentTaskDTO plantExperimentTaskDTO) {
-        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + plantExperimentTaskDTO.getDesignUrl();
+        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + plantExperimentTaskDTO.getPlantDetailUrl();
         try {
-            ossService.downloadPath(tempFilePath, plantExperimentTaskDTO.getDesignUrl());
+            ossService.downloadPath(tempFilePath, plantExperimentTaskDTO.getPlantDetailUrl());
         } catch (Exception e) {
             log.error("【CER试验申请】文件从oss下载失败", e);
             throw new BusinessException("文件处理异常");
@@ -172,7 +164,7 @@ public class PlantExperimentTaskService extends AbstractPlantBaseTaskService {
     }
 
     private String createSampleCode() {
-        String maxSampleCodePrefix = plantExperimentTbMapper.selectMaxSampleCodePrefix();
+        String maxSampleCodePrefix = plantApplyTbMapper.selectMaxSampleCodePrefix();
         if (StringUtils.isEmpty(maxSampleCodePrefix)) {
             return "CAA";
         } else {

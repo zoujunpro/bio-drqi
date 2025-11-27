@@ -11,11 +11,11 @@ import java.util.Date;
 
 /**
  * 
- * @TableName plant_experiment_tb
+ * @TableName plant_apply_tb
  */
-@TableName(value ="plant_experiment_tb")
+@TableName(value ="plant_apply_tb")
 @Data
-public class PlantExperimentTb implements Serializable {
+public class PlantApplyTb implements Serializable {
     /**
      * 主键id
      */
@@ -33,24 +33,24 @@ public class PlantExperimentTb implements Serializable {
     private String experimentType;
 
     /**
-     * 试验目标
+     * 种植目标
      */
-    private String experimentTarget;
+    private String plantTarget;
 
     /**
-     * 试验方案
+     * 种植明细
      */
-    private String designUrl;
+    private String plantDetailUrl;
 
     /**
-     * 试验附件
+     * 附件地址
      */
     private String fileUrl;
 
     /**
-     * 试验编号
+     * 种植申请编号
      */
-    private String experimentNum;
+    private String plantApplyNum;
 
     /**
      * 创建时间

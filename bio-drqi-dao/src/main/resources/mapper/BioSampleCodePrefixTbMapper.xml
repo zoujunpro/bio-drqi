@@ -9,7 +9,7 @@
             <result property="sampleCodePrefix" column="sample_code_prefix" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
-            <result property="plantExperimentCode" column="plant_experiment_code" jdbcType="VARCHAR"/>
+            <result property="taskNum" column="taskNum" jdbcType="VARCHAR"/>
 
     </resultMap>
 
@@ -29,11 +29,11 @@
         from bio_sample_code_prefix_tb
         where vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
     </delete>
-    <select id="selectOneByPlantExperimentCode" resultMap="BaseResultMap">
+    <select id="selectOneByTaskNum" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from bio_sample_code_prefix_tb
         where
-        plant_experiment_code = #{plantExperimentCode,jdbcType=VARCHAR}
+        taskNum = #{taskNum,jdbcType=VARCHAR}
     </select>
 </mapper>

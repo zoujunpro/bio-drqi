@@ -41,7 +41,9 @@
         <include refid="Base_Column_List"/>
         from plant_apply_detail_tb
         <where>
-            <if test="pdImplementCode != null and pdImplementCode!=''">and pd_implement_code=#{pdImplementCode,jdbcType=VARCHAR}</if>
+            <if test="pdImplementCode != null and pdImplementCode!=''">and
+                pd_implement_code=#{pdImplementCode,jdbcType=VARCHAR}
+            </if>
             <if test="plantApplyNum != null and plantApplyNum!=''">and
                 plant_apply_num=#{plantApplyNum,jdbcType=VARCHAR}
             </if>
@@ -65,6 +67,7 @@
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
         </where>
+        order by id desc
     </select>
     <select id="selectAllByRegionNum" resultMap="BaseResultMap">
         select

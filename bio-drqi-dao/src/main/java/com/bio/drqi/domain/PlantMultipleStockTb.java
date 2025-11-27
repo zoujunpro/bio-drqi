@@ -113,7 +113,7 @@ public class PlantMultipleStockTb implements Serializable {
     /**
      * PD编号
      */
-    private String pdNum;
+    private String pdImplementCode;
 
     private String plantDate;
 
@@ -143,7 +143,7 @@ public class PlantMultipleStockTb implements Serializable {
         plantMultipleStockTb.setCurrentNumber(plantExperimentDetailTb.getPlantNumber());
         plantMultipleStockTb.setRegionNum(plantExperimentDetailTb.getRegionNum());
         plantMultipleStockTb.setVectorTaskCode(plantExperimentDetailTb.getVectorTaskCode());
-        plantMultipleStockTb.setPdNum(plantExperimentDetailTb.getPdNum());
+        plantMultipleStockTb.setPdImplementCode(plantExperimentDetailTb.getPdImplementCode());
         plantMultipleStockTb.setPlantDate(DateUtil.format(new Date(), DatePattern.NORM_DATE_PATTERN));
         return plantMultipleStockTb;
     }

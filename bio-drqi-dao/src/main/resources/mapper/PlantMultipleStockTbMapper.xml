@@ -22,7 +22,7 @@
         <result property="currentNumber" column="current_number" jdbcType="INTEGER"/>
         <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
         <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
-        <result property="pdNum" column="pd_num" jdbcType="VARCHAR"/>
+        <result property="pdImplementCode" column="pd_implement_code" jdbcType="VARCHAR"/>
         <result property="plantDate" column="plant_date" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -33,7 +33,7 @@
         remark,create_time,create_user_id,
         create_user_name,task_num,species_code,
         breed_code,sample_number,current_number,
-        region_num,vector_task_code,pd_num,plant_date
+        region_num,vector_task_code,pd_implement_code,plant_date
     </sql>
     <select id="selectAllByVectorTaskCode" resultMap="BaseResultMap">
         select
@@ -67,7 +67,7 @@
             <if test="vectorTaskCode != null and vectorTaskCode!=''">and
                 vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}
             </if>
-            <if test="pdNum != null and pdNum!=''">and pd_num=#{pdNum,jdbcType=VARCHAR}</if>
+            <if test="pdImplementCode != null and pdImplementCode!=''">and pd_implement_code=#{pdImplementCode,jdbcType=VARCHAR}</if>
             <if test='stockNumberNotNullFlag!="Y"'>and plant_number>0</if>
         </where>
         order by id desc
@@ -96,7 +96,7 @@
         remark,create_time,create_user_id,
         create_user_name,task_num,species_code,
         breed_code,sample_number,current_number,
-        region_num,vector_task_code,pd_num,plant_date
+        region_num,vector_task_code,pd_implement_code,plant_date
         )
         values
         <foreach collection="plantMultipleStockTbCollection" item="item" separator=",">
@@ -105,7 +105,7 @@
             #{item.remark,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.createUserId,jdbcType=NUMERIC},
             #{item.createUserName,jdbcType=VARCHAR},#{item.taskNum,jdbcType=VARCHAR},#{item.speciesCode,jdbcType=VARCHAR},
             #{item.breedCode,jdbcType=VARCHAR},#{item.sampleNumber,jdbcType=NUMERIC},#{item.currentNumber,jdbcType=NUMERIC},
-            #{item.regionNum,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},#{item.pdNum,jdbcType=VARCHAR},#{item.plantDate,jdbcType=VARCHAR})
+            #{item.regionNum,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},#{item.pdImplementCode,jdbcType=VARCHAR},#{item.plantDate,jdbcType=VARCHAR})
         </foreach>
     </insert>
     <select id="selectOneByRegionNumAndSeedNum" resultMap="BaseResultMap">

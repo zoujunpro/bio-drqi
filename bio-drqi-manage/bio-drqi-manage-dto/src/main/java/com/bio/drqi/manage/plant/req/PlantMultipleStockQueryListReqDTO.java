@@ -45,7 +45,7 @@ public class PlantMultipleStockQueryListReqDTO {
     /**
      * PD编号
      */
-    private String pdNum;
+    private String pdImplementCode;
 
 
     private String stockNumberNotNullFlag;

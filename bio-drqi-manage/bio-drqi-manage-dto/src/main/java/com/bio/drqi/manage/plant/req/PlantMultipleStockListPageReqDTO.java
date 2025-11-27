@@ -48,7 +48,7 @@ public class PlantMultipleStockListPageReqDTO extends PageDTO {
     /**
      * PD编号
      */
-    private String pdNum;
+    private String pdImplementCode;
 
 
     private String stockNumberNotNullFlag;

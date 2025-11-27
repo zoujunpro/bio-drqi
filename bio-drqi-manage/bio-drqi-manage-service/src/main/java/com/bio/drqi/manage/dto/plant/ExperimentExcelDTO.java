@@ -16,7 +16,7 @@ public class ExperimentExcelDTO {
     @ExcelProperty("实施方案编号")
     private String vectorTaskCode;
 
-    @ExcelProperty("PD编号")
+    @ExcelProperty("PD实施方案编号")
     private String pdImplementCode;
 
     @ExcelProperty("种子编号(*)")

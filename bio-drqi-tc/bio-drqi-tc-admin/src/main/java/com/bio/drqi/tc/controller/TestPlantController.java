@@ -46,55 +46,19 @@ public class TestPlantController {
     @GetMapping("cleanSeedAndTc")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanSeedAndTc() {
-        List<CleanSeedAndTcExcelDTO> cleanSeedAndTcExcelDTOList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\上线\\要清洗数据.xlsx", CleanSeedAndTcExcelDTO.class);
 
-        for (CleanSeedAndTcExcelDTO cleanSeedAndTcExcelDTO : cleanSeedAndTcExcelDTOList) {
-            log.info("cleanSeedAndTcExcelDTO=" + JSONUtil.toJsonStr(cleanSeedAndTcExcelDTO));
-            SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(cleanSeedAndTcExcelDTO.seedNum);
-            if (seedStockTb == null) {
-                throw new BusinessException("种子库找不到种子编号");
-            }
-            List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllBySeedNum(seedStockTb.getSeedNum());
-            if (CollectionUtil.isEmpty(tcExperimentDesignTbList)) {
-                throw new BusinessException("大田找不到种子信息");
-            }
-            if (StringUtils.isEmpty(cleanSeedAndTcExcelDTO.getVectorTaskCode())) {
-                seedStockTbMapper.updatePdNumAndVectorTaskCodeAndProjectCodeById(cleanSeedAndTcExcelDTO.pdNum, cleanSeedAndTcExcelDTO.vectorTaskCode, null, seedStockTb.getId());
-            } else {
-                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cleanSeedAndTcExcelDTO.vectorTaskCode);
-                if (cerVectorTaskTb == null) {
-                    throw new BusinessException("找不到此实施方案编号");
-                }
-                seedStockTbMapper.updatePdNumAndVectorTaskCodeAndProjectCodeById(cleanSeedAndTcExcelDTO.pdNum, cleanSeedAndTcExcelDTO.vectorTaskCode, cerVectorTaskTb.getProjectCode(), seedStockTb.getId());
-            }
-
-            tcExperimentDesignTbList.forEach(tcExperimentDesignTb -> {
-                tcExperimentDesignTbMapper.updatePdImplementCodeAndVectorTaskCodeById(cleanSeedAndTcExcelDTO.pdNum, cleanSeedAndTcExcelDTO.vectorTaskCode, tcExperimentDesignTb.getId());
-            });
-
-
-        }
 
         List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectList(null);
         for (TcExperimentTb tcExperimentTb : tcExperimentTbList) {
             log.info("处理试验工单tcExperimentTb=" + JSONUtil.toJsonStr(tcExperimentTb));
-            List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcExperimentTb.getExperimentNum());
-            List<String> pdImplementCodeList = tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getPdImplementCode).filter(pdImplementCode -> StringUtils.isNotEmpty(pdImplementCode)).distinct().collect(Collectors.toList());
-            List<String> vectorTaskCodeList = tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList());
-            tcExperimentTb.setPdImplementCodes(JSONUtil.toJsonStr(pdImplementCodeList));
-            tcExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(vectorTaskCodeList));
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcExperimentTb.getTaskNum());
             if (bioTaskDtlTb == null) {
                 throw new BusinessException("找不到申请工单");
             }
             TcExperimentTaskDTO tcExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcExperimentTaskDTO.class);
-            tcExperimentTaskDTO.setVectorTaskCodeList(vectorTaskCodeList);
-            tcExperimentTaskDTO.setPdImplementCodeList(pdImplementCodeList);
+            tcExperimentTaskDTO.setPdImplementCodeList(JSONUtil.toList(tcExperimentTb.getPdImplementCodes(),String.class));
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcExperimentTaskDTO));
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
-            tcExperimentTbMapper.updateById(tcExperimentTb);
-
-
         }
 
 

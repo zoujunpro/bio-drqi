@@ -26,7 +26,7 @@ public class PlantExperimentTaskDTO {
     @NotBlank(message = "种植明细缺失")
     private String plantDetailUrl;
 
-    private List<String> pdNumList;
+    private List<String> pdImplementCodeList;
 
     private List<String> vectorTaskCodeList;
 

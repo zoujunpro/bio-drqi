@@ -11,7 +11,7 @@ public class PlantApplyListPageDetailRspDTO {
     /**
      * PD号
      */
-    private String pdNum;
+    private String pdImplementCode;
 
     /**
      * 种植申请编号

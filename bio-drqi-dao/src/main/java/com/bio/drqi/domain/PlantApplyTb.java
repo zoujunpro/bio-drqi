@@ -73,7 +73,7 @@ public class PlantApplyTb implements Serializable {
     private String vectorTaskCodes;
 
 
-    private String pdNums;
+    private String pdImplementCodes;
 
     private String sampleCodePrefix;
 

@@ -49,7 +49,7 @@ public class PlantApplyServiceImpl implements PlantApplyService {
         PageHelper.startPage(plantApplyListPageReqDTO.getPageNum(), plantApplyListPageReqDTO.getPageSize());
         PlantApplyTb plantApplyTb = BeanUtils.copyProperties(plantApplyListPageReqDTO, PlantApplyTb.class);
         plantApplyTb.setVectorTaskCodes(plantApplyListPageReqDTO.getVectorTaskCode());
-        plantApplyTb.setPdNums(plantApplyListPageReqDTO.getPdNum());
+        plantApplyTb.setPdImplementCodes(plantApplyListPageReqDTO.getPdImplementCode());
         List<PlantApplyTb> plantApplyTbList = plantApplyTbMapper.selectSelective(plantApplyTb);
         PageInfo<PlantApplyTb> srcPageInfo = new PageInfo<>(plantApplyTbList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, PlantApplyListPageRspDTO.class);

@@ -17,7 +17,7 @@ public class PlantApplyListPageDetailReqDTO extends PageDTO {
     /**
      * PD号
      */
-    private String pdNum;
+    private String pdImplementCode;
 
     /**
      * 种植申请编号

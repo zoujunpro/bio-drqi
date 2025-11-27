@@ -17,7 +17,7 @@ public class ExperimentExcelDTO {
     private String vectorTaskCode;
 
     @ExcelProperty("PD编号")
-    private String pdNumber;
+    private String pdImplementCode;
 
     @ExcelProperty("种子编号(*)")
     @NotBlank(message = "种子编号缺失")

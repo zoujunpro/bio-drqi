@@ -25,7 +25,7 @@ public class PlantApplyDetailTb implements Serializable {
     /**
      * PD号
      */
-    private String pdNum;
+    private String pdImplementCode;
 
     /**
      * 种植申请编号

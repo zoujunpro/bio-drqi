@@ -36,5 +36,5 @@ public class PlantApplyListPageReqDTO extends PageDTO {
     private String vectorTaskCode;
 
 
-    private String pdNum;
+    private String pdImplementCode;
 }

@@ -85,7 +85,7 @@ public class PlantApplyTaskService extends AbstractPlantBaseTaskService {
             checkReginCodeAndSeedNumList.add(experimentExcelDTO.getRegionNum() + experimentExcelDTO.getSeedNum());
         }
         plantExperimentTaskDTO.setVectorTaskCodeList(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList()));
-        plantExperimentTaskDTO.setPdNumList(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdNumber).filter(pdNumber -> StringUtils.isNotEmpty(pdNumber)).distinct().collect(Collectors.toList()));
+        plantExperimentTaskDTO.setPdImplementCodeList(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdImplementCode).filter(pdImplementCode -> StringUtils.isNotEmpty(pdImplementCode)).distinct().collect(Collectors.toList()));
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plantExperimentTaskDTO));
     }
 
@@ -107,12 +107,12 @@ public class PlantApplyTaskService extends AbstractPlantBaseTaskService {
             plantApplyTb.setCreateUserName(SecurityContextHolder.getNickName());
             plantApplyTb.setSampleCodePrefix(createSampleCode());
             plantApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList())));
-            plantApplyTb.setPdNums(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdNumber).filter(pdNumber -> StringUtils.isNotEmpty(pdNumber)).distinct().collect(Collectors.toList())));
+            plantApplyTb.setPdNums(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdImplementCode).filter(pdImplementCode -> StringUtils.isNotEmpty(pdImplementCode)).distinct().collect(Collectors.toList())));
             List<PlantApplyDetailTb> plantExperimentDetailTbList = new ArrayList<>();
             for (ExperimentExcelDTO experimentExcelDTO : experimentExcelDTOList) {
                 SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(experimentExcelDTO.getSeedNum());
                 PlantApplyDetailTb plantApplyDetailTb = new PlantApplyDetailTb();
-                plantApplyDetailTb.setPdNum(experimentExcelDTO.getPdNumber());
+                plantApplyDetailTb.setPdImplementCode(experimentExcelDTO.getPdImplementCode());
                 plantApplyDetailTb.setPlantApplyNum(plantApplyTb.getPlantApplyNum());
                 plantApplyDetailTb.setRegionNum(experimentExcelDTO.getRegionNum());
                 plantApplyDetailTb.setVectorTaskCode(experimentExcelDTO.getVectorTaskCode());

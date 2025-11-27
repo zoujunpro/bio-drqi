@@ -15,7 +15,7 @@
             <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
             <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
             <result property="vectorTaskCodes" column="vector_task_codes" jdbcType="VARCHAR"/>
-            <result property="pdNums" column="pd_nums" jdbcType="VARCHAR"/>
+            <result property="pdImplementCodes" column="pd_implement_codes" jdbcType="VARCHAR"/>
             <result property="sampleCodePrefix" column="sample_code_prefix" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -23,7 +23,7 @@
         id,species_code,experiment_type,
         plant_target,plant_detail_url,file_url,
         plant_apply_num,create_time,create_user_id,
-        create_user_name,vector_task_codes,pd_nums,sample_code_prefix
+        create_user_name,vector_task_codes,pd_implement_codes,sample_code_prefix
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.PlantApplyTb" resultMap="BaseResultMap">
         select
@@ -37,7 +37,7 @@
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
             <if test="vectorTaskCodes != null and vectorTaskCodes!=''">and vector_task_codes like  CONCAT('%',#{vectorTaskCodes,jdbcType=VARCHAR},'%')</if>
-            <if test="pdNums != null and pdNums!=''">and pd_nums like  CONCAT('%',#{pdNums,jdbcType=VARCHAR},'%')</if>
+            <if test="pdImplementCodes != null and pdImplementCodes!=''">and pd_implement_codes like  CONCAT('%',#{pdImplementCodes,jdbcType=VARCHAR},'%')</if>
         </where>
         order by id desc
     </select>

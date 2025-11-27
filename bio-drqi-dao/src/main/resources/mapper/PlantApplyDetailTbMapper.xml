@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.PlantApplyDetailTb">
         <id property="id" column="id" jdbcType="INTEGER"/>
-        <result property="pdNum" column="pd_num" jdbcType="VARCHAR"/>
+        <result property="pdImplementCode" column="pd_implement_code" jdbcType="VARCHAR"/>
         <result property="plantApplyNum" column="plant_apply_num" jdbcType="VARCHAR"/>
         <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
         <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
@@ -27,7 +27,7 @@
 
     <sql id="Base_Column_List">
         id
-        ,pd_num,plant_apply_num,
+        ,pd_implement_code,plant_apply_num,
         region_num,vector_task_code,seed_num,
         breed_code,plant_code,generation_code,
         species_code,plant_time,plant_number,plant_unit,remarks,
@@ -41,7 +41,7 @@
         <include refid="Base_Column_List"/>
         from plant_apply_detail_tb
         <where>
-            <if test="pdNum != null and pdNum!=''">and pd_num=#{pdNum,jdbcType=VARCHAR}</if>
+            <if test="pdImplementCode != null and pdImplementCode!=''">and pd_implement_code=#{pdImplementCode,jdbcType=VARCHAR}</if>
             <if test="plantApplyNum != null and plantApplyNum!=''">and
                 plant_apply_num=#{plantApplyNum,jdbcType=VARCHAR}
             </if>
@@ -82,7 +82,7 @@
         AND seed_num = #{seedNum,jdbcType=VARCHAR}
     </select>
     <insert id="insertBatch">
-        insert into plant_apply_detail_tb(id,pd_num,plant_apply_num,
+        insert into plant_apply_detail_tb(id,pd_implement_code,plant_apply_num,
         region_num,vector_task_code,seed_num,
         breed_code,plant_code,generation_code,
         species_code,plant_time,plant_number,
@@ -90,7 +90,7 @@
         create_user_id,create_user_name,create_time)
         values
         <foreach collection="plantExperimentDetailTbCollection" item="item" separator=",">
-            (#{item.id,jdbcType=NUMERIC},#{item.pdNum,jdbcType=VARCHAR},#{item.plantApplyNum,jdbcType=VARCHAR},
+            (#{item.id,jdbcType=NUMERIC},#{item.pdImplementCode,jdbcType=VARCHAR},#{item.plantApplyNum,jdbcType=VARCHAR},
             #{item.regionNum,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},#{item.seedNum,jdbcType=VARCHAR},
             #{item.breedCode,jdbcType=VARCHAR},#{item.plantCode,jdbcType=VARCHAR},#{item.generationCode,jdbcType=VARCHAR},
             #{item.speciesCode,jdbcType=VARCHAR},#{item.plantTime,jdbcType=VARCHAR},#{item.plantNumber,jdbcType=NUMERIC},

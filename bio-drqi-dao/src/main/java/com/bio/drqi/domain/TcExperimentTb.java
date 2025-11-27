@@ -100,7 +100,7 @@ public class TcExperimentTb implements Serializable {
 
     private String breedingFlag;
 
-    private String pdNums;
+    private String pdImplementCodes;
 
 
     @TableField(exist = false)

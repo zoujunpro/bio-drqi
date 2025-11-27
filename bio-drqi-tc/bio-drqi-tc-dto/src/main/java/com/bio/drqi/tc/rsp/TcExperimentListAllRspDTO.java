@@ -56,5 +56,5 @@ public class TcExperimentListAllRspDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
 
-    private String pdNum;
+    private String pdImplementCode;
 }

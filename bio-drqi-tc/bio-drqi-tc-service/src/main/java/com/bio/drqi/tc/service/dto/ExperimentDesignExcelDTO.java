@@ -38,8 +38,8 @@ public class ExperimentDesignExcelDTO {
     /**
      * PD编号
      */
-    @ExcelProperty("PD编号")
-    private String pdNum;
+    @ExcelProperty("PD实施方案编号")
+    private String pdImplementCode;
     /**
      * 实施方案编号
      */

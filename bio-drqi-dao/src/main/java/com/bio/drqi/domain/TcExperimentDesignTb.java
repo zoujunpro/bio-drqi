@@ -160,7 +160,7 @@ public class TcExperimentDesignTb implements Serializable {
     /**
      * PD编号
      */
-    private String pdNum;
+    private String pdImplementCode;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

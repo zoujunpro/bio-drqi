@@ -69,7 +69,7 @@ public class TestPlantController {
             }
 
             tcExperimentDesignTbList.forEach(tcExperimentDesignTb -> {
-                tcExperimentDesignTbMapper.updatePdNumAndVectorTaskCodeById(cleanSeedAndTcExcelDTO.pdNum, cleanSeedAndTcExcelDTO.vectorTaskCode, tcExperimentDesignTb.getId());
+                tcExperimentDesignTbMapper.updatePdImplementCodeAndVectorTaskCodeById(cleanSeedAndTcExcelDTO.pdNum, cleanSeedAndTcExcelDTO.vectorTaskCode, tcExperimentDesignTb.getId());
             });
 
 
@@ -79,9 +79,9 @@ public class TestPlantController {
         for (TcExperimentTb tcExperimentTb : tcExperimentTbList) {
             log.info("处理试验工单tcExperimentTb=" + JSONUtil.toJsonStr(tcExperimentTb));
             List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByExperimentNum(tcExperimentTb.getExperimentNum());
-            List<String> pdNumList = tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getPdNum).filter(pdNum -> StringUtils.isNotEmpty(pdNum)).distinct().collect(Collectors.toList());
+            List<String> pdImplementCodeList = tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getPdImplementCode).filter(pdImplementCode -> StringUtils.isNotEmpty(pdImplementCode)).distinct().collect(Collectors.toList());
             List<String> vectorTaskCodeList = tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList());
-            tcExperimentTb.setPdNums(JSONUtil.toJsonStr(pdNumList));
+            tcExperimentTb.setPdImplementCodes(JSONUtil.toJsonStr(pdImplementCodeList));
             tcExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(vectorTaskCodeList));
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcExperimentTb.getTaskNum());
             if (bioTaskDtlTb == null) {
@@ -89,7 +89,7 @@ public class TestPlantController {
             }
             TcExperimentTaskDTO tcExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcExperimentTaskDTO.class);
             tcExperimentTaskDTO.setVectorTaskCodeList(vectorTaskCodeList);
-            tcExperimentTaskDTO.setPdNumList(pdNumList);
+            tcExperimentTaskDTO.setPdImplementCodeList(pdImplementCodeList);
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcExperimentTaskDTO));
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
             tcExperimentTbMapper.updateById(tcExperimentTb);

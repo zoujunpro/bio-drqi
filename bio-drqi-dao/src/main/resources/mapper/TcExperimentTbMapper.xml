@@ -24,13 +24,13 @@
             <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
             <result property="experimentType" column="experiment_type" jdbcType="VARCHAR"/>
             <result property="breedingFlag" column="breeding_flag" jdbcType="VARCHAR"/>
-            <result property="pdNums" column="pd_nums" jdbcType="VARCHAR"/>
+            <result property="pdImplementCodes" column="pd_implement_codes" jdbcType="VARCHAR"/>
 
 
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,vector_task_codes,pd_nums,
+        id,vector_task_codes,pd_implement_codes,
         species_code,species_name,file_url,
         experiment_goal,experiment_address_code,apply_user_name,
         apply_user_id,create_time,experiment_num,
@@ -54,6 +54,8 @@
             <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="experimentStatus != null and experimentStatus!=''">and harvest_apply_num=#{experimentStatus,jdbcType=VARCHAR}</if>
             <if test="experimentType != null and experimentType!=''">and experiment_type=#{experimentType,jdbcType=VARCHAR}</if>
+            <if test="pdImplementCodes != null and pdImplementCodes!=''">and pd_implement_codes=#{pdImplementCodes,jdbcType=VARCHAR}</if>
+
         </where>
         order by id desc
     </select>

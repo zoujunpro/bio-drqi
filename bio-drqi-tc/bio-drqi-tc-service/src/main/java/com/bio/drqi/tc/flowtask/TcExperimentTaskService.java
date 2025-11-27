@@ -59,7 +59,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         }
 
         tcExperimentTaskDTO.setVectorTaskCodeList(experimentDesignExcelDTOList.stream().map(ExperimentDesignExcelDTO::getVectorTaskCode).filter(vectorTaskCode->StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList()));
-        tcExperimentTaskDTO.setPdNumList(experimentDesignExcelDTOList.stream().map(ExperimentDesignExcelDTO::getPdNum).filter(pdNum->StringUtils.isNotEmpty(pdNum)).distinct().collect(Collectors.toList()));
+        tcExperimentTaskDTO.setPdImplementCodeList(experimentDesignExcelDTOList.stream().map(ExperimentDesignExcelDTO::getPdImplementCode).filter(pdImplementCode->StringUtils.isNotEmpty(pdImplementCode)).distinct().collect(Collectors.toList()));
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcExperimentTaskDTO));
     }
 
@@ -126,16 +126,16 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
                 tcExperimentDesignTb.setCreateTime(new Date());
                 tcExperimentDesignTb.setEmergenceRate(experimentDesignExcelDTO.getEmergenceRate());
                 tcExperimentDesignTb.setTransplantTime(experimentDesignExcelDTO.getTransplantTime());
-                tcExperimentDesignTb.setPdNum(experimentDesignExcelDTO.getPdNum());
+                tcExperimentDesignTb.setPdImplementCode(experimentDesignExcelDTO.getPdImplementCode());
                 tcExperimentDesignTbList.add(tcExperimentDesignTb);
             }
-            tcExperimentTb.setPdNums(JSONUtil.toJsonStr(tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getPdNum).filter(pdNum->StringUtils.isNotEmpty(pdNum)).distinct().collect(Collectors.toList())));
+            tcExperimentTb.setPdImplementCodes(JSONUtil.toJsonStr(tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getPdImplementCode).filter(pdImplementCode->StringUtils.isNotEmpty(pdImplementCode)).distinct().collect(Collectors.toList())));
             tcExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getVectorTaskCode).filter(vectorTaskCode->StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList())));
             tcExperimentTbMapper.insert(tcExperimentTb);
             tcExperimentDesignTbMapper.insertBatch(tcExperimentDesignTbList);
             tcExperimentTaskDTO.setSampleCodePrefix(tcExperimentTb.getSampleCodePrefix());
             tcExperimentTaskDTO.setVectorTaskCodeList(JSONUtil.toList(tcExperimentTb.getVectorTaskCodes(),String.class));
-            tcExperimentTaskDTO.setPdNumList(JSONUtil.toList(tcExperimentTb.getPdNums(),String.class));
+            tcExperimentTaskDTO.setPdImplementCodeList(JSONUtil.toList(tcExperimentTb.getPdImplementCodes(),String.class));
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcExperimentTaskDTO));
         }
     }

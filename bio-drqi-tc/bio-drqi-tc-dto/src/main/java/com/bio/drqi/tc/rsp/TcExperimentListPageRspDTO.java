@@ -101,6 +101,6 @@ public class TcExperimentListPageRspDTO {
 
     private String experimentType;
 
-    private String pdNums;
+    private String pdImplementCodes;
 
 }

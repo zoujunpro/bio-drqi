@@ -42,7 +42,7 @@ public class TcExperimentTaskDTO {
 
     private List<String> vectorTaskCodeList;
 
-    private List<String> pdNumList;
+    private List<String> pdImplementCodeList;
 
 
 }

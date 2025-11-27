@@ -227,21 +227,22 @@ public class BioSampleTestTb implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    public static BioSampleTestTb of(String seedNum,String regionNum,String experimentNum,String vectorTaskCode,String transformCode, String generation, String breedCode, String speciesCode, String sampleCode, BioTaskDtlTb bioTaskDtlTb, String sourceCode, String uniqueCode) {
+    public static BioSampleTestTb ofFirst(PlantMultipleStockTb plantMultipleStockTb , String sampleCode, BioTaskDtlTb bioTaskDtlTb) {
         BioSampleTestTb bioSampleTestTb = new BioSampleTestTb();
-        bioSampleTestTb.setVectorTaskCode(vectorTaskCode);
+        bioSampleTestTb.setVectorTaskCode(plantMultipleStockTb.getVectorTaskCode());
         bioSampleTestTb.setSampleCode(sampleCode);
-        bioSampleTestTb.setGeneration(generation);
-        bioSampleTestTb.setBreedCode(breedCode);
-        bioSampleTestTb.setSpeciesCode(speciesCode);
-        bioSampleTestTb.setTransformCode(transformCode);
-        bioSampleTestTb.setSeedNum(seedNum);
-        bioSampleTestTb.setExperimentNum(experimentNum);
-        bioSampleTestTb.setRegionNum(regionNum);
+        bioSampleTestTb.setGeneration(plantMultipleStockTb.getGeneration());
+        bioSampleTestTb.setBreedCode(plantMultipleStockTb.getBreedCode());
+        bioSampleTestTb.setSpeciesCode(plantMultipleStockTb.getSpeciesCode());
+        bioSampleTestTb.setTransformCode(plantMultipleStockTb.getTransformCode());
+        bioSampleTestTb.setSeedNum(plantMultipleStockTb.getSeedNum());
+        bioSampleTestTb.setExperimentNum(null);
+        bioSampleTestTb.setRegionNum(plantMultipleStockTb.getRegionNum());
         bioSampleTestTb.setApplyTime(bioTaskDtlTb.getApplyTime());
         bioSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
         bioSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
-        bioSampleTestTb.setSourceCode(sourceCode);
+        bioSampleTestTb.setSourceCode(plantMultipleStockTb.getSourceCode());
+        bioSampleTestTb.setUniqueCode(sampleCode);
         bioSampleTestTb.setTestIdentifyPrimer(null);
         bioSampleTestTb.setTestMethod(null);
         bioSampleTestTb.setTestEditType(null);
@@ -265,16 +266,57 @@ public class BioSampleTestTb implements Serializable {
         bioSampleTestTb.setUpdateTime(new Date());
         bioSampleTestTb.setApplyNo(bioTaskDtlTb.getTaskNum());
         bioSampleTestTb.setIdentifyPrimer(null);
-        if(StringUtils.isNotEmpty(uniqueCode)){
-            bioSampleTestTb.setUniqueCode(uniqueCode);
-        }
         bioSampleTestTb.setRemark(null);
         bioSampleTestTb.setCloneSampleCode(null);
         bioSampleTestTb.setTestOrgResult(null);
         return bioSampleTestTb;
     }
 
+    public static BioSampleTestTb ofRepeat(BioSampleTestTb targetSampleTestTb,BioTaskDtlTb bioTaskDtlTb) {
+        BioSampleTestTb bioSampleTestTb = new BioSampleTestTb();
+        bioSampleTestTb.setVectorTaskCode(targetSampleTestTb.getVectorTaskCode());
+        bioSampleTestTb.setSampleCode(targetSampleTestTb.getSampleCode());
+        bioSampleTestTb.setGeneration(targetSampleTestTb.getGeneration());
+        bioSampleTestTb.setBreedCode(targetSampleTestTb.getBreedCode());
+        bioSampleTestTb.setSpeciesCode(targetSampleTestTb.getSpeciesCode());
+        bioSampleTestTb.setTransformCode(targetSampleTestTb.getTransformCode());
+        bioSampleTestTb.setSeedNum(targetSampleTestTb.getSeedNum());
+        bioSampleTestTb.setExperimentNum(null);
+        bioSampleTestTb.setRegionNum(targetSampleTestTb.getRegionNum());
+        bioSampleTestTb.setApplyTime(bioTaskDtlTb.getApplyTime());
+        bioSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
+        bioSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
+        bioSampleTestTb.setSourceCode(targetSampleTestTb.getSourceCode());
+        bioSampleTestTb.setApplyNo(bioTaskDtlTb.getTaskNum());
 
+        bioSampleTestTb.setTestIdentifyPrimer(null);
+        bioSampleTestTb.setTestMethod(null);
+        bioSampleTestTb.setTestEditType(null);
+        bioSampleTestTb.setTestNoTransIdentityPrimer(null);
+        bioSampleTestTb.setTestIsGeneModifyPositive(null);
+        bioSampleTestTb.setTestIfFixedPoint(null);
+        bioSampleTestTb.setTestIfCopyInsert(null);
+        bioSampleTestTb.setTestFixedPointType(null);
+        bioSampleTestTb.setTestDonorResidueInfo(null);
+        bioSampleTestTb.setTestInsertionSite(null);
+        bioSampleTestTb.setTestElisaResult(null);
+        bioSampleTestTb.setTestQbzrSeq(null);
+        bioSampleTestTb.setTestEditResidueInfo(null);
+        bioSampleTestTb.setTestUserId(null);
+        bioSampleTestTb.setTestUserName(null);
+        bioSampleTestTb.setTestTime(null);
+        bioSampleTestTb.setCheckUserName(null);
+        bioSampleTestTb.setCheckUserId(null);
+        bioSampleTestTb.setCheckResult(null);
+        bioSampleTestTb.setCreateTime(new Date());
+        bioSampleTestTb.setUpdateTime(new Date());
+        bioSampleTestTb.setIdentifyPrimer(null);
+        bioSampleTestTb.setUniqueCode(null);
+        bioSampleTestTb.setRemark(null);
+        bioSampleTestTb.setCloneSampleCode(null);
+        bioSampleTestTb.setTestOrgResult(null);
+        return bioSampleTestTb;
+    }
 
     public boolean ifHaveTestResult() {
         if (this.testIdentifyPrimer != null && !"".equals(this.testIdentifyPrimer)) {

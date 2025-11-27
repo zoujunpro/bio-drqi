@@ -16,6 +16,8 @@ public interface BioSampleCodePrefixTbMapper extends BaseMapper<BioSampleCodePre
     BioSampleCodePrefixTb selectOneByTaskNum(@Param("taskNum") String taskNum);
 
     int deleteByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
+
+    BioSampleCodePrefixTb selectOneBySampleCodePrefix(@Param("sampleCodePrefix") String sampleCodePrefix);
 }
 
 

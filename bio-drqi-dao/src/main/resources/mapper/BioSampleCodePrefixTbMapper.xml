@@ -36,4 +36,11 @@
         where
         taskNum = #{taskNum,jdbcType=VARCHAR}
     </select>
+    <select id="selectOneBySampleCodePrefix" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_code_prefix_tb
+        where
+        sample_code_prefix = #{sampleCodePrefix,jdbcType=VARCHAR}
+    </select>
 </mapper>

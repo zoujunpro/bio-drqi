@@ -51,9 +51,9 @@
             <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
             <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
             <if test="applyDesc != null">and apply_desc=#{applyDesc,jdbcType=VARCHAR}</if>
-            <if test="applyType != null">and apply_type=#{applyType,jdbcType=VARCHAR}</if>
+            <if test="applyType != null and applyType!=''">and apply_type=#{applyType,jdbcType=VARCHAR}</if>
             <if test="identifyExcelUrl != null">and identify_excel_url=#{identifyExcelUrl,jdbcType=VARCHAR}</if>
-            <if test="cloneFlag != null">and clone_flag=#{cloneFlag,jdbcType=VARCHAR}</if>
+            <if test="cloneFlag != null and cloneFlag!=''">and clone_flag=#{cloneFlag,jdbcType=VARCHAR}</if>
             <if test="layoutFlag != null">and layout_flag=#{layoutFlag,jdbcType=VARCHAR},</if>
             <if test="vectorTaskCodes != null and vectorTaskCodes!=''">and vector_task_codes CONCAT('%',#{vectorTaskCodes,jdbcType=VARCHAR},'%')</if>
             <if test="sampleCodeRange != null">and sample_code_range=#{sampleCodeRange,jdbcType=VARCHAR}</if>

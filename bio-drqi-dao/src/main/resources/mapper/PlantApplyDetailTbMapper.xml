@@ -39,7 +39,7 @@
     <select id="selectSelective" resultType="com.bio.drqi.domain.PlantApplyDetailTb">
         select
         <include refid="Base_Column_List"/>
-        from plant_experiment_detail_tb
+        from plant_apply_detail_tb
         <where>
             <if test="pdNum != null and pdNum!=''">and pd_num=#{pdNum,jdbcType=VARCHAR}</if>
             <if test="plantApplyNum != null and plantApplyNum!=''">and

@@ -1,4 +1,4 @@
-package com.bio.drqi.manage.service.bio.impl.impl;
+package com.bio.drqi.manage.service.bio.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
@@ -12,10 +12,7 @@ import com.bio.drqi.manage.sample.rsp.CerSampleTwoResultListDetailRspDTO;
 import com.bio.drqi.manage.sample.rsp.CerSampleTwoResultListPageRspDTO;
 import com.bio.drqi.manage.service.common.SynSampleTestResultService;
 import com.bio.drqi.manage.service.bio.BioSampleTwoResultService;
-import com.bio.drqi.mapper.BioSampleTestTwoResultDetailTbMapper;
-import com.bio.drqi.mapper.BioSampleTestTwoResultTbMapper;
-import com.bio.drqi.mapper.BioTaskDtlTbMapper;
-import com.bio.drqi.mapper.CerSampleTestTbMapper;
+import com.bio.drqi.mapper.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
@@ -42,7 +39,7 @@ public class BioSampleTwoResultServiceImpl implements BioSampleTwoResultService 
     private SynSampleTestResultService synSampleTestResultService;
 
     @Resource
-    private CerSampleTestTbMapper cerSampleTestTbMapper;
+    private BioSampleTestTbMapper bioSampleTestTbMapper;
 
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
@@ -115,11 +112,11 @@ public class BioSampleTwoResultServiceImpl implements BioSampleTwoResultService 
                     throw new BusinessException("齐博士业务流程不允许删除，该NGS结果所对应的取样编号：" + sampleCode + "所在的申请工单：" + applyNo + "流程已经完成，无法删除");
                 }
                 if (CollectionUtil.isEmpty(bioSampleTestTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(applyNo, sampleCode))) {
-                    CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByApplyNoAndSampleCode(applyNo, sampleCode);
-                    if (cerSampleTestTb == null) {
+                    BioSampleTestTb bioSampleTestTb = bioSampleTestTbMapper.selectOneByApplyNoAndSampleCode(applyNo, sampleCode);
+                    if (bioSampleTestTb == null) {
                         throw new BusinessException("齐博士数据异常，请联系相关人员，错误原因，找不到申请工单下" + applyNo + "的取样编号" + sampleCode);
                     }
-                    cerSampleTestTbMapper.updateTestUserIdAndTestUserNameById(null, null,cerSampleTestTb.getId());
+                    bioSampleTestTbMapper.updateTestUserIdAndTestUserNameById(null, null,bioSampleTestTb.getId());
                 }
 
             });

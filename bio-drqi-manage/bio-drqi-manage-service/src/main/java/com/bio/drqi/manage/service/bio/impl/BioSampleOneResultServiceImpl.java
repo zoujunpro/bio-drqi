@@ -1,4 +1,4 @@
-package com.bio.drqi.manage.service.bio.impl.impl;
+package com.bio.drqi.manage.service.bio.impl;
 
 import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.domain.BioSampleTestOneResultTb;

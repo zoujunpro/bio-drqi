@@ -18,6 +18,8 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
     List<BioSampleTestTb> selectSelective(BioSampleTestTb bioSampleTestTb);
 
+    List<BioSampleTestTb> selectAllBySampleCode(@Param("sampleCode") String sampleCode);
+
     int insertBatch(@Param("bioSampleTestTbCollection") Collection<BioSampleTestTb> bioSampleTestTbCollection);
 
     BioSampleTestTb selectOneBySampleCodeOrderByIdDesc(@Param("sampleCode") String sampleCode);
@@ -60,6 +62,8 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
     BioSampleTestTb selectOneByVectorTaskCodeAndSampleCodeFirst(@Param("vectorTaskCode") String vectorTaskCode, @Param("sampleCode") String sampleCode);
 
     BioSampleTestTb selectOneByUniqueCode(@Param("uniqueCode") String uniqueCode);
+
+    int updateTestUserIdAndTestUserNameById(@Param("testUserId") Integer testUserId, @Param("testUserName") String testUserName, @Param("id") Integer id);
 }
 
 

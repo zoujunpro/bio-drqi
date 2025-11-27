@@ -1,9 +1,12 @@
-package com.bio.drqi.manage.controller.project;
+package com.bio.drqi.manage.controller.bio;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
+import com.bio.drqi.manage.bio.req.BioSampleApplyListPageReqDTO;
+import com.bio.drqi.manage.bio.rsp.BioSampleApplyListPageRspDTO;
 import com.bio.drqi.manage.sample.req.SampleApplyListPageReqDTO;
 import com.bio.drqi.manage.sample.rsp.SampleApplyListPageRspDTO;
+import com.bio.drqi.manage.service.bio.BioSampleApplyService;
 import com.bio.drqi.manage.service.project.SampleApplyService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
@@ -14,27 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-
 /**
- * 取样检测申请
+ * 分子检测申请
  */
 @RestController
-@RequestMapping("/bioSampleApply")
-public class SampleApplyController {
-
+@RequestMapping("/sampleApply")
+public class BioSampleApplyController {
 
     @Resource
-    private SampleApplyService sampleApplyService;
+    private BioSampleApplyService bioSampleApplyService;
 
     /**
-     * 取样检测申请-分页查询
+     * 分子检测申请-分页查询
      *
-     * @param sampleApplyListPageReqDTO
+     * @param bioSampleApplyListPageReqDTO
      * @return
      */
     @PostMapping("/listPage")
     @RequirePermissions("cer:sampleApply:listPage")
-    public ResponseResult<PageInfo<SampleApplyListPageRspDTO>> listPage(@RequestBody @Validated SampleApplyListPageReqDTO sampleApplyListPageReqDTO) {
-        return ResponseResult.getSuccess(sampleApplyService.listPage(sampleApplyListPageReqDTO));
+    public ResponseResult<PageInfo<BioSampleApplyListPageRspDTO>> listPage(@RequestBody @Validated BioSampleApplyListPageReqDTO bioSampleApplyListPageReqDTO) {
+        return ResponseResult.getSuccess(bioSampleApplyService.listPage(bioSampleApplyListPageReqDTO));
     }
 }

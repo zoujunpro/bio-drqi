@@ -25,9 +25,9 @@ public class PlantApplyListPageReqDTO extends PageDTO {
 
 
     /**
-     * 试验编号
+     * 种植申请编号
      */
-    private String experimentNum;
+    private String plantApplyNum;
 
 
     /**

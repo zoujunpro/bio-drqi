@@ -45,12 +45,12 @@
         <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
         <result property="fatherSingleNum" column="father_single_num" jdbcType="VARCHAR"/>
         <result property="matherSingleNum" column="mather_single_num" jdbcType="VARCHAR"/>
-        <result property="pdNum" column="pd_num" jdbcType="VARCHAR"/>
+        <result property="pdImplementCode" column="pd_implement_code" jdbcType="VARCHAR"/>
 
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,plant_code,seed_num,pd_num,
+        id,plant_code,seed_num,pd_implement_code,
         project_code,plant_code,father_info,
         mather_info,generation,species_code,
         breed_code,pollination_method,harvest_type,
@@ -119,7 +119,7 @@
             <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
             <if test="matherSeedNum != null and matherSeedNum!=''">and mather_seed_num=#{matherSeedNum,jdbcType=VARCHAR}</if>
             <if test="matherSingleNum != null and matherSingleNum!=''">and mather_single_num=#{matherSingleNum,jdbcType=VARCHAR}</if>
-            <if test="pdNum != null and pdNum!=''">and pd_num=#{pdNum,jdbcType=VARCHAR}</if>
+            <if test="pdImplementCode != null and pdImplementCode!=''">and pd_implement_code=#{pdImplementCode,jdbcType=VARCHAR}</if>
             <if test="beginDate != null and beginDate != ''">
                 and date_format(create_time,'%Y%m%d') &gt;= #{beginDate,jdbcType=VARCHAR}
             </if>

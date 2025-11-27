@@ -10,6 +10,7 @@ import java.util.Date;
 
 @Data
 public class SeedStockPageRspDTO {
+
     /**
      * 主键ID
      */
@@ -222,7 +223,7 @@ public class SeedStockPageRspDTO {
      */
     private String fatherRegionNum;
 
-    private String pdNum;
+    private String pdImplementCode;
 
 
 

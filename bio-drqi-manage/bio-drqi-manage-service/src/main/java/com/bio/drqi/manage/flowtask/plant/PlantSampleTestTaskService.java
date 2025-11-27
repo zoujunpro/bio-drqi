@@ -90,41 +90,8 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 String speciesCode = null;
                 String breedCode = null;
                 BioSampleCodePrefixTb bioSampleCodePrefixTb = null;
-                if (SourceCodeEnum.project.name().equals(firstSampleApply.getSourceCode())) {
-                    if (StringUtils.isEmpty(firstSampleApply.getVectorTaskCode())) {
-                        throw new BusinessException("实施方案编号缺失");
-                    }
-                    if (StringUtils.isEmpty(firstSampleApply.getTransformCode())) {
-                        throw new BusinessException("转化编号缺失");
-                    }
-                    PlantMultipleStockTb plantMultipleStockTb = plantMultipleStockTbMapper.selectOneByVectorTaskCodeAndTransformCode(firstSampleApply.getVectorTaskCode(), firstSampleApply.getTransformCode());
-                    if (plantMultipleStockTb == null) {
-                        throw new BusinessException("苗库中不存在此转化编号的苗信息，转化编号：" + firstSampleApply.getTransformCode());
-                    }
-                    if (plantMultipleStockTb.getPlantNumber() < firstSampleApply.getSampleNumber()) {
-                        throw new BusinessException("转化编号：" + firstSampleApply.getVectorTaskCode() + "的苗库存不足,当前库存苗数量:" + plantMultipleStockTb.getPlantNumber());
-                    }
-                    bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByVectorTaskCode(firstSampleApply.getVectorTaskCode());
-                    if (bioSampleCodePrefixTb == null) {
-                        throw new BusinessException("实施方案编号未配置取样编号前缀：" + firstSampleApply.getVectorTaskCode());
-                    }
-                    generation = plantMultipleStockTb.getGeneration();
-                    speciesCode = plantMultipleStockTb.getSpeciesCode();
-                    breedCode = plantMultipleStockTb.getBreedCode();
-                    //如果是CER试验苗
-                } else {
-                    PlantApplyDetailTb plantApplyDetailTb = plantApplyDetailTbMapper.selectOneByRegionNumAndSeedNum(firstSampleApply.getRegionNum(), firstSampleApply.getSeedNum());
-                    if (plantApplyDetailTb == null) {
-                        throw new BusinessException("CER试验中无此小区:" + firstSampleApply.getRegionNum() + "和种子编号：" + firstSampleApply.getSeedNum());
-                    }
-                    bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByTaskNum(plantApplyDetailTb.getPlantApplyNum());
-                    if (bioSampleCodePrefixTb == null) {
-                        throw new BusinessException("CER试验未配置取样编号前缀：" + firstSampleApply.getVectorTaskCode());
-                    }
-                    generation = plantApplyDetailTb.getGenerationCode();
-                    speciesCode = plantApplyDetailTb.getSpeciesCode();
-                    breedCode = plantApplyDetailTb.getBreedCode();
-                }
+                PlantMultipleStockTb plantMultipleStockTb =null;
+
                 //获取取样编号前缀
                 String sampleCodePrefix = bioSampleCodePrefixTb.getSampleCodePrefix();
                 List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCodeLike(sampleCodePrefix);
@@ -137,9 +104,11 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 for (int i = 1; i <= firstSampleApply.getSampleNumber(); i++) {
                     maxSampleNumber = maxSampleNumber == null ? 1 : maxSampleNumber + 1;
                     String sampleCode = sampleCodePrefix + maxSampleNumber;
-                    BioSampleTestTb plantSampleTestTb = BioSampleTestTb.of(firstSampleApply.getSeedNum(), firstSampleApply.getRegionNum(), firstSampleApply.getPlantExperimentNum(), firstSampleApply.getVectorTaskCode(),firstSampleApply.getTransformCode(), generation, breedCode, speciesCode, sampleCode, bioTaskDtlTb, firstSampleApply.getSourceCode(), sampleCode);
+                    BioSampleTestTb plantSampleTestTb = BioSampleTestTb.of(firstSampleApply.getSeedNum(), firstSampleApply.getRegionNum(), firstSampleApply.getPlantExperimentNum(), firstSampleApply.getVectorTaskCode(), firstSampleApply.getTransformCode(), generation, breedCode, speciesCode, sampleCode, bioTaskDtlTb, firstSampleApply.getSourceCode(), sampleCode);
                     sampleTestTbList.add(plantSampleTestTb);
                 }
+                //取样数据
+                p
                 //插入数据
                 try {
                     bioSampleTestTbMapper.insertBatch(sampleTestTbList);
@@ -167,7 +136,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     throw new BusinessException("只有正常或者异常苗方可进行取样");
                 }
                 BioSampleTestTb bioSampleTestTb = bioSampleTestTbMapper.selectOneBySampleCodeOrderByIdDesc(repeatSampleTest.getSampleCode());
-                BioSampleTestTb plantSampleTestTb = BioSampleTestTb.of(bioSampleTestTb.getSeedNum(), bioSampleTestTb.getRegionNum(), bioSampleTestTb.getExperimentNum(), bioSampleTestTb.getVectorTaskCode(),bioSampleTestTb.getTransformCode(), bioSampleTestTb.getGeneration(), bioSampleTestTb.getBreedCode(), bioSampleTestTb.getSpeciesCode(), bioSampleTestTb.getSampleCode(), bioTaskDtlTb, bioSampleTestTb.getSourceCode(), null);
+                BioSampleTestTb plantSampleTestTb = BioSampleTestTb.of(bioSampleTestTb.getSeedNum(), bioSampleTestTb.getRegionNum(), bioSampleTestTb.getExperimentNum(), bioSampleTestTb.getVectorTaskCode(), bioSampleTestTb.getTransformCode(), bioSampleTestTb.getGeneration(), bioSampleTestTb.getBreedCode(), bioSampleTestTb.getSpeciesCode(), bioSampleTestTb.getSampleCode(), bioTaskDtlTb, bioSampleTestTb.getSourceCode(), null);
                 sampleTestTbList.add(plantSampleTestTb);
             }
             try {
@@ -229,22 +198,8 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 List<BioSampleTestTb> plantSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(bioSampleApplyTb.getApplyNo()).stream().filter(plantSampleTestTb -> CheckResultEnum.stay.name().equals(plantSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {
                     for (BioSampleTestTb bioSampleTestTb : plantSampleTestTbList) {
-                        PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(bioSampleTestTb, PlantStatusEnum.STATUS_1);
-                        plantSingleStockTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
-                        if (SourceCodeEnum.cer.name().equals(bioSampleTestTb.getSourceCode())) {
-                            PlantMultipleStockTb plantMultipleStockTb = plantMultipleStockTbMapper.selectOneByRegionNumAndSeedNum(bioSampleTestTb.getRegionNum(), bioSampleTestTb.getSeedNum());
-                            if(plantMultipleStockTb==null){
-                                throw new BusinessException("苗库中找不到小区编号为："+bioSampleTestTb.getRegionNum()+"种子编号为："+bioSampleTestTb.getSeedNum()+"的苗信息");
-                            }
-                            plantSingleStockTb.setPlantDate(plantMultipleStockTb.getPlantDate());
-                        } else if (SourceCodeEnum.project.name().equals(bioSampleTestTb.getSourceCode())) {
-                            PlantMultipleStockTb plantMultipleStockTb = plantMultipleStockTbMapper.selectOneByVectorTaskCodeAndTransformCode(bioSampleTestTb.getVectorTaskCode(), bioSampleTestTb.getTransformCode());
-                            if(plantMultipleStockTb==null){
-                                throw new BusinessException("苗库中找不到实施方案编号号为："+bioSampleTestTb.getVectorTaskCode()+"转化编号为："+bioSampleTestTb.getTransformCode()+"的苗信息");
-                            }
-                            plantSingleStockTb.setPlantDate(plantMultipleStockTb.getPlantDate());
-                        }
-
+                        PlantMultipleStockTb plantMultipleStockTb = findPlantMultipleStockTb(bioSampleTestTb);
+                        PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(bioSampleTestTb, PlantStatusEnum.STATUS_1, plantMultipleStockTb.getPlantDate(), bioSampleTestTb.getApplyNo(),bioSampleTestTb.getSourceCode(),"对移秒到CER转话体秒进行取样获得");
                         plantSingleStockTbList.add(plantSingleStockTb);
                     }
                 }
@@ -254,6 +209,22 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
         }
 
+    }
+
+    private PlantMultipleStockTb findPlantMultipleStockTb(BioSampleTestTb bioSampleTestTb) {
+        PlantMultipleStockTb plantMultipleStockTb = null;
+        if (SourceCodeEnum.cer.name().equals(bioSampleTestTb.getSourceCode())) {
+            plantMultipleStockTb = plantMultipleStockTbMapper.selectOneByRegionNumAndSeedNum(bioSampleTestTb.getRegionNum(), bioSampleTestTb.getSeedNum());
+            if (plantMultipleStockTb == null) {
+                throw new BusinessException("苗库中找不到小区编号为：" + bioSampleTestTb.getRegionNum() + "种子编号为：" + bioSampleTestTb.getSeedNum() + "的苗信息");
+            }
+        } else if (SourceCodeEnum.project.name().equals(bioSampleTestTb.getSourceCode())) {
+            plantMultipleStockTb = plantMultipleStockTbMapper.selectOneByVectorTaskCodeAndTransformCode(bioSampleTestTb.getVectorTaskCode(), bioSampleTestTb.getTransformCode());
+            if (plantMultipleStockTb == null) {
+                throw new BusinessException("苗库中找不到实施方案编号号为：" + bioSampleTestTb.getVectorTaskCode() + "转化编号为：" + bioSampleTestTb.getTransformCode() + "的苗信息");
+            }
+        }
+        return plantMultipleStockTb;
     }
 
     @Override
@@ -278,5 +249,45 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
         plantSingleStockTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         bioSampleTestOneResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
+    }
+
+    private PlantMultipleStockTb findPlantMultipleStockTb(){
+        if (SourceCodeEnum.project.name().equals(firstSampleApply.getSourceCode())) {
+            if (StringUtils.isEmpty(firstSampleApply.getVectorTaskCode())) {
+                throw new BusinessException("实施方案编号缺失");
+            }
+            if (StringUtils.isEmpty(firstSampleApply.getTransformCode())) {
+                throw new BusinessException("转化编号缺失");
+            }
+            plantMultipleStockTb = plantMultipleStockTbMapper.selectOneByVectorTaskCodeAndTransformCode(firstSampleApply.getVectorTaskCode(), firstSampleApply.getTransformCode());
+            if (plantMultipleStockTb == null) {
+                throw new BusinessException("苗库中不存在此转化编号的苗信息，转化编号：" + firstSampleApply.getTransformCode());
+            }
+            if (plantMultipleStockTb.getPlantNumber() < firstSampleApply.getSampleNumber()) {
+                throw new BusinessException("转化编号：" + firstSampleApply.getVectorTaskCode() + "的苗库存不足,当前库存苗数量:" + plantMultipleStockTb.getPlantNumber());
+            }
+            //
+            bioSampleCodePrefixTb = bioSampleCodePrefixTbMapper.selectOneByVectorTaskCode(firstSampleApply.getVectorTaskCode());
+            if (bioSampleCodePrefixTb == null) {
+                throw new BusinessException("实施方案编号未配置取样编号前缀：" + firstSampleApply.getVectorTaskCode());
+            }
+            generation = plantMultipleStockTb.getGeneration();
+            speciesCode = plantMultipleStockTb.getSpeciesCode();
+            breedCode = plantMultipleStockTb.getBreedCode();
+            //如果是CER试验苗
+        } else {
+            if (StringUtils.isEmpty(firstSampleApply.getRegionNum())) {
+                throw new BusinessException("小区编号缺失");
+            }
+            if (StringUtils.isEmpty(firstSampleApply.getSeedNum())) {
+                throw new BusinessException("种子编号缺失");
+            }
+            plantMultipleStockTb = plantMultipleStockTbMapper.selectOneByRegionNumAndSeedNum(firstSampleApply.getRegionNum(), firstSampleApply.getSeedNum());
+
+
+            generation = plantMultipleStockTb.getGeneration();
+            speciesCode = plantMultipleStockTb.getSpeciesCode();
+            breedCode = plantMultipleStockTb.getBreedCode();
+        }
     }
 }

@@ -35,5 +35,6 @@ public class CerConversionAndTransConfirmReqDTO {
          */
         private Integer acceptNum;
 
+
     }
 }

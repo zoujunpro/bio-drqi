@@ -338,5 +338,14 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </select>
+    <select id="selectOneByVectorTaskCodeAndSampleCodeFirst" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_test_tb
+        where
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+        AND sample_code = #{sampleCode,jdbcType=VARCHAR}
+        order by id desc limit 1
+    </select>
 
 </mapper>

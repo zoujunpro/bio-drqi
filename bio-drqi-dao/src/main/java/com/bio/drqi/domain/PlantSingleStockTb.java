@@ -153,7 +153,7 @@ public class PlantSingleStockTb implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    public static PlantSingleStockTb of(BioSampleTestTb bioSampleTestTb, PlantStatusEnum plantStatusEnum) {
+    public static PlantSingleStockTb of(BioSampleTestTb bioSampleTestTb, PlantStatusEnum plantStatusEnum,String plantDate,String taskNum,String sourceCode,String remark) {
         PlantSingleStockTb plantSingleStockTb = new PlantSingleStockTb();
         plantSingleStockTb.setPlantCode(bioSampleTestTb.getSampleCode());
         plantSingleStockTb.setGeneration(bioSampleTestTb.getGeneration());
@@ -164,12 +164,13 @@ public class PlantSingleStockTb implements Serializable {
         plantSingleStockTb.setUpdateTime(new Date());
         plantSingleStockTb.setCreateUserId(bioSampleTestTb.getApplyUserId());
         plantSingleStockTb.setCreateUserName(bioSampleTestTb.getApplyUserName());
-        plantSingleStockTb.setTaskNum(bioSampleTestTb.getApplyNo());
+        plantSingleStockTb.setTaskNum(taskNum);
         plantSingleStockTb.setBreedCode(bioSampleTestTb.getBreedCode());
-        plantSingleStockTb.setSourceCode(bioSampleTestTb.getSourceCode());
+        plantSingleStockTb.setSourceCode(sourceCode);
+        plantSingleStockTb.setPlantDate(plantDate);
+        plantSingleStockTb.setRemark(remark);
 
         plantSingleStockTb.setPlantNumber(null);
-        plantSingleStockTb.setPlantDate(null);
         plantSingleStockTb.setTransplantDate(null);
         plantSingleStockTb.setVernalizationBeginDate(null);
         plantSingleStockTb.setVernalizationEndDate(null);
@@ -181,10 +182,9 @@ public class PlantSingleStockTb implements Serializable {
         plantSingleStockTb.setOtherField(null);
         plantSingleStockTb.setEditType(null);
 
-
-        plantSingleStockTb.setRemark(null);
         return plantSingleStockTb;
 
     }
+
 
 }

@@ -205,8 +205,9 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                         PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(bioSampleTestTb, PlantStatusEnum.STATUS_1, plantMultipleStockTb.getPlantDate(), bioSampleTestTb.getApplyNo(), bioSampleTestTb.getSourceCode(), "对移秒到CER转话体秒进行取样获得");
                         plantSingleStockTbList.add(plantSingleStockTb);
                     }
+                    plantSingleStockTbMapper.insertBatch(plantSingleStockTbList);
                 }
-                plantSingleStockTbMapper.insertBatch(plantSingleStockTbList);
+
 
             }
 

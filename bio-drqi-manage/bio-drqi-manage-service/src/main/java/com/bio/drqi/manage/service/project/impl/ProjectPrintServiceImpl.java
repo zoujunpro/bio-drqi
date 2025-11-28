@@ -34,10 +34,10 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
 
 
     @Resource
-    private CerSampleTestTbMapper cerSampleTestTbMapper;
+    private BioSampleTestTbMapper bioSampleTestTbMapper;
 
     @Resource
-    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+    private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
     @Resource
     private PrintApi printApi;
@@ -103,20 +103,19 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
     public PrintRspDTO samplePrint(SamplePrintReqDTO samplePrintReqDTO) {
         List<SamplePrintData> samplePrintDataList = new ArrayList<>();
         for (SamplePrintReqDTO.Content content : samplePrintReqDTO.getContentList()) {
-            List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByVectorTaskCodeAndSampleCode(content.getVectorTaskCode(), content.getSampleCode());
-            if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
-                CerSampleTestTb cerSampleTestTb = cerSampleTestTbList.get(0);
-                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
+            List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByVectorTaskCodeAndSampleCode(content.getVectorTaskCode(), content.getSampleCode());
+            if (CollectionUtil.isNotEmpty(bioSampleTestTbList)) {
+                BioSampleTestTb bioSampleTestTb = bioSampleTestTbList.get(0);
+                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
                 if (cerVectorTaskTb == null) {
-                    throw new BusinessException("数据异常，找不到实施方案信息：" + cerSampleTestTb.getVectorTaskCode());
+                    throw new BusinessException("数据异常，找不到实施方案信息：" + bioSampleTestTb.getVectorTaskCode());
                 }
 
                 SamplePrintData samplePrintData = new SamplePrintData();
-                samplePrintData.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
-                samplePrintData.setPlasmidName(cerSampleTestTb.getPlasmidName());
-                samplePrintData.setTransformCode(cerSampleTestTb.getTransformCode());
-                samplePrintData.setSampleCode(cerSampleTestTb.getSampleCode());
-                samplePrintData.setTaskNum(cerSampleTestTb.getApplyNo());
+                samplePrintData.setVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
+                samplePrintData.setTransformCode(bioSampleTestTb.getTransformCode());
+                samplePrintData.setSampleCode(bioSampleTestTb.getSampleCode());
+                samplePrintData.setTaskNum(bioSampleTestTb.getApplyNo());
                 samplePrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
                 samplePrintDataList.add(samplePrintData);
             }
@@ -150,18 +149,22 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         List<PlantPrintData> plantPrintDataList = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(plantPrintReqDTO.getContentList())) {
             for (PlantPrintReqDTO.Content content : plantPrintReqDTO.getContentList()) {
-                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(content.getPlantCode());
-                if (cerPlantDtlTb == null) {
+                PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(content.getPlantCode());
+                if (plantSingleStockTb == null) {
                     throw new BusinessException("取样苗" + content.getPlantCode() + "未形成种植编号");
                 }
-                CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerPlantDtlTb.getTransformCode(), content.getVectorTaskCode());
+                List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(plantSingleStockTb.getSampleCode());
+                if(CollectionUtil.isNotEmpty(bioSampleTestTbList)){
+                    throw new BusinessException("找不到取样信息");
+                }
+                CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(bioSampleTestTbList.get(0).getTransformCode(), content.getVectorTaskCode());
                 if (cerTransformTb == null) {
                     throw new BusinessException("转化信息不存在");
                 }
 
                 PlantPrintData plantPrintData = new PlantPrintData();
                 plantPrintData.setVectorTaskCode(content.getVectorTaskCode());
-                plantPrintData.setTransformCode(cerPlantDtlTb.getTransformCode());
+                plantPrintData.setTransformCode(cerTransformTb.getTransformCode());
                 plantPrintData.setPlantCode(content.getPlantCode());
                 plantPrintData.setBreedName(cerTransformTb.getAcceptorMaterial());
                 plantPrintData.setPrintNum(content.getPrintNum() == null ? 1 : content.getPrintNum());
@@ -183,13 +186,13 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         List<TransformTransPrintData> transformTransPrintDataList = new ArrayList<>();
         for (TransPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
             if (StringUtils.isNotEmpty(content.getSampleCode())) {
-                List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByVectorTaskCodeAndSampleCode(content.getVectorTaskCode(), content.getSampleCode());
-                if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
+                List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByVectorTaskCodeAndSampleCode(content.getVectorTaskCode(), content.getSampleCode());
+                if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
                     throw new BusinessException("取样编号找不到");
                 }
-                CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTbList.get(0).getTransformCode(), content.getVectorTaskCode());
-                if(cerTransformTb==null){
-                    throw new BusinessException("找不到此取样编号的转化信息:"+content.getSampleCode());
+                CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(bioSampleTestTbList.get(0).getTransformCode(), content.getVectorTaskCode());
+                if (cerTransformTb == null) {
+                    throw new BusinessException("找不到此取样编号的转化信息:" + content.getSampleCode());
                 }
                 SamplePrintData samplePrintData = new SamplePrintData();
                 samplePrintData.setVectorTaskCode(content.getVectorTaskCode());
@@ -232,14 +235,14 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
     public PrintRspDTO tissueEmbryoPrint(TissueEmbryoPrintReqDTO transPrintReqDTO) {
         List<TissueEmbryoPrintDTO> tissueEmbryoPrintDTOList = new ArrayList<>();
         for (TissueEmbryoPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
-            List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(content.getSampleCode());
-            if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
+            List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(content.getSampleCode());
+            if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
                 throw new BusinessException("取样编号不存在：" + content.getSampleCode());
             }
             TissueEmbryoPrintDTO tissueEmbryoPrintDTO = new TissueEmbryoPrintDTO();
             tissueEmbryoPrintDTO.setPrintNum(content.getPrintNum());
-            tissueEmbryoPrintDTO.setVectorTaskCode(cerSampleTestTbList.get(0).getVectorTaskCode());
-            tissueEmbryoPrintDTO.setTransformCode(cerSampleTestTbList.get(0).getTransformCode());
+            tissueEmbryoPrintDTO.setVectorTaskCode(bioSampleTestTbList.get(0).getVectorTaskCode());
+            tissueEmbryoPrintDTO.setTransformCode(bioSampleTestTbList.get(0).getTransformCode());
             tissueEmbryoPrintDTO.setSampleCode(content.getSampleCode());
             tissueEmbryoPrintDTO.setRemark(content.getRemark());
             tissueEmbryoPrintDTOList.add(tissueEmbryoPrintDTO);

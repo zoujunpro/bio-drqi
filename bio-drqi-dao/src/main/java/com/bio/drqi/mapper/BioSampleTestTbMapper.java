@@ -16,6 +16,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
+    List<BioSampleTestTb> selectAllByVectorTaskCodeAndSampleCode(@Param("vectorTaskCode") String vectorTaskCode, @Param("sampleCode") String sampleCode);
+
     List<BioSampleTestTb> selectSelective(BioSampleTestTb bioSampleTestTb);
 
     List<BioSampleTestTb> selectAllBySampleCode(@Param("sampleCode") String sampleCode);

@@ -109,6 +109,7 @@ public class NewSampleTestDTO {
         /**
          * 预览 返显用
          */
+        @NotBlank(message = "实施方案缺失")
         private String vectorTaskCode;
 
         /**

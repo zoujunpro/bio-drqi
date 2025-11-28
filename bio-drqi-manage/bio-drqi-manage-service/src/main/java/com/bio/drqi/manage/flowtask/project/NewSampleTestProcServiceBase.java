@@ -76,6 +76,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         //首次取样，进行转化信息校验
         if (CollectionUtil.isNotEmpty(newSampleTestDTO.getFirstSampleApplyList())) {
             for (NewSampleTestDTO.FirstSampleApply firstSampleApply : newSampleTestDTO.getFirstSampleApplyList()) {
+                ValidatorUtil.validator(firstSampleApply);
                 CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(), firstSampleApply.getVectorTaskCode());
                 if (cerTransformTb == null) {
                     throw new BusinessException("此实施方案下查询不到转化信息：" + firstSampleApply.getTransformCode());

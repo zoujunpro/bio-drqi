@@ -65,6 +65,9 @@ public class CleanSampleTestController {
     @Resource
     private BioSampleApplyTbMapper bioSampleApplyTbMapper;
 
+    @Resource
+    private BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
     @Transactional(rollbackFor = Exception.class)
     @GetMapping("cleanTransform")
     public ResponseResult<String> cleanTransform() {
@@ -95,10 +98,10 @@ public class CleanSampleTestController {
         for (int i = 0; i < cerSampleTestTbList.size(); i++) {
             log.info("清洗取样数据第{}个，ID={}", i, cerSampleTestTbList.get(i).getId());
             CerSampleTestTb cerSampleTestTb = cerSampleTestTbList.get(i);
-            CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(),cerSampleTestTb.getVectorTaskCode());
+            CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
             if (cerTransformTb == null) {
                 continue;
-               // throw new BusinessException("找不到转化信息");
+                // throw new BusinessException("找不到转化信息");
             }
             BioSampleTestTb bioSampleTestTb = new BioSampleTestTb();
             bioSampleTestTb.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
@@ -250,5 +253,19 @@ public class CleanSampleTestController {
             }
         }
         return ResponseResult.getSuccess("okk");
+    }
+
+
+    @GetMapping("cleanPlantDataReport")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanPlantDataReport() {
+        List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("cer_plant");
+        for (BioTaskDtlTb bioTaskDtlTb:bioTaskDtlTbList){
+            bioTaskDtlTb.setTaskNum("C"+bioTaskDtlTb.getTaskNum().substring(1));
+            bioTaskDtlTb.setTaskTypeCode("plant_data_report");
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        }
+
+        return ResponseResult.getSuccess("ok");
     }
 }

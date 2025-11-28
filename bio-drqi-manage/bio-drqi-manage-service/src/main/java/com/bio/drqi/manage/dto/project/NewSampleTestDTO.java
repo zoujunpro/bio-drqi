@@ -84,14 +84,19 @@ public class NewSampleTestDTO {
 
         @NotNull(message = "实施方案编号缺失")
         private String vectorTaskCode;
+
         @NotNull(message = "取样编号缺失")
         private String sampleCode;
+
         private String identifyPrimer;
         /**
          * 克隆苗
          */
         @NotNull(message = "克隆苗数量缺失")
+        private Integer cloneSeedNum;
+
         private Integer cloneNum;
+
         private String breedCode;
         private String breedName;
         private String speciesCode;

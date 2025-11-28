@@ -188,7 +188,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCodeLike(repeatSampleApply.getSampleCode());
                     List<Integer> sampleCodeSuffixList = bioSampleTestTbList.stream().filter(bioSampleTestTb -> bioSampleTestTb.getSampleCode().contains("-")).map(bioSampleTestTb -> Integer.valueOf(bioSampleTestTb.getSampleCode().substring(bioSampleTestTb.getSampleCode().indexOf("-") + 1))).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
                     int maxSampleCodeSuffix = CollectionUtil.isNotEmpty(sampleCodeSuffixList) ? Integer.valueOf(sampleCodeSuffixList.get(0)) : 0;
-                    for (int i = 1; i <= repeatSampleApply.getCloneNum(); i++) {
+                    for (int i = 1; i <= repeatSampleApply.getCloneSeedNum(); i++) {
                         BioSampleTestTb repeatBioSampleTestTb = new BioSampleTestTb();
                         repeatBioSampleTestTb.setVectorTaskCode(bioSampleTestTbList.get(0).getVectorTaskCode());
                         repeatBioSampleTestTb.setTransformCode(bioSampleTestTbList.get(0).getTransformCode());

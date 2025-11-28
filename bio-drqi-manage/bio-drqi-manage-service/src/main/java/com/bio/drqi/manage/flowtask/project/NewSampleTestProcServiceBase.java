@@ -11,6 +11,7 @@ import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.CheckResultEnum;
 import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.ImplementationPlanTypeEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
@@ -183,29 +184,30 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         if (CollectionUtil.isNotEmpty(newSampleTestDTO.getRepeatSampleApplyList())) {
             List<BioSampleTestTb> targetBioSampleTestTbList = new ArrayList<>();
             //克隆苗
-            if (newSampleTestDTO.isCloneFlag()) {
-                for (NewSampleTestDTO.RepeatSampleApply repeatSampleApply : newSampleTestDTO.getRepeatSampleApplyList()) {
-                    List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCodeLike(repeatSampleApply.getSampleCode());
-                    List<Integer> sampleCodeSuffixList = bioSampleTestTbList.stream().filter(bioSampleTestTb -> bioSampleTestTb.getSampleCode().contains("-")).map(bioSampleTestTb -> Integer.valueOf(bioSampleTestTb.getSampleCode().substring(bioSampleTestTb.getSampleCode().indexOf("-") + 1))).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
-                    int maxSampleCodeSuffix = CollectionUtil.isNotEmpty(sampleCodeSuffixList) ? Integer.valueOf(sampleCodeSuffixList.get(0)) : 0;
-                    for (int i = 1; i <= repeatSampleApply.getCloneSeedNum(); i++) {
-                        BioSampleTestTb repeatBioSampleTestTb = new BioSampleTestTb();
-                        repeatBioSampleTestTb.setVectorTaskCode(bioSampleTestTbList.get(0).getVectorTaskCode());
-                        repeatBioSampleTestTb.setTransformCode(bioSampleTestTbList.get(0).getTransformCode());
-                        repeatBioSampleTestTb.setSampleCode(repeatSampleApply.getSampleCode() + "-" + (maxSampleCodeSuffix + i));
-                        repeatBioSampleTestTb.setApplyTime(new Date());
-                        repeatBioSampleTestTb.setApplyUserId(SecurityContextHolder.getUserId());
-                        repeatBioSampleTestTb.setApplyUserName(SecurityContextHolder.getNickName());
-                        repeatBioSampleTestTb.setCreateTime(new Date());
-                        repeatBioSampleTestTb.setApplyNo(bioSampleApplyTb.getApplyNo());
-                        repeatBioSampleTestTb.setCloneSampleCode(repeatSampleApply.getSampleCode());
-                        repeatBioSampleTestTb.setCheckResult(CheckResultEnum.noCheck.name());
-                        repeatBioSampleTestTb.setUniqueCode(repeatBioSampleTestTb.getSampleCode());
-                        targetBioSampleTestTbList.add(repeatBioSampleTestTb);
-                    }
+            for (NewSampleTestDTO.RepeatSampleApply repeatSampleApply : newSampleTestDTO.getRepeatSampleApplyList()) {
+                List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCodeLike(repeatSampleApply.getSampleCode());
+                List<Integer> sampleCodeSuffixList = bioSampleTestTbList.stream().filter(bioSampleTestTb -> bioSampleTestTb.getSampleCode().contains("-")).map(bioSampleTestTb -> Integer.valueOf(bioSampleTestTb.getSampleCode().substring(bioSampleTestTb.getSampleCode().indexOf("-") + 1))).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+                int maxSampleCodeSuffix = CollectionUtil.isNotEmpty(sampleCodeSuffixList) ? Integer.valueOf(sampleCodeSuffixList.get(0)) : 0;
+                for (int i = 1; i <= repeatSampleApply.getCloneSeedNum(); i++) {
+                    BioSampleTestTb repeatBioSampleTestTb = new BioSampleTestTb();
+                    repeatBioSampleTestTb.setVectorTaskCode(bioSampleTestTbList.get(0).getVectorTaskCode());
+                    repeatBioSampleTestTb.setTransformCode(bioSampleTestTbList.get(0).getTransformCode());
+                    repeatBioSampleTestTb.setSampleCode(repeatSampleApply.getSampleCode() + "-" + (maxSampleCodeSuffix + i));
+                    repeatBioSampleTestTb.setApplyTime(new Date());
+                    repeatBioSampleTestTb.setApplyUserId(SecurityContextHolder.getUserId());
+                    repeatBioSampleTestTb.setApplyUserName(SecurityContextHolder.getNickName());
+                    repeatBioSampleTestTb.setCreateTime(new Date());
+                    repeatBioSampleTestTb.setApplyNo(bioSampleApplyTb.getApplyNo());
+                    repeatBioSampleTestTb.setCloneSampleCode(repeatSampleApply.getSampleCode());
+                    repeatBioSampleTestTb.setCheckResult(CheckResultEnum.noCheck.name());
+                    repeatBioSampleTestTb.setUniqueCode(repeatBioSampleTestTb.getSampleCode());
+                    repeatBioSampleTestTb.setSourceCode(SourceCodeEnum.project.name());
+                    repeatBioSampleTestTb.setBreedCode(bioSampleTestTbList.get(0).getBreedCode());
+                    repeatBioSampleTestTb.setSpeciesCode(bioSampleTestTbList.get(0).getSpeciesCode());
+                    targetBioSampleTestTbList.add(repeatBioSampleTestTb);
                 }
-
             }
+
             try {
                 bioSampleTestTbMapper.insertBatch(targetBioSampleTestTbList);
             } catch (DuplicateKeyException e) {
@@ -246,6 +248,9 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     bioSampleTestTb.setApplyNo(bioSampleApplyTb.getApplyNo());
                     bioSampleTestTb.setUniqueCode(bioSampleTestTb.getSampleCode());
                     bioSampleTestTb.setCheckResult(CheckResultEnum.noCheck.name());
+                    bioSampleTestTb.setSourceCode(SourceCodeEnum.project.name());
+                    bioSampleTestTb.setBreedCode(cerTransformTb.getBreedCode());
+                    bioSampleTestTb.setSpeciesCode(cerTransformTb.getSpeciesCode());
                     targetBioSampleTestTbList.add(bioSampleTestTb);
                 }
                 logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test, bioTaskDtlTb.getTaskNum());

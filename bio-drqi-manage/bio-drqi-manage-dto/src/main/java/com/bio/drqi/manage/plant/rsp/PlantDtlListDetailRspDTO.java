@@ -6,65 +6,12 @@ import java.util.Date;
 
 @Data
 public class PlantDtlListDetailRspDTO {
-    /**
-     * 主键ID
-     */
     private Integer id;
 
     /**
-     * 所属项目ID
-     */
-    private Integer projectId;
-
-    /**
-     * 所属项目编码
-     */
-    private String projectCode;
-
-    /**
-     * 种子编号
+     * 种植编号
      */
     private String plantCode;
-
-    /**
-     * 子项目编号
-     */
-    private String subProjectCode;
-
-    /**
-     * 子项目ID
-     */
-    private Integer subProjectId;
-
-    /**
-     * 转化组合名称
-     */
-    private String transformGroupName;
-
-    /**
-     * 任务ID
-     */
-    private Integer vectorTaskId;
-
-    /**
-     * 任务编码
-     */
-    private String vectorTaskCode;
-
-    /**
-     * 质粒信息
-     */
-    private String plasmidName;
-
-    /**
-     * 转化编号
-     */
-    private String transformCode;
-
-    /**
-     * 取样编号
-     */
-    private String sampleCode;
 
     /**
      * 代次
@@ -77,9 +24,14 @@ public class PlantDtlListDetailRspDTO {
     private Integer plantNumber;
 
     /**
-     * 播种/移苗日期
+     * 播种日期
      */
     private String plantDate;
+
+    /**
+     * 取样编号
+     */
+    private String sampleCode;
 
     /**
      * 移栽日期
@@ -101,22 +53,10 @@ public class PlantDtlListDetailRspDTO {
      */
     private String pollinationMethod;
 
-    private String pollinationMethodName;
-
     /**
-     * 植株状态 1正常，2异常, 3已剔除
+     * 植株状态 1正常，2异常, 3已剔除，4已收获
      */
     private String plantStatus;
-
-    /**
-     * 父本信息
-     */
-    private String fatherInfo;
-
-    /**
-     * 母本信息
-     */
-    private String motherInfo;
 
     /**
      * 授粉时间
@@ -129,6 +69,11 @@ public class PlantDtlListDetailRspDTO {
     private String harvestDate;
 
     /**
+     * 收获方式
+     */
+    private String harvestType;
+
+    /**
      * 其他字段
      */
     private Object otherField;
@@ -139,14 +84,9 @@ public class PlantDtlListDetailRspDTO {
     private String editType;
 
     /**
-     * 项目物种
+     * 物种
      */
     private String speciesCode;
-
-    /**
-     * 受体材料
-     */
-    private String acceptorMaterial;
 
     /**
      * 创建日期
@@ -157,5 +97,42 @@ public class PlantDtlListDetailRspDTO {
      * 更新日期
      */
     private Date updateTime;
+
+    /**
+     * 创建人ID
+     */
+    private Integer createUserId;
+
+    /**
+     * 创建人姓名
+     */
+    private String createUserName;
+
+    /**
+     * 任务编号
+     */
+    private String taskNum;
+
+    /**
+     * 品种
+     */
+    private String breedCode;
+
+    /**
+     * 来源渠道 1项目，4种子库
+     */
+    private String sourceCode;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * 实施方案编号
+     */
+    private String vectorTaskCode;
+
+    private String pollinationMethodName;
 
 }

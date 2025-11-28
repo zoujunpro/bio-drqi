@@ -5,14 +5,13 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.enums.BioDictTypeEnum;
-import com.bio.drqi.domain.BioDict;
-import com.bio.drqi.domain.CerBreedDict;
-import com.bio.drqi.domain.CerSpeciesConf;
-import com.bio.drqi.domain.PlantSingleStockTb;
-import com.bio.drqi.mapper.BioDictMapper;
-import com.bio.drqi.mapper.CerBreedDictMapper;
-import com.bio.drqi.mapper.CerSpeciesConfMapper;
-import com.bio.drqi.mapper.PlantSingleStockTbMapper;
+import com.bio.drqi.common.enums.PlantStatusEnum;
+import com.bio.drqi.common.enums.SourceCodeEnum;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.manage.plant.req.PlantDtlListDetailReqDTO;
+import com.bio.drqi.manage.plant.rsp.PlantDtlCountRspDTO;
+import com.bio.drqi.manage.plant.rsp.PlantDtlListDetailRspDTO;
+import com.bio.drqi.mapper.*;
 import com.bio.drqi.manage.plant.req.PlantSingleStockListPageReqDTO;
 import com.bio.drqi.manage.plant.req.PlantSingleStockQueryListReqDTO;
 import com.bio.drqi.manage.plant.rsp.PlantSingleStockListPageRspDTO;
@@ -43,6 +42,9 @@ public class BioSingleStockServiceImpl implements PlantSingleStockService {
 
     @Resource
     private BioDictMapper bioDictMapper;
+
+    @Resource
+    private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
 
     @Override
@@ -96,5 +98,48 @@ public class BioSingleStockServiceImpl implements PlantSingleStockService {
 
     }
 
+    @Override
+    public PageInfo<PlantDtlListDetailRspDTO> listByVectorTaskIdDetail(PlantDtlListDetailReqDTO plantDtlListDetailReqDTO) {
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(plantDtlListDetailReqDTO.getVectorTaskId());
+        if(cerVectorTaskTb==null){
+            throw new BusinessException("找不到实施方案信息");
+        }
+        PageHelper.startPage(plantDtlListDetailReqDTO.getPageNum(), plantDtlListDetailReqDTO.getPageSize());
+        List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectSelective(PlantSingleStockTb.builder().vectorTaskCode(cerVectorTaskTb.getVectorTaskCode()).sourceCode(SourceCodeEnum.project.name()).build());
+        PageInfo<PlantSingleStockTb> srcPageInfo = new PageInfo<>(plantSingleStockTbList);
+        PageInfo<PlantDtlListDetailRspDTO> result = BeanUtils.copyPageInfoProperties(srcPageInfo, PlantDtlListDetailRspDTO.class);
+        if (CollectionUtil.isNotEmpty(result.getList())) {
+            List<BioDict> bioDictList = bioDictMapper.selectAll();
+            Map<String, BioDict> bioDictMap = bioDictList.stream().collect(Collectors.toMap(bioDict -> bioDict.getDictType() + ":" + bioDict.getDictValueCode(), bioDict -> bioDict));
+            result.getList().forEach(plantDtlListRspDTO -> {
+                if (StringUtils.isNotEmpty(plantDtlListRspDTO.getPollinationMethod())) {
+                    BioDict pollinationMethodBioDict = bioDictMap.get(BioDictTypeEnum.POLLINATE_TYPE + ":" + plantDtlListRspDTO.getPollinationMethod());
+                    if (pollinationMethodBioDict == null) {
+                        throw new BusinessException("授粉方式填写错误：" + plantDtlListRspDTO.getPollinationMethod());
+                    }
+                    plantDtlListRspDTO.setPollinationMethodName(pollinationMethodBioDict.getDictValueName());
+                }
+            });
+        }
+        return result;
+    }
+
+    @Override
+    public PlantDtlCountRspDTO count(String vectorTaskCode) {
+        PlantDtlCountRspDTO plantDtlCountRspDTO = new PlantDtlCountRspDTO();
+        List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectCountGroupByPlantStatus(vectorTaskCode);
+        for (PlantSingleStockTb plantSingleStockTb : plantSingleStockTbList) {
+            if (PlantStatusEnum.STATUS_1.code.equals(plantSingleStockTb.getPlantStatus())) {
+                plantDtlCountRspDTO.setNormalCountNum(plantSingleStockTb.getCountNum());
+            } else if (PlantStatusEnum.STATUS_2.code.equals(plantSingleStockTb.getPlantStatus())) {
+                plantDtlCountRspDTO.setAbnormalCountNum(plantSingleStockTb.getCountNum());
+            } else if (PlantStatusEnum.STATUS_3.code.equals(plantSingleStockTb.getPlantStatus())) {
+                plantDtlCountRspDTO.setDeleteCountNum(plantSingleStockTb.getCountNum());
+            } else if (PlantStatusEnum.STATUS_4.code.equals(plantSingleStockTb.getPlantStatus())) {
+                plantDtlCountRspDTO.setHarvestCountNum(plantSingleStockTb.getCountNum());
+            }
+        }
+        return plantDtlCountRspDTO.buildTotalCountNum();
+    }
 
 }

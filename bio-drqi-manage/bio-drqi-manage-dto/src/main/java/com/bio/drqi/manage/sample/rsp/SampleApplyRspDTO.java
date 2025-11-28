@@ -10,10 +10,6 @@ import java.util.Date;
 @Data
 public class SampleApplyRspDTO {
 
-    /**
-     * 主键ID
-     */
-    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -29,7 +25,6 @@ public class SampleApplyRspDTO {
     /**
      * 取样申请时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date applyTime;
 
     /**
@@ -43,10 +38,38 @@ public class SampleApplyRspDTO {
     private String applyUserName;
 
     /**
-     * 当前执行阶段 1取样数据递送中 2检测结果递送中，3最终结果审核中，4执行完毕
+     * 取样工单描述
      */
-    private String currentStepCode;
-
     private String applyDesc;
+
+    /**
+     * 取样类型 first首次取样   repeat重复取样
+     */
+    private String applyType;
+
+    /**
+     * 鉴定引物地址
+     */
+    private String identifyExcelUrl;
+
+    /**
+     * 是否是克隆苗取样 Y N
+     */
+    private String cloneFlag;
+
+    /**
+     * 孔板类型 one,more
+     */
+    private String layoutFlag;
+
+    /**
+     * 实施方案编号
+     */
+    private String vectorTaskCodes;
+
+    /**
+     * 取样编号范围
+     */
+    private String sampleCodeRange;
 
 }

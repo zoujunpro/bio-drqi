@@ -39,6 +39,8 @@ public class BioSampleApplyListPageReqDTO extends PageDTO {
      */
     private String vectorTaskCode;
 
+    private String sourceCode;
+
 
 
 }

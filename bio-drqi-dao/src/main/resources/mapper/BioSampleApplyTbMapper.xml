@@ -61,4 +61,11 @@
         </where>
         order by id desc
     </select>
+    <select id="selectAllByVectorTaskCodeAndSourceCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_apply_tb
+        where apply_no in(select distinct  apply_no from bio_sample_test_tb where vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR} and source_code=#{sourceCode,jdbcType=VARCHAR})
+        order by id desc
+    </select>
 </mapper>

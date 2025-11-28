@@ -6,5 +6,6 @@ import lombok.Data;
 @Data
 public class SampleTestByVectorTaskReqDTO extends PageDTO {
     private Integer vectorTaskId;
+    private String sourceCode;
 
 }

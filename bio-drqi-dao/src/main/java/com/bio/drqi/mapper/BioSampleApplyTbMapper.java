@@ -18,6 +18,8 @@ public interface BioSampleApplyTbMapper extends BaseMapper<BioSampleApplyTb> {
     int deleteByApplyNo(@Param("applyNo") String applyNo);
 
     List<BioSampleApplyTb> selectSelective(BioSampleApplyTb bioSampleApplyTb);
+
+    List<BioSampleApplyTb> selectAllByVectorTaskCodeAndSourceCode(@Param("vectorTaskCode") String vectorTaskCode,@Param("sourceCode")String sourceCode);
 }
 
 

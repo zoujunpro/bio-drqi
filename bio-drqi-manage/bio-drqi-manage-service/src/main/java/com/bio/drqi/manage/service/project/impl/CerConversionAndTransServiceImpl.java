@@ -176,8 +176,8 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                     plantMultipleStockTb.setPlantDate(DateUtil.format(new Date(), DatePattern.NORM_DATE_PATTERN));
                     plantMultipleStockTbMapper.insert(plantMultipleStockTb);
                 } else {
-                    plantMultipleStockTb.setPlantNumber(transFormList.get(0).getAcceptNum() + plantMultipleStockTb.getPlantNumber());
-                    plantMultipleStockTb.setCurrentNumber(transFormList.get(0).getTransNum() + plantMultipleStockTb.getCurrentNumber());
+                    plantMultipleStockTb.setPlantNumber(transFormList.get(0).getAcceptNum() + (plantMultipleStockTb.getPlantNumber()==null?0:plantMultipleStockTb.getPlantNumber()));
+                    plantMultipleStockTb.setCurrentNumber(transFormList.get(0).getAcceptNum() + (plantMultipleStockTb.getCurrentNumber()==null?0:plantMultipleStockTb.getCurrentNumber()));
                     plantMultipleStockTbMapper.updateById(plantMultipleStockTb);
                 }
 

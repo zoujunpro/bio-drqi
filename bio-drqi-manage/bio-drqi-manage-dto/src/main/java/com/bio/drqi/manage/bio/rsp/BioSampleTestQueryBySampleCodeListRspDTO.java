@@ -36,4 +36,6 @@ public class BioSampleTestQueryBySampleCodeListRspDTO {
     private String regionNum;
 
     private String seedNum;
+
+    private String cloneSeedNum;
 }

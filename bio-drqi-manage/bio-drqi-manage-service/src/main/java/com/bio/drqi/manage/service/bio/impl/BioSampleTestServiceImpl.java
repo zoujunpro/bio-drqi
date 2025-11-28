@@ -145,19 +145,17 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         List<BioSampleTestQueryBySampleCodeListRspDTO> result = new ArrayList<>();
         Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
-        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCodeIn(bioSampleTestQueryBySampleCodeListReqDTO.getSampleCodeList());
-        Map<String, List<BioSampleTestTb>> bioSampleTestTbMap = bioSampleTestTbList.stream().collect(Collectors.groupingBy(BioSampleTestTb::getSampleCode));
-        if (bioSampleTestTbMap.keySet().size() != bioSampleTestQueryBySampleCodeListReqDTO.getSampleCodeList().size()) {
-            throw new BusinessException("有部分取样编号不存在，不能发起取样" + JSONUtil.toJsonStr(bioSampleTestTbMap.keySet().removeAll(bioSampleTestQueryBySampleCodeListReqDTO.getSampleCodeList())).replace("[", "").replace("]", ""));
-        }
-        bioSampleTestTbMap.forEach((sampleCode, list) -> {
-            BioSampleTestTb bioSampleTestTb = list.get(0);
-            BioSampleTestQueryBySampleCodeListRspDTO bioSampleTestQueryBySampleCodeListRspDTO = BeanUtils.copyProperties(bioSampleTestTb, BioSampleTestQueryBySampleCodeListRspDTO.class);
+        for (BioSampleTestQueryBySampleCodeListReqDTO.Content content : bioSampleTestQueryBySampleCodeListReqDTO.getContentList()) {
+            List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(content.getSampleCode());
+            if(CollectionUtil.isEmpty(bioSampleTestTbList)){
+                throw new BusinessException("取样编号错误，系统查询不到："+content.getSampleCode());
+            }
+            BioSampleTestQueryBySampleCodeListRspDTO bioSampleTestQueryBySampleCodeListRspDTO = BeanUtils.copyProperties(bioSampleTestTbList.get(0), BioSampleTestQueryBySampleCodeListRspDTO.class);
             bioSampleTestQueryBySampleCodeListRspDTO.setBreedName(cerBreedDictMap.get(bioSampleTestQueryBySampleCodeListRspDTO.getBreedCode()));
             bioSampleTestQueryBySampleCodeListRspDTO.setSpeciesName(cerSpeciesConfMap.get(bioSampleTestQueryBySampleCodeListRspDTO.getSpeciesCode()));
+            bioSampleTestQueryBySampleCodeListRspDTO.setCloneSeedNum(content.getCloneSeedNum());
             result.add(bioSampleTestQueryBySampleCodeListRspDTO);
-        });
-
+        }
         return result;
     }
 

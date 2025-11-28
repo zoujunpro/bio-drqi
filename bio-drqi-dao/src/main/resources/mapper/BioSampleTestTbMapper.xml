@@ -360,6 +360,7 @@
         from bio_sample_test_tb
         where
         sample_code = #{sampleCode,jdbcType=VARCHAR}
+        order by id desc
     </select>
 
 </mapper>

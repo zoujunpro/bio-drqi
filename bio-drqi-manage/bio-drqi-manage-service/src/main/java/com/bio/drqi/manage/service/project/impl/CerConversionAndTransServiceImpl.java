@@ -127,7 +127,7 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 if (cerVectorTaskTb == null) {
                     throw new BusinessException("实施方案找不到 ");
                 }
-                if (VectorTaskStatusEnum.TASK_STATUS_2.status.equals(cerVectorTaskTb.getTaskStatus())) {
+                if (!VectorTaskStatusEnum.TASK_STATUS_2.status.equals(cerVectorTaskTb.getTaskStatus())) {
                     throw new BusinessException("实施方案不是执行中状态,当前实施方案:" + cerVectorTaskTb.getVectorTaskCode());
                 }
                 transFormList.get(0).setAcceptNum(content.getAcceptNum());

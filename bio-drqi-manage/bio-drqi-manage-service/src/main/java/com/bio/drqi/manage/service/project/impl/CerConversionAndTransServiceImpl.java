@@ -222,7 +222,7 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 cerConversionAndTransTb.setTransNumber((cerConversionAndTransTb.getTransNumber() == null ? 0 : cerConversionAndTransTb.getTransNumber()) + 1);
                 cerConversionAndTransTbMapper.updateById(cerConversionAndTransTb);
 
-                PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(bioSampleTestTb, PlantStatusEnum.STATUS_1, DateUtil.format(new Date(),DatePattern.NORM_DATE_PATTERN), bioSampleTestTb.getApplyNo(),SourceCodeEnum.project.name(), "移苗取样数据");
+                PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(bioSampleTestTb, PlantStatusEnum.STATUS_1, DateUtil.format(new Date(),DatePattern.NORM_DATE_PATTERN), bioTaskDtlTb.getTaskNum(),SourceCodeEnum.project.name(), "移苗取样数据");
                 if (Objects.isNull(plantSingleStockTbMapper.selectOneByPlantCode(plantSingleStockTb.getPlantCode()))) {
                     plantSingleStockTbMapper.insert(plantSingleStockTb);
                 }

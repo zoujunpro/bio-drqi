@@ -97,7 +97,8 @@ public class CleanSampleTestController {
             CerSampleTestTb cerSampleTestTb = cerSampleTestTbList.get(i);
             CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(),cerSampleTestTb.getVectorTaskCode());
             if (cerTransformTb == null) {
-                throw new BusinessException("找不到转化信息");
+                continue;
+               // throw new BusinessException("找不到转化信息");
             }
             BioSampleTestTb bioSampleTestTb = new BioSampleTestTb();
             bioSampleTestTb.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());

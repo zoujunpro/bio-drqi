@@ -41,4 +41,6 @@ public class BioSampleTestListDetailReqDTO extends PageDTO {
 
     private String experimentNum;
 
+    private String sourceCode;
+
 }

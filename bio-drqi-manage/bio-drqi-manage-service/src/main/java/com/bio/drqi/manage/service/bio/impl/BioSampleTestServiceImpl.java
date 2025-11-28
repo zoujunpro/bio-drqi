@@ -147,8 +147,8 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
         for (BioSampleTestQueryBySampleCodeListReqDTO.Content content : bioSampleTestQueryBySampleCodeListReqDTO.getContentList()) {
             List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(content.getSampleCode());
-            if(CollectionUtil.isEmpty(bioSampleTestTbList)){
-                throw new BusinessException("取样编号错误，系统查询不到："+content.getSampleCode());
+            if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
+                throw new BusinessException("取样编号错误，系统查询不到：" + content.getSampleCode());
             }
             BioSampleTestQueryBySampleCodeListRspDTO bioSampleTestQueryBySampleCodeListRspDTO = BeanUtils.copyProperties(bioSampleTestTbList.get(0), BioSampleTestQueryBySampleCodeListRspDTO.class);
             bioSampleTestQueryBySampleCodeListRspDTO.setBreedName(cerBreedDictMap.get(bioSampleTestQueryBySampleCodeListRspDTO.getBreedCode()));
@@ -621,6 +621,11 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
             if (Objects.isNull(bioSampleTestTb)) {
                 log.error("approveSampleResult content={}", content);
                 throw new BusinessException("此工单中无此取样编号:" + content.getSampleCode() + ", 工单：" + approveSampleResultReqDTO.getTaskNum());
+            }
+            if (bioSampleTestTb.getTestUserId() == null) {
+                bioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
+                bioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
+                bioSampleTestTb.setRemark(StringUtils.isNotEmpty(bioSampleTestTb.getRemark())?"":(bioSampleTestTb.getRemark()+",")+"无检测结果，审批通过或者拒绝后，检测人就是审核人");
             }
             bioSampleTestTb.setCheckResult(content.getCheckResult());
             bioSampleTestTb.setCheckUserName(SecurityContextHolder.getNickName());

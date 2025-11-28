@@ -127,7 +127,7 @@ public class BioSingleStockServiceImpl implements PlantSingleStockService {
     @Override
     public PlantDtlCountRspDTO count(String vectorTaskCode) {
         PlantDtlCountRspDTO plantDtlCountRspDTO = new PlantDtlCountRspDTO();
-        List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectCountGroupByPlantStatus(vectorTaskCode);
+        List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectCountGroupByPlantStatus(vectorTaskCode,SourceCodeEnum.project.name());
         for (PlantSingleStockTb plantSingleStockTb : plantSingleStockTbList) {
             if (PlantStatusEnum.STATUS_1.code.equals(plantSingleStockTb.getPlantStatus())) {
                 plantDtlCountRspDTO.setNormalCountNum(plantSingleStockTb.getCountNum());

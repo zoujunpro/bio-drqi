@@ -24,7 +24,7 @@ public interface PlantSingleStockTbMapper extends BaseMapper<PlantSingleStockTb>
 
     int deleteByTaskNum(@Param("taskNum") String taskNum);
 
-    List<PlantSingleStockTb> selectCountGroupByPlantStatus(@Param("vectorTaskCode") String vectorTaskCode);
+    List<PlantSingleStockTb> selectCountGroupByPlantStatus(@Param("vectorTaskCode") String vectorTaskCode,@Param("sourceCode") String sourceCode);
 
 }
 

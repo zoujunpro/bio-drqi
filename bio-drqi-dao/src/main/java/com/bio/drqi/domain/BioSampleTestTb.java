@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.CheckResultEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -227,7 +228,7 @@ public class BioSampleTestTb implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    public static BioSampleTestTb ofFirst(PlantMultipleStockTb plantMultipleStockTb , String sampleCode, BioTaskDtlTb bioTaskDtlTb) {
+    public static BioSampleTestTb ofFirst(PlantMultipleStockTb plantMultipleStockTb , String sampleCode, BioTaskDtlTb bioTaskDtlTb, CheckResultEnum checkResultEnum) {
         BioSampleTestTb bioSampleTestTb = new BioSampleTestTb();
         bioSampleTestTb.setVectorTaskCode(plantMultipleStockTb.getVectorTaskCode());
         bioSampleTestTb.setSampleCode(sampleCode);
@@ -243,6 +244,7 @@ public class BioSampleTestTb implements Serializable {
         bioSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
         bioSampleTestTb.setSourceCode(plantMultipleStockTb.getSourceCode());
         bioSampleTestTb.setUniqueCode(sampleCode);
+        bioSampleTestTb.setCheckResult(checkResultEnum.name());
         bioSampleTestTb.setTestIdentifyPrimer(null);
         bioSampleTestTb.setTestMethod(null);
         bioSampleTestTb.setTestEditType(null);
@@ -261,7 +263,6 @@ public class BioSampleTestTb implements Serializable {
         bioSampleTestTb.setTestTime(null);
         bioSampleTestTb.setCheckUserName(null);
         bioSampleTestTb.setCheckUserId(null);
-        bioSampleTestTb.setCheckResult(null);
         bioSampleTestTb.setCreateTime(new Date());
         bioSampleTestTb.setUpdateTime(new Date());
         bioSampleTestTb.setApplyNo(bioTaskDtlTb.getTaskNum());
@@ -272,7 +273,7 @@ public class BioSampleTestTb implements Serializable {
         return bioSampleTestTb;
     }
 
-    public static BioSampleTestTb ofRepeat(BioSampleTestTb targetSampleTestTb,BioTaskDtlTb bioTaskDtlTb) {
+    public static BioSampleTestTb ofRepeat(BioSampleTestTb targetSampleTestTb,BioTaskDtlTb bioTaskDtlTb,CheckResultEnum checkResultEnum) {
         BioSampleTestTb bioSampleTestTb = new BioSampleTestTb();
         bioSampleTestTb.setVectorTaskCode(targetSampleTestTb.getVectorTaskCode());
         bioSampleTestTb.setSampleCode(targetSampleTestTb.getSampleCode());
@@ -288,6 +289,7 @@ public class BioSampleTestTb implements Serializable {
         bioSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
         bioSampleTestTb.setSourceCode(targetSampleTestTb.getSourceCode());
         bioSampleTestTb.setApplyNo(bioTaskDtlTb.getTaskNum());
+        bioSampleTestTb.setCheckResult(checkResultEnum.name());
 
         bioSampleTestTb.setTestIdentifyPrimer(null);
         bioSampleTestTb.setTestMethod(null);
@@ -307,7 +309,6 @@ public class BioSampleTestTb implements Serializable {
         bioSampleTestTb.setTestTime(null);
         bioSampleTestTb.setCheckUserName(null);
         bioSampleTestTb.setCheckUserId(null);
-        bioSampleTestTb.setCheckResult(null);
         bioSampleTestTb.setCreateTime(new Date());
         bioSampleTestTb.setUpdateTime(new Date());
         bioSampleTestTb.setIdentifyPrimer(null);

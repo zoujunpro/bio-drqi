@@ -1,8 +1,6 @@
 package com.bio.drqi.manage.flowtask.project;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
@@ -12,16 +10,14 @@ import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.CheckResultEnum;
-import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.*;
+import com.bio.drqi.enums.ImplementationPlanTypeEnum;
+import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
 import com.bio.drqi.manage.sample.req.LayoutConfirmReqDTO;
 import com.bio.drqi.manage.service.project.CerSampleTestService;
 import com.bio.drqi.mapper.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -80,17 +76,28 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         ValidatorUtil.validator(newSampleTestDTO);
 
         //首次取样，进行转化信息校验
-        for (NewSampleTestDTO.FirstSampleApply firstSampleApply : newSampleTestDTO.getFirstSampleApplyList()) {
-            CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(), firstSampleApply.getVectorTaskCode());
-            if (cerTransformTb == null) {
-                throw new BusinessException("此实施方案下查询不到转化信息：" + firstSampleApply.getTransformCode());
+        if (CollectionUtil.isNotEmpty(newSampleTestDTO.getFirstSampleApplyList())) {
+            for (NewSampleTestDTO.FirstSampleApply firstSampleApply : newSampleTestDTO.getFirstSampleApplyList()) {
+                CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(firstSampleApply.getTransformCode(), firstSampleApply.getVectorTaskCode());
+                if (cerTransformTb == null) {
+                    throw new BusinessException("此实施方案下查询不到转化信息：" + firstSampleApply.getTransformCode());
+                }
+                if (!BioTaskStatusEnum.TASK_STATUS_2.status.equals(cerTransformTb.getTaskStatus())) {
+                    throw new BusinessException("该转化未审批通过：" + cerTransformTb.getTransformCode());
+                }
+                CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerTransformTb.getProjectCode());
+                if (!ProjectStatusEnum.execute.name().equals(cerProjectTb.getProjectStatus())) {
+                    throw new BusinessException(cerTransformTb.getTransformCode() + "所属项目不是进行中");
+                }
             }
-            if (!BioTaskStatusEnum.TASK_STATUS_2.status.equals(cerTransformTb.getTaskStatus())) {
-                throw new BusinessException("该转化未审批通过：" + cerTransformTb.getTransformCode());
-            }
-            CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerTransformTb.getProjectCode());
-            if (!ProjectStatusEnum.execute.name().equals(cerProjectTb.getProjectStatus())) {
-                throw new BusinessException(cerTransformTb.getTransformCode() + "所属项目不是进行中");
+        } else {
+            for (NewSampleTestDTO.RepeatSampleApply repeatSampleApply : newSampleTestDTO.getRepeatSampleApplyList()) {
+                ValidatorUtil.validator(repeatSampleApply);
+                List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(repeatSampleApply.getSampleCode());
+                if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
+                    throw new BusinessException("系统中找不到此取样信息：" + repeatSampleApply.getSampleCode());
+                }
+
             }
         }
         //数据入库

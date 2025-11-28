@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
@@ -80,18 +81,21 @@ public class NewSampleTestDTO {
 
     @Data
     public static class RepeatSampleApply{
+
+        @NotNull(message = "实施方案编号缺失")
         private String vectorTaskCode;
+        @NotNull(message = "取样编号缺失")
         private String sampleCode;
         private String identifyPrimer;
         /**
-         * 取样时间
-         */
-        private String sampleTime;
-
-        /**
          * 克隆苗
          */
+        @NotNull(message = "克隆苗数量缺失")
         private Integer cloneNum;
+        private String breedCode;
+        private String breedName;
+        private String speciesCode;
+        private String speciesName;
     }
 
     @Data

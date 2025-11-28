@@ -120,7 +120,7 @@ public class CerTransformTb implements Serializable {
 
     private String speciesCode;
 
-
+    private String breedCode;
     /**
      * 载体构建任务类型 1测试任务（普通），2测试任务（原生质体），3正常任务创建
      */

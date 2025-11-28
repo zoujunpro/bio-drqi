@@ -347,13 +347,7 @@
         AND sample_code = #{sampleCode,jdbcType=VARCHAR}
         order by id desc limit 1
     </select>
-    <select id="selectOneByUniqueCode" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from bio_sample_test_tb
-        where
-        unique_code = #{uniqueCode,jdbcType=VARCHAR}
-    </select>
+
     <update id="updateTestUserIdAndTestUserNameById">
         update bio_sample_test_tb
         set test_user_id   = #{testUserId,jdbcType=NUMERIC},

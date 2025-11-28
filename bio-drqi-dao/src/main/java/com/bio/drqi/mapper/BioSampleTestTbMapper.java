@@ -61,8 +61,6 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
     BioSampleTestTb selectOneByVectorTaskCodeAndSampleCodeFirst(@Param("vectorTaskCode") String vectorTaskCode, @Param("sampleCode") String sampleCode);
 
-    BioSampleTestTb selectOneByUniqueCode(@Param("uniqueCode") String uniqueCode);
-
     int updateTestUserIdAndTestUserNameById(@Param("testUserId") Integer testUserId, @Param("testUserName") String testUserName, @Param("id") Integer id);
 }
 

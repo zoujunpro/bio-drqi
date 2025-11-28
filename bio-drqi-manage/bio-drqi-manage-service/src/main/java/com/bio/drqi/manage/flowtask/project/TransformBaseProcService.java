@@ -39,7 +39,8 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
 
-
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
 
 
     @Override
@@ -76,7 +77,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
             throw new BusinessException("任务未审批通过,不能进行该项操作：任务号：" + cerVectorTaskTb.getVectorTaskCode());
         }
         CerVectorStepLog cerVectorStepLog = cerVectorStepLogMapper.selectOneByVectorTaskIdAndStepCode(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.plasmid_check.name());
-        if(cerVectorStepLog==null){
+        if (cerVectorStepLog == null) {
             throw new BusinessException("只有质检通过任务方可进行转化");
         }
         //补充form表单
@@ -113,8 +114,18 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
                 cerTransformTb.setInfectNumber(content.getInfectNumber());
                 cerTransformTb.setInfectDate(content.getInfectDate());
                 cerTransformTb.setDeliveryMethod(content.getDeliveryMethod());
-                cerTransformTb.setTransformCode(getTransFormCode(cerVectorTaskTb.getVectorTaskCode(),content.getDeliveryMethod(), content.getInfectDate()));
+                cerTransformTb.setTransformCode(getTransFormCode(cerVectorTaskTb.getVectorTaskCode(), content.getDeliveryMethod(), content.getInfectDate()));
                 cerTransformTb.setAcceptorMaterial(content.getAcceptorMaterial());
+                if (cerVectorTaskTb.getBreedCode().contains("|")) {
+                    CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(content.getAcceptorMaterial(), cerVectorTaskTb.getSpeciesCode());
+                    if (cerBreedDict != null) {
+                        cerTransformTb.setBreedCode(cerBreedDict.getBreedCode());
+                    } else {
+                        cerTransformTb.setBreedCode(cerVectorTaskTb.getBreedCode().split("\\|")[0]);
+                    }
+                } else {
+                    cerTransformTb.setBreedCode(cerVectorTaskTb.getBreedCode());
+                }
                 cerTransformTb.setCreateTime(new Date());
                 cerTransformTb.setUpdateTime(new Date());
                 cerTransformTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
@@ -142,7 +153,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
     }
 
 
-    private String getTransFormCode(String vectorTaskCode, String deliveryMethod,String infectDate) {
+    private String getTransFormCode(String vectorTaskCode, String deliveryMethod, String infectDate) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
         CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(cerVectorTaskTb.getSpeciesCode());
         List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectAllByTransformCodeLike(cerSpeciesConf.getNumPrefix().substring(2) + deliveryMethod + infectDate.replace("-", "").substring(4));
@@ -154,7 +165,8 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
             Integer maxInt = cerTransformTbList.stream().map(cerTransformTb -> Integer.valueOf(cerTransformTb.getTransformCode().substring(7))).max(Integer::compare).get();
             nextNumber = StringUtils.padl(String.valueOf(maxInt + 1), 2, '0');
         }
-        return cerSpeciesConf.getNumPrefix().substring(2) +deliveryMethod + infectDate.replace("-", "").substring(4) + nextNumber;
+        return cerSpeciesConf.getNumPrefix().substring(2) + deliveryMethod + infectDate.replace("-", "").substring(4) + nextNumber;
     }
+
 
 }

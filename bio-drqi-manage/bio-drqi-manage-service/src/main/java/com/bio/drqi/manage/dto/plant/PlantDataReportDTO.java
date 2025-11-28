@@ -1,4 +1,4 @@
-package com.bio.drqi.manage.dto.project;
+package com.bio.drqi.manage.dto.plant;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
@@ -6,11 +6,10 @@ import lombok.Data;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-public class CerPlantDTO {
+public class PlantDataReportDTO {
 
     @NotBlank(message = "参数缺失：excelUrl")
     private String excelUrl;

@@ -3,16 +3,11 @@ package com.bio.drqi.manage.flowtask.plant;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
-import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.domain.BioTaskDtlTb;
-import com.bio.drqi.domain.CerPlantDtlTb;
 import com.bio.drqi.domain.PlantSingleStockTb;
-import com.bio.drqi.manage.dto.project.CerPlantDTO;
-import com.bio.drqi.manage.flowtask.project.AbstractProjectBaseTaskService;
-import com.bio.drqi.mapper.BioTaskDtlTbMapper;
-import com.bio.drqi.mapper.CerPlantDtlTbMapper;
+import com.bio.drqi.manage.dto.plant.PlantDataReportDTO;
 import com.bio.drqi.mapper.PlantSingleStockTbMapper;
 import com.github.pagehelper.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -20,20 +15,20 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-@Service("cer_plant")
+@Service("plant_data_report")
 @Slf4j
-public class CerPlanProcService extends AbstractPlantBaseTaskService {
+public class PlanDataReportProcService extends AbstractPlantBaseTaskService {
 
     @Resource
     private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
-        CerPlantDTO cerPlantDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), CerPlantDTO.class);
-        if (CollectionUtil.isEmpty(cerPlantDTO.getContentList())) {
+        PlantDataReportDTO plantDataReportDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantDataReportDTO.class);
+        if (CollectionUtil.isEmpty(plantDataReportDTO.getContentList())) {
             throw new BusinessException("excel中没有数据");
         }
-        for (CerPlantDTO.Content content : cerPlantDTO.getContentList()) {
+        for (PlantDataReportDTO.Content content : plantDataReportDTO.getContentList()) {
             PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(content.getPlantCode());
             if (plantSingleStockTb == null) {
                 throw new BusinessException("找不到此种植编号:" + content.getPlantCode());
@@ -49,8 +44,8 @@ public class CerPlanProcService extends AbstractPlantBaseTaskService {
     @Override
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-            CerPlantDTO cerPlantDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), CerPlantDTO.class);
-            for (CerPlantDTO.Content content : cerPlantDTO.getContentList()) {
+            PlantDataReportDTO plantDataReportDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantDataReportDTO.class);
+            for (PlantDataReportDTO.Content content : plantDataReportDTO.getContentList()) {
                 PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(content.getPlantCode());
                 if (plantSingleStockTb == null) {
                     throw new BusinessException("找不到此种植编号:" + content.getPlantCode());

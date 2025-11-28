@@ -190,6 +190,8 @@ public class BioSampleTestListDetailRspDTO {
 
     private Integer matchNum;
 
+    private String transformCode;
+
 
 
     private List<BioInfoResult> bioInfoResultList = new ArrayList<>();

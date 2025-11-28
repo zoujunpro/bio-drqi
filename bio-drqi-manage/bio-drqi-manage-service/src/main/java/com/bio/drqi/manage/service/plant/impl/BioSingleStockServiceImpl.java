@@ -63,18 +63,16 @@ public class BioSingleStockServiceImpl implements PlantSingleStockService {
                 plantSingleStockListPageRspDTO.setSpeciesName(cerSpeciesConfMap.get(plantSingleStockListPageRspDTO.getSpeciesCode()));
                 if (StringUtils.isNotEmpty(plantSingleStockListPageRspDTO.getPollinationMethod())) {
                     BioDict pollinationMethodBioDict = bioDictMap.get(BioDictTypeEnum.POLLINATE_TYPE + ":" + plantSingleStockListPageRspDTO.getPollinationMethod());
-                    if (pollinationMethodBioDict == null) {
-                        throw new BusinessException("授粉方式填写错误：" + plantSingleStockListPageRspDTO.getPollinationMethod());
+                    if (pollinationMethodBioDict != null) {
+                        plantSingleStockListPageRspDTO.setPollinationMethodName(pollinationMethodBioDict.getDictValueName());
                     }
-                    plantSingleStockListPageRspDTO.setPollinationMethodName(pollinationMethodBioDict.getDictValueName());
-
                 }
                 if (StringUtils.isNotEmpty(plantSingleStockListPageRspDTO.getHarvestType())) {
                     BioDict pollinationMethodBioDict = bioDictMap.get(BioDictTypeEnum.HARVEST_TYPE + ":" + plantSingleStockListPageRspDTO.getHarvestType());
-                    if (pollinationMethodBioDict == null) {
-                        throw new BusinessException("收获方式填写错误：" + plantSingleStockListPageRspDTO.getHarvestType());
+                    if (pollinationMethodBioDict != null) {
+                        plantSingleStockListPageRspDTO.setHarvestTypeName(pollinationMethodBioDict.getDictValueName());
                     }
-                    plantSingleStockListPageRspDTO.setHarvestTypeName(pollinationMethodBioDict.getDictValueName());
+
 
                 }
             });

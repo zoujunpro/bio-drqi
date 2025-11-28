@@ -62,12 +62,6 @@
         source_code,test_org_result,experiment_num,region_num,seed_num,transform_code
     </sql>
 
-    <update id="updateCheckResultByApplyNoAndCheckResultIsNull">
-        update bio_sample_test_tb
-        set check_result = #{checkResult,jdbcType=VARCHAR}
-        where apply_no = #{applyNo,jdbcType=VARCHAR}
-          AND check_result is null
-    </update>
     <select id="selectAllByApplyNo" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -362,5 +356,15 @@
         sample_code = #{sampleCode,jdbcType=VARCHAR}
         order by id desc
     </select>
+    <update id="updateNoCheckDataByApplyNoAndCheckResult">
+        update bio_sample_test_tb
+        set check_result    = #{checkResult,jdbcType=VARCHAR},
+            check_user_id   = #{checkUserId,jdbcType=NUMERIC},
+            check_user_name = #{checkUserName,jdbcType=VARCHAR},
+            test_user_id    = #{testUserId,jdbcType=NUMERIC},
+            test_user_name  = #{testUserName,jdbcType=VARCHAR}
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+          AND check_result = #{oldCheckResult,jdbcType=VARCHAR}
+    </update>
 
 </mapper>

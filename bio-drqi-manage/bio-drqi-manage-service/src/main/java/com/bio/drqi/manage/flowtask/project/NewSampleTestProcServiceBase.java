@@ -126,9 +126,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-            bioSampleTestTbMapper.updateCheckResultByApplyNoAndCheckResultIsNull(CheckResultEnum.remove.name(), bioSampleApplyTb.getApplyNo());
-
-
+            bioSampleTestTbMapper.updateNoCheckDataByApplyNoAndCheckResult(CheckResultEnum.remove.name(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioSampleApplyTb.getApplyNo(), CheckResultEnum.noCheck.name());
         }
 
     }

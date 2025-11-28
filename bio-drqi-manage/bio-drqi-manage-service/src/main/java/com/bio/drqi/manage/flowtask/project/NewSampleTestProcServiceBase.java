@@ -8,10 +8,7 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.contents.BioDrQiContents;
-import com.bio.drqi.common.enums.BioTaskStatusEnum;
-import com.bio.drqi.common.enums.CheckResultEnum;
-import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
-import com.bio.drqi.common.enums.SourceCodeEnum;
+import com.bio.drqi.common.enums.*;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.ImplementationPlanTypeEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
@@ -204,6 +201,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     repeatBioSampleTestTb.setSourceCode(SourceCodeEnum.project.name());
                     repeatBioSampleTestTb.setBreedCode(bioSampleTestTbList.get(0).getBreedCode());
                     repeatBioSampleTestTb.setSpeciesCode(bioSampleTestTbList.get(0).getSpeciesCode());
+                    repeatBioSampleTestTb.setGeneration(bioSampleTestTbList.get(0).getGeneration());
                     targetBioSampleTestTbList.add(repeatBioSampleTestTb);
                 }
             }
@@ -251,6 +249,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     bioSampleTestTb.setSourceCode(SourceCodeEnum.project.name());
                     bioSampleTestTb.setBreedCode(cerTransformTb.getBreedCode());
                     bioSampleTestTb.setSpeciesCode(cerTransformTb.getSpeciesCode());
+                    bioSampleTestTb.setGeneration(GenerationEnum.T0.code);
                     targetBioSampleTestTbList.add(bioSampleTestTb);
                 }
                 logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test, bioTaskDtlTb.getTaskNum());

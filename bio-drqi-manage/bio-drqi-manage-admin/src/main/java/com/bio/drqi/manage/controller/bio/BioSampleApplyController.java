@@ -34,7 +34,6 @@ public class BioSampleApplyController {
      * @return
      */
     @PostMapping("/listPage")
-    @RequirePermissions("cer:sampleApply:listPage")
     public ResponseResult<PageInfo<BioSampleApplyListPageRspDTO>> listPage(@RequestBody @Validated BioSampleApplyListPageReqDTO bioSampleApplyListPageReqDTO) {
         return ResponseResult.getSuccess(bioSampleApplyService.listPage(bioSampleApplyListPageReqDTO));
     }

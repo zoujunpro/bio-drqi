@@ -24,6 +24,7 @@ import com.bio.drqi.manage.dto.bio.BioSampleTestResultExcelDTO;
 import com.bio.drqi.manage.dto.bio.DownLoadIdentifyPrimerTemplateExcelDTO;
 import com.bio.drqi.manage.dto.plant.SampleTestDownRepeatSampleTemplateExcelDTO;
 import com.bio.drqi.manage.dto.plant.task.PlantSampleTestTaskDTO;
+import com.bio.drqi.manage.dto.plant.task.SampleTestDownCloneRepeatSampleTemplateExcelDTO;
 import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
 import com.bio.drqi.manage.bio.req.BioSampleTestQueryBySampleCodeListReqDTO;
 import com.bio.drqi.manage.bio.rsp.BioSampleTestQueryBySampleCodeListRspDTO;
@@ -141,17 +142,17 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
 
     @Override
     public List<BioSampleTestQueryBySampleCodeListRspDTO> queryBySampleCodeList(BioSampleTestQueryBySampleCodeListReqDTO bioSampleTestQueryBySampleCodeListReqDTO) {
-        List<BioSampleTestQueryBySampleCodeListRspDTO> result=new ArrayList<>();
+        List<BioSampleTestQueryBySampleCodeListRspDTO> result = new ArrayList<>();
         Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
         List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCodeIn(bioSampleTestQueryBySampleCodeListReqDTO.getSampleCodeList());
         Map<String, List<BioSampleTestTb>> bioSampleTestTbMap = bioSampleTestTbList.stream().collect(Collectors.groupingBy(BioSampleTestTb::getSampleCode));
-        if(bioSampleTestTbMap.keySet().size()!=bioSampleTestQueryBySampleCodeListReqDTO.getSampleCodeList().size()){
-            throw new BusinessException("有部分取样编号不存在，不能发起取样"+JSONUtil.toJsonStr(bioSampleTestTbMap.keySet().removeAll(bioSampleTestQueryBySampleCodeListReqDTO.getSampleCodeList())).replace("[","").replace("]",""));
+        if (bioSampleTestTbMap.keySet().size() != bioSampleTestQueryBySampleCodeListReqDTO.getSampleCodeList().size()) {
+            throw new BusinessException("有部分取样编号不存在，不能发起取样" + JSONUtil.toJsonStr(bioSampleTestTbMap.keySet().removeAll(bioSampleTestQueryBySampleCodeListReqDTO.getSampleCodeList())).replace("[", "").replace("]", ""));
         }
-        bioSampleTestTbMap.forEach((sampleCode,list)->{
-            BioSampleTestTb bioSampleTestTb=list.get(0);
-            BioSampleTestQueryBySampleCodeListRspDTO bioSampleTestQueryBySampleCodeListRspDTO =BeanUtils.copyProperties(bioSampleTestTb, BioSampleTestQueryBySampleCodeListRspDTO.class);
+        bioSampleTestTbMap.forEach((sampleCode, list) -> {
+            BioSampleTestTb bioSampleTestTb = list.get(0);
+            BioSampleTestQueryBySampleCodeListRspDTO bioSampleTestQueryBySampleCodeListRspDTO = BeanUtils.copyProperties(bioSampleTestTb, BioSampleTestQueryBySampleCodeListRspDTO.class);
             bioSampleTestQueryBySampleCodeListRspDTO.setBreedName(cerBreedDictMap.get(bioSampleTestQueryBySampleCodeListRspDTO.getBreedCode()));
             bioSampleTestQueryBySampleCodeListRspDTO.setSpeciesName(cerSpeciesConfMap.get(bioSampleTestQueryBySampleCodeListRspDTO.getSpeciesCode()));
             result.add(bioSampleTestQueryBySampleCodeListRspDTO);
@@ -172,8 +173,12 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
 
 
     @Override
-    public void downRepeatSampleTemplate(HttpServletResponse httpServletResponse) {
-        ExcelUtil.writeExcel("重复取样模板", "sheet1", new ArrayList<>(), SampleTestDownRepeatSampleTemplateExcelDTO.class, httpServletResponse);
+    public void downRepeatSampleTemplate(String cloneFlag, HttpServletResponse httpServletResponse) {
+        if (BioDrQiContents.Y.equals(cloneFlag)) {
+            ExcelUtil.writeExcel("克隆苗取样模板", "sheet1", new ArrayList<>(), SampleTestDownCloneRepeatSampleTemplateExcelDTO.class, httpServletResponse);
+        } else {
+            ExcelUtil.writeExcel("重复取样模板", "sheet1", new ArrayList<>(), SampleTestDownRepeatSampleTemplateExcelDTO.class, httpServletResponse);
+        }
     }
 
     @Override

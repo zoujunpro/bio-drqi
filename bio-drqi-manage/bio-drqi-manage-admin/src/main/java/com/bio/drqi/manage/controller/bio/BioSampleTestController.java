@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -61,12 +62,12 @@ public class BioSampleTestController {
 
     /**
      * 分子取样检测-下载重复取样模板
-     * @param httpServletResponse
+     * @param cloneFlag
      */
     @GetMapping("downRepeatSampleTemplate")
     @WebLog(desc = "分子取样检测-下载重复取样模板")
-    public void downRepeatSampleTemplate(HttpServletResponse httpServletResponse) {
-        bioSampleTestService.downRepeatSampleTemplate(httpServletResponse);
+    public void downRepeatSampleTemplate(@RequestParam @Validated @NotBlank(message = "参数缺失") String cloneFlag, HttpServletResponse httpServletResponse) {
+        bioSampleTestService.downRepeatSampleTemplate(cloneFlag,httpServletResponse);
     }
 
 

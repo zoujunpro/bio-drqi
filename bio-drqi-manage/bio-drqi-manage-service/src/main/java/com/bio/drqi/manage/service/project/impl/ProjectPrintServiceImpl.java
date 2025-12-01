@@ -180,6 +180,9 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         Map<String, Integer> map = plantPrintReqDTO.getContentList().stream().collect(Collectors.toMap(PlantPrintReqDTO.Content::getPlantCode, PlantPrintReqDTO.Content::getPrintNum));
         if (CollectionUtil.isNotEmpty(plantPrintReqDTO.getContentList())) {
             List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectAllByPlantCodeIn(plantPrintReqDTO.getContentList().stream().map(PlantPrintReqDTO.Content::getPlantCode).collect(Collectors.toList()));
+            if(CollectionUtil.isEmpty(plantSingleStockTbList)){
+                throw new BusinessException("暂未生成种植数据");
+            }
             Map<String, List<PlantSingleStockTb>> plantSingleStockTbListMap = plantSingleStockTbList.stream().collect(Collectors.groupingBy(PlantSingleStockTb::getSourceCode));
             plantSingleStockTbListMap.forEach((sourceCode, list) -> {
                 for (PlantSingleStockTb plantSingleStockTb : list) {

@@ -161,7 +161,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
             });
             if (StringUtils.isNotEmpty(sampleCodeRangeBuff.toString())) {
                 bioSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));
-                bioSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(sampleTestTbList.stream().filter(plantSampleTestTb -> StringUtils.isNotEmpty(plantSampleTestTb.getVectorTaskCode())).map(BioSampleTestTb::getVectorTaskCode).collect(Collectors.toList())).replace("[", "").replace("]", "").replace("\"", ""));
+                bioSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(sampleTestTbList.stream().filter(plantSampleTestTb -> StringUtils.isNotEmpty(plantSampleTestTb.getVectorTaskCode())).map(BioSampleTestTb::getVectorTaskCode).distinct().collect(Collectors.toList())).replace("[", "").replace("]", "").replace("\"", ""));
             }
             bioSampleApplyTb.setApplyNumber(plantExperimentTaskDTO.getFirstSampleApplyList().stream().map(PlantSampleTestTaskDTO.FirstSampleApply::getSampleNumber).mapToInt(Integer::intValue).sum());
         } else {

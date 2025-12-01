@@ -191,7 +191,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                     plantPrintData.setPlantCode(plantSingleStockTb.getPlantCode());
                     plantPrintData.setRegionNum(bioSampleTestTbList.get(0).getRegionNum());
                     plantPrintData.setSeedNum(bioSampleTestTbList.get(0).getSeedNum());
-                    plantPrintData.setBreedName(cerBreedDictMap.get(cerBreedDictMap.get(plantSingleStockTb.getBreedCode())));
+                    plantPrintData.setBreedName(cerBreedDictMap.get(plantSingleStockTb.getBreedCode()));
                     plantPrintData.setPrintNum(map.get(plantSingleStockTb.getPlantCode()) == null ? 1 : map.get(plantSingleStockTb.getPlantCode()));
                     plantPrintDataList.add(plantPrintData);
                     if (SourceCodeEnum.project.name().equals(sourceCode)) {

@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 打印
+ * 标签打印
  */
 @RestController
 @RequestMapping("/bioPrint")

@@ -15,5 +15,8 @@ public class PrintRspDTO {
         this.printName = printName;
         this.printDataList = printDataList;
     }
+
+    public PrintRspDTO() {
+    }
 }
 

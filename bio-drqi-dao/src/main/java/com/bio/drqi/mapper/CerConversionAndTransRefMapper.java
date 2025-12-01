@@ -15,6 +15,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface CerConversionAndTransRefMapper extends BaseMapper<CerConversionAndTransRef> {
     List<CerConversionAndTransRef> selectAllByConversionAndTransId(@Param("conversionAndTransId") Integer conversionAndTransId);
 
+    List<CerConversionAndTransRef> selectAllBySampleCode(@Param("sampleCode") String sampleCode);
+
     List<CerConversionAndTransRef> selectAllByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
 
     int deleteByConversionAndTransId(@Param("conversionAndTransId") Integer conversionAndTransId);

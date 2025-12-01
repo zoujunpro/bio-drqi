@@ -182,7 +182,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             plantSingleStockTbListMap.forEach((sourceCode, list) -> {
                 for (PlantSingleStockTb plantSingleStockTb : list) {
                     List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(plantSingleStockTb.getSampleCode());
-                    if (CollectionUtil.isNotEmpty(bioSampleTestTbList)) {
+                    if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
                         throw new BusinessException("找不到取样信息");
                     }
                     PlantPrintData plantPrintData = new PlantPrintData();

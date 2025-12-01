@@ -310,8 +310,6 @@ public class CleanSampleTestController {
                 List<CerSampleTestTb> cerSampleTestTbList = JSONUtil.toList(newSampleTestDTO.getCancelTaskSampleList(), CerSampleTestTb.class);
                 for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
                     CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
-
-
                     BioSampleTestHisTb bioSampleTestTb = new BioSampleTestHisTb();
                     bioSampleTestTb.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
                     bioSampleTestTb.setSampleCode(cerSampleTestTb.getSampleCode());
@@ -370,9 +368,12 @@ public class CleanSampleTestController {
         for (PlantSingleStockTb plantSingleStockTb : plantSingleStockTbList) {
             List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(plantSingleStockTb.getSampleCode());
             BioSampleTestTb bioSampleTestTb = bioSampleTestTbList.get(0);
-
-         //List<CerSampleTestTb>     cerConversionAndTransRefMapper.selectAllByTransformCodeAndVectorTaskCode(bioSampleTestTb.getTransformCode(),bioSampleTestTb.getVectorTaskCode());
-
+            List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectAllByTransformCodeAndVectorTaskCode(bioSampleTestTb.getTransformCode(), bioSampleTestTb.getVectorTaskCode());
+            if(CollectionUtil.isNotEmpty(cerConversionAndTransRefList)){
+                plantSingleStockTb.setTaskNum(bioSampleTestTbList.get(0).getApplyNo());
+            }else {
+              //  cerConversionAndTransRefMapper.selectAllByVectorTaskCode()
+            }
 
         }
         return ResponseResult.getSuccess("ok");

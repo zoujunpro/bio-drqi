@@ -131,6 +131,8 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             samplePrintData.setSampleCode(bioSampleTestTb.getSampleCode());
             samplePrintData.setTaskNum(bioSampleTestTb.getApplyNo());
             samplePrintData.setBreedName(cerBreedDictMap.get(bioSampleTestTb.getBreedCode()));
+            samplePrintData.setRegionNum(bioSampleTestTb.getRegionNum());
+            samplePrintData.setSeedNum(bioSampleTestTb.getSeedNum());
             samplePrintDataList.add(samplePrintData);
         });
         if (PrintSizeEnum.large.name().equals(printType)) {

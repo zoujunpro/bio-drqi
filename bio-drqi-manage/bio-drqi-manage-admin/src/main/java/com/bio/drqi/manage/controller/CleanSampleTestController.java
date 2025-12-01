@@ -77,23 +77,28 @@ public class CleanSampleTestController {
     @Resource
     private BioSampleTestHisTbMapper bioSampleTestHisTbMapper;
 
+
+    @Transactional(rollbackFor = Exception.class)
+    @GetMapping("cleanSampleSpecies")
+    public ResponseResult<String> cleanSampleSpecies() {
+        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectSelective(null);
+        for (int i = 0; i < bioSampleTestTbList.size(); i++) {
+            BioSampleTestTb bioSampleTestTb = bioSampleTestTbList.get(i);
+            log.info("清洗取样数据第{}个，ID={}", i, bioSampleTestTb.getId());
+            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
+            bioSampleTestTb.setSpeciesCode(cerVectorTaskTb.getSpeciesCode());
+            bioSampleTestTbMapper.updateById(bioSampleTestTb);
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @GetMapping("cleanTransform")
     public ResponseResult<String> cleanTransform() {
         List<CerTransformTb> cerTransformTbList = cerTransformTbMapper.selectSelective(null);
         for (CerTransformTb cerTransformTb : cerTransformTbList) {
-            log.info("cerTransformTb=" + JSONUtil.toJsonStr(cerTransformTb));
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerTransformTb.getVectorTaskCode());
-            if (cerVectorTaskTb.getBreedCode().contains("|")) {
-                CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(cerVectorTaskTb.getAcceptorMaterial(), cerVectorTaskTb.getSpeciesCode());
-                if (cerBreedDict != null) {
-                    cerTransformTb.setBreedCode(cerBreedDict.getBreedCode());
-                } else {
-                    cerTransformTb.setBreedCode(cerVectorTaskTb.getBreedCode().split("\\|")[0]);
-                }
-            } else {
-                cerTransformTb.setBreedCode(cerVectorTaskTb.getBreedCode());
-            }
+            cerTransformTb.setSpeciesCode(cerVectorTaskTb.getSpeciesCode());
             cerTransformTbMapper.updateById(cerTransformTb);
         }
         return ResponseResult.getSuccess("ok");
@@ -355,6 +360,21 @@ public class CleanSampleTestController {
             }
         }
 
+        return ResponseResult.getSuccess("ok");
+    }
+
+    @GetMapping("/cleanPlantTaskNum")
+    public ResponseResult<String> cleanPlantTaskNum() {
+        List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectSelective(null);
+        plantSingleStockTbList = plantSingleStockTbList.stream().filter(plantSingleStockTb -> StringUtils.isEmpty(plantSingleStockTb.getTaskNum())).collect(Collectors.toList());
+        for (PlantSingleStockTb plantSingleStockTb : plantSingleStockTbList) {
+            List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(plantSingleStockTb.getSampleCode());
+            BioSampleTestTb bioSampleTestTb = bioSampleTestTbList.get(0);
+
+         //List<CerSampleTestTb>     cerConversionAndTransRefMapper.selectAllByTransformCodeAndVectorTaskCode(bioSampleTestTb.getTransformCode(),bioSampleTestTb.getVectorTaskCode());
+
+
+        }
         return ResponseResult.getSuccess("ok");
     }
 }

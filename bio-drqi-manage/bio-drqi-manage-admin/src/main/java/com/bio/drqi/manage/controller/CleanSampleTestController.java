@@ -1,14 +1,17 @@
 package com.bio.drqi.manage.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +49,9 @@ public class CleanSampleTestController {
     private CerConversionAndTransRefMapper cerConversionAndTransRefMapper;
 
     @Resource
+    private CerConversionAndTransTbMapper cerConversionAndTransTbMapper;
+
+    @Resource
     private PlantMultipleStockTbMapper plantMultipleStockTbMapper;
 
     @Resource
@@ -67,6 +73,9 @@ public class CleanSampleTestController {
 
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
+    @Resource
+    private BioSampleTestHisTbMapper bioSampleTestHisTbMapper;
 
     @Transactional(rollbackFor = Exception.class)
     @GetMapping("cleanTransform")
@@ -184,6 +193,8 @@ public class CleanSampleTestController {
     public ResponseResult<String> cleanPlantSingleStockTb() {
         List<CerPlantDtlTb> cerPlantDtlTbList = cerPlantDtlTbMapper.selectList(null);
         for (CerPlantDtlTb cerPlantDtlTb : cerPlantDtlTbList) {
+            CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerPlantDtlTb.getTransformCode(), cerPlantDtlTb.getVectorTaskCode());
+
             log.info("cerPlantDtlTb=" + JSONUtil.toJsonStr(cerPlantDtlTb));
             PlantSingleStockTb plantSingleStockTb = new PlantSingleStockTb();
             plantSingleStockTb.setPlantCode(cerPlantDtlTb.getPlantCode());
@@ -201,17 +212,20 @@ public class CleanSampleTestController {
             plantSingleStockTb.setHarvestType(cerPlantDtlTb.getEditType());
             plantSingleStockTb.setOtherField(cerPlantDtlTb.getOtherField());
             plantSingleStockTb.setEditType(cerPlantDtlTb.getEditType());
-            plantSingleStockTb.setSpeciesCode(cerPlantDtlTb.getSpeciesCode());
+            plantSingleStockTb.setSpeciesCode(cerTransformTb.getSpeciesCode());
             plantSingleStockTb.setCreateDate(cerPlantDtlTb.getCreateDate());
             plantSingleStockTb.setUpdateTime(cerPlantDtlTb.getUpdateTime());
             plantSingleStockTb.setCreateUserId(cerPlantDtlTb.getCreateUserId());
             plantSingleStockTb.setCreateUserName(cerPlantDtlTb.getCreateUserName());
             plantSingleStockTb.setTaskNum(cerPlantDtlTb.getTaskNum());
-            plantSingleStockTb.setBreedCode(cerPlantDtlTb.getPlantCode());
+            plantSingleStockTb.setBreedCode(cerTransformTb.getBreedCode());
             plantSingleStockTb.setSourceCode(SourceCodeEnum.project.name());
             plantSingleStockTb.setRemark("来源项目产生种子的数据清洗");
             plantSingleStockTb.setVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
             plantSingleStockTbMapper.insert(plantSingleStockTb);
+
+            cerPlantDtlTb.setSpeciesCode(cerTransformTb.getSpeciesCode());
+            cerPlantDtlTbMapper.updateById(cerPlantDtlTb);
 
         }
         return ResponseResult.getSuccess("ok");
@@ -220,14 +234,20 @@ public class CleanSampleTestController {
     @Transactional(rollbackFor = Exception.class)
     @GetMapping("cleanPlantMultipleStockTb")
     public ResponseResult<String> cleanPlantMultipleStockTb() {
+
+
         List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectList(null);
         cerConversionAndTransRefList = cerConversionAndTransRefList.stream().filter(cerConversionAndTransRef -> StringUtils.isNotEmpty(cerConversionAndTransRef.getTransformCode()) && StringUtils.isEmpty(cerConversionAndTransRef.getSampleCode())).collect(Collectors.toList());
         for (CerConversionAndTransRef cerConversionAndTransRef : cerConversionAndTransRefList) {
+
+            CerConversionAndTransTb cerConversionAndTransTb = cerConversionAndTransTbMapper.selectById(cerConversionAndTransRef.getConversionAndTransId());
+
             log.info("cerConversionAndTransRef=" + JSONUtil.toJsonStr(cerConversionAndTransRef));
             CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerConversionAndTransRef.getTransformCode(), cerConversionAndTransRef.getVectorTaskCode());
             if (cerTransformTb == null) {
                 throw new BusinessException("找不到转化苗信息");
             }
+
             PlantMultipleStockTb plantMultipleStockTb = plantMultipleStockTbMapper.selectOneByVectorTaskCodeAndTransformCode(cerConversionAndTransRef.getVectorTaskCode(), cerConversionAndTransRef.getTransformCode());
             if (plantMultipleStockTb == null) {
                 plantMultipleStockTb = new PlantMultipleStockTb();
@@ -248,8 +268,13 @@ public class CleanSampleTestController {
                 plantMultipleStockTb.setRegionNum(null);
                 plantMultipleStockTb.setVectorTaskCode(cerTransformTb.getVectorTaskCode());
                 plantMultipleStockTb.setPdImplementCode(null);
-                plantMultipleStockTb.setPlantDate(DateUtil.format(cerConversionAndTransRef.getCreateTime(), DatePattern.NORM_DATE_PATTERN));
+                plantMultipleStockTb.setPlantDate(DateUtil.format(cerConversionAndTransTb.getCreateTime(), DatePattern.NORM_DATE_PATTERN));
                 plantMultipleStockTbMapper.insert(plantMultipleStockTb);
+
+                cerConversionAndTransRef.setCreateUserId(cerConversionAndTransTb.getCreateUserId());
+                cerConversionAndTransRef.setCreateUserName(cerConversionAndTransTb.getCreateUserName());
+                cerConversionAndTransRef.setCreateTime(cerConversionAndTransTb.getCreateTime());
+                cerConversionAndTransRefMapper.updateById(cerConversionAndTransRef);
             }
         }
         return ResponseResult.getSuccess("okk");
@@ -260,10 +285,74 @@ public class CleanSampleTestController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanPlantDataReport() {
         List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("cer_plant");
-        for (BioTaskDtlTb bioTaskDtlTb:bioTaskDtlTbList){
-            bioTaskDtlTb.setTaskNum("C"+bioTaskDtlTb.getTaskNum().substring(1));
+        for (BioTaskDtlTb bioTaskDtlTb : bioTaskDtlTbList) {
+            bioTaskDtlTb.setTaskNum("C" + bioTaskDtlTb.getTaskNum().substring(1));
             bioTaskDtlTb.setTaskTypeCode("plant_data_report");
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        }
+
+        return ResponseResult.getSuccess("ok");
+    }
+
+
+    @GetMapping("cleanSampleTask")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanSampleTask() {
+        List<BioTaskDtlTb> bioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("sample_and_test");
+        for (BioTaskDtlTb bioTaskDtlTb : bioTaskDtlTbList) {
+            NewSampleTestDTO newSampleTestDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
+            if (StringUtils.isNotEmpty(newSampleTestDTO.getCancelTaskSampleList())) {
+                List<CerSampleTestTb> cerSampleTestTbList = JSONUtil.toList(newSampleTestDTO.getCancelTaskSampleList(), CerSampleTestTb.class);
+                for (CerSampleTestTb cerSampleTestTb : cerSampleTestTbList) {
+                    CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
+
+
+                    BioSampleTestHisTb bioSampleTestTb = new BioSampleTestHisTb();
+                    bioSampleTestTb.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
+                    bioSampleTestTb.setSampleCode(cerSampleTestTb.getSampleCode());
+                    bioSampleTestTb.setApplyTime(cerSampleTestTb.getApplyTime());
+                    bioSampleTestTb.setApplyUserId(cerSampleTestTb.getApplyUserId());
+                    bioSampleTestTb.setApplyUserName(cerSampleTestTb.getApplyUserName());
+                    bioSampleTestTb.setTestIdentifyPrimer(cerSampleTestTb.getTestIdentifyPrimer());
+                    bioSampleTestTb.setTestMethod(cerSampleTestTb.getTestMethod());
+                    bioSampleTestTb.setTestEditType(cerSampleTestTb.getTestEditType());
+                    bioSampleTestTb.setTestNoTransIdentityPrimer(cerSampleTestTb.getTestNoTransIdentityPrimer());
+                    bioSampleTestTb.setTestIsGeneModifyPositive(cerSampleTestTb.getTestIsGeneModifyPositive());
+                    bioSampleTestTb.setTestIfFixedPoint(cerSampleTestTb.getTestIfFixedPoint());
+                    bioSampleTestTb.setTestIfCopyInsert(cerSampleTestTb.getTestIfCopyInsert());
+                    bioSampleTestTb.setTestFixedPointType(cerSampleTestTb.getTestFixedPointType());
+                    bioSampleTestTb.setTestDonorResidueInfo(cerSampleTestTb.getTestDonorResidueInfo());
+                    bioSampleTestTb.setTestInsertionSite(cerSampleTestTb.getTestInsertionSite());
+                    bioSampleTestTb.setTestElisaResult(cerSampleTestTb.getTestElisaResult());
+                    bioSampleTestTb.setTestQbzrSeq(cerSampleTestTb.getTestQbzrSeq());
+                    bioSampleTestTb.setTestEditResidueInfo(cerSampleTestTb.getTestEditResidueInfo());
+                    bioSampleTestTb.setTestUserId(cerSampleTestTb.getTestUserId());
+                    bioSampleTestTb.setTestUserName(cerSampleTestTb.getTestUserName());
+                    bioSampleTestTb.setTestTime(cerSampleTestTb.getTestTime());
+                    bioSampleTestTb.setCheckUserName(cerSampleTestTb.getCheckUserName());
+                    bioSampleTestTb.setCheckUserId(cerSampleTestTb.getCheckUserId());
+                    bioSampleTestTb.setCheckResult(cerSampleTestTb.getCheckResult());
+                    bioSampleTestTb.setCreateTime(cerSampleTestTb.getCreateTime());
+                    bioSampleTestTb.setUpdateTime(cerSampleTestTb.getUpdateTime());
+                    bioSampleTestTb.setApplyNo(cerSampleTestTb.getApplyNo());
+                    bioSampleTestTb.setIdentifyPrimer(cerSampleTestTb.getIdentifyPrimer());
+                    bioSampleTestTb.setUniqueCode(StringUtils.isEmpty(cerSampleTestTb.getUniqueCode()) ? null : cerSampleTestTb.getSampleCode());
+                    bioSampleTestTb.setRemark(cerSampleTestTb.getRemark());
+                    bioSampleTestTb.setCloneSampleCode(cerSampleTestTb.getCloneSampleCode());
+                    bioSampleTestTb.setSourceCode(SourceCodeEnum.project.name());
+                    bioSampleTestTb.setGeneration(cerSampleTestTb.getSampleGeneration());
+                    if (cerTransformTb != null) {
+                        bioSampleTestTb.setSpeciesCode(cerTransformTb.getSpeciesCode());
+                        bioSampleTestTb.setBreedCode(cerTransformTb.getBreedCode());
+                    }
+                    bioSampleTestTb.setExperimentNum(null);
+                    bioSampleTestTb.setRegionNum(null);
+                    bioSampleTestTb.setSeedNum(null);
+                    bioSampleTestTb.setTransformCode(cerSampleTestTb.getTransformCode());
+                    bioSampleTestHisTbMapper.insert(bioSampleTestTb);
+                }
+
+            }
         }
 
         return ResponseResult.getSuccess("ok");

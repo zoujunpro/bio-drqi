@@ -143,7 +143,7 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 cerConversionAndTransRef.setPlasmidName(transFormList.get(0).getPlasmidName());
                 cerConversionAndTransRef.setRemark(transFormList.get(0).getRemark());
                 cerConversionAndTransRef.setTaskNum(bioTaskDtlTb.getTaskNum());
-                cerConversionAndTransRef.setCreateTime(cerConversionAndTransTb.getCreateTime());
+                cerConversionAndTransRef.setCreateTime(new Date());
                 cerConversionAndTransRef.setCreateUserId(cerConversionAndTransTb.getCreateUserId());
                 cerConversionAndTransRef.setCreateUserName(cerConversionAndTransTb.getCreateUserName());
                 cerConversionAndTransRefMapper.insert(cerConversionAndTransRef);

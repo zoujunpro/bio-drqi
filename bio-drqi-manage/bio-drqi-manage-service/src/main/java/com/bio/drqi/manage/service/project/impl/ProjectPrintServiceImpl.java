@@ -247,7 +247,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_large_project_print.name(), samplePrintDataList)));
             //转化大签打印
         } else if (CollectionUtil.isNotEmpty(transformTransPrintDataList)) {
-            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.transform_trans_print.name(), samplePrintDataList)));
+            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.transform_trans_print.name(), transformTransPrintDataList)));
         }
         return printRspDTOList;
     }

@@ -249,7 +249,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                 updateBioSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
             }
             updateList.add(updateBioSampleTestTb);
-            bioSampleSampleOneResultTbList.add(BioSampleTestOneResultTb.of(updateBioSampleTestTb, SourceCodeEnum.project.name(), updateBioSampleTestTb.getApplyNo(), null));
+            bioSampleSampleOneResultTbList.add(BioSampleTestOneResultTb.of(updateBioSampleTestTb, SourceCodeEnum.project.name(), bioTaskDtlTb.getTaskNum(), bioTaskDtlTb.getTaskNum()));
 
         }
 
@@ -262,6 +262,14 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         //插入新数据
         bioSampleTestOneResultTbMapper.insertBatch(bioSampleSampleOneResultTbList);
 
+        initBioSampleTestResultFileTb(bioSampleTestUploadTestTemplateReqDTO, bioSampleTestResultExcelDTOList);
+
+
+        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        bioSampleTestTbMapper.updateBatchById(updateList);
+    }
+
+    private BioSampleTestResultFileTb initBioSampleTestResultFileTb(BioSampleTestUploadTestTemplateReqDTO bioSampleTestUploadTestTemplateReqDTO, List<BioSampleTestResultExcelDTO> bioSampleTestResultExcelDTOList) {
         BioSampleTestResultFileTb bioSampleTestResultFileTb = new BioSampleTestResultFileTb();
         bioSampleTestResultFileTb.setFileUrl(bioSampleTestUploadTestTemplateReqDTO.getExcelUrl());
         bioSampleTestResultFileTb.setResultType(CerProjectContents.TEST_ONE);
@@ -274,10 +282,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         bioSampleTestResultFileTb.setNgsSuccessNum(0);
         bioSampleTestResultFileTb.setNgsFailNum(0);
         bioSampleTestResultFileTbMapper.insert(bioSampleTestResultFileTb);
-
-
-        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
-        bioSampleTestTbMapper.updateBatchById(updateList);
+        return bioSampleTestResultFileTb;
     }
 
     @Override

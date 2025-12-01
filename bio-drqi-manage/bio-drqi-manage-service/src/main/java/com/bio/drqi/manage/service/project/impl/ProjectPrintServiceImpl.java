@@ -3,6 +3,7 @@ package com.bio.drqi.manage.service.project.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.PrintTypeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.base.PrintRspDTO;
 import com.bio.drqi.enums.SeedMaterialTypeEnum;
@@ -219,7 +220,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         if (CollectionUtil.isNotEmpty(samplePrintDataList)) {
             PrintRspDTO printRspDTO = new PrintRspDTO();
             printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
-            printRspDTO.setPrintDataList(printDataSave("sample_large_label_print", samplePrintDataList));
+            printRspDTO.setPrintDataList(printDataSave(PrintTypeEnum.sample_label_large_project_print.name(), samplePrintDataList));
             return printRspDTO;
             //转化大签打印
         } else if (CollectionUtil.isNotEmpty(transformTransPrintDataList)) {

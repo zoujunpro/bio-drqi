@@ -3,7 +3,10 @@ package com.bio.drqi.manage.service.project.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.contents.BioDrQiContents;
+import com.bio.drqi.common.enums.PrintSizeEnum;
 import com.bio.drqi.common.enums.PrintTypeEnum;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.base.PrintRspDTO;
 import com.bio.drqi.enums.SeedMaterialTypeEnum;
@@ -16,12 +19,15 @@ import com.bio.print.*;
 import com.bio.print.api.PrintApi;
 import com.bio.print.req.PrintDataReqDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -48,7 +54,8 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
 
 
     @Override
-    public PrintRspDTO vectorBuildPrint(VectorBuildPrintReqDTO vectorBuildPrintReqDTO) {
+    public List<PrintRspDTO> vectorBuildPrint(VectorBuildPrintReqDTO vectorBuildPrintReqDTO) {
+        List<PrintRspDTO> printRspDTOList = new ArrayList<>();
         List<VectorPrintData> vectorPrintDataList = new ArrayList<>();
         for (VectorBuildPrintReqDTO.Content content : vectorBuildPrintReqDTO.getContentList()) {
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(content.getVectorTaskCode());
@@ -64,18 +71,15 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             vectorPrintDataList.add(vectorPrintData);
         }
         if (CollectionUtil.isNotEmpty(vectorPrintDataList)) {
-            PrintRspDTO printRspDTO = new PrintRspDTO();
-            printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
-            printRspDTO.setPrintDataList(printDataSave("vector_label_print", vectorPrintDataList));
-            return printRspDTO;
-        } else {
-            return null;
+            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave("vector_label_print", vectorPrintDataList)));
         }
+        return printRspDTOList;
 
     }
 
     @Override
-    public PrintRspDTO transFormPrint(TransFormPrintReqDTO transFormPrintReqDTO) {
+    public List<PrintRspDTO> transFormPrint(TransFormPrintReqDTO transFormPrintReqDTO) {
+        List<PrintRspDTO> printRspDTOList = new ArrayList<>();
         List<TransFormPrintData> transFormPrintDataList = new ArrayList<>();
         for (TransFormPrintReqDTO.Content content : transFormPrintReqDTO.getContentList()) {
             CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(content.getTransformCode(), content.getVectorTaskCode());
@@ -91,62 +95,85 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             transFormPrintDataList.add(transFormPrintData);
         }
         if (CollectionUtil.isNotEmpty(transFormPrintDataList)) {
-            PrintRspDTO printRspDTO = new PrintRspDTO();
-            printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
-            printRspDTO.setPrintDataList(printDataSave("transform_label_print", transFormPrintDataList));
-            return printRspDTO;
-        } else {
-            return null;
+            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave("transform_label_print", transFormPrintDataList)));
         }
+        return printRspDTOList;
     }
 
     @Override
-    public PrintRspDTO samplePrint(SamplePrintReqDTO samplePrintReqDTO) {
+    public List<PrintRspDTO> samplePrint(SamplePrintReqDTO samplePrintReqDTO) {
+        List<PrintRspDTO> printRspDTOList = new ArrayList<>();
+        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCodeIn(samplePrintReqDTO.getSampleCodeList());
+        if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
+            throw new BusinessException("找不到打印数据");
+        }
+        Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+        Map<String, List<BioSampleTestTb>> bioSampleTestTbListMap = bioSampleTestTbList.stream().collect(Collectors.groupingBy(BioSampleTestTb::getSourceCode));
+        bioSampleTestTbListMap.forEach((sourceCode, list) -> {
+            if (SourceCodeEnum.project.name().equals(sourceCode)) {
+                printRspDTOList.add(doProjectSamplePrint(list, samplePrintReqDTO.getLabelType(), cerBreedDictMap));
+            } else if (SourceCodeEnum.cer.name().equals(sourceCode)) {
+                printRspDTOList.add(doCerSamplePrint(list, samplePrintReqDTO.getLabelType(), cerBreedDictMap));
+            }
+        });
+        return printRspDTOList;
+
+    }
+
+    private PrintRspDTO doCerSamplePrint(List<BioSampleTestTb> bioSampleTestTbList, String printType, Map<String, String> cerBreedDictMap) {
         List<SamplePrintData> samplePrintDataList = new ArrayList<>();
-        for (SamplePrintReqDTO.Content content : samplePrintReqDTO.getContentList()) {
-            List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByVectorTaskCodeAndSampleCode(content.getVectorTaskCode(), content.getSampleCode());
-            if (CollectionUtil.isNotEmpty(bioSampleTestTbList)) {
-                BioSampleTestTb bioSampleTestTb = bioSampleTestTbList.get(0);
-                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
-                if (cerVectorTaskTb == null) {
-                    throw new BusinessException("数据异常，找不到实施方案信息：" + bioSampleTestTb.getVectorTaskCode());
-                }
-
-                SamplePrintData samplePrintData = new SamplePrintData();
-                samplePrintData.setVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
-                samplePrintData.setTransformCode(bioSampleTestTb.getTransformCode());
-                samplePrintData.setSampleCode(bioSampleTestTb.getSampleCode());
-                samplePrintData.setTaskNum(bioSampleTestTb.getApplyNo());
-                samplePrintData.setBreedName(cerVectorTaskTb.getAcceptorMaterial());
-                samplePrintDataList.add(samplePrintData);
-            }
-        }
-        if (CollectionUtil.isNotEmpty(samplePrintDataList)) {
-            PrintRspDTO printRspDTO = new PrintRspDTO();
-            printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
-            if ("large".equals(samplePrintReqDTO.getLabelType())) {
-                printRspDTO.setPrintDataList(printDataSave("sample_large_label_print", samplePrintDataList));
-            } else {
-                printRspDTO.setPrintDataList(printDataSave("sample_small_label_print", samplePrintDataList));
-            }
-            return printRspDTO;
+        Map<String, List<BioSampleTestTb>> bioSampleTestTbListMap = bioSampleTestTbList.stream().collect(Collectors.groupingBy(BioSampleTestTb::getSampleCode));
+        bioSampleTestTbListMap.forEach((sampleCode, list) -> {
+            BioSampleTestTb bioSampleTestTb = list.get(0);
+            SamplePrintData samplePrintData = new SamplePrintData();
+            samplePrintData.setVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
+            samplePrintData.setTransformCode(bioSampleTestTb.getTransformCode());
+            samplePrintData.setSampleCode(bioSampleTestTb.getSampleCode());
+            samplePrintData.setTaskNum(bioSampleTestTb.getApplyNo());
+            samplePrintData.setBreedName(cerBreedDictMap.get(bioSampleTestTb.getBreedCode()));
+            samplePrintDataList.add(samplePrintData);
+        });
+        if (PrintSizeEnum.large.name().equals(printType)) {
+            return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_large_cer_print.name(), samplePrintDataList));
         } else {
-            return null;
+            return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_small_cer_print.name(), samplePrintDataList));
         }
     }
 
+    private PrintRspDTO doProjectSamplePrint(List<BioSampleTestTb> bioSampleTestTbList, String printType, Map<String, String> cerBreedDictMap) {
+        List<SamplePrintData> samplePrintDataList = new ArrayList<>();
+        Map<String, List<BioSampleTestTb>> bioSampleTestTbListMap = bioSampleTestTbList.stream().collect(Collectors.groupingBy(BioSampleTestTb::getSampleCode));
+        bioSampleTestTbListMap.forEach((sampleCode, list) -> {
+            BioSampleTestTb bioSampleTestTb = list.get(0);
+            SamplePrintData samplePrintData = new SamplePrintData();
+            samplePrintData.setVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
+            samplePrintData.setTransformCode(bioSampleTestTb.getTransformCode());
+            samplePrintData.setSampleCode(bioSampleTestTb.getSampleCode());
+            samplePrintData.setTaskNum(bioSampleTestTb.getApplyNo());
+            samplePrintData.setBreedName(cerBreedDictMap.get(bioSampleTestTb.getBreedCode()));
+            samplePrintDataList.add(samplePrintData);
+        });
+        if (PrintSizeEnum.large.name().equals(printType)) {
+            return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_large_project_print.name(), samplePrintDataList));
+        } else {
+            return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_small_project_print.name(), samplePrintDataList));
+        }
+
+    }
+
     @Override
-    public PrintRspDTO layoutPrint(String layoutNumber) {
+    public List<PrintRspDTO> layoutPrint(String layoutNumber) {
+        List<PrintRspDTO> printRspDTOList = new ArrayList<>();
         LayoutNumberPrintDTO layoutNumberPrintDTO = new LayoutNumberPrintDTO();
         layoutNumberPrintDTO.setLayoutNumber(layoutNumber);
-        PrintRspDTO printRspDTO = new PrintRspDTO();
-        printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
-        printRspDTO.setPrintDataList(printDataSave("layout_number_label_print", Arrays.asList(layoutNumberPrintDTO)));
-        return printRspDTO;
+        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave("layout_number_label_print", Arrays.asList(layoutNumberPrintDTO))));
+        return printRspDTOList;
     }
 
     @Override
-    public PrintRspDTO plantPrint(PlantPrintReqDTO plantPrintReqDTO) {
+    public List<PrintRspDTO> plantPrint(PlantPrintReqDTO plantPrintReqDTO) {
+        List<PrintRspDTO> printRspDTOList = new ArrayList<>();
+        Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         List<PlantPrintData> plantPrintDataList = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(plantPrintReqDTO.getContentList())) {
             for (PlantPrintReqDTO.Content content : plantPrintReqDTO.getContentList()) {
@@ -155,34 +182,29 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                     throw new BusinessException("取样苗" + content.getPlantCode() + "未形成种植编号");
                 }
                 List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(plantSingleStockTb.getSampleCode());
-                if(CollectionUtil.isNotEmpty(bioSampleTestTbList)){
+                if (CollectionUtil.isNotEmpty(bioSampleTestTbList)) {
                     throw new BusinessException("找不到取样信息");
                 }
-                CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(bioSampleTestTbList.get(0).getTransformCode(), content.getVectorTaskCode());
-                if (cerTransformTb == null) {
-                    throw new BusinessException("转化信息不存在");
-                }
-
                 PlantPrintData plantPrintData = new PlantPrintData();
-                plantPrintData.setVectorTaskCode(content.getVectorTaskCode());
-                plantPrintData.setTransformCode(cerTransformTb.getTransformCode());
+                plantPrintData.setVectorTaskCode(bioSampleTestTbList.get(0).getVectorTaskCode());
+                plantPrintData.setTransformCode(bioSampleTestTbList.get(0).getTransformCode());
                 plantPrintData.setPlantCode(content.getPlantCode());
-                plantPrintData.setBreedName(cerTransformTb.getAcceptorMaterial());
+                plantPrintData.setRegionNum(bioSampleTestTbList.get(0).getRegionNum());
+                plantPrintData.setSeedNum(bioSampleTestTbList.get(0).getSeedNum());
+                plantPrintData.setBreedName(cerBreedDictMap.get(cerBreedDictMap.get(plantSingleStockTb.getBreedCode())));
                 plantPrintData.setPrintNum(content.getPrintNum() == null ? 1 : content.getPrintNum());
                 plantPrintDataList.add(plantPrintData);
             }
         }
         if (CollectionUtil.isNotEmpty(plantPrintDataList)) {
-            PrintRspDTO printRspDTO = new PrintRspDTO();
-            printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
-            printRspDTO.setPrintDataList(printDataSave("plant_label_print", plantPrintDataList));
-            return printRspDTO;
+            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave("plant_label_print", plantPrintDataList)));
         }
-        return null;
+        return printRspDTOList;
     }
 
     @Override
-    public PrintRspDTO transPrint(TransPrintReqDTO transPrintReqDTO) {
+    public List<PrintRspDTO> transPrint(TransPrintReqDTO transPrintReqDTO) {
+        List<PrintRspDTO> printRspDTOList = new ArrayList<>();
         List<SamplePrintData> samplePrintDataList = new ArrayList<>();
         List<TransformTransPrintData> transformTransPrintDataList = new ArrayList<>();
         for (TransPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
@@ -218,22 +240,17 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         }
         //取样标签打印(大签)
         if (CollectionUtil.isNotEmpty(samplePrintDataList)) {
-            PrintRspDTO printRspDTO = new PrintRspDTO();
-            printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
-            printRspDTO.setPrintDataList(printDataSave(PrintTypeEnum.sample_label_large_project_print.name(), samplePrintDataList));
-            return printRspDTO;
+            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_large_project_print.name(), samplePrintDataList)));
             //转化大签打印
         } else if (CollectionUtil.isNotEmpty(transformTransPrintDataList)) {
-            PrintRspDTO printRspDTO = new PrintRspDTO();
-            printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
-            printRspDTO.setPrintDataList(printDataSave("transform_trans_print", transformTransPrintDataList));
-            return printRspDTO;
+            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.transform_trans_print.name(), samplePrintDataList)));
         }
-        return null;
+        return printRspDTOList;
     }
 
     @Override
-    public PrintRspDTO tissueEmbryoPrint(TissueEmbryoPrintReqDTO transPrintReqDTO) {
+    public List<PrintRspDTO> tissueEmbryoPrint(TissueEmbryoPrintReqDTO transPrintReqDTO) {
+        List<PrintRspDTO> printRspDTOList = new ArrayList<>();
         List<TissueEmbryoPrintDTO> tissueEmbryoPrintDTOList = new ArrayList<>();
         for (TissueEmbryoPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
             List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(content.getSampleCode());
@@ -249,13 +266,9 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             tissueEmbryoPrintDTOList.add(tissueEmbryoPrintDTO);
         }
         if (CollectionUtil.isNotEmpty(tissueEmbryoPrintDTOList)) {
-            PrintRspDTO printRspDTO = new PrintRspDTO();
-            printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
-            printRspDTO.setPrintDataList(printDataSave("tissue_embryo_label_print", tissueEmbryoPrintDTOList));
-            return printRspDTO;
+            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.tissue_embryo_label_print.name(), tissueEmbryoPrintDTOList)));
         }
-
-        return null;
+        return printRspDTOList;
     }
 
     private List<String> printDataSave(String printType, Object printData) {

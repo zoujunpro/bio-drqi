@@ -3,20 +3,22 @@ package com.bio.drqi.manage.service.project;
 import com.bio.drqi.manage.base.PrintRspDTO;
 import com.bio.drqi.manage.projectPrint.*;
 
+import java.util.List;
+
 public interface ProjectPrintService {
 
-    PrintRspDTO vectorBuildPrint(VectorBuildPrintReqDTO vectorBuildPrintReqDTO);
+    List<PrintRspDTO>  vectorBuildPrint(VectorBuildPrintReqDTO vectorBuildPrintReqDTO);
 
-    PrintRspDTO transFormPrint(TransFormPrintReqDTO transFormPrintReqDTO);
+    List<PrintRspDTO> transFormPrint(TransFormPrintReqDTO transFormPrintReqDTO);
 
 
-    PrintRspDTO samplePrint(SamplePrintReqDTO samplePrintReqDTO);
+    List<PrintRspDTO> samplePrint(SamplePrintReqDTO samplePrintReqDTO);
 
-    PrintRspDTO layoutPrint( String layoutNumber);
+    List<PrintRspDTO> layoutPrint( String layoutNumber);
 
-    PrintRspDTO plantPrint(PlantPrintReqDTO plantPrintReqDTO);
+    List<PrintRspDTO> plantPrint(PlantPrintReqDTO plantPrintReqDTO);
 
-    PrintRspDTO transPrint( TransPrintReqDTO transPrintReqDTO);
+    List<PrintRspDTO> transPrint( TransPrintReqDTO transPrintReqDTO);
 
-    PrintRspDTO tissueEmbryoPrint(TissueEmbryoPrintReqDTO transPrintReqDTO);
+    List<PrintRspDTO> tissueEmbryoPrint(TissueEmbryoPrintReqDTO transPrintReqDTO);
 }

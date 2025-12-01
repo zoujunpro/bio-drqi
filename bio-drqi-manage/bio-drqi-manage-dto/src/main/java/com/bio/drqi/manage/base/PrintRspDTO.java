@@ -11,6 +11,9 @@ public class PrintRspDTO {
 
     private List<String> printDataList;
 
-
+    public PrintRspDTO(String printName, List<String> printDataList) {
+        this.printName = printName;
+        this.printDataList = printDataList;
+    }
 }
 

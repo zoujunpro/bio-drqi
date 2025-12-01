@@ -14,8 +14,6 @@ public class PlantPrintReqDTO {
     @Data
     public static class Content {
 
-        private String vectorTaskCode;
-
         private String plantCode;
 
         private Integer printNum;
@@ -24,7 +22,6 @@ public class PlantPrintReqDTO {
     public static void main(String[] args) {
         PlantPrintReqDTO plantPrintReqDTO =new PlantPrintReqDTO();
         Content content=new Content();
-        content.setVectorTaskCode("xx01101-05");
         content.setPlantCode("AG10-01");
         plantPrintReqDTO.getContentList().add(content);
         System.out.println(JSONUtil.toJsonStr(plantPrintReqDTO));

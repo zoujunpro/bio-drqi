@@ -127,4 +127,14 @@
         </where>
         group by plant_status
     </select>
+    <select id="selectAllByPlantCodeIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_single_stock_tb
+        where
+        plant_code in
+        <foreach collection="plantCodeList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 </mapper>

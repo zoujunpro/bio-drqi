@@ -175,29 +175,33 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         List<PrintRspDTO> printRspDTOList = new ArrayList<>();
         Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         List<PlantPrintData> plantPrintDataList = new ArrayList<>();
+        Map<String, Integer> map = plantPrintReqDTO.getContentList().stream().collect(Collectors.toMap(PlantPrintReqDTO.Content::getPlantCode, PlantPrintReqDTO.Content::getPrintNum));
         if (CollectionUtil.isNotEmpty(plantPrintReqDTO.getContentList())) {
-            for (PlantPrintReqDTO.Content content : plantPrintReqDTO.getContentList()) {
-                PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(content.getPlantCode());
-                if (plantSingleStockTb == null) {
-                    throw new BusinessException("取样苗" + content.getPlantCode() + "未形成种植编号");
+            List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectAllByPlantCodeIn(plantPrintReqDTO.getContentList().stream().map(PlantPrintReqDTO.Content::getPlantCode).collect(Collectors.toList()));
+            Map<String, List<PlantSingleStockTb>> plantSingleStockTbListMap = plantSingleStockTbList.stream().collect(Collectors.groupingBy(PlantSingleStockTb::getSourceCode));
+            plantSingleStockTbListMap.forEach((sourceCode, list) -> {
+                for (PlantSingleStockTb plantSingleStockTb : list) {
+                    List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(plantSingleStockTb.getSampleCode());
+                    if (CollectionUtil.isNotEmpty(bioSampleTestTbList)) {
+                        throw new BusinessException("找不到取样信息");
+                    }
+                    PlantPrintData plantPrintData = new PlantPrintData();
+                    plantPrintData.setVectorTaskCode(bioSampleTestTbList.get(0).getVectorTaskCode());
+                    plantPrintData.setTransformCode(bioSampleTestTbList.get(0).getTransformCode());
+                    plantPrintData.setPlantCode(plantSingleStockTb.getPlantCode());
+                    plantPrintData.setRegionNum(bioSampleTestTbList.get(0).getRegionNum());
+                    plantPrintData.setSeedNum(bioSampleTestTbList.get(0).getSeedNum());
+                    plantPrintData.setBreedName(cerBreedDictMap.get(cerBreedDictMap.get(plantSingleStockTb.getBreedCode())));
+                    plantPrintData.setPrintNum(map.get(plantSingleStockTb.getPlantCode()) == null ? 1 : map.get(plantSingleStockTb.getPlantCode()));
+                    plantPrintDataList.add(plantPrintData);
+                    if (SourceCodeEnum.project.name().equals(sourceCode)) {
+                        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_label_project_print.name(), plantPrintDataList)));
+
+                    } else if (SourceCodeEnum.cer.name().equals(sourceCode)) {
+                        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_label_cer_print.name(), plantPrintDataList)));
+                    }
                 }
-                List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(plantSingleStockTb.getSampleCode());
-                if (CollectionUtil.isNotEmpty(bioSampleTestTbList)) {
-                    throw new BusinessException("找不到取样信息");
-                }
-                PlantPrintData plantPrintData = new PlantPrintData();
-                plantPrintData.setVectorTaskCode(bioSampleTestTbList.get(0).getVectorTaskCode());
-                plantPrintData.setTransformCode(bioSampleTestTbList.get(0).getTransformCode());
-                plantPrintData.setPlantCode(content.getPlantCode());
-                plantPrintData.setRegionNum(bioSampleTestTbList.get(0).getRegionNum());
-                plantPrintData.setSeedNum(bioSampleTestTbList.get(0).getSeedNum());
-                plantPrintData.setBreedName(cerBreedDictMap.get(cerBreedDictMap.get(plantSingleStockTb.getBreedCode())));
-                plantPrintData.setPrintNum(content.getPrintNum() == null ? 1 : content.getPrintNum());
-                plantPrintDataList.add(plantPrintData);
-            }
-        }
-        if (CollectionUtil.isNotEmpty(plantPrintDataList)) {
-            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave("plant_label_print", plantPrintDataList)));
+            });
         }
         return printRspDTOList;
     }

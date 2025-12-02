@@ -108,6 +108,16 @@ public class BioPrintController {
         return ResponseResult.getSuccess(projectPrintService.tissueEmbryoPrint(transPrintReqDTO));
     }
 
-
+    /**
+     * 种植申请标签打印
+     *
+     * @return
+     */
+    @PostMapping("plantApplyPrint")
+    @WebLog(desc = "种植申请标签打印")
+    @RequestLog("种植申请标签打印")
+    public ResponseResult<List<PrintRspDTO>> plantApplyPrint(@RequestBody @Validated  BipPrintPlantApplyReqDTO bipPrintPlantApplyReqDTO) {
+        return ResponseResult.getSuccess(projectPrintService.plantApplyPrint(bipPrintPlantApplyReqDTO));
+    }
 
 }

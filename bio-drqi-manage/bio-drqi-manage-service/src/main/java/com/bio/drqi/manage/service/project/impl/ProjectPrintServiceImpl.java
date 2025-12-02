@@ -52,6 +52,9 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
     @Resource
     private CerBreedDictMapper cerBreedDictMapper;
 
+    @Resource
+    private PlantApplyDetailTbMapper plantApplyDetailTbMapper;
+
 
     @Override
     public List<PrintRspDTO> vectorBuildPrint(VectorBuildPrintReqDTO vectorBuildPrintReqDTO) {
@@ -180,7 +183,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         Map<String, Integer> map = plantPrintReqDTO.getContentList().stream().collect(Collectors.toMap(PlantPrintReqDTO.Content::getPlantCode, PlantPrintReqDTO.Content::getPrintNum));
         if (CollectionUtil.isNotEmpty(plantPrintReqDTO.getContentList())) {
             List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectAllByPlantCodeIn(plantPrintReqDTO.getContentList().stream().map(PlantPrintReqDTO.Content::getPlantCode).collect(Collectors.toList()));
-            if(CollectionUtil.isEmpty(plantSingleStockTbList)){
+            if (CollectionUtil.isEmpty(plantSingleStockTbList)) {
                 throw new BusinessException("暂未生成种植数据");
             }
             Map<String, List<PlantSingleStockTb>> plantSingleStockTbListMap = plantSingleStockTbList.stream().collect(Collectors.groupingBy(PlantSingleStockTb::getSourceCode));
@@ -278,6 +281,34 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         }
         if (CollectionUtil.isNotEmpty(tissueEmbryoPrintDTOList)) {
             printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.tissue_embryo_label_print.name(), tissueEmbryoPrintDTOList)));
+        }
+        return printRspDTOList;
+    }
+
+    @Override
+    public List<PrintRspDTO> plantApplyPrint(BipPrintPlantApplyReqDTO bipPrintPlantApplyReqDTO) {
+        List<PrintRspDTO> printRspDTOList = new ArrayList<>();
+        List<PlantApplyPrintDTO> plantApplyPrintDTOList=new ArrayList<>();
+        for (BipPrintPlantApplyReqDTO.Content content : bipPrintPlantApplyReqDTO.getContentList()) {
+            PlantApplyDetailTb plantApplyDetailTb = plantApplyDetailTbMapper.selectOneByRegionNumAndSeedNum(content.getRegionNum(), content.getSeedNum());
+            if (plantApplyDetailTb == null) {
+                throw new BusinessException("种植申请无数据，请检查工单是否已经执行完毕");
+            }
+            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(plantApplyDetailTb.getBreedCode());
+            if(cerBreedDict==null){
+                throw new BusinessException("数据异常，找不到品种信息，当前种植申请的小区号："+content.getRegionNum()+"种子号:"+content.getSeedNum());
+            }
+            PlantApplyPrintDTO plantApplyPrintDTO = new PlantApplyPrintDTO();
+            plantApplyPrintDTO.setRegionNum(plantApplyDetailTb.getRegionNum());
+            plantApplyPrintDTO.setSeedNum(plantApplyDetailTb.getSeedNum());
+            plantApplyPrintDTO.setBreedName(cerBreedDict.getBreedName());
+            plantApplyPrintDTO.setTaskNum(plantApplyDetailTb.getPlantApplyNum());
+            plantApplyPrintDTO.setPrintNumber(content.getPrintNumber()==null?0:content.getPrintNumber());
+            plantApplyPrintDTOList.add(plantApplyPrintDTO);
+        }
+
+        if (CollectionUtil.isNotEmpty(plantApplyPrintDTOList)) {
+            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_apply_label_print.name(), plantApplyPrintDTOList)));
         }
         return printRspDTOList;
     }

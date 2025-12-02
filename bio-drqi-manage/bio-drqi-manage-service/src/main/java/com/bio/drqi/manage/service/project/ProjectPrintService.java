@@ -7,18 +7,20 @@ import java.util.List;
 
 public interface ProjectPrintService {
 
-    List<PrintRspDTO>  vectorBuildPrint(VectorBuildPrintReqDTO vectorBuildPrintReqDTO);
+    List<PrintRspDTO> vectorBuildPrint(VectorBuildPrintReqDTO vectorBuildPrintReqDTO);
 
     List<PrintRspDTO> transFormPrint(TransFormPrintReqDTO transFormPrintReqDTO);
 
 
     List<PrintRspDTO> samplePrint(SamplePrintReqDTO samplePrintReqDTO);
 
-    List<PrintRspDTO> layoutPrint( String layoutNumber);
+    List<PrintRspDTO> layoutPrint(String layoutNumber);
 
     List<PrintRspDTO> plantPrint(PlantPrintReqDTO plantPrintReqDTO);
 
-    List<PrintRspDTO> transPrint( TransPrintReqDTO transPrintReqDTO);
+    List<PrintRspDTO> transPrint(TransPrintReqDTO transPrintReqDTO);
 
     List<PrintRspDTO> tissueEmbryoPrint(TissueEmbryoPrintReqDTO transPrintReqDTO);
+
+    List<PrintRspDTO> plantApplyPrint(BipPrintPlantApplyReqDTO bipPrintPlantApplyReqDTO);
 }

@@ -60,8 +60,8 @@ public class PlantProjectTaskListener extends DefaultDuplicateCopyHandler implem
 
     static {
         vieMap.put("plant_data_report", "cerPlant");
-        vieMap.put("plant_apply_task", "cerSample");
-        vieMap.put("plant_sample_test_task", "cerTest");
+        vieMap.put("plant_apply_task", "cerTest");
+        vieMap.put("plant_sample_test_task", "cerSample");
     }
 
     @Override

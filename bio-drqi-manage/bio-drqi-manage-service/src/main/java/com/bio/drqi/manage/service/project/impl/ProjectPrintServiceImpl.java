@@ -3,7 +3,6 @@ package com.bio.drqi.manage.service.project.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.util.StringUtils;
-import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.PrintSizeEnum;
 import com.bio.drqi.common.enums.PrintTypeEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
@@ -19,7 +18,6 @@ import com.bio.print.*;
 import com.bio.print.api.PrintApi;
 import com.bio.print.req.PrintDataReqDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -54,6 +52,9 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
 
     @Resource
     private PlantApplyDetailTbMapper plantApplyDetailTbMapper;
+
+    @Resource
+    private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
 
 
     @Override
@@ -286,10 +287,10 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
     }
 
     @Override
-    public List<PrintRspDTO> plantApplyPrint(BipPrintPlantApplyReqDTO bipPrintPlantApplyReqDTO) {
+    public List<PrintRspDTO> plantApplyPrint(BioPrintPlantApplyReqDTO bioPrintPlantApplyReqDTO) {
         List<PrintRspDTO> printRspDTOList = new ArrayList<>();
         List<PlantApplyPrintDTO> plantApplyPrintDTOList=new ArrayList<>();
-        for (BipPrintPlantApplyReqDTO.Content content : bipPrintPlantApplyReqDTO.getContentList()) {
+        for (BioPrintPlantApplyReqDTO.Content content : bioPrintPlantApplyReqDTO.getContentList()) {
             PlantApplyDetailTb plantApplyDetailTb = plantApplyDetailTbMapper.selectOneByRegionNumAndSeedNum(content.getRegionNum(), content.getSeedNum());
             if (plantApplyDetailTb == null) {
                 throw new BusinessException("种植申请无数据，请检查工单是否已经执行完毕");
@@ -309,6 +310,34 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
 
         if (CollectionUtil.isNotEmpty(plantApplyPrintDTOList)) {
             printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_apply_label_print.name(), plantApplyPrintDTOList)));
+        }
+        return printRspDTOList;
+    }
+
+    @Override
+    public List<PrintRspDTO> tcExperimentPrint(BioPrintTcExperimentReqDTO bioPrintTcExperimentReqDTO) {
+        List<PrintRspDTO> printRspDTOList = new ArrayList<>();
+        List<TcPollinationApplyPrintDTO> tcPollinationApplyPrintDTOList=new ArrayList<>();
+        for (BioPrintTcExperimentReqDTO.Content content : bioPrintTcExperimentReqDTO.getContentList()) {
+            TcExperimentDesignTb tcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByRegionNumAndSeedNum(content.getRegionNum(), content.getSeedNum());
+            if (tcExperimentDesignTb == null) {
+                throw new BusinessException("田测试验无数据，请检查工单是否已经执行完毕");
+            }
+            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(tcExperimentDesignTb.getBreedCode());
+            if(cerBreedDict==null){
+                throw new BusinessException("数据异常，找不到品种信息，当前种植申请的小区号："+content.getRegionNum()+"种子号:"+content.getSeedNum());
+            }
+            TcPollinationApplyPrintDTO tcPollinationApplyPrintDTO = new TcPollinationApplyPrintDTO();
+            tcPollinationApplyPrintDTO.setRegionNum(tcExperimentDesignTb.getRegionNum());
+            tcPollinationApplyPrintDTO.setSeedNum(tcExperimentDesignTb.getSeedNum());
+            tcPollinationApplyPrintDTO.setBreedName(cerBreedDict.getBreedName());
+            tcPollinationApplyPrintDTO.setTaskNum(tcExperimentDesignTb.getExperimentNum());
+            tcPollinationApplyPrintDTO.setPrintNumber(content.getPrintNumber()==null?0:content.getPrintNumber());
+            tcPollinationApplyPrintDTOList.add(tcPollinationApplyPrintDTO);
+        }
+
+        if (CollectionUtil.isNotEmpty(tcPollinationApplyPrintDTOList)) {
+            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.tc_experiment_label_print.name(), tcPollinationApplyPrintDTOList)));
         }
         return printRspDTOList;
     }

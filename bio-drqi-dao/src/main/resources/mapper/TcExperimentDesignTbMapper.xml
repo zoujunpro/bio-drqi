@@ -102,5 +102,13 @@
             vector_task_code  = #{vectorTaskCode,jdbcType=VARCHAR}
         where id = #{id,jdbcType=NUMERIC}
     </update>
+    <select id="selectOneByRegionNumAndSeedNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_experiment_design_tb
+        where
+        region_num = #{regionNum,jdbcType=VARCHAR}
+        AND seed_num = #{seedNum,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

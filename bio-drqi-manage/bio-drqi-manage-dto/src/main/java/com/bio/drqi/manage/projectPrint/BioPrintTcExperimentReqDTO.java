@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class BipPrintPlantApplyReqDTO {
+public class BioPrintTcExperimentReqDTO {
 
     private List<Content> contentList;
     @Data

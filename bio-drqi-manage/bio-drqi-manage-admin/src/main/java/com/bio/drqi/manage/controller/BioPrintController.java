@@ -116,8 +116,18 @@ public class BioPrintController {
     @PostMapping("plantApplyPrint")
     @WebLog(desc = "种植申请标签打印")
     @RequestLog("种植申请标签打印")
-    public ResponseResult<List<PrintRspDTO>> plantApplyPrint(@RequestBody @Validated  BipPrintPlantApplyReqDTO bipPrintPlantApplyReqDTO) {
-        return ResponseResult.getSuccess(projectPrintService.plantApplyPrint(bipPrintPlantApplyReqDTO));
+    public ResponseResult<List<PrintRspDTO>> plantApplyPrint(@RequestBody @Validated BioPrintPlantApplyReqDTO bioPrintPlantApplyReqDTO) {
+        return ResponseResult.getSuccess(projectPrintService.plantApplyPrint(bioPrintPlantApplyReqDTO));
     }
-
+    /**
+     * 田间试验标签
+     *
+     * @return
+     */
+    @PostMapping("tcExperimentPrint")
+    @WebLog(desc = "田间试验标签")
+    @RequestLog("田间试验标签")
+    public ResponseResult<List<PrintRspDTO>> tcExperimentPrint(@RequestBody @Validated BioPrintTcExperimentReqDTO bioPrintTcExperimentReqDTO) {
+        return ResponseResult.getSuccess(projectPrintService.tcExperimentPrint(bioPrintTcExperimentReqDTO));
+    }
 }

@@ -22,5 +22,7 @@ public interface ProjectPrintService {
 
     List<PrintRspDTO> tissueEmbryoPrint(TissueEmbryoPrintReqDTO transPrintReqDTO);
 
-    List<PrintRspDTO> plantApplyPrint(BipPrintPlantApplyReqDTO bipPrintPlantApplyReqDTO);
+    List<PrintRspDTO> plantApplyPrint(BioPrintPlantApplyReqDTO bioPrintPlantApplyReqDTO);
+
+    List<PrintRspDTO> tcExperimentPrint(BioPrintTcExperimentReqDTO bioPrintTcExperimentReqDTO);
 }

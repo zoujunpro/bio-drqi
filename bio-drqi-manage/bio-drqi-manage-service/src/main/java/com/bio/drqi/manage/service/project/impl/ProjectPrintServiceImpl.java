@@ -176,7 +176,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
     public List<PrintRspDTO> plantPrint(PlantPrintReqDTO plantPrintReqDTO) {
         List<PrintRspDTO> printRspDTOList = new ArrayList<>();
         Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
-        List<PlantPrintData> plantPrintDataList = new ArrayList<>();
+
         Map<String, Integer> map = plantPrintReqDTO.getContentList().stream().collect(Collectors.toMap(PlantPrintReqDTO.Content::getPlantCode, PlantPrintReqDTO.Content::getPrintNum));
         if (CollectionUtil.isNotEmpty(plantPrintReqDTO.getContentList())) {
             List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectAllByPlantCodeIn(plantPrintReqDTO.getContentList().stream().map(PlantPrintReqDTO.Content::getPlantCode).collect(Collectors.toList()));
@@ -185,6 +185,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             }
             Map<String, List<PlantSingleStockTb>> plantSingleStockTbListMap = plantSingleStockTbList.stream().collect(Collectors.groupingBy(PlantSingleStockTb::getSourceCode));
             plantSingleStockTbListMap.forEach((sourceCode, list) -> {
+                List<PlantPrintData> plantPrintDataList = new ArrayList<>();
                 for (PlantSingleStockTb plantSingleStockTb : list) {
                     List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(plantSingleStockTb.getSampleCode());
                     if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
@@ -199,12 +200,13 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                     plantPrintData.setBreedName(cerBreedDictMap.get(plantSingleStockTb.getBreedCode()));
                     plantPrintData.setPrintNum(map.get(plantSingleStockTb.getPlantCode()) == null ? 1 : map.get(plantSingleStockTb.getPlantCode()));
                     plantPrintDataList.add(plantPrintData);
-                    if (SourceCodeEnum.project.name().equals(sourceCode)) {
-                        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_label_project_print.name(), plantPrintDataList)));
 
-                    } else if (SourceCodeEnum.cer.name().equals(sourceCode)) {
-                        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_label_cer_print.name(), plantPrintDataList)));
-                    }
+                }
+                if (SourceCodeEnum.project.name().equals(sourceCode)) {
+                    printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_label_project_print.name(), plantPrintDataList)));
+
+                } else if (SourceCodeEnum.cer.name().equals(sourceCode)) {
+                    printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_label_cer_print.name(), plantPrintDataList)));
                 }
             });
         }

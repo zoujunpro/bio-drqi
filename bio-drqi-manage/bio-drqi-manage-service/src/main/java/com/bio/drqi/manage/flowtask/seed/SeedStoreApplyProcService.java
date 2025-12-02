@@ -147,11 +147,11 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 if (tcExperimentTb == null) {
                     throw new BusinessException("试验编号不存在：" + executeFormContent.getExperimentNum());
                 }
-                TcExperimentDesignTb matherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcExperimentTb.getExperimentNum(), executeFormContent.getMatherRegionNum(), executeFormContent.getMatherSeedNum());
+                TcExperimentDesignTb matherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByRegionNumAndSeedNum( executeFormContent.getMatherRegionNum(), executeFormContent.getMatherSeedNum());
                 if (matherTcExperimentDesignTb == null) {
                     throw new BusinessException("试验方案中不存在此小区或者母本种子，当前试验方案编号：" + tcExperimentTb.getExperimentNum() + "母本小区编号：" + executeFormContent.getMatherRegionNum() + "母本种子编号:" + executeFormContent.getMatherSeedNum());
                 }
-                TcExperimentDesignTb fatherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcExperimentTb.getExperimentNum(), executeFormContent.getFatherRegionNum(), executeFormContent.getFatherSeedNum());
+                TcExperimentDesignTb fatherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByRegionNumAndSeedNum(executeFormContent.getFatherRegionNum(), executeFormContent.getFatherSeedNum());
                 if (fatherTcExperimentDesignTb == null) {
                     throw new BusinessException("试验方案中不存在此小区或者母本种子，当前试验方案编号：" + tcExperimentTb.getExperimentNum() + "父本小区编号：" + executeFormContent.getFatherRegionNum() + "父本种子编号:" + executeFormContent.getFatherSeedNum());
                 }

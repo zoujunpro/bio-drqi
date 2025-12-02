@@ -30,4 +30,6 @@ public class PlantExperimentTaskDTO {
 
     private List<String> vectorTaskCodeList;
 
+    private String experimentAddressCode;
+
 }

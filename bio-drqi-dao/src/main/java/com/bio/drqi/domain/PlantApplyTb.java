@@ -77,6 +77,8 @@ public class PlantApplyTb implements Serializable {
 
     private String sampleCodePrefix;
 
+    private String experimentAddressCode;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

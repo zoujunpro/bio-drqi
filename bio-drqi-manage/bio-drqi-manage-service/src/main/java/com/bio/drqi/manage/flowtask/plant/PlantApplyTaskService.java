@@ -105,6 +105,7 @@ public class PlantApplyTaskService extends AbstractPlantBaseTaskService {
             plantApplyTb.setCreateTime(new Date());
             plantApplyTb.setCreateUserId(SecurityContextHolder.getUserId());
             plantApplyTb.setCreateUserName(SecurityContextHolder.getNickName());
+            plantApplyTb.setExperimentAddressCode(plantExperimentTaskDTO.getExperimentAddressCode());
             plantApplyTb.setSampleCodePrefix(createSampleCode());
             plantApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList())));
             plantApplyTb.setPdImplementCodes(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getPdImplementCode).filter(pdImplementCode -> StringUtils.isNotEmpty(pdImplementCode)).distinct().collect(Collectors.toList())));

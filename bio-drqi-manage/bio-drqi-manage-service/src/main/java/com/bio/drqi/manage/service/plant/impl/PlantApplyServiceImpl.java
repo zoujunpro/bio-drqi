@@ -3,19 +3,13 @@ package com.bio.drqi.manage.service.plant.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
-import com.bio.drqi.domain.CerBreedDict;
-import com.bio.drqi.domain.CerSpeciesConf;
-import com.bio.drqi.domain.PlantApplyDetailTb;
-import com.bio.drqi.domain.PlantApplyTb;
+import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.dto.plant.ExperimentExcelDTO;
 import com.bio.drqi.manage.plant.req.PlantApplyListPageDetailReqDTO;
 import com.bio.drqi.manage.plant.req.PlantApplyListPageReqDTO;
 import com.bio.drqi.manage.plant.rsp.PlantApplyListPageDetailRspDTO;
 import com.bio.drqi.manage.plant.rsp.PlantApplyListPageRspDTO;
-import com.bio.drqi.mapper.CerBreedDictMapper;
-import com.bio.drqi.mapper.CerSpeciesConfMapper;
-import com.bio.drqi.mapper.PlantApplyDetailTbMapper;
-import com.bio.drqi.mapper.PlantApplyTbMapper;
+import com.bio.drqi.mapper.*;
 
 import com.bio.drqi.manage.service.plant.PlantApplyService;
 import com.github.pagehelper.PageHelper;
@@ -44,15 +38,25 @@ public class PlantApplyServiceImpl implements PlantApplyService {
     @Resource
     private CerBreedDictMapper cerBreedDictMapper;
 
+    @Resource
+    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
+
     @Override
     public PageInfo<PlantApplyListPageRspDTO> listPage(PlantApplyListPageReqDTO plantApplyListPageReqDTO) {
         PageHelper.startPage(plantApplyListPageReqDTO.getPageNum(), plantApplyListPageReqDTO.getPageSize());
         PlantApplyTb plantApplyTb = BeanUtils.copyProperties(plantApplyListPageReqDTO, PlantApplyTb.class);
+        Map<String, String> map = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
         plantApplyTb.setVectorTaskCodes(plantApplyListPageReqDTO.getVectorTaskCode());
         plantApplyTb.setPdImplementCodes(plantApplyListPageReqDTO.getPdImplementCode());
         List<PlantApplyTb> plantApplyTbList = plantApplyTbMapper.selectSelective(plantApplyTb);
         PageInfo<PlantApplyTb> srcPageInfo = new PageInfo<>(plantApplyTbList);
-        return BeanUtils.copyPageInfoProperties(srcPageInfo, PlantApplyListPageRspDTO.class);
+        PageInfo<PlantApplyListPageRspDTO> result = BeanUtils.copyPageInfoProperties(srcPageInfo, PlantApplyListPageRspDTO.class);
+        if (CollectionUtil.isEmpty(result.getList())) {
+            result.getList().forEach(plantApplyListPageRspDTO -> {
+                plantApplyListPageRspDTO.setExperimentAddressName(map.get(plantApplyListPageRspDTO.getExperimentAddressCode()));
+            });
+        }
+        return result;
     }
 
     @Override
@@ -63,7 +67,7 @@ public class PlantApplyServiceImpl implements PlantApplyService {
         List<PlantApplyDetailTb> plantExperimentDetailTbList = plantApplyDetailTbMapper.selectSelective(BeanUtils.copyProperties(plantApplyListPageDetailReqDTO, PlantApplyDetailTb.class));
         PageInfo<PlantApplyDetailTb> srcPageInfo = new PageInfo<>(plantExperimentDetailTbList);
         PageInfo<PlantApplyListPageDetailRspDTO> resultPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, PlantApplyListPageDetailRspDTO.class);
-        if(CollectionUtil.isNotEmpty(resultPageInfo.getList())){
+        if (CollectionUtil.isNotEmpty(resultPageInfo.getList())) {
             resultPageInfo.getList().forEach(plantApplyListPageDetailRspDTO -> {
                 plantApplyListPageDetailRspDTO.setBreedName(cerBreedDictMap.get(plantApplyListPageDetailRspDTO.getBreedCode()));
                 plantApplyListPageDetailRspDTO.setSpeciesName(cerSpeciesConfMap.get(plantApplyListPageDetailRspDTO.getSpeciesCode()));

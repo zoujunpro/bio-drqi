@@ -61,4 +61,8 @@ public class PlantApplyListPageRspDTO {
     private String pdImplementCodes;
 
     private String sampleCodePrefix;
+
+    private String experimentAddressName;
+
+    private String experimentAddressCode;
 }

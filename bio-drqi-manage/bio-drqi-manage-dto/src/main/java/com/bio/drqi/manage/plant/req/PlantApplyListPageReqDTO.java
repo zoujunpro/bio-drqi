@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -37,4 +38,6 @@ public class PlantApplyListPageReqDTO extends PageDTO {
 
 
     private String pdImplementCode;
+
+
 }

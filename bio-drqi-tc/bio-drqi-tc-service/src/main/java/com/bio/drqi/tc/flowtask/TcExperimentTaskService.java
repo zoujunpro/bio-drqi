@@ -55,11 +55,11 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         ValidatorUtil.validator(tcExperimentTaskDTO);
         List<ExperimentDesignExcelDTO> experimentDesignExcelDTOList = null;
         if (StringUtils.isNotEmpty(tcExperimentTaskDTO.getExperimentDesignUrl())) {
-            experimentDesignExcelDTOList =   validatorExcel(tcExperimentTaskDTO);
+            experimentDesignExcelDTOList = validatorExcel(tcExperimentTaskDTO);
         }
 
-        tcExperimentTaskDTO.setVectorTaskCodeList(experimentDesignExcelDTOList.stream().map(ExperimentDesignExcelDTO::getVectorTaskCode).filter(vectorTaskCode->StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList()));
-        tcExperimentTaskDTO.setPdImplementCodeList(experimentDesignExcelDTOList.stream().map(ExperimentDesignExcelDTO::getPdImplementCode).filter(pdImplementCode->StringUtils.isNotEmpty(pdImplementCode)).distinct().collect(Collectors.toList()));
+        tcExperimentTaskDTO.setVectorTaskCodeList(experimentDesignExcelDTOList.stream().map(ExperimentDesignExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList()));
+        tcExperimentTaskDTO.setPdImplementCodeList(experimentDesignExcelDTOList.stream().map(ExperimentDesignExcelDTO::getPdImplementCode).filter(pdImplementCode -> StringUtils.isNotEmpty(pdImplementCode)).distinct().collect(Collectors.toList()));
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcExperimentTaskDTO));
     }
 
@@ -129,13 +129,13 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
                 tcExperimentDesignTb.setPdImplementCode(experimentDesignExcelDTO.getPdImplementCode());
                 tcExperimentDesignTbList.add(tcExperimentDesignTb);
             }
-            tcExperimentTb.setPdImplementCodes(JSONUtil.toJsonStr(tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getPdImplementCode).filter(pdImplementCode->StringUtils.isNotEmpty(pdImplementCode)).distinct().collect(Collectors.toList())));
-            tcExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getVectorTaskCode).filter(vectorTaskCode->StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList())));
+            tcExperimentTb.setPdImplementCodes(JSONUtil.toJsonStr(tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getPdImplementCode).filter(pdImplementCode -> StringUtils.isNotEmpty(pdImplementCode)).distinct().collect(Collectors.toList())));
+            tcExperimentTb.setVectorTaskCodes(JSONUtil.toJsonStr(tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList())));
             tcExperimentTbMapper.insert(tcExperimentTb);
             tcExperimentDesignTbMapper.insertBatch(tcExperimentDesignTbList);
             tcExperimentTaskDTO.setSampleCodePrefix(tcExperimentTb.getSampleCodePrefix());
-            tcExperimentTaskDTO.setVectorTaskCodeList(JSONUtil.toList(tcExperimentTb.getVectorTaskCodes(),String.class));
-            tcExperimentTaskDTO.setPdImplementCodeList(JSONUtil.toList(tcExperimentTb.getPdImplementCodes(),String.class));
+            tcExperimentTaskDTO.setVectorTaskCodeList(JSONUtil.toList(tcExperimentTb.getVectorTaskCodes(), String.class));
+            tcExperimentTaskDTO.setPdImplementCodeList(JSONUtil.toList(tcExperimentTb.getPdImplementCodes(), String.class));
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcExperimentTaskDTO));
         }
     }
@@ -171,7 +171,14 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             } else {
                 experimentDesignExcelDTO.setBreedCode(breedNameCodeMap.get(experimentDesignExcelDTO.getBreedName()));
             }
-
+            List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByRegionNum(experimentDesignExcelDTO.getRegionNum());
+            if (CollectionUtil.isNotEmpty(tcExperimentDesignTbList)) {
+                throw new BusinessException("系统中其他试验已经存在此小区编号：" + tcExperimentDesignTbList.get(0).getExperimentNum());
+            }
+            TcExperimentDesignTb tcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByRegionNumAndSeedNum(experimentDesignExcelDTO.getRegionNum(), experimentDesignExcelDTO.getSeedNum());
+            if (tcExperimentDesignTb != null) {
+                throw new BusinessException("系统中已经存在此小区编号" + tcExperimentDesignTb.getRegionNum() + "和此种子编号：" + tcExperimentDesignTb.getSeedNum());
+            }
         }
         Map<String, List<ExperimentDesignExcelDTO>> listMap = experimentDesignExcelDTOList.stream().collect(Collectors.groupingBy(ExperimentDesignExcelDTO::getRegionNum));
         listMap.forEach((regionNun, list) -> {

@@ -80,15 +80,6 @@
             #{item.transplantTime,jdbcType=VARCHAR},#{item.pdImplementCode,jdbcType=VARCHAR})
         </foreach>
     </insert>
-    <select id="selectOneByExperimentNumAndRegionNumAndSeedNum" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from tc_experiment_design_tb
-        where
-        experiment_num = #{experimentNum,jdbcType=VARCHAR}
-        AND region_num = #{regionNum,jdbcType=VARCHAR}
-        AND seed_num = #{seedNum,jdbcType=VARCHAR}
-    </select>
     <select id="selectAllBySeedNum" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -109,6 +100,13 @@
         where
         region_num = #{regionNum,jdbcType=VARCHAR}
         AND seed_num = #{seedNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByRegionNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_experiment_design_tb
+        where
+        region_num = #{regionNum,jdbcType=VARCHAR}
     </select>
 
 </mapper>

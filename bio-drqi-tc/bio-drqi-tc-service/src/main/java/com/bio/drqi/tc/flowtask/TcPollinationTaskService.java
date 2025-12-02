@@ -91,7 +91,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
             //校验1:必填项校验
             ValidatorUtil.validator(tcPollinationTaskDTO);
             //校验2:父本存在性校验
-            TcExperimentDesignTb father = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationTaskDTO.getExperimentNum(), tcPollinationExcelDTO.getFatherRegionNum(), tcPollinationExcelDTO.getFatherSeedNum());
+            TcExperimentDesignTb father = tcExperimentDesignTbMapper.selectOneByRegionNumAndSeedNum(tcPollinationExcelDTO.getFatherRegionNum(), tcPollinationExcelDTO.getFatherSeedNum());
             if (father == null) {
                 throw new BusinessException("试验中无此区域为：" + tcPollinationExcelDTO.getFatherRegionNum() + "的种子编号:" + tcPollinationExcelDTO.getFatherSeedNum());
             }
@@ -129,7 +129,7 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                 }
             }
             //校验5:母本存在性校验
-            TcExperimentDesignTb mother = tcExperimentDesignTbMapper.selectOneByExperimentNumAndRegionNumAndSeedNum(tcPollinationTaskDTO.getExperimentNum(), tcPollinationExcelDTO.getMotherRegionNum(), tcPollinationExcelDTO.getMotherSeedNum());
+            TcExperimentDesignTb mother = tcExperimentDesignTbMapper.selectOneByRegionNumAndSeedNum(tcPollinationExcelDTO.getMotherRegionNum(), tcPollinationExcelDTO.getMotherSeedNum());
             if (mother == null) {
                 throw new BusinessException("试验中无此区域为：" + tcPollinationExcelDTO.getMotherRegionNum() + "的种子编号:" + tcPollinationExcelDTO.getMotherSeedNum());
             }

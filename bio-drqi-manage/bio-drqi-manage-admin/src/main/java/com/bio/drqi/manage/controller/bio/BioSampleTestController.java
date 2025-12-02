@@ -192,6 +192,19 @@ public class BioSampleTestController {
         return ResponseResult.getSuccess(bioSampleTestService.queryBioInfoSampleTestResult(id));
     }
 
+    /**
+     * 分子取样检测-生信检测结果查看(根据取样编号查看)
+     *
+     * @param sampleCode
+     * @return
+     */
+    @GetMapping("queryBioInfoSampleTestResult")
+    @WebLog(desc = "分子取样检测-生信检测结果查看")
+    public ResponseResult<List<QueryBioInfoSampleTestResultRspDTO>> queryBioInfoSampleTestResultBySampleCode(@RequestParam String sampleCode) {
+        return ResponseResult.getSuccess(bioSampleTestService.queryBioInfoSampleTestResultBySampleCode(sampleCode));
+    }
+
+
 
     /**
      * 分子取样检测-同步生信检测结果数据

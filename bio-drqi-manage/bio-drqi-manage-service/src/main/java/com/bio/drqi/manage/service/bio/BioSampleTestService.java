@@ -49,6 +49,10 @@ public interface BioSampleTestService {
 
     List<QueryBioInfoSampleTestResultRspDTO> queryBioInfoSampleTestResult(Integer id);
 
+
+    List<QueryBioInfoSampleTestResultRspDTO> queryBioInfoSampleTestResultBySampleCode(String sampleCode);
+
+
     void synBioInfoSampleTestResult(Integer id);
 
 

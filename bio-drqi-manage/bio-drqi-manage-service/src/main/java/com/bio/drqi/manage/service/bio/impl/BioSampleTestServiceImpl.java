@@ -453,6 +453,25 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
     }
 
     @Override
+    public List<QueryBioInfoSampleTestResultRspDTO> queryBioInfoSampleTestResultBySampleCode(String sampleCode) {
+        List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllBySampleCode(sampleCode);
+        if (CollectionUtil.isEmpty(bioSampleTestTwoResultTbList)) {
+            throw new BusinessException("没有上传NGS检测结果");
+        }
+        List<BioSampleTestTwoResultDetailTb> resultDetailTbs = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultTbList)) {
+            Map<String, List<BioSampleTestTwoResultTb>> bioSampleTestTwoResultTbListMap = bioSampleTestTwoResultTbList.stream().collect(Collectors.groupingBy(bioSampleTestTwoResultTb -> bioSampleTestTwoResultTb.getRunId() + bioSampleTestTwoResultTb.getSampleId()));
+            bioSampleTestTwoResultTbListMap.forEach((key, bioSampleTestTwoResultTbs) -> {
+                List<BioSampleTestTwoResultDetailTb> cerSampleTestBioInfoResultDetailList = bioSampleTestTwoResultDetailTbMapper.selectAllByTwoResultIdAndConfirmStatus(bioSampleTestTwoResultTbs.get(0).getId(), "checked");
+                if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultDetailList)) {
+                    resultDetailTbs.addAll(cerSampleTestBioInfoResultDetailList);
+                }
+            });
+        }
+        return BeanUtils.copyListProperties(resultDetailTbs, QueryBioInfoSampleTestResultRspDTO.class);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void synBioInfoSampleTestResult(Integer id) {
         BioSampleTestTb bioSampleTestTb = bioSampleTestTbMapper.selectById(id);
@@ -630,7 +649,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
             if (bioSampleTestTb.getTestUserId() == null) {
                 bioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
                 bioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
-                bioSampleTestTb.setRemark(StringUtils.isNotEmpty(bioSampleTestTb.getRemark())?"":(bioSampleTestTb.getRemark()+",")+"无检测结果，审批通过或者拒绝后，检测人就是审核人");
+                bioSampleTestTb.setRemark(StringUtils.isNotEmpty(bioSampleTestTb.getRemark()) ? "" : (bioSampleTestTb.getRemark() + ",") + "无检测结果，审批通过或者拒绝后，检测人就是审核人");
             }
             bioSampleTestTb.setCheckResult(content.getCheckResult());
             bioSampleTestTb.setCheckUserName(SecurityContextHolder.getNickName());

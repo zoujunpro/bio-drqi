@@ -41,8 +41,9 @@ public class PlantProjectTaskListener extends DefaultDuplicateCopyHandler implem
 
     private final static Map<String, String> vieMap = new ConcurrentHashMap<>();
 
-    @Value("${cer.properties.feiShuProjectJumpUrl}")
+    @Value("${cer.properties.feiShuCerJumpUrl}")
     private String feiShuProjectJumpUrl;
+
 
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
@@ -58,9 +59,9 @@ public class PlantProjectTaskListener extends DefaultDuplicateCopyHandler implem
 
 
     static {
-        vieMap.put("plant_data_report", "projectInit");
-        vieMap.put("plant_apply_task", "subproject");
-        vieMap.put("implementation_plan", "taskCreat");
+        vieMap.put("plant_data_report", "cerPlant");
+        vieMap.put("plant_apply_task", "cerSample");
+        vieMap.put("plant_sample_test_task", "cerTest");
     }
 
     @Override

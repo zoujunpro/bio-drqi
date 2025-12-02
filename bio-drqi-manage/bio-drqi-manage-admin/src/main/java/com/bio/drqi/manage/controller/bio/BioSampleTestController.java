@@ -198,7 +198,7 @@ public class BioSampleTestController {
      * @param sampleCode
      * @return
      */
-    @GetMapping("queryBioInfoSampleTestResult")
+    @GetMapping("queryBioInfoSampleTestResultBySampleCode")
     @WebLog(desc = "分子取样检测-生信检测结果查看")
     public ResponseResult<List<QueryBioInfoSampleTestResultRspDTO>> queryBioInfoSampleTestResultBySampleCode(@RequestParam String sampleCode) {
         return ResponseResult.getSuccess(bioSampleTestService.queryBioInfoSampleTestResultBySampleCode(sampleCode));

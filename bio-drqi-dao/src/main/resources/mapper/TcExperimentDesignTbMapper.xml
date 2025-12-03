@@ -121,12 +121,12 @@
         from tc_experiment_design_tb
         where 1=1
         <choose>
-            <when test="vectorTaskCode==null and vectorTaskCode=''">AND vector_task_code is null</when>
-            <otherwise>AND vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}</otherwise>
+            <when test="vectorTaskCode!=null and vectorTaskCode !=''">AND vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}</when>
+            <otherwise> AND vector_task_code is null</otherwise>
         </choose>
         <choose>
-            <when test="pdImplementCode==null and pdImplementCode=''">AND pd_implement_code is null</when>
-            <otherwise> AND pd_implement_code = #{pdImplementCode,jdbcType=VARCHAR}</otherwise>
+            <when test="pdImplementCode!=null and pdImplementCode !=''"> AND pd_implement_code = #{pdImplementCode,jdbcType=VARCHAR} </when>
+            <otherwise>AND pd_implement_code is null</otherwise>
         </choose>
     </select>
     <select id="selectAllByExperimentNumIn" resultMap="BaseResultMap">

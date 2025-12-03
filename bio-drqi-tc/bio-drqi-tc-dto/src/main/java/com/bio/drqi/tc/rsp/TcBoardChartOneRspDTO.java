@@ -4,40 +4,41 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class TcBoardChartOneRspDTO {
 
-    private String pdNum;
+    private String pdImplementCode;
 
     private String vectorTaskCode;
 
-    private List<Step> stepList = new ArrayList<>();
+    private List<ExperimentType> experimentTypeList = new ArrayList<>();
 
     @Data
-    private static class Step {
+    private static class ExperimentType {
         /**
          * 步骤
          */
-        private String stepCode;
+        private String experimentTypeCode;
 
 
-        private String stepName;
+        private String experimentTypeName;
         /**
          * 显示 Y亮 N不亮
          */
         private String showFlag;
 
-        public Step(String stepCode, String stepName, String showFlag) {
-            this.stepCode = stepCode;
-            this.stepName = stepName;
+        public ExperimentType(String experimentTypeCode, String experimentTypeName, String showFlag) {
+            this.experimentTypeCode = experimentTypeCode;
+            this.experimentTypeName = experimentTypeName;
             this.showFlag = showFlag;
         }
 
     }
 
-    public void buildStepList(String stepCode, String stepName, String showFlag) {
-        Step step = new Step(stepCode, stepName, showFlag);
-        this.stepList.add(step);
+    public void buildExperimentTypeList(String experimentTypeCode, String experimentTypeName, String showFlag) {
+        experimentTypeList.add(new ExperimentType(experimentTypeCode, experimentTypeName, showFlag));
+
     }
 }

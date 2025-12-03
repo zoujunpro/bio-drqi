@@ -14,4 +14,13 @@ public enum ExperimentTypeEnum {
         this.code = code;
         this.desc = desc;
     }
+
+    public static String getDescByCode(String code){
+        for (ExperimentTypeEnum experimentTypeEnum:ExperimentTypeEnum.values()){
+            if(experimentTypeEnum.code.equals(code)){
+                return experimentTypeEnum.desc;
+            }
+        }
+        return null;
+    }
 }

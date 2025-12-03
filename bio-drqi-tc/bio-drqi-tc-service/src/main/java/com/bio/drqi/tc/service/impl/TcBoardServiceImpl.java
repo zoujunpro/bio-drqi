@@ -35,16 +35,16 @@ public class TcBoardServiceImpl implements TcBoardService {
             TcBoardChartOneRspDTO tcBoardChartOneRspDTO = new TcBoardChartOneRspDTO();
             tcBoardChartOneRspDTO.setPdImplementCode(key.split("\\|")[0].replace("null",""));
             tcBoardChartOneRspDTO.setVectorTaskCode(key.split("\\|")[1].replace("null",""));
+            List<String> experimentTypeList = new ArrayList<>();
             list.forEach(tcExperimentDesignTb -> {
                 TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcExperimentDesignTb.getExperimentNum());
-                List<String> experimentTypeList = new ArrayList<>();
                 if (StringUtils.isNotEmpty(tcExperimentTb.getExperimentType())) {
                     experimentTypeList.addAll(JSONUtil.toList(tcExperimentTb.getExperimentType(), String.class));
                 }
-                for (ExperimentTypeEnum experimentTypeEnum : ExperimentTypeEnum.values()) {
-                    tcBoardChartOneRspDTO.buildExperimentTypeList(experimentTypeEnum.code, experimentTypeEnum.desc, experimentTypeList.contains(experimentTypeEnum.code) ? "Y" : "N");
-                }
             });
+            for (ExperimentTypeEnum experimentTypeEnum : ExperimentTypeEnum.values()) {
+                tcBoardChartOneRspDTO.buildExperimentTypeList(experimentTypeEnum.code, experimentTypeEnum.desc, experimentTypeList.contains(experimentTypeEnum.code) ? "Y" : "N");
+            }
             resultList.add(tcBoardChartOneRspDTO);
         });
 

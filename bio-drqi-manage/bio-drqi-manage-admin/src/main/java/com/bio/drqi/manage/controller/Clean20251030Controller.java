@@ -3,6 +3,7 @@ package com.bio.drqi.manage.controller;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
@@ -10,10 +11,12 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.CheckResultEnum;
+import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.VectorTaskStatusEnum;
 import com.bio.drqi.manage.dto.project.*;
+import com.bio.drqi.manage.sample.req.ApproveSampleResultReqDTO;
 import com.bio.drqi.manage.service.bio.BioSampleTwoResultService;
 import com.bio.drqi.mapper.*;
 import com.bio.print.PlantPrintData;
@@ -59,6 +62,15 @@ public class Clean20251030Controller {
 
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
+    @Resource
+    private BioSampleTestTbMapper bioSampleTestTbMapper;
+
+    @Resource
+    private PlantSingleStockTbMapper plantSingleStockTbMapper;
+
+    @Resource
+    private PlantMultipleStockTbMapper plantMultipleStockTbMapper;
 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
@@ -443,5 +455,23 @@ public class Clean20251030Controller {
         @ExcelProperty("收获日期")
         private String harvestDate;
 
+    }
+
+
+    @GetMapping("cleanCheckResult")
+    public ResponseResult<String> cleanCheckResult() {
+        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo("C0005286");
+        for (BioSampleTestTb bioSampleTestTb : bioSampleTestTbList) {
+            bioSampleTestTb.setCheckResult("stay");
+            bioSampleTestTb.setUpdateTime(new Date());
+            bioSampleTestTbMapper.updateById(bioSampleTestTb);
+
+            PlantMultipleStockTb plantMultipleStockTb = plantMultipleStockTbMapper.selectOneByRegionNumAndSeedNum(bioSampleTestTb.getRegionNum(), bioSampleTestTb.getSeedNum());
+            PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(bioSampleTestTb, PlantStatusEnum.STATUS_1, plantMultipleStockTb.getPlantDate(), bioSampleTestTb.getApplyNo(), bioSampleTestTb.getSourceCode(), "CER种植申请首次取样产出的移苗");
+            plantSingleStockTbMapper.insert(plantSingleStockTb);
+        }
+
+
+        return ResponseResult.getSuccess("ok");
     }
 }

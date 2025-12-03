@@ -195,14 +195,14 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
             BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
             bioSampleTestTbMapper.updateNoCheckDataByApplyNoAndCheckResult(CheckResultEnum.remove.name(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioSampleApplyTb.getApplyNo(), CheckResultEnum.noCheck.name());
 
-            //首次取样，且已经发生过移苗
+            //首次CER取样需要生成种植编号
             if (SampleTestApplyTypeEnum.first.name().equals(bioSampleApplyTb.getApplyType())) {
                 List<PlantSingleStockTb> plantSingleStockTbList = new ArrayList<>();
                 List<BioSampleTestTb> plantSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(bioSampleApplyTb.getApplyNo()).stream().filter(plantSampleTestTb -> CheckResultEnum.stay.name().equals(plantSampleTestTb.getCheckResult())).collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {
                     for (BioSampleTestTb bioSampleTestTb : plantSampleTestTbList) {
                         PlantMultipleStockTb plantMultipleStockTb = findPlantMultipleStockTb(bioSampleTestTb);
-                        PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(bioSampleTestTb, PlantStatusEnum.STATUS_1, plantMultipleStockTb.getPlantDate(), bioSampleTestTb.getApplyNo(), bioSampleTestTb.getSourceCode(), "对移秒到CER转话体秒进行取样获得");
+                        PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(bioSampleTestTb, PlantStatusEnum.STATUS_1, plantMultipleStockTb.getPlantDate(), bioSampleTestTb.getApplyNo(), bioSampleTestTb.getSourceCode(), "CER种植申请首次取样产出的移苗");
                         plantSingleStockTbList.add(plantSingleStockTb);
                     }
                     plantSingleStockTbMapper.insertBatch(plantSingleStockTbList);

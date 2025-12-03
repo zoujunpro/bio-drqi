@@ -52,8 +52,12 @@ public class TcBoardServiceImpl implements TcBoardService {
             resultList.add(tcBoardChartOneRspDTO);
         });
         resultList.stream().sorted((o1, o2) -> {
-            if (StringUtils.isNotEmpty(o1.getPdImplementCode())) {
+            if (StringUtils.isNotEmpty(o1.getPdImplementCode()) && StringUtils.isEmpty(o2.getPdImplementCode())) {
                 return 1;
+            } else if (StringUtils.isNotEmpty(o1.getPdImplementCode()) && StringUtils.isNotEmpty(o2.getPdImplementCode())) {
+                return o1.getPdImplementCode().compareTo(o2.getPdImplementCode());
+            } else if (StringUtils.isEmpty(o1.getPdImplementCode()) && StringUtils.isEmpty(o2.getPdImplementCode())) {
+                return o1.getVectorTaskCode().compareTo(o2.getVectorTaskCode());
             } else {
                 return -1;
             }

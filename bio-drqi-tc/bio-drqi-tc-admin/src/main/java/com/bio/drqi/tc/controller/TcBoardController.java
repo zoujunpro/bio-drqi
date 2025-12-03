@@ -14,7 +14,7 @@ import javax.annotation.Resource;
  * 田测图表
  */
 @RestController
-@RequestMapping("board")
+@RequestMapping("tcBoard")
 public class TcBoardController {
 
     @Resource

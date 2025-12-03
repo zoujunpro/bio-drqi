@@ -10,10 +10,8 @@ import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.domain.TcPollinationApplyTb;
 import com.bio.drqi.domain.TcPollinationTb;
 import com.bio.drqi.domain.TcSampleTestTb;
-import com.bio.drqi.mapper.BioTaskDtlTbMapper;
-import com.bio.drqi.mapper.TcPollinationApplyTbMapper;
-import com.bio.drqi.mapper.TcPollinationTbMapper;
-import com.bio.drqi.mapper.TcSampleTestTbMapper;
+import com.bio.drqi.mapper.*;
+import com.bio.drqi.tc.service.dto.TcExperimentTaskDTO;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import com.bio.drqi.tc.service.dto.TcPollinationTaskDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +49,20 @@ public class TcTestController {
     @Resource
     private OssService ossService;
 
+    @Resource
+    private TcExperimentTbMapper tcExperimentTbMapper;
+
+    @GetMapping("/cleanExperimentType")
+    public ResponseResult<String> cleanExperimentType() {
+        tcExperimentTbMapper.selectList(null).forEach(tcExperimentTb -> {
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcExperimentTb.getTaskNum());
+            TcExperimentTaskDTO tcExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcExperimentTaskDTO.class);
+            tcExperimentTaskDTO.setExperimentType(JSONUtil.toList(tcExperimentTb.getExperimentType(),String.class));
+            bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(tcExperimentTaskDTO));
+            bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        });
+        return ResponseResult.getSuccess("ok");
+    }
 
     @GetMapping("/cleanTcPollinationTb")
     @Transactional(rollbackFor = Exception.class)

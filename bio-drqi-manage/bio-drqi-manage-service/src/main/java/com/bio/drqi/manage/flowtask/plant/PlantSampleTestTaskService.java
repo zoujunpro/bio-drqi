@@ -202,7 +202,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {
                     for (BioSampleTestTb bioSampleTestTb : plantSampleTestTbList) {
                         PlantMultipleStockTb plantMultipleStockTb = findPlantMultipleStockTb(bioSampleTestTb);
-                        PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(bioSampleTestTb, PlantStatusEnum.STATUS_1, plantMultipleStockTb.getPlantDate(), bioSampleTestTb.getApplyNo(), bioSampleTestTb.getSourceCode(), "CER种植申请首次取样产出的移苗");
+                        PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(bioSampleTestTb, PlantStatusEnum.STATUS_1, plantMultipleStockTb.getPlantDate(), bioSampleTestTb.getApplyNo(), bioSampleTestTb.getSourceCode(), "CER种植申请首次取样产出的苗");
                         plantSingleStockTbList.add(plantSingleStockTb);
                     }
                     plantSingleStockTbMapper.insertBatch(plantSingleStockTbList);

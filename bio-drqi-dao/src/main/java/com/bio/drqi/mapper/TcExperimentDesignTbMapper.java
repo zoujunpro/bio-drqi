@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface TcExperimentDesignTbMapper extends BaseMapper<TcExperimentDesignTb> {
 
+    List<TcExperimentDesignTb> selectAllByExperimentNumIn(@Param("experimentNumList") Collection<String> experimentNumList);
     List<TcExperimentDesignTb> selectAllForBroadOne();
     List<TcExperimentDesignTb> selectAllByExperimentNum(@Param("experimentNum") String experimentNum);
 

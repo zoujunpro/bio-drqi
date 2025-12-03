@@ -12,6 +12,7 @@ import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.enums.SampleTestCheckResultEnum;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
+import com.bio.drqi.tc.req.TcExperimentQueryByPdAndVectorTaskCodeReqDTO;
 import com.bio.drqi.tc.req.TcExperimentQueryListExperimentDesignReqDTO;
 import com.bio.drqi.tc.rsp.*;
 import com.bio.drqi.tc.service.TcExperimentService;
@@ -83,6 +84,28 @@ public class TcExperimentServiceImpl implements TcExperimentService {
             });
         }
         return resultPageInfo;
+    }
+
+    @Override
+    public List<TcExperimentQueryByPdAndVectorTaskCodeRspDTO> queryByPdAndVectorTaskCode(TcExperimentQueryByPdAndVectorTaskCodeReqDTO tcExperimentQueryByPdAndVectorTaskCodeReqDTO) {
+        List<TcHarvestSeedApplyTb> tcHarvestSeedApplyTbList = tcHarvestSeedApplyTbMapper.selectSelective(null);
+        List<TcPollinationApplyTb> tcPollinationApplyTbList = tcPollinationApplyTbMapper.selectSelective(null);
+        Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
+
+        List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByVectorTaskCodeAndPdImplementCode(tcExperimentQueryByPdAndVectorTaskCodeReqDTO.getVectorTaskCode(), tcExperimentQueryByPdAndVectorTaskCodeReqDTO.getPdImplementCode());
+        if (CollectionUtil.isNotEmpty(tcExperimentDesignTbList)) {
+            List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByExperimentNumIn(tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getExperimentNum).collect(Collectors.toList()));
+            List<TcExperimentQueryByPdAndVectorTaskCodeRspDTO> tcExperimentQueryByPdAndVectorTaskCodeRspDTOList = BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentQueryByPdAndVectorTaskCodeRspDTO.class);
+            List<String> harvestExperimentNumList = tcHarvestSeedApplyTbList.stream().map(TcHarvestSeedApplyTb::getExperimentNum).distinct().collect(Collectors.toList());
+            List<String> pollinationExperimentNumList = tcPollinationApplyTbList.stream().map(TcPollinationApplyTb::getExperimentNum).distinct().collect(Collectors.toList());
+            tcExperimentQueryByPdAndVectorTaskCodeRspDTOList.forEach(tcExperimentListPageRspDTO -> {
+                tcExperimentListPageRspDTO.setHarvestFlag(harvestExperimentNumList.contains(tcExperimentListPageRspDTO.getExperimentNum()) ? BioDrQiContents.Y : BioDrQiContents.N);
+                tcExperimentListPageRspDTO.setPollinationFlag(pollinationExperimentNumList.contains(tcExperimentListPageRspDTO.getExperimentNum()) ? BioDrQiContents.Y : BioDrQiContents.N);
+                tcExperimentListPageRspDTO.setExperimentAddressName(seedProduceAddressDictMap.get(tcExperimentListPageRspDTO.getExperimentAddressCode()));
+            });
+            return tcExperimentQueryByPdAndVectorTaskCodeRspDTOList;
+        }
+        return null;
     }
 
     @Override

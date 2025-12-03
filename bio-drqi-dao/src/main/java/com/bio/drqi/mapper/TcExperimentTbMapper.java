@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.Collection;
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.TcExperimentTb;
@@ -14,6 +15,8 @@ import java.util.List;
  * @Entity com.bio.drqi.domain.TcExperimentTb
  */
 public interface TcExperimentTbMapper extends BaseMapper<TcExperimentTb> {
+
+    List<TcExperimentTb> selectAllByExperimentNumIn(@Param("experimentNumList") Collection<String> experimentNumList);
 
     List<TcExperimentTb> selectSelective(TcExperimentTb tcExperimentTb);
 

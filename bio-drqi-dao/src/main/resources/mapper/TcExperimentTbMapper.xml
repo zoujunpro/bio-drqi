@@ -95,5 +95,15 @@
         AND harvest_apply_num is null
         order by id desc
     </select>
+    <select id="selectAllByExperimentNumIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_experiment_tb
+        where
+        experiment_num in
+        <foreach collection="experimentNumList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 
 </mapper>

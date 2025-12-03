@@ -7,6 +7,7 @@ import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
+import com.bio.drqi.tc.req.TcExperimentQueryByPdAndVectorTaskCodeReqDTO;
 import com.bio.drqi.tc.req.TcExperimentQueryListExperimentDesignReqDTO;
 import com.bio.drqi.tc.rsp.*;
 import com.bio.drqi.tc.service.TcExperimentService;
@@ -42,6 +43,17 @@ public class TcExperimentController {
     @RequirePermissions("tc:tcExperiment:listPage")
     public ResponseResult<PageInfo<TcExperimentListPageRspDTO>> listPage(@Validated @RequestBody TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
         return ResponseResult.getSuccess(tcExperimentService.listPage(tcExperimentListPageReqDTO));
+    }
+
+    /**
+     * 试验方案申请管理-根据PD和实施方案编号组合查询
+     * @param tcExperimentQueryByPdAndVectorTaskCodeReqDTO
+     * @return
+     */
+    @PostMapping("/queryByPdAndVectorTaskCode")
+    @WebLog(desc = "试验方案申请管理-根据PD和实施方案编号组合查询")
+    public ResponseResult<List<TcExperimentQueryByPdAndVectorTaskCodeRspDTO>> queryByPdAndVectorTaskCode(TcExperimentQueryByPdAndVectorTaskCodeReqDTO tcExperimentQueryByPdAndVectorTaskCodeReqDTO) {
+        return ResponseResult.getSuccess(tcExperimentService.queryByPdAndVectorTaskCode(tcExperimentQueryByPdAndVectorTaskCodeReqDTO));
     }
 
     /**

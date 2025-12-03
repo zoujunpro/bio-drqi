@@ -110,7 +110,7 @@
         region_num = #{regionNum,jdbcType=VARCHAR}
     </select>
     <select id="selectAllForBroadOne" resultType="com.bio.drqi.domain.TcExperimentDesignTb">
-        select DISTINCT vector_task_code, pd_implement_code,experiment_num
+        select DISTINCT vector_task_code, pd_implement_code, experiment_num
         from tc_experiment_design_tb
         where vector_task_code is not null
            or pd_implement_code is not null
@@ -123,5 +123,16 @@
         vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
         AND pd_implement_code = #{pdImplementCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByExperimentNumIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_experiment_design_tb
+        where
+        experiment_num in
+        <foreach collection="experimentNumList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
 
 </mapper>

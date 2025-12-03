@@ -2,6 +2,7 @@ package com.bio.drqi.tc.service;
 
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
+import com.bio.drqi.tc.req.TcExperimentQueryByPdAndVectorTaskCodeReqDTO;
 import com.bio.drqi.tc.req.TcExperimentQueryListExperimentDesignReqDTO;
 import com.bio.drqi.tc.rsp.*;
 import com.github.pagehelper.PageInfo;
@@ -21,6 +22,7 @@ public interface TcExperimentService {
      * @return
      */
     PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO);
+    List<TcExperimentQueryByPdAndVectorTaskCodeRspDTO> queryByPdAndVectorTaskCode(TcExperimentQueryByPdAndVectorTaskCodeReqDTO tcExperimentQueryByPdAndVectorTaskCodeReqDTO);
 
     List<TcExperimentListAllRspDTO> listAll();
 

@@ -52,7 +52,7 @@ public class TcExperimentController {
      */
     @PostMapping("/queryByPdAndVectorTaskCode")
     @WebLog(desc = "试验方案申请管理-根据PD和实施方案编号组合查询")
-    public ResponseResult<List<TcExperimentQueryByPdAndVectorTaskCodeRspDTO>> queryByPdAndVectorTaskCode(TcExperimentQueryByPdAndVectorTaskCodeReqDTO tcExperimentQueryByPdAndVectorTaskCodeReqDTO) {
+    public ResponseResult<List<TcExperimentQueryByPdAndVectorTaskCodeRspDTO>> queryByPdAndVectorTaskCode(@RequestBody @Validated TcExperimentQueryByPdAndVectorTaskCodeReqDTO tcExperimentQueryByPdAndVectorTaskCodeReqDTO) {
         return ResponseResult.getSuccess(tcExperimentService.queryByPdAndVectorTaskCode(tcExperimentQueryByPdAndVectorTaskCodeReqDTO));
     }
 

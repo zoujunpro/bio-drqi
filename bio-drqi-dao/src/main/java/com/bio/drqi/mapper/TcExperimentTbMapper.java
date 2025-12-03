@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface TcExperimentTbMapper extends BaseMapper<TcExperimentTb> {
 
-    List<TcExperimentTb> selectAllByExperimentNumIn(@Param("experimentNumList") Collection<String> experimentNumList);
+    List<TcExperimentTb> selectAllByExperimentNumInAndExperimentTypeLike(@Param("experimentNumList") Collection<String> experimentNumList, @Param("experimentType") String experimentType);
 
     List<TcExperimentTb> selectSelective(TcExperimentTb tcExperimentTb);
 

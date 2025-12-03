@@ -95,7 +95,7 @@
         AND harvest_apply_num is null
         order by id desc
     </select>
-    <select id="selectAllByExperimentNumIn" resultMap="BaseResultMap">
+    <select id="selectAllByExperimentNumInAndExperimentTypeLike" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from tc_experiment_tb
@@ -104,6 +104,7 @@
         <foreach collection="experimentNumList" item="item" open="(" close=")" separator=",">
             #{item,jdbcType=VARCHAR}
         </foreach>
+        AND experiment_type like CONCAT('%',#{experimentType,jdbcType=VARCHAR},'%')
     </select>
 
 </mapper>

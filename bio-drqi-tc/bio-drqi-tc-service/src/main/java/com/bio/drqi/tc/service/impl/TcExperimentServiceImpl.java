@@ -94,7 +94,7 @@ public class TcExperimentServiceImpl implements TcExperimentService {
 
         List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByVectorTaskCodeAndPdImplementCode(tcExperimentQueryByPdAndVectorTaskCodeReqDTO.getVectorTaskCode(), tcExperimentQueryByPdAndVectorTaskCodeReqDTO.getPdImplementCode());
         if (CollectionUtil.isNotEmpty(tcExperimentDesignTbList)) {
-            List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByExperimentNumIn(tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getExperimentNum).collect(Collectors.toList()));
+            List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByExperimentNumInAndExperimentTypeLike(tcExperimentDesignTbList.stream().map(TcExperimentDesignTb::getExperimentNum).distinct().collect(Collectors.toList()),tcExperimentQueryByPdAndVectorTaskCodeReqDTO.getExperimentType());
             List<TcExperimentQueryByPdAndVectorTaskCodeRspDTO> tcExperimentQueryByPdAndVectorTaskCodeRspDTOList = BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentQueryByPdAndVectorTaskCodeRspDTO.class);
             List<String> harvestExperimentNumList = tcHarvestSeedApplyTbList.stream().map(TcHarvestSeedApplyTb::getExperimentNum).distinct().collect(Collectors.toList());
             List<String> pollinationExperimentNumList = tcPollinationApplyTbList.stream().map(TcPollinationApplyTb::getExperimentNum).distinct().collect(Collectors.toList());

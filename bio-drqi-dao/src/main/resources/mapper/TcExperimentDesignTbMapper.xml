@@ -119,9 +119,15 @@
         select
         <include refid="Base_Column_List"/>
         from tc_experiment_design_tb
-        where
-        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
-        AND pd_implement_code = #{pdImplementCode,jdbcType=VARCHAR}
+        where 1=1
+        <choose>
+            <when test="vectorTaskCode==null and vectorTaskCode=''">AND vector_task_code is null</when>
+            <otherwise>AND vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}</otherwise>
+        </choose>
+        <choose>
+            <when test="pdImplementCode==null and pdImplementCode=''">AND pd_implement_code is null</when>
+            <otherwise> AND pd_implement_code = #{pdImplementCode,jdbcType=VARCHAR}</otherwise>
+        </choose>
     </select>
     <select id="selectAllByExperimentNumIn" resultMap="BaseResultMap">
         select

@@ -15,10 +15,7 @@ import com.bio.drqi.tc.service.TcBoardService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,7 +51,13 @@ public class TcBoardServiceImpl implements TcBoardService {
             }
             resultList.add(tcBoardChartOneRspDTO);
         });
-
+        resultList.stream().sorted((o1, o2) -> {
+            if (StringUtils.isNotEmpty(o1.getPdImplementCode())) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
 
         return resultList;
     }

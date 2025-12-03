@@ -108,5 +108,11 @@
         where
         region_num = #{regionNum,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllForBroadOne" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_experiment_design_tb
+        where vector_task_code is null and pd_implement_code is null
+    </select>
 
 </mapper>

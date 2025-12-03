@@ -13,6 +13,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.drqi.domain.TcExperimentDesignTb
 */
 public interface TcExperimentDesignTbMapper extends BaseMapper<TcExperimentDesignTb> {
+
+    List<TcExperimentDesignTb> selectAllForBroadOne();
     List<TcExperimentDesignTb> selectAllByExperimentNum(@Param("experimentNum") String experimentNum);
 
     List<TcExperimentDesignTb> selectAllByRegionNum(@Param("regionNum") String regionNum);

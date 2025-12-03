@@ -75,10 +75,11 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
                 if (cerVectorTaskTb == null) {
                     throw new BusinessException("实施方案编号不存在：" + sample.getVectorTaskCode());
                 }
-                List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(sample.getSampleCode());
+                List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByVectorTaskCodeAndSampleCode(sample.getVectorTaskCode(),sample.getSampleCode());
                 if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
                     throw new BusinessException("此实施方案中无此取样编号：" + sample.getSampleCode());
                 }
+
                 //取样移苗时不校验是否是留种，如果把舍弃的苗移到CER,CER相关人员进行剔苗操作
 
  /*               if (CollectionUtil.isNotEmpty(cerSampleTestTbList.stream().filter(cerSampleTestTb -> "舍弃".equals(cerSampleTestTb.getCheckResult())).collect(Collectors.toList()))) {

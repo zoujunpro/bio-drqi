@@ -30,11 +30,11 @@ public class TcBoardServiceImpl implements TcBoardService {
     public List<TcBoardChartOneRspDTO> chartOne() {
         List<TcBoardChartOneRspDTO> resultList = new ArrayList<>();
         List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllForBroadOne();
-        Map<String, List<TcExperimentDesignTb>> map = tcExperimentDesignTbList.stream().collect(Collectors.groupingBy(tcExperimentDesignTb -> StringUtils.isNotEmpty(tcExperimentDesignTb.getPdImplementCode())?tcExperimentDesignTb.getPdImplementCode():"" + "|" + (StringUtils.isNotEmpty(tcExperimentDesignTb.getVectorTaskCode())?tcExperimentDesignTb.getVectorTaskCode():"")));
+        Map<String, List<TcExperimentDesignTb>> map = tcExperimentDesignTbList.stream().collect(Collectors.groupingBy(tcExperimentDesignTb -> tcExperimentDesignTb.getPdImplementCode() + "|" + tcExperimentDesignTb.getVectorTaskCode()));
         map.forEach((key, list) -> {
             TcBoardChartOneRspDTO tcBoardChartOneRspDTO = new TcBoardChartOneRspDTO();
-            tcBoardChartOneRspDTO.setPdImplementCode(key.split("\\|")[0]);
-            tcBoardChartOneRspDTO.setVectorTaskCode(key.split("\\|")[1]);
+            tcBoardChartOneRspDTO.setPdImplementCode(key.split("\\|")[0].replace("null",""));
+            tcBoardChartOneRspDTO.setVectorTaskCode(key.split("\\|")[1].replace("null",""));
             list.forEach(tcExperimentDesignTb -> {
                 TcExperimentTb tcExperimentTb = tcExperimentTbMapper.selectOneByExperimentNum(tcExperimentDesignTb.getExperimentNum());
                 List<String> experimentTypeList = new ArrayList<>();

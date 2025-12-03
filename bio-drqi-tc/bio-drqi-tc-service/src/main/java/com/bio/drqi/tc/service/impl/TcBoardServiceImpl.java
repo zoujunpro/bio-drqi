@@ -57,7 +57,7 @@ public class TcBoardServiceImpl implements TcBoardService {
             } else if (StringUtils.isNotEmpty(o1.getPdImplementCode()) && StringUtils.isNotEmpty(o2.getPdImplementCode())) {
                 return o1.getPdImplementCode().compareTo(o2.getPdImplementCode());
             } else if (StringUtils.isEmpty(o1.getPdImplementCode()) && StringUtils.isEmpty(o2.getPdImplementCode())) {
-                return o1.getVectorTaskCode().compareTo(o2.getVectorTaskCode());
+                return -1;
             } else {
                 return -1;
             }

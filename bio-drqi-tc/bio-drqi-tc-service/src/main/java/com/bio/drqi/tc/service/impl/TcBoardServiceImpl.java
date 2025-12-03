@@ -68,8 +68,6 @@ public class TcBoardServiceImpl implements TcBoardService {
         tcBoardCountRspDTO.setCountRegionNum(regionNumList == null ? 0 : regionNumList.size());
         Long sampleNumber = tcSampleTestTbMapper.selectCount(null);
         tcBoardCountRspDTO.setCountSampleNum(sampleNumber.intValue());
-
-
-        return null;
+        return tcBoardCountRspDTO;
     }
 }

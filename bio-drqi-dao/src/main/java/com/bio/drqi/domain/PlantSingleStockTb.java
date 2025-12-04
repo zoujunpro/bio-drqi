@@ -155,6 +155,8 @@ public class PlantSingleStockTb implements Serializable {
      */
     private String vectorTaskCode;
 
+    private String pdImplementCode;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -162,6 +164,7 @@ public class PlantSingleStockTb implements Serializable {
 
     @TableField(exist = false)
     private Integer countNum;
+
 
 
     public static PlantSingleStockTb of(BioSampleTestTb bioSampleTestTb, PlantStatusEnum plantStatusEnum,String plantDate,String taskNum,String sourceCode,String remark) {

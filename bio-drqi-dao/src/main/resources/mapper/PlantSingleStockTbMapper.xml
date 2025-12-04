@@ -31,6 +31,7 @@
             <result property="sourceCode" column="source_code" jdbcType="VARCHAR"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+            <result property="pdImplementCode" column="pd_implement_code" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -42,7 +43,7 @@
         edit_type,species_code,create_date,
         update_time,create_user_id,create_user_name,
         task_num,breed_code,source_code,
-        remark,vector_task_code
+        remark,vector_task_code,pd_implement_code
     </sql>
     <select id="selectOneByPlantCode" resultMap="BaseResultMap">
         select
@@ -84,6 +85,7 @@
             <if test="sourceCode != null and sourceCode!=''">and source_code=#{sourceCode,jdbcType=VARCHAR}</if>
             <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
             <if test="vectorTaskCode != null and vectorTaskCode!=''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="pdImplementCode != null and pdImplementCode!=''">and pd_implement_code=#{pdImplementCode,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>
@@ -96,7 +98,7 @@
         edit_type,species_code,create_date,
         update_time,create_user_id,create_user_name,
         task_num,breed_code,source_code,
-        remark,vector_task_code)
+        remark,vector_task_code,pd_implement_code)
         values
         <foreach collection="plantSingleStockTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.plantCode,jdbcType=VARCHAR},#{item.generation,jdbcType=VARCHAR},
@@ -107,7 +109,7 @@
             #{item.editType,jdbcType=VARCHAR},#{item.speciesCode,jdbcType=VARCHAR},#{item.createDate,jdbcType=TIMESTAMP},
             #{item.updateTime,jdbcType=TIMESTAMP},#{item.createUserId,jdbcType=NUMERIC},#{item.createUserName,jdbcType=VARCHAR},
             #{item.taskNum,jdbcType=VARCHAR},#{item.breedCode,jdbcType=VARCHAR},#{item.sourceCode,jdbcType=VARCHAR},
-            #{item.remark,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR})
+            #{item.remark,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},#{item.pdImplementCode,jdbcType=VARCHAR})
         </foreach>
     </insert>
     <delete id="deleteByTaskNum">
@@ -137,4 +139,9 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </select>
+    <select id="selectCountByVectorTaskCode"  resultMap="BaseResultMap">
+        select count(*) as countNum , vector_task_code  as vectorTaskCode from plant_single_stock_tb
+        group by vector_task_code
+    </select>
+
 </mapper>

@@ -110,6 +110,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 }
                 //首次取样更新临时苗取样数量
                 plantMultipleStockTb.setSampleNumber(plantMultipleStockTb.getSampleNumber() + firstSampleApply.getSampleNumber());
+                plantMultipleStockTb.setSampleNumber(plantMultipleStockTb.getPlantNumber() - firstSampleApply.getSampleNumber());
                 plantMultipleStockTbMapper.updateById(plantMultipleStockTb);
                 //插入数据
                 try {

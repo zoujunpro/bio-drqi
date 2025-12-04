@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.service.plant.impl;
 
 import com.bio.drqi.common.enums.PlantStatusEnum;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.PlantMultipleStockTb;
 import com.bio.drqi.domain.PlantSingleStockTb;
 import com.bio.drqi.manage.plant.rsp.PlantBoardCountPlantByVectorTaskEchartsRspDTO;
@@ -59,11 +60,16 @@ public class PlantBoardServiceImpl implements PlantBoardService {
         Long tempPlantCountNumber = plantMultipleStockTbMapper.selectSumPlantNumber();
         Long tempSampleCountNumber = plantMultipleStockTbMapper.selectSumSampleNumber();
         Long plantCountNumber = plantSingleStockTbMapper.selectCount(null);
+        Long  tempNoSampleCountNumber=plantMultipleStockTbMapper.selectNoSampleNumber();
+        Long transFromCountNumber=plantMultipleStockTbMapper.selectCountBySourceCode(SourceCodeEnum.project.name());
+        Long seedCountNumber=plantMultipleStockTbMapper.selectCountBySourceCode(SourceCodeEnum.cer.name());
         PlantBoardCountRspDTO plantBoardCountRspDTO = new PlantBoardCountRspDTO();
         plantBoardCountRspDTO.setPlantCountNumber(plantCountNumber==null?0:plantCountNumber.intValue());
         plantBoardCountRspDTO.setTempPlantCountNumber(tempPlantCountNumber==null?0:tempPlantCountNumber.intValue());
         plantBoardCountRspDTO.setTempSampleCountNumber(tempSampleCountNumber==null?0:tempSampleCountNumber.intValue());
-        plantBoardCountRspDTO.setTempNoSampleCountNumber(plantBoardCountRspDTO.getTempPlantCountNumber()-plantBoardCountRspDTO.getTempSampleCountNumber());
+        plantBoardCountRspDTO.setTempNoSampleCountNumber(tempNoSampleCountNumber==null?0:tempNoSampleCountNumber.intValue());
+        plantBoardCountRspDTO.setTransFromCountNumber(transFromCountNumber==null?0:transFromCountNumber.intValue());
+        plantBoardCountRspDTO.setSeedCountNumber(seedCountNumber==null?0:seedCountNumber.intValue());
         return plantBoardCountRspDTO;
     }
 }

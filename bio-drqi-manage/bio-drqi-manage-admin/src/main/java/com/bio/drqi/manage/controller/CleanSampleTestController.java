@@ -77,7 +77,6 @@ public class CleanSampleTestController {
     @Resource
     private BioSampleTestHisTbMapper bioSampleTestHisTbMapper;
 
-    @Transactional(rollbackFor = Exception.class)
     @GetMapping("cleanPlantNumber")
     public ResponseResult<String> cleanPlantNumber() {
         List<PlantMultipleStockTb> plantMultipleStockTbList = plantMultipleStockTbMapper.selectSelective(null);
@@ -97,6 +96,7 @@ public class CleanSampleTestController {
                 plantMultipleStockTb.setSampleNumber(sampleNumber.intValue());
                 plantMultipleStockTb.setCurrentNumber(plantMultipleStockTb.getPlantNumber() - plantMultipleStockTb.getSampleNumber());
             }
+            plantMultipleStockTbMapper.updateById(plantMultipleStockTb);
         }
         return ResponseResult.getSuccess("ok");
     }

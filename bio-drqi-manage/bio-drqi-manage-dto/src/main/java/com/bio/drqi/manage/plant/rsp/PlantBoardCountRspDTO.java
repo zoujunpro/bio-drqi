@@ -22,4 +22,10 @@ public class PlantBoardCountRspDTO {
      */
     private Integer  tempNoSampleCountNumber;
 
+    private Integer transFromCountNumber;
+
+    private Integer seedCountNumber;
+
+
+
 }

@@ -35,6 +35,10 @@ public interface PlantMultipleStockTbMapper extends BaseMapper<PlantMultipleStoc
     Long selectSumPlantNumber();
 
     Long selectSumSampleNumber();
+
+    Long selectNoSampleNumber();
+
+   Long selectCountBySourceCode(@Param("sourceCode") String sourceCode);
 }
 
 

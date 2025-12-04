@@ -134,4 +134,24 @@
         select sum(sample_number)
         from plant_multiple_stock_tb
     </select>
+    <select id="selectNoSampleNumber" resultType="java.lang.Long">
+        select count(*)
+        from (select DISTINCT a.id
+              from plant_multiple_stock_tb a
+                       LEFT JOIN bio_sample_test_tb b
+                                 on a.transform_code = b.transform_code and a.vector_task_code = b.vector_task_code
+              where b.sample_code is null
+                and a.source_code = 'project'
+              union
+              select DISTINCT a.id
+              from plant_multiple_stock_tb a
+                       LEFT JOIN bio_sample_test_tb b on a.seed_num = b.seed_num and a.region_num = b.region_num
+              where b.sample_code is null
+                and a.source_code = 'cer') d
+    </select>
+    <select id="selectCountBySourceCode" resultType="java.lang.Long">
+        select
+        count(*)
+        from plant_multiple_stock_tb where  source_code = #{sourceCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

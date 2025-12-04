@@ -143,5 +143,4 @@
         select count(*) as countNum , vector_task_code  as vectorTaskCode from plant_single_stock_tb
         group by vector_task_code
     </select>
-
 </mapper>

@@ -1,10 +1,13 @@
 package com.bio.drqi.manage.service.plant.impl;
 
 import com.bio.drqi.common.enums.PlantStatusEnum;
+import com.bio.drqi.domain.PlantMultipleStockTb;
 import com.bio.drqi.domain.PlantSingleStockTb;
 import com.bio.drqi.manage.plant.rsp.PlantBoardCountPlantByVectorTaskEchartsRspDTO;
+import com.bio.drqi.manage.plant.rsp.PlantBoardCountRspDTO;
 import com.bio.drqi.manage.plant.rsp.PlantBoardPlantStatusEchartsRspDTO;
 import com.bio.drqi.manage.service.plant.PlantBoardService;
+import com.bio.drqi.mapper.PlantMultipleStockTbMapper;
 import com.bio.drqi.mapper.PlantSingleStockTbMapper;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,9 @@ public class PlantBoardServiceImpl implements PlantBoardService {
 
     @Resource
     private PlantSingleStockTbMapper plantSingleStockTbMapper;
+
+    @Resource
+    private PlantMultipleStockTbMapper plantMultipleStockTbMapper;
 
     @Override
     public List<PlantBoardPlantStatusEchartsRspDTO> plantStatusEcharts() {
@@ -36,15 +42,28 @@ public class PlantBoardServiceImpl implements PlantBoardService {
 
     @Override
     public List<PlantBoardCountPlantByVectorTaskEchartsRspDTO> CountPlantByVectorTaskEcharts() {
-        List<PlantBoardCountPlantByVectorTaskEchartsRspDTO> resultList=new ArrayList<>();
+        List<PlantBoardCountPlantByVectorTaskEchartsRspDTO> resultList = new ArrayList<>();
         List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectCountByVectorTaskCode();
-        for (PlantSingleStockTb plantSingleStockTb:plantSingleStockTbList){
-            PlantBoardCountPlantByVectorTaskEchartsRspDTO plantBoardCountPlantByVectorTaskEchartsRspDTO=new PlantBoardCountPlantByVectorTaskEchartsRspDTO();
+        for (PlantSingleStockTb plantSingleStockTb : plantSingleStockTbList) {
+            PlantBoardCountPlantByVectorTaskEchartsRspDTO plantBoardCountPlantByVectorTaskEchartsRspDTO = new PlantBoardCountPlantByVectorTaskEchartsRspDTO();
             plantBoardCountPlantByVectorTaskEchartsRspDTO.setVectorTaskCode(plantSingleStockTb.getVectorTaskCode());
             plantBoardCountPlantByVectorTaskEchartsRspDTO.setCountNumber(plantSingleStockTb.getCountNum());
             resultList.add(plantBoardCountPlantByVectorTaskEchartsRspDTO);
 
         }
         return resultList;
+    }
+
+    @Override
+    public PlantBoardCountRspDTO count() {
+        Long tempPlantCountNumber = plantMultipleStockTbMapper.selectSumPlantNumber();
+        Long tempSampleCountNumber = plantMultipleStockTbMapper.selectSumSampleNumber();
+        Long plantCountNumber = plantSingleStockTbMapper.selectCount(null);
+        PlantBoardCountRspDTO plantBoardCountRspDTO = new PlantBoardCountRspDTO();
+        plantBoardCountRspDTO.setPlantCountNumber(plantCountNumber==null?0:plantCountNumber.intValue());
+        plantBoardCountRspDTO.setTempPlantCountNumber(tempPlantCountNumber==null?0:tempPlantCountNumber.intValue());
+        plantBoardCountRspDTO.setTempSampleCountNumber(tempSampleCountNumber==null?0:tempSampleCountNumber.intValue());
+        plantBoardCountRspDTO.setTempNoSampleCountNumber(plantBoardCountRspDTO.getTempPlantCountNumber()-plantBoardCountRspDTO.getTempSampleCountNumber());
+        return plantBoardCountRspDTO;
     }
 }

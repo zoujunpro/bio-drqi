@@ -31,6 +31,10 @@ public interface PlantMultipleStockTbMapper extends BaseMapper<PlantMultipleStoc
 
     int insertBatch(@Param("plantMultipleStockTbCollection") Collection<PlantMultipleStockTb> plantMultipleStockTbCollection);
 
+
+    Long selectSumPlantNumber();
+
+    Long selectSumSampleNumber();
 }
 
 

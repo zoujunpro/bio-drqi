@@ -4,6 +4,7 @@ package com.bio.drqi.manage.controller.plant;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.plant.rsp.PlantBoardCountPlantByVectorTaskEchartsRspDTO;
+import com.bio.drqi.manage.plant.rsp.PlantBoardCountRspDTO;
 import com.bio.drqi.manage.plant.rsp.PlantBoardPlantStatusEchartsRspDTO;
 import com.bio.drqi.manage.service.plant.PlantBoardService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +45,16 @@ public class PlantBoardController {
     public ResponseResult<List<PlantBoardCountPlantByVectorTaskEchartsRspDTO>> CountPlantByVectorTaskEcharts() {
 
         return ResponseResult.getSuccess(plantBoardService.CountPlantByVectorTaskEcharts());
+    }
+
+    /**
+     * 种植图-数量统计
+     * @return
+     */
+    @GetMapping("count")
+    @WebLog(desc = "种植图-数量统计")
+    public ResponseResult<PlantBoardCountRspDTO>  count(){
+    return ResponseResult.getSuccess(plantBoardService.count());
     }
 
 }

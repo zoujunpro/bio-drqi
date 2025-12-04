@@ -67,7 +67,9 @@
             <if test="vectorTaskCode != null and vectorTaskCode!=''">and
                 vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}
             </if>
-            <if test="pdImplementCode != null and pdImplementCode!=''">and pd_implement_code=#{pdImplementCode,jdbcType=VARCHAR}</if>
+            <if test="pdImplementCode != null and pdImplementCode!=''">and
+                pd_implement_code=#{pdImplementCode,jdbcType=VARCHAR}
+            </if>
             <if test='stockNumberNotNullFlag!="Y"'>and plant_number>0</if>
         </where>
         order by id desc
@@ -123,5 +125,13 @@
         where
         vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
         AND transform_code = #{transformCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSumPlantNumber" resultType="java.lang.Long">
+        select sum(plant_number)
+        from plant_single_stock_tb
+    </select>
+    <select id="selectSumSampleNumber" resultType="java.lang.Long">
+        select sum(sample_number)
+        from plant_single_stock_tb
     </select>
 </mapper>

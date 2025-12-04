@@ -32,6 +32,7 @@ public interface PlantSingleStockTbMapper extends BaseMapper<PlantSingleStockTb>
 
     List<PlantSingleStockTb> selectCountByVectorTaskCode();
 
+
 }
 
 

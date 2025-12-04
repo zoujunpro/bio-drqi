@@ -135,6 +135,10 @@ public class BioSingleStockServiceImpl implements PlantSingleStockService {
                 plantDtlCountRspDTO.setDeleteCountNum(plantSingleStockTb.getCountNum());
             } else if (PlantStatusEnum.STATUS_4.code.equals(plantSingleStockTb.getPlantStatus())) {
                 plantDtlCountRspDTO.setHarvestCountNum(plantSingleStockTb.getCountNum());
+            } else if (PlantStatusEnum.STATUS_5.code.equals(plantSingleStockTb.getPlantStatus())) {
+                plantDtlCountRspDTO.setDeathCountNum(plantSingleStockTb.getCountNum());
+            } else if (PlantStatusEnum.STATUS_6.code.equals(plantSingleStockTb.getPlantStatus())) {
+                plantDtlCountRspDTO.setReproductivePeriodCountNum(plantSingleStockTb.getCountNum());
             }
         }
         return plantDtlCountRspDTO.buildTotalCountNum();

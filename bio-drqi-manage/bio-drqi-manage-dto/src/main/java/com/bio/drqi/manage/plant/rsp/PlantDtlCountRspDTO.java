@@ -10,7 +10,8 @@ public class PlantDtlCountRspDTO {
     private Integer abnormalCountNum;
     private Integer deleteCountNum;
     private Integer harvestCountNum;
-
+    private Integer deathCountNum;
+    private Integer reproductivePeriodCountNum;
     public PlantDtlCountRspDTO buildTotalCountNum() {
         if (normalCountNum == null) {
             normalCountNum = 0;
@@ -24,7 +25,13 @@ public class PlantDtlCountRspDTO {
         if (harvestCountNum == null) {
             harvestCountNum = 0;
         }
-        this.totalCountNum = normalCountNum + abnormalCountNum + deleteCountNum + harvestCountNum;
+        if(reproductivePeriodCountNum==null){
+            reproductivePeriodCountNum=0;
+        }
+        if(deathCountNum==null){
+            deathCountNum=0;
+        }
+        this.totalCountNum = normalCountNum + abnormalCountNum + deleteCountNum + harvestCountNum+deathCountNum+reproductivePeriodCountNum;
         return this;
     }
 }

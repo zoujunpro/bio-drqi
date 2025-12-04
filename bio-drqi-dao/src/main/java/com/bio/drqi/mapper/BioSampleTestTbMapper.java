@@ -1,7 +1,6 @@
 package com.bio.drqi.mapper;
 import java.util.List;
 
-import com.bio.drqi.domain.CerSampleTestTb;
 import org.apache.ibatis.annotations.Param;
 import java.util.Collection;
 
@@ -15,6 +14,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.drqi.domain.PlantSampleTestTb
 */
 public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
+
+    selectCountByMonth
 
     List<BioSampleTestTb> selectAllByVectorTaskCodeAndSampleCode(@Param("vectorTaskCode") String vectorTaskCode, @Param("sampleCode") String sampleCode);
 

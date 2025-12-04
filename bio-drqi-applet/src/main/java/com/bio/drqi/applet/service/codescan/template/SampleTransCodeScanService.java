@@ -12,6 +12,7 @@ import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 取样移苗
@@ -29,7 +30,7 @@ public class SampleTransCodeScanService extends AbstractBaseCodeScanService<Tran
     private CerSubProjectTbMapper cerSubProjectTbMapper;
 
     @Resource
-    private CerSampleTestTbMapper cerSampleTestTbMapper;
+    private BioSampleTestTbMapper bioSampleTestTbMapper;
 
     @Resource
     private CerTransformTbMapper cerTransformTbMapper;
@@ -60,8 +61,8 @@ public class SampleTransCodeScanService extends AbstractBaseCodeScanService<Tran
         CerConversionAndTransTb cerConversionAndTransTb = cerConversionAndTransTbMapper.selectOneByTaskNum(transUniqueCodeDTO.getApplyNo());
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
         CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerVectorTaskTb.getSubProjectCode());
-        CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByUniqueCode(cerVectorTaskTb.getProjectCode() + transUniqueCodeDTO.getSampleCode());
-        CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerSampleTestTb.getTransformCode(), cerSampleTestTb.getVectorTaskCode());
+        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(transUniqueCodeDTO.getSampleCode());
+        CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(bioSampleTestTbList.get(0).getTransformCode(), bioSampleTestTbList.get(0).getVectorTaskCode());
         CerVectorGroupTb cerVectorGroupTb = cerVectorGroupTbMapper.selectOneByGroupNameAndVectorTaskId(cerTransformTb.getPlasmidName(), cerVectorTaskTb.getId());
 
         ScanCodeSampleTestTransRspDTO scanCodeSampleTestTransRspDTO = new ScanCodeSampleTestTransRspDTO();
@@ -70,10 +71,10 @@ public class SampleTransCodeScanService extends AbstractBaseCodeScanService<Tran
         scanCodeSampleTestTransRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
         scanCodeSampleTestTransRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         scanCodeSampleTestTransRspDTO.setTransformName(cerVectorGroupTb.getPlasmidNames());
-        scanCodeSampleTestTransRspDTO.setTransformCode(cerSampleTestTb.getTransformCode());
+        scanCodeSampleTestTransRspDTO.setTransformCode(bioSampleTestTbList.get(0).getTransformCode());
         scanCodeSampleTestTransRspDTO.setUrls(JSONUtil.toList(cerConversionAndTransTb.getImageUrl(),String.class));
 
-        ScanCodeSampleTestTransRspDTO.SampleTest sampleTest = BeanUtil.copyProperties(cerSampleTestTb, ScanCodeSampleTestTransRspDTO.SampleTest.class);
+        ScanCodeSampleTestTransRspDTO.SampleTest sampleTest = BeanUtil.copyProperties(bioSampleTestTbList.get(0), ScanCodeSampleTestTransRspDTO.SampleTest.class);
         scanCodeSampleTestTransRspDTO.setSampleTest(sampleTest);
         return scanCodeSampleTestTransRspDTO;
     }

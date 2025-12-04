@@ -142,33 +142,6 @@ public class BioSampleTestOneResultTb implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
-
-    public static BioSampleTestOneResultTb of(CerSampleTestTb cerSampleTestTb, String channel, String taskNum, String uploadNum) {
-        BioSampleTestOneResultTb bioSampleSampleOneResultTb = new BioSampleTestOneResultTb();
-        bioSampleSampleOneResultTb.setSampleCode(cerSampleTestTb.getSampleCode());
-        bioSampleSampleOneResultTb.setTestIdentifyPrimer(cerSampleTestTb.getTestIdentifyPrimer());
-        bioSampleSampleOneResultTb.setTestMethod(cerSampleTestTb.getTestMethod());
-        bioSampleSampleOneResultTb.setTestEditType(cerSampleTestTb.getTestEditType());
-        bioSampleSampleOneResultTb.setTestNoTransIdentityPrimer(cerSampleTestTb.getTestNoTransIdentityPrimer());
-        bioSampleSampleOneResultTb.setTestIsGeneModifyPositive(cerSampleTestTb.getTestIsGeneModifyPositive());
-        bioSampleSampleOneResultTb.setTestIfFixedPoint(cerSampleTestTb.getTestIfFixedPoint());
-        bioSampleSampleOneResultTb.setTestIfCopyInsert(cerSampleTestTb.getTestIfCopyInsert());
-        bioSampleSampleOneResultTb.setTestFixedPointType(cerSampleTestTb.getTestFixedPointType());
-        bioSampleSampleOneResultTb.setTestDonorResidueInfo(cerSampleTestTb.getTestDonorResidueInfo());
-        bioSampleSampleOneResultTb.setTestInsertionSite(cerSampleTestTb.getTestInsertionSite());
-        bioSampleSampleOneResultTb.setTestElisaResult(cerSampleTestTb.getTestElisaResult());
-        bioSampleSampleOneResultTb.setTestQbzrSeq(cerSampleTestTb.getTestQbzrSeq());
-        bioSampleSampleOneResultTb.setTestEditResidueInfo(cerSampleTestTb.getTestEditResidueInfo());
-        bioSampleSampleOneResultTb.setTestUserId(cerSampleTestTb.getTestUserId());
-        bioSampleSampleOneResultTb.setTestUserName(cerSampleTestTb.getTestUserName());
-        bioSampleSampleOneResultTb.setTestTime(cerSampleTestTb.getTestTime());
-        bioSampleSampleOneResultTb.setCreateTime(new Date());
-        bioSampleSampleOneResultTb.setTestChannel(channel);
-        bioSampleSampleOneResultTb.setTaskNum(taskNum);
-        bioSampleSampleOneResultTb.setUploadNum(uploadNum);
-        return bioSampleSampleOneResultTb;
-    }
-
     public static BioSampleTestOneResultTb of(BioSampleTestTb bioSampleTestTb, String channel, String taskNum, String uploadNum) {
         BioSampleTestOneResultTb bioSampleSampleOneResultTb = new BioSampleTestOneResultTb();
         bioSampleSampleOneResultTb.setSampleCode(bioSampleTestTb.getSampleCode());

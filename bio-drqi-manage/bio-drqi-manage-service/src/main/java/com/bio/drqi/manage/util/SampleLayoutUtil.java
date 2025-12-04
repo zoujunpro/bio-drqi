@@ -1,7 +1,6 @@
 package com.bio.drqi.manage.util;
 
 import com.bio.drqi.domain.BioSampleTestTb;
-import com.bio.drqi.domain.CerSampleTestTb;
 import com.bio.drqi.manage.base.SampleUnitDTO;
 import lombok.Data;
 

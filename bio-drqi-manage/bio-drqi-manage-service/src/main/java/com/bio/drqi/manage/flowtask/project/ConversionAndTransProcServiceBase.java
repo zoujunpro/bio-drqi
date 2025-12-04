@@ -37,7 +37,7 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
     private BioSampleTestTbMapper bioSampleTestTbMapper;
 
     @Resource
-    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+    private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
@@ -150,7 +150,7 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
         if (cerConversionAndTransTb != null) {
             cerConversionAndTransTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
             cerConversionAndTransRefMapper.deleteByConversionAndTransId(cerConversionAndTransTb.getId());
-            cerPlantDtlTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
+            plantSingleStockTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         }
         cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.cer_plant.name());
 

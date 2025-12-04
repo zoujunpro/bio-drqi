@@ -1,7 +1,6 @@
 package com.bio.drqi.manage.util;
 
 import com.bio.drqi.manage.base.SampleUnitDTO;
-import com.bio.drqi.domain.CerSampleTestTb;
 import lombok.Data;
 
 import java.util.ArrayList;

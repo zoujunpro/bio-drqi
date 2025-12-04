@@ -35,7 +35,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
     private SeedStockInLogMapper seedStockInLogMapper;
 
     @Resource
-    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+    private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
     @Resource
     private CerProjectTbMapper cerProjectTbMapper;
@@ -121,8 +121,8 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 if (StringUtils.isEmpty(executeFormContent.getVectorTaskCode())) {
                     throw new BusinessException("CER的T1代种子请填写所属实施方案");
                 }
-                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(executeFormContent.getPlantCode());
-                if (cerPlantDtlTb == null) {
+                PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(executeFormContent.getPlantCode());
+                if (plantSingleStockTb == null) {
                     throw new BusinessException(executeFormContent.getPlantCode() + "种植编号不存在:" + executeFormContent.getPlantCode());
                 }
             }

@@ -17,7 +17,7 @@ import java.util.List;
 public class T0PlantCodeScanService extends AbstractBaseCodeScanService<PlantUniqueCodeDTO, ScanCodeT0PlantTestRspDTO> {
 
     @Resource
-    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+    private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
@@ -29,7 +29,7 @@ public class T0PlantCodeScanService extends AbstractBaseCodeScanService<PlantUni
     private CerSubProjectTbMapper cerSubProjectTbMapper;
 
     @Resource
-    private CerSampleTestTbMapper cerSampleTestTbMapper;
+    private BioSampleTestTbMapper bioSampleTestTbMapper;
 
 
     @Override
@@ -43,28 +43,25 @@ public class T0PlantCodeScanService extends AbstractBaseCodeScanService<PlantUni
 
     @Override
     public ScanCodeT0PlantTestRspDTO dealCodeContent(PlantUniqueCodeDTO plantUniqueCodeDTO) {
-        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(plantUniqueCodeDTO.getPlantCode());
-        if (cerPlantDtlTb == null) {
+        PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(plantUniqueCodeDTO.getPlantCode());
+        if (plantSingleStockTb == null) {
             throw new BusinessException("无此T0代种植信息");
         }
+        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(plantSingleStockTb.getPlantCode());
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(plantSingleStockTb.getVectorTaskCode());
 
-        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
-        CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerPlantDtlTb.getProjectCode());
-
-        CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerPlantDtlTb.getSubProjectCode());
+        CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerVectorTaskTb.getSubProjectCode());
         ScanCodeT0PlantTestRspDTO scanCodeT0PlantTestRspDTO = new ScanCodeT0PlantTestRspDTO();
 
-        scanCodeT0PlantTestRspDTO.setProjectCode(cerProjectTb.getProjectCode());
-        scanCodeT0PlantTestRspDTO.setProjectName(cerProjectTb.getProjectName());
+        scanCodeT0PlantTestRspDTO.setProjectCode(cerVectorTaskTb.getProjectCode());
         scanCodeT0PlantTestRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
         scanCodeT0PlantTestRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-        scanCodeT0PlantTestRspDTO.setPlantDtlInfo(BeanUtils.copyProperties(cerPlantDtlTb, ScanCodeT0PlantTestRspDTO.PlantDtlInfo.class));
+        scanCodeT0PlantTestRspDTO.setPlantDtlInfo(BeanUtils.copyProperties(plantSingleStockTb, ScanCodeT0PlantTestRspDTO.PlantDtlInfo.class));
         scanCodeT0PlantTestRspDTO.getPlantDtlInfo().setGeneration(GenerationEnum.getGenerationDesc(scanCodeT0PlantTestRspDTO.getPlantDtlInfo().getGeneration()));
 
 
         //取样信息
-        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllByVectorTaskCodeAndSampleCode(plantUniqueCodeDTO.getVectorTaskCode(), plantUniqueCodeDTO.getPlantCode());
-        scanCodeT0PlantTestRspDTO.setSampleInfoList(BeanUtils.copyToList(cerSampleTestTbList,ScanCodeT0PlantTestRspDTO.SampleInfo.class));
+        scanCodeT0PlantTestRspDTO.setSampleInfoList(BeanUtils.copyToList(bioSampleTestTbList, ScanCodeT0PlantTestRspDTO.SampleInfo.class));
         return scanCodeT0PlantTestRspDTO;
     }
 }

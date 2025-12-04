@@ -14,8 +14,9 @@ import com.bio.drqi.enums.ImplementationPlanTypeEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.drqi.manage.dto.project.NewSampleTestDTO;
 import com.bio.drqi.manage.sample.req.LayoutConfirmReqDTO;
-import com.bio.drqi.manage.service.project.CerSampleTestService;
+import com.bio.drqi.manage.service.bio.BioSampleTestService;
 import com.bio.drqi.mapper.*;
+import com.bio.drqi.service.BioHisSampleTestTbService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     private BioSampleCodePrefixTbMapper bioSampleCodePrefixTbMapper;
 
     @Resource
-    private CerSampleTestService cerSampleTestService;
+    private BioSampleTestService bioSampleTestService;
 
     @Resource
     private BioSampleLayoutTbMapper bioSampleLayoutTbMapper;
@@ -113,7 +114,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         for (BioSampleTestTb bioSampleTestTb : bioSampleTestTbList) {
                             layoutConfirmReqDTO.fillSampleToSingleList(bioSampleTestTb.getVectorTaskCode(), bioSampleTestTb.getTransformCode(), bioSampleTestTb.getSampleCode(), bioSampleTestTb.getIdentifyPrimer());
                         }
-                        cerSampleTestService.layoutConfirm(layoutConfirmReqDTO);
+                        bioSampleTestService.layoutConfirm(layoutConfirmReqDTO);
                     }
 
                 }

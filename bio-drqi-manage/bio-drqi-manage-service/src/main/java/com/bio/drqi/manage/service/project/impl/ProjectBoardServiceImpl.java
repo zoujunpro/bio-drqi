@@ -1,12 +1,12 @@
 package com.bio.drqi.manage.service.project.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.bio.drqi.domain.BioSampleTestTb;
 import com.bio.drqi.manage.board.*;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.enums.ImplementationPlanTypeEnum;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.drqi.domain.CerConversionAndTransTb;
-import com.bio.drqi.domain.CerSampleTestTb;
 import com.bio.drqi.domain.CerVectorStepLog;
 import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.manage.service.project.ProjectBoardService;
@@ -35,7 +35,7 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
     private CerConversionAndTransTbMapper cerConversionAndTransTbMapper;
 
     @Resource
-    private CerSampleTestTbMapper cerSampleTestTbMapper;
+    private BioSampleTestTbMapper bioSampleTestTbMapper;
 
     @Resource
     private CerVectorStepLogMapper cerVectorStepLogMapper;
@@ -56,7 +56,7 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
         projectTaskCountRspDTO.setConversionAndTransCountNum(conversionAndTransCountNum == null ? 0 : conversionAndTransCountNum);
         Integer transFormCountNum = cerTransformTbMapper.selectSumInfectNumber();
         projectTaskCountRspDTO.setVectorTaskCountNum(cerVectorTaskTbMapper.selectCountNum());
-        projectTaskCountRspDTO.setSampleCountNum(cerSampleTestTbMapper.selectCountNum());
+        projectTaskCountRspDTO.setSampleCountNum(bioSampleTestTbMapper.selectCountNum());
         projectTaskCountRspDTO.setTransFormCountNum(transFormCountNum==null?0:transFormCountNum);
         return projectTaskCountRspDTO;
     }
@@ -80,7 +80,7 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
     @Override
     public List<CountSampleByMonthRspDTO> countSampleByMonth(String year) {
         List<CountSampleByMonthRspDTO> countSampleByMonthRspDTOList = new ArrayList<>();
-        List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectCountByMonth(year);
+        List<BioSampleTestTb> cerSampleTestTbList = bioSampleTestTbMapper.selectCountByMonth(year);
         Map<String, Integer> sqlMap = cerSampleTestTbList.stream().collect(Collectors.toMap(CerSampleTestTb::getSampleMonth, CerSampleTestTb::getCountNum));
         List<String> monthList = createMonthList(year);
         monthList.forEach(month -> {

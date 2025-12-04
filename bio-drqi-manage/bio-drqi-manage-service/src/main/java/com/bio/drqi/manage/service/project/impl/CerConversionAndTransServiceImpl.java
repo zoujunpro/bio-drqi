@@ -5,25 +5,25 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
+import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
+import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.enums.ConversionAndTransTypeEnum;
-import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.enums.VectorTaskStatusEnum;
 import com.bio.drqi.manage.dto.project.ConversionAndTransDTO;
-import com.bio.drqi.manage.service.project.CerConversionAndTransService;
-import com.bio.drqi.mapper.*;
 import com.bio.drqi.manage.project.req.CerConversionAndTransConfirmReqDTO;
 import com.bio.drqi.manage.project.req.ConversionAndTransDetailReqDTO;
 import com.bio.drqi.manage.project.req.ConversionAndTransReqDTO;
 import com.bio.drqi.manage.project.rsp.ConversionAndTransDetailRspDTO;
 import com.bio.drqi.manage.project.rsp.ConversionAndTransRspDTO;
-import com.bio.common.core.dto.BusinessException;
-import com.bio.common.core.util.BeanUtils;
-import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.manage.service.project.CerConversionAndTransService;
+import com.bio.drqi.mapper.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -54,9 +54,6 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
 
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
-
-    @Resource
-    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
 
     @Resource
     private BioSampleTestTbMapper bioSampleTestTbMapper;
@@ -176,8 +173,8 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                     plantMultipleStockTb.setPlantDate(DateUtil.format(new Date(), DatePattern.NORM_DATE_PATTERN));
                     plantMultipleStockTbMapper.insert(plantMultipleStockTb);
                 } else {
-                    plantMultipleStockTb.setPlantNumber(transFormList.get(0).getAcceptNum() + (plantMultipleStockTb.getPlantNumber()==null?0:plantMultipleStockTb.getPlantNumber()));
-                    plantMultipleStockTb.setCurrentNumber(transFormList.get(0).getAcceptNum() + (plantMultipleStockTb.getCurrentNumber()==null?0:plantMultipleStockTb.getCurrentNumber()));
+                    plantMultipleStockTb.setPlantNumber(transFormList.get(0).getAcceptNum() + (plantMultipleStockTb.getPlantNumber() == null ? 0 : plantMultipleStockTb.getPlantNumber()));
+                    plantMultipleStockTb.setCurrentNumber(transFormList.get(0).getAcceptNum() + (plantMultipleStockTb.getCurrentNumber() == null ? 0 : plantMultipleStockTb.getCurrentNumber()));
                     plantMultipleStockTbMapper.updateById(plantMultipleStockTb);
                 }
 
@@ -222,7 +219,7 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 cerConversionAndTransTb.setTransNumber((cerConversionAndTransTb.getTransNumber() == null ? 0 : cerConversionAndTransTb.getTransNumber()) + 1);
                 cerConversionAndTransTbMapper.updateById(cerConversionAndTransTb);
 
-                PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(bioSampleTestTb, PlantStatusEnum.STATUS_1, DateUtil.format(new Date(),DatePattern.NORM_DATE_PATTERN), bioTaskDtlTb.getTaskNum(),SourceCodeEnum.project.name(), "移苗取样数据");
+                PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(bioSampleTestTb, PlantStatusEnum.STATUS_1, DateUtil.format(new Date(), DatePattern.NORM_DATE_PATTERN), bioTaskDtlTb.getTaskNum(), SourceCodeEnum.project.name(), "移苗取样数据");
                 if (Objects.isNull(plantSingleStockTbMapper.selectOneByPlantCode(plantSingleStockTb.getPlantCode()))) {
                     plantSingleStockTbMapper.insert(plantSingleStockTb);
                 }

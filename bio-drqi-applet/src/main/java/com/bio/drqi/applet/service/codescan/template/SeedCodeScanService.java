@@ -5,6 +5,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.applet.dto.rsp.ScanCodeSeedRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.SeedUniqueCodeDTO;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
@@ -37,10 +38,10 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
     private SeedStockTbMapper seedStockTbMapper;
 
     @Resource
-    private CerSampleTestTbMapper cerSampleTestTbMapper;
+    private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
     @Resource
-    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
+    private BioSampleTestTbMapper bioSampleTestTbMapper;
 
     @Resource
     private BioDictMapper bioDictMapper;
@@ -83,7 +84,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setSpeciesCode(seedStockTb.getSpeciesCode());
             seed.setSpeciesName(cerSpeciesConfMap.get(seedStockTb.getSpeciesCode()).getSpeciesName());
             seed.setBreedCode(seedStockTb.getBreedCode());
-            seed.setBreedName(cerBreedDictMap.get(seed.getSpeciesCode()+":"+seedStockTb.getBreedCode()).getBreedName());
+            seed.setBreedName(cerBreedDictMap.get(seed.getSpeciesCode() + ":" + seedStockTb.getBreedCode()).getBreedName());
             seed.setPollinationMethod(seedStockTb.getPollinationMethod());
             seed.setHarvestType(seedStockTb.getHarvestType());
             if (StringUtils.isNotEmpty(seed.getHarvestType())) {
@@ -96,7 +97,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             if (StringUtils.isNotEmpty(seed.getSourceType())) {
                 seed.setSourceTypeName(bioDictMap.get(BioDictTypeEnum.SOURCE_CHANNEL.name() + ":" + seedStockTb.getSourceType()).getDictValueName());
             }
-          //  seed.setProductionLocationName(seedStockTb.getProductionLocationName());
+            //  seed.setProductionLocationName(seedStockTb.getProductionLocationName());
             seed.setStockLocationNum(seedStockTb.getStockLocationNum());
             seed.setSubmitUserId(seedStockTb.getSubmitUserId());
             seed.setSubmitUserName(seedStockTb.getSubmitUserName());
@@ -107,10 +108,10 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setGeneticCharacter(seedStockTb.getTargetCharacter());
             seed.setAliasName(seedStockTb.getAliasName());
             seed.setGeneType(seedStockTb.getGeneType());
-             if(seedStockTb.getMaterialType()!=null){
-                 seed.setMaterialType(seedStockTb.getMaterialType());
-                 seed.setMaterialTypeName(bioDictMap.get(BioDictTypeEnum.MATERIAL_TYPE.name() + ":" + seedStockTb.getMaterialType()).getDictValueName());
-             }
+            if (seedStockTb.getMaterialType() != null) {
+                seed.setMaterialType(seedStockTb.getMaterialType());
+                seed.setMaterialTypeName(bioDictMap.get(BioDictTypeEnum.MATERIAL_TYPE.name() + ":" + seedStockTb.getMaterialType()).getDictValueName());
+            }
 
 
             scanCodeSeedRspDTO.getSeedList().add(seed);
@@ -118,15 +119,12 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
         if (CollectionUtil.isNotEmpty(seedStockTbList)) {
             SeedStockTb firstSeed = seedStockTbList.get(0);
             if (StringUtils.isNotEmpty(firstSeed.getPlantCode())) {
-                CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(firstSeed.getPlantCode());
-                if (cerPlantDtlTb != null) {
-                    CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerPlantDtlTb.getProjectCode());
-                    CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerPlantDtlTb.getSubProjectCode());
-                    CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
-                    CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(cerPlantDtlTb.getTransformCode(), cerVectorTaskTb.getVectorTaskCode());
-                    scanCodeSeedRspDTO.setProjectCode(cerProjectTb.getProjectCode());
-                    scanCodeSeedRspDTO.setProjectName(cerProjectTb.getProjectName());
-                    scanCodeSeedRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
+                PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(firstSeed.getPlantCode());
+                if (plantSingleStockTb != null && SourceCodeEnum.project.name().equals(plantSingleStockTb.getSourceCode())) {
+                    List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(plantSingleStockTb.getSampleCode());
+                    CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(plantSingleStockTb.getVectorTaskCode());
+                    CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(bioSampleTestTbList.get(0).getTransformCode(), cerVectorTaskTb.getVectorTaskCode());
+                    scanCodeSeedRspDTO.setSubProjectCode(cerTransformTb.getSubProjectCode());
                     scanCodeSeedRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
                     scanCodeSeedRspDTO.setPlasmidNames(cerTransformTb.getPlasmidName());
                     scanCodeSeedRspDTO.setTransformCode(cerTransformTb.getTransformCode());

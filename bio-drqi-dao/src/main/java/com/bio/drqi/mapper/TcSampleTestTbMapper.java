@@ -2,7 +2,6 @@ package com.bio.drqi.mapper;
 
 import java.util.List;
 
-import com.bio.drqi.domain.CerSampleTestTb;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;

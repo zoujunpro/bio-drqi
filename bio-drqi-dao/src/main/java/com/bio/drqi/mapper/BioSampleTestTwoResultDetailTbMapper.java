@@ -2,7 +2,6 @@ package com.bio.drqi.mapper;
 
 import com.bio.drqi.domain.BioSampleTestTwoResultDetailTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.bio.drqi.domain.CerSampleTestTb;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;

@@ -5,11 +5,11 @@ import cn.hutool.core.io.FileUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
-import com.bio.drqi.domain.CerSampleTestTb;
+import com.bio.drqi.domain.BioSampleTestTb;
 import com.bio.drqi.manage.service.project.TissueEmbryoManageService;
-import com.bio.drqi.mapper.CerSampleTestTbMapper;
 import com.bio.drqi.manage.tissueEmbryo.TissueEmbryoDataExcelDTO;
 import com.bio.drqi.manage.tissueEmbryo.TissueEmbryoDataRspDTO;
+import com.bio.drqi.mapper.BioSampleTestTbMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +23,7 @@ import java.util.UUID;
 public class TissueEmbryoManageServiceImpl implements TissueEmbryoManageService {
 
     @Resource
-    private CerSampleTestTbMapper cerSampleTestTbMapper;
+    private BioSampleTestTbMapper  bioSampleTestTbMapper;
 
     @Override
     public List<TissueEmbryoDataRspDTO> parseExcel(MultipartFile file) {
@@ -39,8 +39,8 @@ public class TissueEmbryoManageServiceImpl implements TissueEmbryoManageService 
 
 
         for (TissueEmbryoDataExcelDTO tissueEmbryoDataExcelDTO : tissueEmbryoDataExcelDTOList) {
-            List<CerSampleTestTb> cerSampleTestTbList = cerSampleTestTbMapper.selectAllBySampleCode(tissueEmbryoDataExcelDTO.getSampleCode());
-            if (CollectionUtil.isEmpty(cerSampleTestTbList)) {
+            List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(tissueEmbryoDataExcelDTO.getSampleCode());
+            if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
                 throw new BusinessException("取样编号不存在:" + tissueEmbryoDataExcelDTO.getSampleCode());
             }
         }

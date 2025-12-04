@@ -14,6 +14,8 @@ public interface CerSampleTestOperateLogMapper extends BaseMapper<CerSampleTestO
 
     CerSampleTestOperateLog selectOneByUniqueCode(@Param("uniqueCode") String uniqueCode);
 
+    CerSampleTestOperateLog selectOneBySampleCode(@Param("sampleCode") String sampleCode);
+
 }
 
 

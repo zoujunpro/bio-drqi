@@ -32,13 +32,10 @@ public class SeedlingServiceImpl implements SeedlingService {
 
 
     @Resource
-    private CerSampleTestTbMapper cerSampleTestTbMapper;
+    private BioSampleTestTbMapper bioSampleTestTbMapper;
 
     @Resource
-    private CerPlantDtlTbMapper cerPlantDtlTbMapper;
-
-    @Resource
-    private CerSampleTestOperateLogMapper cerSampleTestOperateLogMapper;
+    private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
     @Resource
     private CerPlantOperateLogMapper cerPlantOperateLogMapper;
@@ -50,52 +47,20 @@ public class SeedlingServiceImpl implements SeedlingService {
     private CerSpeciesPlantFeaturesConfMapper cerSpeciesPlantFeaturesConfMapper;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void remain(SeedlingRemainReqDTO seedlingRemainReqDTO) {
-        CerSampleTestTb cerSampleTestTb = cerSampleTestTbMapper.selectOneByVectorTaskCodeAndSampleCodeFirst(seedlingRemainReqDTO.getVectorTaskCode(), seedlingRemainReqDTO.getSampleCode());
-        if (cerSampleTestTb == null) {
-            throw new BusinessException("找不到此取样信息");
-        }
-        CerSampleTestOperateLog cerSampleTestOperateLog = cerSampleTestOperateLogMapper.selectOneByUniqueCode(cerSampleTestTb.getProjectCode() + cerSampleTestTb.getSampleCode());
-        if (cerSampleTestOperateLog != null) {
-            throw new BusinessException("已经做过保苗/剔苗操作");
-        }
-        CerPlantDtlTb cerPlantDtlTb = CerPlantDtlTb.of(cerSampleTestTb, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(),null);
-        cerPlantDtlTb.setPlantCode(cerSampleTestTb.getSampleCode());
-        cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_1.code);
-        cerPlantDtlTbMapper.insert(cerPlantDtlTb);
-        cerSampleTestOperateLog = new CerSampleTestOperateLog();
-        cerSampleTestOperateLog.setProjectCode(cerSampleTestTb.getProjectCode());
-        cerSampleTestOperateLog.setVectorTaskCode(cerSampleTestTb.getVectorTaskCode());
-        cerSampleTestOperateLog.setProjectId(cerSampleTestTb.getProjectId());
-        cerSampleTestOperateLog.setVectorTaskId(cerSampleTestTb.getVectorTaskId());
-        cerSampleTestOperateLog.setSampleCode(cerSampleTestTb.getSampleCode());
-        cerSampleTestOperateLog.setOperateCode(CheckResultOperateEnum.remain.name());
-        cerSampleTestOperateLog.setRemark(null);
-        cerSampleTestOperateLog.setPictureUrls(JSONUtil.toJsonStr(seedlingRemainReqDTO.getPictureUrls()));
-        cerSampleTestOperateLog.setCreateTime(new Date());
-        cerSampleTestOperateLog.setUniqueCode(cerSampleTestTb.getProjectCode() + cerSampleTestTb.getSampleCode());
-        cerSampleTestOperateLog.setCreateUserId(SecurityContextHolder.getUserId());
-        cerSampleTestOperateLog.setCreateUserName(SecurityContextHolder.getNickName());
-        cerSampleTestOperateLogMapper.insert(cerSampleTestOperateLog);
-
-    }
-
-    @Override
     public void remove(SeedlingRemoveReqDTO seedlingRemoveReqDTO) {
-        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(seedlingRemoveReqDTO.getPlantCode());
-        if (cerPlantDtlTb == null) {
+        PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(seedlingRemoveReqDTO.getPlantCode());
+        if (plantSingleStockTb == null) {
             throw new BusinessException("无此种植编号");
         }
-        if(PlantStatusEnum.STATUS_3.code.equals(cerPlantDtlTb.getPlantStatus())){
+        if(PlantStatusEnum.STATUS_3.code.equals(plantSingleStockTb.getPlantStatus())){
             throw new BusinessException("此苗已经剔除");
         }
 
-        cerPlantDtlTb.setPlantStatus(PlantStatusEnum.STATUS_3.code);
-        cerPlantDtlTbMapper.updateById(cerPlantDtlTb);
+        plantSingleStockTb.setPlantStatus(PlantStatusEnum.STATUS_3.code);
+        plantSingleStockTbMapper.updateById(plantSingleStockTb);
 
         CerPlantOperateLog cerPlantOperateLog = new CerPlantOperateLog();
-        cerPlantOperateLog.setPlantCode(cerPlantDtlTb.getPlantCode());
+        cerPlantOperateLog.setPlantCode(plantSingleStockTb.getPlantCode());
         cerPlantOperateLog.setPictureUrls(JSONUtil.toJsonStr(seedlingRemoveReqDTO.getPictureUrls()));
         cerPlantOperateLog.setRemark(seedlingRemoveReqDTO.getRemark());
         cerPlantOperateLog.setCreateTime(new Date());
@@ -112,28 +77,24 @@ public class SeedlingServiceImpl implements SeedlingService {
 
     @Override
     public void report(SeedlingReportReqDTO seedlingReportReqDTO) {
-        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(seedlingReportReqDTO.getPlantCode());
-        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
-        List<CerSpeciesPlantFeaturesConf> cerSpeciesPlantFeaturesConfList = cerSpeciesPlantFeaturesConfMapper.selectAllBySpeciesCodeOrderByOrderNum(cerVectorTaskTb.getSpeciesCode());
+        PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(seedlingReportReqDTO.getPlantCode());
+        List<CerSpeciesPlantFeaturesConf> cerSpeciesPlantFeaturesConfList = cerSpeciesPlantFeaturesConfMapper.selectAllBySpeciesCodeOrderByOrderNum(plantSingleStockTb.getSpeciesCode());
 
-        if (PlantStatusEnum.STATUS_3.code.equals(cerPlantDtlTb.getPlantStatus())) {
-            throw new BusinessException("苗已剔除");
-        }
         List<SeedlingReportReqDTO.Attribute> attributeList = seedlingReportReqDTO.getAttributes();
         if (CollectionUtil.isNotEmpty(attributeList)) {
             for (SeedlingReportReqDTO.Attribute attribute : attributeList) {
                 if (CerPlantFixedFieldEnum.harvestDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setHarvestDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
+                    plantSingleStockTb.setHarvestDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
                 } else if (CerPlantFixedFieldEnum.pollinationDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setPollinationDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
+                    plantSingleStockTb.setPollinationDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
                 } else if (CerPlantFixedFieldEnum.vernalizationEndDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setVernalizationEndDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
+                    plantSingleStockTb.setVernalizationEndDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
                 } else if (CerPlantFixedFieldEnum.vernalizationBeginDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setVernalizationBeginDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
+                    plantSingleStockTb.setVernalizationBeginDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
                 } else if (CerPlantFixedFieldEnum.transplantDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setTransplantDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
+                    plantSingleStockTb.setTransplantDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
                 } else if (CerPlantFixedFieldEnum.plantDate.fieldEName.equals(attribute.getName())) {
-                    cerPlantDtlTb.setPlantDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
+                    plantSingleStockTb.setPlantDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
                 }
             }
 
@@ -150,11 +111,11 @@ public class SeedlingServiceImpl implements SeedlingService {
                 }
             }
             if (CollectionUtil.isNotEmpty(result)) {
-                cerPlantDtlTb.setOtherField(JSONUtil.toJsonStr(result));
+                plantSingleStockTb.setOtherField(JSONUtil.toJsonStr(result));
             }
         }
-        cerPlantDtlTb.setPlantStatus(seedlingReportReqDTO.getPlantStatus());
-        cerPlantDtlTbMapper.updateById(cerPlantDtlTb);
+        plantSingleStockTb.setPlantStatus(seedlingReportReqDTO.getPlantStatus());
+        plantSingleStockTbMapper.updateById(plantSingleStockTb);
 
         CerPlantOperateLog cerPlantOperateLog = new CerPlantOperateLog();
         cerPlantOperateLog.setPlantCode(seedlingReportReqDTO.getPlantCode());
@@ -173,15 +134,15 @@ public class SeedlingServiceImpl implements SeedlingService {
     @Override
     public List<Map<String, String>> findPlantField(FindPlantFieldReqDTO findPlantFieldReqDTO) {
         List<Map<String, String>> mapListResult = new ArrayList<>();
-        CerPlantDtlTb cerPlantDtlTb = cerPlantDtlTbMapper.selectOneByPlantCode(findPlantFieldReqDTO.getPlantCode());
-        if (cerPlantDtlTb == null) {
+        PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(findPlantFieldReqDTO.getPlantCode());
+        if (plantSingleStockTb == null) {
             throw new BusinessException("种植明细不存在");
         }
-        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(cerPlantDtlTb.getVectorTaskCode());
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(plantSingleStockTb.getVectorTaskCode());
         List<CerSpeciesPlantFeaturesConf> cerSpeciesPlantFeaturesConfList = cerSpeciesPlantFeaturesConfMapper.selectAllBySpeciesCodeOrderByOrderNum(cerVectorTaskTb.getSpeciesCode());
         //去除已经有属性的数据
-        if (cerPlantDtlTb.getOtherField() != null) {
-            List<SeedlingReportReqDTO.Attribute> attributeList = JSONUtil.toList(JSONUtil.toJsonStr(cerPlantDtlTb.getOtherField()), SeedlingReportReqDTO.Attribute.class);
+        if (plantSingleStockTb.getOtherField() != null) {
+            List<SeedlingReportReqDTO.Attribute> attributeList = JSONUtil.toList(JSONUtil.toJsonStr(plantSingleStockTb.getOtherField()), SeedlingReportReqDTO.Attribute.class);
             List<String> filedCodeList = attributeList.stream().map(SeedlingReportReqDTO.Attribute::getName).collect(Collectors.toList());
             cerSpeciesPlantFeaturesConfList = cerSpeciesPlantFeaturesConfList.stream().filter(cerSpeciesPlantFeaturesConf -> !filedCodeList.contains(cerSpeciesPlantFeaturesConf.getPlantFeaturesName())).collect(Collectors.toList());
         }
@@ -191,32 +152,32 @@ public class SeedlingServiceImpl implements SeedlingService {
             map.put(cerSpeciesPlantFeaturesConf.getPlantFeaturesName(), cerSpeciesPlantFeaturesConf.getPlantFeaturesDesc());
         }
 
-        if (StringUtils.isEmpty(cerPlantDtlTb.getHarvestDate())) {
+        if (StringUtils.isEmpty(plantSingleStockTb.getHarvestDate())) {
             Map<String, String> map = new HashMap<>();
             map.put(CerPlantFixedFieldEnum.harvestDate.fieldEName, CerPlantFixedFieldEnum.harvestDate.fieldCName);
             mapListResult.add(map);
         }
-        if (StringUtils.isEmpty(cerPlantDtlTb.getPollinationDate())) {
+        if (StringUtils.isEmpty(plantSingleStockTb.getPollinationDate())) {
             Map<String, String> map = new HashMap<>();
             map.put(CerPlantFixedFieldEnum.pollinationDate.fieldEName, CerPlantFixedFieldEnum.pollinationDate.fieldCName);
             mapListResult.add(map);
         }
-        if (StringUtils.isEmpty(cerPlantDtlTb.getVernalizationEndDate())) {
+        if (StringUtils.isEmpty(plantSingleStockTb.getVernalizationEndDate())) {
             Map<String, String> map = new HashMap<>();
             map.put(CerPlantFixedFieldEnum.vernalizationEndDate.fieldEName, CerPlantFixedFieldEnum.vernalizationEndDate.fieldCName);
             mapListResult.add(map);
         }
-        if (StringUtils.isEmpty(cerPlantDtlTb.getVernalizationBeginDate())) {
+        if (StringUtils.isEmpty(plantSingleStockTb.getVernalizationBeginDate())) {
             Map<String, String> map = new HashMap<>();
             map.put(CerPlantFixedFieldEnum.vernalizationBeginDate.fieldEName, CerPlantFixedFieldEnum.vernalizationBeginDate.fieldCName);
             mapListResult.add(map);
         }
-        if (StringUtils.isEmpty(cerPlantDtlTb.getTransplantDate())) {
+        if (StringUtils.isEmpty(plantSingleStockTb.getTransplantDate())) {
             Map<String, String> map = new HashMap<>();
             map.put(CerPlantFixedFieldEnum.transplantDate.fieldEName, CerPlantFixedFieldEnum.transplantDate.fieldCName);
             mapListResult.add(map);
         }
-        if (StringUtils.isEmpty(cerPlantDtlTb.getPlantDate())) {
+        if (StringUtils.isEmpty(plantSingleStockTb.getPlantDate())) {
             Map<String, String> map = new HashMap<>();
             map.put(CerPlantFixedFieldEnum.plantDate.fieldEName, CerPlantFixedFieldEnum.plantDate.fieldCName);
             mapListResult.add(map);

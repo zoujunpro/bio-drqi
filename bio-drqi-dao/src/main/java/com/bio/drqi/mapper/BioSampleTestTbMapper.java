@@ -15,7 +15,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
-    selectCountByMonth
+    List<BioSampleTestTb> selectCountByMonth(@Param("year")String year,@Param("sourceCode") String sourceCode);
 
     List<BioSampleTestTb> selectAllByVectorTaskCodeAndSampleCode(@Param("vectorTaskCode") String vectorTaskCode, @Param("sampleCode") String sampleCode);
 

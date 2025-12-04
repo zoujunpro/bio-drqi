@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.service.project.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.BioSampleTestTb;
 import com.bio.drqi.manage.board.*;
 import com.bio.drqi.contents.CerProjectContents;
@@ -80,8 +81,8 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
     @Override
     public List<CountSampleByMonthRspDTO> countSampleByMonth(String year) {
         List<CountSampleByMonthRspDTO> countSampleByMonthRspDTOList = new ArrayList<>();
-        List<BioSampleTestTb> cerSampleTestTbList = bioSampleTestTbMapper.selectCountByMonth(year);
-        Map<String, Integer> sqlMap = cerSampleTestTbList.stream().collect(Collectors.toMap(CerSampleTestTb::getSampleMonth, CerSampleTestTb::getCountNum));
+        List<BioSampleTestTb> cerSampleTestTbList = bioSampleTestTbMapper.selectCountByMonth(year, SourceCodeEnum.project.name());
+        Map<String, Integer> sqlMap = cerSampleTestTbList.stream().collect(Collectors.toMap(BioSampleTestTb::getSampleMonth, BioSampleTestTb::getCountNum));
         List<String> monthList = createMonthList(year);
         monthList.forEach(month -> {
             CountSampleByMonthRspDTO countTransByMonthRspDTO = new CountSampleByMonthRspDTO();

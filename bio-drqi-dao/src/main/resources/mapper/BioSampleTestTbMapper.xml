@@ -391,5 +391,12 @@
         region_num = #{regionNum,jdbcType=VARCHAR}
         AND seed_num = #{seedNum,jdbcType=VARCHAR}
     </select>
-
+    <select id="selectCountByMonth" resultType="com.bio.drqi.domain.BioSampleTestTb">
+        select count(*)                          as countNum,
+               date_format(create_time, '%Y-%m') as sampleMonth
+        from cer_sample_test_tb
+        where date_format(create_time, '%Y') = #{year,jdbcType=VARCHAR}
+        and source_code=#{sourceCode,jdbcType=VARCHAR}
+        GROUP BY sampleMonth
+    </select>
 </mapper>

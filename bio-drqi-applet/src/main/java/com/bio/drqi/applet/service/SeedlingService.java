@@ -12,12 +12,6 @@ import java.util.Map;
 
 public interface SeedlingService {
 
-    /**
-     * 保苗
-     *
-     * @return
-     */
-    void remain(SeedlingRemainReqDTO seedlingRemainReqDTO);
 
 
     /**

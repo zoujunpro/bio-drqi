@@ -263,6 +263,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 PlantMultipleStockTb plantMultipleStockTb = findPlantMultipleStockTb(firstSampleApply);
                 //回退取样数量
                 plantMultipleStockTb.setSampleNumber(plantMultipleStockTb.getSampleNumber() - firstSampleApply.getSampleNumber());
+                plantMultipleStockTb.setCurrentNumber(plantMultipleStockTb.getCurrentNumber()+firstSampleApply.getSampleNumber());
                 plantMultipleStockTbMapper.updateById(plantMultipleStockTb);
             }
         }

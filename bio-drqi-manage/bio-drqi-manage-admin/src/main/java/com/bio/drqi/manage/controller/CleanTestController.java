@@ -1,0 +1,187 @@
+package com.bio.drqi.manage.controller;
+
+
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.bio.common.core.context.SecurityContextHolder;
+import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.core.util.ExcelUtil;
+import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.domain.CerPlasmidQualityTb;
+import com.bio.drqi.domain.CerVectorTaskTb;
+import com.bio.drqi.domain.CerVectorTb;
+import com.bio.drqi.mapper.CerPlasmidQualityTbMapper;
+import com.bio.drqi.mapper.CerVectorTaskTbMapper;
+import com.bio.drqi.mapper.CerVectorTbMapper;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.Jar;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/test1")
+@Slf4j
+public class CleanTestController {
+
+    @Resource
+    private CerVectorTbMapper cerVectorTbMapper;
+
+    @Resource
+    private CerPlasmidQualityTbMapper cerPlasmidQualityTbMapper;
+
+    @Resource
+    private CerVectorTaskTbMapper cerVectorTaskTbMapper;
+
+    @GetMapping("/cleanPlasmid")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanPlasmid() {
+
+        List<Plasmid> plasmidList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\上线\\质粒信息.xlsx", Plasmid.class);
+        for (Plasmid plasmid : plasmidList) {
+            log.info("plasmid=" + JSONUtil.toJsonStr(plasmid));
+            if (StringUtils.isEmpty(plasmid.plasmidName)) {
+                continue;
+            }
+            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(plasmid.vectorTaskCode);
+
+            if (cerVectorTaskTb == null) {
+                throw new BusinessException("数据异常，找不到实施方案");
+            }
+            CerVectorTb cerVectorTb = cerVectorTbMapper.selectOneByPlasmidNameAndVectorTaskId(plasmid.plasmidName, cerVectorTaskTb.getId());
+            if (cerVectorTb == null) {
+                throw new BusinessException("找不到质粒信息");
+            }
+            cerVectorTb.setBacterialResistance(plasmid.bacterialResistance);
+            cerVectorTb.setPlasmidSpecificPrimers(plasmid.plasmidSpecificPrimers);
+            cerVectorTb.setCopyNumber(plasmid.copyNumber);
+            cerVectorTb.setSelectionMarker(plasmid.selectionMarker);
+            cerVectorTbMapper.updateById(cerVectorTb);
+        }
+
+        return ResponseResult.getSuccess("ok");
+
+    }
+
+    @GetMapping("/cleanPlasmidCheck")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanPlasmidCheck() {
+
+        List<Plasmid> plasmidList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\上线\\质粒信息.xlsx", Plasmid.class);
+        Map<String, List<Plasmid>> map = plasmidList.stream().filter(plasmid -> StringUtils.isNotEmpty(plasmid.plasmidName)).collect(Collectors.groupingBy(Plasmid::getVectorTaskCode));
+        map.forEach((vectorTaskCode, plasmids) -> {
+            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+            List<CerPlasmidQualityTb> cerPlasmidQualityTbList = cerPlasmidQualityTbMapper.selectAllByVectorTaskId(cerVectorTaskTb.getId());
+            cerPlasmidQualityTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());
+            if(CollectionUtil.isEmpty(cerPlasmidQualityTbList)){
+                throw new BusinessException("找不到质检信息");
+            }
+            for (Plasmid plasmid : plasmids) {
+                CerPlasmidQualityTb cerPlasmidQualityTb = new CerPlasmidQualityTb();
+                cerPlasmidQualityTb.setSubProjectId(cerVectorTaskTb.getSubProjectId());
+                cerPlasmidQualityTb.setProjectId(cerVectorTaskTb.getProjectId());
+                cerPlasmidQualityTb.setVectorTaskId(cerVectorTaskTb.getId());
+                cerPlasmidQualityTb.setPlasmidName(plasmid.getPlasmidName());
+                cerPlasmidQualityTb.setQualityInspectionNumber(plasmid.getPlasmidName());
+                cerPlasmidQualityTb.setQualityInspectionResult("pass");
+                cerPlasmidQualityTb.setAgrobacteriumInformation(plasmid.getAgrobacteriumInformation());
+                cerPlasmidQualityTb.setCreateUserName("张立肖");
+                cerPlasmidQualityTb.setCreateUserId(24);
+                cerPlasmidQualityTb.setUpdateTime(new Date());
+                cerPlasmidQualityTb.setCreateTime(new Date());
+                if(StringUtils.isNotEmpty(plasmid.agrobacteriumInformation)){
+                    cerPlasmidQualityTb.setQualityInspectionType(JSONUtil.toJsonStr(Arrays.asList("2")));
+                }else {
+                    cerPlasmidQualityTb.setQualityInspectionType(JSONUtil.toJsonStr(Arrays.asList("1")));
+                }
+
+                cerPlasmidQualityTb.setAgrobacteriumResistance(plasmid.getAgrobacteriumResistance());
+                cerPlasmidQualityTb.setPlasmidConcentration(plasmid.getPlasmidConcentration());
+                cerPlasmidQualityTb.setExtractionKit(plasmid.getExtractionKit());
+                cerPlasmidQualityTb.setTaskStatus(cerPlasmidQualityTbList.get(0).getTaskStatus());
+                cerPlasmidQualityTb.setTaskNum(cerPlasmidQualityTbList.get(0).getTaskNum());
+                cerPlasmidQualityTb.setFileUrls(JSONUtil.toJsonStr(cerPlasmidQualityTbList.get(0).getFileUrls()));
+                cerPlasmidQualityTb.setProjectCode(cerVectorTaskTb.getProjectCode());
+                cerPlasmidQualityTb.setSubProjectCode(cerVectorTaskTb.getSubProjectCode());
+                cerPlasmidQualityTb.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+                cerPlasmidQualityTb.setRemark(cerPlasmidQualityTbList.get(0).getRemark());
+                cerPlasmidQualityTbMapper.insert(cerPlasmidQualityTb);
+            }
+
+        });
+
+
+        return ResponseResult.getSuccess("ok");
+
+    }
+
+    @Data
+    public static class Plasmid {
+
+        /**
+         * 质粒名称
+         */
+        @ExcelProperty("质粒名称")
+        private String plasmidName;
+
+        /**
+         * 细菌抗性
+         */
+        @ExcelProperty("细菌抗性")
+        private String bacterialResistance;
+
+        /**
+         * 质粒特异性引物
+         */
+        @ExcelProperty("质粒特异性引物")
+        private String plasmidSpecificPrimers;
+
+        /**
+         * 拷贝数
+         */
+        @ExcelProperty("拷贝数")
+        private String copyNumber;
+        /**
+         * 植物筛选标记
+         */
+        @ExcelProperty("植物筛选标记")
+        private String selectionMarker;
+
+        /**
+         * 农杆菌信息
+         */
+        @ExcelProperty("质检农杆菌信息")
+        private String agrobacteriumInformation;
+
+
+        @ExcelProperty("质检农杆菌抗性")
+        private String agrobacteriumResistance;
+
+        /**
+         * 质粒浓度
+         */
+        @ExcelProperty("质检质粒浓度")
+        private String plasmidConcentration;
+
+        /**
+         * 提取试剂盒
+         */
+        @ExcelProperty("质检提取试剂盒")
+        private String extractionKit;
+
+
+        @ExcelProperty("实施方案编号")
+        private String vectorTaskCode;
+    }
+}

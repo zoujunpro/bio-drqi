@@ -29,6 +29,8 @@ public interface CerPlasmidQualityTbMapper extends BaseMapper<CerPlasmidQualityT
 
     List<CerPlasmidQualityTb> selectAllByVectorTaskId(@Param("vectorTaskId") Integer vectorTaskId);
 
+    int deleteByVectorTaskId(@Param("vectorTaskId") Integer vectorTaskId);
+
     int updateQualityInspectionResultByVectorTaskId(@Param("qualityInspectionResult") String qualityInspectionResult, @Param("vectorTaskId") Integer vectorTaskId);
 
 }

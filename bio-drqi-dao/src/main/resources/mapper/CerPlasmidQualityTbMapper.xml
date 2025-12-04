@@ -29,7 +29,6 @@
             <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
-
     <sql id="Base_Column_List">
         id,sub_project_id,project_id,
         vector_task_id,plasmid_name,
@@ -133,5 +132,10 @@
         vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
         AND plasmid_name = #{plasmidName,jdbcType=VARCHAR}
     </select>
+    <delete id="deleteByVectorTaskId">
+        delete
+        from cer_plasmid_quality_tb
+        where vector_task_id = #{vectorTaskId,jdbcType=NUMERIC}
+    </delete>
 </mapper>
 

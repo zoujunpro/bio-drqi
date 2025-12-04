@@ -139,7 +139,7 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </select>
-    <select id="selectCountByVectorTaskCode"  resultMap="BaseResultMap">
+    <select id="selectCountByVectorTaskCode" resultType="com.bio.drqi.domain.PlantSingleStockTb">
         select count(*) as countNum , vector_task_code  as vectorTaskCode from plant_single_stock_tb
         group by vector_task_code
     </select>

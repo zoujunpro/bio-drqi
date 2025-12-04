@@ -128,10 +128,10 @@
     </select>
     <select id="selectSumPlantNumber" resultType="java.lang.Long">
         select sum(plant_number)
-        from plant_single_stock_tb
+        from plant_multiple_stock_tb
     </select>
     <select id="selectSumSampleNumber" resultType="java.lang.Long">
         select sum(sample_number)
-        from plant_single_stock_tb
+        from plant_multiple_stock_tb
     </select>
 </mapper>

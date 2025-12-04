@@ -375,5 +375,21 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </select>
+    <select id="selectAllByTransformCodeAndVectorTaskCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_test_tb
+        where
+        transform_code = #{transformCode,jdbcType=VARCHAR}
+        AND vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByRegionNumAndSeedNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_test_tb
+        where
+        region_num = #{regionNum,jdbcType=VARCHAR}
+        AND seed_num = #{seedNum,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

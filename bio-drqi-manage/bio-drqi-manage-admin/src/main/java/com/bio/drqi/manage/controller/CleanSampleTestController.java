@@ -77,6 +77,30 @@ public class CleanSampleTestController {
     @Resource
     private BioSampleTestHisTbMapper bioSampleTestHisTbMapper;
 
+    @Transactional(rollbackFor = Exception.class)
+    @GetMapping("cleanPlantNumber")
+    public ResponseResult<String> cleanPlantNumber() {
+        List<PlantMultipleStockTb> plantMultipleStockTbList = plantMultipleStockTbMapper.selectSelective(null);
+        for (PlantMultipleStockTb plantMultipleStockTb : plantMultipleStockTbList) {
+            List<BioSampleTestTb> bioSampleTestTbList = null;
+            if (StringUtils.isNotEmpty(plantMultipleStockTb.getTransformCode())) {
+                bioSampleTestTbList = bioSampleTestTbMapper.selectAllByTransformCodeAndVectorTaskCode(plantMultipleStockTb.getTransformCode(), plantMultipleStockTb.getVectorTaskCode());
+            }else {
+                bioSampleTestTbList=bioSampleTestTbMapper.selectAllByRegionNumAndSeedNum(plantMultipleStockTb.getRegionNum(),plantMultipleStockTb.getSeedNum());
+            }
+            if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
+                plantMultipleStockTb.setCurrentNumber(plantMultipleStockTb.getPlantNumber());
+                plantMultipleStockTb.setSampleNumber(0);
+
+            } else {
+                Long sampleNumber = bioSampleTestTbList.stream().map(BioSampleTestTb::getSampleCode).distinct().count();
+                plantMultipleStockTb.setSampleNumber(sampleNumber.intValue());
+                plantMultipleStockTb.setCurrentNumber(plantMultipleStockTb.getPlantNumber() - plantMultipleStockTb.getSampleNumber());
+            }
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
 
     @Transactional(rollbackFor = Exception.class)
     @GetMapping("cleanSampleSpecies")
@@ -369,10 +393,10 @@ public class CleanSampleTestController {
             List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(plantSingleStockTb.getSampleCode());
             BioSampleTestTb bioSampleTestTb = bioSampleTestTbList.get(0);
             List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectAllByTransformCodeAndVectorTaskCode(bioSampleTestTb.getTransformCode(), bioSampleTestTb.getVectorTaskCode());
-            if(CollectionUtil.isNotEmpty(cerConversionAndTransRefList)){
+            if (CollectionUtil.isNotEmpty(cerConversionAndTransRefList)) {
                 plantSingleStockTb.setTaskNum(bioSampleTestTbList.get(0).getApplyNo());
-            }else {
-              //  cerConversionAndTransRefMapper.selectAllByVectorTaskCode()
+            } else {
+                //  cerConversionAndTransRefMapper.selectAllByVectorTaskCode()
             }
 
         }

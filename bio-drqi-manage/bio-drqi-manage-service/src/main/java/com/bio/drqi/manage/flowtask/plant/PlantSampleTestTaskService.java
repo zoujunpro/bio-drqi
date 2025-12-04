@@ -233,6 +233,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
+        PlantSampleTestTaskDTO plantExperimentTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantSampleTestTaskDTO.class);
         List<BioSampleTestTb> plantSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
         if (CollectionUtil.isNotEmpty(plantSampleTestTbList)) {
             bioSampleTestHisTbMapper.insertBatch(BeanUtils.copyListProperties(plantSampleTestTbList, BioSampleTestHisTb.class));
@@ -250,6 +251,24 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
         plantSingleStockTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         bioSampleTestOneResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
+        //首次取样回退取样苗信息
+        if (SampleTestApplyTypeEnum.first.name().equals(plantExperimentTaskDTO.getApplyType())) {
+
+            if (CollectionUtil.isEmpty(plantExperimentTaskDTO.getFirstSampleApplyList())) {
+                throw new BusinessException("无取样数据");
+            }
+            for (PlantSampleTestTaskDTO.FirstSampleApply firstSampleApply : plantExperimentTaskDTO.getFirstSampleApplyList()) {
+                //获取临时苗库
+                PlantMultipleStockTb plantMultipleStockTb = findPlantMultipleStockTb(firstSampleApply);
+                //回退取样数量
+                plantMultipleStockTb.setSampleNumber(plantMultipleStockTb.getSampleNumber() - firstSampleApply.getSampleNumber());
+                plantMultipleStockTbMapper.updateById(plantMultipleStockTb);
+            }
+        }
+
+
+
+
     }
 
     private PlantMultipleStockTb findPlantMultipleStockTb(PlantSampleTestTaskDTO.FirstSampleApply firstSampleApply) {

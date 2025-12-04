@@ -24,6 +24,14 @@ public class ApproveSampleResultReqDTO {
 
         @NotBlank(message = "参数缺失：checkResult")
         private String checkResult;
+
+        public Content(String sampleCode, String checkResult) {
+            this.sampleCode = sampleCode;
+            this.checkResult = checkResult;
+        }
+
+        public Content() {
+        }
     }
 
 }

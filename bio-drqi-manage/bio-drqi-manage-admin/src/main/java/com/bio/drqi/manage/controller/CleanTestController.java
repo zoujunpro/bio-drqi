@@ -9,12 +9,11 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
-import com.bio.drqi.domain.CerPlasmidQualityTb;
-import com.bio.drqi.domain.CerVectorTaskTb;
-import com.bio.drqi.domain.CerVectorTb;
-import com.bio.drqi.mapper.CerPlasmidQualityTbMapper;
-import com.bio.drqi.mapper.CerVectorTaskTbMapper;
-import com.bio.drqi.mapper.CerVectorTbMapper;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.manage.flowtask.plant.PlantSampleTestTaskService;
+import com.bio.drqi.manage.sample.req.ApproveSampleResultReqDTO;
+import com.bio.drqi.manage.service.bio.BioSampleTestService;
+import com.bio.drqi.mapper.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.Jar;
@@ -43,6 +42,32 @@ public class CleanTestController {
 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
+
+    @Resource
+    private BioSampleTestService bioSampleTestService;
+
+    @Resource
+    private BioSampleTestTbMapper bioSampleTestTbMapper;
+
+    @Resource
+    private PlantSampleTestTaskService plantSampleTestTaskService;
+
+    @Resource
+    private BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
+    @GetMapping("/checkSample")
+    public ResponseResult<String> checkSample() {
+        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo("C0005286");
+      BioTaskDtlTb bioTaskDtlTb=  bioTaskDtlTbMapper.selectOneByTaskNum("C0005286");
+
+        ApproveSampleResultReqDTO approveSampleResultReqDTO = new ApproveSampleResultReqDTO();
+        approveSampleResultReqDTO.setTaskNum("C0005286");
+        approveSampleResultReqDTO.setContentList(bioSampleTestTbList.stream().map(bioSampleTestTb -> new ApproveSampleResultReqDTO.Content(bioSampleTestTb.getSampleCode(),"stay")).collect(Collectors.toList()));
+        bioSampleTestService.approveSampleResult(approveSampleResultReqDTO);
+        plantSampleTestTaskService.executeTask(bioTaskDtlTb);
+        return ResponseResult.getSuccess("ok");
+    }
+
 
     @GetMapping("/cleanPlasmid")
     @Transactional(rollbackFor = Exception.class)
@@ -84,7 +109,7 @@ public class CleanTestController {
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
             List<CerPlasmidQualityTb> cerPlasmidQualityTbList = cerPlasmidQualityTbMapper.selectAllByVectorTaskId(cerVectorTaskTb.getId());
             cerPlasmidQualityTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());
-            if(CollectionUtil.isEmpty(cerPlasmidQualityTbList)){
+            if (CollectionUtil.isEmpty(cerPlasmidQualityTbList)) {
                 throw new BusinessException("找不到质检信息");
             }
             for (Plasmid plasmid : plasmids) {
@@ -100,9 +125,9 @@ public class CleanTestController {
                 cerPlasmidQualityTb.setCreateUserId(24);
                 cerPlasmidQualityTb.setUpdateTime(new Date());
                 cerPlasmidQualityTb.setCreateTime(new Date());
-                if(StringUtils.isNotEmpty(plasmid.agrobacteriumInformation)){
+                if (StringUtils.isNotEmpty(plasmid.agrobacteriumInformation)) {
                     cerPlasmidQualityTb.setQualityInspectionType(JSONUtil.toJsonStr(Arrays.asList("2")));
-                }else {
+                } else {
                     cerPlasmidQualityTb.setQualityInspectionType(JSONUtil.toJsonStr(Arrays.asList("1")));
                 }
 

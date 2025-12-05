@@ -7,6 +7,4 @@ import lombok.Data;
 public class QueryByPlantCodeReqDTO {
 
     private String plantCode;
-
-    private String vectorTaskCode;
 }

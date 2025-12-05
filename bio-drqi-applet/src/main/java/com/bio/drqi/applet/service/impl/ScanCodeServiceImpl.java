@@ -49,7 +49,6 @@ public class ScanCodeServiceImpl implements ScanCodeService {
     public ScanCodeT0PlantTestRspDTO queryByPlantCode(QueryByPlantCodeReqDTO queryByPlantCodeReqDTO) {
         PlantUniqueCodeDTO plantUniqueCodeDTO=new PlantUniqueCodeDTO();
         plantUniqueCodeDTO.setPlantCode(queryByPlantCodeReqDTO.getPlantCode());
-        plantUniqueCodeDTO.setVectorTaskCode(queryByPlantCodeReqDTO.getVectorTaskCode());
         ScanCodeT0PlantTestRspDTO scanCodeT0PlantTestRspDTO = plantCodeScanService.dealCodeContent(plantUniqueCodeDTO);
         return scanCodeT0PlantTestRspDTO;
     }

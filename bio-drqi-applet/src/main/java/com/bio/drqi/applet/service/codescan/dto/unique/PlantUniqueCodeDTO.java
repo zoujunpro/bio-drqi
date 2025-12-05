@@ -6,6 +6,4 @@ import lombok.Data;
 public class PlantUniqueCodeDTO {
 
     private String plantCode;
-
-    private String vectorTaskCode;
 }

@@ -23,8 +23,7 @@ public class PlantCodeScanService extends AbstractBaseCodeScanService<PlantUniqu
     public PlantUniqueCodeDTO parseUniqueCode(String uniqueCode) {
         String[] uniqueCodeArr = uniqueCode.split("\\|");
         PlantUniqueCodeDTO plantUniqueCodeDTO = new PlantUniqueCodeDTO();
-        plantUniqueCodeDTO.setVectorTaskCode(uniqueCodeArr[0]);
-        plantUniqueCodeDTO.setPlantCode(uniqueCodeArr[1]);
+        plantUniqueCodeDTO.setPlantCode(uniqueCodeArr[0]);
         return plantUniqueCodeDTO;
     }
 

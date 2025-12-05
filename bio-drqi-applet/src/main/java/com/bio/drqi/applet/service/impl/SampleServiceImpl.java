@@ -3,7 +3,7 @@ package com.bio.drqi.applet.service.impl;
 import com.bio.drqi.applet.dto.req.QueryBySampleCodeReqDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeProjectSampleTestRspDTO;
 import com.bio.drqi.applet.service.SampleService;
-import com.bio.drqi.applet.service.codescan.dto.ProjectSampleTestUniqueReqDTO;
+import com.bio.drqi.applet.service.codescan.dto.unique.ProjectSampleTestUniqueReqDTO;
 import com.bio.drqi.applet.service.codescan.template.ProjectSampleTestCodeScanService;
 import org.springframework.stereotype.Service;
 

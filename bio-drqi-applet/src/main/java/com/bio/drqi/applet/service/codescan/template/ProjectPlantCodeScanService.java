@@ -4,7 +4,8 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.applet.dto.rsp.ScanCodeT0PlantTestRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
-import com.bio.drqi.applet.service.codescan.dto.PlantUniqueCodeDTO;
+import com.bio.drqi.applet.service.codescan.dto.PlantDTO;
+import com.bio.drqi.applet.service.codescan.dto.unique.PlantUniqueCodeDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.mapper.*;
@@ -56,12 +57,8 @@ public class ProjectPlantCodeScanService extends AbstractBaseCodeScanService<Pla
         scanCodeT0PlantTestRspDTO.setProjectCode(cerVectorTaskTb.getProjectCode());
         scanCodeT0PlantTestRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
         scanCodeT0PlantTestRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-        scanCodeT0PlantTestRspDTO.setPlantDtlInfo(BeanUtils.copyProperties(plantSingleStockTb, ScanCodeT0PlantTestRspDTO.PlantDtlInfo.class));
-        scanCodeT0PlantTestRspDTO.getPlantDtlInfo().setGeneration(GenerationEnum.getGenerationDesc(scanCodeT0PlantTestRspDTO.getPlantDtlInfo().getGeneration()));
-
-
-        //取样信息
-        scanCodeT0PlantTestRspDTO.setSampleInfoList(BeanUtils.copyToList(bioSampleTestTbList, ScanCodeT0PlantTestRspDTO.SampleInfo.class));
+        scanCodeT0PlantTestRspDTO.setPlantDTO(BeanUtils.copyProperties(plantSingleStockTb, PlantDTO.class));
+        scanCodeT0PlantTestRspDTO.getPlantDTO().setGeneration(GenerationEnum.getGenerationDesc(scanCodeT0PlantTestRspDTO.getPlantDTO().getGeneration()));
         return scanCodeT0PlantTestRspDTO;
     }
 }

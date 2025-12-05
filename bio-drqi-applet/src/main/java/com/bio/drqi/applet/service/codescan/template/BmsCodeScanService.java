@@ -1,14 +1,11 @@
 package com.bio.drqi.applet.service.codescan.template;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.applet.dto.rsp.ScanCodeBmsRspDTO;
-import com.bio.drqi.applet.dto.rsp.ScanCodePlasmidRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
-import com.bio.drqi.applet.service.codescan.dto.BmsUniqueCodeDTO;
-import com.bio.drqi.applet.service.codescan.dto.PlasmidUniqueCodeDTO;
+import com.bio.drqi.applet.service.codescan.dto.unique.BmsUniqueCodeDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;

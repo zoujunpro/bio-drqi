@@ -1,18 +1,12 @@
 package com.bio.drqi.applet.service.codescan.template;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollectionUtil;
-import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.applet.dto.rsp.ScanCodePlantSampleTestRspDTO;
-import com.bio.drqi.applet.dto.rsp.ScanCodeProjectSampleTestRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
-import com.bio.drqi.applet.service.codescan.dto.PlantSampleTestUniqueReqDTO;
-import com.bio.drqi.domain.*;
+import com.bio.drqi.applet.service.codescan.dto.unique.PlantSampleTestUniqueReqDTO;
 import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * 取样扫码

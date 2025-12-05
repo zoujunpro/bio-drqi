@@ -1,5 +1,6 @@
 package com.bio.drqi.applet.dto.rsp;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.util.Date;
@@ -16,8 +17,6 @@ public class ScanCodeProjectSampleTestRspDTO {
 
     private String vectorTaskCode;
 
-    private String transformName;
-
     private String transformCode;
 
     private SampleTest sampleTest;
@@ -27,8 +26,6 @@ public class ScanCodeProjectSampleTestRspDTO {
 
     @Data
     public static class BioInfo {
-        private Integer id;
-
         /**
          * 材料名称
          */
@@ -79,9 +76,9 @@ public class ScanCodeProjectSampleTestRspDTO {
     public static class SampleTest {
 
         /**
-         * 受体材料
+         * 载体任务编码
          */
-        private String acceptorMaterial;
+        private String vectorTaskCode;
 
         /**
          * 取样编号
@@ -102,32 +99,6 @@ public class ScanCodeProjectSampleTestRspDTO {
          * 取样申请人姓名
          */
         private String applyUserName;
-
-        /**
-         * 取样时间
-         */
-        private String sampleTime;
-
-        /**
-         * 取样备注
-         */
-        private String sampleRemark;
-
-        /**
-         * 代次
-         */
-        private String sampleGeneration;
-
-
-        /**
-         * 取样数据递送人姓名
-         */
-        private String sampleUserName;
-
-        /**
-         * 取样数据递送人ID
-         */
-        private Integer sampleUserId;
 
         /**
          * 鉴定引物
@@ -234,9 +205,57 @@ public class ScanCodeProjectSampleTestRspDTO {
          */
         private Date updateTime;
 
+        /**
+         * 取样申请编号
+         */
         private String applyNo;
 
+        /**
+         * 鉴定引物
+         */
         private String identifyPrimer;
+
+        /**
+         * 唯一约束
+         */
+        private String uniqueCode;
+
+        /**
+         * 备注
+         */
+        private String remark;
+
+        /**
+         * 克隆苗
+         */
+        private String cloneSampleCode;
+
+        /**
+         * 来源
+         */
+        private String sourceCode;
+
+        /**
+         * 检测原始结果
+         */
+        private String testOrgResult;
+
+        private String generation;
+
+        private String speciesCode;
+
+        private String breedCode;
+
+        private String experimentNum;
+
+        private String regionNum;
+
+        private String seedNum;
+
+        private String transformCode;
+
+
+
     }
 
 }

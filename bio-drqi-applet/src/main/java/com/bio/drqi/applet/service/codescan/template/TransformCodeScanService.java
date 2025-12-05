@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.applet.dto.rsp.ScanCodeTransformRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
-import com.bio.drqi.applet.service.codescan.dto.TransformUniqueCodeDTO;
+import com.bio.drqi.applet.service.codescan.dto.unique.TransformUniqueCodeDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;

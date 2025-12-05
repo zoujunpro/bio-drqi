@@ -5,7 +5,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.applet.dto.rsp.ScanCodeProjectSampleTestRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
-import com.bio.drqi.applet.service.codescan.dto.TissueEmbryoUniqueReqDTO;
+import com.bio.drqi.applet.service.codescan.dto.unique.TissueEmbryoUniqueReqDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;

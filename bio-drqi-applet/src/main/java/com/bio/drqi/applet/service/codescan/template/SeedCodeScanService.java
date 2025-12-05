@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.applet.dto.rsp.ScanCodeSeedRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
-import com.bio.drqi.applet.service.codescan.dto.SeedUniqueCodeDTO;
+import com.bio.drqi.applet.service.codescan.dto.unique.SeedUniqueCodeDTO;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.common.enums.BioDictTypeEnum;

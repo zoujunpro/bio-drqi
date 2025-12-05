@@ -5,7 +5,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.applet.dto.rsp.ScanCodeProjectSampleTestRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
-import com.bio.drqi.applet.service.codescan.dto.ProjectSampleTestUniqueReqDTO;
+import com.bio.drqi.applet.service.codescan.dto.unique.ProjectSampleTestUniqueReqDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;
@@ -56,7 +56,6 @@ public class ProjectSampleTestCodeScanService extends AbstractBaseCodeScanServic
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
         CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerVectorTaskTb.getSubProjectCode());
         List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode( projectSampleTestUniqueReqDTO.getSampleCode());
-        CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(bioSampleTestTbList.get(0).getTransformCode(), bioSampleTestTbList.get(0).getVectorTaskCode());
         List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(bioSampleTestTbList.get(0).getApplyNo(), bioSampleTestTbList.get(0).getSampleCode());
         ScanCodeProjectSampleTestRspDTO scanCodeProjectSampleTestRspDTO = new ScanCodeProjectSampleTestRspDTO();
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbList)) {
@@ -67,7 +66,6 @@ public class ProjectSampleTestCodeScanService extends AbstractBaseCodeScanServic
         scanCodeProjectSampleTestRspDTO.setProjectName(cerProjectTb.getProjectName());
         scanCodeProjectSampleTestRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
         scanCodeProjectSampleTestRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-        scanCodeProjectSampleTestRspDTO.setTransformName(cerTransformTb.getTransformCode());
         scanCodeProjectSampleTestRspDTO.setTransformCode(bioSampleTestTbList.get(0).getTransformCode());
         ScanCodeProjectSampleTestRspDTO.SampleTest sampleTest = BeanUtil.copyProperties(bioSampleTestTbList.get(0), ScanCodeProjectSampleTestRspDTO.SampleTest.class);
         scanCodeProjectSampleTestRspDTO.setSampleTest(sampleTest);

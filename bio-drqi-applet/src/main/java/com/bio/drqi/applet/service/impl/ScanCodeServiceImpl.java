@@ -10,7 +10,7 @@ import com.bio.drqi.applet.dto.rsp.ScanCodeRspDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeT0PlantTestRspDTO;
 import com.bio.drqi.applet.service.ScanCodeService;
 import com.bio.drqi.applet.service.codescan.BaseCodeScanService;
-import com.bio.drqi.applet.service.codescan.dto.PlantUniqueCodeDTO;
+import com.bio.drqi.applet.service.codescan.dto.unique.PlantUniqueCodeDTO;
 import com.bio.drqi.applet.service.codescan.template.ProjectPlantCodeScanService;
 import com.bio.print.api.PrintApi;
 import com.bio.print.rsp.PrintDataRspDTO;

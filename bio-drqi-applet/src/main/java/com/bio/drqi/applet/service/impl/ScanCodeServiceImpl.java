@@ -7,7 +7,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.applet.contant.ScanCodeConstant;
 import com.bio.drqi.applet.dto.req.QueryByPlantCodeReqDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeRspDTO;
-import com.bio.drqi.applet.dto.rsp.ScanCodeT0PlantTestRspDTO;
+import com.bio.drqi.applet.dto.rsp.ScanCodePlantTestRspDTO;
 import com.bio.drqi.applet.service.ScanCodeService;
 import com.bio.drqi.applet.service.codescan.BaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.unique.PlantUniqueCodeDTO;
@@ -46,11 +46,11 @@ public class ScanCodeServiceImpl implements ScanCodeService {
     }
 
     @Override
-    public ScanCodeT0PlantTestRspDTO queryByPlantCode(QueryByPlantCodeReqDTO queryByPlantCodeReqDTO) {
+    public ScanCodePlantTestRspDTO queryByPlantCode(QueryByPlantCodeReqDTO queryByPlantCodeReqDTO) {
         PlantUniqueCodeDTO plantUniqueCodeDTO=new PlantUniqueCodeDTO();
         plantUniqueCodeDTO.setPlantCode(queryByPlantCodeReqDTO.getPlantCode());
-        ScanCodeT0PlantTestRspDTO scanCodeT0PlantTestRspDTO = plantCodeScanService.dealCodeContent(plantUniqueCodeDTO);
-        return scanCodeT0PlantTestRspDTO;
+        ScanCodePlantTestRspDTO scanCodePlantTestRspDTO = plantCodeScanService.dealCodeContent(plantUniqueCodeDTO);
+        return scanCodePlantTestRspDTO;
     }
 
 }

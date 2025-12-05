@@ -4,12 +4,11 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.applet.dto.req.QueryByPlantCodeReqDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeRspDTO;
-import com.bio.drqi.applet.dto.rsp.ScanCodeT0PlantTestRspDTO;
+import com.bio.drqi.applet.dto.rsp.ScanCodePlantTestRspDTO;
 import com.bio.drqi.applet.service.ScanCodeService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.UUID;
 
 /**
  * 扫码
@@ -40,7 +39,7 @@ public class ScanCodeController {
      */
     @PostMapping("/queryByPlantCode")
     @WebLog(desc = "根据种植编号查询信息")
-    public ResponseResult<ScanCodeT0PlantTestRspDTO> queryByPlantCode(@RequestBody QueryByPlantCodeReqDTO queryByPlantCodeReqDTO) {
+    public ResponseResult<ScanCodePlantTestRspDTO> queryByPlantCode(@RequestBody QueryByPlantCodeReqDTO queryByPlantCodeReqDTO) {
         return ResponseResult.getSuccess(scanCodeService.queryByPlantCode(queryByPlantCodeReqDTO));
     }
 

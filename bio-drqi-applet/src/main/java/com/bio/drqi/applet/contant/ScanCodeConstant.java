@@ -51,7 +51,7 @@ public class ScanCodeConstant {
         scanCodeClassMap.put(PrintTypeEnum.sample_label_large_cer_print.name(),SampleTestCodeScanService.class);
 
         //种植申请标签(CER)
-        scanCodeClassMap.put(PrintTypeEnum.plant_apply_label_print.name(),null);
+        scanCodeClassMap.put(PrintTypeEnum.plant_apply_label_print.name(),PlantApplyCodeScanService.class);
 
         //试验申请标签(田测)
         scanCodeClassMap.put(PrintTypeEnum.tc_experiment_label_print.name(),null);

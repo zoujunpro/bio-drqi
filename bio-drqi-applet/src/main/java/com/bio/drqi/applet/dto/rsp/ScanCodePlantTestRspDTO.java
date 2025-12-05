@@ -1,14 +1,11 @@
 package com.bio.drqi.applet.dto.rsp;
 
-import com.bio.drqi.applet.service.codescan.dto.PlantDTO;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
-public class ScanCodeT0PlantTestRspDTO {
+public class ScanCodePlantTestRspDTO {
 
     /**
      * 种植编号

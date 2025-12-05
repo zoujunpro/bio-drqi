@@ -436,7 +436,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         }
         List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByApplyNoAndSampleCodeOrderByIdDesc(bioSampleTestTb.getApplyNo(), bioSampleTestTb.getSampleCode());
         if (CollectionUtil.isEmpty(bioSampleTestTwoResultTbList)) {
-            throw new BusinessException("没有上传NGS检测结果");
+            return null;
         }
         List<BioSampleTestTwoResultDetailTb> resultDetailTbs = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultTbList)) {
@@ -456,7 +456,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
     public List<QueryBioInfoSampleTestResultRspDTO> queryBioInfoSampleTestResultBySampleCode(String sampleCode) {
         List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllBySampleCode(sampleCode);
         if (CollectionUtil.isEmpty(bioSampleTestTwoResultTbList)) {
-            throw new BusinessException("没有上传NGS检测结果");
+            return null;
         }
         List<BioSampleTestTwoResultDetailTb> resultDetailTbs = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultTbList)) {

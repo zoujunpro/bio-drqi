@@ -17,7 +17,7 @@ import java.util.List;
  * 取样扫码
  */
 @Service
-public class SampleTestCodeScanService extends AbstractBaseCodeScanService<SampleTestUniqueReqDTO, ScanCodeSampleTestRspDTO> {
+public class ProjectSampleTestCodeScanService extends AbstractBaseCodeScanService<SampleTestUniqueReqDTO, ScanCodeSampleTestRspDTO> {
 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;

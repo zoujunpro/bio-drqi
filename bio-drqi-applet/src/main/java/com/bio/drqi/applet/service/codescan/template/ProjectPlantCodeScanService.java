@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Service
-public class T0PlantCodeScanService extends AbstractBaseCodeScanService<PlantUniqueCodeDTO, ScanCodeT0PlantTestRspDTO> {
+public class ProjectPlantCodeScanService extends AbstractBaseCodeScanService<PlantUniqueCodeDTO, ScanCodeT0PlantTestRspDTO> {
 
     @Resource
     private PlantSingleStockTbMapper plantSingleStockTbMapper;

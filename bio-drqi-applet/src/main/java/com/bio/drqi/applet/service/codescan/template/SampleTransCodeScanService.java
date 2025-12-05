@@ -18,6 +18,7 @@ import java.util.List;
  * 取样移苗
  */
 @Service
+@Deprecated
 public class SampleTransCodeScanService extends AbstractBaseCodeScanService<TransUniqueCodeDTO, ScanCodeSampleTestTransRspDTO> {
 
     @Resource

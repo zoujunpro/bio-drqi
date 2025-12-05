@@ -14,6 +14,7 @@ import com.bio.drqi.manage.flowtask.plant.PlantSampleTestTaskService;
 import com.bio.drqi.manage.sample.req.ApproveSampleResultReqDTO;
 import com.bio.drqi.manage.service.bio.BioSampleTestService;
 import com.bio.drqi.mapper.*;
+import com.bio.print.PlantApplyPrintDTO;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.Jar;
@@ -55,14 +56,89 @@ public class CleanTestController {
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
+    @Resource
+    private BioPrintLabelInfoTbMapper bioPrintLabelInfoTbMapper;
+
+    @Resource
+    private PlantApplyDetailTbMapper plantApplyDetailTbMapper;
+
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
+
+    @GetMapping("/cleanPrintPlant_apply_label_print")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanPrintPlant_apply_label_print() {
+        List<BioPrintLabelInfoTb> plant_label_cer_printList = bioPrintLabelInfoTbMapper.searchAllByLabelType("plant_apply_label_print");
+        for (BioPrintLabelInfoTb bioPrintLabelInfoTb : plant_label_cer_printList) {
+            String[] uniqueCodeArr = bioPrintLabelInfoTb.getUniqueCode().split("\\|");
+            PlantApplyDetailTb plantApplyDetailTb = plantApplyDetailTbMapper.selectOneByRegionNumAndSeedNum(uniqueCodeArr[0], uniqueCodeArr[1]);
+            PlantApplyPrintDTO plantApplyPrintDTO = new PlantApplyPrintDTO();
+            plantApplyPrintDTO.setRegionNum(plantApplyDetailTb.getRegionNum());
+            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(plantApplyDetailTb.getBreedCode());
+            plantApplyPrintDTO.setSeedNum(plantApplyDetailTb.getSeedNum());
+            plantApplyPrintDTO.setBreedName(cerBreedDict.getBreedName());
+            plantApplyPrintDTO.setTaskNum(plantApplyDetailTb.getPlantApplyNum());
+            plantApplyPrintDTO.setPrintNumber(1);
+            bioPrintLabelInfoTb.setLabelText(JSONUtil.toJsonStr(plantApplyPrintDTO));
+            bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
+
+
+
+        }
+
+
+        return ResponseResult.getSuccess("ok");
+    }
+
+    @GetMapping("/cleanPrint")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanPrint() {
+        List<BioPrintLabelInfoTb> plant_label_cer_printList = bioPrintLabelInfoTbMapper.searchAllByLabelType("plant_label_cer_print");
+        for (BioPrintLabelInfoTb bioPrintLabelInfoTb : plant_label_cer_printList) {
+            String[] str = bioPrintLabelInfoTb.getUniqueCode().split("\\|");
+            if (str.length == 3) {
+                bioPrintLabelInfoTb.setUniqueCode(str[2]);
+                bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
+            }
+        }
+        List<BioPrintLabelInfoTb> plant_label_project_printList = bioPrintLabelInfoTbMapper.searchAllByLabelType("plant_label_project_print");
+        for (BioPrintLabelInfoTb bioPrintLabelInfoTb : plant_label_project_printList) {
+            String[] str = bioPrintLabelInfoTb.getUniqueCode().split("\\|");
+            if (str.length == 2) {
+                bioPrintLabelInfoTb.setUniqueCode(str[1]);
+                bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
+            }
+        }
+        List<BioPrintLabelInfoTb> sample_label_large_project_printList = bioPrintLabelInfoTbMapper.searchAllByLabelType("sample_label_large_project_print");
+        for (BioPrintLabelInfoTb bioPrintLabelInfoTb : sample_label_large_project_printList) {
+            String[] str = bioPrintLabelInfoTb.getUniqueCode().split("\\|");
+            if (str.length == 3) {
+                bioPrintLabelInfoTb.setUniqueCode(str[0] + "|" + str[2]);
+                bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
+            }
+        }
+
+        List<BioPrintLabelInfoTb> sample_label_small_project_printList = bioPrintLabelInfoTbMapper.searchAllByLabelType("sample_label_small_project_print");
+        for (BioPrintLabelInfoTb bioPrintLabelInfoTb : sample_label_small_project_printList) {
+            String[] str = bioPrintLabelInfoTb.getUniqueCode().split("\\|");
+            if (str.length == 3) {
+                bioPrintLabelInfoTb.setUniqueCode(str[0] + "|" + str[2]);
+                bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
+            }
+        }
+
+
+        return null;
+    }
+
     @GetMapping("/checkSample")
     public ResponseResult<String> checkSample() {
         List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo("C0005286");
-      BioTaskDtlTb bioTaskDtlTb=  bioTaskDtlTbMapper.selectOneByTaskNum("C0005286");
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum("C0005286");
 
         ApproveSampleResultReqDTO approveSampleResultReqDTO = new ApproveSampleResultReqDTO();
         approveSampleResultReqDTO.setTaskNum("C0005286");
-        approveSampleResultReqDTO.setContentList(bioSampleTestTbList.stream().map(bioSampleTestTb -> new ApproveSampleResultReqDTO.Content(bioSampleTestTb.getSampleCode(),"stay")).collect(Collectors.toList()));
+        approveSampleResultReqDTO.setContentList(bioSampleTestTbList.stream().map(bioSampleTestTb -> new ApproveSampleResultReqDTO.Content(bioSampleTestTb.getSampleCode(), "stay")).collect(Collectors.toList()));
         bioSampleTestService.approveSampleResult(approveSampleResultReqDTO);
         plantSampleTestTaskService.executeTask(bioTaskDtlTb);
         return ResponseResult.getSuccess("ok");

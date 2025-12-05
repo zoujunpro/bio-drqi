@@ -28,8 +28,6 @@ public class TissueEmbryoCodeScanService extends AbstractBaseCodeScanService<Tis
     @Resource
     private CerTransformTbMapper cerTransformTbMapper;
 
-    @Resource
-    private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
     @Resource
     private BioSampleTestTbMapper bioSampleTestTbMapper;
@@ -56,7 +54,6 @@ public class TissueEmbryoCodeScanService extends AbstractBaseCodeScanService<Tis
         CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerVectorTaskTb.getSubProjectCode());
         List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(tissueEmbryoUniqueReqDTO.getSampleCode());
         CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(bioSampleTestTbList.get(0).getTransformCode(), bioSampleTestTbList.get(0).getVectorTaskCode());
-        CerVectorGroupTb cerVectorGroupTb = cerVectorGroupTbMapper.selectOneByGroupNameAndVectorTaskId(cerTransformTb.getPlasmidName(), cerVectorTaskTb.getId());
         List<BioSampleTestTwoResultDetailTb> bioSampleSampleTwoResultDetailTbList = bioSampleSampleTwoResultDetailTbMapper.selectAllByApplyNoAndSampleCode(bioSampleTestTbList.get(0).getApplyNo(), bioSampleTestTbList.get(0).getSampleCode());
         ScanCodeSampleTestRspDTO scanCodeSampleTestRspDTO = new ScanCodeSampleTestRspDTO();
         if (CollectionUtil.isNotEmpty(bioSampleSampleTwoResultDetailTbList)) {
@@ -67,7 +64,6 @@ public class TissueEmbryoCodeScanService extends AbstractBaseCodeScanService<Tis
         scanCodeSampleTestRspDTO.setProjectName(cerProjectTb.getProjectName());
         scanCodeSampleTestRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
         scanCodeSampleTestRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
-        scanCodeSampleTestRspDTO.setTransformName(cerVectorGroupTb.getPlasmidNames());
         scanCodeSampleTestRspDTO.setTransformCode(bioSampleTestTbList.get(0).getTransformCode());
         ScanCodeSampleTestRspDTO.SampleTest sampleTest = BeanUtil.copyProperties(bioSampleTestTbList.get(0), ScanCodeSampleTestRspDTO.SampleTest.class);
         scanCodeSampleTestRspDTO.setSampleTest(sampleTest);

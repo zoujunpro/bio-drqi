@@ -32,9 +32,6 @@ public class transformTransCodeScanService extends AbstractBaseCodeScanService<T
     private CerTransformTbMapper cerTransformTbMapper;
 
     @Resource
-    private CerVectorGroupTbMapper cerVectorGroupTbMapper;
-
-    @Resource
     private CerConversionAndTransTbMapper cerConversionAndTransTbMapper;
 
 
@@ -63,7 +60,6 @@ public class transformTransCodeScanService extends AbstractBaseCodeScanService<T
         if (cerTransformTb == null) {
             throw new BusinessException("转化编号非法：" + cerTransformTb.getTransformCode());
         }
-        CerVectorGroupTb cerVectorGroupTb = cerVectorGroupTbMapper.selectOneByGroupNameAndVectorTaskId(cerTransformTb.getPlasmidName(), cerVectorTaskTb.getId());
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
         CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerVectorTaskTb.getSubProjectCode());
         ScanCodeTransformTransRspDTO scanCodeTransformRspDTO = new ScanCodeTransformTransRspDTO();
@@ -73,8 +69,6 @@ public class transformTransCodeScanService extends AbstractBaseCodeScanService<T
         scanCodeTransformRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         scanCodeTransformRspDTO.setUrls(JSONUtil.toList(cerConversionAndTransTb.getImageUrl(), String.class));
         ScanCodeTransformTransRspDTO.Transform transform = BeanUtil.copyProperties(cerTransformTb, ScanCodeTransformTransRspDTO.Transform.class);
-        transform.setTransformName(cerVectorGroupTb.getGroupName());
-        transform.setPlasmidName(cerVectorGroupTb.getPlasmidNames());
         scanCodeTransformRspDTO.setTransform(transform);
         return scanCodeTransformRspDTO;
     }

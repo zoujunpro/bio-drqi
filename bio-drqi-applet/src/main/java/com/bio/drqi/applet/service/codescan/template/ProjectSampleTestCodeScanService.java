@@ -32,9 +32,6 @@ public class ProjectSampleTestCodeScanService extends AbstractBaseCodeScanServic
     private CerTransformTbMapper cerTransformTbMapper;
 
     @Resource
-    private CerVectorGroupTbMapper cerVectorGroupTbMapper;
-
-    @Resource
     private BioSampleTestTbMapper bioSampleTestTbMapper;
 
     @Resource

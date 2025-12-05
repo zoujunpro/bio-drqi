@@ -38,9 +38,6 @@ public class PlasmidServiceImpl implements PlasmidService {
     private CerPlasmidQualityTbMapper cerPlasmidQualityTbMapper;
 
     @Resource
-    private CerVectorGroupTbMapper cerVectorGroupTbMapper;
-
-    @Resource
     private OssService ossService;
 
     @Override
@@ -66,21 +63,12 @@ public class PlasmidServiceImpl implements PlasmidService {
         }
         List<PlasmidDTO.Content> plasmidCheckExcelDTOList = new ArrayList<>();
 
-        List<CerVectorGroupTb> cerVectorGroupTbList = cerVectorGroupTbMapper.selectAllByVectorTaskId(cerVectorTaskTb.getId());
         List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectAllByVectorTaskId(cerVectorTaskTb.getId());
         if (CollectionUtil.isNotEmpty(cerVectorTbList)) {
             for (CerVectorTb cerVectorTb : cerVectorTbList) {
                 PlasmidDTO.Content content = new PlasmidDTO.Content();
                 content.setPlasmidName(cerVectorTb.getPlasmidName());
                 content.setQualityInspectionType("质粒制备");
-                plasmidCheckExcelDTOList.add(content);
-            }
-        }
-        if (CollectionUtil.isNotEmpty(cerVectorGroupTbList)) {
-            for (CerVectorGroupTb cerVectorGroupTb : cerVectorGroupTbList) {
-                PlasmidDTO.Content content = new PlasmidDTO.Content();
-                content.setPlasmidName(cerVectorGroupTb.getGroupName());
-                content.setQualityInspectionType("农杆菌检测");
                 plasmidCheckExcelDTOList.add(content);
             }
         }

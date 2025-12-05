@@ -29,8 +29,6 @@ public class TransformCodeScanService extends AbstractBaseCodeScanService<Transf
     @Resource
     private CerTransformTbMapper cerTransformTbMapper;
 
-    @Resource
-    private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
     @Override
     public TransformUniqueCodeDTO parseUniqueCode(String uniqueCode) {
@@ -52,7 +50,6 @@ public class TransformCodeScanService extends AbstractBaseCodeScanService<Transf
         if (cerTransformTb == null) {
             throw new BusinessException("转化编号非法：" + cerTransformTb.getTransformCode());
         }
-        CerVectorGroupTb cerVectorGroupTb = cerVectorGroupTbMapper.selectOneByGroupNameAndVectorTaskId(cerTransformTb.getPlasmidName(), cerVectorTaskTb.getId());
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
         CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(cerVectorTaskTb.getSubProjectCode());
 
@@ -62,8 +59,6 @@ public class TransformCodeScanService extends AbstractBaseCodeScanService<Transf
         scanCodeTransformRspDTO.setSubProjectCode(cerSubProjectTb.getSubProjectCode());
         scanCodeTransformRspDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         ScanCodeTransformRspDTO.Transform transform = BeanUtil.copyProperties(cerTransformTb, ScanCodeTransformRspDTO.Transform.class);
-        transform.setTransformName(cerVectorGroupTb.getGroupName());
-        transform.setPlasmidName(cerVectorGroupTb.getPlasmidNames());
         scanCodeTransformRspDTO.setTransform(transform);
         return scanCodeTransformRspDTO;
     }

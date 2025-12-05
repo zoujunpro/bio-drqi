@@ -39,8 +39,6 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
     @Resource
     private CerVectorTbMapper cerVectorTbMapper;
 
-    @Resource
-    private CerVectorGroupTbMapper cerVectorGroupTbMapper;
 
     @Resource
     private BioSampleCodePrefixTbMapper bioSampleCodePrefixTbMapper;
@@ -140,7 +138,6 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
         }
         cerVectorTaskTbMapper.deleteById(cerVectorTaskTb.getId());
         cerVectorTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());
-        cerVectorGroupTbMapper.deleteByVectorTaskId(cerVectorTaskTb.getId());
         bioSampleCodePrefixTbMapper.deleteByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
     }
 

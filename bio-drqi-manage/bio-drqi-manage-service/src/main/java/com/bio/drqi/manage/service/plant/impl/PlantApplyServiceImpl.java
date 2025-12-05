@@ -43,11 +43,11 @@ public class PlantApplyServiceImpl implements PlantApplyService {
 
     @Override
     public PageInfo<PlantApplyListPageRspDTO> listPage(PlantApplyListPageReqDTO plantApplyListPageReqDTO) {
-        PageHelper.startPage(plantApplyListPageReqDTO.getPageNum(), plantApplyListPageReqDTO.getPageSize());
         PlantApplyTb plantApplyTb = BeanUtils.copyProperties(plantApplyListPageReqDTO, PlantApplyTb.class);
         Map<String, String> map = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
         plantApplyTb.setVectorTaskCodes(plantApplyListPageReqDTO.getVectorTaskCode());
         plantApplyTb.setPdImplementCodes(plantApplyListPageReqDTO.getPdImplementCode());
+        PageHelper.startPage(plantApplyListPageReqDTO.getPageNum(), plantApplyListPageReqDTO.getPageSize());
         List<PlantApplyTb> plantApplyTbList = plantApplyTbMapper.selectSelective(plantApplyTb);
         PageInfo<PlantApplyTb> srcPageInfo = new PageInfo<>(plantApplyTbList);
         PageInfo<PlantApplyListPageRspDTO> result = BeanUtils.copyPageInfoProperties(srcPageInfo, PlantApplyListPageRspDTO.class);

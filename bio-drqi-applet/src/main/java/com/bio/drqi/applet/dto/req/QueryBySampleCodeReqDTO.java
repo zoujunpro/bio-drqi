@@ -7,5 +7,4 @@ import lombok.Data;
 public class QueryBySampleCodeReqDTO {
     private String sampleCode;
 
-    private String vectorTaskCode;
 }

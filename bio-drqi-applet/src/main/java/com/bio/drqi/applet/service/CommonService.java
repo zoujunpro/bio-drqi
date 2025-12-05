@@ -10,18 +10,26 @@ import com.bio.base.user.rsp.UserDetailRspDTO;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.applet.dto.common.OssUploadBase64ReqDTO;
 import com.bio.drqi.applet.dto.common.OssUploadReqDTO;
 import com.bio.drqi.applet.dto.common.OssUploadRspDTO;
+import com.bio.drqi.applet.service.codescan.dto.BioResultInfoDTO;
+import com.bio.drqi.domain.BioSampleTestTwoResultDetailTb;
+import com.bio.drqi.domain.BioSampleTestTwoResultTb;
+import com.bio.drqi.manage.sample.rsp.QueryBioInfoSampleTestResultRspDTO;
+import com.bio.drqi.mapper.BioSampleTestTwoResultDetailTbMapper;
+import com.bio.drqi.mapper.BioSampleTestTwoResultTbMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +46,8 @@ public class CommonService {
     private String tempOssPath;
 
     @Resource
-    public RemoteUserService remoteUserService;
+    private RemoteUserService remoteUserService;
+
 
 
     public OssUploadRspDTO upload(OssUploadReqDTO ossUploadReqDTO) {
@@ -104,5 +113,7 @@ public class CommonService {
         System.out.println(ss);
         return JSONUtil.toBean(ss, Map.class);
     }
+
+
 
 };

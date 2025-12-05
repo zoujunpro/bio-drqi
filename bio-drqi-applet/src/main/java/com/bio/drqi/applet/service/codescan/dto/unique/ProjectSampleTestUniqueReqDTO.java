@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ProjectSampleTestUniqueReqDTO {
 
-    private String vectorTaskCode;
+    private String taskNum;
 
     private String sampleCode;
 }

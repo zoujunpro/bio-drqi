@@ -8,4 +8,6 @@ public class PlantSampleTestUniqueReqDTO {
     private String regionNum;
 
     private String seedNum;
+
+    private String sampleCode;
 }

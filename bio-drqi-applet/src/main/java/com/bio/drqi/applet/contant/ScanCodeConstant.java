@@ -21,10 +21,10 @@ public class ScanCodeConstant {
         scanCodeClassMap.put(PrintTypeEnum.vector_label_print.name(), PlasmidCodeScanService.class);
 
         //取样标签-小（项目）
-        scanCodeClassMap.put(PrintTypeEnum.sample_label_small_project_print.name() , ProjectSampleTestCodeScanService.class);
+        scanCodeClassMap.put(PrintTypeEnum.sample_label_small_project_print.name() , SampleTestCodeScanService.class);
 
         //取样标签-小（大）
-        scanCodeClassMap.put(PrintTypeEnum.sample_label_large_project_print.name() , ProjectSampleTestCodeScanService.class);
+        scanCodeClassMap.put(PrintTypeEnum.sample_label_large_project_print.name() , SampleTestCodeScanService.class);
 
         //种子入库标签
         scanCodeClassMap.put(PrintTypeEnum.seed_in_label_print.name() , SeedCodeScanService.class);
@@ -36,7 +36,7 @@ public class ScanCodeConstant {
         scanCodeClassMap.put(PrintTypeEnum.layout_number_label_print.name(), NineSixLayoutCodeScanService.class);
 
         //种植标签（项目）
-        scanCodeClassMap.put(PrintTypeEnum.plant_label_project_print.name(), ProjectPlantCodeScanService.class);
+        scanCodeClassMap.put(PrintTypeEnum.plant_label_project_print.name(), PlantCodeScanService.class);
 
         //组胚标签
         scanCodeClassMap.put(PrintTypeEnum.tissue_embryo_label_print.name() ,TissueEmbryoCodeScanService.class);
@@ -45,13 +45,13 @@ public class ScanCodeConstant {
         scanCodeClassMap.put(PrintTypeEnum.bms_label_print.name(),BmsCodeScanService.class);
 
         //种植标签(CER)
-        scanCodeClassMap.put(PrintTypeEnum.plant_label_cer_print.name(),null);
+        scanCodeClassMap.put(PrintTypeEnum.plant_label_cer_print.name(),PlantCodeScanService.class);
 
         //取样标签小（CER）
-        scanCodeClassMap.put(PrintTypeEnum.sample_label_small_cer_print.name() ,null);
+        scanCodeClassMap.put(PrintTypeEnum.sample_label_small_cer_print.name() ,SampleTestCodeScanService.class);
 
         //取样标签大（CER）
-        scanCodeClassMap.put(PrintTypeEnum.sample_label_large_cer_print.name(),null);
+        scanCodeClassMap.put(PrintTypeEnum.sample_label_large_cer_print.name(),SampleTestCodeScanService.class);
 
         //种植申请标签(CER)
         scanCodeClassMap.put(PrintTypeEnum.plant_apply_label_print.name(),null);

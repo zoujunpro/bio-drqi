@@ -24,8 +24,8 @@ public class PlantSampleTestCodeScanService extends AbstractBaseCodeScanService<
     @Resource
     private BioSampleTestTbMapper bioSampleTestTbMapper;
 
-    @Resource
-    private BioSampleTestTwoResultDetailTbMapper bioSampleSampleTwoResultDetailTbMapper;
+
+
 
     @Override
     public PlantSampleTestUniqueReqDTO parseUniqueCode(String uniqueCode) {
@@ -33,6 +33,7 @@ public class PlantSampleTestCodeScanService extends AbstractBaseCodeScanService<
         PlantSampleTestUniqueReqDTO plantSampleTestUniqueReqDTO = new PlantSampleTestUniqueReqDTO();
         plantSampleTestUniqueReqDTO.setRegionNum(uniqueCodeArr[1]);
         plantSampleTestUniqueReqDTO.setSeedNum(uniqueCodeArr[2]);
+        plantSampleTestUniqueReqDTO.setSampleCode(uniqueCodeArr[3]);
         return plantSampleTestUniqueReqDTO;
     }
 

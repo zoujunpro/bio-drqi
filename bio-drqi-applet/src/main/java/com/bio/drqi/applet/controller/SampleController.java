@@ -30,4 +30,5 @@ public class SampleController {
     public ResponseResult<ScanCodeProjectSampleTestRspDTO> queryBySampleCode(@RequestBody QueryBySampleCodeReqDTO queryBySampleCodeReqDTO) {
         return ResponseResult.getSuccess(sampleService.queryBySampleCode(queryBySampleCodeReqDTO));
     }
+
 }

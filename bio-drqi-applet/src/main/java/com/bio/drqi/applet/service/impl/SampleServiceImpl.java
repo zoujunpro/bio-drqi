@@ -4,7 +4,7 @@ import com.bio.drqi.applet.dto.req.QueryBySampleCodeReqDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeProjectSampleTestRspDTO;
 import com.bio.drqi.applet.service.SampleService;
 import com.bio.drqi.applet.service.codescan.dto.unique.ProjectSampleTestUniqueReqDTO;
-import com.bio.drqi.applet.service.codescan.template.ProjectSampleTestCodeScanService;
+import com.bio.drqi.applet.service.codescan.template.SampleTestCodeScanService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -13,13 +13,12 @@ import javax.annotation.Resource;
 public class SampleServiceImpl implements SampleService {
 
     @Resource
-    private ProjectSampleTestCodeScanService projectSampleTestCodeScanService;
+    private SampleTestCodeScanService sampleTestCodeScanService;
 
     @Override
     public ScanCodeProjectSampleTestRspDTO queryBySampleCode(QueryBySampleCodeReqDTO queryBySampleCodeReqDTO) {
         ProjectSampleTestUniqueReqDTO projectSampleTestUniqueReqDTO = new ProjectSampleTestUniqueReqDTO();
-        projectSampleTestUniqueReqDTO.setVectorTaskCode(queryBySampleCodeReqDTO.getVectorTaskCode());
         projectSampleTestUniqueReqDTO.setSampleCode(queryBySampleCodeReqDTO.getSampleCode());
-        return projectSampleTestCodeScanService.dealCodeContent(projectSampleTestUniqueReqDTO);
+        return sampleTestCodeScanService.dealCodeContent(projectSampleTestUniqueReqDTO);
     }
 }

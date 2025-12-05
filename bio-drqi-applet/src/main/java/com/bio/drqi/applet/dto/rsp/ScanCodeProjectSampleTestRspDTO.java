@@ -1,6 +1,6 @@
 package com.bio.drqi.applet.dto.rsp;
 
-import com.baomidou.mybatisplus.annotation.TableField;
+import com.bio.drqi.applet.service.codescan.dto.BioResultInfoDTO;
 import lombok.Data;
 
 import java.util.Date;
@@ -8,102 +8,64 @@ import java.util.List;
 
 @Data
 public class ScanCodeProjectSampleTestRspDTO {
-
-    private String projectCode;
-
-    private String projectName;
-
-    private String subProjectCode;
-
+    /**
+     * 载体任务编码
+     */
     private String vectorTaskCode;
+
+    /**
+     * 取样编号
+     */
+    private String sampleCode;
+
+    /**
+     * 取样申请时间
+     */
+    private Date applyTime;
+
+    /**
+     * 取样申请人ID
+     */
+    private Integer applyUserId;
+
+    /**
+     * 取样申请人姓名
+     */
+    private String applyUserName;
+
+    /**
+     * 鉴定引物
+     */
+    private String testIdentifyPrimer;
+
+    private String generation;
+
+    private String speciesCode;
+
+    private String breedCode;
+
+    private String experimentNum;
+
+    private String regionNum;
+
+    private String seedNum;
 
     private String transformCode;
 
-    private SampleTest sampleTest;
+    /**
+     * 来源
+     */
+    private String sourceCode;
 
-    private List<BioInfo> bioInfoList;
 
+    private OneTestResultInfo oneTestResultInfo;
 
-    @Data
-    public static class BioInfo {
-        /**
-         * 材料名称
-         */
-        private String sampleId;
+    private List<BioResultInfoDTO> bioInfoList;
 
-        /**
-         * 生信系统唯一编号
-         */
-        private String uniqueDbCode;
-
-        /**
-         * 测序编号
-         */
-        private String runId;
-
-        /**
-         * HapID
-         */
-        private String hapId;
-
-        /**
-         * 变异类型合计
-         */
-        private String varType;
-
-        /**
-         * 突变方向合计
-         */
-        private String mutate;
-
-        /**
-         * 变异类型占比(%)
-         */
-        private String ratio;
-
-        /**
-         * 生信分析结果确认状态 checked  none
-         */
-        private String confirmStatus;
-
-        /**
-         * 分析编号
-         */
-        private String resultKey;
-    }
 
     @Data
-    public static class SampleTest {
+    public class OneTestResultInfo {
 
-        /**
-         * 载体任务编码
-         */
-        private String vectorTaskCode;
-
-        /**
-         * 取样编号
-         */
-        private String sampleCode;
-
-        /**
-         * 取样申请时间
-         */
-        private Date applyTime;
-
-        /**
-         * 取样申请人ID
-         */
-        private Integer applyUserId;
-
-        /**
-         * 取样申请人姓名
-         */
-        private String applyUserName;
-
-        /**
-         * 鉴定引物
-         */
-        private String testIdentifyPrimer;
 
         /**
          * 检测方法
@@ -230,32 +192,13 @@ public class ScanCodeProjectSampleTestRspDTO {
          */
         private String cloneSampleCode;
 
-        /**
-         * 来源
-         */
-        private String sourceCode;
+
 
         /**
          * 检测原始结果
          */
         private String testOrgResult;
 
-        private String generation;
-
-        private String speciesCode;
-
-        private String breedCode;
-
-        private String experimentNum;
-
-        private String regionNum;
-
-        private String seedNum;
-
-        private String transformCode;
-
-
 
     }
-
 }

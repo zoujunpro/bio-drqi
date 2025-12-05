@@ -11,7 +11,7 @@ import com.bio.drqi.applet.dto.rsp.ScanCodeT0PlantTestRspDTO;
 import com.bio.drqi.applet.service.ScanCodeService;
 import com.bio.drqi.applet.service.codescan.BaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.unique.PlantUniqueCodeDTO;
-import com.bio.drqi.applet.service.codescan.template.ProjectPlantCodeScanService;
+import com.bio.drqi.applet.service.codescan.template.PlantCodeScanService;
 import com.bio.print.api.PrintApi;
 import com.bio.print.rsp.PrintDataRspDTO;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class ScanCodeServiceImpl implements ScanCodeService {
     private PrintApi printApi;
 
     @Resource
-    private ProjectPlantCodeScanService projectPlantCodeScanService;
+    private PlantCodeScanService plantCodeScanService;
 
     @Override
     public ScanCodeRspDTO scanCode(String code) {
@@ -50,7 +50,7 @@ public class ScanCodeServiceImpl implements ScanCodeService {
         PlantUniqueCodeDTO plantUniqueCodeDTO=new PlantUniqueCodeDTO();
         plantUniqueCodeDTO.setPlantCode(queryByPlantCodeReqDTO.getPlantCode());
         plantUniqueCodeDTO.setVectorTaskCode(queryByPlantCodeReqDTO.getVectorTaskCode());
-        ScanCodeT0PlantTestRspDTO scanCodeT0PlantTestRspDTO = projectPlantCodeScanService.dealCodeContent(plantUniqueCodeDTO);
+        ScanCodeT0PlantTestRspDTO scanCodeT0PlantTestRspDTO = plantCodeScanService.dealCodeContent(plantUniqueCodeDTO);
         return scanCodeT0PlantTestRspDTO;
     }
 

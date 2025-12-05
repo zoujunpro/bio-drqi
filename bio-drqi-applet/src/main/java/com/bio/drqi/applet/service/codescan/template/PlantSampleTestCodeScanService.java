@@ -1,6 +1,5 @@
 package com.bio.drqi.applet.service.codescan.template;
 
-import com.bio.drqi.applet.dto.rsp.ScanCodePlantSampleTestRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.unique.PlantSampleTestUniqueReqDTO;
 import com.bio.drqi.mapper.*;

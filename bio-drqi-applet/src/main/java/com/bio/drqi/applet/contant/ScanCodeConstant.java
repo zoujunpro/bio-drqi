@@ -38,9 +38,6 @@ public class ScanCodeConstant {
         //种植标签（项目）
         scanCodeClassMap.put(PrintTypeEnum.plant_label_project_print.name(), PlantCodeScanService.class);
 
-        //组胚标签
-        scanCodeClassMap.put(PrintTypeEnum.tissue_embryo_label_print.name() ,TissueEmbryoCodeScanService.class);
-
         //耗材标签
         scanCodeClassMap.put(PrintTypeEnum.bms_label_print.name(),BmsCodeScanService.class);
 

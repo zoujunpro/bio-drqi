@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class ScanCodeProjectSampleTestRspDTO {
+public class ScanCodeSampleTestRspDTO {
     /**
      * 载体任务编码
      */

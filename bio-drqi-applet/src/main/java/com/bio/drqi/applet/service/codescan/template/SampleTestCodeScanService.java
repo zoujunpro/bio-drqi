@@ -4,10 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
-import com.bio.drqi.applet.dto.rsp.ScanCodeProjectSampleTestRspDTO;
+import com.bio.drqi.applet.dto.rsp.ScanCodeSampleTestRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.BioResultInfoDTO;
-import com.bio.drqi.applet.service.codescan.dto.unique.ProjectSampleTestUniqueReqDTO;
+import com.bio.drqi.applet.service.codescan.dto.unique.SampleTestUniqueReqDTO;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * 取样扫码
  */
 @Service
-public class SampleTestCodeScanService extends AbstractBaseCodeScanService<ProjectSampleTestUniqueReqDTO, ScanCodeProjectSampleTestRspDTO> {
+public class SampleTestCodeScanService extends AbstractBaseCodeScanService<SampleTestUniqueReqDTO, ScanCodeSampleTestRspDTO> {
 
 
     @Resource
@@ -36,42 +36,42 @@ public class SampleTestCodeScanService extends AbstractBaseCodeScanService<Proje
 
 
     @Override
-    public ProjectSampleTestUniqueReqDTO parseUniqueCode(String uniqueCode) {
+    public SampleTestUniqueReqDTO parseUniqueCode(String uniqueCode) {
         String[] uniqueCodeArr = uniqueCode.split("\\|");
-        ProjectSampleTestUniqueReqDTO projectSampleTestUniqueReqDTO = new ProjectSampleTestUniqueReqDTO();
-        projectSampleTestUniqueReqDTO.setSampleCode(uniqueCodeArr[1]);
-        projectSampleTestUniqueReqDTO.setTaskNum(uniqueCodeArr[0]);
-        return projectSampleTestUniqueReqDTO;
+        SampleTestUniqueReqDTO sampleTestUniqueReqDTO = new SampleTestUniqueReqDTO();
+        sampleTestUniqueReqDTO.setSampleCode(uniqueCodeArr[1]);
+        sampleTestUniqueReqDTO.setTaskNum(uniqueCodeArr[0]);
+        return sampleTestUniqueReqDTO;
     }
 
 
     @Override
-    public ScanCodeProjectSampleTestRspDTO dealCodeContent(ProjectSampleTestUniqueReqDTO projectSampleTestUniqueReqDTO) {
-        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(projectSampleTestUniqueReqDTO.getSampleCode());
+    public ScanCodeSampleTestRspDTO dealCodeContent(SampleTestUniqueReqDTO sampleTestUniqueReqDTO) {
+        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(sampleTestUniqueReqDTO.getSampleCode());
         if(CollectionUtil.isEmpty(bioSampleTestTbList)){
             throw new BusinessException("找不到取样编号");
         }
         BioSampleTestTb bioSampleTestTb=bioSampleTestTbList.get(0);
 
 
-        ScanCodeProjectSampleTestRspDTO scanCodeProjectSampleTestRspDTO = new ScanCodeProjectSampleTestRspDTO();
-        scanCodeProjectSampleTestRspDTO.setVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
-        scanCodeProjectSampleTestRspDTO.setSampleCode(bioSampleTestTb.getSampleCode());
-        scanCodeProjectSampleTestRspDTO.setApplyTime(bioSampleTestTb.getApplyTime());
-        scanCodeProjectSampleTestRspDTO.setApplyUserId(bioSampleTestTb.getApplyUserId());
-        scanCodeProjectSampleTestRspDTO.setApplyUserName(bioSampleTestTb.getApplyUserName());
-        scanCodeProjectSampleTestRspDTO.setTestIdentifyPrimer(bioSampleTestTb.getTestIdentifyPrimer());
-        scanCodeProjectSampleTestRspDTO.setGeneration(bioSampleTestTb.getGeneration());
-        scanCodeProjectSampleTestRspDTO.setSpeciesCode(bioSampleTestTb.getSpeciesCode());
-        scanCodeProjectSampleTestRspDTO.setBreedCode(bioSampleTestTb.getBreedCode());
-        scanCodeProjectSampleTestRspDTO.setExperimentNum(bioSampleTestTb.getExperimentNum());
-        scanCodeProjectSampleTestRspDTO.setRegionNum(bioSampleTestTb.getRegionNum());
-        scanCodeProjectSampleTestRspDTO.setSeedNum(bioSampleTestTb.getSeedNum());
-        scanCodeProjectSampleTestRspDTO.setTransformCode(bioSampleTestTb.getTransformCode());
-        scanCodeProjectSampleTestRspDTO.setSourceCode(bioSampleTestTb.getSourceCode());
-        scanCodeProjectSampleTestRspDTO.setOneTestResultInfo(BeanUtil.copyProperties(bioSampleTestTb, ScanCodeProjectSampleTestRspDTO.OneTestResultInfo.class));
-        scanCodeProjectSampleTestRspDTO.setBioInfoList(queryBioInfoSampleTestResultBySampleCode(projectSampleTestUniqueReqDTO.getSampleCode()));
-        return scanCodeProjectSampleTestRspDTO;
+        ScanCodeSampleTestRspDTO scanCodeSampleTestRspDTO = new ScanCodeSampleTestRspDTO();
+        scanCodeSampleTestRspDTO.setVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
+        scanCodeSampleTestRspDTO.setSampleCode(bioSampleTestTb.getSampleCode());
+        scanCodeSampleTestRspDTO.setApplyTime(bioSampleTestTb.getApplyTime());
+        scanCodeSampleTestRspDTO.setApplyUserId(bioSampleTestTb.getApplyUserId());
+        scanCodeSampleTestRspDTO.setApplyUserName(bioSampleTestTb.getApplyUserName());
+        scanCodeSampleTestRspDTO.setTestIdentifyPrimer(bioSampleTestTb.getTestIdentifyPrimer());
+        scanCodeSampleTestRspDTO.setGeneration(bioSampleTestTb.getGeneration());
+        scanCodeSampleTestRspDTO.setSpeciesCode(bioSampleTestTb.getSpeciesCode());
+        scanCodeSampleTestRspDTO.setBreedCode(bioSampleTestTb.getBreedCode());
+        scanCodeSampleTestRspDTO.setExperimentNum(bioSampleTestTb.getExperimentNum());
+        scanCodeSampleTestRspDTO.setRegionNum(bioSampleTestTb.getRegionNum());
+        scanCodeSampleTestRspDTO.setSeedNum(bioSampleTestTb.getSeedNum());
+        scanCodeSampleTestRspDTO.setTransformCode(bioSampleTestTb.getTransformCode());
+        scanCodeSampleTestRspDTO.setSourceCode(bioSampleTestTb.getSourceCode());
+        scanCodeSampleTestRspDTO.setOneTestResultInfo(BeanUtil.copyProperties(bioSampleTestTb, ScanCodeSampleTestRspDTO.OneTestResultInfo.class));
+        scanCodeSampleTestRspDTO.setBioInfoList(queryBioInfoSampleTestResultBySampleCode(sampleTestUniqueReqDTO.getSampleCode()));
+        return scanCodeSampleTestRspDTO;
     }
 
     private List<BioResultInfoDTO> queryBioInfoSampleTestResultBySampleCode(String sampleCode) {

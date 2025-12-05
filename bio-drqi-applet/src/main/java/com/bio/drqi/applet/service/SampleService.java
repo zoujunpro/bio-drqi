@@ -1,9 +1,9 @@
 package com.bio.drqi.applet.service;
 
 import com.bio.drqi.applet.dto.req.QueryBySampleCodeReqDTO;
-import com.bio.drqi.applet.dto.rsp.ScanCodeProjectSampleTestRspDTO;
+import com.bio.drqi.applet.dto.rsp.ScanCodeSampleTestRspDTO;
 
 public interface SampleService {
 
-    ScanCodeProjectSampleTestRspDTO queryBySampleCode(QueryBySampleCodeReqDTO queryBySampleCodeReqDTO);
+    ScanCodeSampleTestRspDTO queryBySampleCode(QueryBySampleCodeReqDTO queryBySampleCodeReqDTO);
 }

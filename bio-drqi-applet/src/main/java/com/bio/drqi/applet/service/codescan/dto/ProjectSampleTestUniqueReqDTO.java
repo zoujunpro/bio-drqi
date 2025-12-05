@@ -3,7 +3,7 @@ package com.bio.drqi.applet.service.codescan.dto;
 import lombok.Data;
 
 @Data
-public class SampleTestUniqueReqDTO {
+public class ProjectSampleTestUniqueReqDTO {
 
     private String vectorTaskCode;
 

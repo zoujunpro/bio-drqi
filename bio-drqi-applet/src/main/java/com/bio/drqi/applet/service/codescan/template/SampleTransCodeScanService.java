@@ -3,7 +3,6 @@ package com.bio.drqi.applet.service.codescan.template;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
-import com.bio.drqi.applet.dto.rsp.ScanCodeSampleTestRspDTO;
 import com.bio.drqi.applet.dto.rsp.ScanCodeSampleTestTransRspDTO;
 import com.bio.drqi.applet.service.codescan.AbstractBaseCodeScanService;
 import com.bio.drqi.applet.service.codescan.dto.TransUniqueCodeDTO;

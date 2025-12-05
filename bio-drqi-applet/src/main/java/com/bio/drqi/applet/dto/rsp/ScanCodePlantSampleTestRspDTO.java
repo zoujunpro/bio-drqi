@@ -6,19 +6,19 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class ScanCodeSampleTestRspDTO {
+public class ScanCodePlantSampleTestRspDTO {
 
-    private String projectCode;
+    private String regionNum;
 
-    private String projectName;
+    private String seedNum;
 
-    private String subProjectCode;
+    private String sampleCode;
 
-    private String vectorTaskCode;
+    private String taskNum;
 
-    private String transformName;
+    private String breedName;
 
-    private String transformCode;
+    private String breedCode;
 
     private SampleTest sampleTest;
 
@@ -77,11 +77,6 @@ public class ScanCodeSampleTestRspDTO {
 
     @Data
     public static class SampleTest {
-
-        /**
-         * 受体材料
-         */
-        private String acceptorMaterial;
 
         /**
          * 取样编号

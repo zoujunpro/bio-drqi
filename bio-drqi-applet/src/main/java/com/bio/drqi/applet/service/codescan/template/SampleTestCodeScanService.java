@@ -52,23 +52,7 @@ public class SampleTestCodeScanService extends AbstractBaseCodeScanService<Sampl
             throw new BusinessException("找不到取样编号");
         }
         BioSampleTestTb bioSampleTestTb=bioSampleTestTbList.get(0);
-
-
-        ScanCodeSampleTestRspDTO scanCodeSampleTestRspDTO = new ScanCodeSampleTestRspDTO();
-        scanCodeSampleTestRspDTO.setVectorTaskCode(bioSampleTestTb.getVectorTaskCode());
-        scanCodeSampleTestRspDTO.setSampleCode(bioSampleTestTb.getSampleCode());
-        scanCodeSampleTestRspDTO.setApplyTime(bioSampleTestTb.getApplyTime());
-        scanCodeSampleTestRspDTO.setApplyUserId(bioSampleTestTb.getApplyUserId());
-        scanCodeSampleTestRspDTO.setApplyUserName(bioSampleTestTb.getApplyUserName());
-        scanCodeSampleTestRspDTO.setTestIdentifyPrimer(bioSampleTestTb.getTestIdentifyPrimer());
-        scanCodeSampleTestRspDTO.setGeneration(bioSampleTestTb.getGeneration());
-        scanCodeSampleTestRspDTO.setSpeciesCode(bioSampleTestTb.getSpeciesCode());
-        scanCodeSampleTestRspDTO.setBreedCode(bioSampleTestTb.getBreedCode());
-        scanCodeSampleTestRspDTO.setExperimentNum(bioSampleTestTb.getExperimentNum());
-        scanCodeSampleTestRspDTO.setRegionNum(bioSampleTestTb.getRegionNum());
-        scanCodeSampleTestRspDTO.setSeedNum(bioSampleTestTb.getSeedNum());
-        scanCodeSampleTestRspDTO.setTransformCode(bioSampleTestTb.getTransformCode());
-        scanCodeSampleTestRspDTO.setSourceCode(bioSampleTestTb.getSourceCode());
+        ScanCodeSampleTestRspDTO scanCodeSampleTestRspDTO = BeanUtil.copyProperties(bioSampleTestTb, ScanCodeSampleTestRspDTO.class);
         scanCodeSampleTestRspDTO.setOneTestResultInfo(BeanUtil.copyProperties(bioSampleTestTb, ScanCodeSampleTestRspDTO.OneTestResultInfo.class));
         scanCodeSampleTestRspDTO.setBioInfoList(queryBioInfoSampleTestResultBySampleCode(sampleTestUniqueReqDTO.getSampleCode()));
         return scanCodeSampleTestRspDTO;

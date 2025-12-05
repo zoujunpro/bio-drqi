@@ -57,6 +57,21 @@ public class ScanCodeSampleTestRspDTO {
      */
     private String sourceCode;
 
+    /**
+     * 审核人姓名
+     */
+    private String checkUserName;
+
+    /**
+     * 审核人ID
+     */
+    private Integer checkUserId;
+
+    /**
+     * 审查结果
+     */
+    private String checkResult;
+
 
     private OneTestResultInfo oneTestResultInfo;
 
@@ -142,20 +157,7 @@ public class ScanCodeSampleTestRspDTO {
          */
         private String testTime;
 
-        /**
-         * 审核人姓名
-         */
-        private String checkUserName;
 
-        /**
-         * 审核人ID
-         */
-        private Integer checkUserId;
-
-        /**
-         * 审查结果
-         */
-        private String checkResult;
 
         /**
          * 创建日期

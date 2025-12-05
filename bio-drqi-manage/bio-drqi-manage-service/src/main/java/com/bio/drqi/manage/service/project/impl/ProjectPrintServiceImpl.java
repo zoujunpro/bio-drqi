@@ -219,8 +219,9 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
 
     @Override
     public List<PrintRspDTO> transPrint(TransPrintReqDTO transPrintReqDTO) {
+        Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         List<PrintRspDTO> printRspDTOList = new ArrayList<>();
-        List<SamplePrintData> samplePrintDataList = new ArrayList<>();
+        List<PlantPrintData> plantPrintDataList = new ArrayList<>();
         List<TransformTransPrintData> transformTransPrintDataList = new ArrayList<>();
         for (TransPrintReqDTO.Content content : transPrintReqDTO.getContentList()) {
             if (StringUtils.isNotEmpty(content.getSampleCode())) {
@@ -232,13 +233,15 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 if (cerTransformTb == null) {
                     throw new BusinessException("找不到此取样编号的转化信息:" + content.getSampleCode());
                 }
-                SamplePrintData samplePrintData = new SamplePrintData();
-                samplePrintData.setVectorTaskCode(content.getVectorTaskCode());
-                samplePrintData.setTransformCode(content.getTransformCode());
-                samplePrintData.setSampleCode(content.getSampleCode());
-                samplePrintData.setTaskNum(transPrintReqDTO.getTaskNum());
-                samplePrintData.setBreedName(cerTransformTb.getAcceptorMaterial());
-                samplePrintDataList.add(samplePrintData);
+                PlantPrintData plantPrintData = new PlantPrintData();
+                plantPrintData.setVectorTaskCode(bioSampleTestTbList.get(0).getVectorTaskCode());
+                plantPrintData.setTransformCode(bioSampleTestTbList.get(0).getTransformCode());
+                plantPrintData.setPlantCode(content.getSampleCode());
+                plantPrintData.setRegionNum(bioSampleTestTbList.get(0).getRegionNum());
+                plantPrintData.setSeedNum(bioSampleTestTbList.get(0).getSeedNum());
+                plantPrintData.setBreedName(cerBreedDictMap.get(bioSampleTestTbList.get(0).getBreedCode()));
+                plantPrintData.setPrintNum(1);
+                plantPrintDataList.add(plantPrintData);
             } else if (StringUtils.isNotEmpty(content.getTransformCode())) {
                 CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(content.getTransformCode(), content.getVectorTaskCode());
                 if (cerTransformTb == null) {
@@ -254,8 +257,8 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             }
         }
         //取样标签打印(大签)
-        if (CollectionUtil.isNotEmpty(samplePrintDataList)) {
-            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_large_project_print.name(), samplePrintDataList)));
+        if (CollectionUtil.isNotEmpty(plantPrintDataList)) {
+            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_label_project_print.name(), plantPrintDataList)));
             //转化大签打印
         } else if (CollectionUtil.isNotEmpty(transformTransPrintDataList)) {
             printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.transform_trans_print.name(), transformTransPrintDataList)));

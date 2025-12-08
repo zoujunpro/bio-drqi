@@ -122,6 +122,8 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
             PageInfo<BioSampleTestListDetailRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, BioSampleTestListDetailRspDTO.class);
             targetPageInfo.getList().forEach(sampleTestListDetailRspDTO -> {
                 sampleTestListDetailRspDTO.setGeneration(GenerationEnum.getGenerationDesc(sampleTestListDetailRspDTO.getGeneration()));
+                sampleTestListDetailRspDTO.setBreedName(cerBreedDictMap.get(sampleTestListDetailRspDTO.getBreedCode()));
+                sampleTestListDetailRspDTO.setSpeciesName(cerSpeciesConfMap.get(sampleTestListDetailRspDTO.getSpeciesCode()));
                 List<BioSampleTestTwoResultTb> bioSampleTestTwoResultTbList = bioSampleTestTwoResultTbMapper.selectAllByApplyNoAndSampleCodeOrderByIdDesc(sampleTestListDetailRspDTO.getApplyNo(), sampleTestListDetailRspDTO.getSampleCode());
                 if (CollectionUtil.isNotEmpty(bioSampleTestTwoResultTbList)) {
                     Map<String, List<BioSampleTestTwoResultTb>> bioSampleTestTwoResultTbListMap = bioSampleTestTwoResultTbList.stream().collect(Collectors.groupingBy(bioSampleTestTwoResultTb -> bioSampleTestTwoResultTb.getRunId() + bioSampleTestTwoResultTb.getSampleId()));
@@ -130,8 +132,6 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                         if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultDetailList)) {
                             cerSampleTestBioInfoResultDetailList.forEach(cerSampleTestBioInfoResultTb -> {
                                 sampleTestListDetailRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
-                                sampleTestListDetailRspDTO.setBreedName(cerBreedDictMap.get(sampleTestListDetailRspDTO.getBreedCode()));
-                                sampleTestListDetailRspDTO.setSpeciesName(cerSpeciesConfMap.get(sampleTestListDetailRspDTO.getSpeciesCode()));
                             });
                         }
                     });

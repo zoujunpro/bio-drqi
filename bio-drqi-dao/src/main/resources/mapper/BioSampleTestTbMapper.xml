@@ -399,4 +399,12 @@
         and source_code=#{sourceCode,jdbcType=VARCHAR}
         GROUP BY sampleMonth
     </select>
+    <select id="selectAllByVectorTaskCodeAndSourceCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_test_tb
+        where
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+        AND source_code = #{sourceCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

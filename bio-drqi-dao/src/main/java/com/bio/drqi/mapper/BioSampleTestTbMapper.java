@@ -61,7 +61,7 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
     List<BioSampleTestTb> selectAllBySampleCodeLike(@Param("sampleCode") String sampleCode);
 
-    selectAllByVectorTaskCodeAndSourceCode
+    List<BioSampleTestTb> selectAllByVectorTaskCodeAndSourceCode(@Param("vectorTaskCode") String vectorTaskCode, @Param("sourceCode") String sourceCode);
 
     BioSampleTestTb selectOneByVectorTaskCodeAndSampleCodeFirst(@Param("vectorTaskCode") String vectorTaskCode, @Param("sampleCode") String sampleCode);
 

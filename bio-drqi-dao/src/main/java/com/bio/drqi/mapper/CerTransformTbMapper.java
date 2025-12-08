@@ -19,8 +19,6 @@ public interface CerTransformTbMapper extends BaseMapper<CerTransformTb> {
 
     List<CerTransformTb> selectAllByProjectId(@Param("projectId") Integer projectId);
 
-    List<CerTransformTb> selectAllByVectorTaskIdAndPlasmidName(@Param("vectorTaskId") Integer vectorTaskId, @Param("plasmidName") String plasmidName);
-
     List<CerTransformTb> selectAllByVectorTaskId(@Param("vectorTaskId") Integer vectorTaskId);
 
     List<CerTransformTb> selectAllByProjectIdAndTaskStatus(@Param("projectId") Integer projectId, @Param("taskStatus") String taskStatus);

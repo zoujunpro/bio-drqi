@@ -11,13 +11,13 @@
             <result property="noticeType" column="notice_type" jdbcType="VARCHAR"/>
             <result property="noticeTime" column="notice_time" jdbcType="TIMESTAMP"/>
             <result property="readFlag" column="read_flag" jdbcType="VARCHAR"/>
-            <result property="openId" column="open_id" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="openId" column="open_id" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,notice_user_name,notice_content,
-        notice_type,notice_time,read_flag,open_id
-        create_time
+        notice_type,notice_time,read_flag,
+        create_time,open_id
     </sql>
 </mapper>

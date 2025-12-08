@@ -24,6 +24,7 @@ public interface TcExperimentDesignTbMapper extends BaseMapper<TcExperimentDesig
 
     List<TcExperimentDesignTb> selectAllBySeedNum(@Param("seedNum") String seedNum);
 
+    List<TcExperimentDesignTb> selectAllByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
     List<TcExperimentDesignTb> selectAllByVectorTaskCodeAndPdImplementCode(@Param("vectorTaskCode") String vectorTaskCode, @Param("pdImplementCode") String pdImplementCode);
 
     int updatePdImplementCodeAndVectorTaskCodeById(@Param("pdImplementCode") String pdImplementCode, @Param("vectorTaskCode") String vectorTaskCode, @Param("id") Integer id);

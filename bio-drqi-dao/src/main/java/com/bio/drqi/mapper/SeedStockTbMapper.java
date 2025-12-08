@@ -30,6 +30,8 @@ public interface SeedStockTbMapper extends BaseMapper<SeedStockTb> {
 
     List<SeedStockTb> selectAllBySeedNumIn(@Param("seedNumList") Collection<String> seedNumList);
 
+    List<SeedStockTb> selectAllByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
+
     int deleteBySeedNumIn(@Param("seedNumList") Collection<String> seedNumList);
 
     List<SeedStockTb> selectAllByBreedCode(@Param("breedCode") String breedCode);

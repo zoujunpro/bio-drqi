@@ -224,5 +224,12 @@
             project_code     = #{projectCode,jdbcType=VARCHAR}
         where id = #{id,jdbcType=NUMERIC}
     </update>
+    <select id="selectAllByVectorTaskCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_tb
+        where
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

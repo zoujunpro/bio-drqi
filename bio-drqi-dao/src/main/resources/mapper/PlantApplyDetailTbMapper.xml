@@ -101,5 +101,12 @@
             #{item.createUserId,jdbcType=NUMERIC},#{item.createUserName,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP})
         </foreach>
     </insert>
+    <select id="selectAllByVectorTaskCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_apply_detail_tb
+        where
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

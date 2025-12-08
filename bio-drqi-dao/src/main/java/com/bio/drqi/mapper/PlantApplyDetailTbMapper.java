@@ -21,6 +21,8 @@ public interface PlantApplyDetailTbMapper extends BaseMapper<PlantApplyDetailTb>
 
     PlantApplyDetailTb selectOneByRegionNumAndSeedNum(@Param("regionNum") String regionNum, @Param("seedNum") String seedNum);
 
+    List<PlantApplyDetailTb> selectAllByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
+
 
 }
 

@@ -38,6 +38,10 @@ public class ProjectBaseProcService extends AbstractProjectBaseTaskService {
         if (cerProjectTb != null) {
             throw new BusinessException("项目编号已经使用");
         }
+
+        if (!projectAddDTO.getProjectCode().matches("^[A-Za-z0-9]+$")) {
+            throw new BusinessException("项目编号只能是数字或者字母");
+        }
     }
 
     @Override
@@ -78,7 +82,6 @@ public class ProjectBaseProcService extends AbstractProjectBaseTaskService {
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByTaskNum(bioTaskDtlTb.getTaskNum());
         if (cerProjectTb != null) {
             cerProjectTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
-
         }
     }
 }

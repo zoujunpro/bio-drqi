@@ -24,7 +24,6 @@ public class ProjectAddDTO {
      * 项目编号
      */
     @NotBlank(message = "项目编号缺失")
-    @Size(max = 5,message = "项目编号5")
     private String projectCode;
 
     /**

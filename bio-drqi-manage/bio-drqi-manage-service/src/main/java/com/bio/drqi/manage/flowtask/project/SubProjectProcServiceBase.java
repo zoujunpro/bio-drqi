@@ -30,6 +30,7 @@ public class SubProjectProcServiceBase extends AbstractProjectBaseTaskService {
 
     @Resource
     private CerProjectTbMapper cerProjectTbMapper;
+
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         log.info("【任务工单】子项目开始创建");
@@ -99,9 +100,10 @@ public class SubProjectProcServiceBase extends AbstractProjectBaseTaskService {
             if (!content.getSubProjectCode().startsWith(cerProjectTb.getProjectCode())) {
                 throw new BusinessException("子项目编号必须以项目编号开头：" + content.getSubProjectCode());
             }
-            if (content.getSubProjectCode().length() - cerProjectTb.getProjectCode().length() != 2) {
-                throw new BusinessException("子项目编号必须是项目编号后跟两位字符,形如：X01 X代表项目编号");
+            if (!content.getSubProjectCode().matches("^[A-Za-z0-9]+$")) {
+                throw new BusinessException("子项目编号只能输数字或者字符");
             }
+
         }
     }
 }

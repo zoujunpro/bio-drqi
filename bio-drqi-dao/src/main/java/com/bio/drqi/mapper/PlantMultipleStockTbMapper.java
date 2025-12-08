@@ -23,7 +23,6 @@ public interface PlantMultipleStockTbMapper extends BaseMapper<PlantMultipleStoc
 
     List<String> selectSpeciesCode();
 
-    List<PlantMultipleStockTb> selectAllByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
 
     PlantMultipleStockTb selectOneByVectorTaskCodeAndTransformCode(@Param("vectorTaskCode") String vectorTaskCode, @Param("transformCode") String transformCode);
 
@@ -37,6 +36,8 @@ public interface PlantMultipleStockTbMapper extends BaseMapper<PlantMultipleStoc
     Long selectSumSampleNumber();
 
     Long selectNoSampleNumber();
+
+    List<PlantMultipleStockTb> selectAllByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
 
    Long selectCountBySourceCode(@Param("sourceCode") String sourceCode);
 }

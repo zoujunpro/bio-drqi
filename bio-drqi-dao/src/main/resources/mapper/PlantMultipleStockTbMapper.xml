@@ -35,13 +35,6 @@
         breed_code,sample_number,current_number,
         region_num,vector_task_code,pd_implement_code,plant_date
     </sql>
-    <select id="selectAllByVectorTaskCode" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from plant_multiple_stock_tb
-        where
-        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
-    </select>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.PlantMultipleStockTb">
         select
         <include refid="Base_Column_List"/>
@@ -153,5 +146,12 @@
         select
         count(*)
         from plant_multiple_stock_tb where  source_code = #{sourceCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllByVectorTaskCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_multiple_stock_tb
+        where
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
     </select>
 </mapper>

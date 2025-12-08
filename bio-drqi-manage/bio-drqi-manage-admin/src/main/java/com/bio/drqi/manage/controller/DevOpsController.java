@@ -145,7 +145,7 @@ public class DevOpsController {
             for (CerVectorTaskTb cerVectorTaskTb : cerVectorTaskTbList) {
                 log.info("修改实施方案编号");
                 String oldVectorTaskCode = cerVectorTaskTb.getVectorTaskCode();
-                String newVectorTaskCode = devOpsModifySubProjectCodeReqDTO.getNewSubProjectCode() +"-"+ cerVectorTaskTb.getVectorTaskCode().split("-")[1];
+                String newVectorTaskCode = devOpsModifySubProjectCodeReqDTO.getNewSubProjectCode() + "-" + cerVectorTaskTb.getVectorTaskCode().split("-")[1];
                 cerVectorTaskTb.setVectorTaskCode(newVectorTaskCode);
                 cerVectorTaskTb.setSubProjectCode(devOpsModifySubProjectCodeReqDTO.getNewSubProjectCode());
                 cerVectorTaskTb.setSubProjectCode(devOpsModifySubProjectCodeReqDTO.getNewSubProjectCode());
@@ -202,9 +202,9 @@ public class DevOpsController {
                 List<BioSampleApplyTb> bioSampleApplyTbList = bioSampleApplyTbMapper.selectSelective(null);
                 if (CollectionUtil.isNotEmpty(bioSampleApplyTbList)) {
                     bioSampleApplyTbList.forEach(bioSampleApplyTb -> {
-                        if(StringUtils.isNotEmpty(bioSampleApplyTb.getVectorTaskCodes())&&bioSampleApplyTb.getVectorTaskCodes().contains(oldVectorTaskCode)){
+                        if (StringUtils.isNotEmpty(bioSampleApplyTb.getVectorTaskCodes()) && bioSampleApplyTb.getVectorTaskCodes().contains(oldVectorTaskCode)) {
                             log.info("修改取样申请中实施方案编号");
-                            bioSampleApplyTb.setVectorTaskCodes(bioSampleApplyTb.getVectorTaskCodes().replace(oldVectorTaskCode,newVectorTaskCode));
+                            bioSampleApplyTb.setVectorTaskCodes(bioSampleApplyTb.getVectorTaskCodes().replace(oldVectorTaskCode, newVectorTaskCode));
                             bioSampleApplyTbMapper.updateById(bioSampleApplyTb);
                         }
 
@@ -234,6 +234,22 @@ public class DevOpsController {
                     });
 
                 }
+
+                List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectAllByVectorTaskCode(oldVectorTaskCode);
+                if (CollectionUtil.isNotEmpty(plantSingleStockTbList)) {
+                    plantSingleStockTbList.forEach(plantSingleStockTb -> {
+                        plantSingleStockTb.setVectorTaskCode(newVectorTaskCode);
+                        plantSingleStockTbMapper.updateById(plantSingleStockTb);
+                    });
+                }
+                List<PlantMultipleStockTb> plantMultipleStockTbList = plantMultipleStockTbMapper.selectAllByVectorTaskCode(oldVectorTaskCode);
+                if (CollectionUtil.isNotEmpty(plantMultipleStockTbList)) {
+                    plantMultipleStockTbList.forEach(plantMultipleStockTb -> {
+                        plantMultipleStockTb.setVectorTaskCode(newVectorTaskCode);
+                        plantMultipleStockTbMapper.updateById(plantMultipleStockTb);
+                    });
+                }
+
                 //修改种子库
                 List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectAllByVectorTaskCode(oldVectorTaskCode);
                 if (CollectionUtil.isNotEmpty(seedStockTbList)) {

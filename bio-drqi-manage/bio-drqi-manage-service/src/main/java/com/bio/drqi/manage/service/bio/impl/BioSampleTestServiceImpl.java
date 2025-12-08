@@ -101,7 +101,8 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
 
     @Override
     public PageInfo<BioSampleTestListDetailRspDTO> listPage(BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO) {
-
+        Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+        Map<String, String> cerSpeciesConfMap = cerSpeciesConfMapper.selectAll().stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
         //先判断是否是取消的工单
         if (checkTaskStatusIfRefuse(bioSampleTestListDetailReqDTO)) {
             PageHelper.startPage(bioSampleTestListDetailReqDTO.getPageNum(), bioSampleTestListDetailReqDTO.getPageSize());
@@ -129,6 +130,8 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                         if (CollectionUtil.isNotEmpty(cerSampleTestBioInfoResultDetailList)) {
                             cerSampleTestBioInfoResultDetailList.forEach(cerSampleTestBioInfoResultTb -> {
                                 sampleTestListDetailRspDTO.addBioInfoResultToList(cerSampleTestBioInfoResultTb.getSampleId(), cerSampleTestBioInfoResultTb.getVarType(), cerSampleTestBioInfoResultTb.getMutate(), cerSampleTestBioInfoResultTb.getRatio());
+                                sampleTestListDetailRspDTO.setBreedName(cerBreedDictMap.get(sampleTestListDetailRspDTO.getBreedCode()));
+                                sampleTestListDetailRspDTO.setSpeciesName(cerSpeciesConfMap.get(sampleTestListDetailRspDTO.getSpeciesCode()));
                             });
                         }
                     });

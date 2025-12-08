@@ -182,6 +182,10 @@ public class BioSampleTestListDetailRspDTO {
 
     private String breedCode;
 
+    private String speciesName;
+
+    private String breedName;
+
     private String experimentNum;
 
     private String regionNum;

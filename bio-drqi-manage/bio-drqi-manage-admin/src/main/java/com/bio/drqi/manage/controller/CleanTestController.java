@@ -77,9 +77,12 @@ public class CleanTestController {
     @GetMapping("/cleanPlantSeed")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanPlantSeed() {
-        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectSelective(SeedStockTb.builder().sourceType(SeedSourceEnum.CODE_4.name()).build());
+        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectSelective(SeedStockTb.builder().sourceType(SeedSourceEnum.CODE_4.code).build());
         for (SeedStockTb seedStockTb : seedStockTbList) {
             log.info("seedStockTb="+JSONUtil.toJsonStr(seedStockTb));
+            if(StringUtils.isEmpty(seedStockTb.getExperimentNum())){
+                continue;
+            }
             seedPlantService.seedInStockAddRefPlant(seedStockTb);
         }
         return ResponseResult.getSuccess("ok");

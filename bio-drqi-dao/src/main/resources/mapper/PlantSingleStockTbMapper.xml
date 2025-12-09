@@ -97,8 +97,8 @@
             <if test="pdImplementCode != null and pdImplementCode!=''">and
                 pd_implement_code=#{pdImplementCode,jdbcType=VARCHAR}
             </if>
-            <if test='ifHaveNormalStatus=="Y"'>and plant_status='1'</if>
-            <if test='ifHaveNormalStatus=="N"'>and plant_status !='1'</if>
+            <if test='ifHarvest=="Y"'>and plant_status='4'</if>
+            <if test='ifHarvest=="N"'>and plant_status !='4'</if>
 
 
         </where>

@@ -66,5 +66,5 @@ public class PlantSingleStockListPageReqDTO extends PageDTO {
      * Y 只含有正常状态种植信息 ，N不包含正常状态种植信息
      */
 
-    private String ifHaveNormalStatus;
+    private String ifHarvest;
 }

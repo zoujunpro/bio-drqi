@@ -23,6 +23,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
+import com.bio.drqi.manage.service.common.SeedPlantService;
 import com.bio.drqi.manage.service.seed.SeedStockInService;
 import com.bio.drqi.mapper.*;
 import com.github.pagehelper.PageHelper;
@@ -71,6 +72,9 @@ public class SeedStockInServiceImpl implements SeedStockInService {
 
     @Resource
     private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
+
+    @Resource
+    private SeedPlantService seedPlantService;
 
 
     @Override
@@ -194,6 +198,8 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             executeFormContent.setSeedNum(seedStockTb.getSeedNum());
             bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(seedInStoreDTO, new JSONConfig().setIgnoreNullValue(false)));
             bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+
+            seedPlantService.seedInStockAddRefPlant(seedStockTb);
         }
 
     }

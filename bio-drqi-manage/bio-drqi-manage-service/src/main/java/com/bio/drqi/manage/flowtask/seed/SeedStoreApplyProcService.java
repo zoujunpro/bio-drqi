@@ -11,6 +11,7 @@ import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SeedSourceEnum;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
+import com.bio.drqi.manage.service.common.SeedPlantService;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,9 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
 
     @Resource
     private TcPollinationTbMapper tcPollinationTbMapper;
+
+    @Resource
+    private SeedPlantService seedPlantService;
 
 
     @Override
@@ -147,7 +151,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 if (tcExperimentTb == null) {
                     throw new BusinessException("试验编号不存在：" + executeFormContent.getExperimentNum());
                 }
-                TcExperimentDesignTb matherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByRegionNumAndSeedNum( executeFormContent.getMatherRegionNum(), executeFormContent.getMatherSeedNum());
+                TcExperimentDesignTb matherTcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByRegionNumAndSeedNum(executeFormContent.getMatherRegionNum(), executeFormContent.getMatherSeedNum());
                 if (matherTcExperimentDesignTb == null) {
                     throw new BusinessException("试验方案中不存在此小区或者母本种子，当前试验方案编号：" + tcExperimentTb.getExperimentNum() + "母本小区编号：" + executeFormContent.getMatherRegionNum() + "母本种子编号:" + executeFormContent.getMatherSeedNum());
                 }
@@ -182,7 +186,9 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 if (seedStockTb.getSeedNumber().compareTo(seedStockTb.getTotalNumber()) != 0) {
                     throw new BusinessException("该批次中有种子被使用，无法撤销 使用种子编号：" + seedStockTb.getSeedNum());
                 }
+                seedPlantService.seedInStockDeleteRefPlant(seedStockTb);
             }
+
 
             //删除种子入库记录
             seedStockInLogMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());

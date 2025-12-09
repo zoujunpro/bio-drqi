@@ -46,6 +46,9 @@ public class ProjectListReqDTO extends PageDTO {
     private Order order;
 
 
+    private String projectType;
+
+
     @Data
     @Valid
     public static  class  Order{

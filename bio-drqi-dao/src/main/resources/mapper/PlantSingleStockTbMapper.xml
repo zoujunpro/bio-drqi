@@ -150,4 +150,11 @@
         where
         vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectCountNumByPlantStatus" resultType="java.lang.Long">
+        select count(*)
+        from plant_single_stock_tb
+        <where>
+            <if test="plantStatus != null and plantStatus!=''">and plant_status=#{plantStatus,jdbcType=VARCHAR}</if>
+        </where>
+    </select>
 </mapper>

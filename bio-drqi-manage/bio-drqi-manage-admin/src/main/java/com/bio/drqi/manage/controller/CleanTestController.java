@@ -74,15 +74,32 @@ public class CleanTestController {
     @Resource
     private SeedStockTbMapper seedStockTbMapper;
 
+    @Resource
+    private PlantSingleStockTbMapper plantSingleStockTbMapper;
+
     @GetMapping("/cleanPlantSeed")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanPlantSeed() {
-        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectSelective(SeedStockTb.builder().sourceType(SeedSourceEnum.CODE_4.code).build());
-        for (SeedStockTb seedStockTb : seedStockTbList) {
-            log.info("seedStockTb="+JSONUtil.toJsonStr(seedStockTb));
-            if(StringUtils.isEmpty(seedStockTb.getExperimentNum())){
+        List<SeedStockTb> seedStockTbList4 = seedStockTbMapper.selectSelective(SeedStockTb.builder().sourceType(SeedSourceEnum.CODE_4.code).build());
+        for (SeedStockTb seedStockTb : seedStockTbList4) {
+            log.info("大田seedStockTb=" + JSONUtil.toJsonStr(seedStockTb));
+            if (StringUtils.isEmpty(seedStockTb.getExperimentNum())) {
                 continue;
             }
+            seedPlantService.seedInStockAddRefPlant(seedStockTb);
+        }
+
+        List<SeedStockTb> seedStockTbList1 = seedStockTbMapper.selectSelective(SeedStockTb.builder().sourceType(SeedSourceEnum.CODE_1.code).build());
+        for (SeedStockTb seedStockTb : seedStockTbList1) {
+            log.info("CER seedStockTb=" + JSONUtil.toJsonStr(seedStockTb));
+            if (StringUtils.isEmpty(seedStockTb.getPlantCode())) {
+                continue;
+            }
+            PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(seedStockTb.getPlantCode());
+            if(plantSingleStockTb==null){
+                continue;
+            }
+
             seedPlantService.seedInStockAddRefPlant(seedStockTb);
         }
         return ResponseResult.getSuccess("ok");

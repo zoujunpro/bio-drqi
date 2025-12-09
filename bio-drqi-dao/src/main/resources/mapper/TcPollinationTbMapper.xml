@@ -54,7 +54,7 @@
         seed_number,unit,
         seed_type,harvest_apply_num,harvest_remark,
         f_single_number,m_single_number,m_tc_sample_code,
-        f_tc_sample_code
+        f_tc_sample_code,seed_nums
     </sql>
 
     <select id="selectAllByPollinationApplyNum" resultMap="BaseResultMap">

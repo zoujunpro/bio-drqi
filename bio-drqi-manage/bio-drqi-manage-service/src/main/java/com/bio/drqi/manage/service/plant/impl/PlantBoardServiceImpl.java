@@ -59,7 +59,7 @@ public class PlantBoardServiceImpl implements PlantBoardService {
     public PlantBoardCountRspDTO count() {
         Long tempPlantCountNumber = plantMultipleStockTbMapper.selectSumPlantNumber();
         Long tempSampleCountNumber = plantMultipleStockTbMapper.selectSumSampleNumber();
-        Long plantCountNumber = plantSingleStockTbMapper.selectCount(null);
+        Long plantCountNumber = plantSingleStockTbMapper.selectCountNumByPlantStatus(PlantStatusEnum.STATUS_1.code);
         Long  tempNoSampleCountNumber=plantMultipleStockTbMapper.selectNoSampleNumber();
         Long transFromCountNumber=plantMultipleStockTbMapper.selectCountBySourceCode(SourceCodeEnum.project.name());
         Long seedCountNumber=plantMultipleStockTbMapper.selectCountBySourceCode(SourceCodeEnum.cer.name());

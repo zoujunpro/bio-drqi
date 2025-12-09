@@ -194,6 +194,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
+            bioSampleTestHisTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
             bioSampleTestTbMapper.updateNoCheckDataByApplyNoAndCheckResult(CheckResultEnum.remove.name(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioSampleApplyTb.getApplyNo(), CheckResultEnum.noCheck.name());
 
             //首次CER取样需要生成种植编号

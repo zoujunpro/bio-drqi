@@ -153,4 +153,6 @@ public class PlantSingleStockListPageRspDTO {
      * 实施方案编号
      */
     private String vectorTaskCode;
+
+    private String seedNums;
 }

@@ -121,13 +121,27 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
             }
 
             //CER 校验
-            if (StringUtils.isNotEmpty(executeFormContent.getPlantCode())) {
-                if (StringUtils.isEmpty(executeFormContent.getVectorTaskCode())) {
-                    throw new BusinessException("CER的T1代种子请填写所属实施方案");
+
+            if (SeedSourceEnum.CODE_1.code.equals(executeFormContent.getSource())) {
+                if(StringUtils.isEmpty(executeFormContent.getPlantCode())){
+                    throw new BusinessException("来源自CER的种子必然有种植编号");
                 }
                 PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(executeFormContent.getPlantCode());
                 if (plantSingleStockTb == null) {
                     throw new BusinessException(executeFormContent.getPlantCode() + "种植编号不存在:" + executeFormContent.getPlantCode());
+                }
+                if(StringUtils.isEmpty(executeFormContent.getVectorTaskCode())){
+                    executeFormContent.setSeedNum(plantSingleStockTb.getVectorTaskCode());
+                }else {
+                    if(StringUtils.isEmpty(plantSingleStockTb.getVectorTaskCode())){
+                        throw new BusinessException("种植编号为："+executeFormContent.getPlantCode()+"的种子实施方案填写不正确");
+                    }
+                }
+                if(StringUtils.equals(executeFormContent.getSpeciesCode(),plantSingleStockTb.getSpeciesCode())){
+                    throw new BusinessException("种植编号为："+executeFormContent.getPlantCode()+"的种子物种填写不正确");
+                }
+                if(StringUtils.equals(executeFormContent.getBreedCode(),plantSingleStockTb.getBreedCode())){
+                    throw new BusinessException("种植编号为："+executeFormContent.getPlantCode()+"的种子品种填写不正确");
                 }
             }
             //大田校验

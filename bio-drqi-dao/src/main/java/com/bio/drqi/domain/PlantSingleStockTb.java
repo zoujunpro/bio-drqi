@@ -157,6 +157,8 @@ public class PlantSingleStockTb implements Serializable {
 
     private String pdImplementCode;
 
+    private String seedNums;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -164,6 +166,14 @@ public class PlantSingleStockTb implements Serializable {
 
     @TableField(exist = false)
     private Integer countNum;
+
+    /**
+     * Y 只含有正常状态种植信息 ，N不包含正常状态种植信息
+     */
+    @TableField(exist = false)
+    private String ifHaveNormalStatus;
+
+
 
 
 

@@ -62,4 +62,9 @@ public class PlantSingleStockListPageReqDTO extends PageDTO {
      * 实施方案编号
      */
     private String vectorTaskCode;
+    /**
+     * Y 只含有正常状态种植信息 ，N不包含正常状态种植信息
+     */
+
+    private String ifHaveNormalStatus;
 }

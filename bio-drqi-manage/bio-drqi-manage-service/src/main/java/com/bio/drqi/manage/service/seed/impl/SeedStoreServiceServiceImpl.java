@@ -10,6 +10,7 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.enums.BioDictTypeEnum;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.DataPermissionTypeEnum;
 import com.bio.drqi.enums.DataPermissionValueEnum;
@@ -64,6 +65,12 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
     @Resource
     private BioDictMapper bioDictMapper;
+
+    @Resource
+    private PlantApplyDetailTbMapper plantApplyDetailTbMapper;
+
+    @Resource
+    private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
 
     @Override
     public SeedDetailRspDTO querySeedByNum(String seedNum) {
@@ -206,7 +213,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         if (StringUtils.isNotEmpty(seedStockTb.getFatherSeedNum())) {
             buildSeedMapRspDTO(seedStockTb.getFatherSeedNum(), seedMapRspDTO, cerBreedDictMap);
         }
-        if (StringUtils.isNotEmpty(seedStockTb.getMatherSeedNum())&&!seedStockTb.getMatherSeedNum().equals(seedStockTb.getFatherSeedNum())) {
+        if (StringUtils.isNotEmpty(seedStockTb.getMatherSeedNum()) && !seedStockTb.getMatherSeedNum().equals(seedStockTb.getFatherSeedNum())) {
             buildSeedMapRspDTO(seedStockTb.getMatherSeedNum(), seedMapRspDTO, cerBreedDictMap);
         }
 
@@ -251,6 +258,41 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
             result.addAll(fatherSeedStockTbList.stream().map(SeedStockTb::getSeedNum).collect(Collectors.toList()));
         }
         return result.stream().distinct().collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SeedStockQueryPlantListRspDTO> queryPlantList(String seedNum) {
+        List<SeedStockQueryPlantListRspDTO> resultList = new ArrayList<>();
+        List<PlantApplyDetailTb> plantApplyDetailTbList = plantApplyDetailTbMapper.selectAllBySeedNum(seedNum);
+        if (CollectionUtil.isNotEmpty(plantApplyDetailTbList)) {
+            plantApplyDetailTbList.forEach(plantApplyDetailTb -> {
+                SeedStockQueryPlantListRspDTO seedStockQueryPlantListRspDTO = new SeedStockQueryPlantListRspDTO();
+                seedStockQueryPlantListRspDTO.setTaskNum(plantApplyDetailTb.getPlantApplyNum());
+                seedStockQueryPlantListRspDTO.setSourceCode(SourceCodeEnum.cer.name());
+                seedStockQueryPlantListRspDTO.setPlantUserName(plantApplyDetailTb.getCreateUserName());
+                seedStockQueryPlantListRspDTO.setCreateTime(plantApplyDetailTb.getCreateTime());
+                seedStockQueryPlantListRspDTO.setRegionCode(plantApplyDetailTb.getRegionNum());
+                seedStockQueryPlantListRspDTO.setSeedNum(plantApplyDetailTb.getSeedNum());
+                seedStockQueryPlantListRspDTO.setPlantNumber(plantApplyDetailTb.getPlantNumber() + plantApplyDetailTb.getPlantUnit());
+                resultList.add(seedStockQueryPlantListRspDTO);
+            });
+        }
+        List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllBySeedNum(seedNum);
+        if(CollectionUtil.isNotEmpty(tcExperimentDesignTbList)){
+            tcExperimentDesignTbList.forEach(tcExperimentDesignTb -> {
+                SeedStockQueryPlantListRspDTO seedStockQueryPlantListRspDTO = new SeedStockQueryPlantListRspDTO();
+                seedStockQueryPlantListRspDTO.setTaskNum(tcExperimentDesignTb.getTaskNum());
+                seedStockQueryPlantListRspDTO.setSourceCode(SourceCodeEnum.field.name());
+                seedStockQueryPlantListRspDTO.setPlantUserName(tcExperimentDesignTb.getCreateUserName());
+                seedStockQueryPlantListRspDTO.setCreateTime(tcExperimentDesignTb.getCreateTime());
+                seedStockQueryPlantListRspDTO.setRegionCode(tcExperimentDesignTb.getRegionNum());
+                seedStockQueryPlantListRspDTO.setSeedNum(tcExperimentDesignTb.getSeedNum());
+                seedStockQueryPlantListRspDTO.setPlantNumber(tcExperimentDesignTb.getSeedingNumber()+tcExperimentDesignTb.getSeedingUnit());
+                resultList.add(seedStockQueryPlantListRspDTO);
+            });
+        }
+
+        return resultList;
     }
 
 

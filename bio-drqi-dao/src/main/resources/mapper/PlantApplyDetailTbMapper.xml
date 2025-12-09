@@ -108,5 +108,12 @@
         where
         vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllBySeedNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plant_apply_detail_tb
+        where
+        seed_num = #{seedNum,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

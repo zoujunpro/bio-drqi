@@ -34,7 +34,6 @@ public class SeedPlantService {
             if (tcPollinationTb == null) {
                 throw new BusinessException("回关大田种子编号异常，无此授粉信息或者授粉信息不匹配：当前对应数据行的试验方案：" + seedStockTb.getExperimentNum() + " 父本种子编号：" + seedStockTb.getFatherSeedNum() + " 母本种子编号：" + seedStockTb.getMatherSeedNum());
             }
-
             seedNumList = JSONUtil.toList(tcPollinationTb.getSeedNums(), String.class);
             if (!seedNumList.contains(seedStockTb.getSeedNum())) {
                 seedNumList.add(seedStockTb.getSeedNum());

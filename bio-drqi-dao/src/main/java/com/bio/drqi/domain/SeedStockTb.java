@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -17,6 +20,9 @@ import java.util.stream.Collectors;
  */
 @TableName(value = "seed_stock_tb")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SeedStockTb implements Serializable {
     /**
      * 主键ID

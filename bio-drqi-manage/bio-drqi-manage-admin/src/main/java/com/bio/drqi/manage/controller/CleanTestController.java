@@ -10,9 +10,11 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.SeedSourceEnum;
 import com.bio.drqi.manage.flowtask.plant.PlantSampleTestTaskService;
 import com.bio.drqi.manage.sample.req.ApproveSampleResultReqDTO;
 import com.bio.drqi.manage.service.bio.BioSampleTestService;
+import com.bio.drqi.manage.service.common.SeedPlantService;
 import com.bio.drqi.mapper.*;
 import com.bio.print.PlantApplyPrintDTO;
 import lombok.Data;
@@ -65,6 +67,24 @@ public class CleanTestController {
     @Resource
     private CerBreedDictMapper cerBreedDictMapper;
 
+
+    @Resource
+    private SeedPlantService seedPlantService;
+
+    @Resource
+    private SeedStockTbMapper seedStockTbMapper;
+
+    @GetMapping("/cleanPlantSeed")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanPlantSeed() {
+        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectSelective(SeedStockTb.builder().sourceType(SeedSourceEnum.CODE_4.name()).build());
+        for (SeedStockTb seedStockTb : seedStockTbList) {
+            log.info("seedStockTb="+JSONUtil.toJsonStr(seedStockTb));
+            seedPlantService.seedInStockAddRefPlant(seedStockTb);
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
     @GetMapping("/cleanPrintPlant_apply_label_print")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanPrintPlant_apply_label_print() {
@@ -81,7 +101,6 @@ public class CleanTestController {
             plantApplyPrintDTO.setPrintNumber(1);
             bioPrintLabelInfoTb.setLabelText(JSONUtil.toJsonStr(plantApplyPrintDTO));
             bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
-
 
 
         }

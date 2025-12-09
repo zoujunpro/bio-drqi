@@ -153,6 +153,8 @@ public class TcPollinationTb implements Serializable {
 
     private String harvestRemark;
 
+    private String seedNums;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

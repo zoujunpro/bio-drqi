@@ -29,16 +29,16 @@
         <result property="harvestTypeCode" column="harvest_type_code" jdbcType="VARCHAR"/>
         <result property="harvestTypeName" column="harvest_type_name" jdbcType="VARCHAR"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
-        <result property="harvestTime" column="harvest_time" jdbcType="VARCHAR"/>
         <result property="seedNumber" column="seed_number" jdbcType="DECIMAL"/>
         <result property="unit" column="unit" jdbcType="VARCHAR"/>
-        <result property="seedType" column="seed_type" jdbcType="VARCHAR"/>
         <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
         <result property="harvestRemark" column="harvest_remark" jdbcType="VARCHAR"/>
         <result property="fSingleNumber" column="f_single_number" jdbcType="VARCHAR"/>
         <result property="mSingleNumber" column="m_single_number" jdbcType="VARCHAR"/>
         <result property="mTcSampleCode" column="m_tc_sample_code" jdbcType="VARCHAR"/>
         <result property="fTcSampleCode" column="f_tc_sample_code" jdbcType="VARCHAR"/>
+        <result property="seedNums" column="seed_nums" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -51,7 +51,7 @@
         f_generation_code,m_tc_gene,f_tc_gene,
         pollination_date,pollination_method_code,pollination_method_name,
         harvest_type_code,harvest_type_name,remark,
-        harvest_time,seed_number,unit,
+        seed_number,unit,
         seed_type,harvest_apply_num,harvest_remark,
         f_single_number,m_single_number,m_tc_sample_code,
         f_tc_sample_code
@@ -191,6 +191,12 @@
         where
         experiment_num = #{experimentNum,jdbcType=VARCHAR}
     </select>
+
+    <delete id="deleteByPollinationApplyNum">
+        delete
+        from tc_pollination_tb
+        where pollination_apply_num = #{pollinationApplyNum,jdbcType=VARCHAR}
+    </delete>
     <insert id="insertBatch">
         insert into tc_pollination_tb(id,experiment_num,sample_apply_num,
         pollination_apply_num,m_region_num,f_region_num,
@@ -202,7 +208,7 @@
         f_tc_gene,pollination_date,pollination_method_code,
         pollination_method_name,harvest_type_code,harvest_type_name,
         remark,unit,seed_number,
-        harvest_apply_num,harvest_remark)
+        harvest_apply_num,harvest_remark,seed_nums)
         values
         <foreach collection="tcPollinationTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.sampleApplyNum,jdbcType=VARCHAR},
@@ -215,12 +221,7 @@
             #{item.fTcGene,jdbcType=VARCHAR},#{item.pollinationDate,jdbcType=VARCHAR},#{item.pollinationMethodCode,jdbcType=VARCHAR},
             #{item.pollinationMethodName,jdbcType=VARCHAR},#{item.harvestTypeCode,jdbcType=VARCHAR},#{item.harvestTypeName,jdbcType=VARCHAR},
             #{item.remark,jdbcType=VARCHAR},#{item.unit,jdbcType=VARCHAR},#{item.seedNumber,jdbcType=DECIMAL},
-            #{item.harvestApplyNum,jdbcType=VARCHAR},#{item.harvestRemark,jdbcType=VARCHAR})
+            #{item.harvestApplyNum,jdbcType=VARCHAR},#{item.harvestRemark,jdbcType=VARCHAR},#{item.seedNums,jdbcType=VARCHAR})
         </foreach>
     </insert>
-    <delete id="deleteByPollinationApplyNum">
-        delete
-        from tc_pollination_tb
-        where pollination_apply_num = #{pollinationApplyNum,jdbcType=VARCHAR}
-    </delete>
 </mapper>

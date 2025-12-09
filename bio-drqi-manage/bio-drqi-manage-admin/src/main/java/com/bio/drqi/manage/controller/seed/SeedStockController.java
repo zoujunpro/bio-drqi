@@ -125,13 +125,14 @@ public class SeedStockController {
     }
 
     /**
-     *种子库-查询图谱
+     * 种子库-查询图谱
+     *
      * @param seedNum
      * @return
      */
     @GetMapping("/findSeedMap")
     @WebLog(desc = "种子库-查询图谱")
-    public ResponseResult<SeedMapRspDTO> findSeedMap(@RequestParam @Validated @NotBlank(message = "参数缺失") String seedNum){
+    public ResponseResult<SeedMapRspDTO> findSeedMap(@RequestParam @Validated @NotBlank(message = "参数缺失") String seedNum) {
         return ResponseResult.getSuccess(seedStoreService.findSeedMap(seedNum));
     }
 
@@ -153,13 +154,25 @@ public class SeedStockController {
 
 
     /**
-     *种子库-查询某一个种子所有直系子代
+     * 种子库-查询某一个种子所有直系子代
+     *
      * @param seedNum
      * @return
      */
     @GetMapping("/queryChildSeed")
     @WebLog(desc = "种子库-查询某一个种子所有直系子代")
-    public ResponseResult<List<String>> queryChildSeed(String seedNum){
+    public ResponseResult<List<String>> queryChildSeed(String seedNum) {
         return ResponseResult.getSuccess(seedStoreService.queryChildSeed(seedNum));
+    }
+
+    /**
+     * 种子库-查询种植列表
+     *
+     * @return
+     */
+    @GetMapping("/queryPlantList")
+    @WebLog(desc = "种子库-查询种植列表")
+    public ResponseResult<List<SeedStockQueryPlantListRspDTO>> queryPlantList(String seedNum) {
+        return ResponseResult.getSuccess(seedStoreService.queryPlantList(seedNum));
     }
 }

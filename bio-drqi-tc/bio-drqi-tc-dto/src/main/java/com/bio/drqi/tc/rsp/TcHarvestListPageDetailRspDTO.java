@@ -161,4 +161,6 @@ public class TcHarvestListPageDetailRspDTO {
 
     private String harvestRemark;
 
+    private String seedNums;
+
 }

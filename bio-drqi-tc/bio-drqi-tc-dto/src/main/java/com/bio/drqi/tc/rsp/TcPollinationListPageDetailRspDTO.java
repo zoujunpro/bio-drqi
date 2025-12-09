@@ -167,5 +167,8 @@ public class TcPollinationListPageDetailRspDTO {
 
     private String unit;
 
+
+    private String seedNums;
+
     private BigDecimal seedNumber;
 }

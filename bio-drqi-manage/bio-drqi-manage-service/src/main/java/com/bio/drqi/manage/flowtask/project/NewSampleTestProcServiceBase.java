@@ -136,6 +136,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
         List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
         if (CollectionUtil.isNotEmpty(bioSampleTestTbList)) {
+            bioSampleTestHisTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
             bioSampleTestHisTbMapper.insertBatch(BeanUtils.copyListProperties(bioSampleTestTbList, BioSampleTestHisTb.class));
         }
         bioSampleApplyTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());

@@ -108,5 +108,7 @@ public class CerVectorBuildListPageRspDTO {
 
     private String taskNum;
 
+    private String transFlag;
+
 
 }

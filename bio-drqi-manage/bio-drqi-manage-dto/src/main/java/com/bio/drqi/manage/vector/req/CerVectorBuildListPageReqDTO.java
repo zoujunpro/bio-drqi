@@ -17,6 +17,8 @@ public class CerVectorBuildListPageReqDTO extends PageDTO {
 
     private String taskNum;
 
+    private String transFlag;
+
 
 
 }

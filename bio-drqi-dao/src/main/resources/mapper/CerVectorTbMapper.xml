@@ -5,37 +5,40 @@
 <mapper namespace="com.bio.drqi.mapper.CerVectorTbMapper">
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.CerVectorTb">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="vectorTaskId" column="vector_task_id" jdbcType="VARCHAR"/>
-            <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
-            <result property="plasmidName" column="plasmid_name" jdbcType="VARCHAR"/>
-            <result property="targetSite" column="target_site" jdbcType="VARCHAR"/>
-            <result property="bacterialResistance" column="bacterial_resistance" jdbcType="VARCHAR"/>
-            <result property="plasmidSpecificPrimers" column="plasmid_specific_primers" jdbcType="VARCHAR"/>
-            <result property="bacterialReplicon" column="bacterial_replicon" jdbcType="VARCHAR"/>
-            <result property="copyNumber" column="copy_number" jdbcType="VARCHAR"/>
-            <result property="agrobacteriumInformation" column="agrobacterium_information" jdbcType="VARCHAR"/>
-            <result property="selectionMarker" column="selection_marker" jdbcType="VARCHAR"/>
-            <result property="foreignGene" column="foreign_gene" jdbcType="VARCHAR"/>
-            <result property="geneCharacter" column="gene_character" jdbcType="VARCHAR"/>
-            <result property="targetGene" column="target_gene" jdbcType="VARCHAR"/>
-            <result property="pam" column="pam" jdbcType="VARCHAR"/>
-            <result property="remark" column="remark" jdbcType="VARCHAR"/>
-            <result property="expectedPositiveVaccine" column="expected_positive_vaccine" jdbcType="INTEGER"/>
-            <result property="fileUrls" column="file_urls" jdbcType="VARCHAR"/>
-            <result property="qualityInspectionResult" column="quality_inspection_result" jdbcType="VARCHAR"/>
-            <result property="destinationStripeSize" column="destination_stripe_size" jdbcType="VARCHAR"/>
-            <result property="vectorSize" column="vector_size" jdbcType="VARCHAR"/>
-            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="vectorTaskId" column="vector_task_id" jdbcType="VARCHAR"/>
+        <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+        <result property="plasmidName" column="plasmid_name" jdbcType="VARCHAR"/>
+        <result property="targetSite" column="target_site" jdbcType="VARCHAR"/>
+        <result property="bacterialResistance" column="bacterial_resistance" jdbcType="VARCHAR"/>
+        <result property="plasmidSpecificPrimers" column="plasmid_specific_primers" jdbcType="VARCHAR"/>
+        <result property="bacterialReplicon" column="bacterial_replicon" jdbcType="VARCHAR"/>
+        <result property="copyNumber" column="copy_number" jdbcType="VARCHAR"/>
+        <result property="agrobacteriumInformation" column="agrobacterium_information" jdbcType="VARCHAR"/>
+        <result property="selectionMarker" column="selection_marker" jdbcType="VARCHAR"/>
+        <result property="foreignGene" column="foreign_gene" jdbcType="VARCHAR"/>
+        <result property="geneCharacter" column="gene_character" jdbcType="VARCHAR"/>
+        <result property="targetGene" column="target_gene" jdbcType="VARCHAR"/>
+        <result property="pam" column="pam" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="expectedPositiveVaccine" column="expected_positive_vaccine" jdbcType="INTEGER"/>
+        <result property="fileUrls" column="file_urls" jdbcType="VARCHAR"/>
+        <result property="qualityInspectionResult" column="quality_inspection_result" jdbcType="VARCHAR"/>
+        <result property="destinationStripeSize" column="destination_stripe_size" jdbcType="VARCHAR"/>
+        <result property="vectorSize" column="vector_size" jdbcType="VARCHAR"/>
+        <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+        <result property="transFlag" column="trans_flag" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,vector_task_id,plasmid_name,vector_task_code,
+        id
+        ,vector_task_id,plasmid_name,vector_task_code,
         target_site,bacterial_resistance,plasmid_specific_primers,
         bacterial_replicon,copy_number,agrobacterium_information,
         selection_marker,foreign_gene,gene_character,
         target_gene,pam,remark,
-        expected_positive_vaccine,file_urls,quality_inspection_result,destination_stripe_size,vector_size,task_num
+        expected_positive_vaccine,file_urls,quality_inspection_result,destination_stripe_size,vector_size,task_num,trans_flag
     </sql>
     <delete id="deleteByVectorTaskId">
         delete
@@ -64,7 +67,7 @@
         bacterial_replicon,copy_number,agrobacterium_information,
         selection_marker,foreign_gene,gene_character,
         target_gene,pam,remark,
-        file_urls,expected_positive_vaccine,quality_inspection_result,destination_stripe_size,vector_size,task_num)
+        file_urls,expected_positive_vaccine,quality_inspection_result,destination_stripe_size,vector_size,task_num,trans_flag)
         values
         <foreach collection="cerVectorTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.vectorTaskId,jdbcType=NUMERIC},#{item.plasmidName,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},
@@ -73,7 +76,7 @@
             #{item.selectionMarker,jdbcType=VARCHAR},#{item.foreignGene,jdbcType=VARCHAR},#{item.geneCharacter,jdbcType=VARCHAR},
             #{item.targetGene,jdbcType=VARCHAR},#{item.pam,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},
             #{item.fileUrls,jdbcType=VARCHAR},#{item.expectedPositiveVaccine,jdbcType=NUMERIC},#{item.qualityInspectionResult,jdbcType=VARCHAR},
-            #{item.destinationStripeSize,jdbcType=VARCHAR},#{item.vectorSize,jdbcType=VARCHAR},#{item.taskNum,jdbcType=VARCHAR})
+            #{item.destinationStripeSize,jdbcType=VARCHAR},#{item.vectorSize,jdbcType=VARCHAR},#{item.taskNum,jdbcType=VARCHAR},#{item.transFlag,jdbcType=VARCHAR})
         </foreach>
     </insert>
     <select id="selectOneByPlasmidNameAndVectorTaskId" resultMap="BaseResultMap">
@@ -90,17 +93,19 @@
         from cer_vector_tb
         <where>
             <if test="vectorTaskId != null">and vector_task_id=#{vectorTaskId,jdbcType=NUMERIC}</if>
-            <if test="vectorTaskCode != null and vectorTaskCode!=''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null and vectorTaskCode!=''">and
+                vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}
+            </if>
             <if test="plasmidName != null and plasmidName!=''">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
             <if test="targetSite != null">and target_site=#{targetSite,jdbcType=VARCHAR}</if>
             <if test="bacterialResistance != null">and bacterial_resistance=#{bacterialResistance,jdbcType=VARCHAR}</if>
             <if test="plasmidSpecificPrimers != null">
-                and  plasmid_specific_primers=#{plasmidSpecificPrimers,jdbcType=VARCHAR}
+                and plasmid_specific_primers=#{plasmidSpecificPrimers,jdbcType=VARCHAR}
             </if>
             <if test="bacterialReplicon != null">and bacterial_replicon=#{bacterialReplicon,jdbcType=VARCHAR}</if>
             <if test="copyNumber != null">and copy_number=#{copyNumber,jdbcType=VARCHAR}</if>
             <if test="agrobacteriumInformation != null">
-                and   agrobacterium_information=#{agrobacteriumInformation,jdbcType=VARCHAR}
+                and agrobacterium_information=#{agrobacteriumInformation,jdbcType=VARCHAR}
             </if>
             <if test="selectionMarker != null">and selection_marker=#{selectionMarker,jdbcType=VARCHAR}</if>
             <if test="foreignGene != null">and foreign_gene=#{foreignGene,jdbcType=VARCHAR}</if>
@@ -110,16 +115,17 @@
             <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
             <if test="fileUrls != null">and file_urls=#{fileUrls,jdbcType=VARCHAR}</if>
             <if test="expectedPositiveVaccine != null">
-                and  expected_positive_vaccine=#{expectedPositiveVaccine,jdbcType=NUMERIC}
+                and expected_positive_vaccine=#{expectedPositiveVaccine,jdbcType=NUMERIC}
             </if>
             <if test="qualityInspectionResult != null">
-                and  quality_inspection_result=#{qualityInspectionResult,jdbcType=VARCHAR}
+                and quality_inspection_result=#{qualityInspectionResult,jdbcType=VARCHAR}
             </if>
             <if test="destinationStripeSize != null">
-                and   destination_stripe_size=#{destinationStripeSize,jdbcType=VARCHAR}
+                and destination_stripe_size=#{destinationStripeSize,jdbcType=VARCHAR}
             </if>
             <if test="vectorSize != null">and vector_size=#{vectorSize,jdbcType=VARCHAR}</if>
             <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="transFlag != null and transFlag!=''">and trans_flag=#{transFlag,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

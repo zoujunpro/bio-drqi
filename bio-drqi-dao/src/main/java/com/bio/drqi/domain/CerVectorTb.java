@@ -118,6 +118,8 @@ public class CerVectorTb implements Serializable {
 
     private String vectorTaskCode;
 
+    private String transFlag;
+
 
 
     @TableField(exist = false)

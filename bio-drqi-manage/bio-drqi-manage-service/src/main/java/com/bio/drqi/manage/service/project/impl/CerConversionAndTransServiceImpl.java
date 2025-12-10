@@ -130,11 +130,6 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                 if (!VectorTaskStatusEnum.TASK_STATUS_2.status.equals(cerVectorTaskTb.getTaskStatus())) {
                     throw new BusinessException("实施方案不是执行中状态,当前实施方案:" + cerVectorTaskTb.getVectorTaskCode());
                 }
-                CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(content.getTransformCode(), cerVectorTaskTb.getVectorTaskCode());
-                if(cerTransformTb==null){
-                    throw new BusinessException("找不到转化信息");
-                }
-
                 transFormList.get(0).setAcceptNum(content.getAcceptNum());
                 CerConversionAndTransRef cerConversionAndTransRef = new CerConversionAndTransRef();
                 cerConversionAndTransRef.setConversionAndTransId(cerConversionAndTransTb.getId());
@@ -163,7 +158,7 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                     plantMultipleStockTb = new PlantMultipleStockTb();
                     plantMultipleStockTb.setSeedNum(null);
                     plantMultipleStockTb.setTransformCode(transFormList.get(0).getTransformCode());
-                    plantMultipleStockTb.setGeneration(cerTransformTb.getTransformCode());
+                    plantMultipleStockTb.setGeneration(GenerationEnum.T0.code);
                     plantMultipleStockTb.setPlantNumber(transFormList.get(0).getTransNum());
                     plantMultipleStockTb.setSourceCode(SourceCodeEnum.project.name());
                     plantMultipleStockTb.setRemark("转化移苗数据");

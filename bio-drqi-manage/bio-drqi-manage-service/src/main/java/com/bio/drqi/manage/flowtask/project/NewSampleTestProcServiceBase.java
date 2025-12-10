@@ -252,7 +252,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     bioSampleTestTb.setSourceCode(SourceCodeEnum.project.name());
                     bioSampleTestTb.setBreedCode(cerTransformTb.getBreedCode());
                     bioSampleTestTb.setSpeciesCode(cerTransformTb.getSpeciesCode());
-                    bioSampleTestTb.setGeneration(cerTransformTb.getTransformCode());
+                    bioSampleTestTb.setGeneration(GenerationEnum.T0.code);
                     targetBioSampleTestTbList.add(bioSampleTestTb);
                 }
                 logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test, bioTaskDtlTb.getTaskNum());

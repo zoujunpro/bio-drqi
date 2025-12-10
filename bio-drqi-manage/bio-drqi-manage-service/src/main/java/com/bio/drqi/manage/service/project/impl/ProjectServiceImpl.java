@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.base.api.RemoteUserService;
 import com.bio.base.user.rsp.UserDetailRspDTO;
+import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.enums.*;
 import com.bio.drqi.manage.project.req.ProjectListReqDTO;
 import com.bio.drqi.manage.project.rsp.*;
@@ -56,6 +57,7 @@ public class ProjectServiceImpl implements ProjectService {
         selectCerProjectTb.setProjectCode(projectListReqDTO.getProjectCode());
         selectCerProjectTb.setGeneEditMethod(projectListReqDTO.getGeneEditMethod());
         selectCerProjectTb.setOwnerUserId(projectListReqDTO.getOwnerUserId());
+        selectCerProjectTb.setProjectStatus(projectListReqDTO.getProjectStatus());
         selectCerProjectTb.setProjectType(projectListReqDTO.getProjectType());
         if (projectListReqDTO.getOrder() != null) {
             selectCerProjectTb.setOrderField(projectListReqDTO.getOrder().getFieldName());
@@ -150,6 +152,14 @@ public class ProjectServiceImpl implements ProjectService {
         cerProjectTb.setProjectStatus(ProjectStatusEnum.stop.name());
         cerProjectTbMapper.updateById(cerProjectTb);
 
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByProjectId(cerProjectTb.getId());
+        if (CollectionUtil.isNotEmpty(cerVectorTaskTbList)) {
+            cerVectorTaskTbList.forEach(cerVectorTaskTb -> {
+                cerVectorTaskTb.setTaskStatus(VectorTaskStatusEnum.TASK_STATUS_4.status);
+                cerVectorTaskTbMapper.updateById(cerVectorTaskTb);
+            });
+        }
+
 
         //cerProjectStatusListener.notice(ProjectStatusEnum.stop,()->cerProjectTb.getId());
     }
@@ -170,6 +180,14 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional(rollbackFor = Exception.class)
     public void complete(Integer id) {
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectById(id);
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByProjectId(cerProjectTb.getId());
+        if (CollectionUtil.isNotEmpty(cerVectorTaskTbList)) {
+            for (CerVectorTaskTb cerVectorTaskTb : cerVectorTaskTbList) {
+                if (VectorTaskStatusEnum.TASK_STATUS_2.status.equals(cerVectorTaskTb.getTaskStatus())) {
+                    throw new BusinessException("有进行中实施方案，无法完成此项目");
+                }
+            }
+        }
         cerProjectTb.setProjectStatus(ProjectStatusEnum.compete.name());
         cerProjectTbMapper.updateById(cerProjectTb);
 

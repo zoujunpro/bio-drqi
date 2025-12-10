@@ -48,6 +48,8 @@ public class ProjectListReqDTO extends PageDTO {
 
     private String projectType;
 
+    private String projectStatus;
+
 
     @Data
     @Valid

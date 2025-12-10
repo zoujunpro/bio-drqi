@@ -40,7 +40,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         ValidatorUtil.validator(plasmidDTO);
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(plasmidDTO.getVectorTaskId());
         if (!BioTaskStatusEnum.TASK_STATUS_2.status.equals(cerVectorTaskTb.getTaskStatus())) {
-            throw new BusinessException("任务审批中，不能质检");
+            throw new BusinessException("不是进行中实施方案,实施方案号：" + cerVectorTaskTb.getVectorTaskCode());
         }
         CerProjectTb cerProjectTb = cerProjectTbMapper.selectById(cerVectorTaskTb.getProjectId());
         if (cerProjectTb == null) {
@@ -78,6 +78,9 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             PlasmidDTO plasmidDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlasmidDTO.class);
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(plasmidDTO.getVectorTaskId());
+            if (!BioTaskStatusEnum.TASK_STATUS_2.status.equals(cerVectorTaskTb.getTaskStatus())) {
+                throw new BusinessException("不是进行中实施方案,实施方案号：" + cerVectorTaskTb.getVectorTaskCode());
+            }
             //更新转化质检结果
             for (PlasmidDTO.Content content : plasmidDTO.getContentList()) {
                 CerPlasmidQualityTb cerPlasmidQualityTb = new CerPlasmidQualityTb();

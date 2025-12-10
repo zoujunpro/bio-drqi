@@ -74,7 +74,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
             throw new BusinessException("参数异常：载体任务未匹配子项目");
         }
         if (!BioTaskStatusEnum.TASK_STATUS_2.status.equals(cerVectorTaskTb.getTaskStatus())) {
-            throw new BusinessException("任务未审批通过,不能进行该项操作：任务号：" + cerVectorTaskTb.getVectorTaskCode());
+            throw new BusinessException("不是进行中实施方案,实施方案号：" + cerVectorTaskTb.getVectorTaskCode());
         }
         CerVectorStepLog cerVectorStepLog = cerVectorStepLogMapper.selectOneByVectorTaskIdAndStepCode(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.plasmid_check.name());
         if (cerVectorStepLog == null) {
@@ -101,8 +101,9 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
             log.info("【任务工单】转化再生开始");
             TransformDTO transformDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TransformDTO.class);
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(transformDTO.getVectorTaskId());
-
-
+            if (!BioTaskStatusEnum.TASK_STATUS_2.status.equals(cerVectorTaskTb.getTaskStatus())) {
+                throw new BusinessException("不是进行中实施方案,实施方案号：" + cerVectorTaskTb.getVectorTaskCode());
+            }
             for (TransformDTO.Content content : transformDTO.getContentList()) {
                 CerTransformTb cerTransformTb = new CerTransformTb();
                 cerTransformTb.setProjectId(cerVectorTaskTb.getProjectId());

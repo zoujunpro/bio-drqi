@@ -11,6 +11,7 @@ import com.bio.drqi.enums.ImplementationPlanTypeEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.VectorTaskStatusEnum;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.feign.PlasmidAPi;
 import com.bio.drqi.mapper.*;
@@ -50,6 +51,9 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
         if (cerVectorTaskTb == null) {
             throw new BusinessException("无此实施方案信息");
+        }
+        if(!VectorTaskStatusEnum.TASK_STATUS_2.status.equals(cerVectorTaskTb.getTaskStatus())){
+            throw new BusinessException("不是进行中实施方案");
         }
         if (CollectionUtil.isNotEmpty(cerVectorTbMapper.selectAllByVectorTaskId(cerVectorTaskTb.getId()))) {
             throw new BusinessException("已经发起过载体构建，请不要重复发起");
@@ -92,6 +96,9 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
             CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskAddDTO.getVectorTaskCode());
             if (cerVectorTaskTb == null) {
                 throw new BusinessException("实施方案不存在");
+            }
+            if(!VectorTaskStatusEnum.TASK_STATUS_2.status.equals(cerVectorTaskTb.getTaskStatus())){
+                throw new BusinessException("不是进行中实施方案");
             }
             CerProjectTb cerProjectTb = cerProjectTbMapper.selectById(cerVectorTaskTb.getProjectId());
             if (cerProjectTb == null) {

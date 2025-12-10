@@ -100,7 +100,9 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 Integer maxSampleNumber = null;
                 if (CollectionUtil.isNotEmpty(bioSampleTestTbList)) {
                     bioSampleTestTbList = bioSampleTestTbList.stream().filter(bioSampleTestTb -> !bioSampleTestTb.getSampleCode().contains("-") && bioSampleTestTb.getSampleCode().startsWith(sampleCodePrefix)).collect(Collectors.toList());
-                    maxSampleNumber = bioSampleTestTbList.stream().map(bioSampleTestTb -> Integer.valueOf(bioSampleTestTb.getSampleCode().substring(sampleCodePrefix.length()))).max(Integer::compare).get();
+                    if(CollectionUtil.isNotEmpty(bioSampleTestTbList)){
+                        maxSampleNumber = bioSampleTestTbList.stream().map(bioSampleTestTb -> Integer.valueOf(bioSampleTestTb.getSampleCode().substring(sampleCodePrefix.length()))).max(Integer::compare).get();
+                    }
                 }
                 for (int i = 1; i <= firstSampleApply.getSampleNumber(); i++) {
                     maxSampleNumber = maxSampleNumber == null ? 1 : maxSampleNumber + 1;

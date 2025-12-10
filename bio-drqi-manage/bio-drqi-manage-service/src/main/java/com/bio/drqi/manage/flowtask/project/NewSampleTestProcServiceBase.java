@@ -232,7 +232,9 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 Integer maxSampleNumber = null;
                 if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
                     cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> !cerSampleTestTb.getSampleCode().contains("-") && cerSampleTestTb.getSampleCode().startsWith(bioSampleCodePrefixTb.getSampleCodePrefix())).collect(Collectors.toList());
-                    maxSampleNumber = cerSampleTestTbList.stream().map(cerSampleTestTb -> Integer.valueOf(cerSampleTestTb.getSampleCode().substring(2))).max(Integer::compare).get();
+                    if(CollectionUtil.isNotEmpty(cerSampleTestTbList)){
+                        maxSampleNumber = cerSampleTestTbList.stream().map(cerSampleTestTb -> Integer.valueOf(cerSampleTestTb.getSampleCode().substring(2))).max(Integer::compare).get();
+                    }
                 }
                 for (int i = 1; i <= firstSampleApply.getSampleNum(); i++) {
                     maxSampleNumber = maxSampleNumber == null ? 1 : maxSampleNumber + 1;

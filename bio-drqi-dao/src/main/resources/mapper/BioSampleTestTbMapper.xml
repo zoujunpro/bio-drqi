@@ -257,7 +257,7 @@
         <include refid="Base_Column_List"/>
         from bio_sample_test_tb
         where
-        sample_code like CONCAT('%',#{sampleCode,jdbcType=VARCHAR},'%')
+        sample_code like CONCAT(#{sampleCode,jdbcType=VARCHAR},'%')
     </select>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BioSampleTestTb">
         select

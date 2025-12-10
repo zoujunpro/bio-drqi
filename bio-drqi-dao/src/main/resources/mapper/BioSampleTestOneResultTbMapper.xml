@@ -104,4 +104,12 @@
         from bio_sample_test_one_result_tb
         where upload_num = #{uploadNum,jdbcType=VARCHAR}
     </delete>
+    <select id="selectOneBySampleCodeOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_test_one_result_tb
+        where
+        sample_code = #{sampleCode,jdbcType=VARCHAR}
+        order by id desc
+    </select>
 </mapper>

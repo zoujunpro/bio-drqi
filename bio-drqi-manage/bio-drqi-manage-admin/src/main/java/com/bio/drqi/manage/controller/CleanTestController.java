@@ -11,6 +11,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SeedSourceEnum;
+import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.flowtask.plant.PlantSampleTestTaskService;
 import com.bio.drqi.manage.sample.req.ApproveSampleResultReqDTO;
 import com.bio.drqi.manage.service.bio.BioSampleTestService;
@@ -77,6 +78,24 @@ public class CleanTestController {
     @Resource
     private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
+
+    @GetMapping("/cleanTransFlag")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanTransFlag() {
+        List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectSelective(null);
+        Map<String, List<CerVectorTb>> map = cerVectorTbList.stream().filter(cerVectorTb -> StringUtils.isNotEmpty(cerVectorTb.getTaskNum())).collect(Collectors.groupingBy(CerVectorTb::getTaskNum));
+        map.forEach((taskNum, list) -> {
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(taskNum);
+            VectorTaskAddDTO vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
+            list.forEach(cerVectorTb -> {
+                cerVectorTb.setTransFlag(StringUtils.isEmpty(vectorTaskAddDTO.getTransFlag()) ? "N" : vectorTaskAddDTO.getTransFlag());
+                cerVectorTbMapper.updateById(cerVectorTb);
+            });
+        });
+        return ResponseResult.getSuccess("ok");
+    }
+
+
     @GetMapping("/cleanPlantSeed")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanPlantSeed() {
@@ -96,7 +115,7 @@ public class CleanTestController {
                 continue;
             }
             PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(seedStockTb.getPlantCode());
-            if(plantSingleStockTb==null){
+            if (plantSingleStockTb == null) {
                 continue;
             }
 

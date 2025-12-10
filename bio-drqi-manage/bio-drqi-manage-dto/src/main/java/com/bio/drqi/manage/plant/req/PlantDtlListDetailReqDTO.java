@@ -7,4 +7,6 @@ import lombok.Data;
 public class PlantDtlListDetailReqDTO extends PageDTO {
 
     private Integer vectorTaskId;
+
+    private String plantStatus;
 }

@@ -45,7 +45,7 @@
             <if test="projectCode != null and projectCode != ''">
                 and project_code = #{projectCode,jdbcType=VARCHAR}
             </if>
-            <if test="projectStatus != null">
+            <if test="projectStatus != null and projectStatus!=''">
                 and project_status = #{projectStatus,jdbcType=VARCHAR}
             </if>
             <if test="createTime != null">

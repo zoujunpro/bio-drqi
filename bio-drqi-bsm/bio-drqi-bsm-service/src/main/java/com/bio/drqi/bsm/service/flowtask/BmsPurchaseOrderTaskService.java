@@ -109,11 +109,10 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
             for (BmsPurchaseOrderDTO.Product product : bmsPurchaseOrderDTO.getProductList()) {
                 BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(product.getSupplierCode());
                 //品牌没有就创建
-                BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(product.getBrandName());
-                if (bmsBrandTb == null) {
-                    bmsBrandTb = bmsBrandService.add(BmsBrandAddReqDTO.builder().brandName(product.getBrandName()).build());
+                if (StringUtils.isEmpty(product.getBrandCode())) {
+                    BmsBrandTb bmsBrandTb = bmsBrandService.add(BmsBrandAddReqDTO.builder().brandName(product.getBrandName()).build());
+                    product.setBrandCode(bmsBrandTb.getBrandCode());
                 }
-                product.setBrandCode(bmsBrandTb.getBrandCode());
                 //非常规采购进行商品创建
                 if (PurchaseTypeEnum.TYPE_2.code.equals(bmsOrderTb.getPurchaseTypeCode())) {
                     BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(product.getProductName(), product.getBrandCode(), product.getProductSpecs());
@@ -122,7 +121,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                     }
                     product.setProductInnerCode(bmsProductTb.getProductInnerCode());
                 }
-
+                BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
                 BmsProjectDict bmsProjectDict = bmsProjectDictMapper.selectOneByProjectCode(product.getProjectCode());
                 //创建订单
                 BmsOrderDetailTb bmsOrderDetailTb = new BmsOrderDetailTb();
@@ -230,11 +229,21 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 if (bmsBrandTb == null) {
                     throw new BusinessException("数据异常，品牌找不到：" + product.getBrandCode());
                 }
-
-
             } else if (PurchaseTypeEnum.TYPE_2.code.equals(purchaseTypeCode)) {
-                if (StringUtils.isEmpty(product.getBrandName()) && StringUtils.isEmpty(product.getBrandCode())) {
-                    throw new BusinessException("非仓管采购时，品牌必填");
+                if (StringUtils.isNotEmpty(product.getBrandCode())) {
+                    BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
+                    if (bmsBrandTb == null) {
+                        throw new BusinessException("非常规采购品牌填写数据异常,根据品牌编号找不到品牌信息");
+                    }
+                    product.setBrandName(bmsBrandTb.getBrandName());
+                } else {
+                    if (StringUtils.isEmpty(product.getBrandCode())) {
+                        throw new BusinessException("非常规采购品牌必选");
+                    }
+                    BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(product.getBrandName());
+                    if (bmsBrandTb != null) {
+                        throw new BusinessException("库存中已经有此品牌，请直接使用已有品牌");
+                    }
                 }
                 if (StringUtils.isEmpty(product.getProductSpecs())) {
                     throw new BusinessException("商品规格必填");

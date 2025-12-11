@@ -79,7 +79,7 @@ public class SeedMapRspDTO {
                     children.add(new SeedMapNode(matherSeed));
                 }else {
                     matherSeed = new SeedMapDTO();
-                    matherSeed.setSeedNum("unKnown");
+                    matherSeed.setSeedNum("unknown");
                     matherSeed.setParentType("parent");
                     children.add(new SeedMapNode(matherSeed));
                 }
@@ -89,7 +89,7 @@ public class SeedMapRspDTO {
                     children.add(new SeedMapNode(fatherSeed));
                 } else {
                     fatherSeed = new SeedMapDTO();
-                    fatherSeed.setSeedNum("unKnown");
+                    fatherSeed.setSeedNum("unknown");
                     fatherSeed.setParentType("father");
                     children.add(new SeedMapNode(fatherSeed));
                 }
@@ -98,7 +98,7 @@ public class SeedMapRspDTO {
                     children.add(new SeedMapNode(matherSeed));
                 } else {
                     matherSeed = new SeedMapDTO();
-                    matherSeed.setSeedNum("unKnown");
+                    matherSeed.setSeedNum("unknown");
                     matherSeed.setParentType("mather");
                     children.add(new SeedMapNode(matherSeed));
                 }

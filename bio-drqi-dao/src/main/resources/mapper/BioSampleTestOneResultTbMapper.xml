@@ -104,7 +104,7 @@
         from bio_sample_test_one_result_tb
         where upload_num = #{uploadNum,jdbcType=VARCHAR}
     </delete>
-    <select id="selectOneBySampleCodeOrderByIdDesc" resultMap="BaseResultMap">
+    <select id="selectAllBySampleCodeOrderByIdDesc" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from bio_sample_test_one_result_tb

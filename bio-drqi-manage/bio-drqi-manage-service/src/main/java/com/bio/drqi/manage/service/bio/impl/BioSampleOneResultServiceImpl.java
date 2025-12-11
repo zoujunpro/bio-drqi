@@ -36,9 +36,9 @@ public class BioSampleOneResultServiceImpl implements BioSampleOneResultService 
 
     @Override
     public CerSampleOneResultQueryBySampleCodeRspDTO queryOneResultBySampleCode(String sampleCode) {
-        BioSampleTestOneResultTb bioSampleTestOneResultTb = bioSampleTestOneResultTbMapper.selectOneBySampleCodeOrderByIdDesc(sampleCode);
-        if (bioSampleTestOneResultTb != null) {
-            return BeanUtils.copyProperties(bioSampleTestOneResultTb, CerSampleOneResultQueryBySampleCodeRspDTO.class);
+        List<BioSampleTestOneResultTb> bioSampleTestOneResultTbList = bioSampleTestOneResultTbMapper.selectAllBySampleCodeOrderByIdDesc(sampleCode);
+        if (CollectionUtil.isNotEmpty(bioSampleTestOneResultTbList)) {
+            return BeanUtils.copyProperties(bioSampleTestOneResultTbList.get(0), CerSampleOneResultQueryBySampleCodeRspDTO.class);
         } else {
             List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(sampleCode);
             if (CollectionUtil.isNotEmpty(bioSampleTestTbList)) {

@@ -77,6 +77,11 @@ public class SeedMapRspDTO {
                 if (Objects.nonNull(matherSeed)) {
                     matherSeed.setParentType("parent");
                     children.add(new SeedMapNode(matherSeed));
+                }else {
+                    matherSeed = new SeedMapDTO();
+                    matherSeed.setSeedNum("unKnown");
+                    matherSeed.setParentType("parent");
+                    children.add(new SeedMapNode(matherSeed));
                 }
             } else {
                 if (Objects.nonNull(fatherSeed)) {

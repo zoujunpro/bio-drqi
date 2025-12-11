@@ -35,6 +35,7 @@ public class DevOpsController {
 
     /**
      * 更改实施方案的品种信息
+     *
      * @param devOpsModifyVectorTaskCodeBreedCodeReqDTO
      * @return
      */
@@ -47,6 +48,7 @@ public class DevOpsController {
 
     /**
      * 清洗子项目编号
+     *
      * @param devOpsModifySubProjectCodeReqDTO
      * @return
      */
@@ -56,8 +58,10 @@ public class DevOpsController {
         devOpsService.cleanSubProjectCode(devOpsModifySubProjectCodeReqDTO);
         return ResponseResult.getSuccess("ok");
     }
+
     /**
      * 清洗实施方案编号
+     *
      * @param devOpsModifySubProjectCodeReqDTO
      * @return
      */
@@ -70,6 +74,7 @@ public class DevOpsController {
 
     /**
      * 清洗项目编号
+     *
      * @param devOpsModifyProjectCodeReqDTO
      * @return
      */
@@ -77,6 +82,32 @@ public class DevOpsController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanProjectCode(@RequestBody DevOpsModifyProjectCodeReqDTO devOpsModifyProjectCodeReqDTO) {
         devOpsService.cleanProjectCode(devOpsModifyProjectCodeReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 根据项目编号删除整条项目数据
+     *
+     * @param projectCode
+     * @return
+     */
+    @GetMapping("/deleteByProjectCode")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> deleteByProjectCode(@RequestParam String projectCode) {
+        devOpsService.deleteByProjectCode(projectCode);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 根据项实施方案编号删除子项目信息
+     *
+     * @param vectorTaskCode
+     * @return
+     */
+    @GetMapping("/deleteByVectorTaskCode")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> deleteByVectorTaskCode(@RequestParam String vectorTaskCode) {
+        devOpsService.deleteByVectorTaskCode(vectorTaskCode);
         return ResponseResult.getSuccess("ok");
     }
 

@@ -228,6 +228,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
             seedMapDTO.setVectorTaskCode(seedStockTb.getVectorTaskCode() == null ? "" : seedStockTb.getVectorTaskCode());
             seedMapDTO.setGeneration(seedStockTb.getGeneration());
             seedMapDTO.setPollinationMethod(bioDict != null ? bioDict.getDictValueName() : "");
+            seedMapDTO.setPollinationMethodCode(bioDict.getDictValueCode());
             seedMapDTO.setBreedName(cerBreedDictMap.get(seedStockTb.getBreedCode()));
             return seedMapDTO;
         } else {

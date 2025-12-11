@@ -39,9 +39,6 @@ public class BmsProductServiceImpl implements BmsProductService {
     private BmsBrandTbMapper bmsBrandTbMapper;
 
     @Resource
-    private BmsSupplierTbMapper bmsSupplierTbMapper;
-
-    @Resource
     private BmsProductTypeTbMapper bmsProductTypeTbMapper;
 
     @Resource

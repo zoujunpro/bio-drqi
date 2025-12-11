@@ -94,6 +94,12 @@ public class BmsProductTb implements Serializable {
 
     private String kdNumber;
 
+    private String buyTimeNumber;
+
+    private String productGroupType;
+
+    private String tempFlag;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

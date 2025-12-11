@@ -20,6 +20,9 @@
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
         <result property="deleteFlag" column="delete_flag" jdbcType="VARCHAR"/>
         <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
+        <result property="productGroupType" column="product_group_type" jdbcType="VARCHAR"/>
+        <result property="buyTimeNumber" column="buy_time_number" jdbcType="INTEGER"/>
+        <result property="tempFlag" column="temp_flag" jdbcType="INTEGER"/>
 
     </resultMap>
 
@@ -29,7 +32,7 @@
         product_inner_code,product_category_code,product_type_code,
         brand_name,brand_code,
         product_specs,create_time,create_user_id,
-        create_user_name,delete_flag,kd_number
+        create_user_name,delete_flag,kd_number,product_group_type,buy_time_number,temp_flag
     </sql>
 
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsProductTb">
@@ -54,6 +57,7 @@
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
             <if test="deleteFlag != null and deleteFlag!=''">and delete_flag=#{deleteFlag,jdbcType=VARCHAR}</if>
+            <if test="productGroupType != null and productGroupType!=''">and product_group_type=#{productGroupType,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

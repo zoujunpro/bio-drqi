@@ -19,13 +19,13 @@ public class SeedMapRspDTO {
     public void buildMap(SeedMapDTO currentSeed, SeedMapDTO fatherSeed, SeedMapDTO matherSeed) {
         if (rootMap.getName() == null) {
             rootMap.seedNode(currentSeed);
-            rootMap.buildChildren(fatherSeed, matherSeed);
+            rootMap.buildChildren(currentSeed,fatherSeed, matherSeed);
         } else {
             SeedMapNode currentNode = findCurrentNode(currentSeed, rootMap);
             if (currentNode == null) {
                 throw new BusinessException("构建图谱失败，失败种子编号：" + currentSeed.seedNum);
             } else {
-                currentNode.buildChildren(fatherSeed, matherSeed);
+                currentNode.buildChildren(currentSeed,fatherSeed, matherSeed);
             }
         }
 
@@ -71,18 +71,18 @@ public class SeedMapRspDTO {
             this.value = JSONUtil.toJsonStr(seedMapDTO);
         }
 
-        public void buildChildren(SeedMapDTO fatherSeed, SeedMapDTO matherSeed) {
+        public void buildChildren(SeedMapDTO currentSeed,SeedMapDTO fatherSeed, SeedMapDTO matherSeed) {
             //自交只有一个亲本
-            if (Objects.nonNull(fatherSeed) && Objects.nonNull(matherSeed) && fatherSeed.seedNum.equals(matherSeed.seedNum)) {
+            if ("self_cross".equals(currentSeed.pollinationMethod)||"asexual_cross".equals(currentSeed.pollinationMethod)) {
                 fatherSeed.setParentType("parent");
-                children.add(new SeedMapNode(fatherSeed));
+                children.add(new SeedMapNode(matherSeed));
             } else {
                 if (Objects.nonNull(fatherSeed)) {
                     fatherSeed.setParentType("father");
                     children.add(new SeedMapNode(fatherSeed));
                 } else {
                     fatherSeed = new SeedMapDTO();
-                    fatherSeed.setSeedNum("");
+                    fatherSeed.setSeedNum("unKnown");
                     fatherSeed.setParentType("father");
                     children.add(new SeedMapNode(fatherSeed));
                 }
@@ -91,7 +91,7 @@ public class SeedMapRspDTO {
                     children.add(new SeedMapNode(matherSeed));
                 } else {
                     matherSeed = new SeedMapDTO();
-                    matherSeed.setSeedNum("");
+                    matherSeed.setSeedNum("unKnown");
                     matherSeed.setParentType("mather");
                     children.add(new SeedMapNode(matherSeed));
                 }

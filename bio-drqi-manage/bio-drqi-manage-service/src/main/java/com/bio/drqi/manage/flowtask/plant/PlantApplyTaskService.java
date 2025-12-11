@@ -103,8 +103,8 @@ public class PlantApplyTaskService extends AbstractPlantBaseTaskService {
             plantApplyTb.setFileUrl(plantExperimentTaskDTO.getFileUrl());
             plantApplyTb.setPlantApplyNum(bioTaskDtlTb.getTaskNum());
             plantApplyTb.setCreateTime(new Date());
-            plantApplyTb.setCreateUserId(SecurityContextHolder.getUserId());
-            plantApplyTb.setCreateUserName(SecurityContextHolder.getNickName());
+            plantApplyTb.setCreateUserId(bioTaskDtlTb.getApplyUserId());
+            plantApplyTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
             plantApplyTb.setExperimentAddressCode(plantExperimentTaskDTO.getExperimentAddressCode());
             plantApplyTb.setSampleCodePrefix(createSampleCode());
             plantApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(experimentExcelDTOList.stream().map(ExperimentExcelDTO::getVectorTaskCode).filter(vectorTaskCode -> StringUtils.isNotEmpty(vectorTaskCode)).distinct().collect(Collectors.toList())));
@@ -127,8 +127,8 @@ public class PlantApplyTaskService extends AbstractPlantBaseTaskService {
                 plantApplyDetailTb.setPlantUnit("粒");
                 plantApplyDetailTb.setRemarks(experimentExcelDTO.getRemark());
                 plantApplyDetailTb.setGeneType(seedStockTb.getGeneType());
-                plantApplyDetailTb.setCreateUserId(SecurityContextHolder.getUserId());
-                plantApplyDetailTb.setCreateUserName(SecurityContextHolder.getNickName());
+                plantApplyDetailTb.setCreateUserId(bioTaskDtlTb.getApplyUserId());
+                plantApplyDetailTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
                 plantApplyDetailTb.setCreateTime(new Date());
                 plantExperimentDetailTbList.add(plantApplyDetailTb);
             }

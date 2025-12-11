@@ -74,8 +74,10 @@ public class SeedMapRspDTO {
         public void buildChildren(SeedMapDTO currentSeed,SeedMapDTO fatherSeed, SeedMapDTO matherSeed) {
             //自交只有一个亲本
             if ("self_cross".equals(currentSeed.pollinationMethodCode)||"asexual_cross".equals(currentSeed.pollinationMethodCode)) {
-                fatherSeed.setParentType("parent");
-                children.add(new SeedMapNode(matherSeed));
+                if (Objects.nonNull(matherSeed)) {
+                    matherSeed.setParentType("parent");
+                    children.add(new SeedMapNode(matherSeed));
+                }
             } else {
                 if (Objects.nonNull(fatherSeed)) {
                     fatherSeed.setParentType("father");

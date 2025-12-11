@@ -97,8 +97,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
             if (executeFormContent.getSeedNumber() == null || executeFormContent.getSeedNumber().compareTo(BigDecimal.ZERO) < 0) {
                 throw new BusinessException("入库数量非法");
             }
-            String generationNum = GenerationEnum.getGenerationNum(executeFormContent.getGeneration());
-            if (StringUtils.isEmpty(generationNum)) {
+            if (StringUtils.isEmpty(GenerationEnum.getGenerationDesc(executeFormContent.getGeneration()))) {
                 throw new BusinessException("代次填写错误：" + executeFormContent.getGeneration());
             }
             if (StringUtils.isNotEmpty(executeFormContent.getProductionLocationName())) {

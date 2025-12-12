@@ -20,8 +20,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id
-        ,product_out_code,
+        id,
+        product_name,product_out_code,
         product_inner_code,product_category_code,brand_code,
         product_specs,create_time,create_user_id,
         create_user_name,product_status,kd_number

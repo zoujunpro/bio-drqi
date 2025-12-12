@@ -36,8 +36,6 @@ public class BmsProductServiceImpl implements BmsProductService {
     @Resource
     private BmsBrandTbMapper bmsBrandTbMapper;
 
-    @Resource
-    private BmsProductTypeTbMapper bmsProductTypeTbMapper;
 
     @Resource
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
@@ -51,11 +49,10 @@ public class BmsProductServiceImpl implements BmsProductService {
         List<BmsProductTb> bmsProductTbLit = bmsProductTbMapper.selectSelective(BeanUtils.copyProperties(bmsProductListPageReqDTO, BmsProductTb.class));
         PageInfo<BmsProductTb> srcPageInfo = new PageInfo<>(bmsProductTbLit);
         PageInfo<BmsProductListPageRspDTO> resultPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, BmsProductListPageRspDTO.class);
-
         if (CollectionUtil.isNotEmpty(resultPageInfo.getList())) {
             //类性
-            List<BmsProductTypeTb> bmsProductTypeTbList = bmsProductTypeTbMapper.selectSelective(null);
-            Map<String, String> bmsProductTypeTbMap = bmsProductTypeTbList.stream().collect(Collectors.toMap(BmsProductTypeTb::getProductTypeCode, BmsProductTypeTb::getProductTypeName));
+            List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(null);
+            Map<String, String> bmsBrandTbMap = bmsBrandTbList.stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
 
             //类别
             List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
@@ -63,7 +60,7 @@ public class BmsProductServiceImpl implements BmsProductService {
 
             resultPageInfo.getList().forEach(bmsProductListPageRspDTO -> {
                 bmsProductListPageRspDTO.setProductCategoryName(bmsProductCategoryMap.get(bmsProductListPageRspDTO.getProductCategoryCode()));
-                bmsProductListPageRspDTO.setProductTypeName(bmsProductTypeTbMap.get(bmsProductListPageRspDTO.getProductTypeCode()));
+                bmsProductListPageRspDTO.setBrandName(bmsBrandTbMap.get(bmsProductListPageRspDTO.getBrandCode()));
             });
         }
 
@@ -134,7 +131,6 @@ public class BmsProductServiceImpl implements BmsProductService {
         bmsProductTb.setProductOutCode(bmsProductAddReqDTO.getProductOutCode());
         bmsProductTb.setProductInnerCode(productInnerCode);
         bmsProductTb.setProductCategoryCode(bmsProductAddReqDTO.getProductCategoryCode());
-        bmsProductTb.setBrandName(bmsBrandTb.getBrandName());
         bmsProductTb.setBrandCode(bmsBrandTb.getBrandCode());
         bmsProductTb.setProductSpecs(bmsProductAddReqDTO.getProductSpecs());
         bmsProductTb.setCreateTime(new Date());
@@ -181,7 +177,7 @@ public class BmsProductServiceImpl implements BmsProductService {
             throw new BusinessException("材料已经禁用，无法修改");
         }
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectAllByProductInnerCode(bmsProductTb.getProductInnerCode());
-        if(CollectionUtil.isNotEmpty(bmsOrderDetailTbList)){
+        if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
             throw new BusinessException("已经采购的商品无法更改商品信息");
         }
         bmsProductTb.setProductName(bmsProductEditReqDTO.getProductName());

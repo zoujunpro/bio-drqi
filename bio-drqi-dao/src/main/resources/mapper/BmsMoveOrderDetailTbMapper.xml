@@ -9,13 +9,10 @@
         <result property="productName" column="product_name" jdbcType="VARCHAR"/>
         <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
         <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
-        <result property="productTypeCode" column="product_type_code" jdbcType="VARCHAR"/>
         <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
-        <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
         <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
         <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
         <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
-        <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
         <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
         <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
         <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
@@ -36,9 +33,9 @@
     <sql id="Base_Column_List">
         id
         ,product_name,product_out_code,
-        product_category_code,product_type_code,brand_code,
-        brand_name,product_specs,batch_no,
-        unit_code,supplier_name,supplier_code,
+        product_category_code,brand_code,
+        product_specs,batch_no,
+        unit_code,supplier_code,
         product_inner_code,produce_date,expiration_date,
         from_stock_code,from_stock_location_number,to_stock_code,
         to_stock_location_number,move_number,create_user_id,
@@ -62,13 +59,10 @@
             </if>
             <if test="productCategoryCode != null">and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
             </if>
-            <if test="productTypeCode != null">and product_type_code=#{productTypeCode,jdbcType=VARCHAR}</if>
             <if test="brandCode != null">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
-            <if test="brandName != null">and brand_name=#{brandName,jdbcType=VARCHAR}</if>
             <if test="productSpecs != null">and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>
             <if test="batchNo != null">and batch_no=#{batchNo,jdbcType=VARCHAR}</if>
             <if test="unitCode != null">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
-            <if test="supplierName != null">and supplier_name=#{supplierName,jdbcType=VARCHAR}</if>
             <if test="supplierCode != null">and supplier_code=#{supplierCode,jdbcType=VARCHAR}</if>
             <if test="productInnerCode != null and productInnerCode!=''">and
                 product_inner_code=#{productInnerCode,jdbcType=VARCHAR}

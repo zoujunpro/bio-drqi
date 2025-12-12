@@ -83,10 +83,6 @@ public class BmsReturnOrderDetailTb implements Serializable {
      */
     private String brandCode;
 
-    /**
-     * 品牌名称
-     */
-    private String brandName;
 
     /**
      * 商品批次
@@ -98,10 +94,6 @@ public class BmsReturnOrderDetailTb implements Serializable {
      */
     private String unitCode;
 
-    /**
-     * 供应商名称
-     */
-    private String supplierName;
 
     /**
      * 供应商编号

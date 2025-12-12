@@ -6,6 +6,7 @@ import java.util.Date;
 
 @Data
 public class BmsSupplierListPageRspDTO {
+
     private Integer id;
 
     /**
@@ -102,6 +103,13 @@ public class BmsSupplierListPageRspDTO {
      * 创建人ID
      */
     private Integer createUserId;
+
+    /**
+     * 状态 Y N
+     */
+    private String supplierStatus;
+
+    private String kdNumber;
 
 
 }

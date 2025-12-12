@@ -32,6 +32,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,25 +54,73 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
+    @Resource
+    private BmsSupplierTbMapper bmsSupplierTbMapper;
+
+    @Resource
+    private BmsStockDictMapper bmsStockDictMapper;
+
+
+    @Resource
+    private BmsBrandTbMapper bmsBrandTbMapper;
+
+    @Resource
+    private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
+
     @Override
     public PageInfo<BmsOrderDetailListPageRspDTO> listPage(BmsOrderDetailListPageReqDTO bmsOrderDetailListPageReqDTO) {
         PageHelper.startPage(bmsOrderDetailListPageReqDTO.getPageNum(), bmsOrderDetailListPageReqDTO.getPageSize());
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectSelective(BeanUtils.copyProperties(bmsOrderDetailListPageReqDTO, BmsOrderDetailTb.class));
         PageInfo<BmsOrderDetailTb> srcPageInfo = new PageInfo<>(bmsOrderDetailTbList);
-
-        return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsOrderDetailListPageRspDTO.class);
+        PageInfo<BmsOrderDetailListPageRspDTO> resultPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, BmsOrderDetailListPageRspDTO.class);
+        if (CollectionUtil.isNotEmpty(resultPageInfo.getList())) {
+            List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(null);
+            List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+            Map<String, String> bmsSupplierTbMap = bmsSupplierTbMapper.selectSelective(null).stream().collect(Collectors.toMap(BmsSupplierTb::getSupplierCode, BmsSupplierTb::getSupplierName));
+            Map<String, String> bmsBrandMap = bmsBrandTbList.stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
+            Map<String, String> bmsProductCategoryTbMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+            resultPageInfo.getList().forEach(bmsOrderDetailListPageRspDTO -> {
+                bmsOrderDetailListPageRspDTO.setBrandName(bmsBrandMap.get(bmsOrderDetailListPageRspDTO.getBrandCode()));
+                bmsOrderDetailListPageRspDTO.setSupplierName(bmsSupplierTbMap.get(bmsOrderDetailListPageRspDTO.getSupplierCode()));
+                bmsOrderDetailListPageRspDTO.setProductCategoryName(bmsProductCategoryTbMap.get(bmsOrderDetailListPageRspDTO.getProductCategoryCode()));
+            });
+        }
+        return resultPageInfo;
     }
 
     @Override
     public BmsOrderDtlDetailRspDTO detail(Integer id) {
         BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectById(id);
-        return BeanUtils.copyProperties(bmsOrderDetailTb, BmsOrderDtlDetailRspDTO.class);
+        BmsOrderDtlDetailRspDTO bmsOrderDtlDetailRspDTO = BeanUtils.copyProperties(bmsOrderDetailTb, BmsOrderDtlDetailRspDTO.class);
+        if (bmsOrderDtlDetailRspDTO != null) {
+            BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsOrderDtlDetailRspDTO.getBrandCode());
+            BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsOrderDtlDetailRspDTO.getProductCategoryCode());
+            BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(bmsOrderDtlDetailRspDTO.getSupplierCode());
+            bmsOrderDtlDetailRspDTO.setBrandName(bmsBrandTb==null?null:bmsBrandTb.getBrandName());
+            bmsOrderDtlDetailRspDTO.setSupplierName(bmsSupplierTb==null?null:bmsSupplierTb.getSupplierName());
+            bmsOrderDtlDetailRspDTO.setProductCategoryName(bmsProductCategoryTb==null?null:bmsProductCategoryTb.getProductCategoryName());
+        }
+
+        return bmsOrderDtlDetailRspDTO;
     }
 
     @Override
     public List<BmsOrderDetailQueryByOrderNumRspDTO> queryByOrderNum(String orderNum) {
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectAllByOrderNum(orderNum);
-        return BeanUtils.copyListProperties(bmsOrderDetailTbList, BmsOrderDetailQueryByOrderNumRspDTO.class);
+        List<BmsOrderDetailQueryByOrderNumRspDTO> resultList = BeanUtils.copyListProperties(bmsOrderDetailTbList, BmsOrderDetailQueryByOrderNumRspDTO.class);
+        if (CollectionUtil.isNotEmpty(resultList)) {
+            List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(null);
+            List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+            Map<String, String> bmsSupplierTbMap = bmsSupplierTbMapper.selectSelective(null).stream().collect(Collectors.toMap(BmsSupplierTb::getSupplierCode, BmsSupplierTb::getSupplierName));
+            Map<String, String> bmsBrandMap = bmsBrandTbList.stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
+            Map<String, String> bmsProductCategoryTbMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+            resultList.forEach(bmsOrderDetailQueryByOrderNumRspDTO -> {
+                bmsOrderDetailQueryByOrderNumRspDTO.setBrandName(bmsBrandMap.get(bmsOrderDetailQueryByOrderNumRspDTO.getBrandCode()));
+                bmsOrderDetailQueryByOrderNumRspDTO.setSupplierName(bmsSupplierTbMap.get(bmsOrderDetailQueryByOrderNumRspDTO.getSupplierCode()));
+                bmsOrderDetailQueryByOrderNumRspDTO.setProductCategoryName(bmsProductCategoryTbMap.get(bmsOrderDetailQueryByOrderNumRspDTO.getProductCategoryCode()));
+            });
+        }
+        return resultList;
     }
 
     @Override

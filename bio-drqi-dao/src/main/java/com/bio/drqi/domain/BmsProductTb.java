@@ -48,12 +48,6 @@ public class BmsProductTb implements Serializable {
      */
     private String productCategoryCode;
 
-
-    /**
-     * 品牌名称
-     */
-    private String brandName;
-
     /**
      * 品牌编号
      */
@@ -90,11 +84,6 @@ public class BmsProductTb implements Serializable {
 
     private String kdNumber;
 
-    private String buyTimeNumber;
-
-    private String productGroupType;
-
-    private String tempFlag;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

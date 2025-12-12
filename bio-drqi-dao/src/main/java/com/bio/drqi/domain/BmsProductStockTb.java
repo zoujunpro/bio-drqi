@@ -44,19 +44,9 @@ public class BmsProductStockTb implements Serializable {
     private String productCategoryCode;
 
     /**
-     * 货品类型编号
-     */
-    private String productTypeCode;
-
-    /**
      * 品牌编号
      */
     private String brandCode;
-
-    /**
-     * 品牌名称
-     */
-    private String brandName;
 
     /**
      * 商品规格
@@ -82,9 +72,6 @@ public class BmsProductStockTb implements Serializable {
      * 累计出库数量
      */
     private Integer totalOutNumber;
-
-
-
     /**
      * 单位
      */
@@ -99,8 +86,6 @@ public class BmsProductStockTb implements Serializable {
 
 
     private String supplierCode;
-
-    private String supplierName;
 
     private String uniqueCode;
 

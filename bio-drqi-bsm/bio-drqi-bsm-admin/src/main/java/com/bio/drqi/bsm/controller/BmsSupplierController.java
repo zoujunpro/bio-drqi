@@ -108,7 +108,7 @@ public class BmsSupplierController {
     @WebLog(desc = "供应商管理-禁用")
     @RequirePermissions("bms:supplier:disable")
     @RequestLog("库存明细管理-禁用")
-    public ResponseResult<String> delete(@RequestParam Integer id) {
+    public ResponseResult<String> disable(@RequestParam Integer id) {
         bmsSupplierService.disable(id);
         return ResponseResult.getSuccess("ok");
     }

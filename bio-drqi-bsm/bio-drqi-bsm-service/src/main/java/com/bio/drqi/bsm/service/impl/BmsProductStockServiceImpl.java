@@ -14,12 +14,8 @@ import com.bio.drqi.bsm.rsp.BmsProductStockDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockService;
-import com.bio.drqi.domain.BmsMoveOrderDetailTb;
-import com.bio.drqi.domain.BmsProductStockTb;
-import com.bio.drqi.domain.BmsStockDict;
-import com.bio.drqi.mapper.BmsMoveOrderDetailTbMapper;
-import com.bio.drqi.mapper.BmsProductStockTbMapper;
-import com.bio.drqi.mapper.BmsStockDictMapper;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -40,10 +36,19 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
 
 
     @Resource
+    private BmsSupplierTbMapper bmsSupplierTbMapper;
+
+    @Resource
     private BmsStockDictMapper bmsStockDictMapper;
 
     @Resource
     private BmsMoveOrderDetailTbMapper bmsMoveOrderDetailTbMapper;
+
+    @Resource
+    private BmsBrandTbMapper bmsBrandTbMapper;
+
+    @Resource
+    private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
 
     @Override
     public PageInfo<BmsProductStockListPageRspDTO> listPage(BmsProductStockListPageReqDTO bmsProductStockListPageReqDTO) {
@@ -53,9 +58,17 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         PageInfo<BmsProductStockListPageRspDTO> targetPage = BeanUtils.copyPageInfoProperties(srcPageInfo, BmsProductStockListPageRspDTO.class);
         if (CollectionUtil.isNotEmpty(targetPage.getList())) {
             List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
+            List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(null);
+            List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+            Map<String, String> bmsSupplierTbMap = bmsSupplierTbMapper.selectSelective(null).stream().collect(Collectors.toMap(BmsSupplierTb::getSupplierCode, BmsSupplierTb::getSupplierName));
+            Map<String, String> bmsBrandMap = bmsBrandTbList.stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
+            Map<String, String> bmsProductCategoryTbMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
             Map<String, String> bmsStockDictMap = bmsStockDictList.stream().collect(Collectors.toMap(BmsStockDict::getStockCode, BmsStockDict::getStockName));
             targetPage.getList().forEach(bmsProductStockListPageRspDTO -> {
                 bmsProductStockListPageRspDTO.setStockName(bmsStockDictMap.get(bmsProductStockListPageRspDTO.getStockCode()));
+                bmsProductStockListPageRspDTO.setBrandName(bmsBrandMap.get(bmsProductStockListPageRspDTO.getBrandCode()));
+                bmsProductStockListPageRspDTO.setSupplierName(bmsSupplierTbMap.get(bmsProductStockListPageRspDTO.getSupplierCode()));
+                bmsProductStockListPageRspDTO.setProductCategoryCode(bmsProductCategoryTbMap.get(bmsProductStockListPageRspDTO.getProductCategoryCode()));
             });
         }
         return targetPage;
@@ -69,7 +82,13 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         }
         BmsProductStockDetailRspDTO bmsProductStockDetailRspDTO = BeanUtils.copyProperties(bmsProductStockTb, BmsProductStockDetailRspDTO.class);
         BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsProductStockDetailRspDTO.getStockCode());
+        BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsProductStockTb.getProductCategoryCode());
+        BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(bmsProductStockTb.getSupplierCode());
+        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsProductStockTb.getBrandCode());
         bmsProductStockDetailRspDTO.setStockName(bmsStockDict != null ? bmsStockDict.getStockName() : null);
+        bmsProductStockDetailRspDTO.setProductCategoryName(bmsProductCategoryTb == null ? null : bmsProductCategoryTb.getProductCategoryName());
+        bmsProductStockDetailRspDTO.setSupplierName(bmsSupplierTb == null ? null : bmsSupplierTb.getSupplierName());
+        bmsProductStockDetailRspDTO.setBrandName(bmsBrandTb==null?null:bmsBrandTb.getBrandName());
         return bmsProductStockDetailRspDTO;
     }
 
@@ -111,7 +130,7 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
     @Override
     public void moveStock(BmsProductStockMoveStockReqDTO bmsProductStockMoveStockReqDTO) {
         BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsProductStockMoveStockReqDTO.getNewStockCode());
-        if(bmsStockDict==null){
+        if (bmsStockDict == null) {
             throw new BusinessException("库房不存在");
         }
         BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectById(bmsProductStockMoveStockReqDTO.getId());
@@ -124,7 +143,7 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         if (bmsProductStockTb.getStockCode().equals(bmsProductStockMoveStockReqDTO.getNewStockCode())) {
             throw new BusinessException("库房无变化");
         }
-        if(!bmsStockDict.getUnitCode().equals(bmsProductStockTb.getUnitCode())){
+        if (!bmsStockDict.getUnitCode().equals(bmsProductStockTb.getUnitCode())) {
             throw new BusinessException("不能跨单位调拨");
         }
         // 移除库存扣减
@@ -138,7 +157,7 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         if (newBmsProductStockTb != null) {
             newBmsProductStockTb.setCurrentStockNumber(newBmsProductStockTb.getCurrentStockNumber() + bmsProductStockMoveStockReqDTO.getMoveNumber());
             newBmsProductStockTb.setTotalStoreNumber(newBmsProductStockTb.getTotalStoreNumber() + bmsProductStockMoveStockReqDTO.getMoveNumber());
-            List<String> currentStockLoationList=JSONUtil.toList(newBmsProductStockTb.getStockLocationNumber(),String.class);
+            List<String> currentStockLoationList = JSONUtil.toList(newBmsProductStockTb.getStockLocationNumber(), String.class);
             currentStockLoationList.addAll(bmsProductStockMoveStockReqDTO.getNewStockLocationList());
             newBmsProductStockTb.setStockLocationNumber(JSONUtil.toJsonStr(currentStockLoationList.stream().distinct().collect(Collectors.toList())));
             bmsProductStockTbMapper.updateById(newBmsProductStockTb);
@@ -147,9 +166,7 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
             newBmsProductStockTb.setProductName(bmsProductStockTb.getProductName());
             newBmsProductStockTb.setProductOutCode(bmsProductStockTb.getProductOutCode());
             newBmsProductStockTb.setProductCategoryCode(bmsProductStockTb.getProductCategoryCode());
-            newBmsProductStockTb.setProductTypeCode(bmsProductStockTb.getProductTypeCode());
             newBmsProductStockTb.setBrandCode(bmsProductStockTb.getBrandCode());
-            newBmsProductStockTb.setBrandName(bmsProductStockTb.getBrandName());
             newBmsProductStockTb.setProductSpecs(bmsProductStockTb.getProductSpecs());
             newBmsProductStockTb.setBatchNo(bmsProductStockTb.getBatchNo());
             newBmsProductStockTb.setTotalStoreNumber(bmsProductStockMoveStockReqDTO.getMoveNumber());
@@ -159,7 +176,6 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
             newBmsProductStockTb.setStockLocationNumber(JSONUtil.toJsonStr(bmsProductStockMoveStockReqDTO.getNewStockLocationList()));
             newBmsProductStockTb.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
             newBmsProductStockTb.setSupplierCode(bmsProductStockTb.getSupplierCode());
-            newBmsProductStockTb.setSupplierName(bmsProductStockTb.getSupplierName());
             newBmsProductStockTb.setUniqueCode(IdUtils.simpleUUID());
             newBmsProductStockTb.setProduceDate(bmsProductStockTb.getProduceDate());
             newBmsProductStockTb.setExpirationDate(bmsProductStockTb.getExpirationDate());
@@ -172,13 +188,10 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         bmsMoveOrderDetailTb.setProductName(newBmsProductStockTb.getProductName());
         bmsMoveOrderDetailTb.setProductOutCode(newBmsProductStockTb.getProductOutCode());
         bmsMoveOrderDetailTb.setProductCategoryCode(newBmsProductStockTb.getProductCategoryCode());
-        bmsMoveOrderDetailTb.setProductTypeCode(newBmsProductStockTb.getProductTypeCode());
         bmsMoveOrderDetailTb.setBrandCode(newBmsProductStockTb.getBrandCode());
-        bmsMoveOrderDetailTb.setBrandName(newBmsProductStockTb.getBrandName());
         bmsMoveOrderDetailTb.setProductSpecs(newBmsProductStockTb.getProductSpecs());
         bmsMoveOrderDetailTb.setBatchNo(newBmsProductStockTb.getBatchNo());
         bmsMoveOrderDetailTb.setUnitCode(newBmsProductStockTb.getUnitCode());
-        bmsMoveOrderDetailTb.setSupplierName(newBmsProductStockTb.getSupplierName());
         bmsMoveOrderDetailTb.setSupplierCode(newBmsProductStockTb.getSupplierCode());
         bmsMoveOrderDetailTb.setProductInnerCode(newBmsProductStockTb.getProductInnerCode());
         bmsMoveOrderDetailTb.setProduceDate(newBmsProductStockTb.getProduceDate());

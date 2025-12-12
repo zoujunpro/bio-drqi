@@ -46,16 +46,6 @@ public class BmsOrderDetailTb implements Serializable {
     private String projectCode;
 
     /**
-     * 项目名称
-     */
-    private String projectName;
-
-    /**
-     * 供应商名称
-     */
-    private String supplierName;
-
-    /**
      * 供应商编号
      */
     private String supplierCode;
@@ -74,11 +64,6 @@ public class BmsOrderDetailTb implements Serializable {
      * 品牌编号
      */
     private String brandCode;
-
-    /**
-     * 品牌名称
-     */
-    private String brandName;
 
     /**
      * 商品名称
@@ -116,12 +101,6 @@ public class BmsOrderDetailTb implements Serializable {
      * 商品类别编号
      */
     private String productCategoryCode;
-
-    /**
-     * 商品类别名称
-     */
-    private String productCategoryName;
-
     /**
      * 创建时间
      */
@@ -141,10 +120,6 @@ public class BmsOrderDetailTb implements Serializable {
      * 任务编号
      */
     private String taskNum;
-
-    private String productTypeCode;
-
-    private String productTypeName;
 
     private String pictureUrls;
 

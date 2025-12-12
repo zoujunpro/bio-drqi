@@ -29,6 +29,11 @@ public class BmsProductStockInLogDetailRspDTO {
     private String productCategoryCode;
 
     /**
+     * 商品类别
+     */
+    private String productCategoryName;
+
+    /**
      * 商品类型编号
      */
     private String productTypeCode;

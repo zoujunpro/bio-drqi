@@ -10,11 +10,6 @@ public class BmsBrandListPageRspDTO {
     private Integer id;
 
     /**
-     * 商品编号
-     */
-    private String supplierCode;
-
-    /**
      * 品牌编号
      */
     private String brandCode;
@@ -39,4 +34,7 @@ public class BmsBrandListPageRspDTO {
      */
     private String createUserName;
 
+    private String brandStatus;
+
+    private String kdNumber;
 }

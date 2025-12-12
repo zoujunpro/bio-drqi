@@ -5,60 +5,53 @@
 <mapper namespace="com.bio.drqi.mapper.BmsOrderDetailTbMapper">
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BmsOrderDetailTb">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="orderNum" column="order_num" jdbcType="VARCHAR"/>
-            <result property="orderDetailNum" column="order_detail_num" jdbcType="VARCHAR"/>
-            <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
-            <result property="projectName" column="project_name" jdbcType="VARCHAR"/>
-            <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
-            <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
-            <result property="contactUserTelephone" column="contact_user_telephone" jdbcType="VARCHAR"/>
-            <result property="contactUserName" column="contact_user_name" jdbcType="VARCHAR"/>
-            <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
-            <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
-            <result property="productName" column="product_name" jdbcType="VARCHAR"/>
-            <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
-            <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
-            <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
-            <result property="purchasePrice" column="purchase_price" jdbcType="DECIMAL"/>
-            <result property="purchaseNumber" column="purchase_number" jdbcType="INTEGER"/>
-            <result property="receiveNumber" column="receive_number" jdbcType="INTEGER"/>
-            <result property="payAmount" column="pay_amount" jdbcType="DECIMAL"/>
-            <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
-            <result property="productCategoryName" column="product_category_name" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
-            <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
-            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
-            <result property="productTypeCode" column="product_type_code" jdbcType="VARCHAR"/>
-            <result property="productTypeName" column="product_type_name" jdbcType="VARCHAR"/>
-            <result property="pictureUrls" column="picture_urls" jdbcType="VARCHAR"/>
-            <result property="purchaseDate" column="purchase_date" jdbcType="VARCHAR"/>
-            <result property="applyUnitCode" column="apply_unit_code" jdbcType="VARCHAR"/>
-            <result property="applyUnitName" column="apply_unit_name" jdbcType="VARCHAR"/>
-            <result property="purchaseDepartment" column="purchase_department" jdbcType="VARCHAR"/>
-            <result property="contractUrls" column="contract_urls" jdbcType="VARCHAR"/>
-            <result property="contractNumber" column="contract_number" jdbcType="VARCHAR"/>
-            <result property="paymentVoucherUrls" column="payment_voucher_urls" jdbcType="VARCHAR"/>
-            <result property="invoiceUrls" column="invoice_urls" jdbcType="VARCHAR"/>
-            <result property="reportAccountTime" column="report_account_time" jdbcType="VARCHAR"/>
-            <result property="demandRequireTime" column="demand_require_time" jdbcType="VARCHAR"/>
-            <result property="demandUsageTime" column="demand_usage_time" jdbcType="VARCHAR"/>
-            <result property="expectedDeliveryTime" column="expected_delivery_time" jdbcType="VARCHAR"/>
-            <result property="taxRate" column="tax_rate" jdbcType="VARCHAR"/>
-            <result property="returnNumber" column="return_number" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="orderNum" column="order_num" jdbcType="VARCHAR"/>
+        <result property="orderDetailNum" column="order_detail_num" jdbcType="VARCHAR"/>
+        <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+        <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
+        <result property="contactUserTelephone" column="contact_user_telephone" jdbcType="VARCHAR"/>
+        <result property="contactUserName" column="contact_user_name" jdbcType="VARCHAR"/>
+        <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
+        <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+        <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
+        <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
+        <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
+        <result property="purchasePrice" column="purchase_price" jdbcType="DECIMAL"/>
+        <result property="purchaseNumber" column="purchase_number" jdbcType="INTEGER"/>
+        <result property="receiveNumber" column="receive_number" jdbcType="INTEGER"/>
+        <result property="payAmount" column="pay_amount" jdbcType="DECIMAL"/>
+        <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
+        <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
+        <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+        <result property="pictureUrls" column="picture_urls" jdbcType="VARCHAR"/>
+        <result property="purchaseDate" column="purchase_date" jdbcType="VARCHAR"/>
+        <result property="applyUnitCode" column="apply_unit_code" jdbcType="VARCHAR"/>
+        <result property="applyUnitName" column="apply_unit_name" jdbcType="VARCHAR"/>
+        <result property="purchaseDepartment" column="purchase_department" jdbcType="VARCHAR"/>
+        <result property="contractUrls" column="contract_urls" jdbcType="VARCHAR"/>
+        <result property="contractNumber" column="contract_number" jdbcType="VARCHAR"/>
+        <result property="paymentVoucherUrls" column="payment_voucher_urls" jdbcType="VARCHAR"/>
+        <result property="invoiceUrls" column="invoice_urls" jdbcType="VARCHAR"/>
+        <result property="reportAccountTime" column="report_account_time" jdbcType="VARCHAR"/>
+        <result property="demandRequireTime" column="demand_require_time" jdbcType="VARCHAR"/>
+        <result property="demandUsageTime" column="demand_usage_time" jdbcType="VARCHAR"/>
+        <result property="expectedDeliveryTime" column="expected_delivery_time" jdbcType="VARCHAR"/>
+        <result property="taxRate" column="tax_rate" jdbcType="VARCHAR"/>
+        <result property="returnNumber" column="return_number" jdbcType="INTEGER"/>
 
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,order_num,order_detail_num,
-        project_code,project_name,supplier_name,
-        supplier_code,contact_user_telephone,contact_user_name,
-        brand_code,brand_name,product_name,
+        id
+        ,order_num,order_detail_num,
+        project_code,supplier_code,contact_user_telephone,contact_user_name,
+        brand_code,product_name,
         product_specs,product_out_code,product_inner_code,purchase_price,
-        purchase_number,pay_amount,product_category_code,
-        product_category_name,create_time,apply_user_id,
-        apply_user_name,task_num,product_type_code,product_type_name,picture_urls,
+        purchase_number,pay_amount,product_category_code,create_time,apply_user_id,
+        apply_user_name,task_num,picture_urls,
         purchase_date,apply_unit_code,apply_unit_name,purchase_department,receive_number,
         payment_voucher_urls,contract_number,invoice_urls,report_account_time,contract_urls,
         demand_require_time,demand_usage_time,expected_delivery_time,tax_rate,return_number
@@ -78,13 +71,12 @@
             <if test="orderNum != null and orderNum!=''">and order_num=#{orderNum,jdbcType=VARCHAR}</if>
             <if test="orderDetailNum != null">and order_detail_num=#{orderDetailNum,jdbcType=VARCHAR}</if>
             <if test="projectCode != null and projectCode!='' ">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
-            <if test="projectName != null and projectName!=''">and project_name=#{projectName,jdbcType=VARCHAR}</if>
-            <if test="supplierName != null and supplierName !=''">and supplier_name=#{supplierName,jdbcType=VARCHAR}</if>
             <if test="supplierCode != null and supplierCode!=''">and supplier_code=#{supplierCode,jdbcType=VARCHAR}</if>
-            <if test="contactUserTelephone != null">and contact_user_telephone=#{contactUserTelephone,jdbcType=VARCHAR}</if>
+            <if test="contactUserTelephone != null">and
+                contact_user_telephone=#{contactUserTelephone,jdbcType=VARCHAR}
+            </if>
             <if test="contactUserName != null">and contact_user_name=#{contactUserName,jdbcType=VARCHAR}</if>
             <if test="brandCode != null and brandCode!=''">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
-            <if test="brandName != null and brandName!=''">and brand_name=#{brandName,jdbcType=VARCHAR}</if>
             <if test="productName != null and productName !=''">and product_name=#{productName,jdbcType=VARCHAR}</if>
             <if test="productSpecs != null and productSpecs!=''">and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>
             <if test="productOutCode != null">and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
@@ -92,23 +84,34 @@
             <if test="purchasePrice != null">and purchase_price=#{purchasePrice,jdbcType=DECIMAL}</if>
             <if test="purchaseNumber != null">and purchase_number=#{purchaseNumber,jdbcType=NUMERIC}</if>
             <if test="payAmount != null">and pay_amount=#{payAmount,jdbcType=DECIMAL}</if>
-            <if test="productCategoryCode != null and productCategoryCode!=''">and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
-            <if test="productCategoryName != null and productCategoryName!=''">and product_category_name=#{productCategoryName,jdbcType=VARCHAR}</if>
+            <if test="productCategoryCode != null and productCategoryCode!=''">and
+                product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
+            </if>
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
             <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
             <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
-            <if test="productTypeCode != null and productTypeCode!=''">and product_type_code=#{productTypeCode,jdbcType=VARCHAR}</if>
+            <if test="productTypeCode != null and productTypeCode!=''">and
+                product_type_code=#{productTypeCode,jdbcType=VARCHAR}
+            </if>
             <if test="purchaseDate != null and purchaseDate!=''">and purchase_date=#{purchaseDate,jdbcType=VARCHAR}</if>
-            <if test="applyUnitCode != null and applyUnitCode!=''">and apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
-            <if test="applyUnitName != null and applyUnitName!=''">and apply_unit_name=#{applyUnitName,jdbcType=VARCHAR}</if>
-            <if test="purchaseDepartment != null and purchaseDepartment!=''">and purchase_department=#{purchaseDepartment,jdbcType=VARCHAR}</if>
-            <if test="reportAccountTime != null and reportAccountTime!=''">and  report_account_time=#{reportAccountTime,jdbcType=VARCHAR}</if>
-            <if test="invoiceUrls != null">and  invoice_urls=#{invoiceUrls,jdbcType=VARCHAR}</if>
-            <if test="contractUrls != null">and  contract_urls=#{contractUrls,jdbcType=VARCHAR}</if>
-            <if test='reportAccountTimeNullFlag == "Y"'>and  report_account_time is  null</if>
-            <if test='paymentVoucherUrlsNullFlag == "Y"'>and  payment_voucher_urls is  null</if>
-            <if test='filterZeroFlag == "Y"'>and  purchase_number>receive_number</if>
+            <if test="applyUnitCode != null and applyUnitCode!=''">and
+                apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}
+            </if>
+            <if test="applyUnitName != null and applyUnitName!=''">and
+                apply_unit_name=#{applyUnitName,jdbcType=VARCHAR}
+            </if>
+            <if test="purchaseDepartment != null and purchaseDepartment!=''">and
+                purchase_department=#{purchaseDepartment,jdbcType=VARCHAR}
+            </if>
+            <if test="reportAccountTime != null and reportAccountTime!=''">and
+                report_account_time=#{reportAccountTime,jdbcType=VARCHAR}
+            </if>
+            <if test="invoiceUrls != null">and invoice_urls=#{invoiceUrls,jdbcType=VARCHAR}</if>
+            <if test="contractUrls != null">and contract_urls=#{contractUrls,jdbcType=VARCHAR}</if>
+            <if test='reportAccountTimeNullFlag == "Y"'>and report_account_time is null</if>
+            <if test='paymentVoucherUrlsNullFlag == "Y"'>and payment_voucher_urls is null</if>
+            <if test='filterZeroFlag == "Y"'>and purchase_number>receive_number</if>
         </where>
         order by id desc
     </select>

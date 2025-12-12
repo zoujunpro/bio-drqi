@@ -120,9 +120,6 @@ public class BmsOrderDetailListPageRspDTO {
      */
     private String taskNum;
 
-    private String productTypeCode;
-
-    private String productTypeName;
 
     private String pictureUrls;
 

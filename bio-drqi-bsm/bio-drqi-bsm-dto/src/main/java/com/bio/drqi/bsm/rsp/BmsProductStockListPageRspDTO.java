@@ -23,6 +23,10 @@ public class BmsProductStockListPageRspDTO {
     private String productCategoryCode;
 
     /**
+     * 所属类别编号
+     */
+    private String productCategoryName;
+    /**
      * 货品类型编号
      */
     private String productTypeCode;
@@ -62,13 +66,10 @@ public class BmsProductStockListPageRspDTO {
      */
     private Integer totalOutNumber;
 
-
-
     /**
      * 单位
      */
     private String unitCode;
-
     /**
      * 库存位置编号
      */
@@ -76,11 +77,9 @@ public class BmsProductStockListPageRspDTO {
 
     private String productInnerCode;
 
-
     private String supplierCode;
 
     private String supplierName;
-
 
     private String produceDate;
 

@@ -10,9 +10,7 @@
         <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
         <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
         <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
-        <result property="productTypeCode" column="product_type_code" jdbcType="VARCHAR"/>
         <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
-        <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
         <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
         <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
         <result property="returnNumber" column="return_number" jdbcType="INTEGER"/>
@@ -22,7 +20,6 @@
         <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
         <result property="stockLocationNumber" column="stock_location_number" jdbcType="VARCHAR"/>
         <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
-        <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
         <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
         <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
         <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
@@ -32,11 +29,10 @@
     <sql id="Base_Column_List">
         id
         ,product_name,product_out_code,
-        product_category_code,product_type_code,brand_code,
-        brand_name,product_specs,batch_no,return_number,
+        product_category_code,brand_code,product_specs,batch_no,return_number,
         total_store_number,current_stock_number,total_out_number,
         unit_code,stock_location_number,product_inner_code,supplier_code,
-        supplier_name,unique_code,produce_date,expiration_date,stock_code
+        unique_code,produce_date,expiration_date,stock_code
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsProductStockTb" resultMap="BaseResultMap">
         select
@@ -46,9 +42,7 @@
             <if test="productName != null and productName != ''"> and product_name=#{productName,jdbcType=VARCHAR}</if>
             <if test="productOutCode != null and productOutCode!=''"> and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
             <if test="productCategoryCode != null and productCategoryCode!=''"> and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
-            <if test="productTypeCode != null and productTypeCode!=''"> and product_type_code=#{productTypeCode,jdbcType=VARCHAR}</if>
             <if test="brandCode != null and brandCode!=''"> and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
-            <if test="brandName != null and brandName!=''"> and brand_name=#{brandName,jdbcType=VARCHAR}</if>
             <if test="productSpecs != null and productSpecs!=''"> and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>
             <if test="batchNo != null and batchNo!=''"> and batch_no=#{batchNo,jdbcType=VARCHAR}</if>
             <if test="totalStoreNumber != null "> and total_store_number=#{totalStoreNumber,jdbcType=NUMERIC}</if>

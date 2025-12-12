@@ -49,11 +49,6 @@ public class BmsProductStockOutLog implements Serializable {
     private String productCategoryCode;
 
     /**
-     * 货品类型编号
-     */
-    private String productTypeCode;
-
-    /**
      * 品牌编号
      */
     private String brandCode;

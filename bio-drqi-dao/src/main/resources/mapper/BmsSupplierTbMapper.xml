@@ -93,5 +93,11 @@
         from bms_supplier_tb
         order by id desc limit 1
     </select>
+    <select id="selectSupplierCodeAndSupplierCodeBySupplierStatusOrderByIdDesc" resultMap="BaseResultMap">
+        select supplier_code, supplier_code
+        from bms_supplier_tb
+        where supplier_status = #{supplierStatus,jdbcType=VARCHAR}
+        order by id desc
+    </select>
 
 </mapper>

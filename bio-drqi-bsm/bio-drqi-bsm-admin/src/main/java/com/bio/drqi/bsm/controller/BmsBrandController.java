@@ -80,14 +80,14 @@ public class BmsBrandController {
 
 
     /**
-     * 品牌管理-禁用
+     * 品牌管理-启用
      *
      * @return
      */
     @GetMapping("/enable")
-    @WebLog(desc = "品牌管理-禁用")
+    @WebLog(desc = "品牌管理-启用")
     @RequirePermissions("bms:brand:enable")
-    @RequestLog("品牌管理-禁用")
+    @RequestLog("品牌管理-启用")
     public ResponseResult<String> enable(@RequestParam Integer id) {
         bmsBrandService.enable(id);
         return ResponseResult.getSuccess("ok");

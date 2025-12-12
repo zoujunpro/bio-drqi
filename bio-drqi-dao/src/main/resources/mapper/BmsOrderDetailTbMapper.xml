@@ -91,9 +91,6 @@
             <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
             <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
             <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
-            <if test="productTypeCode != null and productTypeCode!=''">and
-                product_type_code=#{productTypeCode,jdbcType=VARCHAR}
-            </if>
             <if test="purchaseDate != null and purchaseDate!=''">and purchase_date=#{purchaseDate,jdbcType=VARCHAR}</if>
             <if test="applyUnitCode != null and applyUnitCode!=''">and
                 apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}

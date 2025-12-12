@@ -99,30 +99,31 @@ public class BmsSupplierController {
     }
 
     /**
-     * 供应商管理-删除
+     * 供应商管理-禁用
      *
      * @param id
      * @return
      */
-    @GetMapping("/delete")
-    @WebLog(desc = "供应商管理-删除")
-    @RequirePermissions("bms:supplier:delete")
-    @RequestLog("库存明细管理-删除")
+    @GetMapping("/disable")
+    @WebLog(desc = "供应商管理-禁用")
+    @RequirePermissions("bms:supplier:disable")
+    @RequestLog("库存明细管理-禁用")
     public ResponseResult<String> delete(@RequestParam Integer id) {
-        bmsSupplierService.delete(id);
+        bmsSupplierService.disable(id);
         return ResponseResult.getSuccess("ok");
     }
 
     /**
-     * 供应商管理-移出回收站供应商
+     * 供应商管理-启用
      *
      * @param id
      * @return
      */
-    @GetMapping("/move")
-    @WebLog(desc = "供应商管理-移出回收站供应商")
-    @RequestLog("库存明细管理-移出回收站供应商")
-    public ResponseResult<String> move(Integer id){
+    @GetMapping("/enable")
+    @WebLog(desc = "供应商管理-启用")
+    @RequestLog("库存明细管理-启用")
+    public ResponseResult<String> enable(Integer id){
+        bmsSupplierService.enable(id);
         return ResponseResult.getSuccess("ok");
     }
     /**

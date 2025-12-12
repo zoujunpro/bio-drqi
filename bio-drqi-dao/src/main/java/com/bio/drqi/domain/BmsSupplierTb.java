@@ -124,9 +124,9 @@ public class BmsSupplierTb implements Serializable {
     private Integer createUserId;
 
     /**
-     * 删除标识
+     * 状态 Y N
      */
-    private String deleteFlag;
+    private String supplierStatus;
 
     private String kdNumber;
 

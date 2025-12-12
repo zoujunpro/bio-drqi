@@ -1,5 +1,6 @@
 package com.bio.drqi.bsm.dto;
 
+import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
@@ -43,7 +44,7 @@ public class BmsPurchaseOrderDTO {
     /**
      * 采购类型描述
      */
-    @NotBlank(message = "请填写采购类型描述")
+    @EnumValue(strValues = {"1","2"},message = "采购类型填写错误")
     private String purchaseTypeCode;
 
 
@@ -90,48 +91,40 @@ public class BmsPurchaseOrderDTO {
         /**
          * 供应商名称
          */
-        @NotBlank(message = "参数缺失：供应商名称")
         private String supplierName;
 
         /**
          * 供应商编号
          */
-        @NotBlank(message = "参数缺失：供应商名称")
         private String supplierCode;
 
         /**
          * 采购数量
          */
-        @NotBlank(message = "参数缺失：采购数量")
         private Integer purchaseNumber;
         /**
          * 采购单价
          */
-        @NotBlank(message = "参数缺失：采购单价")
         private String purchasePrice;
 
         /**
          * 采购金额
          */
-        @NotBlank(message = "参数缺失：采购金额")
         private String purchaseAmount;
         /**
          * 品牌名称
          */
-        @NotBlank(message = "参数缺失：品牌名称")
         private String brandName;
 
         private String brandCode;
         /**
          * 商品名称
          */
-        @NotBlank(message = "参数缺失：商品名称")
         private String productName;
 
         /**
          * 商品编码
          */
-        @NotBlank(message = "参数缺失：商品编码")
         private String productOutCode;
 
         /**
@@ -142,18 +135,15 @@ public class BmsPurchaseOrderDTO {
         /**
          * 商品规格
          */
-        @NotBlank(message = "参数缺失：商品规格")
         private String productSpecs;
 
         /**
          * 商品类别编号
          */
-        @NotBlank(message = "参数缺失：商品类别编号")
         private String productCategoryCode;
         /**
          * 商品类别名称
          */
-        @NotBlank(message = "参数缺失：商品类别名称")
         private String productCategoryName;
 
         /**

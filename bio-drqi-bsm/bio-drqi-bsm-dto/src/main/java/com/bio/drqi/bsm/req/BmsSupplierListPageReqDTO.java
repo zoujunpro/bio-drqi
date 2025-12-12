@@ -18,5 +18,5 @@ public class BmsSupplierListPageReqDTO extends PageDTO {
     /**
      * Y代表已经删除，在回收站
      */
-    private String deleteFlag;
+    private String supplierStatus;
 }

@@ -68,7 +68,7 @@ public interface BmsSupplierService {
      * @param id
      * @return
      */
-    void delete(Integer id);
+    void disable(Integer id);
 
     /**
      * 供应商管理-移出回收站供应商
@@ -76,7 +76,7 @@ public interface BmsSupplierService {
      * @param id
      * @return
      */
-    void move(Integer id);
+    void enable(Integer id);
 
     /**
      * 供应商管理-导出

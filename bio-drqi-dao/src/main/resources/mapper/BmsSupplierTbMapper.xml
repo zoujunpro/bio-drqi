@@ -25,7 +25,7 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
         <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
-        <result property="deleteFlag" column="delete_flag" jdbcType="VARCHAR"/>
+        <result property="supplierStatus" column="supplier_status" jdbcType="VARCHAR"/>
         <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -37,7 +37,7 @@
         framework_agreement_number,framework_agreement_annex,expiration_date,
         contact_user_name,contact_user_telephone,leader_user_name,
         leader_user_id,remark,create_time,
-        create_user_name,create_user_id,delete_flag,kd_number
+        create_user_name,create_user_id,supplier_status,kd_number
     </sql>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsSupplierTb">
         select
@@ -69,14 +69,8 @@
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
-            <if test="deleteFlag != null">and delete_flag=#{deleteFlag,jdbcType=VARCHAR}</if>
+            <if test="supplierStatus != null and supplierStatus!=''">and supplier_status=#{supplierStatus,jdbcType=VARCHAR}</if>
         </where>
-        order by id desc
-    </select>
-    <select id="selectSupplierCodeAndSupplierCodeByDeleteFlagOrderByIdDesc" resultMap="BaseResultMap">
-        select supplier_code, supplier_name
-        from bms_supplier_tb
-        where delete_flag = #{deleteFlag,jdbcType=VARCHAR}
         order by id desc
     </select>
     <select id="selectOneBySupplierCode" resultMap="BaseResultMap">

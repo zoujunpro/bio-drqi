@@ -42,14 +42,14 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
     @Override
     public PageInfo<BmsSupplierListPageRspDTO> listPage(BmsSupplierListPageReqDTO bmsSupplierListPageReqDTO) {
         PageHelper.startPage(bmsSupplierListPageReqDTO.getPageNum(), bmsSupplierListPageReqDTO.getPageSize());
-        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectSelective(BmsSupplierTb.builder().supplierCode(bmsSupplierListPageReqDTO.getSupplierCode()).deleteFlag(bmsSupplierListPageReqDTO.getDeleteFlag()).supplierName(bmsSupplierListPageReqDTO.getSupplierName()).build());
+        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectSelective(BeanUtils.copyProperties(bmsSupplierListPageReqDTO, BmsSupplierTb.class));
         PageInfo<BmsSupplierTb> srcPageInfo = new PageInfo<>(bmsSupplierTbList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsSupplierListPageRspDTO.class);
     }
 
     @Override
     public List<BmsSupplierListAllRspDTO> listALl() {
-        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectSupplierCodeAndSupplierCodeByDeleteFlagOrderByIdDesc(BioDrQiContents.N);
+        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectSelective(BmsSupplierTb.builder().supplierStatus(BioDrQiContents.Y).build());
         return BeanUtils.copyListProperties(bmsSupplierTbList, BmsSupplierListAllRspDTO.class);
     }
 
@@ -59,12 +59,12 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
         if (Objects.nonNull(bmsSupplierTbMapper.selectOneBySupplierName(bmsSupplierAddReqDTO.getSupplierName()))) {
             throw new BusinessException("供应商名称重复");
         }
-        String supplierCode=null;
+        String supplierCode = null;
         String maxSupplierCode = bmsSupplierTbMapper.selectMaxSupplierCode();
-        if(StringUtils.isEmpty(maxSupplierCode)){
-            supplierCode= BioBsmContents.supplier_prefix+"1";
-        }else {
-            supplierCode=BioBsmContents.supplier_prefix+(Integer.valueOf(maxSupplierCode.split("-")[1])+1);
+        if (StringUtils.isEmpty(maxSupplierCode)) {
+            supplierCode = BioBsmContents.supplier_prefix + "1";
+        } else {
+            supplierCode = BioBsmContents.supplier_prefix + (Integer.valueOf(maxSupplierCode.split("-")[1]) + 1);
         }
         BmsSupplierTb bmsSupplierTb = new BmsSupplierTb();
         bmsSupplierTb.setSupplierCode(supplierCode);
@@ -86,7 +86,7 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
         bmsSupplierTb.setCreateTime(new Date());
         bmsSupplierTb.setCreateUserName(SecurityContextHolder.getNickName());
         bmsSupplierTb.setCreateUserId(SecurityContextHolder.getUserId());
-        bmsSupplierTb.setDeleteFlag(BioDrQiContents.N);
+        bmsSupplierTb.setSupplierStatus(BioDrQiContents.Y);
         bmsSupplierTbMapper.insert(bmsSupplierTb);
     }
 
@@ -96,8 +96,8 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
         if (bmsSupplierTb == null) {
             throw new BusinessException("供应商不存在");
         }
-        if (BioDrQiContents.Y.equals(bmsSupplierTb.getDeleteFlag())) {
-            throw new BusinessException("供应商已删除");
+        if (BioDrQiContents.Y.equals(bmsSupplierTb.getSupplierStatus())) {
+            throw new BusinessException("供应商已禁用");
         }
         BeanUtils.copyProperties(bmsSupplierEditReqDTO, bmsSupplierTb);
         bmsSupplierTbMapper.updateById(bmsSupplierTb);
@@ -113,25 +113,24 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(Integer id) {
+    public void disable(Integer id) {
         BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectById(id);
         if (bmsSupplierTb == null) {
             throw new BusinessException("供应商找不到");
         }
-
         //逻辑删除供应商
-        bmsSupplierTb.setDeleteFlag(BioDrQiContents.Y);
+        bmsSupplierTb.setSupplierStatus(BioDrQiContents.N);
         bmsSupplierTbMapper.updateById(bmsSupplierTb);
 
     }
 
     @Override
-    public void move(Integer id) {
+    public void enable(Integer id) {
         BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectById(id);
         if (bmsSupplierTb == null) {
             throw new BusinessException("供应商找不到");
         }
-        bmsSupplierTb.setDeleteFlag(BioDrQiContents.N);
+        bmsSupplierTb.setSupplierStatus(BioDrQiContents.Y);
         bmsSupplierTbMapper.updateById(bmsSupplierTb);
 
     }

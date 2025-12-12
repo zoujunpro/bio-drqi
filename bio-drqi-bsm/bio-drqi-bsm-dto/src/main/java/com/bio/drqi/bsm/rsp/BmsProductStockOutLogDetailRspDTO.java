@@ -28,6 +28,8 @@ public class BmsProductStockOutLogDetailRspDTO {
      */
     private String productCategoryCode;
 
+    private String productCategoryName;
+
     /**
      * 货品类型编号
      */

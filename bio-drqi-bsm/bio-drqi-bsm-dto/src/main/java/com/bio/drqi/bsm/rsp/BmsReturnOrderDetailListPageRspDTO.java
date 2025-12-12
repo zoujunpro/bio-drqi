@@ -124,4 +124,8 @@ public class BmsReturnOrderDetailListPageRspDTO {
     private String stockName;
 
     private String projectCode;
+
+    private String productCategoryCode;
+
+    private String productCategoryName;
 }

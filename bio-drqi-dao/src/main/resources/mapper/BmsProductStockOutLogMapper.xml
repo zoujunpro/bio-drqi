@@ -11,7 +11,6 @@
             <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
             <result property="productTypeCode" column="product_type_code" jdbcType="VARCHAR"/>
             <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
-            <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
             <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
             <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
             <result property="outNumber" column="out_number" jdbcType="INTEGER"/>
@@ -22,7 +21,6 @@
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="outType" column="out_type" jdbcType="VARCHAR"/>
             <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
-            <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
             <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
             <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
             <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
@@ -34,11 +32,11 @@
     <sql id="Base_Column_List">
         id,product_name,product_out_code,
         product_inner_code,product_category_code,product_type_code,
-        brand_code,brand_name,product_specs,
+        brand_code,product_specs,
         batch_no,out_number,apply_user_id,
         apply_user_name,create_time,task_num,
         remark,out_type,unit_code,kd_number,
-        supplier_name,supplier_code,unique_code,produce_date,expiration_date,stock_code
+        supplier_code,unique_code,produce_date,expiration_date,stock_code
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsProductStockOutLog" resultMap="BaseResultMap">
         select
@@ -51,7 +49,6 @@
             <if test="productCategoryCode != null and productCategoryCode!=''">and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
             <if test="productTypeCode != null and productTypeCode!=''">and product_type_code=#{productTypeCode,jdbcType=VARCHAR}</if>
             <if test="brandCode != null and brandCode!=''">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
-            <if test="brandName != null and brandName!=''">and brand_name=#{brandName,jdbcType=VARCHAR}</if>
             <if test="productSpecs != null">and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>
             <if test="batchNo != null and batchNo!=''">and batch_no=#{batchNo,jdbcType=VARCHAR}</if>
             <if test="outNumber != null">and out_number=#{outNumber,jdbcType=NUMERIC}</if>
@@ -67,7 +64,6 @@
             <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
             <if test="outType != null and outType!=''">and out_type=#{outType,jdbcType=VARCHAR}</if>
             <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
-            <if test="supplierName != null and supplierName!=''">and supplier_name=#{supplierName,jdbcType=VARCHAR}</if>
             <if test="supplierCode != null and supplierCode!=''">and supplier_code=#{supplierCode,jdbcType=VARCHAR}</if>
             <if test="uniqueCode != null and uniqueCode!=''">and unique_code=#{uniqueCode,jdbcType=VARCHAR}</if>
             <if test="produceDate != null"> and produce_date=#{produceDate,jdbcType=VARCHAR}</if>

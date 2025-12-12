@@ -126,7 +126,6 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                     product.setProductInnerCode(bmsProductTb.getProductInnerCode());
                 }
                 BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
-                BmsProjectDict bmsProjectDict = bmsProjectDictMapper.selectOneByProjectCode(product.getProjectCode());
                 //创建订单
                 BmsOrderDetailTb bmsOrderDetailTb = new BmsOrderDetailTb();
                 bmsOrderDetailTb.setOrderNum(bmsOrderTb.getOrderNum());
@@ -157,8 +156,6 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setExpectedDeliveryTime(product.getExpectedDeliveryTime());
                 bmsOrderDetailTb.setDemandUsageTime(bmsOrderTb.getDemandUsageTime());
                 bmsOrderDetailTb.setDemandRequireTime(bmsOrderTb.getDemandRequireTime());
-
-
                 bmsOrderDetailTb.setReceiveNumber(0);
                 bmsOrderDetailTb.setInvoiceUrls(null);
                 bmsOrderDetailTb.setContractUrls(null);
@@ -245,6 +242,9 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 }
                 if (!product.getProductCategoryCode().equals(bmsProductTb.getProductCategoryCode())) {
                     throw new BusinessException("商品规格填写错误");
+                }
+                if(bmsProductTb.getBrandCode().equals(product.getBrandCode())){
+                    throw new BusinessException(product.getProductName()+"商品品牌填写错误");
                 }
                 product.setProductSpecs(bmsProductTb.getProductSpecs());
                 product.setProductName(bmsProductTb.getProductName());

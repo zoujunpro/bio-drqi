@@ -18,5 +18,7 @@ public interface DevOpsService {
 
     void deleteByProjectCode(String projectCode);
 
+    void deleteBySubProjectCode( String subProjectCode);
+
     void deleteByVectorTaskCode(String vectorTaskCode);
 }

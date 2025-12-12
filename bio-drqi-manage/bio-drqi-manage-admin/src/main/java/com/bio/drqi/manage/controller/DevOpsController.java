@@ -115,6 +115,20 @@ public class DevOpsController {
         return ResponseResult.getSuccess("ok");
     }
 
+
+    /**
+     * 根据子项目编号删除整条项目数据
+     *
+     * @param subProjectCode
+     * @return
+     */
+    @GetMapping("/deleteBySubProjectCode")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> deleteBySubProjectCode(@RequestParam String subProjectCode) {
+        devOpsService.deleteBySubProjectCode(subProjectCode);
+        return ResponseResult.getSuccess("ok");
+    }
+
     /**
      * 根据项实施方案编号删除子项目信息
      *

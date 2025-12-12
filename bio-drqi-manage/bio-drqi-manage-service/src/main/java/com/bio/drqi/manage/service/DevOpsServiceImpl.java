@@ -230,8 +230,23 @@ public class DevOpsServiceImpl implements DevOpsService {
                 }
             });
         }
+    }
 
+    @Override
+    public void deleteBySubProjectCode(String subProjectCode) {
+        CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(subProjectCode);
+        if(cerSubProjectTb==null){
+            throw new BusinessException("找不到子项目信息");
+        }
+        bioTaskDtlTbMapper.deleteByTaskNum(cerSubProjectTb.getTaskNum());
 
+        cerSubProjectTbMapper.deleteById(cerSubProjectTb.getId());
+
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllBySubProjectId(cerSubProjectTb.getId());
+
+        for (CerVectorTaskTb cerVectorTaskTb : cerVectorTaskTbList) {
+            deleteByVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
+        }
     }
 
     @Override

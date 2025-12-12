@@ -438,7 +438,7 @@ public class BmsTestController {
             bmsSupplierTb.setCreateTime(new Date());
             bmsSupplierTb.setCreateUserName(null);
             bmsSupplierTb.setCreateUserId(null);
-            bmsSupplierTb.setDeleteFlag(BioBsmContents.N);
+            bmsSupplierTb.setSupplierStatus(BioBsmContents.Y);
             bmsSupplierTbMapper.insert(bmsSupplierTb);
 
 
@@ -466,7 +466,7 @@ public class BmsTestController {
                         bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
                         bmsBrandTb.setBrandName(productStockCleanDataExcel.brandName);
                         bmsBrandTb.setCreateTime(new Date());
-                        bmsBrandTb.setDeleteFlag("N");
+                        bmsBrandTb.setBrandStatus("Y");
                         bmsBrandTbMapper.insert(bmsBrandTb);
                     }
                 }
@@ -494,17 +494,14 @@ public class BmsTestController {
             bmsProductStockTb.setProductName(bmsProductTb.getProductName());
             bmsProductStockTb.setProductOutCode(bmsProductTb.getProductOutCode());
             bmsProductStockTb.setProductCategoryCode(bmsProductTb.getProductCategoryCode());
-            bmsProductStockTb.setProductTypeCode(bmsProductTb.getProductTypeCode());
             if (bmsProductTb.getBrandCode() != null) {
                 BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsProductTb.getBrandCode());
                 bmsProductStockTb.setBrandCode(bmsBrandTb.getBrandCode());
-                bmsProductStockTb.setBrandName(bmsBrandTb.getBrandName());
             }
 
             if (StringUtils.isNotEmpty(productStockCleanDataExcel.getSupplierCode())) {
                 BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(productStockCleanDataExcel.getSupplierCode());
                 bmsProductStockTb.setSupplierCode(bmsSupplierTb.getSupplierCode());
-                bmsProductStockTb.setSupplierName(bmsSupplierTb.getSupplierName());
             }
 
             bmsProductStockTb.setProductSpecs(bmsProductTb.getProductSpecs());
@@ -537,7 +534,7 @@ public class BmsTestController {
                     bmsBrandTb = new BmsBrandTb();
                     bmsBrandTb.setBrandName(productCleanDataExcel.brandName);
                     bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
-                    bmsBrandTb.setDeleteFlag(BioBsmContents.N);
+                    bmsBrandTb.setBrandStatus(BioBsmContents.Y);
                     bmsBrandTbMapper.insert(bmsBrandTb);
                 }
                 brandCode = bmsBrandTb.getBrandCode();
@@ -602,7 +599,6 @@ public class BmsTestController {
                 List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectAllByProductInnerCode(bmsProductTb.getProductInnerCode());
                 if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
                     bmsProductTb.setBrandCode(bmsOrderDetailTbList.get(0).getBrandCode());
-                    bmsProductTb.setBrandName(bmsOrderDetailTbList.get(0).getBrandName());
                     bmsProductTbMapper.updateById(bmsProductTb);
                 }
             }

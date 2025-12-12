@@ -35,6 +35,9 @@ public class KdApiServiceImpl implements KdApiService {
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
 
     @Resource
+    private BmsBrandTbMapper bmsBrandTbMapper;
+
+    @Resource
     private BmsSupplierTbMapper bmsSupplierTbMapper;
 
     @Resource
@@ -382,7 +385,11 @@ public class KdApiServiceImpl implements KdApiService {
         if (bmsProductCategoryTb.getKdNumber() == null) {
             throw new BusinessException("材料分组未同步");
         }
-        MaterialSaveModel materialSaveModel = new MaterialSaveModel(bmsProductTb.getProductInnerCode(), bmsProductTb.getProductName(), bmsProductTb.getProductSpecs(), bmsProductTb.getBrandName(), bmsProductCategoryTb.getProductCategoryCode(), bmsProductCategoryTb.getKdCategoryCode());
+        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsProductTb.getBrandCode());
+        if(bmsBrandTb==null){
+            throw new BusinessException("品牌找不到");
+        }
+        MaterialSaveModel materialSaveModel = new MaterialSaveModel(bmsProductTb.getProductInnerCode(), bmsProductTb.getProductName(), bmsProductTb.getProductSpecs(), bmsBrandTb.getBrandName(), bmsProductCategoryTb.getProductCategoryCode(), bmsProductCategoryTb.getKdCategoryCode());
         return KdRequestUtil.save(FormIdEnum.BD_MATERIAL, KdApiBaseSaveRequestDTO.buildOfSave(materialSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
     }
 
@@ -415,7 +422,7 @@ public class KdApiServiceImpl implements KdApiService {
         if (bmsSupplierTb == null) {
             throw new BusinessException("供应商不存在" + bmsProductStockInLog.getSupplierCode());
         }
-        if (StringUtils.isEmpty(bmsSupplierTb.getKdNumber() )) {
+        if (StringUtils.isEmpty(bmsSupplierTb.getKdNumber())) {
             throw new BusinessException("供应商未同步金蝶" + bmsProductStockInLog.getSupplierCode());
         }
         BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsProductStockInLog.getProductInnerCode());
@@ -426,11 +433,11 @@ public class KdApiServiceImpl implements KdApiService {
             throw new BusinessException("耗材还未同步到金蝶" + bmsProductStockInLog.getProductInnerCode());
         }
         BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsProductStockInLog.getStockCode());
-        if(bmsStockDict==null){
+        if (bmsStockDict == null) {
             throw new BusinessException("仓库找不到");
         }
-        if(StringUtils.isEmpty(bmsStockDict.getKdNumber())){
-            throw new BusinessException("仓库未同步到金蝶："+bmsStockDict.getStockName());
+        if (StringUtils.isEmpty(bmsStockDict.getKdNumber())) {
+            throw new BusinessException("仓库未同步到金蝶：" + bmsStockDict.getStockName());
         }
 
 

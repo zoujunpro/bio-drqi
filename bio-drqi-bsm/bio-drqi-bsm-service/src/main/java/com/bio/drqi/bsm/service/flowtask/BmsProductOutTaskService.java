@@ -83,9 +83,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockOutLog.setProductName(bmsProductStockTb.getProductName());
         bmsProductStockOutLog.setProductOutCode(bmsProductStockTb.getProductOutCode());
         bmsProductStockOutLog.setProductCategoryCode(bmsProductStockTb.getProductCategoryCode());
-        bmsProductStockOutLog.setProductTypeCode(bmsProductStockTb.getProductTypeCode());
         bmsProductStockOutLog.setBrandCode(bmsProductStockTb.getBrandCode());
-        bmsProductStockOutLog.setBrandName(bmsProductStockTb.getBrandName());
         bmsProductStockOutLog.setProductSpecs(bmsProductStockTb.getProductSpecs());
         bmsProductStockOutLog.setBatchNo(bmsProductStockTb.getBatchNo());
         bmsProductStockOutLog.setOutNumber(bmsProductOutDTO.getNumber());
@@ -98,7 +96,6 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockOutLog.setUnitCode(bmsProductOutDTO.getUnitCode());
         bmsProductStockOutLog.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
         bmsProductStockOutLog.setUniqueCode(bmsProductStockTb.getUniqueCode());
-        bmsProductStockOutLog.setSupplierName(bmsProductStockTb.getSupplierName());
         bmsProductStockOutLog.setSupplierCode(bmsProductStockTb.getSupplierCode());
         bmsProductStockOutLog.setProduceDate(bmsProductStockTb.getProduceDate());
         bmsProductStockOutLog.setExpirationDate(bmsProductStockTb.getExpirationDate());

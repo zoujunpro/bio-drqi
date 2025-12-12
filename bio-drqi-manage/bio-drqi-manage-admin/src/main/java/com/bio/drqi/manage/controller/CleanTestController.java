@@ -218,18 +218,7 @@ public class CleanTestController {
         return null;
     }
 
-    @GetMapping("/checkSample")
-    public ResponseResult<String> checkSample() {
-        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo("C0005286");
-        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum("C0005286");
 
-        ApproveSampleResultReqDTO approveSampleResultReqDTO = new ApproveSampleResultReqDTO();
-        approveSampleResultReqDTO.setTaskNum("C0005286");
-        approveSampleResultReqDTO.setContentList(bioSampleTestTbList.stream().map(bioSampleTestTb -> new ApproveSampleResultReqDTO.Content(bioSampleTestTb.getSampleCode(), "stay")).collect(Collectors.toList()));
-        bioSampleTestService.approveSampleResult(approveSampleResultReqDTO);
-        plantSampleTestTaskService.executeTask(bioTaskDtlTb);
-        return ResponseResult.getSuccess("ok");
-    }
 
 
     @GetMapping("/cleanPlasmid")

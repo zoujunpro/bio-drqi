@@ -132,13 +132,10 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setOrderNum(bmsOrderTb.getOrderNum());
                 bmsOrderDetailTb.setOrderDetailNum(IdUtils.simpleUUID());
                 bmsOrderDetailTb.setProjectCode(product.getProjectCode());
-                bmsOrderDetailTb.setProjectName(bmsProjectDict.getProjectName());
-                bmsOrderDetailTb.setSupplierName(product.getSupplierName());
                 bmsOrderDetailTb.setSupplierCode(product.getSupplierCode());
                 bmsOrderDetailTb.setContactUserTelephone(bmsSupplierTb.getContactUserTelephone());
                 bmsOrderDetailTb.setContactUserName(bmsSupplierTb.getContactUserName());
                 bmsOrderDetailTb.setBrandCode(bmsBrandTb.getBrandCode());
-                bmsOrderDetailTb.setBrandName(bmsBrandTb.getBrandName());
                 bmsOrderDetailTb.setProductName(product.getProductName());
                 bmsOrderDetailTb.setProductSpecs(product.getProductSpecs());
                 bmsOrderDetailTb.setProductOutCode(product.getProductOutCode());
@@ -147,7 +144,6 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setPurchaseNumber(product.getPurchaseNumber());
                 bmsOrderDetailTb.setPayAmount(new BigDecimal(product.getPurchaseAmount()));
                 bmsOrderDetailTb.setProductCategoryCode(product.getProductCategoryCode());
-                bmsOrderDetailTb.setProductCategoryName(product.getProductCategoryName());
                 bmsOrderDetailTb.setCreateTime(new Date());
                 bmsOrderDetailTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
                 bmsOrderDetailTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());

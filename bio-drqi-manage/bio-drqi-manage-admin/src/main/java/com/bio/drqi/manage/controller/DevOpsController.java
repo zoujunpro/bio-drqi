@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.devOps.DevOpsModifyProjectCodeReqDTO;
@@ -13,11 +14,15 @@ import com.bio.drqi.manage.devOps.DevOpsModifySubProjectCodeReqDTO;
 import com.bio.drqi.manage.devOps.DevOpsModifyVectorTaskCodeBreedCodeReqDTO;
 import com.bio.drqi.manage.devOps.DevOpsModifyVectorTaskCodeReqDTO;
 import com.bio.drqi.manage.dto.plant.task.PlantExperimentTaskDTO;
+import com.bio.drqi.manage.flowtask.plant.PlantSampleTestTaskService;
+import com.bio.drqi.manage.sample.req.ApproveSampleResultReqDTO;
 import com.bio.drqi.manage.service.DevOpsService;
+import com.bio.drqi.manage.service.bio.BioSampleTestService;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.service.dto.TcExperimentTaskDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -31,6 +36,18 @@ public class DevOpsController {
 
     @Resource
     private DevOpsService devOpsService;
+
+    @Resource
+    private BioSampleTestTbMapper bioSampleTestTbMapper;
+
+    @Resource
+    private BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
+    @Resource
+    private BioSampleTestService bioSampleTestService;
+
+    @Resource
+    private PlantSampleTestTaskService plantSampleTestTaskService;
 
 
     /**
@@ -108,6 +125,23 @@ public class DevOpsController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> deleteByVectorTaskCode(@RequestParam String vectorTaskCode) {
         devOpsService.deleteByVectorTaskCode(vectorTaskCode);
+        return ResponseResult.getSuccess("ok");
+    }
+
+
+    @GetMapping("/approveSample")
+    public ResponseResult<String> approveSample(@RequestParam @Validated String taskNum) {
+        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(taskNum);
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(taskNum);
+        ApproveSampleResultReqDTO approveSampleResultReqDTO = new ApproveSampleResultReqDTO();
+        approveSampleResultReqDTO.setTaskNum(taskNum);
+        bioTaskDtlTb.setTaskStatus(BioTaskStatusEnum.TASK_STATUS_1.status);
+        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        approveSampleResultReqDTO.setContentList(bioSampleTestTbList.stream().map(bioSampleTestTb -> new ApproveSampleResultReqDTO.Content(bioSampleTestTb.getSampleCode(), "stay")).collect(Collectors.toList()));
+        bioSampleTestService.approveSampleResult(approveSampleResultReqDTO);
+        bioTaskDtlTb.setTaskStatus(BioTaskStatusEnum.TASK_STATUS_2.status);
+        plantSampleTestTaskService.executeTask(bioTaskDtlTb);
+        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
         return ResponseResult.getSuccess("ok");
     }
 

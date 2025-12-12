@@ -87,9 +87,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
                 });
             }
             orderDetail.setProjectCode(bmsOrderDetailTb.getProjectCode());
-            orderDetail.setProjectName(bmsOrderDetailTb.getProjectName());
             orderDetail.setBrandCode(bmsOrderDetailTb.getBrandCode());
-            orderDetail.setBrandName(bmsOrderDetailTb.getBrandName());
             orderDetail.setProductName(bmsOrderDetailTb.getProductName());
             orderDetail.setProductSpecs(bmsOrderDetailTb.getProductSpecs());
             orderDetail.setProductOutCode(bmsOrderDetailTb.getProductOutCode());
@@ -97,7 +95,6 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
             orderDetail.setPurchaseNumber(bmsOrderDetailTb.getPurchaseNumber());
             orderDetail.setPayAmount(bmsOrderDetailTb.getPayAmount());
             orderDetail.setProductCategoryCode(bmsOrderDetailTb.getProductCategoryCode());
-            orderDetail.setProductCategoryName(bmsOrderDetailTb.getProductCategoryName());
             orderDetail.setApplyUnitCode(bmsOrderDetailTb.getApplyUnitCode());
             orderDetail.setApplyUnitName(bmsOrderDetailTb.getApplyUnitName());
             orderDetail.setProductInnerCode(bmsOrderDetailTb.getProductInnerCode());
@@ -158,9 +155,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
             bmsProductStockTb.setProductName(bmsOrderDetailTb.getProductName());
             bmsProductStockTb.setProductOutCode(bmsOrderDetailTb.getProductOutCode());
             bmsProductStockTb.setProductCategoryCode(bmsOrderDetailTb.getProductCategoryCode());
-            bmsProductStockTb.setProductTypeCode(bmsOrderDetailTb.getProductTypeCode());
             bmsProductStockTb.setBrandCode(bmsOrderDetailTb.getBrandCode());
-            bmsProductStockTb.setBrandName(bmsOrderDetailTb.getBrandName());
             bmsProductStockTb.setProductSpecs(bmsOrderDetailTb.getProductSpecs());
             bmsProductStockTb.setBatchNo(batchNo);
             bmsProductStockTb.setTotalStoreNumber(inputOrderDetail.getNumber());
@@ -169,7 +164,6 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
             bmsProductStockTb.setUnitCode(bmsOrderDetailTb.getApplyUnitCode());
             bmsProductStockTb.setStockLocationNumber(JSONUtil.toJsonStr(inputOrderDetail.getStockLocationNumberList()));
             bmsProductStockTb.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
-            bmsProductStockTb.setSupplierName(bmsOrderDetailTb.getSupplierName());
             bmsProductStockTb.setSupplierCode(bmsOrderDetailTb.getSupplierCode());
             bmsProductStockTb.setProductInnerCode(bmsOrderDetailTb.getProductInnerCode());
             bmsProductStockTb.setUniqueCode(IdUtils.simpleUUID());
@@ -201,9 +195,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockInLog.setProductName(bmsOrderDetailTb.getProductName());
         bmsProductStockInLog.setProductOutCode(bmsOrderDetailTb.getProductOutCode());
         bmsProductStockInLog.setProductCategoryCode(bmsOrderDetailTb.getProductCategoryCode());
-        bmsProductStockInLog.setProductTypeCode(bmsOrderDetailTb.getProductTypeCode());
         bmsProductStockInLog.setBrandCode(bmsOrderDetailTb.getBrandCode());
-        bmsProductStockInLog.setBrandName(bmsOrderDetailTb.getBrandName());
         bmsProductStockInLog.setProductSpecs(bmsOrderDetailTb.getProductSpecs());
         bmsProductStockInLog.setBatchNo(inputOrderDetail.getBatchNo());
         bmsProductStockInLog.setProjectCode(bmsOrderDetailTb.getProjectCode());
@@ -218,7 +210,6 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockInLog.setStockLocationNumber(JSONUtil.toJsonStr(inputOrderDetail.getStockLocationNumberList()));
         bmsProductStockInLog.setUnitCode(bmsOrderDetailTb.getApplyUnitCode());
         bmsProductStockInLog.setUniqueCode(bmsProductStockTb.getUniqueCode());
-        bmsProductStockInLog.setSupplierName(bmsProductStockTb.getSupplierName());
         bmsProductStockInLog.setSupplierCode(bmsProductStockTb.getSupplierCode());
         bmsProductStockInLog.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
         bmsProductStockInLog.setProduceDate(inputOrderDetail.getProduceDate());

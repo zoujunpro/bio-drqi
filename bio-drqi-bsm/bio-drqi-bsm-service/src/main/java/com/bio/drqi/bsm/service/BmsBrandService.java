@@ -34,11 +34,18 @@ public interface BmsBrandService {
     BmsBrandTb add(BmsBrandAddReqDTO bmsBrandAddReqDTO);
 
     /**
-     * 品牌管理-删除
+     * 品牌管理-禁用
      *
      * @return
      */
-    void delete(Integer id);
+    void disable(Integer id);
+
+    /**
+     * 品牌管理-启用
+     *
+     * @return
+     */
+    void enable(Integer id);
 
     /**
      * 品牌管理-修改

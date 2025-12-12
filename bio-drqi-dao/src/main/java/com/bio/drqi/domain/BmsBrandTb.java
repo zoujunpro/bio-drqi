@@ -53,7 +53,7 @@ public class BmsBrandTb implements Serializable {
      */
     private String createUserName;
 
-    private String deleteFlag;
+    private String brandStatus;
 
     private String kdNumber;
 

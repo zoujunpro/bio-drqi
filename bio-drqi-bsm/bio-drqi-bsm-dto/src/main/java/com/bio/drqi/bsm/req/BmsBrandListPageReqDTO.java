@@ -10,7 +10,7 @@ public class BmsBrandListPageReqDTO extends PageDTO {
 
 
     /**
-     * Y已删除，回收站   , N正常
+     * Y启用 N禁用
      */
-    private String deleteFlag;
+    private String brandStatus;
 }

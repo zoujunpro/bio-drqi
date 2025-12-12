@@ -65,16 +65,31 @@ public class BmsBrandController {
     }
 
     /**
-     * 品牌管理-删除
+     * 品牌管理-禁用
      *
      * @return
      */
-    @GetMapping("/delete")
-    @WebLog(desc = "品牌管理-删除")
-    @RequirePermissions("bms:brand:delete")
-    @RequestLog("品牌管理-删除")
-    public ResponseResult<String> delete(@RequestParam Integer id) {
-        bmsBrandService.delete(id);
+    @GetMapping("/disable")
+    @WebLog(desc = "品牌管理-禁用")
+    @RequirePermissions("bms:brand:disable")
+    @RequestLog("品牌管理-禁用")
+    public ResponseResult<String> disable(@RequestParam Integer id) {
+        bmsBrandService.disable(id);
+        return ResponseResult.getSuccess("ok");
+    }
+
+
+    /**
+     * 品牌管理-禁用
+     *
+     * @return
+     */
+    @GetMapping("/enable")
+    @WebLog(desc = "品牌管理-禁用")
+    @RequirePermissions("bms:brand:enable")
+    @RequestLog("品牌管理-禁用")
+    public ResponseResult<String> enable(@RequestParam Integer id) {
+        bmsBrandService.enable(id);
         return ResponseResult.getSuccess("ok");
     }
 

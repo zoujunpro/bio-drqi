@@ -48,10 +48,6 @@ public class BmsProductTb implements Serializable {
      */
     private String productCategoryCode;
 
-    /**
-     * 商品类型编号
-     */
-    private String productTypeCode;
 
     /**
      * 品牌名称
@@ -86,7 +82,7 @@ public class BmsProductTb implements Serializable {
     /**
      * 删除标识
      */
-    private String deleteFlag;
+    private String productStatus;
     /**
      * 图片
      */

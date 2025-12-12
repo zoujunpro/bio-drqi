@@ -78,6 +78,35 @@ public class CleanTestController {
     @Resource
     private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
+    @GetMapping("/cleanSeed")
+    public ResponseResult<String> cleanSeed() {
+        List<Seed> seedList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\20251120 BR2项目T3代.xlsx", Seed.class);
+        for (Seed seed : seedList) {
+            SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seed.seedNum);
+            seedStockTb.setGeneration(seed.generation);
+            seedStockTb.setTargetCharacter(seed.targetCharacter);
+            seedStockTb.setAliasName(seed.aliasName);
+            seedStockTbMapper.updateById(seedStockTb);
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
+    @Data
+    public static class Seed {
+
+        @ExcelProperty("seed_num")
+        private String seedNum;
+
+        @ExcelProperty("generation")
+        private String generation;
+
+        @ExcelProperty("target_character")
+        private String targetCharacter;
+
+        @ExcelProperty("alias_name")
+        private String aliasName;
+
+    }
 
     @GetMapping("/cleanTransFlag")
     @Transactional(rollbackFor = Exception.class)

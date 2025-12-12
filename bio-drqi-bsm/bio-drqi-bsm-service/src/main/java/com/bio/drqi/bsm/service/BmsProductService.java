@@ -41,11 +41,16 @@ public interface BmsProductService {
 
 
     /**
-     * 商品管理-删除
+     * 商品管理-禁用
      * @return
      */
-    void delete( Integer id);
+    void disable( Integer id);
 
+    /**
+     * 商品管理-启用
+     * @return
+     */
+    void enable( Integer id);
     /**
      * 商品管理-编辑
      * @return

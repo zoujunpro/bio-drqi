@@ -32,13 +32,10 @@ public class BmsBrandServiceImpl implements BmsBrandService {
     @Resource
     private BmsBrandTbMapper bmsBrandTbMapper;
 
-    @Resource
-    private BmsProductTbMapper bmsProductTbMapper;
-
     @Override
     public PageInfo<BmsBrandListPageRspDTO> listPage(BmsBrandListPageReqDTO bmsBrandListPageReqDTO) {
         PageHelper.startPage(bmsBrandListPageReqDTO.getPageNum(), bmsBrandListPageReqDTO.getPageSize());
-        List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(BmsBrandTb.builder().brandName(bmsBrandListPageReqDTO.getBrandName()).deleteFlag(bmsBrandListPageReqDTO.getDeleteFlag()).build());
+        List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(BeanUtils.copyProperties(bmsBrandListPageReqDTO, BmsBrandTb.class));
         PageInfo<BmsBrandTb> srcPageInfo = new PageInfo<>(bmsBrandTbList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, BmsBrandListPageRspDTO.class);
     }
@@ -46,7 +43,7 @@ public class BmsBrandServiceImpl implements BmsBrandService {
 
     @Override
     public List<BmsBrandListAllRspDTO> listAll() {
-        List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(BmsBrandTb.builder().deleteFlag(BioDrQiContents.N).build());
+        List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(BmsBrandTb.builder().brandStatus(BioDrQiContents.Y).build());
         return BeanUtils.copyListProperties(bmsBrandTbList, BmsBrandListAllRspDTO.class);
     }
 
@@ -54,35 +51,41 @@ public class BmsBrandServiceImpl implements BmsBrandService {
     public BmsBrandTb add(BmsBrandAddReqDTO bmsBrandAddReqDTO) {
         BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsBrandAddReqDTO.getBrandName());
         if (Objects.nonNull(bmsBrandTb)) {
-            if (BioDrQiContents.N.equals(bmsBrandTb.getDeleteFlag())) {
-                throw new BusinessException("该品牌已经存在");
-            } else {
-                bmsBrandTb.setDeleteFlag(BioDrQiContents.N);
-                bmsBrandTbMapper.updateById(bmsBrandTb);
+            if (BioDrQiContents.N.equals(bmsBrandTb.getBrandStatus())) {
+                throw new BusinessException("该品牌已经存在,且是禁用,无需添加，启用即可");
             }
-        } else {
-            bmsBrandTb = new BmsBrandTb();
-            bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
-            bmsBrandTb.setBrandName(bmsBrandAddReqDTO.getBrandName());
-            bmsBrandTb.setCreateTime(new Date());
-            bmsBrandTb.setCreateUserId(SecurityContextHolder.getUserId());
-            bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
-            bmsBrandTb.setDeleteFlag(BioDrQiContents.N);
-            bmsBrandTbMapper.insert(bmsBrandTb);
         }
+        bmsBrandTb = new BmsBrandTb();
+        bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
+        bmsBrandTb.setBrandName(bmsBrandAddReqDTO.getBrandName());
+        bmsBrandTb.setCreateTime(new Date());
+        bmsBrandTb.setCreateUserId(SecurityContextHolder.getUserId());
+        bmsBrandTb.setCreateUserName(SecurityContextHolder.getNickName());
+        bmsBrandTb.setBrandStatus(BioDrQiContents.Y);
+        bmsBrandTbMapper.insert(bmsBrandTb);
         return bmsBrandTb;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(Integer id) {
+    public void disable(Integer id) {
         BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectById(id);
         if (Objects.isNull(bmsBrandTb)) {
             throw new BusinessException("品牌不存在");
         }
-        bmsBrandTb.setDeleteFlag(BioDrQiContents.Y);
+        bmsBrandTb.setBrandStatus(BioDrQiContents.N);
         bmsBrandTbMapper.updateById(bmsBrandTb);
 
+    }
+
+    @Override
+    public void enable(Integer id) {
+        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectById(id);
+        if (Objects.isNull(bmsBrandTb)) {
+            throw new BusinessException("品牌不存在");
+        }
+        bmsBrandTb.setBrandStatus(BioDrQiContents.Y);
+        bmsBrandTbMapper.updateById(bmsBrandTb);
     }
 
     @Override

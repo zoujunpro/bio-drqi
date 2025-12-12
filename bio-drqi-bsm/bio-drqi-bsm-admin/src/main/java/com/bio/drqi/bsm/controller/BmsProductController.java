@@ -58,8 +58,8 @@ public class BmsProductController {
      */
     @PostMapping("/queryList")
     @WebLog(desc = "材料管理-查询")
-    public ResponseResult<List<BmsProductQueryListRspDTO>> queryList(@RequestBody @Validated BmsProductQueryListReqDTO bmsProductQueryListReqDTO) {
-        return ResponseResult.getSuccess(bmsProductService.queryList(bmsProductQueryListReqDTO));
+        public ResponseResult<List<BmsProductQueryListRspDTO>> queryList(@RequestBody @Validated BmsProductQueryListReqDTO bmsProductQueryListReqDTO) {
+            return ResponseResult.getSuccess(bmsProductService.queryList(bmsProductQueryListReqDTO));
     }
 
     /**
@@ -91,16 +91,30 @@ public class BmsProductController {
 
 
     /**
-     * 材料管理-删除
+     * 材料管理-禁用
      *
      * @return
      */
-    @GetMapping("/delete")
-    @WebLog(desc = "材料管理-删除")
-    @RequirePermissions("bms:product:delete")
-    @RequestLog("材料管理-删除")
-    public ResponseResult<String> delete(@RequestParam @Validated @NotNull Integer id) {
-        bmsProductService.delete(id);
+    @GetMapping("/disable")
+    @WebLog(desc = "材料管理-禁用")
+    @RequirePermissions("bms:product:disable")
+    @RequestLog("材料管理-禁用")
+    public ResponseResult<String> disable(@RequestParam @Validated @NotNull Integer id) {
+        bmsProductService.disable(id);
+        return ResponseResult.getSuccess("ok");
+    }
+
+    /**
+     * 材料管理-启用
+     *
+     * @return
+     */
+    @GetMapping("/enable")
+    @WebLog(desc = "材料管理-启用")
+    @RequirePermissions("bms:product:enable")
+    @RequestLog("材料管理-启用")
+    public ResponseResult<String> enable(@RequestParam @Validated @NotNull Integer id) {
+        bmsProductService.enable(id);
         return ResponseResult.getSuccess("ok");
     }
 

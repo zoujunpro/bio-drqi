@@ -243,7 +243,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 if (!product.getProductCategoryCode().equals(bmsProductTb.getProductCategoryCode())) {
                     throw new BusinessException("商品规格填写错误");
                 }
-                if(bmsProductTb.getBrandCode().equals(product.getBrandCode())){
+                if(!bmsProductTb.getBrandCode().equals(product.getBrandCode())){
                     throw new BusinessException(product.getProductName()+"商品品牌填写错误");
                 }
                 product.setProductSpecs(bmsProductTb.getProductSpecs());

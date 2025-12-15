@@ -80,4 +80,14 @@
         from seed_stock_in_log
         where task_num = #{taskNum,jdbcType=VARCHAR}
     </delete>
+    <select id="selectAllBySeedNumIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_in_log
+        where
+        seed_num in
+        <foreach collection="seedNumList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 </mapper>

@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.Collection;
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.SeedStockInLog;
@@ -18,6 +19,7 @@ public interface SeedStockInLogMapper extends BaseMapper<SeedStockInLog> {
 
     List<SeedStockInLog> selectAllByTaskNum(@Param("taskNum") String taskNum);
 
+    List<SeedStockInLog> selectAllBySeedNumIn(@Param("seedNumList") Collection<String> seedNumList);
 
     SeedStockInLog selectOneByUniqueCode(@Param("uniqueCode") String uniqueCode);
 

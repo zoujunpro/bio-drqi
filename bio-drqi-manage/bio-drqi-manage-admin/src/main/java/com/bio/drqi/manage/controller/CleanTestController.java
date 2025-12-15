@@ -12,6 +12,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SeedSourceEnum;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
+import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
 import com.bio.drqi.manage.flowtask.plant.PlantSampleTestTaskService;
 import com.bio.drqi.manage.sample.req.ApproveSampleResultReqDTO;
 import com.bio.drqi.manage.service.bio.BioSampleTestService;
@@ -76,17 +77,33 @@ public class CleanTestController {
     private SeedStockTbMapper seedStockTbMapper;
 
     @Resource
+    private SeedStockInLogMapper seedStockInLogMapper;
+
+    @Resource
     private PlantSingleStockTbMapper plantSingleStockTbMapper;
+
 
     @GetMapping("/cleanSeed")
     public ResponseResult<String> cleanSeed() {
-        List<Seed> seedList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\20251120 BR2项目T3代.xlsx", Seed.class);
+        List<Seed> seedList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\外来种.xlsx", Seed.class);
         for (Seed seed : seedList) {
-            SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seed.seedNum);
-            seedStockTb.setGeneration(seed.generation);
-            seedStockTb.setTargetCharacter(seed.targetCharacter);
-            seedStockTb.setAliasName(seed.aliasName);
-            seedStockTbMapper.updateById(seedStockTb);
+            List<SeedStockInLog> seedStockInLogList = seedStockInLogMapper.selectList(null);
+            Map<String, List<SeedStockInLog>> listMap = seedStockInLogList.stream().collect(Collectors.groupingBy(SeedStockInLog::getTaskNum));
+            listMap.forEach((taskNum, list) -> {
+                BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(taskNum);
+                SeedInStoreDTO seedInStoreDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedInStoreDTO.class);
+                Map<String, SeedInStoreDTO.ExecuteFormContent> contentMap = seedInStoreDTO.getExecuteForm().getExecuteFormContentList().stream().collect(Collectors.toMap(SeedInStoreDTO.ExecuteFormContent::getUniqueCode, executeFormContent -> executeFormContent));
+                list.forEach(seedStockInLog -> {
+                    log.info("seedStockInLog={}"+JSONUtil.toJsonStr(seedStockInLog));
+                    SeedInStoreDTO.ExecuteFormContent content = contentMap.get(seedStockInLog.getUniqueCode());
+                    SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedStockInLog.getSeedNum());
+                    seedStockTb.setGeneration(content.getGeneration());
+                    seedStockTb.setSourceType(content.getSource());
+                    seedStockTbMapper.updateById(seedStockTb);
+                });
+
+
+            });
         }
         return ResponseResult.getSuccess("ok");
     }
@@ -94,17 +111,9 @@ public class CleanTestController {
     @Data
     public static class Seed {
 
-        @ExcelProperty("seed_num")
+        @ExcelProperty("种子编号")
         private String seedNum;
 
-        @ExcelProperty("generation")
-        private String generation;
-
-        @ExcelProperty("target_character")
-        private String targetCharacter;
-
-        @ExcelProperty("alias_name")
-        private String aliasName;
 
     }
 
@@ -217,8 +226,6 @@ public class CleanTestController {
 
         return null;
     }
-
-
 
 
     @GetMapping("/cleanPlasmid")

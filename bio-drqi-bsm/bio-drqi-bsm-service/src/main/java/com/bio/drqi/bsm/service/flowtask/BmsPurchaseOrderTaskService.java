@@ -117,14 +117,14 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                     BmsBrandTb bmsBrandTb = bmsBrandService.add(BmsBrandAddReqDTO.builder().brandName(product.getBrandName()).build());
                     product.setBrandCode(bmsBrandTb.getBrandCode());
                 }
-                //非常规采购进行商品创建
-                if (PurchaseTypeEnum.TYPE_2.code.equals(bmsOrderTb.getPurchaseTypeCode())) {
-                    BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(product.getProductName(), product.getBrandCode(), product.getProductSpecs());
-                    if (bmsProductTb == null) {
-                        bmsProductTb = bmsProductService.add(BeanUtils.copyProperties(product, BmsProductAddReqDTO.class));
-                    }
-                    product.setProductInnerCode(bmsProductTb.getProductInnerCode());
+                BmsProductTb bmsProductTb = null;
+                if (StringUtils.isEmpty(product.getProductInnerCode())) {
+                    bmsProductTb = bmsProductService.add(BeanUtils.copyProperties(product, BmsProductAddReqDTO.class));
+                } else {
+                    bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(product.getProductInnerCode());
                 }
+
+                product.setProductInnerCode(bmsProductTb.getProductInnerCode());
                 BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
                 //创建订单
                 BmsOrderDetailTb bmsOrderDetailTb = new BmsOrderDetailTb();
@@ -243,8 +243,8 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 if (!product.getProductCategoryCode().equals(bmsProductTb.getProductCategoryCode())) {
                     throw new BusinessException("商品规格填写错误");
                 }
-                if(!bmsProductTb.getBrandCode().equals(product.getBrandCode())){
-                    throw new BusinessException(product.getProductName()+"商品品牌填写错误");
+                if (!bmsProductTb.getBrandCode().equals(product.getBrandCode())) {
+                    throw new BusinessException(product.getProductName() + "商品品牌填写错误");
                 }
                 product.setProductSpecs(bmsProductTb.getProductSpecs());
                 product.setProductName(bmsProductTb.getProductName());

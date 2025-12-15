@@ -231,7 +231,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 }
                 BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(product.getBrandName());
                 if (bmsBrandTb != null) {
-                    throw new BusinessException("库存中已经有此品牌，请检测库存中品牌状态，直接使用");
+                    throw new BusinessException("库存中已经有此品牌，请检查品牌是否已经禁用，无需新增品牌");
                 }
             }
             //商品校验

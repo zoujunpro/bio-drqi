@@ -299,7 +299,11 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
     @Override
     public List<SeedStockQueryListRspDTO> queryUserList() {
         List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectSubmitUserIdAndSubmitUserName();
-        return BeanUtils.copyListProperties(seedStockTbList,SeedStockQueryListRspDTO.class);
+        if (CollectionUtil.isNotEmpty(seedStockTbList)) {
+            return BeanUtils.copyListProperties(seedStockTbList, SeedStockQueryListRspDTO.class).stream().filter(seedStockQueryListRspDTO -> seedStockQueryListRspDTO.getSubmitUserId() != null).collect(Collectors.toList());
+        }
+        return null;
+
     }
 
 

@@ -32,6 +32,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class BmsSupplierServiceImpl implements BmsSupplierService {
@@ -143,5 +144,9 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
     @Override
     public void importExcel() {
 
+    }
+
+    public static void main(String[] args) {
+        System.out.println(UUID.randomUUID().toString());
     }
 }

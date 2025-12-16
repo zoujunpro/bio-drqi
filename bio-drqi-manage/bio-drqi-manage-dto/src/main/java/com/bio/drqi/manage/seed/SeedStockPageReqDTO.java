@@ -130,6 +130,8 @@ public class SeedStockPageReqDTO extends PageDTO {
 
     private String pdImplementCode;
 
+    private Integer submitUserId;
+
     /**
      * 备注
      */

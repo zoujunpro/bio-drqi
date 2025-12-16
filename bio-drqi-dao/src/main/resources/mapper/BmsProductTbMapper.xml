@@ -33,6 +33,7 @@
         <where>
             <if test="productOutCode != null">and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
             <if test="productInnerCode != null">and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}</if>
+            <if test="productName != null and productName!=''">and product_name=#{productName,jdbcType=VARCHAR}</if>
             <if test="productCategoryCode != null and productCategoryCode != ''">and
                 product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
             </if>

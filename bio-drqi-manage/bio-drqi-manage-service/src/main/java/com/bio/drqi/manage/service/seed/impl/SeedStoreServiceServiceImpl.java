@@ -279,7 +279,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
             });
         }
         List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllBySeedNum(seedNum);
-        if(CollectionUtil.isNotEmpty(tcExperimentDesignTbList)){
+        if (CollectionUtil.isNotEmpty(tcExperimentDesignTbList)) {
             tcExperimentDesignTbList.forEach(tcExperimentDesignTb -> {
                 SeedStockQueryPlantListRspDTO seedStockQueryPlantListRspDTO = new SeedStockQueryPlantListRspDTO();
                 seedStockQueryPlantListRspDTO.setTaskNum(tcExperimentDesignTb.getTaskNum());
@@ -288,12 +288,18 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
                 seedStockQueryPlantListRspDTO.setCreateTime(tcExperimentDesignTb.getCreateTime());
                 seedStockQueryPlantListRspDTO.setRegionCode(tcExperimentDesignTb.getRegionNum());
                 seedStockQueryPlantListRspDTO.setSeedNum(tcExperimentDesignTb.getSeedNum());
-                seedStockQueryPlantListRspDTO.setPlantNumber(tcExperimentDesignTb.getSeedingNumber()+tcExperimentDesignTb.getSeedingUnit());
+                seedStockQueryPlantListRspDTO.setPlantNumber(tcExperimentDesignTb.getSeedingNumber() + tcExperimentDesignTb.getSeedingUnit());
                 resultList.add(seedStockQueryPlantListRspDTO);
             });
         }
 
         return resultList;
+    }
+
+    @Override
+    public List<SeedStockQueryListRspDTO> queryUserList() {
+        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectSubmitUserIdAndSubmitUserName();
+        return BeanUtils.copyListProperties(seedStockTbList,SeedStockQueryListRspDTO.class);
     }
 
 

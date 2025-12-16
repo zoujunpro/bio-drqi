@@ -175,4 +175,15 @@ public class SeedStockController {
     public ResponseResult<List<SeedStockQueryPlantListRspDTO>> queryPlantList(String seedNum) {
         return ResponseResult.getSuccess(seedStoreService.queryPlantList(seedNum));
     }
+
+    /**
+     * 种子库-查询种植列表用户
+     *
+     * @return
+     */
+    @GetMapping("/queryUserList")
+    @WebLog(desc = "种子库-查询种植列表用户")
+    public ResponseResult<List<SeedStockQueryListRspDTO>> queryUserList() {
+        return ResponseResult.getSuccess(seedStoreService.queryUserList());
+    }
 }

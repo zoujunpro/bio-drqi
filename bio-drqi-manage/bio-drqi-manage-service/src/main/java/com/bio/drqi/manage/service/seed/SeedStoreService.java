@@ -39,4 +39,6 @@ public interface SeedStoreService {
     List<String> queryChildSeed(String seedNum);
 
     List<SeedStockQueryPlantListRspDTO>  queryPlantList(String seedNum);
+
+    List<SeedStockQueryListRspDTO> queryUserList();
 }

@@ -43,6 +43,8 @@ public interface SeedStockTbMapper extends BaseMapper<SeedStockTb> {
     int updatePlantCodeAndRemarksById(@Param("plantCode") String plantCode, @Param("remarks") String remarks, @Param("id") Integer id);
 
     int updatePdNumAndVectorTaskCodeAndProjectCodeById(@Param("pdNum") String pdNum, @Param("vectorTaskCode") String vectorTaskCode, @Param("projectCode") String projectCode, @Param("id") Integer id);
+
+    List<SeedStockTb> selectSubmitUserIdAndSubmitUserName();
 }
 
 

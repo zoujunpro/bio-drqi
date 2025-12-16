@@ -231,5 +231,9 @@
         where
         vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectSubmitUserIdAndSubmitUserName" resultMap="BaseResultMap">
+        select distinct submit_user_id, submit_user_name
+        from seed_stock_tb
+    </select>
 
 </mapper>

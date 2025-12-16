@@ -16,16 +16,11 @@ public class BmsProductStockListPageReqDTO extends PageDTO {
      */
     private String productCategoryCode;
 
-    /**
-     * 商品类别名称
-     */
-    private String productCategoryName;
-
 
     /**
      * 品牌名称
      */
-    private String brandName;
+    private String brandCode;
 
 
     /**

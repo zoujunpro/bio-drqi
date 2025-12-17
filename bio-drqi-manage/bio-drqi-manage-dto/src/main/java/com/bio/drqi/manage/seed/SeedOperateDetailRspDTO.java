@@ -14,6 +14,8 @@ public class SeedOperateDetailRspDTO {
 
     private String operateCode;
 
+    private String taskNum;
+
     private String operateUserName;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

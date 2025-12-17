@@ -141,6 +141,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
             seedOperateDetailRspDTO.setOperateUserName(seedStockInLog.getApplyUserName());
             seedOperateDetailRspDTO.setOperateTime(seedStockInLog.getCreateTime());
             seedOperateDetailRspDTO.setUnit(seedStockInLog.getUnit());
+            seedOperateDetailRspDTO.setTaskNum(seedStockInLog.getTaskNum());
             seedOperateDetailRspDTO.setNumber(seedStockInLog.getSeedNumber());
             result.add(seedOperateDetailRspDTO);
         }
@@ -154,6 +155,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
                 seedOperateDetailRspDTO.setOperateTime(seedStockOutLog.getCreateTime());
                 seedOperateDetailRspDTO.setUnit(seedStockOutLog.getUnit());
                 seedOperateDetailRspDTO.setNumber(seedStockOutLog.getSeedNumber());
+                seedOperateDetailRspDTO.setTaskNum(seedStockOutLog.getTaskNum());
                 result.add(seedOperateDetailRspDTO);
             }
         }

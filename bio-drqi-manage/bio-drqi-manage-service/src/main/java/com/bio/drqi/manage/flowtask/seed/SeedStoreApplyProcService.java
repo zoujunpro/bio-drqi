@@ -136,10 +136,10 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                         throw new BusinessException("种植编号为："+executeFormContent.getPlantCode()+"的种子实施方案填写不正确");
                     }
                 }
-                if(StringUtils.equals(executeFormContent.getSpeciesCode(),plantSingleStockTb.getSpeciesCode())){
+                if(!StringUtils.equals(executeFormContent.getSpeciesCode(),plantSingleStockTb.getSpeciesCode())){
                     throw new BusinessException("种植编号为："+executeFormContent.getPlantCode()+"的种子物种填写不正确");
                 }
-                if(StringUtils.equals(executeFormContent.getBreedCode(),plantSingleStockTb.getBreedCode())){
+                if(!StringUtils.equals(executeFormContent.getBreedCode(),plantSingleStockTb.getBreedCode())){
                     throw new BusinessException("种植编号为："+executeFormContent.getPlantCode()+"的种子品种填写不正确");
                 }
             }

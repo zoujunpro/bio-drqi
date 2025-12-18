@@ -28,10 +28,12 @@ public class ScanCodeSeedRspDTO {
     @Data
     public static class Seed {
 
+        private Integer id;
+
         /**
          * 种植编号
          */
-        private String plantNum;
+        private String plantCode;
 
         /**
          * 种子编号
@@ -73,9 +75,6 @@ public class ScanCodeSeedRspDTO {
          */
         private String breedCode;
 
-        /**
-         * 品种
-         */
         private String breedName;
 
         /**
@@ -83,25 +82,14 @@ public class ScanCodeSeedRspDTO {
          */
         private String pollinationMethod;
 
-        /**
-         * 种子类型  自交/杂交
-         */
-        private String seedType;
-        /**
-         * 种子类型  自交/杂交
-         */
-        private String seedTypeName;
+        private String pollinationMethodName;
 
         /**
-         * 收获方式，单珠和混珠
+         * 收获方式
          */
         private String harvestType;
 
-        /**
-         * 收获方式，单珠和混珠
-         */
-        private String harvestName;
-
+        private String harvestTypeName;
         /**
          * 收获时间
          */
@@ -113,7 +101,7 @@ public class ScanCodeSeedRspDTO {
         private BigDecimal seedNumber;
 
         /**
-         * 计量单位g/kg/粒
+         * 计量单位g/kg/粒ml
          */
         private String unit;
 
@@ -121,18 +109,14 @@ public class ScanCodeSeedRspDTO {
          * 种子来源（1 CER/ 2 温室/3 大田/4 外单位）
          */
         private String sourceType;
-        /**
-         * 种子来源（1 CER/ 2 温室/3 大田/4 外单位）
-         */
-        private String sourceTypeName;
 
+        private String sourceTypeName;
 
         /**
          * 生产地点（天津/海南/新乡）
          */
+        private String productionLocationCode;
         private String productionLocationName;
-
-
         /**
          * 库位编号
          */
@@ -151,13 +135,11 @@ public class ScanCodeSeedRspDTO {
         /**
          * 创建日期
          */
-        @JsonFormat(pattern = "yyyy-MM-dd")
         private Date createTime;
 
         /**
          * 更新日期
          */
-        @JsonFormat(pattern = "yyyy-MM-dd")
         private Date updateTime;
 
         /**
@@ -166,14 +148,14 @@ public class ScanCodeSeedRspDTO {
         private String remarks;
 
         /**
-         * 入库时库存
+         * 入库时数量
          */
         private BigDecimal totalNumber;
 
         /**
-         * 基因型性状
+         * 目标性状
          */
-        private String geneticCharacter;
+        private String targetCharacter;
 
         /**
          * 别名
@@ -181,19 +163,80 @@ public class ScanCodeSeedRspDTO {
         private String aliasName;
 
         /**
-         * 基因类型
+         * 基因型
          */
         private String geneType;
+
+        /**
+         * 检测结果
+         */
+        private String checkResult;
+
 
         /**
          * 材料类型
          */
         private String materialType;
 
-        /**
-         * 材料类型
-         */
         private String materialTypeName;
+
+        /**
+         * 母本种子编号
+         */
+        private String matherSeedNum;
+
+        /**
+         * 父本种子编号
+         */
+        private String fatherSeedNum;
+
+        /**
+         * 母本小区编号
+         */
+        private String matherRegionNum;
+
+        /**
+         * 父本小区编号
+         */
+        private String fatherRegionNum;
+
+
+        /**
+         * 系谱
+         */
+        private String genealogy;
+
+        /**
+         * 是否基因分离
+         */
+        private String geneSeparateFlag;
+
+        /**
+         * 是否转基因
+         */
+        private String transFlag;
+
+        /**
+         * 实施方案编号
+         */
+        private String vectorTaskCode;
+
+
+        private String experimentNum;
+
+        private String projectCode;
+
+        /**
+         * 父本单株编号
+         */
+        private String fatherSingleNum;
+
+        /**
+         * 母本单株编号
+         */
+        private String matherSingleNum;
+
+        private String pdImplementCode;
 
     }
 

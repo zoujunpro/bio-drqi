@@ -75,7 +75,26 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
         Collections.reverse(seedStockTbList);
         for (SeedStockTb seedStockTb : seedStockTbList) {
             ScanCodeSeedRspDTO.Seed seed = new ScanCodeSeedRspDTO.Seed();
-            seed.setPlantNum(seedStockTb.getPlantCode());
+            seed.setProductionLocationCode(seedStockTb.getProductionLocationCode());
+            if (StringUtils.isNotEmpty(seed.getProductionLocationCode())) {
+                seed.setPollinationMethodName(bioDictMap.get(BioDictTypeEnum.POLLINATE_TYPE.name() + ":" + seedStockTb.getHarvestType()).getDictValueName());
+            }
+            seed.setStockLocationNum(seedStockTb.getStockLocationNum());
+            seed.setCheckResult(seedStockTb.getCheckResult());
+            seed.setMatherSeedNum(seedStockTb.getMatherSeedNum());
+            seed.setFatherSeedNum(seedStockTb.getFatherSeedNum());
+            seed.setMatherRegionNum(seedStockTb.getMatherRegionNum());
+            seed.setFatherRegionNum(seedStockTb.getFatherRegionNum());
+            seed.setGenealogy(seedStockTb.getGenealogy());
+            seed.setGeneSeparateFlag(seedStockTb.getGeneSeparateFlag());
+            seed.setTransFlag(seedStockTb.getTransFlag());
+            seed.setVectorTaskCode(seedStockTb.getVectorTaskCode());
+            seed.setExperimentNum(seedStockTb.getExperimentNum());
+            seed.setProjectCode(seedStockTb.getProjectCode());
+            seed.setFatherSingleNum(seedStockTb.getFatherSingleNum());
+            seed.setMatherSingleNum(seedStockTb.getMatherSingleNum());
+            seed.setPdImplementCode(seedStockTb.getPdImplementCode());
+            seed.setPlantCode(seedStockTb.getPlantCode());
             seed.setSeedNum(seedStockTb.getSeedNum());
             seed.setParentNum(seedStockTb.getParentNum());
             seed.setFatherInfo(seedStockTb.getFatherInfo());
@@ -88,7 +107,7 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setPollinationMethod(seedStockTb.getPollinationMethod());
             seed.setHarvestType(seedStockTb.getHarvestType());
             if (StringUtils.isNotEmpty(seed.getHarvestType())) {
-                seed.setHarvestName(bioDictMap.get(BioDictTypeEnum.HARVEST_TYPE.name() + ":" + seedStockTb.getHarvestType()).getDictValueName());
+                seed.setHarvestTypeName(bioDictMap.get(BioDictTypeEnum.HARVEST_TYPE.name() + ":" + seedStockTb.getHarvestType()).getDictValueName());
             }
             seed.setHarvestTime(seedStockTb.getHarvestTime());
             seed.setSeedNumber(seedStockTb.getSeedNumber());
@@ -105,13 +124,14 @@ public class SeedCodeScanService extends AbstractBaseCodeScanService<SeedUniqueC
             seed.setUpdateTime(seedStockTb.getUpdateTime());
             seed.setRemarks(seedStockTb.getRemarks());
             seed.setTotalNumber(seedStockTb.getTotalNumber());
-            seed.setGeneticCharacter(seedStockTb.getTargetCharacter());
+            seed.setTargetCharacter(seedStockTb.getTargetCharacter());
             seed.setAliasName(seedStockTb.getAliasName());
             seed.setGeneType(seedStockTb.getGeneType());
             if (seedStockTb.getMaterialType() != null) {
                 seed.setMaterialType(seedStockTb.getMaterialType());
                 seed.setMaterialTypeName(bioDictMap.get(BioDictTypeEnum.MATERIAL_TYPE.name() + ":" + seedStockTb.getMaterialType()).getDictValueName());
             }
+
 
 
             scanCodeSeedRspDTO.getSeedList().add(seed);

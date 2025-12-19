@@ -158,13 +158,6 @@
         set plant_code = #{parentNum,jdbcType=VARCHAR}
         where id = #{id,jdbcType=NUMERIC}
     </update>
-    <select id="selectOneByPlantCode" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from seed_stock_tb
-        where
-        plant_code = #{plantCode,jdbcType=VARCHAR}
-    </select>
     <select id="selectAllBySeedNumIn" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -234,6 +227,13 @@
     <select id="selectSubmitUserIdAndSubmitUserName" resultMap="BaseResultMap">
         select distinct submit_user_id, submit_user_name
         from seed_stock_tb
+    </select>
+    <select id="selectAllByPlantCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from seed_stock_tb
+        where
+        plant_code = #{plantCode,jdbcType=VARCHAR}
     </select>
 
 </mapper>

@@ -82,6 +82,70 @@ public class CleanTestController {
     @Resource
     private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
+    @Resource
+    private PlantMultipleStockTbMapper plantMultipleStockTbMapper;
+
+    @Resource
+    private CerTransformTbMapper cerTransformTbMapper;
+
+
+    @GetMapping("cleanVectorTaskCode")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanVectorTaskCode() {
+        List<TransForm> seedList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\转化信息1.xlsx", TransForm.class);
+        for (TransForm transForm : seedList) {
+            log.info("transForm=" + JSONUtil.toJsonStr(transForm));
+            CerTransformTb cerTransformTb = cerTransformTbMapper.selectOneByTransformCodeAndVectorTaskCode(transForm.transform_code, transForm.vector_task_code);
+            CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(transForm.getAcceptorMaterial(), cerTransformTb.getSpeciesCode());
+            cerTransformTb.setBreedCode(cerBreedDict.getBreedCode());
+            cerTransformTbMapper.updateById(cerTransformTb);
+            List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByTransformCodeAndVectorTaskCode(cerTransformTb.getTransformCode(), cerTransformTb.getVectorTaskCode());
+            for (BioSampleTestTb bioSampleTestTb : bioSampleTestTbList) {
+                bioSampleTestTb.setBreedCode(cerBreedDict.getBreedCode());
+                bioSampleTestTbMapper.updateById(bioSampleTestTb);
+
+                PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(bioSampleTestTb.getSampleCode());
+                if (plantSingleStockTb != null) {
+                    plantSingleStockTb.setBreedCode(cerBreedDict.getBreedCode());
+                    plantSingleStockTbMapper.updateById(plantSingleStockTb);
+
+                    List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectAllByPlantCode(plantSingleStockTb.getPlantCode());
+                    if (CollectionUtil.isNotEmpty(seedStockTbList)) {
+                        seedStockTbList.forEach(seedStockTb -> {
+                            seedStockTb.setBreedCode(cerBreedDict.getBreedCode());
+                            seedStockTbMapper.updateById(seedStockTb);
+                        });
+                    }
+                }
+            }
+            List<PlantMultipleStockTb> plantMultipleStockTbList = plantMultipleStockTbMapper.selectAllByVectorTaskCode(cerTransformTb.getVectorTaskCode());
+            if (CollectionUtil.isNotEmpty(plantMultipleStockTbList)) {
+                plantMultipleStockTbList.forEach(plantMultipleStockTb -> {
+                    plantMultipleStockTb.setBreedCode(cerBreedDict.getBreedCode());
+                    plantMultipleStockTbMapper.updateById(plantMultipleStockTb);
+                });
+            }
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
+    @Data
+    public static class TransForm {
+
+        @ExcelProperty("id")
+        private String id;
+
+        @ExcelProperty("transform_code")
+        private String transform_code;
+
+        @ExcelProperty("受体材料")
+        private String acceptorMaterial;
+
+        @ExcelProperty("vector_task_code")
+        private String vector_task_code;
+
+    }
+
 
     @GetMapping("/cleanSeed")
     public ResponseResult<String> cleanSeed() {
@@ -94,7 +158,7 @@ public class CleanTestController {
                 SeedInStoreDTO seedInStoreDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedInStoreDTO.class);
                 Map<String, SeedInStoreDTO.ExecuteFormContent> contentMap = seedInStoreDTO.getExecuteForm().getExecuteFormContentList().stream().collect(Collectors.toMap(SeedInStoreDTO.ExecuteFormContent::getUniqueCode, executeFormContent -> executeFormContent));
                 list.forEach(seedStockInLog -> {
-                    log.info("seedStockInLog={}"+JSONUtil.toJsonStr(seedStockInLog));
+                    log.info("seedStockInLog={}" + JSONUtil.toJsonStr(seedStockInLog));
                     SeedInStoreDTO.ExecuteFormContent content = contentMap.get(seedStockInLog.getUniqueCode());
                     SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedStockInLog.getSeedNum());
                     seedStockTb.setGeneration(content.getGeneration());

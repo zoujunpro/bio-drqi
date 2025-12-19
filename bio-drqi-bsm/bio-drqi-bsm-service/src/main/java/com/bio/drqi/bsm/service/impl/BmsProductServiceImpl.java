@@ -173,7 +173,7 @@ public class BmsProductServiceImpl implements BmsProductService {
         if (bmsProductTb == null) {
             throw new BusinessException("材料不存在");
         }
-        if (BioDrQiContents.Y.equals(bmsProductTb.getProductStatus())) {
+        if (!BioDrQiContents.Y.equals(bmsProductTb.getProductStatus())) {
             throw new BusinessException("材料已经禁用，无法修改");
         }
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectAllByProductInnerCode(bmsProductTb.getProductInnerCode());

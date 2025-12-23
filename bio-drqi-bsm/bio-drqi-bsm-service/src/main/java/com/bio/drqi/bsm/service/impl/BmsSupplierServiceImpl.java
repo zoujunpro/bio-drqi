@@ -97,7 +97,7 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
         if (bmsSupplierTb == null) {
             throw new BusinessException("供应商不存在");
         }
-        if (BioDrQiContents.Y.equals(bmsSupplierTb.getSupplierStatus())) {
+        if (!BioDrQiContents.Y.equals(bmsSupplierTb.getSupplierStatus())) {
             throw new BusinessException("供应商已禁用");
         }
         BeanUtils.copyProperties(bmsSupplierEditReqDTO, bmsSupplierTb);

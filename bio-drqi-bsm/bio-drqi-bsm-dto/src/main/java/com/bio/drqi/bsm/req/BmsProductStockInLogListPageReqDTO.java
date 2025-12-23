@@ -22,7 +22,7 @@ public class BmsProductStockInLogListPageReqDTO extends PageDTO {
     /**
      * 品牌名称
      */
-    private String brandName;
+    private String brandCode;
 
 
 

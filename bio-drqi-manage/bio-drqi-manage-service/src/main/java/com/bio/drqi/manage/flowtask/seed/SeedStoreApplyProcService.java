@@ -121,7 +121,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
 
             //CER 校验
 
-            if (SeedSourceEnum.CODE_1.code.equals(executeFormContent.getSource())) {
+            if (SeedSourceEnum.CODE_1.code.equals(executeFormContent.getSource())&&GenerationEnum.T0.code.equals(executeFormContent.getGeneration())) {
                 if(StringUtils.isEmpty(executeFormContent.getPlantCode())){
                     throw new BusinessException("来源自CER的种子必然有种植编号");
                 }

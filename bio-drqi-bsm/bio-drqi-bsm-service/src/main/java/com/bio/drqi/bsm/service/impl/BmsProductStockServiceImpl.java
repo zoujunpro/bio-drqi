@@ -68,7 +68,7 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
                 bmsProductStockListPageRspDTO.setStockName(bmsStockDictMap.get(bmsProductStockListPageRspDTO.getStockCode()));
                 bmsProductStockListPageRspDTO.setBrandName(bmsBrandMap.get(bmsProductStockListPageRspDTO.getBrandCode()));
                 bmsProductStockListPageRspDTO.setSupplierName(bmsSupplierTbMap.get(bmsProductStockListPageRspDTO.getSupplierCode()));
-                bmsProductStockListPageRspDTO.setProductCategoryCode(bmsProductCategoryTbMap.get(bmsProductStockListPageRspDTO.getProductCategoryCode()));
+                bmsProductStockListPageRspDTO.setProductCategoryName(bmsProductCategoryTbMap.get(bmsProductStockListPageRspDTO.getProductCategoryCode()));
             });
         }
         return targetPage;

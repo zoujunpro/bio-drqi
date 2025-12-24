@@ -2,6 +2,7 @@ package com.bio.drqi.manage.flowtask.project;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.enums.ImplementationPlanTypeEnum;
@@ -52,7 +53,8 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
         ConversionAndTransDTO conversionAndTransDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), ConversionAndTransDTO.class);
         if (CollectionUtil.isNotEmpty(conversionAndTransDTO.getTransFormList())) {
             for (ConversionAndTransDTO.TransForm transForm : conversionAndTransDTO.getTransFormList()) {
-                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(transForm.getVectorTaskCode());
+                BeanUtils.trimFiledSpace(transForm);
+                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(transForm.getVectorTaskCode().trim());
                 if (cerVectorTaskTb == null) {
                     throw new BusinessException("实施方案编号不存在：" + transForm.getVectorTaskCode());
                 }
@@ -68,6 +70,7 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
         }
         if (CollectionUtil.isNotEmpty(conversionAndTransDTO.getSampleCodeList())) {
             for (ConversionAndTransDTO.SampleCode sample : conversionAndTransDTO.getSampleCodeList()) {
+                BeanUtils.trimFiledSpace(sample);
                 if (StringUtils.isEmpty(sample.getEditPureUnion())) {
                     throw new BusinessException("是否编辑纯合不能为空");
                 }

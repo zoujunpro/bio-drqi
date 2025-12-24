@@ -20,7 +20,7 @@ public class LayoutUtil {
         Map<String, List<TcSampleTestTb>> identifyPrimerListMap = tcSampleTestTbList.stream().collect(Collectors.groupingBy(TcSampleTestTb::getIdentifyPrimer));
         //
         identifyPrimerListMap.forEach((identifyPrimer, identifyPrimerList) -> {
-            Map<String, List<TcSampleTestTb>> listMap = identifyPrimerList.stream().collect(Collectors.groupingBy(TcSampleTestTb::getVectorTaskCode));
+            Map<String, List<TcSampleTestTb>> listMap = identifyPrimerList.stream().collect(Collectors.groupingBy(tcSampleTestTb -> tcSampleTestTb.getVectorTaskCode()==null?"":tcSampleTestTb.getVectorTaskCode()));
             ninetySixList.add(new ArrayList<List<SampleUnitDTO>>());
             listMap.forEach((vectorTaskCode, vectorTaskCerSampleTestTbList) -> {
                 //找到最新的一个孔板,并插入新行

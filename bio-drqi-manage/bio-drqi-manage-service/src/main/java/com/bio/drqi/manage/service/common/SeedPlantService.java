@@ -40,7 +40,7 @@ public class SeedPlantService {
             }
             tcPollinationTb.setSeedNums(JSONUtil.toJsonStr(seedNumList));
             tcPollinationTbMapper.updateById(tcPollinationTb);
-        } else if (SeedSourceEnum.CODE_1.code.equals(seedStockTb.getSourceType())) {
+        } else if (SeedSourceEnum.CODE_1.code.equals(seedStockTb.getSourceType())&&StringUtils.isNotEmpty(seedStockTb.getPlantCode())) {
             PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(seedStockTb.getPlantCode());
             if (plantSingleStockTb == null) {
                 throw new BusinessException("CER种子入库的根据种植编号找不到种植信息," + seedStockTb.getPlantCode());
@@ -70,7 +70,7 @@ public class SeedPlantService {
             }
             tcPollinationTb.setSeedNums(JSONUtil.toJsonStr(seedNumList));
             tcPollinationTbMapper.updateById(tcPollinationTb);
-        } else if (SeedSourceEnum.CODE_1.code.equals(seedStockTb.getSourceType())) {
+        } else if (SeedSourceEnum.CODE_1.code.equals(seedStockTb.getSourceType())&&StringUtils.isNotEmpty(seedStockTb.getPlantCode())) {
             PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(seedStockTb.getPlantCode());
             if (plantSingleStockTb == null) {
                 throw new BusinessException("CER种子入库的根据种植编号找不到种植信息," + seedStockTb.getPlantCode());

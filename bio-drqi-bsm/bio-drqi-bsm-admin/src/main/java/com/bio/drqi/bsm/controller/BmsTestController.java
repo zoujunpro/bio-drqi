@@ -96,15 +96,116 @@ public class BmsTestController {
     @Resource
     private BioPrintLabelInfoTbMapper bioPrintLabelInfoTbMapper;
 
+
+    @Resource
+    private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
+
+
+    @Resource
+    private BmsMoveOrderDetailTbMapper bmsMoveOrderDetailTbMapper;
+
+
+    @GetMapping("cleanBrand20251224")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanBrand20251224() {
+        List<BmsBrand> bmsBrandList = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\品牌(1).xlsx", BmsBrand.class);
+        bmsBrandList = bmsBrandList.stream().filter(bmsBrand -> StringUtils.isNotEmpty(bmsBrand.repeatBrandName)).collect(Collectors.toList());
+        for (BmsBrand bmsBrand : bmsBrandList) {
+            log.info("bmsBrand=" + JSONUtil.toJsonStr(bmsBrand));
+            BmsBrandTb repeatBmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(bmsBrand.repeatBrandName);
+            BmsBrandTb sourceBmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsBrand.brandCode);
+            if (sourceBmsBrandTb == null) {
+                continue;
+            }
+            if (repeatBmsBrandTb == null) {
+                sourceBmsBrandTb.setBrandName(bmsBrand.repeatBrandName);
+                bmsBrandTbMapper.updateById(sourceBmsBrandTb);
+            } else {
+                List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectSelective(BmsProductTb.builder().brandCode(sourceBmsBrandTb.getBrandCode()).build());
+                if (CollectionUtil.isNotEmpty(bmsProductTbList)) {
+                    bmsProductTbList.forEach(bmsProductTb -> {
+                        bmsProductTb.setBrandCode(repeatBmsBrandTb.getBrandCode());
+                        bmsProductTbMapper.updateById(bmsProductTb);
+                    });
+                }
+
+                List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectSelective(BmsOrderDetailTb.builder().brandCode(sourceBmsBrandTb.getBrandCode()).build());
+                if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
+                    bmsOrderDetailTbList.forEach(bmsOrderDetailTb -> {
+                        bmsOrderDetailTb.setBrandCode(repeatBmsBrandTb.getBrandCode());
+                        bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
+                    });
+                }
+
+                List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(BmsProductStockTb.builder().brandCode(sourceBmsBrandTb.getBrandCode()).build());
+                if (CollectionUtil.isNotEmpty(bmsProductStockTbList)) {
+                    bmsProductStockTbList.forEach(bmsProductStockTb -> {
+                        bmsProductStockTb.setBrandCode(repeatBmsBrandTb.getBrandCode());
+                        bmsProductStockTbMapper.updateById(bmsProductStockTb);
+                    });
+                }
+
+                List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().brandCode(sourceBmsBrandTb.getBrandCode()).build());
+                if (CollectionUtil.isNotEmpty(bmsProductStockInLogList)) {
+                    bmsProductStockInLogList.forEach(bmsProductStockInLog -> {
+                        bmsProductStockInLog.setBrandCode(repeatBmsBrandTb.getBrandCode());
+                        bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
+                    });
+                }
+
+                List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectSelective(BmsProductStockOutLog.builder().brandCode(sourceBmsBrandTb.getBrandCode()).build());
+                if (CollectionUtil.isNotEmpty(bmsProductStockOutLogList)) {
+                    bmsProductStockOutLogList.forEach(bmsProductStockOutLog -> {
+                        bmsProductStockOutLog.setBrandCode(repeatBmsBrandTb.getBrandCode());
+                        bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
+                    });
+                }
+
+                List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectSelective(BmsReturnOrderDetailTb.builder().brandCode(sourceBmsBrandTb.getBrandCode()).build());
+                if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)) {
+                    bmsReturnOrderDetailTbList.forEach(bmsReturnOrderDetailTb -> {
+                        bmsReturnOrderDetailTb.setBrandCode(repeatBmsBrandTb.getBrandCode());
+                        bmsReturnOrderDetailTbMapper.updateById(bmsReturnOrderDetailTb);
+                    });
+                }
+
+                List<BmsMoveOrderDetailTb> bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbMapper.selectSelective(BmsMoveOrderDetailTb.builder().brandCode(sourceBmsBrandTb.getBrandCode()).build());
+                if (CollectionUtil.isNotEmpty(bmsMoveOrderDetailTbList)) {
+                    bmsMoveOrderDetailTbList.forEach(bmsMoveOrderDetailTb -> {
+                        bmsMoveOrderDetailTb.setBrandCode(repeatBmsBrandTb.getBrandCode());
+                        bmsMoveOrderDetailTbMapper.updateById(bmsMoveOrderDetailTb);
+                    });
+                }
+            }
+
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
+
+    @Data
+    public static class BmsBrand {
+
+        @ExcelProperty("品牌")
+        private String brandName;
+
+        @ExcelProperty("品牌编码")
+        private String brandCode;
+
+        @ExcelProperty("重复品牌名字")
+        private String repeatBrandName;
+    }
+
+
     @GetMapping("/cleanTianJinStock")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanTianJinStock() {
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(BmsProductStockTb.builder().unitCode("tianjin").build());
         for (BmsProductStockTb bmsProductStockTb : bmsProductStockTbList) {
-            log.info("修正数据："+JSONUtil.toJsonStr(bmsProductStockTb));
+            log.info("修正数据：" + JSONUtil.toJsonStr(bmsProductStockTb));
             List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectAllByUniqueCode(bmsProductStockTb.getUniqueCode());
             Integer outNum = 0;
-            int intNum=0;
+            int intNum = 0;
             if (CollectionUtil.isNotEmpty(bmsProductStockOutLogList)) {
                 for (BmsProductStockOutLog bmsProductStockOutLog : bmsProductStockOutLogList) {
                     outNum = outNum + bmsProductStockOutLog.getOutNumber();
@@ -112,9 +213,9 @@ public class BmsTestController {
             }
 
             List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectAllByUniqueCode(bmsProductStockTb.getUniqueCode());
-            if(CollectionUtil.isNotEmpty(bmsProductStockInLogList)){
-                for (BmsProductStockInLog bmsProductStockInLog:bmsProductStockInLogList){
-                    intNum=intNum+bmsProductStockInLog.getStoreNumber();
+            if (CollectionUtil.isNotEmpty(bmsProductStockInLogList)) {
+                for (BmsProductStockInLog bmsProductStockInLog : bmsProductStockInLogList) {
+                    intNum = intNum + bmsProductStockInLog.getStoreNumber();
                 }
             }
             bmsProductStockTb.setTotalStoreNumber(intNum);

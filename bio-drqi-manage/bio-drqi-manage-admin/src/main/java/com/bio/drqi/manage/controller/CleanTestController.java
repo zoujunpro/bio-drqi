@@ -89,6 +89,10 @@ public class CleanTestController {
     private CerTransformTbMapper cerTransformTbMapper;
 
 
+
+
+
+
     @GetMapping("cleanVectorTaskCode")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanVectorTaskCode() {

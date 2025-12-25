@@ -21,7 +21,7 @@ public class SampleLayoutUtil {
         Map<String, List<BioSampleTestTb>> identifyPrimerListMap = bioSampleTestTbList.stream().collect(Collectors.groupingBy(BioSampleTestTb::getIdentifyPrimer));
         //
         identifyPrimerListMap.forEach((identifyPrimer, identifyPrimerList) -> {
-            Map<String, List<BioSampleTestTb>> listMap = identifyPrimerList.stream().collect(Collectors.groupingBy(BioSampleTestTb::getVectorTaskCode));
+            Map<String, List<BioSampleTestTb>> listMap = identifyPrimerList.stream().collect(Collectors.groupingBy(bioSampleTestTb -> bioSampleTestTb.getVectorTaskCode()==null?"":bioSampleTestTb.getVectorTaskCode()));
             ninetySixList.add(new ArrayList<List<SampleUnitDTO>>());
             listMap.forEach((vectorTaskCode, vectorTaskBioSampleTestTbList) -> {
                 //找到最新的一个孔板,并插入新行

@@ -1,11 +1,13 @@
 package com.bio.drqi.bsm.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.uuid.IdUtils;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -709,6 +712,85 @@ public class BmsTestController {
     }
 
 
+
+    @GetMapping("/createBmsStockExcel")
+    public void createBmsStockExcel(HttpServletResponse httpServletResponse) {
+        Date pointDate = DateUtil.parse("20250701000000", DatePattern.PURE_DATETIME_PATTERN);
+        //step 数据查询
+        List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
+        Map<String, BmsProductStockTb> bmsProductStockTbMap = bmsProductStockTbList.stream().collect(Collectors.toMap(bmsProductStockTb -> bmsProductStockTb.getProductInnerCode() + bmsProductStockTb.getUnitCode() + bmsProductStockTb.getBatchNo() + bmsProductStockTb.getStockCode(), bmsProductStockTb -> bmsProductStockTb));
+
+
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectList(null);
+        System.out.println("bmsProductStockInLogList :" + bmsProductStockInLogList.size());
+
+        List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectSelective(null);
+        System.out.println("bmsProductStockOutLogList :" + bmsProductStockOutLogList.size());
+
+
+        List<BmsMoveOrderDetailTb> bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbMapper.selectList(null);
+        System.out.println("bmsMoveOrderDetailTbList :" + bmsMoveOrderDetailTbList.size());
+
+
+        List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectList(null);
+        System.out.println("bmsReturnOrderDetailTbList :" + bmsReturnOrderDetailTbList.size());
+
+        //时间过滤
+        bmsProductStockInLogList = bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductStockInLog.getCreateTime().compareTo(pointDate) > 0).collect(Collectors.toList());
+        System.out.println("bmsProductStockInLogList filter:" + bmsProductStockInLogList.size());
+
+        bmsProductStockOutLogList = bmsProductStockOutLogList.stream().filter(bmsProductStockOutLog -> bmsProductStockOutLog.getCreateTime().compareTo(pointDate) > 0).collect(Collectors.toList());
+        System.out.println("bmsProductStockOutLogList filter:" + bmsProductStockOutLogList.size());
+
+        bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbList.stream().filter(bmsMoveOrderDetailTb -> bmsMoveOrderDetailTb.getCreateTime().compareTo(pointDate) > 0).collect(Collectors.toList());
+        System.out.println("bmsMoveOrderDetailTbList filter:" + bmsMoveOrderDetailTbList.size());
+
+        bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsReturnOrderDetailTb.getCreateTime().compareTo(pointDate) > 0).collect(Collectors.toList());
+        System.out.println("bmsReturnOrderDetailTbList filter:" + bmsReturnOrderDetailTbList.size());
+        //复原库存
+        //先复原出库  出库的数据加到库存中
+        for (BmsProductStockOutLog bmsProductStockOutLog : bmsProductStockOutLogList) {
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsProductStockOutLog.getProductInnerCode() + bmsProductStockOutLog.getUnitCode() + bmsProductStockOutLog.getBatchNo() + bmsProductStockOutLog.getStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockOutLog.getOutNumber() + bmsProductStockTb.getCurrentStockNumber());
+        }
+        //复原退货
+        for (BmsReturnOrderDetailTb bmsReturnOrderDetailTb : bmsReturnOrderDetailTbList) {
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsReturnOrderDetailTb.getProductInnerCode() + bmsReturnOrderDetailTb.getUnitCode() + bmsReturnOrderDetailTb.getBatchNo() + bmsReturnOrderDetailTb.getStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsReturnOrderDetailTb.getReturnNumber() + bmsProductStockTb.getCurrentStockNumber());
+        }
+        //复原调拨
+        for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb : bmsMoveOrderDetailTbList) {
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsMoveOrderDetailTb.getProductInnerCode() + bmsMoveOrderDetailTb.getUnitCode() + bmsMoveOrderDetailTb.getBatchNo() + bmsMoveOrderDetailTb.getFromStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsMoveOrderDetailTb.getMoveNumber() + bmsProductStockTb.getCurrentStockNumber());
+        }
+        //回退入库的
+        for (BmsProductStockInLog bmsProductStockInLog : bmsProductStockInLogList) {
+            log.info("bmsProductStockInLog="+JSONUtil.toJsonStr(bmsProductStockInLog));
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsProductStockInLog.getProductInnerCode() + bmsProductStockInLog.getUnitCode() + bmsProductStockInLog.getBatchNo().trim() + bmsProductStockInLog.getStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductStockInLog.getStoreNumber());
+        }
+        //回退调拨的
+        for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb : bmsMoveOrderDetailTbList) {
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsMoveOrderDetailTb.getProductInnerCode() + bmsMoveOrderDetailTb.getUnitCode() + bmsMoveOrderDetailTb.getBatchNo() + bmsMoveOrderDetailTb.getToStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsMoveOrderDetailTb.getMoveNumber());
+        }
+        List<BmsStock> bmsStockList = BeanUtils.copyListProperties(bmsProductStockTbList, BmsStock.class);
+
+        bmsStockList = bmsStockList.stream().filter(bmsStock -> bmsStock.getCurrentStockNumber() > 0).collect(Collectors.toList());
+        for (BmsStock bmsStock : bmsStockList) {
+            List<BmsProductStockInLog> bmsProductStockInLogs = bmsProductStockInLogMapper.selectAllByUniqueCode(bmsStock.getUniqueCode());
+            if (CollectionUtil.isNotEmpty(bmsProductStockInLogs)) {
+                String projectCode = bmsProductStockInLogs.get(0).getProjectCode();
+                BmsProjectDict bmsProjectDict = bmsProjectDictMapper.selectOneByProjectCode(projectCode);
+                bmsStock.setProjectCode(bmsProjectDict.getProjectCode());
+                bmsStock.setProjectType(bmsProjectDict.getKdProjectType());
+                bmsStock.setProductName(bmsProjectDict.getKdProjectName());
+            }
+        }
+
+        ExcelUtil.writeExcel("D://7月1号之后数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
+    }
+
     @Data
     public static class CmsProjectDataExcel {
 
@@ -719,7 +801,95 @@ public class BmsTestController {
         private String projectName;
 
     }
+    @Data
+    public static class BmsStock {
+        /**
+         * 主键ID
+         */
+        @ExcelProperty("主键ID")
+        private Integer id;
 
+        /**
+         * 商品名称
+         */
+        @ExcelProperty("商品名称")
+        private String productName;
+
+
+        /**
+         * 所属类别编号
+         */
+        @ExcelProperty("所属类别编号")
+        private String productCategoryCode;
+
+
+        /**
+         * 品牌编号
+         */
+        @ExcelProperty("品牌编号")
+        private String brandCode;
+
+        /**
+         * 品牌名称
+         */
+        @ExcelProperty("品牌名称")
+        private String brandName;
+
+        /**
+         * 商品规格
+         */
+        @ExcelProperty("商品规格")
+        private String productSpecs;
+
+        /**
+         * 商品批次
+         */
+        @ExcelProperty("商品批次")
+        private String batchNo;
+
+        /**
+         * 当前库存数量
+         */
+        @ExcelProperty("当前库存数量")
+        private Integer currentStockNumber;
+
+        /**
+         * 单位
+         */
+        @ExcelProperty("单位")
+        private String unitCode;
+
+
+        @ExcelProperty("商品编号")
+        private String productInnerCode;
+
+        @ExcelProperty("供应商编号")
+        private String supplierCode;
+
+        @ExcelProperty("供应商名称")
+        private String supplierName;
+
+
+        @ExcelProperty("生产日期")
+        private String produceDate;
+
+
+        @ExcelProperty("库房编号")
+        private String stockCode;
+
+        @ExcelProperty("项目编号")
+        private String projectCode;
+
+        @ExcelProperty("项目名称")
+        private String projectName;
+
+        @ExcelProperty("项目类型")
+        private String projectType;
+        /**
+         * 唯一编号
+         */
+        private String uniqueCode;
+    }
 
     @Data
     public static class ProductCleanDataExcel {

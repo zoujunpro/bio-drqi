@@ -111,6 +111,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
             BmsProductInputDTO bmsProductInputDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsProductInputDTO.class);
             for (BmsProductInputDTO.OrderDetail inputOrderDetail : bmsProductInputDTO.getOrderDetailList()) {
                 ValidatorUtil.validator(inputOrderDetail);
+                BeanUtils.trimFiledSpace(inputOrderDetail);
                 BmsOrderDetailTb bmsOrderDetailTb = bmsOrderDetailTbMapper.selectOneByOrderDetailNum(inputOrderDetail.getOrderDetailNum());
                 String batchNo = StringUtils.isEmpty(inputOrderDetail.getBatchNo()) ? "N/A" : inputOrderDetail.getBatchNo();
                 // 入库库存updateOrInsertBmsProductStock

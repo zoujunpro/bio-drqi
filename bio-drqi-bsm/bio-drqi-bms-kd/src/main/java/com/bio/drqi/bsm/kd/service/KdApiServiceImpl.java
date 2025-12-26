@@ -212,7 +212,7 @@ public class KdApiServiceImpl implements KdApiService {
         BmsProductCategoryTb bmsProductCategoryTb = (BmsProductCategoryTb) obj;
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.Sal_MATERIALGROUP.name());
-        executeBillQueryModelDTO.setFieldKeys("FNUMBER");
+        executeBillQueryModelDTO.setFieldKeys("FID,FNUMBER,FNAME,FPARENTID");
         executeBillQueryModelDTO.setFilterString(String.format("FNUMBER='%s'", bmsProductCategoryTb.getProductCategoryCode()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
         if (CollectionUtil.isNotEmpty(result) && CollectionUtil.isNotEmpty(result.get(0))) {

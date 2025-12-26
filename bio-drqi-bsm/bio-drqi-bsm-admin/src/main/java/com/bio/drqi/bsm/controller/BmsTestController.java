@@ -13,6 +13,9 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.contents.BioBsmContents;
+import com.bio.drqi.bsm.dto.BmsProductInputDTO;
+import com.bio.drqi.bsm.dto.BmsProductOutDTO;
+import com.bio.drqi.bsm.dto.BmsPurchaseOrderDTO;
 import com.bio.drqi.bsm.enums.CooperateFormEnum;
 import com.bio.drqi.bsm.kd.KdTaskService;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
@@ -106,6 +109,94 @@ public class BmsTestController {
 
     @Resource
     private BmsMoveOrderDetailTbMapper bmsMoveOrderDetailTbMapper;
+
+    @Resource
+    private BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
+
+    @GetMapping("cleanStockNew")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanStockNew() {
+        List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
+        for (BmsStockDict bmsStockDict : bmsStockDictList) {
+            if (bmsStockDict.getStockCode().length() > 30) {
+                bmsStockDict.setStockCode(bmsStockDict.getStockCode().substring(0, 30));
+                bmsStockDictMapper.updateById(bmsStockDict);
+            }
+        }
+        List<BmsMoveOrderDetailTb> bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbMapper.selectList(null);
+        for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb : bmsMoveOrderDetailTbList) {
+            if (bmsMoveOrderDetailTb.getToStockCode().length() > 30) {
+                bmsMoveOrderDetailTb.setFromStockCode(bmsMoveOrderDetailTb.getFromStockCode().substring(0, 30));
+                bmsMoveOrderDetailTb.setToStockCode(bmsMoveOrderDetailTb.getToStockCode().substring(0, 30));
+                bmsMoveOrderDetailTbMapper.updateById(bmsMoveOrderDetailTb);
+            }
+
+        }
+
+        bmsReturnOrderDetailTbMapper.selectSelective(null).forEach(bmsReturnOrderDetailTb -> {
+            if (bmsReturnOrderDetailTb.getStockCode().length() > 30) {
+                bmsReturnOrderDetailTb.setStockCode(bmsReturnOrderDetailTb.getStockCode().substring(0, 30));
+                bmsReturnOrderDetailTbMapper.updateById(bmsReturnOrderDetailTb);
+            }
+
+        });
+        bmsProductStockTbMapper.selectList(null).forEach(bmsProductStockTb -> {
+            if (bmsProductStockTb.getStockCode().length() > 30) {
+                bmsProductStockTb.setStockCode(bmsProductStockTb.getStockCode().substring(0, 30));
+                bmsProductStockTbMapper.updateById(bmsProductStockTb);
+            }
+
+        });
+
+        bmsProductStockOutLogMapper.selectSelective(null).forEach(bmsProductStockOutLog -> {
+            if (bmsProductStockOutLog.getStockCode().length() > 30) {
+                bmsProductStockOutLog.setStockCode(bmsProductStockOutLog.getStockCode().substring(0, 30));
+                bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
+            }
+
+        });
+
+        bmsProductStockInLogMapper.selectSelective(null).forEach(bmsProductStockInLog -> {
+            if (bmsProductStockInLog.getStockCode().length() > 30) {
+                bmsProductStockInLog.setStockCode(bmsProductStockInLog.getStockCode().substring(0, 30));
+                bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
+            }
+
+        });
+
+        List<BioTaskDtlTb> inBioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("bms_product_input");
+        if (CollectionUtil.isNotEmpty(inBioTaskDtlTbList)) {
+            inBioTaskDtlTbList.forEach(bioTaskDtlTb -> {
+                BmsProductInputDTO bmsProductInputDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsProductInputDTO.class);
+                bmsProductInputDTO.getOrderDetailList().forEach(orderDetail -> {
+                    if (StringUtils.isNotEmpty(orderDetail.getStockCode()) && orderDetail.getStockCode().length() > 30) {
+                        orderDetail.setStockCode(orderDetail.getStockCode().substring(0, 30));
+                    }
+
+                });
+                bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(bmsProductInputDTO));
+                bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+            });
+        }
+
+
+        List<BioTaskDtlTb> outBioTaskDtlTbList = bioTaskDtlTbMapper.selectAllByTaskTypeCode("bms_product_out");
+        if (CollectionUtil.isNotEmpty(outBioTaskDtlTbList)) {
+            outBioTaskDtlTbList.forEach(bioTaskDtlTb -> {
+                List<BmsProductOutDTO> bmsProductOutDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskForm(), BmsProductOutDTO.class);
+                for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
+                    if (StringUtils.isNotEmpty(bmsProductOutDTO.getStockCode()) && bmsProductOutDTO.getStockCode().length() > 30) {
+                        bmsProductOutDTO.setStockCode(bmsProductOutDTO.getStockCode().substring(0, 30));
+                    }
+                }
+                bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(bmsProductOutDTOList));
+                bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+            });
+        }
+        return ResponseResult.getSuccess("ok");
+
+    }
 
 
     @GetMapping("cleanBrand20251224")
@@ -712,7 +803,6 @@ public class BmsTestController {
     }
 
 
-
     @GetMapping("/createBmsStockExcel")
     public void createBmsStockExcel(HttpServletResponse httpServletResponse) {
         Date pointDate = DateUtil.parse("20250701000000", DatePattern.PURE_DATETIME_PATTERN);
@@ -765,7 +855,7 @@ public class BmsTestController {
         }
         //回退入库的
         for (BmsProductStockInLog bmsProductStockInLog : bmsProductStockInLogList) {
-            log.info("bmsProductStockInLog="+JSONUtil.toJsonStr(bmsProductStockInLog));
+            log.info("bmsProductStockInLog=" + JSONUtil.toJsonStr(bmsProductStockInLog));
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsProductStockInLog.getProductInnerCode() + bmsProductStockInLog.getUnitCode() + bmsProductStockInLog.getBatchNo().trim() + bmsProductStockInLog.getStockCode());
             bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductStockInLog.getStoreNumber());
         }
@@ -801,6 +891,7 @@ public class BmsTestController {
         private String projectName;
 
     }
+
     @Data
     public static class BmsStock {
         /**

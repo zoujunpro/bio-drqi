@@ -54,7 +54,7 @@ public class BmsStockServiceImpl implements BmsStockService {
         }
         bmsStockDict = new BmsStockDict();
         bmsStockDict.setStockName(bmsStockAddReqDTO.getStockName());
-        bmsStockDict.setStockCode(IdUtils.simpleUUID());
+        bmsStockDict.setStockCode(IdUtils.simpleUUID().substring(0,30));
         bmsStockDict.setUnitCode(bmsStockAddReqDTO.getUnitCode());
         bmsStockDict.setKdNumber(null);
         bmsStockDict.setCreateTime(new Date());

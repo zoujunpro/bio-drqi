@@ -9,8 +9,6 @@ import java.util.List;
 public class StockModel extends KdModel {
     private String FStockId;
     private String Fnumber;
-    //修改用
-    private String FNumber;
     private String Fname;
     private String FDescription;
 

@@ -345,7 +345,7 @@ public class KdApiServiceImpl implements KdApiService {
         BmsStockDict bmsStockDict = (BmsStockDict) obj;
         StockModel stockModel = new StockModel();
         stockModel.setFStockId(bmsStockDict.getKdNumber());
-        stockModel.setFNumber(bmsStockDict.getKdNumber());
+        stockModel.setFnumber(bmsStockDict.getKdNumber());
         stockModel.setFname(bmsStockDict.getStockName());
         return KdRequestUtil.save(FormIdEnum.BD_STOCK, KdApiBaseSaveRequestDTO.buildOfModify(stockModel));
 

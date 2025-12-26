@@ -8,7 +8,9 @@ import java.util.List;
 @Data
 public class StockModel extends KdModel {
     private String FStockId;
-    private String F_WAUJ_UUID;
+    private String Fnumber;
+    //修改用
+    private String FNumber;
     private String Fname;
     private String FDescription;
 

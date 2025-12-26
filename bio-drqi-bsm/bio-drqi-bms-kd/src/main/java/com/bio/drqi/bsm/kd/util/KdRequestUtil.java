@@ -42,7 +42,7 @@ public class KdRequestUtil {
         Gson gson = new Gson();
         RepoRet<RepoResult> sRet = gson.fromJson(result, RepoRet.class);
         if (sRet.isSuccessfully()) {
-            return sRet.getResult().getResponseStatus().getSuccessEntitys().get(0).getNumber();
+            return sRet.getResult().getId();
         } else {
             throw new BusinessException("调用金蝶保存接口save失败: " + gson.toJson(sRet.getResult()));
         }
@@ -76,7 +76,7 @@ public class KdRequestUtil {
             Gson gson = new Gson();
             RepoRet<RepoResult> sRet = gson.fromJson(result, RepoRet.class);
             if (sRet.isSuccessfully()) {
-                return sRet.getResult().getResponseStatus().getSuccessEntitys().get(0).getNumber();
+                return sRet.getResult().getId();
             } else {
                 throw new BusinessException("金蝶禁用接口disable调用失败: " + gson.toJson(sRet.getResult()));
             }
@@ -100,7 +100,7 @@ public class KdRequestUtil {
         Gson gson = new Gson();
         RepoRet sRet = gson.fromJson(result, RepoRet.class);
         if (sRet.isSuccessfully()) {
-            return sRet.getResult().getResponseStatus().getSuccessEntitys().get(0).getNumber();
+            return sRet.getResult().getResponseStatus().getSuccessEntitys().get(0).getId();
         } else {
             throw new BusinessException("金蝶分组接口groupSave调用失败: " + gson.toJson(sRet.getResult()));
         }

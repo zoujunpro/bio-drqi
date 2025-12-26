@@ -846,6 +846,7 @@ public class BmsTestController {
         //复原退货
         for (BmsReturnOrderDetailTb bmsReturnOrderDetailTb : bmsReturnOrderDetailTbList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsReturnOrderDetailTb.getProductInnerCode() + bmsReturnOrderDetailTb.getUnitCode() + bmsReturnOrderDetailTb.getBatchNo() + bmsReturnOrderDetailTb.getStockCode());
+            log.info("bmsReturnOrderDetailTb={}"+JSONUtil.toJsonStr(bmsReturnOrderDetailTb));
             bmsProductStockTb.setCurrentStockNumber(bmsReturnOrderDetailTb.getReturnNumber() + bmsProductStockTb.getCurrentStockNumber());
         }
         //复原调拨

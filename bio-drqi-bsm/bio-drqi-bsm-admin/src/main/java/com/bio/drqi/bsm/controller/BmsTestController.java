@@ -169,12 +169,14 @@ public class BmsTestController {
         if (CollectionUtil.isNotEmpty(inBioTaskDtlTbList)) {
             inBioTaskDtlTbList.forEach(bioTaskDtlTb -> {
                 BmsProductInputDTO bmsProductInputDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsProductInputDTO.class);
-                bmsProductInputDTO.getOrderDetailList().forEach(orderDetail -> {
-                    if (StringUtils.isNotEmpty(orderDetail.getStockCode()) && orderDetail.getStockCode().length() > 30) {
-                        orderDetail.setStockCode(orderDetail.getStockCode().substring(0, 30));
-                    }
+                if(CollectionUtil.isNotEmpty(bmsProductInputDTO.getOrderDetailList())){
+                    bmsProductInputDTO.getOrderDetailList().forEach(orderDetail -> {
+                        if (StringUtils.isNotEmpty(orderDetail.getStockCode()) && orderDetail.getStockCode().length() > 30) {
+                            orderDetail.setStockCode(orderDetail.getStockCode().substring(0, 30));
+                        }
 
-                });
+                    });
+                }
                 bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(bmsProductInputDTO));
                 bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
             });

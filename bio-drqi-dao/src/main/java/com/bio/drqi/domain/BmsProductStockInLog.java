@@ -67,11 +67,6 @@ public class BmsProductStockInLog implements Serializable {
     private String brandCode;
 
     /**
-     * 品牌名称
-     */
-    private String brandName;
-
-    /**
      * 商品规格
      */
     private String productSpecs;
@@ -135,11 +130,6 @@ public class BmsProductStockInLog implements Serializable {
      * 单位编号
      */
     private String unitCode;
-
-    /**
-     * 供应商名称
-     */
-    private String supplierName;
 
     /**
      * 供应商编号

@@ -15,7 +15,6 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.dto.BmsProductInputDTO;
 import com.bio.drqi.bsm.dto.BmsProductOutDTO;
-import com.bio.drqi.bsm.dto.BmsPurchaseOrderDTO;
 import com.bio.drqi.bsm.enums.CooperateFormEnum;
 import com.bio.drqi.bsm.kd.KdTaskService;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
@@ -113,7 +112,6 @@ public class BmsTestController {
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
-
     @GetMapping("cleanStockNew")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanStockNew() {
@@ -169,7 +167,7 @@ public class BmsTestController {
         if (CollectionUtil.isNotEmpty(inBioTaskDtlTbList)) {
             inBioTaskDtlTbList.forEach(bioTaskDtlTb -> {
                 BmsProductInputDTO bmsProductInputDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), BmsProductInputDTO.class);
-                if(CollectionUtil.isNotEmpty(bmsProductInputDTO.getOrderDetailList())){
+                if (CollectionUtil.isNotEmpty(bmsProductInputDTO.getOrderDetailList())) {
                     bmsProductInputDTO.getOrderDetailList().forEach(orderDetail -> {
                         if (StringUtils.isNotEmpty(orderDetail.getStockCode()) && orderDetail.getStockCode().length() > 30) {
                             orderDetail.setStockCode(orderDetail.getStockCode().substring(0, 30));
@@ -195,6 +193,24 @@ public class BmsTestController {
                 bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(bmsProductOutDTOList));
                 bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
             });
+        }
+
+        List<BioPrintLabelInfoTb> bioPrintLabelInfoTbList = bioPrintLabelInfoTbMapper.searchAllByLabelType("bms_label_print");
+        for (BioPrintLabelInfoTb bioPrintLabelInfoTb : bioPrintLabelInfoTbList) {
+            String uniqueCode = bioPrintLabelInfoTb.getUniqueCode();
+            String[] uniqueCodeArr = uniqueCode.split("\\|");
+            if (uniqueCodeArr.length != 4) {
+                throw new BusinessException("旧二维码已经废弃，请重新打印");
+            }
+            if (uniqueCodeArr[3].length() > 30) {
+                bioPrintLabelInfoTb.setUniqueCode(uniqueCodeArr[0] + "|" + uniqueCodeArr[1] + "|" + uniqueCodeArr[2] + "|" + uniqueCodeArr[3].substring(0, 30));
+                BmsLabelPrintDTO bmsLabelPrintDTO = JSONUtil.toBean(bioPrintLabelInfoTb.getLabelText(), BmsLabelPrintDTO.class);
+                bmsLabelPrintDTO.setStockCode(bmsLabelPrintDTO.getStockCode().substring(0, 30));
+                bioPrintLabelInfoTb.setLabelText(JSONUtil.toJsonStr(bmsLabelPrintDTO));
+                bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);
+            }
+
+
         }
         return ResponseResult.getSuccess("ok");
 
@@ -848,7 +864,7 @@ public class BmsTestController {
         //复原退货
         for (BmsReturnOrderDetailTb bmsReturnOrderDetailTb : bmsReturnOrderDetailTbList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsReturnOrderDetailTb.getProductInnerCode() + bmsReturnOrderDetailTb.getUnitCode() + bmsReturnOrderDetailTb.getBatchNo() + bmsReturnOrderDetailTb.getStockCode());
-            log.info("bmsReturnOrderDetailTb={}"+JSONUtil.toJsonStr(bmsReturnOrderDetailTb));
+            log.info("bmsReturnOrderDetailTb={}" + JSONUtil.toJsonStr(bmsReturnOrderDetailTb));
             bmsProductStockTb.setCurrentStockNumber(bmsReturnOrderDetailTb.getReturnNumber() + bmsProductStockTb.getCurrentStockNumber());
         }
         //复原调拨

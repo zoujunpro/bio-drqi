@@ -65,6 +65,9 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     private BmsBrandTbMapper bmsBrandTbMapper;
 
     @Resource
+    private BmsProjectDictMapper bmsProjectDictMapper;
+
+    @Resource
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
 
     @Override
@@ -96,9 +99,9 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
             BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsOrderDtlDetailRspDTO.getBrandCode());
             BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsOrderDtlDetailRspDTO.getProductCategoryCode());
             BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierCode(bmsOrderDtlDetailRspDTO.getSupplierCode());
-            bmsOrderDtlDetailRspDTO.setBrandName(bmsBrandTb==null?null:bmsBrandTb.getBrandName());
-            bmsOrderDtlDetailRspDTO.setSupplierName(bmsSupplierTb==null?null:bmsSupplierTb.getSupplierName());
-            bmsOrderDtlDetailRspDTO.setProductCategoryName(bmsProductCategoryTb==null?null:bmsProductCategoryTb.getProductCategoryName());
+            bmsOrderDtlDetailRspDTO.setBrandName(bmsBrandTb == null ? null : bmsBrandTb.getBrandName());
+            bmsOrderDtlDetailRspDTO.setSupplierName(bmsSupplierTb == null ? null : bmsSupplierTb.getSupplierName());
+            bmsOrderDtlDetailRspDTO.setProductCategoryName(bmsProductCategoryTb == null ? null : bmsProductCategoryTb.getProductCategoryName());
         }
 
         return bmsOrderDtlDetailRspDTO;
@@ -268,7 +271,20 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
     @Override
     public void exportExcel(BmsOrderDetailExportExcelReqDTO bmsOrderDetailExportExcelReqDTO, HttpServletResponse httpServletResponse) {
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectBatchIds(bmsOrderDetailExportExcelReqDTO.getIdList());
+
         List<BmsOrderDetailExcelDTO> bmsOrderDetailExcelDTOList = BeanUtils.copyListProperties(bmsOrderDetailTbList, BmsOrderDetailExcelDTO.class);
+        if (CollectionUtil.isNotEmpty(bmsOrderDetailExcelDTOList)) {
+            Map<String, String> bmsSupplierTbMap =  bmsSupplierTbMapper.selectSelective(null).stream().collect(Collectors.toMap(BmsSupplierTb::getSupplierCode, BmsSupplierTb::getSupplierName));
+            Map<String, String> bmsBrandTbMap =  bmsBrandTbMapper.selectSelective(null).stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
+            Map<String, String> bmsProjectDictMap =  bmsProjectDictMapper.selectSelective(null).stream().collect(Collectors.toMap(BmsProjectDict::getProjectCode, BmsProjectDict::getProjectName));
+            Map<String, String> bmsProductCategoryMap =  bmsProductCategoryTbMapper.selectSelective(null).stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+            bmsOrderDetailExcelDTOList.forEach(bmsOrderDetailExcelDTO -> {
+                bmsOrderDetailExcelDTO.setSupplierName(bmsSupplierTbMap.get(bmsOrderDetailExcelDTO.getSupplierCode()));
+                bmsOrderDetailExcelDTO.setBrandName(bmsBrandTbMap.get(bmsOrderDetailExcelDTO.getBrandCode()));
+                bmsOrderDetailExcelDTO.setProductCategoryName(bmsProductCategoryMap.get(bmsOrderDetailExcelDTO.getProductCategoryCode()));
+                bmsOrderDetailExcelDTO.setProjectName(bmsProjectDictMap.get(bmsOrderDetailExcelDTO.getProjectCode()));
+            });
+        }
         ExcelUtil.writeExcel("订单明细" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xlsx", "sheet", bmsOrderDetailExcelDTOList, BmsOrderDetailExcelDTO.class, httpServletResponse);
     }
 

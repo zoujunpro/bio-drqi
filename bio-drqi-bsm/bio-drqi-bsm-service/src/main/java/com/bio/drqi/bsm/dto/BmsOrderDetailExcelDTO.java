@@ -57,6 +57,8 @@ public class BmsOrderDetailExcelDTO {
     @ExcelProperty("品牌名称")
     private String brandName;
 
+    private String brandCode;
+
     /**
      * 商品名称
      */
@@ -102,7 +104,7 @@ public class BmsOrderDetailExcelDTO {
      */
     @ExcelProperty("商品类别")
     private String productCategoryName;
-
+    private String productCategoryCode;
     /**
      * 申请人名称
      */

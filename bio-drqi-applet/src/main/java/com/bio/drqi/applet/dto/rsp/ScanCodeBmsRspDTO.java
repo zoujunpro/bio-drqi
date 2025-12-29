@@ -26,6 +26,11 @@ public class ScanCodeBmsRspDTO {
     private String productCategoryCode;
 
     /**
+     * 所属类别编号
+     */
+    private String productCategoryName;
+
+    /**
      * 货品类型编号
      */
     private String productTypeCode;

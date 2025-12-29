@@ -197,8 +197,8 @@ public class KdApiServiceImpl implements KdApiService {
         BmsStockDict bmsStockDict = (BmsStockDict) obj;
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.BD_STOCK.name());
-        executeBillQueryModelDTO.setFieldKeys("FSTOCKID,FNUMBER,FNAME,FDocumentStatus,FForbidStatus,F_WAUJ_UUID");
-        String filterString = "F_WAUJ_UUID='%s' and FCreateOrgId.FNumber ='%s' and  FUseOrgId.FNumber='%s' and  FDocumentStatus='C' and FForbidStatus='A'";
+        executeBillQueryModelDTO.setFieldKeys("FSTOCKID,FNUMBER,FNAME,FDocumentStatus,FForbidStatus");
+        String filterString = "Fnumber='%s' and FCreateOrgId.FNumber ='%s' and  FUseOrgId.FNumber='%s' and  FDocumentStatus='C' and FForbidStatus='A'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsStockDict.getStockCode(), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode), OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
         if (CollectionUtil.isNotEmpty(result) && CollectionUtil.isNotEmpty(result.get(0))) {
@@ -345,7 +345,7 @@ public class KdApiServiceImpl implements KdApiService {
         BmsStockDict bmsStockDict = (BmsStockDict) obj;
         StockModel stockModel = new StockModel();
         stockModel.setFStockId(bmsStockDict.getKdNumber());
-        stockModel.setFnumber(bmsStockDict.getKdNumber());
+        stockModel.setFnumber(bmsStockDict.getStockCode());
         stockModel.setFname(bmsStockDict.getStockName());
         return KdRequestUtil.save(FormIdEnum.BD_STOCK, KdApiBaseSaveRequestDTO.buildOfModify(stockModel));
 

@@ -1,5 +1,6 @@
 package com.bio.drqi.bsm.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
@@ -57,6 +58,8 @@ public class BmsOrderDetailExcelDTO {
     @ExcelProperty("品牌名称")
     private String brandName;
 
+
+    @ExcelIgnore
     private String brandCode;
 
     /**
@@ -104,6 +107,8 @@ public class BmsOrderDetailExcelDTO {
      */
     @ExcelProperty("商品类别")
     private String productCategoryName;
+
+    @ExcelIgnore
     private String productCategoryCode;
     /**
      * 申请人名称

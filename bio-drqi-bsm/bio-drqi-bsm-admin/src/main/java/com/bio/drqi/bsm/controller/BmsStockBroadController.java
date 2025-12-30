@@ -33,7 +33,7 @@ public class BmsStockBroadController {
      *
      * @return
      */
-    @GetMapping("countStock")
+    @GetMapping("countStockDetailList")
     @WebLog(desc = "库存数据统计-总量统计")
     public ResponseResult<List<BmsStockBroadCountStockDetailListRspDTO>> countStockDetailList(BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO) {
         return null;

@@ -94,10 +94,13 @@ public class BioSampleTwoResultServiceImpl implements BioSampleTwoResultService 
         //更新取样检测结果
 
         BioSampleTestTb bioSampleTestTb = bioSampleTestTbMapper.selectOneByApplyNoAndSampleCode(bioSampleTestTwoResultTb.getApplyNo(), bioSampleTestTwoResultTb.getSampleCode());
-        bioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
-        bioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
-        bioSampleTestTb.setTestTime(DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN));
-        bioSampleTestTbMapper.updateById(bioSampleTestTb);
+        if(bioSampleTestTb.getTestUserId()==null){
+            bioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
+            bioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
+            bioSampleTestTb.setTestTime(DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN));
+            bioSampleTestTbMapper.updateById(bioSampleTestTb);
+        }
+
 
 
         //更新结果状态

@@ -490,10 +490,14 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                 bioSampleTestTwoResultDetailTbMapper.insert(cerSampleTestBioInfoResultTb);
             }
         }
-        bioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
-        bioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
-        bioSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
-        bioSampleTestTbMapper.updateById(bioSampleTestTb);
+
+        if(bioSampleTestTb.getTestUserId()==null){
+            bioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
+            bioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
+            bioSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
+            bioSampleTestTbMapper.updateById(bioSampleTestTb);
+        }
+
         //更新结果状态
         bioSampleTestTwoResultTbMapper.updateById(bioSampleSampleTwoResultTbList.get(0));
 

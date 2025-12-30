@@ -13,6 +13,7 @@ import com.bio.drqi.mapper.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,6 +101,8 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockOutLog.setProduceDate(bmsProductStockTb.getProduceDate());
         bmsProductStockOutLog.setExpirationDate(bmsProductStockTb.getExpirationDate());
         bmsProductStockOutLog.setStockCode(bmsProductStockTb.getStockCode());
+        bmsProductStockOutLog.setProductPrice(bmsProductStockTb.getProductPrice());
+        bmsProductStockOutLog.setOutAmount(bmsProductStockOutLog.getProductPrice().multiply(new BigDecimal(bmsProductStockOutLog.getOutNumber())));
         bmsProductStockOutLogMapper.insert(bmsProductStockOutLog);
     }
 

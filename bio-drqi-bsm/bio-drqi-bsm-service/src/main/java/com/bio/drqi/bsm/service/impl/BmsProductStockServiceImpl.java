@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -205,6 +206,8 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         bmsMoveOrderDetailTb.setCreateUserName(SecurityContextHolder.getNickName());
         bmsMoveOrderDetailTb.setCreateTime(new Date());
         bmsMoveOrderDetailTb.setUniqueCode(newBmsProductStockTb.getUniqueCode());
+        bmsMoveOrderDetailTb.setProductPrice(newBmsProductStockTb.getProductPrice());
+        bmsMoveOrderDetailTb.setMoveAmount(bmsMoveOrderDetailTb.getProductPrice().multiply(new BigDecimal(bmsMoveOrderDetailTb.getMoveNumber())));
         bmsMoveOrderDetailTbMapper.insert(bmsMoveOrderDetailTb);
     }
 }

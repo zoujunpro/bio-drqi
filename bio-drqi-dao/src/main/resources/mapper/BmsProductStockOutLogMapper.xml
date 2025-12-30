@@ -27,7 +27,7 @@
             <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
             <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
             <result property="productPrice" column="product_price" jdbcType="DECIMAL"/>
-
+            <result property="outAmount" column="out_amount" jdbcType="DECIMAL"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -37,7 +37,7 @@
         batch_no,out_number,apply_user_id,
         apply_user_name,create_time,task_num,
         remark,out_type,unit_code,kd_number,
-        supplier_code,unique_code,produce_date,expiration_date,stock_code,product_price
+        supplier_code,unique_code,produce_date,expiration_date,stock_code,product_price,out_amount
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsProductStockOutLog" resultMap="BaseResultMap">
         select

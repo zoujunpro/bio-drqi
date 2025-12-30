@@ -129,6 +129,7 @@ public class BmsProductStockOutLog implements Serializable {
 
     private String kdNumber;
 
+    private BigDecimal outAmount;
 
     private BigDecimal productPrice;
 

@@ -1,6 +1,9 @@
 package com.bio.drqi.manage.service.bio.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.common.contents.BioDrQiContents;
@@ -78,7 +81,7 @@ public class BioSampleTwoResultServiceImpl implements BioSampleTwoResultService 
         if (Objects.isNull(bioSampleTestTwoResultTb)) {
             throw new BusinessException("excel没匹配到该生信检测数据");
         }
-        if(BioDrQiContents.O.equals(bioSampleTestTwoResultTb.getSynResult())){
+        if (BioDrQiContents.O.equals(bioSampleTestTwoResultTb.getSynResult())) {
             throw new BusinessException(bioSampleTestTwoResultTb.getSynResult());
         }
         List<BioSampleTestTwoResultDetailTb> bioSampleTestTwoResultDetailTbList = synSampleTestResultService.synBioResult(Arrays.asList(bioSampleTestTwoResultTb));
@@ -88,6 +91,15 @@ public class BioSampleTwoResultServiceImpl implements BioSampleTwoResultService 
                 bioSampleTestTwoResultDetailTbMapper.insert(bioSampleTestTwoResultDetailTb);
             }
         }
+        //更新取样检测结果
+
+        BioSampleTestTb bioSampleTestTb = bioSampleTestTbMapper.selectOneByApplyNoAndSampleCode(bioSampleTestTwoResultTb.getApplyNo(), bioSampleTestTwoResultTb.getSampleCode());
+        bioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
+        bioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
+        bioSampleTestTb.setTestTime(DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN));
+        bioSampleTestTbMapper.updateById(bioSampleTestTb);
+
+
         //更新结果状态
         bioSampleTestTwoResultTbMapper.updateById(bioSampleTestTwoResultTb);
     }
@@ -116,7 +128,7 @@ public class BioSampleTwoResultServiceImpl implements BioSampleTwoResultService 
                     if (bioSampleTestTb == null) {
                         throw new BusinessException("齐博士数据异常，请联系相关人员，错误原因，找不到申请工单下" + applyNo + "的取样编号" + sampleCode);
                     }
-                    bioSampleTestTbMapper.updateTestUserIdAndTestUserNameById(null, null,bioSampleTestTb.getId());
+                    bioSampleTestTbMapper.updateTestUserIdAndTestUserNameById(null, null, bioSampleTestTb.getId());
                 }
 
             });

@@ -823,7 +823,7 @@ public class BmsTestController {
 
     @GetMapping("/createBmsStockExcel")
     public void createBmsStockExcel(HttpServletResponse httpServletResponse) {
-        Date pointDate = DateUtil.parse("20250701000000", DatePattern.PURE_DATETIME_PATTERN);
+        Date pointDate = DateUtil.parse("20251130235959", DatePattern.PURE_DATETIME_PATTERN);
         //step 数据查询
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
         Map<String, BmsProductStockTb> bmsProductStockTbMap = bmsProductStockTbList.stream().collect(Collectors.toMap(bmsProductStockTb -> bmsProductStockTb.getProductInnerCode() + bmsProductStockTb.getUnitCode() + bmsProductStockTb.getBatchNo() + bmsProductStockTb.getStockCode(), bmsProductStockTb -> bmsProductStockTb));
@@ -897,7 +897,7 @@ public class BmsTestController {
             }
         }
 
-        ExcelUtil.writeExcel("D://7月1号之后数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
+        ExcelUtil.writeExcel("D://11月30号之后数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
     }
 
     @Data

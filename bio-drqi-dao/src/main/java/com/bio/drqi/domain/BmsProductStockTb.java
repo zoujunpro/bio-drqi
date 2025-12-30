@@ -97,6 +97,8 @@ public class BmsProductStockTb implements Serializable {
 
     private String stockCode;
 
+    private BigDecimal productPrice;
+
     @TableField(exist = false)
     private String filterZeroFlag;
 

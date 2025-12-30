@@ -2,6 +2,7 @@ package com.bio.drqi.bsm.rsp;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -133,5 +134,7 @@ public class BmsMoveOrderDetailListPageRspDTO {
      * 创建时间
      */
     private Date createTime;
+
+    private BigDecimal productPrice;
 
 }

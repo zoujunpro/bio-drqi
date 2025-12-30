@@ -2,6 +2,8 @@ package com.bio.drqi.bsm.rsp;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class BmsProductStockListPageRspDTO {
     private Integer id;
@@ -90,4 +92,6 @@ public class BmsProductStockListPageRspDTO {
     private String stockCode;
 
     private String stockName;
+
+    private BigDecimal productPrice;
 }

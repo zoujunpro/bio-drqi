@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -127,6 +128,9 @@ public class BmsProductStockOutLog implements Serializable {
     private String endDate;
 
     private String kdNumber;
+
+
+    private BigDecimal productPrice;
 
 
 

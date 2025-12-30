@@ -9,7 +9,6 @@
             <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
             <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
             <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
-            <result property="productTypeCode" column="product_type_code" jdbcType="VARCHAR"/>
             <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
             <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
             <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
@@ -27,6 +26,8 @@
             <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
             <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
             <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
+            <result property="productPrice" column="product_price" jdbcType="DECIMAL"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -36,7 +37,7 @@
         batch_no,out_number,apply_user_id,
         apply_user_name,create_time,task_num,
         remark,out_type,unit_code,kd_number,
-        supplier_code,unique_code,produce_date,expiration_date,stock_code
+        supplier_code,unique_code,produce_date,expiration_date,stock_code,product_price
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsProductStockOutLog" resultMap="BaseResultMap">
         select

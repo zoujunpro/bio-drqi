@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -118,6 +119,9 @@ public class BmsMoveOrderDetailTb implements Serializable {
     private String uniqueCode;
 
     private String kdNumber;
+
+
+    private BigDecimal productPrice;
 
     @TableField(exist = false)
     private String startDate;

@@ -105,7 +105,7 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void returnStock(BmsProductStockInLogReturnStockReqDTO bmsProductStockInLogReturnStockReqDTO) {
+    public synchronized void  returnStock(BmsProductStockInLogReturnStockReqDTO bmsProductStockInLogReturnStockReqDTO) {
         BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectById(bmsProductStockInLogReturnStockReqDTO.getId());
         if (bmsProductStockInLog == null) {
             throw new BusinessException("不存在此商品");

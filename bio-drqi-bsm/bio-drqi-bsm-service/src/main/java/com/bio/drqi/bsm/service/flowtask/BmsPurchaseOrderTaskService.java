@@ -123,7 +123,6 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 } else {
                     bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(product.getProductInnerCode());
                 }
-
                 product.setProductInnerCode(bmsProductTb.getProductInnerCode());
                 BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(product.getBrandCode());
                 //创建订单
@@ -231,7 +230,10 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 }
                 BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(product.getBrandName());
                 if (bmsBrandTb != null) {
-                    throw new BusinessException("库存中已经有此品牌，请检查品牌是否已经禁用，无需新增品牌");
+                    if (BioDrQiContents.N.equals(bmsBrandTb.getBrandStatus())) {
+                        throw new BusinessException("品牌已经禁用，请先启用");
+                    }
+                    product.setBrandCode(bmsBrandTb.getBrandCode());
                 }
             }
             //商品校验
@@ -262,7 +264,11 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 }
                 BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(product.getProductName(), product.getBrandCode(), product.getProductSpecs());
                 if (bmsProductTb != null) {
-                    throw new BusinessException("数据库中已有此商品，请检查商品状态并直接使用");
+                    if (BioDrQiContents.N.equals(bmsProductTb.getProductStatus())) {
+                        throw new BusinessException("商品已经禁用，请先启用");
+                    }
+                    product.setProductInnerCode(bmsProductTb.getProductInnerCode());
+                    product.setProductSpecs(bmsProductTb.getProductSpecs());
                 }
             }
             if (StringUtils.isNotEmpty(product.getSupplierCode())) {
@@ -273,7 +279,10 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
             } else {
                 BmsSupplierTb bmsSupplierTb = bmsSupplierTbMapper.selectOneBySupplierName(product.getSupplierCode());
                 if (bmsSupplierTb != null) {
-                    throw new BusinessException("供应商已再系统中存在，请检查是否禁用");
+                    if (BioDrQiContents.N.equals(bmsSupplierTb.getSupplierStatus())) {
+                        throw new BusinessException("供应商已经禁用,请先启用");
+                    }
+                    product.setSupplierCode(bmsSupplierTb.getSupplierCode());
                 }
             }
 

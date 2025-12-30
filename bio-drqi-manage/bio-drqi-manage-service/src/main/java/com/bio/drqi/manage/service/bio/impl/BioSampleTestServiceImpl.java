@@ -491,7 +491,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
             }
         }
 
-        if(bioSampleTestTb.getTestUserId()==null){
+        if(bioSampleTestTb.getTestUserId()==null&&BioDrQiContents.Y.equals(bioSampleSampleTwoResultTbList.get(0).getSynResult())){
             bioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
             bioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
             bioSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));

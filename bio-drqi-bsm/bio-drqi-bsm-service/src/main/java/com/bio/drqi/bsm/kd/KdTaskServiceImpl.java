@@ -362,15 +362,15 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
     @Override
     public void executeSynKd(BmsSynKdTaskLog bmsSynKdTaskLog) {
         try {
-            synStockTask();
-           // synMaterialGroupTask();
-           // synSupplierTask();
-           // synProjectTask();
-           // synMaterialTask();
-            //synInStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
+            // synStockTask();
+            // synMaterialGroupTask();
+            // synSupplierTask();
+            // synProjectTask();
+            //synMaterialTask();
+            synInStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
             synMoveStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
-           synReturnStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
-           synOutStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
+            synReturnStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
+            synOutStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
 
             bmsSynKdTaskLog.setSynStatus(BmsKdSynStatusEnum.success.name());
             bmsSynKdTaskLogMapper.updateById(bmsSynKdTaskLog);

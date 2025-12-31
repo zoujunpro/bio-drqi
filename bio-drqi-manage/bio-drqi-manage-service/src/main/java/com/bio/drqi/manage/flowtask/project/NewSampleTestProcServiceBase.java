@@ -9,6 +9,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.*;
+import com.bio.drqi.common.util.LetterUtil;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.ImplementationPlanTypeEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
@@ -231,9 +232,9 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 List<BioSampleTestTb> cerSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCodeLike(bioSampleCodePrefixTb.getSampleCodePrefix());
                 Integer maxSampleNumber = null;
                 if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
-                    cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> !cerSampleTestTb.getSampleCode().contains("-") && cerSampleTestTb.getSampleCode().startsWith(bioSampleCodePrefixTb.getSampleCodePrefix())).collect(Collectors.toList());
+                    cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> !cerSampleTestTb.getSampleCode().contains("-") && cerSampleTestTb.getSampleCode().startsWith(bioSampleCodePrefixTb.getSampleCodePrefix())&& LetterUtil.isNumeric(cerSampleTestTb.getSampleCode().substring(bioSampleCodePrefixTb.getSampleCodePrefix().length()))).collect(Collectors.toList());
                     if(CollectionUtil.isNotEmpty(cerSampleTestTbList)){
-                        maxSampleNumber = cerSampleTestTbList.stream().map(cerSampleTestTb -> Integer.valueOf(cerSampleTestTb.getSampleCode().substring(2))).max(Integer::compare).get();
+                        maxSampleNumber = cerSampleTestTbList.stream().map(cerSampleTestTb -> Integer.valueOf(cerSampleTestTb.getSampleCode().substring(bioSampleCodePrefixTb.getSampleCodePrefix().length()))).max(Integer::compare).get();
                     }
                 }
                 for (int i = 1; i <= firstSampleApply.getSampleNum(); i++) {
@@ -284,6 +285,10 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         bioSampleApplyTbMapper.updateById(bioSampleApplyTb);
 
 
+    }
+
+    public static void main(String[] args) {
+        System.out.println("KXYGHB0001".startsWith("XV"));
     }
 
 }

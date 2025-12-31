@@ -113,7 +113,7 @@ public class KdApiServiceImpl implements KdApiService {
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.STK_TransferDirect.name());
         executeBillQueryModelDTO.setFieldKeys("FID,FBillno,FDocumentStatus");
-        String filterString = "F_WAUJ_UUID='%s' and  FBillTypeID.FNumber ='ZJDB01_SYS'";
+        String filterString = "F_WAUJ_UUID='%s'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsMoveOrderDetailTb.getId().toString()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
         if (CollectionUtil.isNotEmpty(result) && CollectionUtil.isNotEmpty(result.get(0))) {
@@ -127,7 +127,7 @@ public class KdApiServiceImpl implements KdApiService {
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.PUR_MRB.name());
         executeBillQueryModelDTO.setFieldKeys("FID,FBillno,FDocumentStatus");
-        String filterString = "F_WAUJ_UUID='%s' and FBillTypeID.FNumber ='TLD01_SYS'";
+        String filterString = "F_WAUJ_UUID='%s'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsReturnOrderDetailTb.getId().toString()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
         if (CollectionUtil.isNotEmpty(result) && CollectionUtil.isNotEmpty(result.get(0))) {
@@ -141,7 +141,7 @@ public class KdApiServiceImpl implements KdApiService {
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.STK_MisDelivery.name());
         executeBillQueryModelDTO.setFieldKeys("FID,FBillno,FDocumentStatus");
-        String filterString = "F_WAUJ_UUID='%s' and FBillTypeID.FNumber ='QTCKD01_SYS'";
+        String filterString = "F_WAUJ_UUID='%s'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsProductStockOutLog.getId().toString()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
         if (CollectionUtil.isNotEmpty(result) && CollectionUtil.isNotEmpty(result.get(0))) {
@@ -155,7 +155,7 @@ public class KdApiServiceImpl implements KdApiService {
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.STK_InStock.name());
         executeBillQueryModelDTO.setFieldKeys("FID,FBillno,FDocumentStatus");
-        String filterString = "F_WAUJ_UUID='%s' and FBillTypeID.FNumber ='RKD01_SYS'";
+        String filterString = "F_WAUJ_UUID='%s'";
         executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsProductStockInLog.getId().toString()));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
         if (CollectionUtil.isNotEmpty(result) && CollectionUtil.isNotEmpty(result.get(0))) {

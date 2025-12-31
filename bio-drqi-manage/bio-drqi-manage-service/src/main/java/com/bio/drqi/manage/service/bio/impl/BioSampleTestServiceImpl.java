@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.service.bio.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
@@ -489,6 +490,14 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                 bioSampleTestTwoResultDetailTbMapper.insert(cerSampleTestBioInfoResultTb);
             }
         }
+
+        if(bioSampleTestTb.getTestUserId()==null&&BioDrQiContents.Y.equals(bioSampleSampleTwoResultTbList.get(0).getSynResult())){
+            bioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
+            bioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
+            bioSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
+            bioSampleTestTbMapper.updateById(bioSampleTestTb);
+        }
+
         //更新结果状态
         bioSampleTestTwoResultTbMapper.updateById(bioSampleSampleTwoResultTbList.get(0));
 
@@ -549,7 +558,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                 bioSampleSampleTwoResultTb.setSynResult(BioDrQiContents.O);
             } else {
                 //更新检测人（检测标志）
-                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(bioSampleTestTb.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
+                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(bioSampleTestTb.getId()).testTime(DateUtil.formatDate(new Date())).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
             }
             bioSampleSampleTwoResultTbList.add(bioSampleSampleTwoResultTb);
         }

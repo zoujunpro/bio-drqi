@@ -16,6 +16,7 @@ import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.dto.BmsProductInputDTO;
 import com.bio.drqi.bsm.dto.BmsProductOutDTO;
 import com.bio.drqi.bsm.enums.CooperateFormEnum;
+import com.bio.drqi.bsm.enums.PurchaseTypeEnum;
 import com.bio.drqi.bsm.kd.KdTaskService;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
 import com.bio.drqi.bsm.kd.properties.KdProperties;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -111,6 +113,80 @@ public class BmsTestController {
 
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
+    @Resource
+    private BmsOrderTbMapper bmsOrderTbMapper;
+
+
+    @GetMapping("/addData")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> addData() {
+        List<BmsStock> list = ExcelUtil.readExcel("", BmsStock.class);
+        for (BmsStock bmsStock : list) {
+            BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsStock.productInnerCode);
+            //补充入库记录
+            BmsProductStockInLog bmsProductStockInLog = new BmsProductStockInLog();
+            bmsProductStockInLog.setOrderDetailNum(null);
+            bmsProductStockInLog.setProductName(bmsProductTb.getProductName());
+            bmsProductStockInLog.setProductOutCode(bmsProductTb.getProductOutCode());
+            bmsProductStockInLog.setProductCategoryCode(bmsProductTb.getProductCategoryCode());
+            bmsProductStockInLog.setBrandCode(bmsProductTb.getBrandCode());
+            bmsProductStockInLog.setProductSpecs(bmsProductTb.getProductSpecs());
+            bmsProductStockInLog.setBatchNo(bmsStock.getBatchNo());
+            bmsProductStockInLog.setProjectCode(bmsStock.getProjectCode());
+            bmsProductStockInLog.setProductPrice(new BigDecimal(bmsStock.getProductPrice()));
+            bmsProductStockInLog.setStoreNumber(bmsStock.getCurrentStockNumber());
+            bmsProductStockInLog.setStoreAmount(bmsProductStockInLog.getProductPrice().multiply(new BigDecimal(bmsProductStockInLog.getStoreNumber())));
+            bmsProductStockInLog.setApplyUserId(86);
+            bmsProductStockInLog.setApplyUserName("邹军");
+            bmsProductStockInLog.setCreateTime(new Date());
+            bmsProductStockInLog.setTaskNum(null);
+            bmsProductStockInLog.setOrderNum(null);
+            bmsProductStockInLog.setStockLocationNumber(null);
+            bmsProductStockInLog.setUnitCode(bmsStock.getUnitCode());
+            bmsProductStockInLog.setUniqueCode(bmsStock.getUniqueCode());
+            bmsProductStockInLog.setSupplierCode(bmsStock.getSupplierCode());
+            bmsProductStockInLog.setProductInnerCode(bmsStock.getProductInnerCode());
+            bmsProductStockInLog.setProduceDate("2025-05-08");
+            bmsProductStockInLog.setExpirationDate("2028-05-08");
+            bmsProductStockInLog.setTaxRate("0");
+            bmsProductStockInLog.setStockCode(bmsStock.getStockCode());
+            bmsProductStockInLog.setReturnNumber(0);
+            bmsProductStockInLogMapper.insert(bmsProductStockInLog);
+        }
+        return ResponseResult.getSuccess("ok");
+
+    }
+
+
+    @GetMapping("/cleanAmount")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanAmount() {
+        List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
+        for (BmsProductStockTb bmsProductStockTb : bmsProductStockTbList) {
+            log.info("bmsProductStockTb=" + JSONUtil.toJsonStr(bmsProductStockTb));
+            List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectAllByUniqueCode(bmsProductStockTb.getUniqueCode());
+            bmsProductStockTb.setProductPrice(bmsProductStockInLogList.get(0).getProductPrice());
+            bmsProductStockTbMapper.updateById(bmsProductStockTb);
+        }
+        bmsProductStockOutLogMapper.selectSelective(null).forEach(bmsProductStockOutLog -> {
+            log.info("bmsProductStockOutLog=" + JSONUtil.toJsonStr(bmsProductStockOutLog));
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductStockOutLog.getUniqueCode());
+            bmsProductStockOutLog.setProductPrice(bmsProductStockTb.getProductPrice());
+            bmsProductStockOutLog.setOutAmount(bmsProductStockTb.getProductPrice().multiply(new BigDecimal(bmsProductStockOutLog.getOutNumber())));
+            bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
+        });
+
+        bmsMoveOrderDetailTbMapper.selectSelective(null).forEach(bmsMoveOrderDetailTb -> {
+            log.info("bmsMoveOrderDetailTb=" + JSONUtil.toJsonStr(bmsMoveOrderDetailTb));
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsMoveOrderDetailTb.getUniqueCode());
+            bmsMoveOrderDetailTb.setProductPrice(bmsProductStockTb.getProductPrice());
+            bmsMoveOrderDetailTb.setMoveAmount(bmsProductStockTb.getProductPrice().multiply(new BigDecimal(bmsMoveOrderDetailTb.getMoveNumber())));
+            bmsMoveOrderDetailTbMapper.updateById(bmsMoveOrderDetailTb);
+        });
+        return ResponseResult.getSuccess("ok");
+
+    }
 
     @GetMapping("cleanStockNew")
     @Transactional(rollbackFor = Exception.class)
@@ -823,7 +899,7 @@ public class BmsTestController {
 
     @GetMapping("/createBmsStockExcel")
     public void createBmsStockExcel(HttpServletResponse httpServletResponse) {
-        Date pointDate = DateUtil.parse("20251130235959", DatePattern.PURE_DATETIME_PATTERN);
+        Date pointDate = DateUtil.parse("20250501235959", DatePattern.PURE_DATETIME_PATTERN);
         //step 数据查询
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
         Map<String, BmsProductStockTb> bmsProductStockTbMap = bmsProductStockTbList.stream().collect(Collectors.toMap(bmsProductStockTb -> bmsProductStockTb.getProductInnerCode() + bmsProductStockTb.getUnitCode() + bmsProductStockTb.getBatchNo() + bmsProductStockTb.getStockCode(), bmsProductStockTb -> bmsProductStockTb));
@@ -897,7 +973,7 @@ public class BmsTestController {
             }
         }
 
-        ExcelUtil.writeExcel("D://11月30号之后数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
+        ExcelUtil.writeExcel("D://5月1号之后数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
     }
 
     @Data
@@ -998,7 +1074,11 @@ public class BmsTestController {
         /**
          * 唯一编号
          */
+        @ExcelProperty("唯一编号")
         private String uniqueCode;
+
+        @ExcelProperty("采购单价")
+        private String productPrice;
     }
 
     @Data

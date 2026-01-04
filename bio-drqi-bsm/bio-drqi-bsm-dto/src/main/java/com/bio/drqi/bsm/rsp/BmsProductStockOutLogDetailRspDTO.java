@@ -121,4 +121,6 @@ public class BmsProductStockOutLogDetailRspDTO {
 
     private BigDecimal productPrice;
 
+    private BigDecimal outAmount;
+
 }

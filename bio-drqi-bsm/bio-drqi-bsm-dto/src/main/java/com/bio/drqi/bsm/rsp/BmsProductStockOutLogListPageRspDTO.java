@@ -125,4 +125,6 @@ public class BmsProductStockOutLogListPageRspDTO {
     private Integer kdNumber;
 
     private BigDecimal productPrice;
+
+    private BigDecimal outAmount;
 }

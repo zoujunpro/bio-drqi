@@ -121,8 +121,9 @@ public class BmsTestController {
     @GetMapping("/addData")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> addData() {
-        List<BmsStock> list = ExcelUtil.readExcel("", BmsStock.class);
+        List<BmsStock> list = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\5月1号之后数据-LR.xlsx", BmsStock.class);
         for (BmsStock bmsStock : list) {
+            log.info("bmsStock="+JSONUtil.toJsonStr(bmsStock));
             BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsStock.productInnerCode);
             //补充入库记录
             BmsProductStockInLog bmsProductStockInLog = new BmsProductStockInLog();
@@ -165,7 +166,7 @@ public class BmsTestController {
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
         for (BmsProductStockTb bmsProductStockTb : bmsProductStockTbList) {
             log.info("bmsProductStockTb=" + JSONUtil.toJsonStr(bmsProductStockTb));
-            List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectAllByUniqueCode(bmsProductStockTb.getUniqueCode());
+            List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().productInnerCode(bmsProductStockTb.getProductInnerCode()).build());
             bmsProductStockTb.setProductPrice(bmsProductStockInLogList.get(0).getProductPrice());
             bmsProductStockTbMapper.updateById(bmsProductStockTb);
         }

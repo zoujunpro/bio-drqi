@@ -114,8 +114,18 @@ public class BmsTestController {
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
-    @Resource
-    private BmsOrderTbMapper bmsOrderTbMapper;
+
+    @GetMapping("/cleanStockLocation")
+    public ResponseResult<String> cleanStockLocation() {
+
+        bmsStockLocationDictMapper.selectList(null).forEach(bmsStockLocationDict -> {
+            if(bmsStockLocationDict.getStockCode().length()>30){
+                bmsStockLocationDict.setStockCode(bmsStockLocationDict.getStockCode().substring(0,30));
+                bmsStockLocationDictMapper.updateById(bmsStockLocationDict);
+            }
+        });
+        return ResponseResult.getSuccess("ok");
+    }
 
 
     @GetMapping("/addData")
@@ -123,7 +133,7 @@ public class BmsTestController {
     public ResponseResult<String> addData() {
         List<BmsStock> list = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\5月1号之后数据-LR.xlsx", BmsStock.class);
         for (BmsStock bmsStock : list) {
-            log.info("bmsStock="+JSONUtil.toJsonStr(bmsStock));
+            log.info("bmsStock=" + JSONUtil.toJsonStr(bmsStock));
             BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsStock.productInnerCode);
             //补充入库记录
             BmsProductStockInLog bmsProductStockInLog = new BmsProductStockInLog();

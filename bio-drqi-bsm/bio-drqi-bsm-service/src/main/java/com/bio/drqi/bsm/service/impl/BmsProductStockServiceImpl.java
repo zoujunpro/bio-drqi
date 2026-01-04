@@ -182,6 +182,7 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
             newBmsProductStockTb.setExpirationDate(bmsProductStockTb.getExpirationDate());
             newBmsProductStockTb.setReturnNumber(0);
             newBmsProductStockTb.setStockCode(bmsProductStockMoveStockReqDTO.getNewStockCode());
+            newBmsProductStockTb.setProductPrice(bmsProductStockTb.getProductPrice());
             bmsProductStockTbMapper.insert(newBmsProductStockTb);
         }
         //记录移库流水

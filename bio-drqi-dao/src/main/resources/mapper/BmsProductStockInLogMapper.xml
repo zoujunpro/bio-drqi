@@ -190,7 +190,7 @@
             parameterType="com.bio.drqi.domain.BmsProductStockInLog">
         select product_category_code,
         <if test='countType=="year"'>date_format(create_time,'%Y') as dateTime ,</if>
-        <if test='countType=="month"||countType==null||countType==""'>date_format(create_time,'%Y-%m') as dateTime,</if>
+        <if test='countType=="month"'>date_format(create_time,'%Y-%m') as dateTime,</if>
         sum(store_amount) as store_amount
         from bms_product_stock_in_log
         <where>
@@ -219,7 +219,11 @@
                 </if>
             </if>
         </where>
-        group by product_category_code,dateTime
+        group by
+        <if test="countType != null and countType!=''">
+            dateTime,
+        </if>
+        product_category_code
     </select>
 
 </mapper>

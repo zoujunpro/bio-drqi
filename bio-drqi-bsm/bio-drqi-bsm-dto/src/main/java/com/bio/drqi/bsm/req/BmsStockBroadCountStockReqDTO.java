@@ -1,7 +1,6 @@
 package com.bio.drqi.bsm.req;
 
 import lombok.Data;
-
 @Data
 public class BmsStockBroadCountStockReqDTO {
 
@@ -16,5 +15,6 @@ public class BmsStockBroadCountStockReqDTO {
    private String productCategoryCode;
 
    private String unitCode;
+
 
 }

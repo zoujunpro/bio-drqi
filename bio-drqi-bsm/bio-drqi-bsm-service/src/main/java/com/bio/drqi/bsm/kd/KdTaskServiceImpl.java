@@ -219,6 +219,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         selectBmsProductStockInLog.setStartDate(startDate);
         selectBmsProductStockInLog.setEndDate(endDate);
         List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(selectBmsProductStockInLog);
+        bmsProductStockInLogList=bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> StringUtils.isEmpty(bmsProductStockInLog.getKdNumber())).collect(Collectors.toList());
         //过滤出不需要同步的项目
         List<String> projectCodeList = bmsProjectDictMapper.selectList(null).stream().filter(bmsProjectDict -> StringUtils.isNotEmpty(bmsProjectDict.getKdNumber())).map(BmsProjectDict::getProjectCode).collect(Collectors.toList());
         //过滤出不需要同步的耗材
@@ -256,6 +257,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         selectBmsProductStockOutLog.setStartDate(startDate);
         selectBmsProductStockOutLog.setEndDate(endDate);
         List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectSelective(selectBmsProductStockOutLog);
+        bmsProductStockOutLogList=bmsProductStockOutLogList.stream().filter(bmsProductStockOutLog -> StringUtils.isEmpty(bmsProductStockOutLog.getKdNumber())).collect(Collectors.toList());
+
         //过滤出需要同步的数据
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
         bmsProductStockOutLogList = bmsProductStockOutLogList.stream().filter(bmsProductStockOutLog -> bmsProductCategoryCodeList.contains(bmsProductStockOutLog.getProductCategoryCode())).collect(Collectors.toList());
@@ -294,6 +297,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         selectBmsReturnOrderDetailTb.setStartDate(startDate);
         selectBmsReturnOrderDetailTb.setEndDate(endDate);
         List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectSelective(selectBmsReturnOrderDetailTb);
+        bmsReturnOrderDetailTbList=bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> StringUtils.isEmpty(bmsReturnOrderDetailTb.getKdNumber())).collect(Collectors.toList());
+
         //过滤出不需要同步的项目
         List<String> projectCodeList = bmsProjectDictMapper.selectList(null).stream().filter(bmsProjectDict -> StringUtils.isNotEmpty(bmsProjectDict.getKdProjectCode())).map(BmsProjectDict::getProjectCode).collect(Collectors.toList());
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
@@ -331,6 +336,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         selectBmsMoveOrderDetailTb.setStartDate(startDate);
         selectBmsMoveOrderDetailTb.setEndDate(endDate);
         List<BmsMoveOrderDetailTb> bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbMapper.selectSelective(selectBmsMoveOrderDetailTb);
+        bmsMoveOrderDetailTbList=bmsMoveOrderDetailTbList.stream().filter(bmsMoveOrderDetailTb -> StringUtils.isEmpty(bmsMoveOrderDetailTb.getKdNumber())).collect(Collectors.toList());
+
         //过滤出不需要同步的耗材
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
         bmsMoveOrderDetailTbList.stream().filter(bmsMoveOrderDetailTb -> bmsProductCategoryCodeList.contains(bmsMoveOrderDetailTb.getProductCategoryCode())).collect(Collectors.toList());
@@ -362,11 +369,11 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
     @Override
     public void executeSynKd(BmsSynKdTaskLog bmsSynKdTaskLog) {
         try {
-            synStockTask();
-            synMaterialGroupTask();
-            synSupplierTask();
-            synProjectTask();
-            synMaterialTask();
+           // synStockTask();
+            //synMaterialGroupTask();
+            //synSupplierTask();
+            //synProjectTask();
+           // synMaterialTask();
             synInStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
             synMoveStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
             synReturnStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());

@@ -99,13 +99,19 @@
             <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
 
             <if test='countType=="year"'>
-                <if test="dateTime != null and dateTime!=''">
-                    and date_format(create_time,'%Y') =#{dateTime,jdbcType=VARCHAR}
+                <if test="beginDateTime != null and beginDateTime!=''">
+                    and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}
+                </if>
+                <if test="endDateTime != null and endDateTime!=''">
+                    and date_format(create_time,'%Y') &lt;=#{endDateTime,jdbcType=VARCHAR}
                 </if>
             </if>
             <if test='countType=="month"'>
-                <if test="dateTime != null and dateTime!=''">
-                    and date_format(create_time,'%Y-%m') =#{dateTime,jdbcType=VARCHAR}
+                <if test="beginDateTime != null and beginDateTime!=''">
+                    and date_format(create_time,'%Y-%m') >=#{beginDateTime,jdbcType=VARCHAR}
+                </if>
+                <if test="endDateTime != null and endDateTime!=''">
+                    and date_format(create_time,'%Y-%m') &lt;=#{endDateTime,jdbcType=VARCHAR}
                 </if>
             </if>
         </where>
@@ -130,13 +136,19 @@
             <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
 
             <if test='countType=="year"'>
-                <if test="dateTime != null and dateTime!=''">
-                    and date_format(create_time,'%Y') =#{dateTime,jdbcType=VARCHAR}
+                <if test="beginDateTime != null and beginDateTime!=''">
+                    and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}
+                </if>
+                <if test="endDateTime != null and endDateTime!=''">
+                    and date_format(create_time,'%Y') &lt;=#{endDateTime,jdbcType=VARCHAR}
                 </if>
             </if>
             <if test='countType=="month"'>
-                <if test="dateTime != null and dateTime!=''">
-                    and date_format(create_time,'%Y-%m') =#{dateTime,jdbcType=VARCHAR}
+                <if test="beginDateTime != null and beginDateTime!=''">
+                    and date_format(create_time,'%Y-%m') >=#{beginDateTime,jdbcType=VARCHAR}
+                </if>
+                <if test="endDateTime != null and endDateTime!=''">
+                    and date_format(create_time,'%Y-%m') &lt;=#{endDateTime,jdbcType=VARCHAR}
                 </if>
             </if>
         </where>

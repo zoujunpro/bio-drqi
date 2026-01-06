@@ -164,7 +164,14 @@ public class BmsProductStockInLog implements Serializable {
     private String countType;
 
     @TableField(exist = false)
+    private String beginDateTime;
+
+    @TableField(exist = false)
+    private String endDateTime;
+
+    @TableField(exist = false)
     private String dateTime;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

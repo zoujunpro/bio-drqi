@@ -81,4 +81,26 @@ public class BmsStockBroadCountStockDetailListRspDTO {
      */
     private Integer returnNumber;
 
+    /**
+     * 调入数量
+     */
+    private Integer moveInNumber;
+
+    /**
+     * 调出数量
+     */
+    private Integer moveOutNumber;
+
+    /**
+     * 调入金额
+     */
+    private BigDecimal moveInAmount;
+
+    /**
+     * 调出金额
+     */
+    private BigDecimal moveOutAmount;
+
+
+
 }

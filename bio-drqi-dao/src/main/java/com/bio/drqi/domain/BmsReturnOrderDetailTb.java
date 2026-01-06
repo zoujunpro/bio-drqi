@@ -154,6 +154,12 @@ public class BmsReturnOrderDetailTb implements Serializable {
     private String countType;
 
     @TableField(exist = false)
+    private String beginDateTime;
+
+    @TableField(exist = false)
+    private String endDateTime;
+
+    @TableField(exist = false)
     private String dateTime;
 
 

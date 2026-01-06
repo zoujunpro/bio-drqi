@@ -1,5 +1,6 @@
 package com.bio.drqi.mapper;
 import com.bio.drqi.domain.BmsProductStockOutLog;
+import com.bio.drqi.domain.BmsProductStockTb;
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.BmsProductStockInLog;
@@ -27,6 +28,8 @@ List<BmsProductStockInLog> selectSelective(BmsProductStockInLog bmsProductStockI
     BigDecimal selectSumAmount(BmsProductStockInLog bmsProductStockInLog);
 
     List<BmsProductStockInLog> selectForCountStockDetailList(BmsProductStockInLog bmsProductStockInLog);
+
+    List<BmsProductStockInLog> selectForCountStockInByCategory(BmsProductStockInLog bmsProductStockInLog);
 
 
 }

@@ -1,5 +1,7 @@
 package com.bio.drqi.mapper;
 import java.util.Collection;
+
+import com.bio.drqi.domain.BmsProductStockInLog;
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.BmsProductStockTb;
@@ -25,6 +27,7 @@ public interface BmsProductStockTbMapper extends BaseMapper<BmsProductStockTb> {
     List<BmsProductStockTb> selectAllByStockCode(@Param("stockCode") String stockCode);
 
     List<BmsProductStockTb> selectAllByStockLocationNumberIn(@Param("stockLocationNumberList") Collection<String> stockLocationNumberList);
+    List<BmsProductStockTb> selectForCountStockByCategory(BmsProductStockTb bmsProductStockTb);
 
 
 }

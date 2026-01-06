@@ -109,5 +109,9 @@
         AND unit_code = #{unitCode,jdbcType=VARCHAR}
         AND batch_no = #{batchNo,jdbcType=VARCHAR}
     </select>
+    <select id="selectForCountStockByCategory" resultType="com.bio.drqi.domain.BmsProductStockTb">
+
+
+    </select>
 
 </mapper>

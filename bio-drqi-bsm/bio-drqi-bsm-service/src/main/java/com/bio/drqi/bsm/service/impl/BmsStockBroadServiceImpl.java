@@ -1,6 +1,8 @@
 package com.bio.drqi.bsm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.drqi.bsm.req.BmsStockBroadCountStockReqDTO;
@@ -51,7 +53,6 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
 
 
-
     @Override
     public BmsStockBroadCountStockRspDTO countStock(BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO) {
         BmsStockBroadCountStockRspDTO bmsStockBroadCountStockRspDTO = new BmsStockBroadCountStockRspDTO();
@@ -75,13 +76,14 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
         List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectForCountStockDetailList(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsProductStockInLog.class));
         List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectForCountStockDetailList(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsProductStockOutLog.class));
         List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectForCountStockDetailList(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsReturnOrderDetailTb.class));
+        List<BmsMoveOrderDetailTb> bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbMapper.selectForCountStockDetailList(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsMoveOrderDetailTb.class));
         //入库数据统计
         if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)) {
             bmsProductStockInLogList.forEach(bmsProductStockInLog -> {
                 BmsStockBroadCountStockDetailListRspDTO bmsStockBroadCountStockDetailListRspDTO = new BmsStockBroadCountStockDetailListRspDTO();
-                BmsProductTb bmsProductTb =bmsProductTbMap.get(bmsProductStockInLog.getProductInnerCode());
-                if(bmsProductTb==null){
-                    throw new BusinessException("数据异常，找不到编号为"+bmsProductStockInLog.getProductInnerCode()+"的商品");
+                BmsProductTb bmsProductTb = bmsProductTbMap.get(bmsProductStockInLog.getProductInnerCode());
+                if (bmsProductTb == null) {
+                    throw new BusinessException("数据异常，找不到编号为" + bmsProductStockInLog.getProductInnerCode() + "的商品");
                 }
                 bmsStockBroadCountStockDetailListRspDTO.setProductInnerCode(bmsProductStockInLog.getProductInnerCode());
                 bmsStockBroadCountStockDetailListRspDTO.setProductName(bmsProductTb.getProductName());
@@ -100,6 +102,10 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
                 bmsStockBroadCountStockDetailListRspDTO.setOutNumber(0);
                 bmsStockBroadCountStockDetailListRspDTO.setReturnAmount(new BigDecimal(0));
                 bmsStockBroadCountStockDetailListRspDTO.setReturnNumber(0);
+                bmsStockBroadCountStockDetailListRspDTO.setMoveInAmount(new BigDecimal(0));
+                bmsStockBroadCountStockDetailListRspDTO.setMoveOutAmount(new BigDecimal(0));
+                bmsStockBroadCountStockDetailListRspDTO.setMoveInNumber(0);
+                bmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(0);
                 result.add(bmsStockBroadCountStockDetailListRspDTO);
             });
         }
@@ -107,9 +113,9 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
         if (CollectionUtil.isNotEmpty(bmsProductStockOutLogList)) {
             Map<String, BmsStockBroadCountStockDetailListRspDTO> resultMap = result.stream().collect(Collectors.toMap(detail -> detail.getProductInnerCode() + detail.getUnitCode() + detail.getStockCode() + detail.getBatchNo(), detail -> detail));
             bmsProductStockOutLogList.forEach(bmsProductStockOutLog -> {
-                BmsProductTb bmsProductTb =bmsProductTbMap.get(bmsProductStockOutLog.getProductInnerCode());
-                if(bmsProductTb==null){
-                    throw new BusinessException("数据异常，找不到编号为"+bmsProductStockOutLog.getProductInnerCode()+"的商品");
+                BmsProductTb bmsProductTb = bmsProductTbMap.get(bmsProductStockOutLog.getProductInnerCode());
+                if (bmsProductTb == null) {
+                    throw new BusinessException("数据异常，找不到编号为" + bmsProductStockOutLog.getProductInnerCode() + "的商品");
                 }
                 BmsStockBroadCountStockDetailListRspDTO bmsStockBroadCountStockDetailListRspDTO = resultMap.get(bmsProductStockOutLog.getProductInnerCode() + bmsProductStockOutLog.getUnitCode() + bmsProductStockOutLog.getStockCode() + bmsProductStockOutLog.getBatchNo());
                 if (bmsStockBroadCountStockDetailListRspDTO != null) {
@@ -134,6 +140,10 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
                     bmsStockBroadCountStockDetailListRspDTO.setOutNumber(bmsProductStockOutLog.getOutNumber());
                     bmsStockBroadCountStockDetailListRspDTO.setReturnAmount(new BigDecimal(0));
                     bmsStockBroadCountStockDetailListRspDTO.setReturnNumber(0);
+                    bmsStockBroadCountStockDetailListRspDTO.setMoveInAmount(new BigDecimal(0));
+                    bmsStockBroadCountStockDetailListRspDTO.setMoveOutAmount(new BigDecimal(0));
+                    bmsStockBroadCountStockDetailListRspDTO.setMoveInNumber(0);
+                    bmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(0);
                     result.add(bmsStockBroadCountStockDetailListRspDTO);
                 }
             });
@@ -142,9 +152,9 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
         if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)) {
             Map<String, BmsStockBroadCountStockDetailListRspDTO> resultMap = result.stream().collect(Collectors.toMap(detail -> detail.getProductInnerCode() + detail.getUnitCode() + detail.getStockCode() + detail.getBatchNo(), detail -> detail));
             bmsReturnOrderDetailTbList.forEach(bmsReturnOrderDetailTb -> {
-                BmsProductTb bmsProductTb =bmsProductTbMap.get(bmsReturnOrderDetailTb.getProductInnerCode());
-                if(bmsProductTb==null){
-                    throw new BusinessException("数据异常，找不到编号为"+bmsReturnOrderDetailTb.getProductInnerCode()+"的商品");
+                BmsProductTb bmsProductTb = bmsProductTbMap.get(bmsReturnOrderDetailTb.getProductInnerCode());
+                if (bmsProductTb == null) {
+                    throw new BusinessException("数据异常，找不到编号为" + bmsReturnOrderDetailTb.getProductInnerCode() + "的商品");
                 }
                 BmsStockBroadCountStockDetailListRspDTO bmsStockBroadCountStockDetailListRspDTO = resultMap.get(bmsReturnOrderDetailTb.getProductInnerCode() + bmsReturnOrderDetailTb.getUnitCode() + bmsReturnOrderDetailTb.getStockCode() + bmsReturnOrderDetailTb.getBatchNo());
                 if (bmsStockBroadCountStockDetailListRspDTO != null) {
@@ -169,22 +179,87 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
                     bmsStockBroadCountStockDetailListRspDTO.setReturnAmount(bmsReturnOrderDetailTb.getReturnAmount());
                     bmsStockBroadCountStockDetailListRspDTO.setReturnAmount(new BigDecimal(0));
                     bmsStockBroadCountStockDetailListRspDTO.setReturnNumber(0);
+                    bmsStockBroadCountStockDetailListRspDTO.setMoveInAmount(new BigDecimal(0));
+                    bmsStockBroadCountStockDetailListRspDTO.setMoveOutAmount(new BigDecimal(0));
+                    bmsStockBroadCountStockDetailListRspDTO.setMoveInNumber(0);
+                    bmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(0);
                     result.add(bmsStockBroadCountStockDetailListRspDTO);
                 }
             });
         }
+        //调拨
+        if (CollectionUtil.isNotEmpty(bmsMoveOrderDetailTbList)) {
+            Map<String, BmsStockBroadCountStockDetailListRspDTO> resultMap = result.stream().collect(Collectors.toMap(detail -> detail.getProductInnerCode() + detail.getUnitCode() + detail.getStockCode() + detail.getBatchNo(), detail -> detail));
+            bmsMoveOrderDetailTbList.forEach(bmsMoveOrderDetailTb -> {
+                BmsProductTb bmsProductTb = bmsProductTbMap.get(bmsMoveOrderDetailTb.getProductInnerCode());
+                if (bmsProductTb == null) {
+                    throw new BusinessException("数据异常，找不到编号为" + bmsMoveOrderDetailTb.getProductInnerCode() + "的商品");
+                }
+                //调出
+                BmsStockBroadCountStockDetailListRspDTO outBmsStockBroadCountStockDetailListRspDTO = resultMap.get(bmsMoveOrderDetailTb.getProductInnerCode() + bmsMoveOrderDetailTb.getUnitCode() + bmsMoveOrderDetailTb.getFromStockCode() + bmsMoveOrderDetailTb.getBatchNo());
+                outBmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(bmsMoveOrderDetailTb.getMoveNumber());
+                outBmsStockBroadCountStockDetailListRspDTO.setMoveOutAmount(bmsMoveOrderDetailTb.getMoveAmount());
+                //调入
+                BmsStockBroadCountStockDetailListRspDTO inBmsStockBroadCountStockDetailListRspDTO = resultMap.get(bmsMoveOrderDetailTb.getProductInnerCode() + bmsMoveOrderDetailTb.getUnitCode() + bmsMoveOrderDetailTb.getToStockCode() + bmsMoveOrderDetailTb.getBatchNo());
+                if (inBmsStockBroadCountStockDetailListRspDTO != null) {
+                    inBmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(bmsMoveOrderDetailTb.getMoveNumber());
+                    inBmsStockBroadCountStockDetailListRspDTO.setMoveOutAmount(bmsMoveOrderDetailTb.getMoveAmount());
+                } else {
+                    inBmsStockBroadCountStockDetailListRspDTO = new BmsStockBroadCountStockDetailListRspDTO();
+                    inBmsStockBroadCountStockDetailListRspDTO.setProductName(bmsProductTb.getProductName());
+                    inBmsStockBroadCountStockDetailListRspDTO.setProductCategoryCode(bmsProductTb.getProductCategoryCode());
+                    inBmsStockBroadCountStockDetailListRspDTO.setProductCategoryName(bmsProductCategoryTbMap.get(bmsProductTb.getProductCategoryCode()));
+                    inBmsStockBroadCountStockDetailListRspDTO.setBrandCode(bmsProductTb.getBrandCode());
+                    inBmsStockBroadCountStockDetailListRspDTO.setBrandName(bmsBrandMap.get(bmsProductTb.getBrandCode()));
+                    inBmsStockBroadCountStockDetailListRspDTO.setProductSpecs(bmsProductTb.getProductSpecs());
+                    inBmsStockBroadCountStockDetailListRspDTO.setBatchNo(bmsMoveOrderDetailTb.getBatchNo());
+                    inBmsStockBroadCountStockDetailListRspDTO.setUnitCode(bmsMoveOrderDetailTb.getUnitCode());
+                    inBmsStockBroadCountStockDetailListRspDTO.setProductInnerCode(bmsMoveOrderDetailTb.getProductInnerCode());
+                    inBmsStockBroadCountStockDetailListRspDTO.setStockCode(bmsMoveOrderDetailTb.getToStockCode());
+                    inBmsStockBroadCountStockDetailListRspDTO.setStockName(bmsStockDictMap.get(inBmsStockBroadCountStockDetailListRspDTO.getStockCode()));
+                    inBmsStockBroadCountStockDetailListRspDTO.setInAmount(new BigDecimal(0));
+                    inBmsStockBroadCountStockDetailListRspDTO.setInNumber(0);
+                    inBmsStockBroadCountStockDetailListRspDTO.setReturnNumber(0);
+                    inBmsStockBroadCountStockDetailListRspDTO.setReturnAmount(new BigDecimal(0));
+                    inBmsStockBroadCountStockDetailListRspDTO.setReturnAmount(new BigDecimal(0));
+                    inBmsStockBroadCountStockDetailListRspDTO.setReturnNumber(0);
+                    inBmsStockBroadCountStockDetailListRspDTO.setMoveInAmount(bmsMoveOrderDetailTb.getMoveAmount());
+                    inBmsStockBroadCountStockDetailListRspDTO.setMoveOutAmount(new BigDecimal(0));
+                    inBmsStockBroadCountStockDetailListRspDTO.setMoveInNumber(bmsMoveOrderDetailTb.getMoveNumber());
+                    inBmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(0);
+                    result.add(inBmsStockBroadCountStockDetailListRspDTO);
+                }
+
+            });
+        }
+
 
         return result;
     }
 
     @Override
     public List<BmsStockBroadCountByCategoryRspDTO> countStockByCategory(BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO) {
+
         return null;
     }
 
     @Override
     public List<BmsStockInBroadCountByCategoryRspDTO> countStockInByCategory(BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO) {
-        return null;
+        List<BmsStockInBroadCountByCategoryRspDTO> resultList=new ArrayList<>();
+        List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+        Map<String, String> bmsProductCategoryTbMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectForCountStockInByCategory(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsProductStockInLog.class));
+        if(CollectionUtil.isNotEmpty(bmsProductStockInLogList)){
+            bmsProductStockInLogList.forEach(bmsProductStockInLog -> {
+                BmsStockInBroadCountByCategoryRspDTO bmsStockInBroadCountByCategoryRspDTO=new BmsStockInBroadCountByCategoryRspDTO();
+                bmsStockInBroadCountByCategoryRspDTO.setProductCategoryCode(bmsProductStockInLog.getProductCategoryCode());
+                bmsStockInBroadCountByCategoryRspDTO.setProductCategoryName(bmsProductCategoryTbMap.get(bmsProductStockInLog.getProductCategoryCode()));
+                bmsStockInBroadCountByCategoryRspDTO.setDateTime(bmsProductStockInLog.getDateTime());
+                bmsStockInBroadCountByCategoryRspDTO.setCountAmount(bmsProductStockInLog.getStoreAmount());
+                resultList.add(bmsStockInBroadCountByCategoryRspDTO);
+            });
+        }
+        return resultList;
     }
 
     @Override

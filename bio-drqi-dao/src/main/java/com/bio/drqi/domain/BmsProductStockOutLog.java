@@ -136,6 +136,13 @@ public class BmsProductStockOutLog implements Serializable {
     @TableField(exist = false)
     private String countType;
 
+
+    @TableField(exist = false)
+    private String beginDateTime;
+
+    @TableField(exist = false)
+    private String endDateTime;
+
     @TableField(exist = false)
     private String dateTime;
 

@@ -4,34 +4,35 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bio.drqi.mapper.BmsProductStockOutLogMapper">
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BmsProductStockOutLog">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="productName" column="product_name" jdbcType="VARCHAR"/>
-            <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
-            <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
-            <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
-            <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
-            <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
-            <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
-            <result property="outNumber" column="out_number" jdbcType="INTEGER"/>
-            <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
-            <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
-            <result property="remark" column="remark" jdbcType="VARCHAR"/>
-            <result property="outType" column="out_type" jdbcType="VARCHAR"/>
-            <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
-            <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
-            <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
-            <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
-            <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
-            <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
-            <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
-            <result property="productPrice" column="product_price" jdbcType="DECIMAL"/>
-            <result property="outAmount" column="out_amount" jdbcType="DECIMAL"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+        <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
+        <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
+        <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
+        <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
+        <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
+        <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
+        <result property="outNumber" column="out_number" jdbcType="INTEGER"/>
+        <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
+        <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="outType" column="out_type" jdbcType="VARCHAR"/>
+        <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
+        <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
+        <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
+        <result property="produceDate" column="produce_date" jdbcType="VARCHAR"/>
+        <result property="expirationDate" column="expiration_date" jdbcType="VARCHAR"/>
+        <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
+        <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
+        <result property="productPrice" column="product_price" jdbcType="DECIMAL"/>
+        <result property="outAmount" column="out_amount" jdbcType="DECIMAL"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,product_name,product_out_code,
+        id
+        ,product_name,product_out_code,
         product_inner_code,product_category_code,
         brand_code,product_specs,
         batch_no,out_number,apply_user_id,
@@ -45,9 +46,15 @@
         from bms_product_stock_out_log
         <where>
             <if test="productName != null and productName!='' ">and product_name=#{productName,jdbcType=VARCHAR}</if>
-            <if test="productOutCode != null and productOutCode!=''">and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
-            <if test="productInnerCode != null and productInnerCode!=''">and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}</if>
-            <if test="productCategoryCode != null and productCategoryCode!=''">and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
+            <if test="productOutCode != null and productOutCode!=''">and
+                product_out_code=#{productOutCode,jdbcType=VARCHAR}
+            </if>
+            <if test="productInnerCode != null and productInnerCode!=''">and
+                product_inner_code=#{productInnerCode,jdbcType=VARCHAR}
+            </if>
+            <if test="productCategoryCode != null and productCategoryCode!=''">and
+                product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
+            </if>
             <if test="brandCode != null and brandCode!=''">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
             <if test="productSpecs != null">and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>
             <if test="batchNo != null and batchNo!=''">and batch_no=#{batchNo,jdbcType=VARCHAR}</if>
@@ -66,9 +73,9 @@
             <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
             <if test="supplierCode != null and supplierCode!=''">and supplier_code=#{supplierCode,jdbcType=VARCHAR}</if>
             <if test="uniqueCode != null and uniqueCode!=''">and unique_code=#{uniqueCode,jdbcType=VARCHAR}</if>
-            <if test="produceDate != null"> and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
-            <if test="expirationDate != null"> and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
-            <if test="stockCode != null and stockCode!=''"> and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
+            <if test="produceDate != null">and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
+            <if test="expirationDate != null">and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
+            <if test="stockCode != null and stockCode!=''">and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>
@@ -78,5 +85,61 @@
         from bms_product_stock_out_log
         where
         unique_code = #{uniqueCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSumAmount" resultType="java.math.BigDecimal"
+            parameterType="com.bio.drqi.domain.BmsProductStockOutLog">
+        select sum(out_amount) from bms_product_stock_out_log
+        <where>
+            <if test="productInnerCode != null and productInnerCode!=''">and
+                product_inner_code=#{productInnerCode,jdbcType=VARCHAR}
+            </if>
+            <if test="productCategoryCode != null and productCategoryCode!=''">and
+                product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
+            </if>
+            <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
+
+            <if test='countType=="year"'>
+                <if test="dateTime != null and dateTime!=''">
+                    and date_format(create_time,'%Y') =#{dateTime,jdbcType=VARCHAR}
+                </if>
+            </if>
+            <if test='countType=="month"'>
+                <if test="dateTime != null and dateTime!=''">
+                    and date_format(create_time,'%Y-%m') =#{dateTime,jdbcType=VARCHAR}
+                </if>
+            </if>
+        </where>
+    </select>
+    <select id="selectForCountStockDetailList" resultType="com.bio.drqi.domain.BmsProductStockOutLog"
+            parameterType="com.bio.drqi.domain.BmsProductStockOutLog">
+        select product_inner_code,
+        brand_code,
+        batch_no,
+        stock_code,
+        unit_code,
+        sum(out_amount) as out_amount,
+        sum(out_number) as out_number
+        from bms_product_stock_out_log
+        <where>
+            <if test="productInnerCode != null and productInnerCode!=''">and
+                product_inner_code=#{productInnerCode,jdbcType=VARCHAR}
+            </if>
+            <if test="productCategoryCode != null and productCategoryCode!=''">and
+                product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
+            </if>
+            <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
+
+            <if test='countType=="year"'>
+                <if test="dateTime != null and dateTime!=''">
+                    and date_format(create_time,'%Y') =#{dateTime,jdbcType=VARCHAR}
+                </if>
+            </if>
+            <if test='countType=="month"'>
+                <if test="dateTime != null and dateTime!=''">
+                    and date_format(create_time,'%Y-%m') =#{dateTime,jdbcType=VARCHAR}
+                </if>
+            </if>
+        </where>
+        group by product_inner_code, brand_code, batch_no, stock_code,unit_code
     </select>
 </mapper>

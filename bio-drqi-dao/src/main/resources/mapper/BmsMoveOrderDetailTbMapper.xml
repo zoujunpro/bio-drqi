@@ -90,4 +90,8 @@
         </where>
         order by id desc
     </select>
+    <select id="selectForCountStockDetailList" resultType="com.bio.drqi.domain.BmsMoveOrderDetailTb">
+
+
+    </select>
 </mapper>

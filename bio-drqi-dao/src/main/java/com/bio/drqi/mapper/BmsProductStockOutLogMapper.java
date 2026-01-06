@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Param;
 import com.bio.drqi.domain.BmsProductStockOutLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -19,6 +20,11 @@ public interface BmsProductStockOutLogMapper extends BaseMapper<BmsProductStockO
     List<BmsProductStockOutLog> selectSelective(BmsProductStockOutLog bmsProductStockOutLog);
 
     List<BmsProductStockOutLog> selectAllByUniqueCode(@Param("uniqueCode") String uniqueCode);
+
+   BigDecimal selectSumAmount(BmsProductStockOutLog bmsProductStockOutLog);
+
+
+  List<BmsProductStockOutLog> selectForCountStockDetailList(BmsProductStockOutLog bmsProductStockOutLog);
 }
 
 

@@ -1,5 +1,7 @@
 package com.bio.drqi.mapper;
 import java.util.List;
+
+import com.bio.drqi.domain.BmsReturnOrderDetailTb;
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.BmsMoveOrderDetailTb;
@@ -15,6 +17,8 @@ public interface BmsMoveOrderDetailTbMapper extends BaseMapper<BmsMoveOrderDetai
 
 
     List<BmsMoveOrderDetailTb> selectSelective(BmsMoveOrderDetailTb bmsMoveOrderDetailTb);
+
+    List<BmsMoveOrderDetailTb> selectForCountStockDetailList(BmsMoveOrderDetailTb bmsMoveOrderDetailTb);
 
 }
 

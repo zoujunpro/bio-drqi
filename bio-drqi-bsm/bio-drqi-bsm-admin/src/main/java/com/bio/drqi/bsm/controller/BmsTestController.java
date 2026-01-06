@@ -15,6 +15,7 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.dto.BmsProductInputDTO;
 import com.bio.drqi.bsm.dto.BmsProductOutDTO;
+import com.bio.drqi.bsm.dto.BmsPurchaseOrderDTO;
 import com.bio.drqi.bsm.enums.CooperateFormEnum;
 import com.bio.drqi.bsm.enums.PurchaseTypeEnum;
 import com.bio.drqi.bsm.kd.KdTaskService;
@@ -115,12 +116,45 @@ public class BmsTestController {
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
 
+    @GetMapping("/cleanAddProduct")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanAddProduct() {
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectSelective(null);
+        if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
+            bmsOrderDetailTbList.forEach(bmsOrderDetailTb -> {
+                log.info("bmsOrderDetailTb*******"+JSONUtil.toJsonStr(bmsOrderDetailTb));
+
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsOrderDetailTb.getProductInnerCode());
+                if (bmsProductTb == null) {
+                    bmsProductTb = new BmsProductTb();
+                    bmsProductTb.setProductName(bmsOrderDetailTb.getProductName());
+                    bmsProductTb.setProductOutCode(bmsOrderDetailTb.getProductOutCode());
+                    bmsProductTb.setProductInnerCode(bmsOrderDetailTb.getProductInnerCode());
+                    bmsProductTb.setProductCategoryCode(bmsOrderDetailTb.getProductCategoryCode());
+                    bmsProductTb.setBrandCode(bmsOrderDetailTb.getBrandCode());
+                    bmsProductTb.setProductSpecs(bmsOrderDetailTb.getProductSpecs());
+                    bmsProductTb.setCreateTime(bmsOrderDetailTb.getCreateTime());
+                    bmsProductTb.setCreateUserId(bmsOrderDetailTb.getApplyUserId());
+                    bmsProductTb.setCreateUserName(bmsOrderDetailTb.getApplyUserName());
+                    bmsProductTb.setProductStatus("Y");
+                    bmsProductTb.setPictureUrls(null);
+                    bmsProductTb.setKdNumber(null);
+                    bmsProductTbMapper.insert(bmsProductTb);
+                }
+
+
+            });
+        }
+        return ResponseResult.getSuccess("ok");
+
+    }
+
     @GetMapping("/cleanStockLocation")
     public ResponseResult<String> cleanStockLocation() {
 
         bmsStockLocationDictMapper.selectList(null).forEach(bmsStockLocationDict -> {
-            if(bmsStockLocationDict.getStockCode().length()>30){
-                bmsStockLocationDict.setStockCode(bmsStockLocationDict.getStockCode().substring(0,30));
+            if (bmsStockLocationDict.getStockCode().length() > 30) {
+                bmsStockLocationDict.setStockCode(bmsStockLocationDict.getStockCode().substring(0, 30));
                 bmsStockLocationDictMapper.updateById(bmsStockLocationDict);
             }
         });

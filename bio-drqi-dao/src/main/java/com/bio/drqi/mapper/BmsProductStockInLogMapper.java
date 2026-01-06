@@ -1,9 +1,11 @@
 package com.bio.drqi.mapper;
+import com.bio.drqi.domain.BmsProductStockOutLog;
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.BmsProductStockInLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -22,7 +24,10 @@ List<BmsProductStockInLog> selectSelective(BmsProductStockInLog bmsProductStockI
 
     BmsProductStockInLog selectOneByTaskNumAndProductInnerCodeAndBatchNo(@Param("taskNum") String taskNum, @Param("productInnerCode") String productInnerCode, @Param("batchNo") String batchNo);
 
-    ;
+    BigDecimal selectSumAmount(BmsProductStockInLog bmsProductStockInLog);
+
+    List<BmsProductStockInLog> selectForCountStockDetailList(BmsProductStockInLog bmsProductStockInLog);
+
 
 }
 

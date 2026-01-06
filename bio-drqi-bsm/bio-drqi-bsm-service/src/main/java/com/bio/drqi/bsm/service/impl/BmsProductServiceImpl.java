@@ -115,11 +115,11 @@ public class BmsProductServiceImpl implements BmsProductService {
             throw new BusinessException("此品牌已经禁用");
         }
         String productInnerCode = null;
-        String maxProductInnerCode = bmsProductTbMapper.selectMaxProductInnerCode();
-        if (StringUtils.isEmpty(maxProductInnerCode)) {
+        Integer maxProductInnerCode = bmsProductTbMapper.selectList(null).stream().map(BmsProductTb::getProductInnerCode).map(code -> Integer.valueOf(code.substring(2))).max(Integer::compareTo).get();
+        if (maxProductInnerCode==null) {
             productInnerCode = BioBsmContents.product_prefix + StringUtils.padl("1", 5, '0');
         } else {
-            String nextProductInnerCode = String.valueOf(Integer.valueOf(maxProductInnerCode.substring(2)) + 1);
+            String nextProductInnerCode = String.valueOf(maxProductInnerCode + 1);
             productInnerCode = BioBsmContents.product_prefix + StringUtils.padl(nextProductInnerCode, 5, '0');
         }
         BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(bmsProductAddReqDTO.getProductName(), bmsProductAddReqDTO.getBrandCode(), bmsProductAddReqDTO.getProductSpecs());

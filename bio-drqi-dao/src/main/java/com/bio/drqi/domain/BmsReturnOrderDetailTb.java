@@ -150,6 +150,11 @@ public class BmsReturnOrderDetailTb implements Serializable {
 
     private String productCategoryCode;
 
+    @TableField(exist = false)
+    private String countType;
+
+    @TableField(exist = false)
+    private String dateTime;
 
 
     @TableField(exist = false)

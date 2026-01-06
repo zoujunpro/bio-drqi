@@ -7,10 +7,12 @@ public class BmsStockBroadCountStockReqDTO {
 
    private String countType;
 
-   private String DateTime;
+   private String dateTime;
 
    private String productInnerCode;
 
    private String productCategoryCode;
+
+   private String unitCode;
 
 }

@@ -1,9 +1,11 @@
 package com.bio.drqi.mapper;
+import com.bio.drqi.domain.BmsProductStockInLog;
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.BmsReturnOrderDetailTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -18,6 +20,9 @@ public interface BmsReturnOrderDetailTbMapper extends BaseMapper<BmsReturnOrderD
 
     List<BmsReturnOrderDetailTb> selectAllByOrderDetailNum(@Param("orderDetailNum") String orderDetailNum);
 
+    BigDecimal selectSumAmount(BmsReturnOrderDetailTb bmsReturnOrderDetailTb);
+
+    List<BmsReturnOrderDetailTb> selectForCountStockDetailList(BmsReturnOrderDetailTb bmsReturnOrderDetailTb);
 }
 
 

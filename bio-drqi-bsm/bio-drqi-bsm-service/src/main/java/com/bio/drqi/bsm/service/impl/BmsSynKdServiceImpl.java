@@ -44,7 +44,16 @@ public class BmsSynKdServiceImpl implements BmsSynKdService {
 
     @Override
     public void execute(BmsSynKdExecuteReqDTO bmsSynKdExecuteReqDTO) {
-
+        if (StringUtils.isEmpty(bmsSynKdExecuteReqDTO.getBeginDate())) {
+            bmsSynKdExecuteReqDTO.setBeginDate("2025-07-01");
+        }
+        if (StringUtils.isNotEmpty(bmsSynKdExecuteReqDTO.getBeginDate())) {
+            Date currentBeignDate = DateUtil.parse(bmsSynKdExecuteReqDTO.getBeginDate(), "yyyy-MM-dd");
+            Date minBeignDate = DateUtil.parse("2025-07-01", "yyyy-MM-dd");
+            if(currentBeignDate.compareTo(minBeignDate)<0){
+                throw new BusinessException("只能同步2025-07-01之后数据");
+            }
+        }
         List<BmsSynKdTaskLog> list = bmsSynKdTaskLogMapper.selectAllBySynStatusOrderByIdDesc(BmsKdSynStatusEnum.syn.name());
         if (CollectionUtil.isNotEmpty(list)) {
             throw new BusinessException("已经有在进行中的任务，请等待执行完毕后再进行金蝶数据同步");

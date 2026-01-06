@@ -165,7 +165,7 @@ public class BmsTestController {
     @GetMapping("/addData")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> addData() {
-        List<BmsStock> list = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\5月1号之后数据-LR.xlsx", BmsStock.class);
+        List<BmsStock> list = ExcelUtil.readExcel("C:\\Users\\zou'jun\\Desktop\\7月1号之后数据-LR.xlsx", BmsStock.class);
         for (BmsStock bmsStock : list) {
             log.info("bmsStock=" + JSONUtil.toJsonStr(bmsStock));
             BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsStock.productInnerCode);
@@ -944,7 +944,7 @@ public class BmsTestController {
 
     @GetMapping("/createBmsStockExcel")
     public void createBmsStockExcel(HttpServletResponse httpServletResponse) {
-        Date pointDate = DateUtil.parse("20250501235959", DatePattern.PURE_DATETIME_PATTERN);
+        Date pointDate = DateUtil.parse("20250701000000", DatePattern.PURE_DATETIME_PATTERN);
         //step 数据查询
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
         Map<String, BmsProductStockTb> bmsProductStockTbMap = bmsProductStockTbList.stream().collect(Collectors.toMap(bmsProductStockTb -> bmsProductStockTb.getProductInnerCode() + bmsProductStockTb.getUnitCode() + bmsProductStockTb.getBatchNo() + bmsProductStockTb.getStockCode(), bmsProductStockTb -> bmsProductStockTb));
@@ -1018,7 +1018,7 @@ public class BmsTestController {
             }
         }
 
-        ExcelUtil.writeExcel("D://5月1号之后数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
+        ExcelUtil.writeExcel("D://7月1号之后数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
     }
 
     @Data

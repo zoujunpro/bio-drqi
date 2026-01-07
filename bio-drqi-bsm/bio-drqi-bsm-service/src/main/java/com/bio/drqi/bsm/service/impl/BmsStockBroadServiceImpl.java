@@ -254,7 +254,6 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
         }
         List<BmsStockInBroadCountByCategoryRspDTO> resultList = new ArrayList<>();
         List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
-        Map<String, String> bmsProductCategoryTbMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
         List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectForCountStockInByCategory(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsProductStockInLog.class));
         if (CollectionUtil.isNotEmpty(bmsProductStockInLogList)) {
             bmsProductStockInLogList.stream().collect(Collectors.groupingBy(BmsProductStockInLog::getDateTime)).forEach((dateTime, list) -> {
@@ -272,6 +271,25 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
 
     @Override
     public List<BmsStockOutBroadCountByCategoryRspDTO> countStockOutByCategory(BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO) {
-        return null;
+        if (StringUtils.isEmpty(bmsStockBroadCountStockReqDTO.getCountType())) {
+            bmsStockBroadCountStockReqDTO.setCountType("month");
+            bmsStockBroadCountStockReqDTO.setEndDateTime(DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN));
+            bmsStockBroadCountStockReqDTO.setBeginDateTime(DateUtil.format(new Date(), DatePattern.NORM_YEAR_PATTERN) + "-01");
+        }
+        List<BmsStockOutBroadCountByCategoryRspDTO> resultList = new ArrayList<>();
+        List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+        List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectForCountStockInByCategory(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsProductStockOutLog.class));
+        if (CollectionUtil.isNotEmpty(bmsProductStockOutLogList)) {
+            bmsProductStockOutLogList.stream().collect(Collectors.groupingBy(BmsProductStockOutLog::getDateTime)).forEach((dateTime, list) -> {
+                BmsStockOutBroadCountByCategoryRspDTO bmsStockOutBroadCountByCategoryRspDTO = new BmsStockOutBroadCountByCategoryRspDTO();
+                bmsStockOutBroadCountByCategoryRspDTO.setDateTime(dateTime);
+                for (BmsProductCategoryTb bmsProductCategoryTb : bmsProductCategoryTbList) {
+                    Map<String, BigDecimal> map = list.stream().collect(Collectors.toMap(BmsProductStockOutLog::getProductCategoryCode, BmsProductStockOutLog::getOutAmount));
+                    bmsStockOutBroadCountByCategoryRspDTO.addContent(bmsProductCategoryTb.getProductCategoryCode(), bmsProductCategoryTb.getProductCategoryName(), map.get(bmsProductCategoryTb.getProductCategoryCode()) == null ? new BigDecimal(0) : map.get(bmsProductCategoryTb.getProductCategoryCode()));
+                }
+                resultList.add(bmsStockOutBroadCountByCategoryRspDTO);
+            });
+        }
+        return resultList;
     }
 }

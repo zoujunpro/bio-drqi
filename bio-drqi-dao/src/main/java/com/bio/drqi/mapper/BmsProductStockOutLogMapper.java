@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import com.bio.drqi.domain.BmsProductStockInLog;
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.BmsProductStockOutLog;
@@ -25,6 +26,8 @@ public interface BmsProductStockOutLogMapper extends BaseMapper<BmsProductStockO
 
 
   List<BmsProductStockOutLog> selectForCountStockDetailList(BmsProductStockOutLog bmsProductStockOutLog);
+
+    List<BmsProductStockOutLog> selectForCountStockInByCategory(BmsProductStockOutLog bmsProductStockOutLog);
 }
 
 

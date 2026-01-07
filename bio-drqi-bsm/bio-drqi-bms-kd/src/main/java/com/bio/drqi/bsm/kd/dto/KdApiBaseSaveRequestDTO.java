@@ -33,7 +33,7 @@ public class KdApiBaseSaveRequestDTO<T extends KdModel> {
         kdApiBaseSaveRequestDTO.setIsEntryBatchFil("true");
         kdApiBaseSaveRequestDTO.setValidateFlag("true");
         kdApiBaseSaveRequestDTO.setNumberSearch("true");
-        kdApiBaseSaveRequestDTO.setIsAutoAdjustField("false");
+        kdApiBaseSaveRequestDTO.setIsAutoAdjustField("true");
         kdApiBaseSaveRequestDTO.setIsAutoSubmitAndAudit("true");
         kdApiBaseSaveRequestDTO.setInterationFlags(null);
         kdApiBaseSaveRequestDTO.setIgnoreInterationFlag(null);

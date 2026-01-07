@@ -48,7 +48,7 @@ public class BmsProductController {
     @GetMapping("/listAllProductName")
     @WebLog(desc = "材料管理-查询所有材料名称")
     public ResponseResult<List<String>> listAllProductName() {
-    return ResponseResult.getSuccess(bmsProductService.listAllProductName());
+        return ResponseResult.getSuccess(bmsProductService.listAllProductName());
     }
 
     /**
@@ -58,8 +58,8 @@ public class BmsProductController {
      */
     @PostMapping("/queryList")
     @WebLog(desc = "材料管理-查询")
-        public ResponseResult<List<BmsProductQueryListRspDTO>> queryList(@RequestBody @Validated BmsProductQueryListReqDTO bmsProductQueryListReqDTO) {
-            return ResponseResult.getSuccess(bmsProductService.queryList(bmsProductQueryListReqDTO));
+    public ResponseResult<List<BmsProductQueryListRspDTO>> queryList(@RequestBody @Validated BmsProductQueryListReqDTO bmsProductQueryListReqDTO) {
+        return ResponseResult.getSuccess(bmsProductService.queryList(bmsProductQueryListReqDTO));
     }
 
     /**

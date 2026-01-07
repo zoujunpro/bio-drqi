@@ -210,7 +210,7 @@ public class BmsTestController {
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
         for (BmsProductStockTb bmsProductStockTb : bmsProductStockTbList) {
             log.info("bmsProductStockTb=" + JSONUtil.toJsonStr(bmsProductStockTb));
-            List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().productInnerCode(bmsProductStockTb.getProductInnerCode()).build());
+            List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().productInnerCode(bmsProductStockTb.getProductInnerCode()).unitCode(bmsProductStockTb.getUnitCode()).build());
             bmsProductStockTb.setProductPrice(bmsProductStockInLogList.get(0).getProductPrice());
             bmsProductStockTbMapper.updateById(bmsProductStockTb);
         }

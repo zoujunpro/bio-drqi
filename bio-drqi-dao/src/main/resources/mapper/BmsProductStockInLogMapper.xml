@@ -85,7 +85,7 @@
             <if test="produceDate != null">and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
             <if test="expirationDate != null">and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
             <if test="stockCode != null and stockCode!=''">and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
-
+            <if test="productInnerCode != null and productInnerCode!=''">and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

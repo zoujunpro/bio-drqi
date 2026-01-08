@@ -41,6 +41,7 @@
         <include refid="Base_Column_List"/>
         from bms_product_stock_tb
         <where>
+            <if test="productInnerCode != null and productInnerCode != ''"> and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}</if>
             <if test="productName != null and productName != ''"> and product_name=#{productName,jdbcType=VARCHAR}</if>
             <if test="productOutCode != null and productOutCode!=''"> and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
             <if test="productCategoryCode != null and productCategoryCode!=''"> and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
@@ -56,6 +57,7 @@
             <if test="expirationDate != null"> and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
             <if test="stockCode != null and stockCode!=''"> and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
             <if test='filterZeroFlag == "Y"'>and current_stock_number>0</if>
+
         </where>
         order by id desc
     </select>

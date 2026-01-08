@@ -1,7 +1,10 @@
 package com.bio.drqi.bsm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.req.BmsStockBroadCountOrderReqDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailBroadOrderCountRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailDirectionAmountCountCountRspDTO;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -39,6 +43,11 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
 
     @Override
     public List<BmsOrderDetailDirectionAmountCountCountRspDTO> directionAmountCount(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
+        if (StringUtils.isEmpty(bmsStockBroadCountOrderReqDTO.getCountType())) {
+            bmsStockBroadCountOrderReqDTO.setCountType("month");
+            bmsStockBroadCountOrderReqDTO.setBeginDateTime("2025-05");
+            bmsStockBroadCountOrderReqDTO.setEndDateTime(DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN));
+        }
         List<BmsOrderDetailDirectionAmountCountCountRspDTO> resultList = new ArrayList<>();
         List<BmsOrderDetailTb> list = bmsOrderDetailTbMapper.selectForDirectionAmountCount(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
         if (CollectionUtil.isNotEmpty(list)) {

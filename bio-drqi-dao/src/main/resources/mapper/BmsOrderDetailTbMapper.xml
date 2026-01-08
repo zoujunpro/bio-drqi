@@ -92,9 +92,7 @@
             <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
             <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="purchaseDate != null and purchaseDate!=''">and purchase_date=#{purchaseDate,jdbcType=VARCHAR}</if>
-            <if test="applyUnitCode != null and applyUnitCode!=''">and
-                apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}
-            </if>
+            <if test="applyUnitCode != null and applyUnitCode!=''">and apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
             <if test="applyUnitName != null and applyUnitName!=''">and
                 apply_unit_name=#{applyUnitName,jdbcType=VARCHAR}
             </if>
@@ -143,7 +141,7 @@
             <if test="productCategoryCode != null and productCategoryCode!=''">
                 and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
             </if>
-            <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
+            <if test="applyUnitCode != null and applyUnitCode!=''">and apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
             <if test='countType=="year"'>
                 <if test="beginDateTime != null and beginDateTime!=''">
                     and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}
@@ -173,7 +171,7 @@
         <if test="productCategoryCode != null and productCategoryCode!=''">
             and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
         </if>
-        <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
+        <if test="applyUnitCode != null and applyUnitCode!=''">and apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
         <if test='countType=="year"'>
             <if test="beginDateTime != null and beginDateTime!=''">
                 and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}
@@ -205,7 +203,7 @@
             <if test="productCategoryCode != null and productCategoryCode!=''">
                 and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
             </if>
-            <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
+            <if test="applyUnitCode != null and applyUnitCode!=''">and apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
             <if test='countType=="year"'>
                 <if test="beginDateTime != null and beginDateTime!=''">
                     and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}
@@ -238,7 +236,7 @@
             <if test="productCategoryCode != null and productCategoryCode!=''">
                 and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
             </if>
-            <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
+            <if test="applyUnitCode != null and applyUnitCode!=''">and apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
             <if test='countType=="year"'>
                 <if test="beginDateTime != null and beginDateTime!=''">
                     and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}

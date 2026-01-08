@@ -8,6 +8,7 @@ import com.bio.drqi.bsm.service.BmsStockBroadService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -30,6 +31,7 @@ public class BmsStockBroadController {
     public ResponseResult<BmsStockBroadCountStockRspDTO> countStock(@RequestBody BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO) {
         return ResponseResult.getSuccess(bmsStockBroadService.countStock(bmsStockBroadCountStockReqDTO));
     }
+
     /**
      * 库存数据统计-统计出入库明细
      *
@@ -37,8 +39,19 @@ public class BmsStockBroadController {
      */
     @PostMapping("countStockDetailList")
     @WebLog(desc = "库存数据统计-统计出入库明细")
-    public ResponseResult<List<BmsStockBroadCountStockDetailListRspDTO>> countStockDetailList(@RequestBody  BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO) {
+    public ResponseResult<List<BmsStockBroadCountStockDetailListRspDTO>> countStockDetailList(@RequestBody BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO) {
         return ResponseResult.getSuccess(bmsStockBroadService.countStockDetailList(bmsStockBroadCountStockReqDTO));
+    }
+
+    /**
+     * 库存数据统计-出入库明细下载
+     *
+     * @return
+     */
+    @PostMapping("downTemplateCountStockDetailList")
+    @WebLog(desc = "库存数据统计-出入库明细下载")
+    public void downTemplateCountStockDetailList(@RequestBody BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO, HttpServletResponse httpServletResponse) {
+        bmsStockBroadService.downTemplateCountStockDetailList(bmsStockBroadCountStockReqDTO,httpServletResponse);
     }
 
     /**
@@ -48,7 +61,7 @@ public class BmsStockBroadController {
      */
     @PostMapping("countStockByCategory")
     @WebLog(desc = "库存数据统计-按类别统计")
-    public ResponseResult<List<BmsStockBroadCountByCategoryRspDTO>> countStockByCategory(@RequestBody  BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO) {
+    public ResponseResult<List<BmsStockBroadCountByCategoryRspDTO>> countStockByCategory(@RequestBody BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO) {
         return ResponseResult.getSuccess(bmsStockBroadService.countStockByCategory(bmsStockBroadCountStockReqDTO));
     }
 

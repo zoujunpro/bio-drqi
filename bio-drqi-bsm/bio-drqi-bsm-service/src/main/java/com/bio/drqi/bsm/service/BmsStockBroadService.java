@@ -5,7 +5,9 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsStockBroadCountStockReqDTO;
 import com.bio.drqi.bsm.rsp.*;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface BmsStockBroadService {
@@ -23,6 +25,8 @@ public interface BmsStockBroadService {
      * @return
      */
     List<BmsStockBroadCountStockDetailListRspDTO> countStockDetailList(BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO);
+
+    void downTemplateCountStockDetailList(BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO, HttpServletResponse httpServletResponse);
 
     /**
      * 库存数据统计-按类别统计

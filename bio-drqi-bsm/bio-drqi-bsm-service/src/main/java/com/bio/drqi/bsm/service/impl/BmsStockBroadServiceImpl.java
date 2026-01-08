@@ -5,6 +5,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.req.BmsStockBroadCountStockReqDTO;
 import com.bio.drqi.bsm.rsp.*;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -234,6 +236,13 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
 
 
         return result;
+    }
+
+    @Override
+    public void downTemplateCountStockDetailList(BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO, HttpServletResponse httpServletResponse) {
+        List<BmsStockBroadCountStockDetailListRspDTO> list = countStockDetailList(bmsStockBroadCountStockReqDTO);
+        ExcelUtil.writeExcel("出入库明细", "sheet1", list, BmsStockBroadCountStockDetailListRspDTO.class, httpServletResponse);
+
     }
 
     @Override

@@ -155,7 +155,6 @@
         group by product_inner_code, brand_code, batch_no, stock_code,unit_code
     </select>
     <select id="selectForCountStockInByCategory" resultType="com.bio.drqi.domain.BmsProductStockOutLog">
-
         select product_category_code,
         <if test='countType=="year"'>date_format(create_time,'%Y') as dateTime ,</if>
         <if test='countType=="month"'>date_format(create_time,'%Y-%m') as dateTime,</if>

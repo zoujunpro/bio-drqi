@@ -10,6 +10,11 @@ public class BmsProductStockListPageReqDTO extends PageDTO {
      */
     private String productName;
 
+    /**
+     * 商品名称
+     */
+    private String productInnerCode;
+
 
     /**
      * 商品类别编号

@@ -44,4 +44,7 @@ public class BmsProductStockInLogListPageReqDTO extends PageDTO {
      * 单位编号
      */
     private String unitCode;
+
+
+    private String productInnerCode;
 }

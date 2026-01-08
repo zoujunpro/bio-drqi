@@ -244,11 +244,11 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
 
     @Override
     public List<BmsStockInBroadCountByCategoryRspDTO> countStockInByCategory(BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO) {
-        if (StringUtils.isEmpty(bmsStockBroadCountStockReqDTO.getCountType())) {
+      /*  if (StringUtils.isEmpty(bmsStockBroadCountStockReqDTO.getCountType())) {
             bmsStockBroadCountStockReqDTO.setCountType("month");
             bmsStockBroadCountStockReqDTO.setEndDateTime(DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN));
             bmsStockBroadCountStockReqDTO.setBeginDateTime(DateUtil.format(new Date(), DatePattern.NORM_YEAR_PATTERN) + "-01");
-        }
+        }*/
         List<BmsStockInBroadCountByCategoryRspDTO> resultList = new ArrayList<>();
         List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
         List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectForCountStockInByCategory(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsProductStockInLog.class));
@@ -268,11 +268,11 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
 
     @Override
     public List<BmsStockOutBroadCountByCategoryRspDTO> countStockOutByCategory(BmsStockBroadCountStockReqDTO bmsStockBroadCountStockReqDTO) {
-        if (StringUtils.isEmpty(bmsStockBroadCountStockReqDTO.getCountType())) {
+     /*   if (StringUtils.isEmpty(bmsStockBroadCountStockReqDTO.getCountType())) {
             bmsStockBroadCountStockReqDTO.setCountType("month");
             bmsStockBroadCountStockReqDTO.setEndDateTime(DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN));
             bmsStockBroadCountStockReqDTO.setBeginDateTime(DateUtil.format(new Date(), DatePattern.NORM_YEAR_PATTERN) + "-01");
-        }
+        }*/
         List<BmsStockOutBroadCountByCategoryRspDTO> resultList = new ArrayList<>();
         List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
         List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectForCountStockInByCategory(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsProductStockOutLog.class));

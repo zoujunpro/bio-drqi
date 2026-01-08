@@ -77,7 +77,7 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
         List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectForCountStockDetailList(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsReturnOrderDetailTb.class));
         List<BmsMoveOrderDetailTb> bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbMapper.selectForCountStockDetailList(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsMoveOrderDetailTb.class));
         //入库数据统计
-        if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)) {
+        if (CollectionUtil.isNotEmpty(bmsProductStockInLogList)) {
             bmsProductStockInLogList.forEach(bmsProductStockInLog -> {
                 BmsStockBroadCountStockDetailListRspDTO bmsStockBroadCountStockDetailListRspDTO = new BmsStockBroadCountStockDetailListRspDTO();
                 BmsProductTb bmsProductTb = bmsProductTbMap.get(bmsProductStockInLog.getProductInnerCode());

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 库存期初期末管理
@@ -25,7 +26,8 @@ public class BmsStockPeriodCountController {
     private BmsStockPeriodCountService bmsStockPeriodCountService;
 
     /**
-     *库存期初期末管理-分页查询
+     * 库存期初期末管理-分页查询
+     *
      * @param bmsStockPeriodCountListPageReqDTO
      * @return
      */
@@ -36,4 +38,15 @@ public class BmsStockPeriodCountController {
 
     }
 
+    /**
+     * 库存期初期末管理-分页查询
+     *
+     * @param bmsStockPeriodCountListPageReqDTO
+     * @return
+     */
+    @PostMapping("exportExcel")
+    @WebLog(desc = "库存期初期末管理-分页查询")
+    public void exportExcel(@Validated @RequestBody BmsStockPeriodCountListPageReqDTO bmsStockPeriodCountListPageReqDTO, HttpServletResponse httpServletResponse) {
+
+    }
 }

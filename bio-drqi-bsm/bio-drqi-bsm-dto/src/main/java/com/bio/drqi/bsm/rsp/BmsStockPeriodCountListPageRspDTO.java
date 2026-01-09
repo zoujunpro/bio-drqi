@@ -52,6 +52,8 @@ public class BmsStockPeriodCountListPageRspDTO {
      */
     private String stockCode;
 
+    private String stockName;
+
     /**
      * 期初数据
      */

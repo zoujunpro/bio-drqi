@@ -7,8 +7,10 @@ import com.bio.drqi.bsm.rsp.BmsStockPeriodCountListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsStockPeriodCountService;
 import com.bio.drqi.domain.BmsProductCategoryTb;
 import com.bio.drqi.domain.BmsProductStockPeriodCountTb;
+import com.bio.drqi.domain.BmsStockDict;
 import com.bio.drqi.mapper.BmsProductCategoryTbMapper;
 import com.bio.drqi.mapper.BmsProductStockPeriodCountTbMapper;
+import com.bio.drqi.mapper.BmsStockDictMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,9 @@ public class BmsStockPeriodCountServiceImpl implements BmsStockPeriodCountServic
     @Resource
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
 
+    @Resource
+    private BmsStockDictMapper bmsStockDictMapper;
+
     @Override
     public PageInfo<BmsStockPeriodCountListPageRspDTO> listPage(BmsStockPeriodCountListPageReqDTO bmsStockPeriodCountListPageReqDTO) {
         PageHelper.startPage(bmsStockPeriodCountListPageReqDTO.getPageNum(), bmsStockPeriodCountListPageReqDTO.getPageSize());
@@ -37,8 +42,10 @@ public class BmsStockPeriodCountServiceImpl implements BmsStockPeriodCountServic
         PageInfo<BmsStockPeriodCountListPageRspDTO> resultPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, BmsStockPeriodCountListPageRspDTO.class);
         if (CollectionUtil.isNotEmpty(list)) {
             Map<String, String> map = bmsProductCategoryTbMapper.selectSelective(null).stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+          Map<String,String> bmsStockDictMap=  bmsStockDictMapper.selectList(null).stream().collect(Collectors.toMap(BmsStockDict::getStockCode,BmsStockDict::getStockName));
             resultPageInfo.getList().forEach(bmsStockPeriodCountListPageRspDTO -> {
                 bmsStockPeriodCountListPageRspDTO.setProductCategoryName(map.get(bmsStockPeriodCountListPageRspDTO.getProductCategoryCode()));
+                bmsStockPeriodCountListPageRspDTO.setStockName(bmsStockDictMap.get(bmsStockPeriodCountListPageRspDTO.getStockCode()));
             });
         }
         return resultPageInfo;

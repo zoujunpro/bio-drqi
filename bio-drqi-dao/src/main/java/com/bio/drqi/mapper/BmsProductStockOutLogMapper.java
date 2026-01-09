@@ -28,6 +28,8 @@ public interface BmsProductStockOutLogMapper extends BaseMapper<BmsProductStockO
   List<BmsProductStockOutLog> selectForCountStockDetailList(BmsProductStockOutLog bmsProductStockOutLog);
 
     List<BmsProductStockOutLog> selectForCountStockInByCategory(BmsProductStockOutLog bmsProductStockOutLog);
+
+    List<BmsProductStockOutLog> selectAllByCreateTime(@Param("month") String month);
 }
 
 

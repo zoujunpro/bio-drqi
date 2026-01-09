@@ -23,6 +23,8 @@ public interface BmsReturnOrderDetailTbMapper extends BaseMapper<BmsReturnOrderD
     BigDecimal selectSumAmount(BmsReturnOrderDetailTb bmsReturnOrderDetailTb);
 
     List<BmsReturnOrderDetailTb> selectForCountStockDetailList(BmsReturnOrderDetailTb bmsReturnOrderDetailTb);
+
+    List<BmsReturnOrderDetailTb> selectAllByCreateTime(@Param("month") String month);
 }
 
 

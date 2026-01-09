@@ -25,7 +25,6 @@
         <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-        <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
         <result property="kdNumber" column="kd_number" jdbcType="INTEGER"/>
         <result property="productPrice" column="product_price" jdbcType="DECIMAL"/>
         <result property="moveAmount" column="move_amount" jdbcType="DECIMAL"/>
@@ -40,7 +39,7 @@
         product_inner_code,produce_date,expiration_date,
         from_stock_code,from_stock_location_number,to_stock_code,
         to_stock_location_number,move_number,create_user_id,
-        create_user_name,create_time,unique_code,kd_number,product_price,move_amount
+        create_user_name,create_time,kd_number,product_price,move_amount
     </sql>
     <select id="selectAllByUnitCode" resultMap="BaseResultMap">
         select
@@ -127,5 +126,13 @@
             </if>
         </where>
         group by product_inner_code, brand_code, batch_no, from_stock_code,to_stock_code,unit_code
+    </select>
+
+    <select id="selectAllByCreateTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_move_order_detail_tb
+        where
+        date_format(create_time,'%Y-%m') ={month,jdbcType=VARCHAR}
     </select>
 </mapper>

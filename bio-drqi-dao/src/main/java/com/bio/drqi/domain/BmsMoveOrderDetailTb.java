@@ -116,7 +116,6 @@ public class BmsMoveOrderDetailTb implements Serializable {
      */
     private Date createTime;
 
-    private String uniqueCode;
 
     private String kdNumber;
 

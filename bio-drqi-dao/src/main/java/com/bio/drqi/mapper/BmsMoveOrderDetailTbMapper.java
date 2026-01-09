@@ -1,6 +1,7 @@
 package com.bio.drqi.mapper;
 import java.util.List;
 
+import com.bio.drqi.domain.BmsProductStockInLog;
 import com.bio.drqi.domain.BmsReturnOrderDetailTb;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,6 +21,7 @@ public interface BmsMoveOrderDetailTbMapper extends BaseMapper<BmsMoveOrderDetai
 
     List<BmsMoveOrderDetailTb> selectForCountStockDetailList(BmsMoveOrderDetailTb bmsMoveOrderDetailTb);
 
+    List<BmsMoveOrderDetailTb> selectAllByCreateTime(@Param("month") String month);
 }
 
 

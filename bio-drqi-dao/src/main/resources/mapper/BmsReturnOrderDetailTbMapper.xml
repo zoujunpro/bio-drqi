@@ -155,4 +155,11 @@
         </where>
         group by product_inner_code, brand_code, batch_no, stock_code,unit_code
     </select>
+    <select id="selectAllByCreateTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_return_order_detail_tb
+        where
+        date_format(create_time,'%Y-%m') ={month,jdbcType=VARCHAR}
+    </select>
 </mapper>

@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.Date;
 import com.bio.drqi.domain.BmsProductStockOutLog;
 import com.bio.drqi.domain.BmsProductStockTb;
 import org.apache.ibatis.annotations.Param;
@@ -30,6 +31,8 @@ List<BmsProductStockInLog> selectSelective(BmsProductStockInLog bmsProductStockI
     List<BmsProductStockInLog> selectForCountStockDetailList(BmsProductStockInLog bmsProductStockInLog);
 
     List<BmsProductStockInLog> selectForCountStockInByCategory(BmsProductStockInLog bmsProductStockInLog);
+
+    List<BmsProductStockInLog> selectAllByCreateTime(@Param("month") String month);
 
 
 }

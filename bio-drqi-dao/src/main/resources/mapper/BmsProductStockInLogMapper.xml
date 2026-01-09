@@ -225,5 +225,12 @@
         </if>
         product_category_code
     </select>
+    <select id="selectAllByCreateTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_in_log
+        where
+        date_format(create_time,'%Y-%m') ={month,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

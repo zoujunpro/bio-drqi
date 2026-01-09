@@ -206,7 +206,6 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         bmsMoveOrderDetailTb.setCreateUserId(SecurityContextHolder.getUserId());
         bmsMoveOrderDetailTb.setCreateUserName(SecurityContextHolder.getNickName());
         bmsMoveOrderDetailTb.setCreateTime(new Date());
-        bmsMoveOrderDetailTb.setUniqueCode(newBmsProductStockTb.getUniqueCode());
         bmsMoveOrderDetailTb.setProductPrice(newBmsProductStockTb.getProductPrice());
         bmsMoveOrderDetailTb.setMoveAmount(bmsMoveOrderDetailTb.getProductPrice().multiply(new BigDecimal(bmsMoveOrderDetailTb.getMoveNumber())));
         bmsMoveOrderDetailTbMapper.insert(bmsMoveOrderDetailTb);

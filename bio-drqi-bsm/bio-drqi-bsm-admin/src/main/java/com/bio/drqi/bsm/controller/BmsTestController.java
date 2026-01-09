@@ -13,6 +13,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.contents.BioBsmContents;
+import com.bio.drqi.bsm.dto.BmsCountPeriodTaskDTO;
 import com.bio.drqi.bsm.dto.BmsProductInputDTO;
 import com.bio.drqi.bsm.dto.BmsProductOutDTO;
 import com.bio.drqi.bsm.dto.BmsPurchaseOrderDTO;
@@ -22,6 +23,7 @@ import com.bio.drqi.bsm.kd.KdTaskService;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
 import com.bio.drqi.bsm.kd.properties.KdProperties;
 import com.bio.drqi.bsm.req.BmsProductAddReqDTO;
+import com.bio.drqi.bsm.service.BmsCountPeriodTaskService;
 import com.bio.drqi.bsm.service.BmsProductService;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
@@ -32,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -114,6 +117,9 @@ public class BmsTestController {
 
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
+    @Resource
+    private BmsCountPeriodTaskService bmsCountPeriodTaskService;
 
 
     @GetMapping("/cleanAddProduct")
@@ -224,7 +230,7 @@ public class BmsTestController {
 
         bmsMoveOrderDetailTbMapper.selectSelective(null).forEach(bmsMoveOrderDetailTb -> {
             log.info("bmsMoveOrderDetailTb=" + JSONUtil.toJsonStr(bmsMoveOrderDetailTb));
-            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsMoveOrderDetailTb.getUniqueCode());
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCode(bmsMoveOrderDetailTb.getProductInnerCode(),bmsMoveOrderDetailTb.getUnitCode(),bmsMoveOrderDetailTb.getBatchNo(),bmsMoveOrderDetailTb.getFromStockCode());
             bmsMoveOrderDetailTb.setProductPrice(bmsProductStockTb.getProductPrice());
             bmsMoveOrderDetailTb.setMoveAmount(bmsProductStockTb.getProductPrice().multiply(new BigDecimal(bmsMoveOrderDetailTb.getMoveNumber())));
             bmsMoveOrderDetailTbMapper.updateById(bmsMoveOrderDetailTb);
@@ -943,8 +949,9 @@ public class BmsTestController {
 
 
     @GetMapping("/createBmsStockExcel")
-    public void createBmsStockExcel(HttpServletResponse httpServletResponse) {
-        Date pointDate = DateUtil.parse("20250701000000", DatePattern.PURE_DATETIME_PATTERN);
+    @Transactional(rollbackFor = Exception.class)
+    public void createBmsStockExcel(HttpServletResponse httpServletResponse,@RequestParam String dateTime) {
+        Date pointDate = DateUtil.parse(dateTime, DatePattern.PURE_DATETIME_PATTERN);
         //step 数据查询
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
         Map<String, BmsProductStockTb> bmsProductStockTbMap = bmsProductStockTbList.stream().collect(Collectors.toMap(bmsProductStockTb -> bmsProductStockTb.getProductInnerCode() + bmsProductStockTb.getUnitCode() + bmsProductStockTb.getBatchNo() + bmsProductStockTb.getStockCode(), bmsProductStockTb -> bmsProductStockTb));
@@ -1006,7 +1013,7 @@ public class BmsTestController {
         }
         List<BmsStock> bmsStockList = BeanUtils.copyListProperties(bmsProductStockTbList, BmsStock.class);
 
-        bmsStockList = bmsStockList.stream().filter(bmsStock -> bmsStock.getCurrentStockNumber() > 0).collect(Collectors.toList());
+   /*     bmsStockList = bmsStockList.stream().filter(bmsStock -> bmsStock.getCurrentStockNumber() > 0).collect(Collectors.toList());
         for (BmsStock bmsStock : bmsStockList) {
             List<BmsProductStockInLog> bmsProductStockInLogs = bmsProductStockInLogMapper.selectAllByUniqueCode(bmsStock.getUniqueCode());
             if (CollectionUtil.isNotEmpty(bmsProductStockInLogs)) {
@@ -1017,8 +1024,9 @@ public class BmsTestController {
                 bmsStock.setProductName(bmsProjectDict.getKdProjectName());
             }
         }
-
-        ExcelUtil.writeExcel("D://7月1号之后数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
+*/
+        bmsCountPeriodTaskService.createPeriodData(DateUtil.format(pointDate,DatePattern.NORM_MONTH_PATTERN),BeanUtils.copyListProperties(bmsStockList, BmsCountPeriodTaskDTO.class));
+       // ExcelUtil.writeExcel("D://7月1号之后数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
     }
 
     @Data

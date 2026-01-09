@@ -32,7 +32,7 @@ List<BmsProductStockInLog> selectSelective(BmsProductStockInLog bmsProductStockI
 
     List<BmsProductStockInLog> selectForCountStockInByCategory(BmsProductStockInLog bmsProductStockInLog);
 
-    List<BmsProductStockInLog> selectAllByCreateTime(@Param("month") String month);
+    List<BmsProductStockInLog> selectAllByCreateTime(@Param("dateTime") String dateTime);
 
 
 }

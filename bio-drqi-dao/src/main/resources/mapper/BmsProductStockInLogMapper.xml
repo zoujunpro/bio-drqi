@@ -85,7 +85,9 @@
             <if test="produceDate != null">and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
             <if test="expirationDate != null">and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
             <if test="stockCode != null and stockCode!=''">and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
-            <if test="productInnerCode != null and productInnerCode!=''">and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}</if>
+            <if test="productInnerCode != null and productInnerCode!=''">and
+                product_inner_code=#{productInnerCode,jdbcType=VARCHAR}
+            </if>
         </where>
         order by id desc
     </select>
@@ -225,12 +227,13 @@
         </if>
         product_category_code
     </select>
-    <select id="selectAllByCreateTime" resultMap="BaseResultMap">
+
+    <select id="selectAllByCreateTime" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
         from bms_product_stock_in_log
         where
-        date_format(create_time,'%Y-%m') ={month,jdbcType=VARCHAR}
+        date_format(create_time,'%Y-%m') =#{dateTime,jdbcType=VARCHAR}
     </select>
 
 </mapper>

@@ -24,7 +24,7 @@ public interface BmsReturnOrderDetailTbMapper extends BaseMapper<BmsReturnOrderD
 
     List<BmsReturnOrderDetailTb> selectForCountStockDetailList(BmsReturnOrderDetailTb bmsReturnOrderDetailTb);
 
-    List<BmsReturnOrderDetailTb> selectAllByCreateTime(@Param("month") String month);
+    List<BmsReturnOrderDetailTb> selectAllByCreateTime(@Param("dateTime") String dateTime);
 }
 
 

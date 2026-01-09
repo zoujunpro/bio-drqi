@@ -198,6 +198,6 @@
         <include refid="Base_Column_List"/>
         from bms_product_stock_out_log
         where
-        date_format(create_time,'%Y-%m') ={month,jdbcType=VARCHAR}
+        date_format(create_time,'%Y-%m') =#{dateTime,jdbcType=VARCHAR}
     </select>
 </mapper>

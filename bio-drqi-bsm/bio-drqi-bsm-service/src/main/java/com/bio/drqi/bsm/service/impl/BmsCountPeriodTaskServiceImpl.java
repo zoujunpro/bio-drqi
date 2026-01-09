@@ -42,7 +42,7 @@ public class BmsCountPeriodTaskServiceImpl implements BmsCountPeriodTaskService 
     public void createPeriodData(String dateTime, List<BmsCountPeriodTaskDTO> list) {
         for (BmsCountPeriodTaskDTO bmsCountPeriodTaskDTO : list) {
             log.info("处理库存数据bmsCountPeriodTaskDTO=" + JSONUtil.toJsonStr(bmsCountPeriodTaskDTO));
-            DateTime dateMonth = DateUtil.parse("2025-01", DatePattern.NORM_MONTH_PATTERN);
+            DateTime dateMonth = DateUtil.parse(dateTime, DatePattern.NORM_MONTH_PATTERN);
             String lastMonth = DateUtil.format(DateUtil.offsetMonth(dateMonth, -1), DatePattern.NORM_MONTH_PATTERN);
             BmsProductStockPeriodCountTb lastBmsProductStockPeriodCountTb = bmsProductStockPeriodCountTbMapper.selectOneByProductInnerCodeAndUnitCodeAndStockCodeAndBatchNoAndPeriodTime(bmsCountPeriodTaskDTO.getProductInnerCode(), bmsCountPeriodTaskDTO.getUnitCode(), bmsCountPeriodTaskDTO.getStockCode(), bmsCountPeriodTaskDTO.getBatchNo(), lastMonth);
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsCountPeriodTaskDTO.getUniqueCode());
@@ -59,8 +59,8 @@ public class BmsCountPeriodTaskServiceImpl implements BmsCountPeriodTaskService 
             bmsProductStockPeriodCountTb.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
             bmsProductStockPeriodCountTb.setUniqueCode(bmsProductStockTb.getUniqueCode());
             bmsProductStockPeriodCountTb.setStockCode(bmsProductStockTb.getStockCode());
-            bmsProductStockPeriodCountTb.setPeriodBeginNumber(0);
-            bmsProductStockPeriodCountTb.setPeriodEndNumber(lastBmsProductStockPeriodCountTb != null ? lastBmsProductStockPeriodCountTb.getPeriodEndNumber() : bmsCountPeriodTaskDTO.getCurrentStockNumber());
+            bmsProductStockPeriodCountTb.setPeriodBeginNumber(lastBmsProductStockPeriodCountTb!=null?lastBmsProductStockPeriodCountTb.getPeriodEndNumber():0);
+            bmsProductStockPeriodCountTb.setPeriodEndNumber(bmsCountPeriodTaskDTO.getCurrentStockNumber());
             bmsProductStockPeriodCountTb.setTotalInNumber(0);
             bmsProductStockPeriodCountTb.setTotalOutNumber(0);
             bmsProductStockPeriodCountTb.setPeriodTime(dateTime);
@@ -99,7 +99,7 @@ public class BmsCountPeriodTaskServiceImpl implements BmsCountPeriodTaskService 
             bmsProductStockOutLogList.forEach(bmsProductStockOutLog -> {
                 log.info("处理出库数据bmsProductStockOutLog=" + JSONUtil.toJsonStr(bmsProductStockOutLog));
                 BmsProductStockPeriodCountTb bmsProductStockPeriodCountTb = bmsProductStockPeriodCountTbMapper.selectOneByProductInnerCodeAndUnitCodeAndStockCodeAndBatchNoAndPeriodTime(bmsProductStockOutLog.getProductInnerCode(), bmsProductStockOutLog.getUnitCode(), bmsProductStockOutLog.getStockCode(), bmsProductStockOutLog.getBatchNo(), dateTime);
-                bmsProductStockPeriodCountTb.setTotalOutNumber(bmsProductStockOutLog.getOutNumber() + bmsProductStockPeriodCountTb.getMoveOutNumber());
+                bmsProductStockPeriodCountTb.setTotalOutNumber(bmsProductStockOutLog.getOutNumber() + bmsProductStockPeriodCountTb.getTotalOutNumber());
                 bmsProductStockPeriodCountTbMapper.updateById(bmsProductStockPeriodCountTb);
             });
         }

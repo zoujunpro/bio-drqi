@@ -21,7 +21,7 @@ public interface BmsMoveOrderDetailTbMapper extends BaseMapper<BmsMoveOrderDetai
 
     List<BmsMoveOrderDetailTb> selectForCountStockDetailList(BmsMoveOrderDetailTb bmsMoveOrderDetailTb);
 
-    List<BmsMoveOrderDetailTb> selectAllByCreateTime(@Param("month") String month);
+    List<BmsMoveOrderDetailTb> selectAllByCreateTime(@Param("dateTime") String dateTime);
 }
 
 

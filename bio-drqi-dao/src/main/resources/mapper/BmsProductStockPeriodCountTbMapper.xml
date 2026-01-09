@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.mapper.BmsProductStockPeriodCountTbMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BmsProductStockPeriodCountTb">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+            <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
+            <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
+            <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
+            <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
+            <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
+            <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
+            <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>
+            <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
+            <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
+            <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
+            <result property="periodBeginNumber" column="period_begin_number" jdbcType="INTEGER"/>
+            <result property="periodEndNumber" column="period_end_number" jdbcType="INTEGER"/>
+            <result property="totalInNumber" column="total_in_number" jdbcType="INTEGER"/>
+            <result property="totalOutNumber" column="total_out_number" jdbcType="INTEGER"/>
+            <result property="periodTime" column="period_time" jdbcType="VARCHAR"/>
+            <result property="returnNumber" column="return_number" jdbcType="INTEGER"/>
+            <result property="moveInNumber" column="move_in_number" jdbcType="INTEGER"/>
+            <result property="moveOutNumber" column="move_out_number" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,product_name,product_out_code,
+        product_category_code,brand_code,product_specs,
+        batch_no,unit_code,supplier_code,
+        product_inner_code,unique_code,stock_code,
+        period_begin_number,period_end_number,total_in_number,
+        total_out_number,period_time,return_number,
+        move_in_number,move_out_number
+    </sql>
+    <select id="selectOneByProductInnerCodeAndUnitCodeAndStockCodeAndBatchNoAndPeriodTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_period_count_tb
+        where
+        product_inner_code = #{productInnerCode,jdbcType=VARCHAR}
+        AND unit_code = #{unitCode,jdbcType=VARCHAR}
+        AND stock_code = #{stockCode,jdbcType=VARCHAR}
+        AND batch_no = #{batchNo,jdbcType=VARCHAR}
+        AND period_time = #{periodTime,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.BmsProductStockPeriodCountTb">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_period_count_tb
+        <where>
+            <if test="productName != null"> and product_name=#{productName,jdbcType=VARCHAR}</if>
+            <if test="productOutCode != null">and product_out_code=#{productOutCode,jdbcType=VARCHAR}</if>
+            <if test="productCategoryCode != null and productCategoryCode!=''">and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
+            <if test="brandCode != null and brandCode!=''">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
+            <if test="productSpecs != null">and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>
+            <if test="batchNo != null and batchNo!=''">and batch_no=#{batchNo,jdbcType=VARCHAR}</if>
+            <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
+            <if test="supplierCode != null and supplierCode!=''">and supplier_code=#{supplierCode,jdbcType=VARCHAR}</if>
+            <if test="productInnerCode != null and productInnerCode!=''">and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}</if>
+            <if test="uniqueCode != null">and unique_code=#{uniqueCode,jdbcType=VARCHAR}</if>
+            <if test="stockCode != null and stockCode!=''">and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
+            <if test="periodBeginNumber != null">and period_begin_number=#{periodBeginNumber,jdbcType=NUMERIC}</if>
+            <if test="periodEndNumber != null">and period_end_number=#{periodEndNumber,jdbcType=NUMERIC}</if>
+            <if test="totalInNumber != null">and total_in_number=#{totalInNumber,jdbcType=NUMERIC}</if>
+            <if test="totalOutNumber != null">and total_out_number=#{totalOutNumber,jdbcType=NUMERIC}</if>
+            <if test="returnNumber != null">and return_number=#{returnNumber,jdbcType=NUMERIC}</if>
+            <if test="moveInNumber != null">and move_in_number=#{moveInNumber,jdbcType=NUMERIC}</if>
+            <if test="moveOutNumber != null">and move_out_number=#{moveOutNumber,jdbcType=NUMERIC}</if>
+            <if test="beginDateTime != null and beginDateTime!=''">and period_time >=#{beginDateTime,jdbcType=VARCHAR}</if>
+            <if test="endDateTime != null and endDateTime!=''">and period_time &lt;=#{endDateTime,jdbcType=VARCHAR}</if>
+        </where>
+        order by product_inner_code asc , unit_code asc , batch_no asc ,stock_code asc  ,period_time asc
+    </select>
+
+
+</mapper>

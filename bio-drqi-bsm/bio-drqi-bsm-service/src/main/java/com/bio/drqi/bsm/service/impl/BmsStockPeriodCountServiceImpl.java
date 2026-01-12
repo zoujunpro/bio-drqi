@@ -57,6 +57,14 @@ public class BmsStockPeriodCountServiceImpl implements BmsStockPeriodCountServic
     public void exportExcel(BmsStockPeriodCountListPageReqDTO bmsStockPeriodCountListPageReqDTO, HttpServletResponse httpServletResponse) {
         List<BmsProductStockPeriodCountTb> list = bmsProductStockPeriodCountTbMapper.selectSelective(BeanUtils.copyProperties(bmsStockPeriodCountListPageReqDTO, BmsProductStockPeriodCountTb.class));
         List<BmsStockPeriodCountListPageRspDTO> resultList = BeanUtils.copyListProperties(list, BmsStockPeriodCountListPageRspDTO.class);
+        if (CollectionUtil.isNotEmpty(resultList)) {
+            Map<String, String> map = bmsProductCategoryTbMapper.selectSelective(null).stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+            Map<String, String> bmsStockDictMap = bmsStockDictMapper.selectList(null).stream().collect(Collectors.toMap(BmsStockDict::getStockCode, BmsStockDict::getStockName));
+            resultList.forEach(bmsStockPeriodCountListPageRspDTO -> {
+                bmsStockPeriodCountListPageRspDTO.setProductCategoryName(map.get(bmsStockPeriodCountListPageRspDTO.getProductCategoryCode()));
+                bmsStockPeriodCountListPageRspDTO.setStockName(bmsStockDictMap.get(bmsStockPeriodCountListPageRspDTO.getStockCode()));
+            });
+        }
         ExcelUtil.writeExcel("期初期末数据","sheet1",resultList,BmsStockPeriodCountListPageRspDTO.class,httpServletResponse);
     }
 }

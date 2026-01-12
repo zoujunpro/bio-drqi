@@ -64,7 +64,7 @@ public class BmsStockPeriodCountListPageRspDTO {
     @ExcelIgnore
     private String stockCode;
 
-    @ExcelProperty("库房编号")
+    @ExcelProperty("库房")
     private String stockName;
 
     /**

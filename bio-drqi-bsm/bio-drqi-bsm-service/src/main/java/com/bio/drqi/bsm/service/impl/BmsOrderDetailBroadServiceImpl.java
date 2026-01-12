@@ -42,14 +42,16 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
     }
 
     @Override
-    public List<BmsOrderDetailDirectionAmountCountCountRspDTO> directionAmountCount(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO,String reportFlag) {
+    public List<BmsOrderDetailDirectionAmountCountCountRspDTO> directionAmountCount(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO, String reportFlag) {
         if (StringUtils.isEmpty(bmsStockBroadCountOrderReqDTO.getCountType())) {
             bmsStockBroadCountOrderReqDTO.setCountType("month");
             bmsStockBroadCountOrderReqDTO.setBeginDateTime("2025-05");
             bmsStockBroadCountOrderReqDTO.setEndDateTime(DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN));
         }
         List<BmsOrderDetailDirectionAmountCountCountRspDTO> resultList = new ArrayList<>();
-        List<BmsOrderDetailTb> list = bmsOrderDetailTbMapper.selectForDirectionAmountCount(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
+        BmsOrderDetailTb orderDetailTb = BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class);
+        orderDetailTb.setReportFlag(reportFlag);
+        List<BmsOrderDetailTb> list = bmsOrderDetailTbMapper.selectForDirectionAmountCount(orderDetailTb);
         if (CollectionUtil.isNotEmpty(list)) {
             list.forEach(bmsOrderDetailTb -> {
                 BmsOrderDetailDirectionAmountCountCountRspDTO bmsOrderDetailDirectionAmountCountCountRspDTO = new BmsOrderDetailDirectionAmountCountCountRspDTO();

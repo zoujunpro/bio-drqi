@@ -31,7 +31,7 @@ public class BmsStockPeriodCountListPageRspDTO {
     /**
      * 所属类别编号
      */
-    @ExcelProperty("所属类别编号")
+    @ExcelProperty("类别")
     private String productCategoryName;
 
     /**

@@ -9,6 +9,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface BmsOrderDetailBroadService {
@@ -40,4 +41,6 @@ public interface BmsOrderDetailBroadService {
 
 
     PageInfo<BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO>  queryReportNoInStockListPage( BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO);
+
+    void exportReportNoInStockListPage(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO, HttpServletResponse httpServletResponse);
 }

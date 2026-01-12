@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.req.BmsStockBroadCountOrderReqDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailBroadOrderCountRspDTO;
@@ -26,6 +27,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -112,5 +114,22 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
             });
         }
         return result;
+    }
+
+    @Override
+    public void exportReportNoInStockListPage(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO, HttpServletResponse httpServletResponse) {
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForReportNoInStockListPage(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
+        List<BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO> result=BeanUtils.copyListProperties(bmsOrderDetailTbList,BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.class);
+        if(CollectionUtil.isNotEmpty(bmsOrderDetailTbList)){
+            List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(null);
+            List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+            Map<String, String> bmsBrandMap = bmsBrandTbList.stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
+            Map<String, String> bmsProductCategoryTbMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+            result.forEach(bmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO -> {
+                bmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.setBrandName(bmsBrandMap.get(bmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.getBrandCode()));
+                bmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.setProductCategoryName(bmsProductCategoryTbMap.get(bmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.getProductCategoryCode()));
+            });
+        }
+        ExcelUtil.writeExcel("已入库未报账数据","sheet1",result,BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.class,httpServletResponse);
     }
 }

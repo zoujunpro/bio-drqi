@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -80,14 +81,25 @@ public class BmsOrderDetailBroadController {
 
 
     /**
-     *
+     * 采购统计-已入库未报账数据
      * @param bmsStockBroadCountOrderReqDTO
      * @return
      */
-    @PostMapping("/queryReportNoInStock")
+    @PostMapping("/queryReportNoInStockListPage")
     @WebLog(desc = "采购统计-已入库未报账数据")
     public ResponseResult<PageInfo<BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO>>  queryReportNoInStockListPage(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO){
         return ResponseResult.getSuccess(bmsOrderDetailBroadService.queryReportNoInStockListPage(bmsStockBroadCountOrderReqDTO));
+    }
+
+    /**
+     * 采购统计-导出已入库未报账数据
+     * @param bmsStockBroadCountOrderReqDTO
+     * @return
+     */
+    @PostMapping("/exportReportNoInStockListPage")
+    @WebLog(desc = "采购统计-导出已入库未报账数据")
+    public void   exportReportNoInStockListPage(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO, HttpServletResponse httpServletResponse){
+        bmsOrderDetailBroadService.exportReportNoInStockListPage(bmsStockBroadCountOrderReqDTO,httpServletResponse);
     }
 
 }

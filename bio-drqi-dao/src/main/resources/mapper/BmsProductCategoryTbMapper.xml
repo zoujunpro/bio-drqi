@@ -47,7 +47,7 @@
             <if test="kdCategoryCode != null">and kd_category_code=#{kdCategoryCode,jdbcType=VARCHAR}</if>
             <if test="kdParentId != null">and kd_parent_id=#{kdParentId,jdbcType=VARCHAR}</if>
         </where>
-        order by id desc
+        order by id asc
     </select>
     <select id="selectOneByProductCategoryCode" resultMap="BaseResultMap">
         select

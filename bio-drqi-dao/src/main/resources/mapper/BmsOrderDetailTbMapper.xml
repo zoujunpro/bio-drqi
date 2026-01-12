@@ -92,7 +92,9 @@
             <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
             <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="purchaseDate != null and purchaseDate!=''">and purchase_date=#{purchaseDate,jdbcType=VARCHAR}</if>
-            <if test="applyUnitCode != null and applyUnitCode!=''">and apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
+            <if test="applyUnitCode != null and applyUnitCode!=''">and
+                apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}
+            </if>
             <if test="applyUnitName != null and applyUnitName!=''">and
                 apply_unit_name=#{applyUnitName,jdbcType=VARCHAR}
             </if>
@@ -141,7 +143,9 @@
             <if test="productCategoryCode != null and productCategoryCode!=''">
                 and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
             </if>
-            <if test="applyUnitCode != null and applyUnitCode!=''">and apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
+            <if test="applyUnitCode != null and applyUnitCode!=''">and
+                apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}
+            </if>
             <if test='countType=="year"'>
                 <if test="beginDateTime != null and beginDateTime!=''">
                     and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}
@@ -171,7 +175,8 @@
         <if test="productCategoryCode != null and productCategoryCode!=''">
             and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
         </if>
-        <if test="applyUnitCode != null and applyUnitCode!=''">and apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
+        <if test="applyUnitCode != null and applyUnitCode!=''">and apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}
+        </if>
         <if test='countType=="year"'>
             <if test="beginDateTime != null and beginDateTime!=''">
                 and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}
@@ -198,7 +203,7 @@
         from bms_order_detail_tb
         <where>
             <if test='reportFlag=="Y"'>
-                and report_account_time  is not null
+                and report_account_time is not null
             </if>
             <if test="productInnerCode != null and productInnerCode!=''">
                 and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}
@@ -206,7 +211,9 @@
             <if test="productCategoryCode != null and productCategoryCode!=''">
                 and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
             </if>
-            <if test="applyUnitCode != null and applyUnitCode!=''">and apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
+            <if test="applyUnitCode != null and applyUnitCode!=''">and
+                apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}
+            </if>
             <if test='countType=="year"'>
                 <if test="beginDateTime != null and beginDateTime!=''">
                     and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}
@@ -239,7 +246,9 @@
             <if test="productCategoryCode != null and productCategoryCode!=''">
                 and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
             </if>
-            <if test="applyUnitCode != null and applyUnitCode!=''">and apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}</if>
+            <if test="applyUnitCode != null and applyUnitCode!=''">and
+                apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}
+            </if>
             <if test='countType=="year"'>
                 <if test="beginDateTime != null and beginDateTime!=''">
                     and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}
@@ -259,5 +268,39 @@
         </where>
         group by supplier_code
         order by pay_amount desc limit 10
+    </select>
+    <select id="selectForReportNoInStockListPage" resultType="com.bio.drqi.domain.BmsOrderDetailTb"
+            parameterType="com.bio.drqi.domain.BmsOrderDetailTb">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_order_detail_tb
+        where report_account_time is null
+        and order_detail_num not in
+        (select order_detail_num from bms_product_stock_in_log where order_detail_num is not null)
+        <if test="productInnerCode != null and productInnerCode!=''">
+            and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}
+        </if>
+        <if test="productCategoryCode != null and productCategoryCode!=''">
+            and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
+        </if>
+        <if test="applyUnitCode != null and applyUnitCode!=''">and
+            apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}
+        </if>
+        <if test='countType=="year"'>
+            <if test="beginDateTime != null and beginDateTime!=''">
+                and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endDateTime != null and endDateTime!=''">
+                and date_format(create_time,'%Y') &lt;=#{endDateTime,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test='countType=="month"'>
+            <if test="beginDateTime != null and beginDateTime!=''">
+                and date_format(create_time,'%Y-%m') >=#{beginDateTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endDateTime != null and endDateTime!=''">
+                and date_format(create_time,'%Y-%m') &lt;=#{endDateTime,jdbcType=VARCHAR}
+            </if>
+        </if>
     </select>
 </mapper>

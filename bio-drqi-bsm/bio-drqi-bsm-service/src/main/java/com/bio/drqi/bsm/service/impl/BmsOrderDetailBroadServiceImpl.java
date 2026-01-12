@@ -8,12 +8,19 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.req.BmsStockBroadCountOrderReqDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailBroadOrderCountRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailDirectionAmountCountCountRspDTO;
+import com.bio.drqi.bsm.rsp.BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailDirectionSupplierCountCountRspDTO;
 import com.bio.drqi.bsm.service.BmsOrderDetailBroadService;
+import com.bio.drqi.domain.BmsBrandTb;
 import com.bio.drqi.domain.BmsOrderDetailTb;
+import com.bio.drqi.domain.BmsProductCategoryTb;
 import com.bio.drqi.domain.BmsSupplierTb;
+import com.bio.drqi.mapper.BmsBrandTbMapper;
 import com.bio.drqi.mapper.BmsOrderDetailTbMapper;
+import com.bio.drqi.mapper.BmsProductCategoryTbMapper;
 import com.bio.drqi.mapper.BmsSupplierTbMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -22,6 +29,8 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -32,6 +41,12 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
 
     @Resource
     private BmsSupplierTbMapper bmsSupplierTbMapper;
+
+    @Resource
+    private BmsBrandTbMapper bmsBrandTbMapper;
+
+    @Resource
+    private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
 
     @Override
     public BmsOrderDetailBroadOrderCountRspDTO orderCount(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
@@ -78,5 +93,24 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
             });
         }
         return resultList;
+    }
+
+    @Override
+    public PageInfo<BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO> queryReportNoInStockListPage(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
+        PageHelper.startPage(bmsStockBroadCountOrderReqDTO.getPageNum(), bmsStockBroadCountOrderReqDTO.getPageSize());
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForReportNoInStockListPage(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
+        PageInfo<BmsOrderDetailTb> bmsOrderDetailTbPageInfo=new PageInfo<>(bmsOrderDetailTbList);
+        PageInfo<BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO> result=BeanUtils.copyPageInfoProperties(bmsOrderDetailTbPageInfo,BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.class);
+        if(CollectionUtil.isNotEmpty(bmsOrderDetailTbList)){
+            List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(null);
+            List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+            Map<String, String> bmsBrandMap = bmsBrandTbList.stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
+            Map<String, String> bmsProductCategoryTbMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+            result.getList().forEach(bmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO -> {
+                bmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.setBrandName(bmsBrandMap.get(bmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.getBrandCode()));
+                bmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.setProductCategoryName(bmsProductCategoryTbMap.get(bmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.getProductCategoryCode()));
+            });
+        }
+        return result;
     }
 }

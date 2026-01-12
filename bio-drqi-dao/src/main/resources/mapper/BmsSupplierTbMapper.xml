@@ -44,20 +44,21 @@
         <include refid="Base_Column_List"/>
         from bms_supplier_tb
         <where>
-            <if test="supplierCode != null">and supplier_code LIKE  CONCAT('%',#{supplierCode,jdbcType=VARCHAR},'%')</if>
-            <if test="supplierName != null">and supplier_name LIKE  CONCAT('%',#{supplierName,jdbcType=VARCHAR},'%')</if>
+            <if test="supplierCode != null">and supplier_code LIKE CONCAT('%',#{supplierCode,jdbcType=VARCHAR},'%')</if>
+            <if test="supplierName != null">and supplier_name LIKE CONCAT('%',#{supplierName,jdbcType=VARCHAR},'%')</if>
             <if test="openingBank != null">and opening_bank=#{openingBank,jdbcType=VARCHAR}</if>
             <if test="bankAccount != null">and bank_account=#{bankAccount,jdbcType=VARCHAR}</if>
             <if test="taxId != null">and tax_id=#{taxId,jdbcType=VARCHAR}</if>
-            <if test="qualificationLocation != null">and qualification_location=#{qualificationLocation,jdbcType=VARCHAR}
+            <if test="qualificationLocation != null">and
+                qualification_location=#{qualificationLocation,jdbcType=VARCHAR}
             </if>
             <if test="businessScope != null">and business_scope=#{businessScope,jdbcType=VARCHAR}</if>
             <if test="cooperateForm != null">and cooperate_form=#{cooperateForm,jdbcType=VARCHAR}</if>
             <if test="frameworkAgreementNumber != null">
-                and  framework_agreement_number=#{frameworkAgreementNumber,jdbcType=VARCHAR}
+                and framework_agreement_number=#{frameworkAgreementNumber,jdbcType=VARCHAR}
             </if>
             <if test="frameworkAgreementAnnex != null">
-                and  framework_agreement_annex=#{frameworkAgreementAnnex,jdbcType=VARCHAR}
+                and framework_agreement_annex=#{frameworkAgreementAnnex,jdbcType=VARCHAR}
             </if>
             <if test="expirationDate != null">and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
             <if test="contactUserName != null">and contact_user_name=#{contactUserName,jdbcType=VARCHAR}</if>
@@ -69,7 +70,9 @@
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
-            <if test="supplierStatus != null and supplierStatus!=''">and supplier_status=#{supplierStatus,jdbcType=VARCHAR}</if>
+            <if test="supplierStatus != null and supplierStatus!=''">and
+                supplier_status=#{supplierStatus,jdbcType=VARCHAR}
+            </if>
         </where>
         order by id desc
     </select>
@@ -99,5 +102,6 @@
         where supplier_status = #{supplierStatus,jdbcType=VARCHAR}
         order by id desc
     </select>
+
 
 </mapper>

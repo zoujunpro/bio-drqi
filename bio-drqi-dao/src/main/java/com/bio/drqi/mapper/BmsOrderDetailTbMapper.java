@@ -34,6 +34,8 @@ public interface BmsOrderDetailTbMapper extends BaseMapper<BmsOrderDetailTb> {
 
     List<BmsOrderDetailTb> selectForDirectionSupplierCount(BmsOrderDetailTb bmsOrderDetailTb);
 
+    List<BmsOrderDetailTb> selectForReportNoInStockListPage(BmsOrderDetailTb bmsOrderDetailTb);
+
 }
 
 

@@ -6,6 +6,7 @@ import com.bio.drqi.bsm.rsp.BmsOrderDetailBroadOrderCountRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailDirectionAmountCountCountRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailDirectionSupplierCountCountRspDTO;
 import com.bio.drqi.bsm.service.BmsOrderDetailBroadService;
+import com.bio.drqi.common.contents.BioDrQiContents;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,9 +44,20 @@ public class BmsOrderDetailBroadController {
      * @param bmsStockBroadCountOrderReqDTO
      * @return
      */
-    @PostMapping("/directionAmountCount")
-    public ResponseResult<List<BmsOrderDetailDirectionAmountCountCountRspDTO>> directionAmountCount(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
-        return ResponseResult.getSuccess(bmsOrderDetailBroadService.directionAmountCount(bmsStockBroadCountOrderReqDTO));
+    @PostMapping("/directionPurchaseAmountCount")
+    public ResponseResult<List<BmsOrderDetailDirectionAmountCountCountRspDTO>> directionPurchaseAmountCount(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
+        return ResponseResult.getSuccess(bmsOrderDetailBroadService.directionAmountCount(bmsStockBroadCountOrderReqDTO, BioDrQiContents.N));
+    }
+
+    /**
+     * 采购统计-按日期统计报账金额
+     *
+     * @param bmsStockBroadCountOrderReqDTO
+     * @return
+     */
+    @PostMapping("/directionReportAmountCount")
+    public ResponseResult<List<BmsOrderDetailDirectionAmountCountCountRspDTO>> directionReportAmountCount(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
+        return ResponseResult.getSuccess(bmsOrderDetailBroadService.directionAmountCount(bmsStockBroadCountOrderReqDTO,BioDrQiContents.Y));
     }
 
     /**

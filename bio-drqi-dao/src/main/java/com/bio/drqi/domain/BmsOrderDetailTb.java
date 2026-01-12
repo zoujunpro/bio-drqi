@@ -194,6 +194,9 @@ public class BmsOrderDetailTb implements Serializable {
     @TableField(exist = false)
     private String dateTime;
 
+    @TableField(exist = false)
+    private String reportFlag;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

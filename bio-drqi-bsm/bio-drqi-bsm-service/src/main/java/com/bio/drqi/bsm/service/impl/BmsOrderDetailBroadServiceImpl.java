@@ -42,7 +42,7 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
     }
 
     @Override
-    public List<BmsOrderDetailDirectionAmountCountCountRspDTO> directionAmountCount(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
+    public List<BmsOrderDetailDirectionAmountCountCountRspDTO> directionAmountCount(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO,String reportFlag) {
         if (StringUtils.isEmpty(bmsStockBroadCountOrderReqDTO.getCountType())) {
             bmsStockBroadCountOrderReqDTO.setCountType("month");
             bmsStockBroadCountOrderReqDTO.setBeginDateTime("2025-05");

@@ -197,6 +197,9 @@
         sum(pay_amount) as pay_amount
         from bms_order_detail_tb
         <where>
+            <if test='reportFlag=="Y"'>
+                and report_account_time !=null
+            </if>
             <if test="productInnerCode != null and productInnerCode!=''">
                 and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}
             </if>

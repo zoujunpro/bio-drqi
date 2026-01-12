@@ -1013,7 +1013,7 @@ public class BmsTestController {
         }
         List<BmsStock> bmsStockList = BeanUtils.copyListProperties(bmsProductStockTbList, BmsStock.class);
 
-   /*     bmsStockList = bmsStockList.stream().filter(bmsStock -> bmsStock.getCurrentStockNumber() > 0).collect(Collectors.toList());
+      // bmsStockList = bmsStockList.stream().filter(bmsStock -> bmsStock.getCurrentStockNumber() > 0).collect(Collectors.toList());
         for (BmsStock bmsStock : bmsStockList) {
             List<BmsProductStockInLog> bmsProductStockInLogs = bmsProductStockInLogMapper.selectAllByUniqueCode(bmsStock.getUniqueCode());
             if (CollectionUtil.isNotEmpty(bmsProductStockInLogs)) {
@@ -1024,9 +1024,9 @@ public class BmsTestController {
                 bmsStock.setProductName(bmsProjectDict.getKdProjectName());
             }
         }
-*/
-        bmsCountPeriodTaskService.createPeriodData(DateUtil.format(pointDate,DatePattern.NORM_MONTH_PATTERN),BeanUtils.copyListProperties(bmsStockList, BmsCountPeriodTaskDTO.class));
-       // ExcelUtil.writeExcel("D://7月1号之后数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
+
+        // bmsCountPeriodTaskService.createPeriodData(DateUtil.format(pointDate,DatePattern.NORM_MONTH_PATTERN),BeanUtils.copyListProperties(bmsStockList, BmsCountPeriodTaskDTO.class));
+        ExcelUtil.writeExcel("D://12月31号数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
     }
 
     @Data

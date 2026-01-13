@@ -386,7 +386,7 @@ public class KdApiServiceImpl implements KdApiService {
             throw new BusinessException("材料分组未同步");
         }
         BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsProductTb.getBrandCode());
-        if(bmsBrandTb==null){
+        if (bmsBrandTb == null) {
             throw new BusinessException("品牌找不到");
         }
         MaterialSaveModel materialSaveModel = new MaterialSaveModel(bmsProductTb.getProductInnerCode(), bmsProductTb.getProductName(), bmsProductTb.getProductSpecs(), bmsBrandTb.getBrandName(), bmsProductCategoryTb.getProductCategoryCode(), bmsProductCategoryTb.getKdCategoryCode());
@@ -569,7 +569,7 @@ public class KdApiServiceImpl implements KdApiService {
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
 
         MoveStockSaveModel moveStockSaveModel = new MoveStockSaveModel(bmsMoveOrderDetailTb.getId().toString(), moveDate, kdParentGroupEnum, orgCode, bmsMoveOrderDetailTb.getProductInnerCode(), new BigDecimal(bmsMoveOrderDetailTb.getMoveNumber()), srcBmsStockDict.getStockCode(), targetBmsStockDict.getStockCode());
-        return KdRequestUtil.save(FormIdEnum.STK_TransferDirect, KdApiBaseSaveRequestDTO.buildOfModify(moveStockSaveModel));
+        return KdRequestUtil.save(FormIdEnum.STK_TransferDirect, KdApiBaseSaveRequestDTO.buildOfSave(moveStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
     }
 
     private String executeMaterialModify(Object obj) {

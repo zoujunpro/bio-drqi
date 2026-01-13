@@ -113,8 +113,6 @@ public class BmsCountPeriodTaskServiceImpl implements BmsCountPeriodTaskService 
                 bmsProductStockPeriodCountTbMapper.updateById(bmsProductStockPeriodCountTb);
             });
         }
-
-
     }
 
     public static void main(String[] args) {

@@ -39,13 +39,13 @@ public class BmsStockPeriodCountController {
     }
 
     /**
-     * 库存期初期末管理-分页查询
+     * 库存期初期末管理-导出
      *
      * @param bmsStockPeriodCountListPageReqDTO
      * @return
      */
     @PostMapping("exportExcel")
-    @WebLog(desc = "库存期初期末管理-分页查询")
+    @WebLog(desc = "库存期初期末管理-导出")
     public void exportExcel(@Validated @RequestBody BmsStockPeriodCountListPageReqDTO bmsStockPeriodCountListPageReqDTO, HttpServletResponse httpServletResponse) {
             bmsStockPeriodCountService.exportExcel(bmsStockPeriodCountListPageReqDTO,httpServletResponse);
     }

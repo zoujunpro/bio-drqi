@@ -1025,8 +1025,8 @@ public class BmsTestController {
             }
         }
 
-        // bmsCountPeriodTaskService.createPeriodData(DateUtil.format(pointDate,DatePattern.NORM_MONTH_PATTERN),BeanUtils.copyListProperties(bmsStockList, BmsCountPeriodTaskDTO.class));
-        ExcelUtil.writeExcel("D://12月31号数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
+       bmsCountPeriodTaskService.createPeriodData(DateUtil.format(pointDate,DatePattern.NORM_MONTH_PATTERN),BeanUtils.copyListProperties(bmsStockList, BmsCountPeriodTaskDTO.class));
+        //ExcelUtil.writeExcel("D://12月31号数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
     }
 
     @Data

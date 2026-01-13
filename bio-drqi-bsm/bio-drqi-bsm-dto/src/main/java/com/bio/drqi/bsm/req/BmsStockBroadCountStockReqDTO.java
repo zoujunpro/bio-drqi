@@ -16,5 +16,7 @@ public class BmsStockBroadCountStockReqDTO {
 
    private String unitCode;
 
+   private String stockCode;
+
 
 }

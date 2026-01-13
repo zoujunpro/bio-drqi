@@ -106,8 +106,9 @@
             <if test="productCategoryCode != null and productCategoryCode!=''">and
                 product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
             </if>
+            <if test="toStockCode != null">and to_stock_code=#{toStockCode,jdbcType=VARCHAR}</if>
+            <if test="fromStockCode != null">and from_stock_code=#{fromStockCode,jdbcType=VARCHAR}</if>
             <if test="unitCode != null and unitCode!=''">and unit_code=#{unitCode,jdbcType=VARCHAR}</if>
-
             <if test='countType=="year"'>
                 <if test="beginDateTime != null and beginDateTime!=''">
                     and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}

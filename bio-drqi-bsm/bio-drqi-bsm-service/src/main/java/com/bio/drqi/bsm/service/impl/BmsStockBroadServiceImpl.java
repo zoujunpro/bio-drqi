@@ -25,10 +25,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BmsStockBroadServiceImpl implements BmsStockBroadService {
 
-
-    @Resource
-    private BmsProductStockTbMapper bmsProductStockTbMapper;
-
     @Resource
     private BmsProductTbMapper bmsProductTbMapper;
 
@@ -77,7 +73,10 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
         List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectForCountStockDetailList(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsProductStockInLog.class));
         List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectForCountStockDetailList(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsProductStockOutLog.class));
         List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectForCountStockDetailList(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsReturnOrderDetailTb.class));
-        List<BmsMoveOrderDetailTb> bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbMapper.selectForCountStockDetailList(BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsMoveOrderDetailTb.class));
+        BmsMoveOrderDetailTb selectBmsMoveOrderDetailTb = BeanUtils.copyProperties(bmsStockBroadCountStockReqDTO, BmsMoveOrderDetailTb.class);
+        selectBmsMoveOrderDetailTb.setToStockCode(bmsStockBroadCountStockReqDTO.getStockCode());
+        selectBmsMoveOrderDetailTb.setFromStockCode(bmsStockBroadCountStockReqDTO.getStockCode());
+        List<BmsMoveOrderDetailTb> bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbMapper.selectForCountStockDetailList(selectBmsMoveOrderDetailTb);
         //入库数据统计
         if (CollectionUtil.isNotEmpty(bmsProductStockInLogList)) {
             bmsProductStockInLogList.forEach(bmsProductStockInLog -> {

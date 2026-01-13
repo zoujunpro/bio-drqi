@@ -1,6 +1,8 @@
 package com.bio.drqi.bsm.service.flowtask;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
@@ -32,6 +34,9 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
     @Resource
     private BmsProductStockOutLogMapper bmsProductStockOutLogMapper;
 
+    @Resource
+    private BmsProductStockInLogMapper bmsProductStockInLogMapper;
+
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
         List<BmsProductOutDTO> bmsProductOutDTOList = JSONUtil.toList(bioTaskDtlTb.getTaskForm(), BmsProductOutDTO.class);
@@ -39,7 +44,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
             ValidatorUtil.validator(bmsProductOutDTO);
             BeanUtils.trimFiledSpace(bmsProductOutDTO);
         }
-        if(CollectionUtil.isEmpty(bmsProductOutDTOList)){
+        if (CollectionUtil.isEmpty(bmsProductOutDTOList)) {
             throw new BusinessException("请选择出库数据");
         }
         for (BmsProductOutDTO bmsProductOutDTO : bmsProductOutDTOList) {
@@ -53,11 +58,11 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
             }
         }
         List<String> productNameList = bmsProductOutDTOList.stream().map(BmsProductOutDTO::getProductName).collect(Collectors.toList());
-        StringBuilder productNames=new StringBuilder();
-        for (String productName:productNameList){
+        StringBuilder productNames = new StringBuilder();
+        for (String productName : productNameList) {
             productNames.append(productName).append(";");
         }
-        bioTaskDtlTb.setTaskDesc(productNames.substring(0,productNames.length()-1));
+        bioTaskDtlTb.setTaskDesc(productNames.substring(0, productNames.length() - 1));
     }
 
     @Override
@@ -79,7 +84,8 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockTb.setTotalOutNumber(bmsProductStockTb.getTotalOutNumber() + bmsProductOutDTO.getNumber());
         bmsProductStockTbMapper.updateById(bmsProductStockTb);
         //生成出库记录
-
+        //找出入库记录
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().productInnerCode(bmsProductStockTb.getProductInnerCode()).unitCode(bmsProductStockTb.getUnitCode()).batchNo(bmsProductStockTb.getBatchNo()).endDate(DateUtil.format(new Date(), DatePattern.NORM_DATE_PATTERN)).build());
         BmsProductStockOutLog bmsProductStockOutLog = new BmsProductStockOutLog();
         bmsProductStockOutLog.setProductName(bmsProductStockTb.getProductName());
         bmsProductStockOutLog.setProductOutCode(bmsProductStockTb.getProductOutCode());
@@ -101,7 +107,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockOutLog.setProduceDate(bmsProductStockTb.getProduceDate());
         bmsProductStockOutLog.setExpirationDate(bmsProductStockTb.getExpirationDate());
         bmsProductStockOutLog.setStockCode(bmsProductStockTb.getStockCode());
-        bmsProductStockOutLog.setProductPrice(bmsProductStockTb.getProductPrice());
+        bmsProductStockOutLog.setProductPrice(bmsProductStockInLogList.get(0).getProductPrice());
         bmsProductStockOutLog.setOutAmount(bmsProductStockOutLog.getProductPrice().multiply(new BigDecimal(bmsProductStockOutLog.getOutNumber())));
         bmsProductStockOutLogMapper.insert(bmsProductStockOutLog);
     }

@@ -128,7 +128,7 @@ public class BmsTestController {
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectSelective(null);
         if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
             bmsOrderDetailTbList.forEach(bmsOrderDetailTb -> {
-                log.info("bmsOrderDetailTb*******"+JSONUtil.toJsonStr(bmsOrderDetailTb));
+                log.info("bmsOrderDetailTb*******" + JSONUtil.toJsonStr(bmsOrderDetailTb));
 
                 BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductInnerCode(bmsOrderDetailTb.getProductInnerCode());
                 if (bmsProductTb == null) {
@@ -222,17 +222,17 @@ public class BmsTestController {
         }
         bmsProductStockOutLogMapper.selectSelective(null).forEach(bmsProductStockOutLog -> {
             log.info("bmsProductStockOutLog=" + JSONUtil.toJsonStr(bmsProductStockOutLog));
-            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductStockOutLog.getUniqueCode());
-            bmsProductStockOutLog.setProductPrice(bmsProductStockTb.getProductPrice());
-            bmsProductStockOutLog.setOutAmount(bmsProductStockTb.getProductPrice().multiply(new BigDecimal(bmsProductStockOutLog.getOutNumber())));
+            List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().productInnerCode(bmsProductStockOutLog.getProductInnerCode()).unitCode(bmsProductStockOutLog.getUnitCode()).batchNo(bmsProductStockOutLog.getBatchNo()).build());
+            bmsProductStockOutLog.setProductPrice(bmsProductStockInLogList.get(0).getProductPrice());
+            bmsProductStockOutLog.setOutAmount(bmsProductStockInLogList.get(0).getProductPrice().multiply(new BigDecimal(bmsProductStockOutLog.getOutNumber())));
             bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
         });
 
         bmsMoveOrderDetailTbMapper.selectSelective(null).forEach(bmsMoveOrderDetailTb -> {
             log.info("bmsMoveOrderDetailTb=" + JSONUtil.toJsonStr(bmsMoveOrderDetailTb));
-            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCode(bmsMoveOrderDetailTb.getProductInnerCode(),bmsMoveOrderDetailTb.getUnitCode(),bmsMoveOrderDetailTb.getBatchNo(),bmsMoveOrderDetailTb.getFromStockCode());
-            bmsMoveOrderDetailTb.setProductPrice(bmsProductStockTb.getProductPrice());
-            bmsMoveOrderDetailTb.setMoveAmount(bmsProductStockTb.getProductPrice().multiply(new BigDecimal(bmsMoveOrderDetailTb.getMoveNumber())));
+            List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().productInnerCode(bmsMoveOrderDetailTb.getProductInnerCode()).unitCode(bmsMoveOrderDetailTb.getUnitCode()).batchNo(bmsMoveOrderDetailTb.getBatchNo()).build());
+            bmsMoveOrderDetailTb.setProductPrice(bmsProductStockInLogList.get(0).getProductPrice());
+            bmsMoveOrderDetailTb.setMoveAmount(bmsProductStockInLogList.get(0).getProductPrice().multiply(new BigDecimal(bmsMoveOrderDetailTb.getMoveNumber())));
             bmsMoveOrderDetailTbMapper.updateById(bmsMoveOrderDetailTb);
         });
         return ResponseResult.getSuccess("ok");
@@ -950,7 +950,7 @@ public class BmsTestController {
 
     @GetMapping("/createBmsStockExcel")
     @Transactional(rollbackFor = Exception.class)
-    public void createBmsStockExcel(HttpServletResponse httpServletResponse,@RequestParam String dateTime) {
+    public void createBmsStockExcel(HttpServletResponse httpServletResponse, @RequestParam String dateTime) {
         Date pointDate = DateUtil.parse(dateTime, DatePattern.PURE_DATETIME_PATTERN);
         //step 数据查询
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
@@ -1013,7 +1013,7 @@ public class BmsTestController {
         }
         List<BmsStock> bmsStockList = BeanUtils.copyListProperties(bmsProductStockTbList, BmsStock.class);
 
-      // bmsStockList = bmsStockList.stream().filter(bmsStock -> bmsStock.getCurrentStockNumber() > 0).collect(Collectors.toList());
+        // bmsStockList = bmsStockList.stream().filter(bmsStock -> bmsStock.getCurrentStockNumber() > 0).collect(Collectors.toList());
         for (BmsStock bmsStock : bmsStockList) {
             List<BmsProductStockInLog> bmsProductStockInLogs = bmsProductStockInLogMapper.selectAllByUniqueCode(bmsStock.getUniqueCode());
             if (CollectionUtil.isNotEmpty(bmsProductStockInLogs)) {
@@ -1025,7 +1025,7 @@ public class BmsTestController {
             }
         }
 
-       bmsCountPeriodTaskService.createPeriodData(DateUtil.format(pointDate,DatePattern.NORM_MONTH_PATTERN),BeanUtils.copyListProperties(bmsStockList, BmsCountPeriodTaskDTO.class));
+        bmsCountPeriodTaskService.createPeriodData(DateUtil.format(pointDate, DatePattern.NORM_MONTH_PATTERN), BeanUtils.copyListProperties(bmsStockList, BmsCountPeriodTaskDTO.class));
         //ExcelUtil.writeExcel("D://12月31号数据.xlsx", "sheet1", bmsStockList, BmsStock.class);
     }
 

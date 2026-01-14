@@ -3,10 +3,7 @@ package com.bio.drqi.bsm.controller;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsStockBroadCountOrderReqDTO;
-import com.bio.drqi.bsm.rsp.BmsOrderDetailBroadOrderCountRspDTO;
-import com.bio.drqi.bsm.rsp.BmsOrderDetailDirectionAmountCountCountRspDTO;
-import com.bio.drqi.bsm.rsp.BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO;
-import com.bio.drqi.bsm.rsp.BmsOrderDetailDirectionSupplierCountCountRspDTO;
+import com.bio.drqi.bsm.rsp.*;
 import com.bio.drqi.bsm.service.BmsOrderDetailBroadService;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.github.pagehelper.PageInfo;
@@ -41,7 +38,17 @@ public class BmsOrderDetailBroadController {
     public ResponseResult<BmsOrderDetailBroadOrderCountRspDTO> orderCount(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
         return ResponseResult.getSuccess(bmsOrderDetailBroadService.orderCount(bmsStockBroadCountOrderReqDTO));
     }
-
+    /**
+     * 采购统计-按照类别统计报账金额/采购金额
+     *
+     * @param bmsStockBroadCountOrderReqDTO
+     * @return
+     */
+    @PostMapping("/countAmountByByCategory")
+    @WebLog(desc = "采购统计-按照类别统计报账金额/采购金额")
+    public ResponseResult<List<BmsOrderBroadCountByCategoryRspDTO>> countAmountByByCategory(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
+        return ResponseResult.getSuccess(bmsOrderDetailBroadService.countAmountByByCategory(bmsStockBroadCountOrderReqDTO));
+    }
 
     /**
      * 采购统计-按日期统计采购/报账金额
@@ -70,24 +77,26 @@ public class BmsOrderDetailBroadController {
 
     /**
      * 采购统计-已入库未报账数据
+     *
      * @param bmsStockBroadCountOrderReqDTO
      * @return
      */
     @PostMapping("/queryReportNoInStockListPage")
     @WebLog(desc = "采购统计-已入库未报账数据")
-    public ResponseResult<PageInfo<BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO>>  queryReportNoInStockListPage(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO){
+    public ResponseResult<PageInfo<BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO>> queryReportNoInStockListPage(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
         return ResponseResult.getSuccess(bmsOrderDetailBroadService.queryReportNoInStockListPage(bmsStockBroadCountOrderReqDTO));
     }
 
     /**
      * 采购统计-导出已入库未报账数据
+     *
      * @param bmsStockBroadCountOrderReqDTO
      * @return
      */
     @PostMapping("/exportReportNoInStockListPage")
     @WebLog(desc = "采购统计-导出已入库未报账数据")
-    public void   exportReportNoInStockListPage(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO, HttpServletResponse httpServletResponse){
-        bmsOrderDetailBroadService.exportReportNoInStockListPage(bmsStockBroadCountOrderReqDTO,httpServletResponse);
+    public void exportReportNoInStockListPage(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO, HttpServletResponse httpServletResponse) {
+        bmsOrderDetailBroadService.exportReportNoInStockListPage(bmsStockBroadCountOrderReqDTO, httpServletResponse);
     }
 
 }

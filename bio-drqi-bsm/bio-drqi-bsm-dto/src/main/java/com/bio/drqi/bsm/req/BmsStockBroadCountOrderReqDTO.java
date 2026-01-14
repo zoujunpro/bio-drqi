@@ -17,4 +17,6 @@ public class BmsStockBroadCountOrderReqDTO extends PageDTO {
     private String productCategoryCode;
 
     private String applyUnitCode;
+
+    private String reportFlag;
 }

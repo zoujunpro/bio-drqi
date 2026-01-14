@@ -7,15 +7,9 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.req.BmsStockBroadCountOrderReqDTO;
-import com.bio.drqi.bsm.rsp.BmsOrderDetailBroadOrderCountRspDTO;
-import com.bio.drqi.bsm.rsp.BmsOrderDetailDirectionAmountCountCountRspDTO;
-import com.bio.drqi.bsm.rsp.BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO;
-import com.bio.drqi.bsm.rsp.BmsOrderDetailDirectionSupplierCountCountRspDTO;
+import com.bio.drqi.bsm.rsp.*;
 import com.bio.drqi.bsm.service.BmsOrderDetailBroadService;
-import com.bio.drqi.domain.BmsBrandTb;
-import com.bio.drqi.domain.BmsOrderDetailTb;
-import com.bio.drqi.domain.BmsProductCategoryTb;
-import com.bio.drqi.domain.BmsSupplierTb;
+import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.BmsBrandTbMapper;
 import com.bio.drqi.mapper.BmsOrderDetailTbMapper;
 import com.bio.drqi.mapper.BmsProductCategoryTbMapper;
@@ -28,10 +22,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,6 +42,7 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
     @Resource
     private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
 
+
     @Override
     public BmsOrderDetailBroadOrderCountRspDTO orderCount(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
         BmsOrderDetailBroadOrderCountRspDTO bmsOrderDetailBroadOrderCountRspDTO = new BmsOrderDetailBroadOrderCountRspDTO();
@@ -59,21 +52,45 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
     }
 
     @Override
-    public List<BmsOrderDetailDirectionAmountCountCountRspDTO> directionAmountCount(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO, String reportFlag) {
+    public List<BmsOrderBroadCountByCategoryRspDTO> countAmountByByCategory(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
+        if (StringUtils.isEmpty(bmsStockBroadCountOrderReqDTO.getCountType())) {
+            bmsStockBroadCountOrderReqDTO.setCountType("month");
+            bmsStockBroadCountOrderReqDTO.setBeginDateTime("2025-05");
+            bmsStockBroadCountOrderReqDTO.setEndDateTime(DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN));
+        }
+        List<BmsOrderBroadCountByCategoryRspDTO> resultList=new ArrayList<>();
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForCountAmountGroupByCategory(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
+        List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+        if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
+            bmsOrderDetailTbList.stream().collect(Collectors.groupingBy(BmsOrderDetailTb::getDateTime)).forEach((dateTime, list) -> {
+                BmsOrderBroadCountByCategoryRspDTO bmsOrderBroadCountByCategoryRspDTO = new BmsOrderBroadCountByCategoryRspDTO();
+                bmsOrderBroadCountByCategoryRspDTO.setDateTime(dateTime);
+                for (BmsProductCategoryTb bmsProductCategoryTb : bmsProductCategoryTbList) {
+                    Map<String, BigDecimal> map = list.stream().collect(Collectors.toMap(BmsOrderDetailTb::getProductCategoryCode, BmsOrderDetailTb::getPayAmount));
+                    bmsOrderBroadCountByCategoryRspDTO.addContent(bmsProductCategoryTb.getProductCategoryCode(), bmsProductCategoryTb.getProductCategoryName(), map.get(bmsProductCategoryTb.getProductCategoryCode()) == null ? new BigDecimal(0) : map.get(bmsProductCategoryTb.getProductCategoryCode()));
+                }
+                resultList.add(bmsOrderBroadCountByCategoryRspDTO);
+            });
+        }
+        return resultList.stream().sorted(Comparator.comparing(bmsStockInBroadCountByCategoryRspDTO -> bmsStockInBroadCountByCategoryRspDTO.getDateTime())).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<BmsOrderDetailDirectionAmountCountCountRspDTO> directionAmountCount(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
         if (StringUtils.isEmpty(bmsStockBroadCountOrderReqDTO.getCountType())) {
             bmsStockBroadCountOrderReqDTO.setCountType("month");
             bmsStockBroadCountOrderReqDTO.setBeginDateTime("2025-05");
             bmsStockBroadCountOrderReqDTO.setEndDateTime(DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN));
         }
         List<BmsOrderDetailDirectionAmountCountCountRspDTO> resultList = new ArrayList<>();
-        BmsOrderDetailTb orderDetailTb = BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class);
-        orderDetailTb.setReportFlag(reportFlag);
-        List<BmsOrderDetailTb> list = bmsOrderDetailTbMapper.selectForDirectionAmountCount(orderDetailTb);
+        List<BmsOrderDetailTb> list = bmsOrderDetailTbMapper.selectForDirectionAmountCount(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
         if (CollectionUtil.isNotEmpty(list)) {
             list.forEach(bmsOrderDetailTb -> {
                 BmsOrderDetailDirectionAmountCountCountRspDTO bmsOrderDetailDirectionAmountCountCountRspDTO = new BmsOrderDetailDirectionAmountCountCountRspDTO();
                 bmsOrderDetailDirectionAmountCountCountRspDTO.setDateTime(bmsOrderDetailTb.getDateTime());
-                bmsOrderDetailDirectionAmountCountCountRspDTO.setAmount(bmsOrderDetailTb.getPayAmount());
+                bmsOrderDetailDirectionAmountCountCountRspDTO.setPurchaseAmount(bmsOrderDetailTb.getPayAmount());
+                bmsOrderDetailDirectionAmountCountCountRspDTO.setReportAmount(bmsOrderDetailTb.getReportAmount());
                 resultList.add(bmsOrderDetailDirectionAmountCountCountRspDTO);
             });
         }
@@ -101,9 +118,9 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
     public PageInfo<BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO> queryReportNoInStockListPage(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
         PageHelper.startPage(bmsStockBroadCountOrderReqDTO.getPageNum(), bmsStockBroadCountOrderReqDTO.getPageSize());
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForReportNoInStockListPage(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
-        PageInfo<BmsOrderDetailTb> bmsOrderDetailTbPageInfo=new PageInfo<>(bmsOrderDetailTbList);
-        PageInfo<BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO> result=BeanUtils.copyPageInfoProperties(bmsOrderDetailTbPageInfo,BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.class);
-        if(CollectionUtil.isNotEmpty(bmsOrderDetailTbList)){
+        PageInfo<BmsOrderDetailTb> bmsOrderDetailTbPageInfo = new PageInfo<>(bmsOrderDetailTbList);
+        PageInfo<BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO> result = BeanUtils.copyPageInfoProperties(bmsOrderDetailTbPageInfo, BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.class);
+        if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
             List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(null);
             List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
             Map<String, String> bmsBrandMap = bmsBrandTbList.stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
@@ -119,8 +136,8 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
     @Override
     public void exportReportNoInStockListPage(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO, HttpServletResponse httpServletResponse) {
         List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForReportNoInStockListPage(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
-        List<BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO> result=BeanUtils.copyListProperties(bmsOrderDetailTbList,BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.class);
-        if(CollectionUtil.isNotEmpty(bmsOrderDetailTbList)){
+        List<BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO> result = BeanUtils.copyListProperties(bmsOrderDetailTbList, BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.class);
+        if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
             List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(null);
             List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
             Map<String, String> bmsBrandMap = bmsBrandTbList.stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
@@ -130,6 +147,6 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
                 bmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.setProductCategoryName(bmsProductCategoryTbMap.get(bmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.getProductCategoryCode()));
             });
         }
-        ExcelUtil.writeExcel("已入库未报账数据","sheet1",result,BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.class,httpServletResponse);
+        ExcelUtil.writeExcel("已入库未报账数据", "sheet1", result, BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.class, httpServletResponse);
     }
 }

@@ -1,6 +1,7 @@
 package com.bio.drqi.bsm.service;
 
 import com.bio.drqi.bsm.req.*;
+import com.bio.drqi.bsm.rsp.BmsProductListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
 import com.bio.drqi.domain.BmsProductTb;
@@ -19,6 +20,8 @@ public interface BmsProductService {
     PageInfo<BmsProductListPageRspDTO> listPage(BmsProductListPageReqDTO bmsProductListPageReqDTO);
 
     List<String> listAllProductName();
+
+    List<BmsProductListAllRspDTO> listAll();
 
     /**
      * 商品管理-查询

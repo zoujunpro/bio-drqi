@@ -9,5 +9,7 @@ public class BmsOrderDetailDirectionAmountCountCountRspDTO {
 
     private String dateTime;
 
-    private BigDecimal amount;
+    private BigDecimal purchaseAmount;
+
+    private BigDecimal reportAmount;
 }

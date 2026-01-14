@@ -7,6 +7,7 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.contents.BioBsmContents;
 import com.bio.drqi.bsm.req.*;
+import com.bio.drqi.bsm.rsp.BmsProductListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
@@ -71,6 +72,11 @@ public class BmsProductServiceImpl implements BmsProductService {
     public List<String> listAllProductName() {
         List<String> productNameList = bmsProductTbMapper.selectProductNameOrderByIdDesc();
         return productNameList.stream().distinct().collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BmsProductListAllRspDTO> listAll() {
+        return BeanUtils.copyListProperties(bmsProductTbMapper.selectSelective(null),BmsProductListAllRspDTO.class);
     }
 
     @Override

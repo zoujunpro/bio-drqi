@@ -4,6 +4,7 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.*;
+import com.bio.drqi.bsm.rsp.BmsProductListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
 import com.bio.drqi.bsm.service.BmsProductService;
@@ -50,6 +51,19 @@ public class BmsProductController {
     public ResponseResult<List<String>> listAllProductName() {
         return ResponseResult.getSuccess(bmsProductService.listAllProductName());
     }
+
+
+    /**
+     * 材料管理-查询所有材料
+     *
+     * @return
+     */
+    @GetMapping("/listAll")
+    @WebLog(desc = "材料管理-查询所有材料")
+    public ResponseResult<List<BmsProductListAllRspDTO>> listAll() {
+        return ResponseResult.getSuccess(bmsProductService.listAll());
+    }
+
 
     /**
      * 材料管理-查询

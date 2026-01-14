@@ -194,22 +194,14 @@
             </if>
         </if>
     </select>
-    <select id="selectForDirectionAmountCount" resultType="com.bio.drqi.domain.BmsOrderDetailTb"
+    <select id="selectForDirectionPurchaseAmountCount" resultType="com.bio.drqi.domain.BmsOrderDetailTb"
             parameterType="com.bio.drqi.domain.BmsOrderDetailTb">
         select
-        dateTime,
-        sum(a.pay_amount) as payAmount,
-        sum(a.report_amount) as reportAmount
-        from (select
         <if test='countType=="year"'>date_format(create_time,'%Y') as dateTime ,</if>
         <if test='countType=="month"'>date_format(create_time,'%Y-%m') as dateTime,</if>
-        pay_amount,
-        case when report_account_time is not null then pay_amount else 0 end as report_amount
+        sum(pay_amount) as pay_amount
         from bms_order_detail_tb
         <where>
-            <if test='reportFlag=="Y"'>
-                and report_account_time is not null
-            </if>
             <if test="productInnerCode != null and productInnerCode!=''">
                 and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}
             </if>
@@ -236,9 +228,46 @@
                 </if>
             </if>
         </where>
-        )a
         group by dateTime order by dateTime
     </select>
+
+    <select id="selectForDirectionReportAmountCount" resultType="com.bio.drqi.domain.BmsOrderDetailTb"
+            parameterType="com.bio.drqi.domain.BmsOrderDetailTb">
+        select
+        <if test='countType=="year"'>SUBSTRING(report_account_time,1,4) as dateTime ,</if>
+        <if test='countType=="month"'>report_account_time as dateTime,</if>
+        sum(pay_amount) as pay_amount
+        from bms_order_detail_tb
+        where
+        report_account_time is not null
+        <if test="productInnerCode != null and productInnerCode!=''">
+            and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}
+        </if>
+        <if test="productCategoryCode != null and productCategoryCode!=''">
+            and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
+        </if>
+        <if test="applyUnitCode != null and applyUnitCode!=''">and
+            apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}
+        </if>
+        <if test='countType=="year"'>
+            <if test="beginDateTime != null and beginDateTime!=''">
+                and SUBSTRING(report_account_time,1,4) >=#{beginDateTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endDateTime != null and endDateTime!=''">
+                and SUBSTRING(report_account_time,1,4) &lt;=#{endDateTime,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test='countType=="month"'>
+            <if test="beginDateTime != null and beginDateTime!=''">
+                and report_account_time >=#{beginDateTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endDateTime != null and endDateTime!=''">
+                and report_account_time &lt;=#{endDateTime,jdbcType=VARCHAR}
+            </if>
+        </if>
+        group by dateTime order by dateTime
+    </select>
+
     <select id="selectForDirectionSupplierCount" resultType="com.bio.drqi.domain.BmsOrderDetailTb">
         select
         sum(pay_amount) as pay_amount ,
@@ -308,7 +337,8 @@
             </if>
         </if>
     </select>
-    <select id="selectForCountPurchaseAmountGroupByCategory" resultType="com.bio.drqi.domain.BmsOrderDetailTb" parameterType="com.bio.drqi.domain.BmsOrderDetailTb">
+    <select id="selectForCountPurchaseAmountGroupByCategory" resultType="com.bio.drqi.domain.BmsOrderDetailTb"
+            parameterType="com.bio.drqi.domain.BmsOrderDetailTb">
         select product_category_code,
         <if test='countType=="year"'>date_format(create_time,'%Y') as dateTime ,</if>
         <if test='countType=="month"'>date_format(create_time,'%Y-%m') as dateTime,</if>
@@ -348,7 +378,8 @@
         </if>
         product_category_code
     </select>
-    <select id="selectForCountReportAmountGroupByCategory" resultType="com.bio.drqi.domain.BmsOrderDetailTb" parameterType="com.bio.drqi.domain.BmsOrderDetailTb">
+    <select id="selectForCountReportAmountGroupByCategory" resultType="com.bio.drqi.domain.BmsOrderDetailTb"
+            parameterType="com.bio.drqi.domain.BmsOrderDetailTb">
         select product_category_code,
         <if test='countType=="year"'>SUBSTRING(report_account_time,1,4) as dateTime ,</if>
         <if test='countType=="month"'>report_account_time as dateTime,</if>

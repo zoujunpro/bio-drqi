@@ -101,7 +101,7 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
             bmsStockBroadCountOrderReqDTO.setEndDateTime(DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN));
         }
         List<BmsOrderDetailDirectionAmountCountCountRspDTO> resultList = new ArrayList<>();
-        List<BmsOrderDetailTb> list = bmsOrderDetailTbMapper.selectForDirectionAmountCount(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
+        List<BmsOrderDetailTb> list = bmsOrderDetailTbMapper.selectForDirectionPurchaseAmountCount(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
         if (CollectionUtil.isNotEmpty(list)) {
             list.forEach(bmsOrderDetailTb -> {
                 BmsOrderDetailDirectionAmountCountCountRspDTO bmsOrderDetailDirectionAmountCountCountRspDTO = new BmsOrderDetailDirectionAmountCountCountRspDTO();

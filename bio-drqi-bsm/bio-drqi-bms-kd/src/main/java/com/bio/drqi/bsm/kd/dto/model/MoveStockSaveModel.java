@@ -81,7 +81,7 @@ public class MoveStockSaveModel extends KdModel {
         this.FOwnerTypeIdHead = "BD_OwnerOrg";
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
         this.FBillEntry = Arrays.asList(new FBillEntryModel(productInnerCode, moveNumber, srcStockId, destStockId, orgCode));
-        this.FNote="";
+        this.FNote=" ";
     }
 
     @Data

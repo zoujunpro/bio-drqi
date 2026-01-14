@@ -44,27 +44,15 @@ public class BmsOrderDetailBroadController {
 
 
     /**
-     * 采购统计-按日期统计采购金额
+     * 采购统计-按日期统计采购/报账金额
      *
      * @param bmsStockBroadCountOrderReqDTO
      * @return
      */
-    @PostMapping("/directionPurchaseAmountCount")
+    @PostMapping("/directionAmountCount")
     @WebLog(desc = "采购统计-按日期统计采购金额")
-    public ResponseResult<List<BmsOrderDetailDirectionAmountCountCountRspDTO>> directionPurchaseAmountCount(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
-        return ResponseResult.getSuccess(bmsOrderDetailBroadService.directionAmountCount(bmsStockBroadCountOrderReqDTO, BioDrQiContents.N));
-    }
-
-    /**
-     * 采购统计-按日期统计报账金额
-     *
-     * @param bmsStockBroadCountOrderReqDTO
-     * @return
-     */
-    @PostMapping("/directionReportAmountCount")
-    @WebLog(desc = "采购统计-按日期统计报账金额")
-    public ResponseResult<List<BmsOrderDetailDirectionAmountCountCountRspDTO>> directionReportAmountCount(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
-        return ResponseResult.getSuccess(bmsOrderDetailBroadService.directionAmountCount(bmsStockBroadCountOrderReqDTO,BioDrQiContents.Y));
+    public ResponseResult<List<BmsOrderDetailDirectionAmountCountCountRspDTO>> directionAmountCount(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
+        return ResponseResult.getSuccess(bmsOrderDetailBroadService.directionAmountCount(bmsStockBroadCountOrderReqDTO));
     }
 
     /**

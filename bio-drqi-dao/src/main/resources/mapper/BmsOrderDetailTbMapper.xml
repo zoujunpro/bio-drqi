@@ -197,9 +197,14 @@
     <select id="selectForDirectionAmountCount" resultType="com.bio.drqi.domain.BmsOrderDetailTb"
             parameterType="com.bio.drqi.domain.BmsOrderDetailTb">
         select
+        dateTime,
+        sum(a.pay_amount) as payAmount,
+        sum(a.report_amount) as reportAmount
+        from (select
         <if test='countType=="year"'>date_format(create_time,'%Y') as dateTime ,</if>
         <if test='countType=="month"'>date_format(create_time,'%Y-%m') as dateTime,</if>
-        sum(pay_amount) as pay_amount
+        pay_amount,
+        case when report_account_time is not null then pay_amount else 0 end as report_amount
         from bms_order_detail_tb
         <where>
             <if test='reportFlag=="Y"'>
@@ -231,8 +236,8 @@
                 </if>
             </if>
         </where>
-        group by dateTime
-        order by dateTime
+        )a
+        group by dateTime order by dateTime
     </select>
     <select id="selectForDirectionSupplierCount" resultType="com.bio.drqi.domain.BmsOrderDetailTb">
         select

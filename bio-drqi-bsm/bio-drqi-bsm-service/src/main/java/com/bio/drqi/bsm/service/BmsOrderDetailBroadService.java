@@ -29,7 +29,7 @@ public interface BmsOrderDetailBroadService {
      * @param bmsStockBroadCountOrderReqDTO
      * @return
      */
-    List<BmsOrderDetailDirectionAmountCountCountRspDTO> directionAmountCount(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO,String reportFlag);
+    List<BmsOrderDetailDirectionAmountCountCountRspDTO> directionAmountCount(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO);
 
     /**
      * 采购统计-按供应商统计采购金额（前10位）

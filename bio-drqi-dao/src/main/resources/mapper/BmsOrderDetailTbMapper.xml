@@ -351,7 +351,7 @@
     <select id="selectForCountReportAmountGroupByCategory" resultType="com.bio.drqi.domain.BmsOrderDetailTb" parameterType="com.bio.drqi.domain.BmsOrderDetailTb">
         select product_category_code,
         <if test='countType=="year"'>SUBSTRING(report_account_time,1,4) as dateTime ,</if>
-        <if test='countType=="month"'>report_account_time,</if>
+        <if test='countType=="month"'>report_account_time as dateTime,</if>
         sum(pay_amount) as pay_amount
         from bms_order_detail_tb
         <where>

@@ -62,5 +62,10 @@ public class BmsOrderDetailListPageReqDTO extends PageDTO {
      */
     private String reportAccountTime;
 
+    /**
+     * 采购日期
+     */
+    private String dateTime;
+
 
 }

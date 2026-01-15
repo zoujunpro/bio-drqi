@@ -87,7 +87,9 @@
             <if test="productCategoryCode != null and productCategoryCode!=''">and
                 product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
             </if>
-            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="dateTime != null and dateTime!=''">
+                and date_format(create_time,'%Y-%m')  =#{dateTime,jdbcType=VARCHAR}
+            </if>
             <if test="applyUserId != null">and apply_user_id=#{applyUserId,jdbcType=NUMERIC}</if>
             <if test="applyUserName != null">and apply_user_name=#{applyUserName,jdbcType=VARCHAR}</if>
             <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>

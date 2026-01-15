@@ -30,14 +30,16 @@ public interface BmsOrderDetailTbMapper extends BaseMapper<BmsOrderDetailTb> {
 
     BigDecimal selectForOrderCount2(BmsOrderDetailTb bmsOrderDetailTb);
 
-    List<BmsOrderDetailTb> selectForDirectionAmountCount(BmsOrderDetailTb bmsOrderDetailTb);
+    List<BmsOrderDetailTb> selectForDirectionPurchaseAmountCount(BmsOrderDetailTb bmsOrderDetailTb);
+
+    List<BmsOrderDetailTb> selectForDirectionReportAmountCount(BmsOrderDetailTb bmsOrderDetailTb);
 
     List<BmsOrderDetailTb> selectForDirectionSupplierCount(BmsOrderDetailTb bmsOrderDetailTb);
 
     List<BmsOrderDetailTb> selectForReportNoInStockListPage(BmsOrderDetailTb bmsOrderDetailTb);
 
-    List<BmsOrderDetailTb> selectForCountAmountGroupByCategory(BmsOrderDetailTb bmsOrderDetailTb);
-
+    List<BmsOrderDetailTb> selectForCountPurchaseAmountGroupByCategory(BmsOrderDetailTb bmsOrderDetailTb);
+    List<BmsOrderDetailTb> selectForCountReportAmountGroupByCategory(BmsOrderDetailTb bmsOrderDetailTb);
 }
 
 

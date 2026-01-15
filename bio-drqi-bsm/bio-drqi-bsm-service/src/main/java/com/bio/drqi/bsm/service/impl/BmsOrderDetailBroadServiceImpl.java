@@ -54,14 +54,14 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
 
     @Override
     public List<BmsOrderBroadCountByCategoryRspDTO> countAmountByByCategory(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
-        List<BmsOrderBroadCountByCategoryRspDTO> resultList=new ArrayList<>();
+        List<BmsOrderBroadCountByCategoryRspDTO> resultList = new ArrayList<>();
         if (StringUtils.isEmpty(bmsStockBroadCountOrderReqDTO.getCountType())) {
             bmsStockBroadCountOrderReqDTO.setCountType("month");
             bmsStockBroadCountOrderReqDTO.setBeginDateTime("2025-05");
             bmsStockBroadCountOrderReqDTO.setEndDateTime(DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN));
         }
         List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
-        if(BioDrQiContents.Y.equals(bmsStockBroadCountOrderReqDTO.getReportFlag())){
+        if (BioDrQiContents.Y.equals(bmsStockBroadCountOrderReqDTO.getReportFlag())) {
             List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForCountPurchaseAmountGroupByCategory(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
             if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
                 bmsOrderDetailTbList.stream().collect(Collectors.groupingBy(BmsOrderDetailTb::getDateTime)).forEach((dateTime, list) -> {
@@ -74,7 +74,7 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
                     resultList.add(bmsOrderBroadCountByCategoryRspDTO);
                 });
             }
-        }else {
+        } else {
             List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForCountReportAmountGroupByCategory(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
             if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
                 bmsOrderDetailTbList.stream().collect(Collectors.groupingBy(BmsOrderDetailTb::getDateTime)).forEach((dateTime, list) -> {
@@ -101,16 +101,36 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
             bmsStockBroadCountOrderReqDTO.setEndDateTime(DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN));
         }
         List<BmsOrderDetailDirectionAmountCountCountRspDTO> resultList = new ArrayList<>();
-        List<BmsOrderDetailTb> list = bmsOrderDetailTbMapper.selectForDirectionPurchaseAmountCount(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
-        if (CollectionUtil.isNotEmpty(list)) {
-            list.forEach(bmsOrderDetailTb -> {
+        List<BmsOrderDetailTb> purchaseBmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForDirectionPurchaseAmountCount(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
+        List<BmsOrderDetailTb> reportBmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForDirectionReportAmountCount(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
+        Map<String, BigDecimal> purchaseMap = purchaseBmsOrderDetailTbList.stream().collect(Collectors.toMap(BmsOrderDetailTb::getDateTime, BmsOrderDetailTb::getPayAmount));
+        Map<String, BigDecimal> reportMap = reportBmsOrderDetailTbList.stream().collect(Collectors.toMap(BmsOrderDetailTb::getDateTime, BmsOrderDetailTb::getReportAmount));
+
+        if (CollectionUtil.isNotEmpty(purchaseMap)) {
+            purchaseMap.forEach((dateTime, payAmount) -> {
                 BmsOrderDetailDirectionAmountCountCountRspDTO bmsOrderDetailDirectionAmountCountCountRspDTO = new BmsOrderDetailDirectionAmountCountCountRspDTO();
-                bmsOrderDetailDirectionAmountCountCountRspDTO.setDateTime(bmsOrderDetailTb.getDateTime());
-                bmsOrderDetailDirectionAmountCountCountRspDTO.setPurchaseAmount(bmsOrderDetailTb.getPayAmount());
-                bmsOrderDetailDirectionAmountCountCountRspDTO.setReportAmount(bmsOrderDetailTb.getReportAmount());
+                bmsOrderDetailDirectionAmountCountCountRspDTO.setDateTime(dateTime);
+                bmsOrderDetailDirectionAmountCountCountRspDTO.setPurchaseAmount(payAmount);
+                bmsOrderDetailDirectionAmountCountCountRspDTO.setReportAmount(new BigDecimal(0));
                 resultList.add(bmsOrderDetailDirectionAmountCountCountRspDTO);
             });
         }
+        if (CollectionUtil.isNotEmpty(reportMap)) {
+            Map<String, BmsOrderDetailDirectionAmountCountCountRspDTO> resultMap = resultList.stream().collect(Collectors.toMap(BmsOrderDetailDirectionAmountCountCountRspDTO::getDateTime, bmsOrderDetailDirectionAmountCountCountRspDTO -> bmsOrderDetailDirectionAmountCountCountRspDTO));
+            reportMap.forEach((dateTime, reportAmount) -> {
+                BmsOrderDetailDirectionAmountCountCountRspDTO bmsOrderDetailDirectionAmountCountCountRspDTO = resultMap.get(dateTime);
+                if (bmsOrderDetailDirectionAmountCountCountRspDTO != null) {
+                    bmsOrderDetailDirectionAmountCountCountRspDTO.setReportAmount(reportAmount);
+                } else {
+                    bmsOrderDetailDirectionAmountCountCountRspDTO = new BmsOrderDetailDirectionAmountCountCountRspDTO();
+                    bmsOrderDetailDirectionAmountCountCountRspDTO.setDateTime(dateTime);
+                    bmsOrderDetailDirectionAmountCountCountRspDTO.setPurchaseAmount(new BigDecimal(0));
+                    bmsOrderDetailDirectionAmountCountCountRspDTO.setReportAmount(reportAmount);
+                    resultList.add(bmsOrderDetailDirectionAmountCountCountRspDTO);
+                }
+            });
+        }
+
         return resultList;
     }
 

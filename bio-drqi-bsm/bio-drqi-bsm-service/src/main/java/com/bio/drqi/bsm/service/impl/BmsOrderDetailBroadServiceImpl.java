@@ -62,7 +62,7 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
         }
         List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
         if (BioDrQiContents.Y.equals(bmsStockBroadCountOrderReqDTO.getReportFlag())) {
-            List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForCountPurchaseAmountGroupByCategory(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
+            List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForCountReportAmountGroupByCategory(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
             if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
                 bmsOrderDetailTbList.stream().collect(Collectors.groupingBy(BmsOrderDetailTb::getDateTime)).forEach((dateTime, list) -> {
                     BmsOrderBroadCountByCategoryRspDTO bmsOrderBroadCountByCategoryRspDTO = new BmsOrderBroadCountByCategoryRspDTO();
@@ -75,7 +75,7 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
                 });
             }
         } else {
-            List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForCountReportAmountGroupByCategory(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
+            List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForCountPurchaseAmountGroupByCategory(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
             if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
                 bmsOrderDetailTbList.stream().collect(Collectors.groupingBy(BmsOrderDetailTb::getDateTime)).forEach((dateTime, list) -> {
                     BmsOrderBroadCountByCategoryRspDTO bmsOrderBroadCountByCategoryRspDTO = new BmsOrderBroadCountByCategoryRspDTO();

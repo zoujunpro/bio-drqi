@@ -104,7 +104,7 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
         List<BmsOrderDetailTb> purchaseBmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForDirectionPurchaseAmountCount(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
         List<BmsOrderDetailTb> reportBmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForDirectionReportAmountCount(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
         Map<String, BigDecimal> purchaseMap = purchaseBmsOrderDetailTbList.stream().collect(Collectors.toMap(BmsOrderDetailTb::getDateTime, BmsOrderDetailTb::getPayAmount));
-        Map<String, BigDecimal> reportMap = reportBmsOrderDetailTbList.stream().collect(Collectors.toMap(BmsOrderDetailTb::getDateTime, BmsOrderDetailTb::getReportAmount));
+        Map<String, BigDecimal> reportMap = reportBmsOrderDetailTbList.stream().collect(Collectors.toMap(BmsOrderDetailTb::getDateTime, BmsOrderDetailTb::getPayAmount));
 
         if (CollectionUtil.isNotEmpty(purchaseMap)) {
             purchaseMap.forEach((dateTime, payAmount) -> {

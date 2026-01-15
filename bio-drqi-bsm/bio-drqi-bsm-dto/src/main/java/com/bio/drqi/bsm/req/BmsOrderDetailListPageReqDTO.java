@@ -68,4 +68,6 @@ public class BmsOrderDetailListPageReqDTO extends PageDTO {
     private String dateTime;
 
 
+    private String productCategoryCode;
+
 }

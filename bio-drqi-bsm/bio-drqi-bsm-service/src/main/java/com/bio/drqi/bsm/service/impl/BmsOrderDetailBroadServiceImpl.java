@@ -131,7 +131,7 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
             });
         }
 
-        return resultList;
+        return resultList.stream().sorted(Comparator.comparing(bmsOrderDetailDirectionAmountCountCountRspDTO -> bmsOrderDetailDirectionAmountCountCountRspDTO.getDateTime())).collect(Collectors.toList());
     }
 
     @Override

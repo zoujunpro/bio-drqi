@@ -57,5 +57,7 @@ public class BmsProductStockOutLogListPageReqDTO  extends PageDTO {
      */
     private String supplierCode;
 
+    private String dateTime;
+
 
 }

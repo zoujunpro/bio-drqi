@@ -67,6 +67,9 @@
             <if test="endDate != null and endDate != ''">
                 and date_format(create_time,'%Y-%m-%d') &lt;= #{endDate,jdbcType=VARCHAR}
             </if>
+            <if test="dateTime!=null and dateTime!=''">
+                and date_format(create_time,'%Y-%m') >=#{dateTime,jdbcType=VARCHAR}
+            </if>
             <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
             <if test="outType != null and outType!=''">and out_type=#{outType,jdbcType=VARCHAR}</if>

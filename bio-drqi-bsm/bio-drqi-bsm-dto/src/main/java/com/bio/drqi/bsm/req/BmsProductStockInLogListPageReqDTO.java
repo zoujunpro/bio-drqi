@@ -47,4 +47,6 @@ public class BmsProductStockInLogListPageReqDTO extends PageDTO {
 
 
     private String productInnerCode;
+
+    private String dateTime;
 }

@@ -5,7 +5,6 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.bsm.req.BmsStockBroadCountOrderReqDTO;
 import com.bio.drqi.bsm.rsp.*;
 import com.bio.drqi.bsm.service.BmsOrderDetailBroadService;
-import com.bio.drqi.common.contents.BioDrQiContents;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -99,4 +98,14 @@ public class BmsOrderDetailBroadController {
         bmsOrderDetailBroadService.exportReportNoInStockListPage(bmsStockBroadCountOrderReqDTO, httpServletResponse);
     }
 
+    /**
+     * 采购统计-根据项目统计采购金额
+     * @param bmsStockBroadCountOrderReqDTO
+     * @return
+     */
+    @PostMapping("/countAmountByProjectCode")
+    @WebLog(desc = "采购统计-根据项目统计采购金额")
+    public ResponseResult<List<BmsOrderDetailCountAmountByProjectCodeRspDTO>> countAmountByProjectCode(@RequestBody @Validated BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO){
+        return ResponseResult.getSuccess(bmsOrderDetailBroadService.countAmountByProjectCode(bmsStockBroadCountOrderReqDTO));
+    }
 }

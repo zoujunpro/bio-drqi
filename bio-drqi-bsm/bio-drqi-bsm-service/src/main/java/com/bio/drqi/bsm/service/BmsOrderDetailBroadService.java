@@ -51,4 +51,6 @@ public interface BmsOrderDetailBroadService {
     PageInfo<BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO>  queryReportNoInStockListPage( BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO);
 
     void exportReportNoInStockListPage(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO, HttpServletResponse httpServletResponse);
+
+    List<BmsOrderDetailCountAmountByProjectCodeRspDTO> countAmountByProjectCode(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO);
 }

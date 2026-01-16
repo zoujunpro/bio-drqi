@@ -186,4 +186,20 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
         }
         ExcelUtil.writeExcel("已入库未报账数据", "sheet1", result, BmsOrderDetailDirectionQueryReportNoInStockListPageRspDTO.class, httpServletResponse);
     }
+
+    @Override
+    public List<BmsOrderDetailCountAmountByProjectCodeRspDTO> countAmountByProjectCode(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
+        List<BmsOrderDetailCountAmountByProjectCodeRspDTO> resultList=new ArrayList<>();
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForCountAmountByProjectCode(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
+        if(CollectionUtil.isNotEmpty(bmsOrderDetailTbList)){
+            bmsOrderDetailTbList.forEach(bmsOrderDetailTb -> {
+                BmsOrderDetailCountAmountByProjectCodeRspDTO bmsOrderDetailCountAmountByProjectCodeRspDTO=new BmsOrderDetailCountAmountByProjectCodeRspDTO();
+                bmsOrderDetailCountAmountByProjectCodeRspDTO.setProjectCode(bmsOrderDetailTb.getProjectCode());
+                bmsOrderDetailCountAmountByProjectCodeRspDTO.setCountAmount(bmsOrderDetailTb.getPayAmount());
+                resultList.add(bmsOrderDetailCountAmountByProjectCodeRspDTO);
+
+            });
+        }
+        return resultList;
+    }
 }

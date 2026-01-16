@@ -421,4 +421,38 @@
         </if>
         product_category_code
     </select>
+    <select id="selectForCountAmountByProjectCode" resultType="com.bio.drqi.domain.BmsOrderDetailTb" parameterType="com.bio.drqi.domain.BmsOrderDetailTb">
+        select project_code,
+        sum(pay_amount) as pay_amount
+        from bms_order_detail_tb
+        <where>
+            <if test='reportFlag=="Y"'>and report_account_time is not null</if>
+            <if test="productInnerCode != null and productInnerCode!=''">and
+                product_inner_code=#{productInnerCode,jdbcType=VARCHAR}
+            </if>
+            <if test="productCategoryCode != null and productCategoryCode!=''">and
+                product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
+            </if>
+            <if test="applyUnitCode != null and applyUnitCode!=''">and
+                apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}
+            </if>
+            <if test='countType=="year"'>
+                <if test="beginDateTime != null and beginDateTime!=''">
+                    and SUBSTRING(report_account_time,1,4) >=#{beginDateTime,jdbcType=VARCHAR}
+                </if>
+                <if test="endDateTime != null and endDateTime!=''">
+                    and SUBSTRING(report_account_time,1,4) &lt;=#{endDateTime,jdbcType=VARCHAR}
+                </if>
+            </if>
+            <if test='countType=="month"'>
+                <if test="beginDateTime != null and beginDateTime!=''">
+                    and report_account_time >=#{beginDateTime,jdbcType=VARCHAR}
+                </if>
+                <if test="endDateTime != null and endDateTime!=''">
+                    and report_account_time &lt;=#{endDateTime,jdbcType=VARCHAR}
+                </if>
+            </if>
+        </where>
+        group by project_code
+    </select>
 </mapper>

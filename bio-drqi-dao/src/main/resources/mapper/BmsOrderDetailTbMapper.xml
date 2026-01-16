@@ -311,7 +311,7 @@
         <include refid="Base_Column_List"/>
         from bms_order_detail_tb
         where report_account_time is null
-        and order_detail_num not in
+        and order_detail_num  in
         (select order_detail_num from bms_product_stock_in_log where order_detail_num is not null)
         <if test="productInnerCode != null and productInnerCode!=''">
             and product_inner_code=#{productInnerCode,jdbcType=VARCHAR}

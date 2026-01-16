@@ -49,4 +49,10 @@ public class BmsProductStockInLogListPageReqDTO extends PageDTO {
     private String productInnerCode;
 
     private String dateTime;
+
+    /**
+     * 所属类别编号
+     */
+    private String productCategoryCode;
+
 }

@@ -421,7 +421,7 @@
         </if>
         product_category_code
     </select>
-    <select id="selectForCountAmountByProjectCode" resultType="com.bio.drqi.domain.BmsOrderDetailTb" parameterType="com.bio.drqi.domain.BmsOrderDetailTb">
+    <select id="selectForCountReportAmountByProjectCode" resultType="com.bio.drqi.domain.BmsOrderDetailTb" parameterType="com.bio.drqi.domain.BmsOrderDetailTb">
         select project_code,
         sum(pay_amount) as pay_amount
         from bms_order_detail_tb
@@ -450,6 +450,41 @@
                 </if>
                 <if test="endDateTime != null and endDateTime!=''">
                     and report_account_time &lt;=#{endDateTime,jdbcType=VARCHAR}
+                </if>
+            </if>
+        </where>
+        group by project_code
+    </select>
+
+    <select id="selectForCountPurchaseAmountByProjectCode" resultType="com.bio.drqi.domain.BmsOrderDetailTb" parameterType="com.bio.drqi.domain.BmsOrderDetailTb">
+        select project_code,
+        sum(pay_amount) as pay_amount
+        from bms_order_detail_tb
+        <where>
+            <if test='reportFlag=="Y"'>and report_account_time is not null</if>
+            <if test="productInnerCode != null and productInnerCode!=''">and
+                product_inner_code=#{productInnerCode,jdbcType=VARCHAR}
+            </if>
+            <if test="productCategoryCode != null and productCategoryCode!=''">and
+                product_category_code=#{productCategoryCode,jdbcType=VARCHAR}
+            </if>
+            <if test="applyUnitCode != null and applyUnitCode!=''">and
+                apply_unit_code=#{applyUnitCode,jdbcType=VARCHAR}
+            </if>
+            <if test='countType=="year"'>
+                <if test="beginDateTime != null and beginDateTime!=''">
+                    and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}
+                </if>
+                <if test="endDateTime != null and endDateTime!=''">
+                    and date_format(create_time,'%Y') &lt;=#{endDateTime,jdbcType=VARCHAR}
+                </if>
+            </if>
+            <if test='countType=="month"'>
+                <if test="beginDateTime != null and beginDateTime!=''">
+                    and date_format(create_time,'%Y-%m') >=#{beginDateTime,jdbcType=VARCHAR}
+                </if>
+                <if test="endDateTime != null and endDateTime!=''">
+                    and date_format(create_time,'%Y-%m') &lt;=#{endDateTime,jdbcType=VARCHAR}
                 </if>
             </if>
         </where>

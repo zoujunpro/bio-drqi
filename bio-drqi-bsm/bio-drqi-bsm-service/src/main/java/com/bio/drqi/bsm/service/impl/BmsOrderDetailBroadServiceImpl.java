@@ -189,11 +189,16 @@ public class BmsOrderDetailBroadServiceImpl implements BmsOrderDetailBroadServic
 
     @Override
     public List<BmsOrderDetailCountAmountByProjectCodeRspDTO> countAmountByProjectCode(BmsStockBroadCountOrderReqDTO bmsStockBroadCountOrderReqDTO) {
-        List<BmsOrderDetailCountAmountByProjectCodeRspDTO> resultList=new ArrayList<>();
-        List<BmsOrderDetailTb> bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForCountAmountByProjectCode(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
-        if(CollectionUtil.isNotEmpty(bmsOrderDetailTbList)){
+        List<BmsOrderDetailCountAmountByProjectCodeRspDTO> resultList = new ArrayList<>();
+        List<BmsOrderDetailTb> bmsOrderDetailTbList = null;
+        if (BioDrQiContents.Y.equals(bmsStockBroadCountOrderReqDTO.getReportFlag())) {
+            bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForCountReportAmountByProjectCode(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
+        } else {
+            bmsOrderDetailTbList = bmsOrderDetailTbMapper.selectForCountPurchaseAmountByProjectCode(BeanUtils.copyProperties(bmsStockBroadCountOrderReqDTO, BmsOrderDetailTb.class));
+        }
+        if (CollectionUtil.isNotEmpty(bmsOrderDetailTbList)) {
             bmsOrderDetailTbList.forEach(bmsOrderDetailTb -> {
-                BmsOrderDetailCountAmountByProjectCodeRspDTO bmsOrderDetailCountAmountByProjectCodeRspDTO=new BmsOrderDetailCountAmountByProjectCodeRspDTO();
+                BmsOrderDetailCountAmountByProjectCodeRspDTO bmsOrderDetailCountAmountByProjectCodeRspDTO = new BmsOrderDetailCountAmountByProjectCodeRspDTO();
                 bmsOrderDetailCountAmountByProjectCodeRspDTO.setProjectCode(bmsOrderDetailTb.getProjectCode());
                 bmsOrderDetailCountAmountByProjectCodeRspDTO.setCountAmount(bmsOrderDetailTb.getPayAmount());
                 resultList.add(bmsOrderDetailCountAmountByProjectCodeRspDTO);

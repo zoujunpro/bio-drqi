@@ -41,7 +41,9 @@ public interface BmsOrderDetailTbMapper extends BaseMapper<BmsOrderDetailTb> {
     List<BmsOrderDetailTb> selectForCountPurchaseAmountGroupByCategory(BmsOrderDetailTb bmsOrderDetailTb);
     List<BmsOrderDetailTb> selectForCountReportAmountGroupByCategory(BmsOrderDetailTb bmsOrderDetailTb);
 
-    List<BmsOrderDetailTb> selectForCountAmountByProjectCode(BmsOrderDetailTb bmsOrderDetailTb);
+    List<BmsOrderDetailTb> selectForCountPurchaseAmountByProjectCode(BmsOrderDetailTb bmsOrderDetailTb);
+
+    List<BmsOrderDetailTb> selectForCountReportAmountByProjectCode(BmsOrderDetailTb bmsOrderDetailTb);
 }
 
 

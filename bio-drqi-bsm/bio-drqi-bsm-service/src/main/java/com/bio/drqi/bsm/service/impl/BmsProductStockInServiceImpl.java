@@ -139,6 +139,7 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
         } else {
             bmsOrderDetailTb.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber() + bmsOrderDetailTb.getReturnNumber());
         }
+        bmsOrderDetailTb.setPayAmount(bmsOrderDetailTb.getPayAmount().subtract(bmsOrderDetailTb.getPurchasePrice().multiply(new BigDecimal(bmsProductStockInLogReturnStockReqDTO.getReturnNumber()))));
         bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
 
         //判断订单是否已经结束，如果已经结束则更新状态;

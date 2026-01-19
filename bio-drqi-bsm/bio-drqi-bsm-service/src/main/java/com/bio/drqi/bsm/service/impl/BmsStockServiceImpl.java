@@ -61,6 +61,15 @@ public class BmsStockServiceImpl implements BmsStockService {
     @Resource
     private BmsProjectDictMapper bmsProjectDictMapper;
 
+    @Resource
+    private BmsBrandTbMapper bmsBrandTbMapper;
+
+    @Resource
+    private BmsProductCategoryTbMapper bmsProductCategoryTbMapper;
+
+    @Resource
+    private BmsSupplierTbMapper bmsSupplierTbMapper;
+
     @Override
     public List<BmsStockQueryByUnitRspDTO> queryStockByUnit(String unitCode) {
         List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectAllByUnitCodeOrderByIdDesc(unitCode);
@@ -122,6 +131,13 @@ public class BmsStockServiceImpl implements BmsStockService {
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
         Map<String, BmsProductStockTb> bmsProductStockTbMap = bmsProductStockTbList.stream().collect(Collectors.toMap(bmsProductStockTb -> bmsProductStockTb.getProductInnerCode() + bmsProductStockTb.getUnitCode() + bmsProductStockTb.getBatchNo() + bmsProductStockTb.getStockCode(), bmsProductStockTb -> bmsProductStockTb));
 
+        List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
+        List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(null);
+        List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+        Map<String, String> bmsSupplierTbMap = bmsSupplierTbMapper.selectSelective(null).stream().collect(Collectors.toMap(BmsSupplierTb::getSupplierCode, BmsSupplierTb::getSupplierName));
+        Map<String, String> bmsBrandMap = bmsBrandTbList.stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
+        Map<String, String> bmsProductCategoryTbMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+        Map<String, String> bmsStockDictMap = bmsStockDictList.stream().collect(Collectors.toMap(BmsStockDict::getStockCode, BmsStockDict::getStockName));
 
         //查询需要回退的数据
 
@@ -178,6 +194,10 @@ public class BmsStockServiceImpl implements BmsStockService {
                 bmsStock.setProjectType(bmsProjectDict.getKdProjectType());
                 bmsStock.setProductName(bmsProjectDict.getKdProjectName());
             }
+            bmsStock.setStockName(bmsStockDictMap.get(bmsStock.getStockCode()));
+            bmsStock.setProductCategoryName(bmsProductCategoryTbMap.get(bmsStock.getProductCategoryCode()));
+            bmsStock.setBrandName(bmsBrandMap.get(bmsStock.getBrandCode()));
+            bmsStock.setSupplierName(bmsSupplierTbMap.get(bmsStock.getSupplierCode()));
         }
 
         ExcelUtil.writeExcel("D://"+dateTime, "sheet1", bmsStockList, BmsJieCunStockExcelDTO.class,httpServletResponse);

@@ -1,5 +1,6 @@
 package com.bio.drqi.bsm.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
@@ -22,14 +23,17 @@ public class BmsJieCunStockExcelDTO {
     /**
      * 所属类别编号
      */
-    @ExcelProperty("所属类别编号")
+    @ExcelIgnore
     private String productCategoryCode;
 
-
     /**
-     * 品牌编号
+     * 所属类别编号
      */
-    @ExcelProperty("品牌编号")
+    @ExcelProperty("所属类别")
+    private String productCategoryName;
+
+
+    @ExcelIgnore
     private String brandCode;
 
     /**
@@ -77,8 +81,12 @@ public class BmsJieCunStockExcelDTO {
     private String produceDate;
 
 
-    @ExcelProperty("库房编号")
+    @ExcelIgnore
     private String stockCode;
+
+
+    @ExcelProperty("库房")
+    private String stockName;
 
     @ExcelProperty("项目编号")
     private String projectCode;
@@ -91,9 +99,7 @@ public class BmsJieCunStockExcelDTO {
     /**
      * 唯一编号
      */
-    @ExcelProperty("唯一编号")
+    @ExcelIgnore
     private String uniqueCode;
 
-    @ExcelProperty("采购单价")
-    private String productPrice;
 }

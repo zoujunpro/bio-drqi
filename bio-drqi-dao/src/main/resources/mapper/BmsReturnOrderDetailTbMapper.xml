@@ -65,6 +65,9 @@
             <if test="endDate != null and endDate != ''">
                 and date_format(create_time,'%Y-%m-%d') &lt;= #{endDate,jdbcType=VARCHAR}
             </if>
+            <if test="dateTime!=null and dateTime!=''">
+                and date_format(create_time,'%Y-%m') =#{dateTime,jdbcType=VARCHAR}
+            </if>
             <if test="orderNum != null and orderNum!=''"> and order_num=#{orderNum,jdbcType=VARCHAR}</if>
             <if test="productSpecs != null"> and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>
             <if test="brandCode != null and brandCode!=''"> and brand_code=#{brandCode,jdbcType=VARCHAR}</if>

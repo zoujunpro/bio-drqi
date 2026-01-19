@@ -1,30 +1,37 @@
 package com.bio.drqi.bsm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.uuid.IdUtils;
+import com.bio.drqi.bsm.dto.BmsCountPeriodTaskDTO;
+import com.bio.drqi.bsm.dto.BmsJieCunStockExcelDTO;
 import com.bio.drqi.bsm.kd.KdTaskExecuteService;
 import com.bio.drqi.bsm.req.BmsStockAddReqDTO;
 import com.bio.drqi.bsm.req.BmsStockEditReqDTO;
 import com.bio.drqi.bsm.rsp.BmsStockQueryByUnitRspDTO;
 import com.bio.drqi.bsm.service.BmsStockService;
-import com.bio.drqi.domain.BmsProductStockTb;
-import com.bio.drqi.domain.BmsStockDict;
-import com.bio.drqi.mapper.BmsProductStockTbMapper;
-import com.bio.drqi.mapper.BmsStockDictMapper;
-import com.bio.drqi.mapper.BmsStockLocationDictMapper;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.*;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
-@Data
+@Slf4j
 public class BmsStockServiceImpl implements BmsStockService {
 
     @Resource
@@ -39,6 +46,20 @@ public class BmsStockServiceImpl implements BmsStockService {
     @Resource
     private KdTaskExecuteService kdTaskExecuteService;
 
+    @Resource
+    private BmsReturnOrderDetailTbMapper bmsReturnOrderDetailTbMapper;
+
+    @Resource
+    private BmsMoveOrderDetailTbMapper bmsMoveOrderDetailTbMapper;
+
+    @Resource
+    private BmsProductStockInLogMapper bmsProductStockInLogMapper;
+
+    @Resource
+    private BmsProductStockOutLogMapper bmsProductStockOutLogMapper;
+
+    @Resource
+    private BmsProjectDictMapper bmsProjectDictMapper;
 
     @Override
     public List<BmsStockQueryByUnitRspDTO> queryStockByUnit(String unitCode) {
@@ -54,7 +75,7 @@ public class BmsStockServiceImpl implements BmsStockService {
         }
         bmsStockDict = new BmsStockDict();
         bmsStockDict.setStockName(bmsStockAddReqDTO.getStockName());
-        bmsStockDict.setStockCode(IdUtils.simpleUUID().substring(0,30));
+        bmsStockDict.setStockCode(IdUtils.simpleUUID().substring(0, 30));
         bmsStockDict.setUnitCode(bmsStockAddReqDTO.getUnitCode());
         bmsStockDict.setKdNumber(null);
         bmsStockDict.setCreateTime(new Date());
@@ -92,6 +113,74 @@ public class BmsStockServiceImpl implements BmsStockService {
         }
         bmsStockDictMapper.deleteById(id);
 
+    }
+
+    @Override
+    public void downJieCunStockExcel(String dateTime, HttpServletResponse httpServletResponse) {
+        String beginDate = DateUtil.format(DateUtil.offsetDay(DateUtil.parse(dateTime, DatePattern.NORM_DATE_PATTERN), 1),DatePattern.NORM_DATE_PATTERN);
+        //step 数据查询
+        List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
+        Map<String, BmsProductStockTb> bmsProductStockTbMap = bmsProductStockTbList.stream().collect(Collectors.toMap(bmsProductStockTb -> bmsProductStockTb.getProductInnerCode() + bmsProductStockTb.getUnitCode() + bmsProductStockTb.getBatchNo() + bmsProductStockTb.getStockCode(), bmsProductStockTb -> bmsProductStockTb));
+
+
+        //查询需要回退的数据
+
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().startDate(beginDate).build());
+        log.info("bmsProductStockInLogList :" + bmsProductStockInLogList.size());
+
+        List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectSelective(BmsProductStockOutLog.builder().startDate(beginDate).build());
+        log.info("bmsProductStockOutLogList :" + bmsProductStockOutLogList.size());
+
+
+        List<BmsMoveOrderDetailTb> bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbMapper.selectSelective(BmsMoveOrderDetailTb.builder().startDate(beginDate).build());
+        log.info("bmsMoveOrderDetailTbList :" + bmsMoveOrderDetailTbList.size());
+
+
+        List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectSelective(BmsReturnOrderDetailTb.builder().startDate(beginDate).build());
+        log.info("bmsReturnOrderDetailTbList :" + bmsReturnOrderDetailTbList.size());
+
+        //复原库存
+        //先复原出库  出库的数据加到库存中
+        for (BmsProductStockOutLog bmsProductStockOutLog : bmsProductStockOutLogList) {
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsProductStockOutLog.getProductInnerCode() + bmsProductStockOutLog.getUnitCode() + bmsProductStockOutLog.getBatchNo() + bmsProductStockOutLog.getStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockOutLog.getOutNumber() + bmsProductStockTb.getCurrentStockNumber());
+        }
+        //复原退货
+        for (BmsReturnOrderDetailTb bmsReturnOrderDetailTb : bmsReturnOrderDetailTbList) {
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsReturnOrderDetailTb.getProductInnerCode() + bmsReturnOrderDetailTb.getUnitCode() + bmsReturnOrderDetailTb.getBatchNo() + bmsReturnOrderDetailTb.getStockCode());
+            log.info("bmsReturnOrderDetailTb={}" + JSONUtil.toJsonStr(bmsReturnOrderDetailTb));
+            bmsProductStockTb.setCurrentStockNumber(bmsReturnOrderDetailTb.getReturnNumber() + bmsProductStockTb.getCurrentStockNumber());
+        }
+        //复原调拨
+        for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb : bmsMoveOrderDetailTbList) {
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsMoveOrderDetailTb.getProductInnerCode() + bmsMoveOrderDetailTb.getUnitCode() + bmsMoveOrderDetailTb.getBatchNo() + bmsMoveOrderDetailTb.getFromStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsMoveOrderDetailTb.getMoveNumber() + bmsProductStockTb.getCurrentStockNumber());
+        }
+        //回退入库的
+        for (BmsProductStockInLog bmsProductStockInLog : bmsProductStockInLogList) {
+            log.info("bmsProductStockInLog=" + JSONUtil.toJsonStr(bmsProductStockInLog));
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsProductStockInLog.getProductInnerCode() + bmsProductStockInLog.getUnitCode() + bmsProductStockInLog.getBatchNo().trim() + bmsProductStockInLog.getStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductStockInLog.getStoreNumber());
+        }
+        //回退调拨的
+        for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb : bmsMoveOrderDetailTbList) {
+            BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsMoveOrderDetailTb.getProductInnerCode() + bmsMoveOrderDetailTb.getUnitCode() + bmsMoveOrderDetailTb.getBatchNo() + bmsMoveOrderDetailTb.getToStockCode());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsMoveOrderDetailTb.getMoveNumber());
+        }
+        List<BmsJieCunStockExcelDTO> bmsStockList = BeanUtils.copyListProperties(bmsProductStockTbList, BmsJieCunStockExcelDTO.class);
+        bmsStockList = bmsStockList.stream().filter(bmsStock -> bmsStock.getCurrentStockNumber() > 0).collect(Collectors.toList());
+        for (BmsJieCunStockExcelDTO bmsStock : bmsStockList) {
+            List<BmsProductStockInLog> bmsProductStockInLogs = bmsProductStockInLogMapper.selectAllByUniqueCode(bmsStock.getUniqueCode());
+            if (CollectionUtil.isNotEmpty(bmsProductStockInLogs)) {
+                String projectCode = bmsProductStockInLogs.get(0).getProjectCode();
+                BmsProjectDict bmsProjectDict = bmsProjectDictMapper.selectOneByProjectCode(projectCode);
+                bmsStock.setProjectCode(bmsProjectDict.getProjectCode());
+                bmsStock.setProjectType(bmsProjectDict.getKdProjectType());
+                bmsStock.setProductName(bmsProjectDict.getKdProjectName());
+            }
+        }
+
+        ExcelUtil.writeExcel("D://"+dateTime, "sheet1", bmsStockList, BmsJieCunStockExcelDTO.class,httpServletResponse);
     }
 
 }

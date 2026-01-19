@@ -1,18 +1,30 @@
 package com.bio.drqi.bsm.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.bsm.dto.BmsCountPeriodTaskDTO;
 import com.bio.drqi.bsm.req.BmsStockAddReqDTO;
 import com.bio.drqi.bsm.req.BmsStockEditReqDTO;
 import com.bio.drqi.bsm.rsp.BmsStockQueryByUnitRspDTO;
 import com.bio.drqi.bsm.service.BmsStockService;
 import com.bio.drqi.common.aspect.RequestLog;
+import com.bio.drqi.domain.*;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 库房管理
@@ -83,6 +95,14 @@ public class BmsStockController {
     public ResponseResult<String> delete(@RequestParam Integer id) {
         bmsStockService.delete(id);
         return ResponseResult.getSuccess("ok");
+    }
+
+
+
+    @GetMapping("/downJieCunStockExcel")
+    @Transactional(rollbackFor = Exception.class)
+    public void downJieCunStockExcel( @RequestParam String dateTime,HttpServletResponse httpServletResponse) {
+        bmsStockService.downJieCunStockExcel(dateTime,httpServletResponse);
     }
 
 }

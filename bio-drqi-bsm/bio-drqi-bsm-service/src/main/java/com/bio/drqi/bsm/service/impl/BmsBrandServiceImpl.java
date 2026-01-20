@@ -53,8 +53,11 @@ public class BmsBrandServiceImpl implements BmsBrandService {
         if (Objects.nonNull(bmsBrandTb)) {
             if (BioDrQiContents.N.equals(bmsBrandTb.getBrandStatus())) {
                 throw new BusinessException("该品牌已经存在,且是禁用,无需添加，启用即可");
+            }else {
+                throw new BusinessException("该品牌已经存在,无需添加");
             }
         }
+
         bmsBrandTb = new BmsBrandTb();
         bmsBrandTb.setBrandCode(IdUtils.simpleUUID());
         bmsBrandTb.setBrandName(bmsBrandAddReqDTO.getBrandName());

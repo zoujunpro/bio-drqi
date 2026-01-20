@@ -29,9 +29,6 @@ public class TcExperimentController {
     @Resource
     private TcExperimentService tcExperimentService;
 
-    @Resource
-    private OssService ossService;
-
     /**
      * 试验方案申请管理-分页查询
      *

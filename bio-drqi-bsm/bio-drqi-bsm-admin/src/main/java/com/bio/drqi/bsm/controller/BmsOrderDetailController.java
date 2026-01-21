@@ -53,7 +53,6 @@ public class BmsOrderDetailController {
     @GetMapping("/queryLByOrderNum")
     @WebLog(desc = "采购订单明细管理-订单号查询")
     public ResponseResult<List<BmsOrderDetailQueryByOrderNumRspDTO>> queryByOrderNum(@RequestParam String orderNum) {
-
         return ResponseResult.getSuccess(bmsOrderDetailService.queryByOrderNum(orderNum));
     }
 

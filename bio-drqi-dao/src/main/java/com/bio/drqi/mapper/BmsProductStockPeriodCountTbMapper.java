@@ -16,6 +16,8 @@ public interface BmsProductStockPeriodCountTbMapper extends BaseMapper<BmsProduc
 
     List<BmsProductStockPeriodCountTb> selectSelective(BmsProductStockPeriodCountTb bmsProductStockPeriodCountTb);
 
+    List<BmsProductStockPeriodCountTb> selectAllByPeriodTime(@Param("periodTime") String periodTime);
+
     BmsProductStockPeriodCountTb selectOneByProductInnerCodeAndUnitCodeAndStockCodeAndBatchNoAndPeriodTime(@Param("productInnerCode") String productInnerCode, @Param("unitCode") String unitCode, @Param("stockCode") String stockCode, @Param("batchNo") String batchNo, @Param("periodTime") String periodTime);
 }
 

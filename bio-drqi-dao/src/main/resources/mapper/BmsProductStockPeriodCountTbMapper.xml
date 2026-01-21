@@ -72,8 +72,16 @@
             <if test="moveOutNumber != null">and move_out_number=#{moveOutNumber,jdbcType=NUMERIC}</if>
             <if test="beginDateTime != null and beginDateTime!=''">and period_time >=#{beginDateTime,jdbcType=VARCHAR}</if>
             <if test="endDateTime != null and endDateTime!=''">and period_time &lt;=#{endDateTime,jdbcType=VARCHAR}</if>
+            <if test="periodTime != null and periodTime!=''">and period_time &lt;=#{periodTime,jdbcType=VARCHAR}</if>
         </where>
         order by product_inner_code asc , unit_code asc , batch_no asc ,stock_code asc  ,period_time asc
+    </select>
+    <select id="selectAllByPeriodTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_product_stock_period_count_tb
+        where
+        period_time = #{periodTime,jdbcType=VARCHAR}
     </select>
 
 

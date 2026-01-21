@@ -37,7 +37,5 @@ public class BmsTaskScheduledService {
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
         List<BmsCountPeriodTaskDTO> bmsCountPeriodTaskDTOList = BeanUtils.copyListProperties(bmsProductStockTbList, BmsCountPeriodTaskDTO.class);
         bmsCountPeriodTaskService.createPeriodData(StringUtils.isEmpty(bmsStockPeriodCountScheduledCron) ? DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN) : bmsStockPeriodCountScheduledCron, bmsCountPeriodTaskDTOList);
-
-
     }
 }

@@ -101,7 +101,7 @@ public class BmsMoveOrderDetailTb implements Serializable {
     /**
      * 移库数量
      */
-    private Integer moveNumber;
+    private BigDecimal moveNumber;
     /**
      * 创建人
      */

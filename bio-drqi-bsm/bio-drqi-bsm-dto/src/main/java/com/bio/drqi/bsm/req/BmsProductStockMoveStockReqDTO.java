@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -22,5 +23,5 @@ public class BmsProductStockMoveStockReqDTO {
     private List<String> newStockLocationList;
 
     @NotNull(message = "调拨数量必填")
-    private Integer moveNumber;
+    private BigDecimal moveNumber;
 }

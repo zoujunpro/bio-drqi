@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -64,14 +65,14 @@ public class BmsCountPeriodTaskServiceImpl implements BmsCountPeriodTaskService 
             bmsProductStockPeriodCountTb.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
             bmsProductStockPeriodCountTb.setUniqueCode(bmsProductStockTb.getUniqueCode());
             bmsProductStockPeriodCountTb.setStockCode(bmsProductStockTb.getStockCode());
-            bmsProductStockPeriodCountTb.setPeriodBeginNumber(lastBmsProductStockPeriodCountTb != null ? lastBmsProductStockPeriodCountTb.getPeriodEndNumber() : 0);
+            bmsProductStockPeriodCountTb.setPeriodBeginNumber(lastBmsProductStockPeriodCountTb != null ? lastBmsProductStockPeriodCountTb.getPeriodEndNumber() : new BigDecimal(0));
             bmsProductStockPeriodCountTb.setPeriodEndNumber(bmsCountPeriodTaskDTO.getCurrentStockNumber());
-            bmsProductStockPeriodCountTb.setTotalInNumber(0);
-            bmsProductStockPeriodCountTb.setTotalOutNumber(0);
+            bmsProductStockPeriodCountTb.setTotalInNumber(new BigDecimal(0));
+            bmsProductStockPeriodCountTb.setTotalOutNumber(new BigDecimal(0));
             bmsProductStockPeriodCountTb.setPeriodTime(dateTime);
-            bmsProductStockPeriodCountTb.setReturnNumber(0);
-            bmsProductStockPeriodCountTb.setMoveInNumber(0);
-            bmsProductStockPeriodCountTb.setMoveOutNumber(0);
+            bmsProductStockPeriodCountTb.setReturnNumber(new BigDecimal(0));
+            bmsProductStockPeriodCountTb.setMoveInNumber(new BigDecimal(0));
+            bmsProductStockPeriodCountTb.setMoveOutNumber(new BigDecimal(0));
             bmsProductStockPeriodCountTbMapper.insert(bmsProductStockPeriodCountTb);
         }
         //处理入库
@@ -80,7 +81,7 @@ public class BmsCountPeriodTaskServiceImpl implements BmsCountPeriodTaskService 
             for (BmsProductStockInLog bmsProductStockInLog : bmsProductStockInLogList) {
                 log.info("处理入库数据bmsCountPeriodTaskDTO=" + JSONUtil.toJsonStr(bmsProductStockInLog));
                 BmsProductStockPeriodCountTb bmsProductStockPeriodCountTb = bmsProductStockPeriodCountTbMapper.selectOneByProductInnerCodeAndUnitCodeAndStockCodeAndBatchNoAndPeriodTime(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getStockCode(), bmsProductStockInLog.getBatchNo(), dateTime);
-                bmsProductStockPeriodCountTb.setTotalInNumber(bmsProductStockPeriodCountTb.getTotalInNumber() + bmsProductStockInLog.getStoreNumber());
+                bmsProductStockPeriodCountTb.setTotalInNumber(bmsProductStockPeriodCountTb.getTotalInNumber().add(bmsProductStockInLog.getStoreNumber()));
                 bmsProductStockPeriodCountTbMapper.updateById(bmsProductStockPeriodCountTb);
             }
         }
@@ -92,8 +93,8 @@ public class BmsCountPeriodTaskServiceImpl implements BmsCountPeriodTaskService 
                 log.info("处理调拨数据bmsMoveOrderDetailTb=" + JSONUtil.toJsonStr(bmsMoveOrderDetailTb));
                 BmsProductStockPeriodCountTb fromBmsProductStockPeriodCountTb = bmsProductStockPeriodCountTbMapper.selectOneByProductInnerCodeAndUnitCodeAndStockCodeAndBatchNoAndPeriodTime(bmsMoveOrderDetailTb.getProductInnerCode(), bmsMoveOrderDetailTb.getUnitCode(), bmsMoveOrderDetailTb.getFromStockCode(), bmsMoveOrderDetailTb.getBatchNo(), dateTime);
                 BmsProductStockPeriodCountTb toBmsProductStockPeriodCountTb = bmsProductStockPeriodCountTbMapper.selectOneByProductInnerCodeAndUnitCodeAndStockCodeAndBatchNoAndPeriodTime(bmsMoveOrderDetailTb.getProductInnerCode(), bmsMoveOrderDetailTb.getUnitCode(), bmsMoveOrderDetailTb.getToStockCode(), bmsMoveOrderDetailTb.getBatchNo(), dateTime);
-                fromBmsProductStockPeriodCountTb.setMoveOutNumber(fromBmsProductStockPeriodCountTb.getMoveOutNumber() + bmsMoveOrderDetailTb.getMoveNumber());
-                toBmsProductStockPeriodCountTb.setMoveInNumber(fromBmsProductStockPeriodCountTb.getMoveInNumber() + bmsMoveOrderDetailTb.getMoveNumber());
+                fromBmsProductStockPeriodCountTb.setMoveOutNumber(fromBmsProductStockPeriodCountTb.getMoveOutNumber().add(bmsMoveOrderDetailTb.getMoveNumber()));
+                toBmsProductStockPeriodCountTb.setMoveInNumber(fromBmsProductStockPeriodCountTb.getMoveInNumber().add(bmsMoveOrderDetailTb.getMoveNumber()));
                 bmsProductStockPeriodCountTbMapper.updateById(fromBmsProductStockPeriodCountTb);
                 bmsProductStockPeriodCountTbMapper.updateById(toBmsProductStockPeriodCountTb);
             });
@@ -104,7 +105,7 @@ public class BmsCountPeriodTaskServiceImpl implements BmsCountPeriodTaskService 
             bmsProductStockOutLogList.forEach(bmsProductStockOutLog -> {
                 log.info("处理出库数据bmsProductStockOutLog=" + JSONUtil.toJsonStr(bmsProductStockOutLog));
                 BmsProductStockPeriodCountTb bmsProductStockPeriodCountTb = bmsProductStockPeriodCountTbMapper.selectOneByProductInnerCodeAndUnitCodeAndStockCodeAndBatchNoAndPeriodTime(bmsProductStockOutLog.getProductInnerCode(), bmsProductStockOutLog.getUnitCode(), bmsProductStockOutLog.getStockCode(), bmsProductStockOutLog.getBatchNo(), dateTime);
-                bmsProductStockPeriodCountTb.setTotalOutNumber(bmsProductStockOutLog.getOutNumber() + bmsProductStockPeriodCountTb.getTotalOutNumber());
+                bmsProductStockPeriodCountTb.setTotalOutNumber(bmsProductStockOutLog.getOutNumber().add(bmsProductStockPeriodCountTb.getTotalOutNumber()));
                 bmsProductStockPeriodCountTbMapper.updateById(bmsProductStockPeriodCountTb);
             });
         }
@@ -114,7 +115,7 @@ public class BmsCountPeriodTaskServiceImpl implements BmsCountPeriodTaskService 
             bmsReturnOrderDetailTbList.forEach(bmsReturnOrderDetailTb -> {
                 log.info("处理退货数据bmsReturnOrderDetailTb=" + JSONUtil.toJsonStr(bmsReturnOrderDetailTb));
                 BmsProductStockPeriodCountTb bmsProductStockPeriodCountTb = bmsProductStockPeriodCountTbMapper.selectOneByProductInnerCodeAndUnitCodeAndStockCodeAndBatchNoAndPeriodTime(bmsReturnOrderDetailTb.getProductInnerCode(), bmsReturnOrderDetailTb.getUnitCode(), bmsReturnOrderDetailTb.getStockCode(), bmsReturnOrderDetailTb.getBatchNo(), dateTime);
-                bmsProductStockPeriodCountTb.setReturnNumber(bmsProductStockPeriodCountTb.getReturnNumber() + bmsReturnOrderDetailTb.getReturnNumber());
+                bmsProductStockPeriodCountTb.setReturnNumber(bmsProductStockPeriodCountTb.getReturnNumber().add(bmsReturnOrderDetailTb.getReturnNumber()));
                 bmsProductStockPeriodCountTbMapper.updateById(bmsProductStockPeriodCountTb);
             });
         }

@@ -38,9 +38,6 @@ public class BmsStockServiceImpl implements BmsStockService {
     private BmsStockDictMapper bmsStockDictMapper;
 
     @Resource
-    private BmsStockLocationDictMapper bmsStockLocationDictMapper;
-
-    @Resource
     private BmsProductStockTbMapper bmsProductStockTbMapper;
 
     @Resource
@@ -126,7 +123,7 @@ public class BmsStockServiceImpl implements BmsStockService {
 
     @Override
     public void downJieCunStockExcel(String dateTime, HttpServletResponse httpServletResponse) {
-        String beginDate = DateUtil.format(DateUtil.offsetDay(DateUtil.parse(dateTime, DatePattern.NORM_DATE_PATTERN), 1),DatePattern.NORM_DATE_PATTERN);
+        String beginDate = DateUtil.format(DateUtil.offsetDay(DateUtil.parse(dateTime, DatePattern.NORM_DATE_PATTERN), 1), DatePattern.NORM_DATE_PATTERN);
         //step 数据查询
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
         Map<String, BmsProductStockTb> bmsProductStockTbMap = bmsProductStockTbList.stream().collect(Collectors.toMap(bmsProductStockTb -> bmsProductStockTb.getProductInnerCode() + bmsProductStockTb.getUnitCode() + bmsProductStockTb.getBatchNo() + bmsProductStockTb.getStockCode(), bmsProductStockTb -> bmsProductStockTb));
@@ -159,29 +156,29 @@ public class BmsStockServiceImpl implements BmsStockService {
         //先复原出库  出库的数据加到库存中
         for (BmsProductStockOutLog bmsProductStockOutLog : bmsProductStockOutLogList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsProductStockOutLog.getProductInnerCode() + bmsProductStockOutLog.getUnitCode() + bmsProductStockOutLog.getBatchNo() + bmsProductStockOutLog.getStockCode());
-            bmsProductStockTb.setCurrentStockNumber(bmsProductStockOutLog.getOutNumber() + bmsProductStockTb.getCurrentStockNumber());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockOutLog.getOutNumber().add(bmsProductStockTb.getCurrentStockNumber()));
         }
         //复原退货
         for (BmsReturnOrderDetailTb bmsReturnOrderDetailTb : bmsReturnOrderDetailTbList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsReturnOrderDetailTb.getProductInnerCode() + bmsReturnOrderDetailTb.getUnitCode() + bmsReturnOrderDetailTb.getBatchNo() + bmsReturnOrderDetailTb.getStockCode());
             log.info("bmsReturnOrderDetailTb={}" + JSONUtil.toJsonStr(bmsReturnOrderDetailTb));
-            bmsProductStockTb.setCurrentStockNumber(bmsReturnOrderDetailTb.getReturnNumber() + bmsProductStockTb.getCurrentStockNumber());
+            bmsProductStockTb.setCurrentStockNumber(bmsReturnOrderDetailTb.getReturnNumber().add(bmsProductStockTb.getCurrentStockNumber()));
         }
         //复原调拨
         for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb : bmsMoveOrderDetailTbList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsMoveOrderDetailTb.getProductInnerCode() + bmsMoveOrderDetailTb.getUnitCode() + bmsMoveOrderDetailTb.getBatchNo() + bmsMoveOrderDetailTb.getFromStockCode());
-            bmsProductStockTb.setCurrentStockNumber(bmsMoveOrderDetailTb.getMoveNumber() + bmsProductStockTb.getCurrentStockNumber());
+            bmsProductStockTb.setCurrentStockNumber(bmsMoveOrderDetailTb.getMoveNumber().add(bmsProductStockTb.getCurrentStockNumber()));
         }
         //回退入库的
         for (BmsProductStockInLog bmsProductStockInLog : bmsProductStockInLogList) {
             log.info("bmsProductStockInLog=" + JSONUtil.toJsonStr(bmsProductStockInLog));
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsProductStockInLog.getProductInnerCode() + bmsProductStockInLog.getUnitCode() + bmsProductStockInLog.getBatchNo().trim() + bmsProductStockInLog.getStockCode());
-            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductStockInLog.getStoreNumber());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber().subtract(bmsProductStockInLog.getStoreNumber()));
         }
         //回退调拨的
         for (BmsMoveOrderDetailTb bmsMoveOrderDetailTb : bmsMoveOrderDetailTbList) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMap.get(bmsMoveOrderDetailTb.getProductInnerCode() + bmsMoveOrderDetailTb.getUnitCode() + bmsMoveOrderDetailTb.getBatchNo() + bmsMoveOrderDetailTb.getToStockCode());
-            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsMoveOrderDetailTb.getMoveNumber());
+            bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber().subtract(bmsMoveOrderDetailTb.getMoveNumber()));
         }
         List<BmsJieCunStockExcelDTO> bmsStockList = BeanUtils.copyListProperties(bmsProductStockTbList, BmsJieCunStockExcelDTO.class);
         bmsStockList = bmsStockList.stream().filter(bmsStock -> bmsStock.getCurrentStockNumber() > 0).collect(Collectors.toList());
@@ -200,7 +197,7 @@ public class BmsStockServiceImpl implements BmsStockService {
             bmsStock.setSupplierName(bmsSupplierTbMap.get(bmsStock.getSupplierCode()));
         }
 
-        ExcelUtil.writeExcel("D://"+dateTime, "sheet1", bmsStockList, BmsJieCunStockExcelDTO.class,httpServletResponse);
+        ExcelUtil.writeExcel("D://" + dateTime, "sheet1", bmsStockList, BmsJieCunStockExcelDTO.class, httpServletResponse);
     }
 
 }

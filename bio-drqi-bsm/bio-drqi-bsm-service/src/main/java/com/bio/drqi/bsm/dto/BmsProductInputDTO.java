@@ -102,7 +102,7 @@ public class BmsProductInputDTO {
         /**
          * 采购数量
          */
-        private Integer purchaseNumber;
+        private BigDecimal purchaseNumber;
 
         /**
          * 付款金额
@@ -133,7 +133,7 @@ public class BmsProductInputDTO {
          * 到货数量
          */
         @NotNull(message = "入库参数缺少：到货数量")
-        private Integer receiveNumber;
+        private BigDecimal receiveNumber;
 
 
         @NotBlank(message = "入库参数缺少：订单明细")
@@ -149,7 +149,7 @@ public class BmsProductInputDTO {
          * 入库数量
          */
         @NotNull(message = "入库参数缺少：入库数量")
-        private Integer number;
+        private BigDecimal number;
 
         /**
          * 过期时间

@@ -71,7 +71,7 @@ public class BmsStockBroadCountStockDetailListRspDTO {
      * 积累入库数量
      */
     @ExcelProperty(value = "入库数量",index = 8)
-    private Integer inNumber;
+    private BigDecimal inNumber;
     /**
      * 积累入库金额
      */
@@ -82,7 +82,7 @@ public class BmsStockBroadCountStockDetailListRspDTO {
      * 累计出库数量
      */
     @ExcelProperty(value = "出库数量",index = 10)
-    private Integer outNumber;
+    private BigDecimal outNumber;
     /**
      * 累计出库金额
      */
@@ -94,7 +94,7 @@ public class BmsStockBroadCountStockDetailListRspDTO {
      * 累计退货数量
      */
     @ExcelProperty(value = "退货数量",index = 12)
-    private Integer returnNumber;
+    private BigDecimal returnNumber;
     /**
      * 累计退货金额
      */
@@ -105,13 +105,13 @@ public class BmsStockBroadCountStockDetailListRspDTO {
      * 调入数量
      */
     @ExcelProperty(value = "调入数量",index = 14)
-    private Integer moveInNumber;
+    private BigDecimal moveInNumber;
 
     /**
      * 调出数量
      */
     @ExcelProperty(value = "调出数量",index = 15)
-    private Integer moveOutNumber;
+    private BigDecimal moveOutNumber;
 
     /**
      * 调入金额

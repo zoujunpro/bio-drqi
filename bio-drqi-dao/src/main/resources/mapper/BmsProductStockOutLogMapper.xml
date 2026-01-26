@@ -12,7 +12,7 @@
         <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
         <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
         <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
-        <result property="outNumber" column="out_number" jdbcType="INTEGER"/>
+        <result property="outNumber" column="out_number" jdbcType="DECIMAL"/>
         <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
         <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>

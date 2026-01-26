@@ -61,17 +61,17 @@ public class BmsProductStockTb implements Serializable {
     /**
      * 累计入库数量
      */
-    private Integer totalStoreNumber;
+    private BigDecimal totalStoreNumber;
 
     /**
      * 当前库存数量
      */
-    private Integer currentStockNumber;
+    private BigDecimal currentStockNumber;
 
     /**
      * 累计出库数量
      */
-    private Integer totalOutNumber;
+    private BigDecimal totalOutNumber;
     /**
      * 单位
      */
@@ -93,7 +93,7 @@ public class BmsProductStockTb implements Serializable {
 
     private String expirationDate;
 
-    private Integer returnNumber;
+    private BigDecimal returnNumber;
 
     private String stockCode;
 

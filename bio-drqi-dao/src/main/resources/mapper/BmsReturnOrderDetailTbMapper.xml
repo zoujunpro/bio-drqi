@@ -7,7 +7,7 @@
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.BmsReturnOrderDetailTb">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="orderDetailNum" column="order_detail_num" jdbcType="VARCHAR"/>
-        <result property="returnNumber" column="return_number" jdbcType="INTEGER"/>
+        <result property="returnNumber" column="return_number" jdbcType="DECIMAL"/>
         <result property="returnAmount" column="return_amount" jdbcType="DECIMAL"/>
         <result property="applyUserId" column="apply_user_id" jdbcType="INTEGER"/>
         <result property="applyUserName" column="apply_user_name" jdbcType="VARCHAR"/>

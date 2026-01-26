@@ -155,13 +155,13 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setExpectedDeliveryTime(product.getExpectedDeliveryTime());
                 bmsOrderDetailTb.setDemandUsageTime(bmsOrderTb.getDemandUsageTime());
                 bmsOrderDetailTb.setDemandRequireTime(bmsOrderTb.getDemandRequireTime());
-                bmsOrderDetailTb.setReceiveNumber(0);
+                bmsOrderDetailTb.setReceiveNumber(new BigDecimal(0));
                 bmsOrderDetailTb.setInvoiceUrls(null);
                 bmsOrderDetailTb.setContractUrls(null);
                 bmsOrderDetailTb.setReportAccountTime(null);
                 bmsOrderDetailTb.setContractNumber(null);
                 bmsOrderDetailTb.setPaymentVoucherUrls(null);
-                bmsOrderDetailTb.setReturnNumber(0);
+                bmsOrderDetailTb.setReturnNumber(new BigDecimal(0));
                 bmsOrderDetailTbMapper.insert(bmsOrderDetailTb);
             }
         }

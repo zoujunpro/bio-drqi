@@ -115,21 +115,21 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
             throw new BusinessException("数据异常，找不到此订单明细");
         }
 
-        if (bmsProductStockInLog.getStoreNumber() < bmsProductStockInLogReturnStockReqDTO.getReturnNumber()) {
+        if (bmsProductStockInLog.getStoreNumber().doubleValue() < bmsProductStockInLogReturnStockReqDTO.getReturnNumber().doubleValue()) {
             throw new BusinessException("退货数量过多，最多可退货：" + bmsProductStockInLog.getStoreNumber());
         }
         BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCode(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo(), bmsProductStockInLog.getStockCode());
         if (bmsProductStockTb == null) {
             throw new BusinessException("库存中不存在此耗材");
         }
-        if (bmsProductStockTb.getCurrentStockNumber() < bmsProductStockInLogReturnStockReqDTO.getReturnNumber()) {
+        if (bmsProductStockTb.getCurrentStockNumber().doubleValue() < bmsProductStockInLogReturnStockReqDTO.getReturnNumber().doubleValue()) {
             throw new BusinessException("库存台账异常，库存中此耗材数量不足,当前剩余库存：" + bmsProductStockTb.getCurrentStockNumber());
         }
         //更新入库记录退货数量
         if (bmsProductStockInLog.getReturnNumber() == null) {
             bmsProductStockInLog.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
         } else {
-            bmsProductStockInLog.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber() + bmsProductStockInLog.getReturnNumber());
+            bmsProductStockInLog.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber().add(bmsProductStockInLog.getReturnNumber()));
         }
         bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
 
@@ -137,9 +137,9 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
         if (bmsOrderDetailTb.getReturnNumber() == null) {
             bmsOrderDetailTb.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
         } else {
-            bmsOrderDetailTb.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber() + bmsOrderDetailTb.getReturnNumber());
+            bmsOrderDetailTb.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber().add(bmsOrderDetailTb.getReturnNumber()));
         }
-        bmsOrderDetailTb.setPayAmount(bmsOrderDetailTb.getPayAmount().subtract(bmsOrderDetailTb.getPurchasePrice().multiply(new BigDecimal(bmsProductStockInLogReturnStockReqDTO.getReturnNumber()))));
+        bmsOrderDetailTb.setPayAmount(bmsOrderDetailTb.getPayAmount().subtract(bmsOrderDetailTb.getPurchasePrice().multiply(bmsProductStockInLogReturnStockReqDTO.getReturnNumber())));
         bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
 
         //判断订单是否已经结束，如果已经结束则更新状态;
@@ -150,11 +150,11 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
             bmsOrderTbMapper.updateById(bmsOrderTb);
         }
         //更新库存数量
-        bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
+        bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber().subtract(bmsProductStockInLogReturnStockReqDTO.getReturnNumber()));
         if (bmsProductStockTb.getReturnNumber() == null) {
             bmsProductStockTb.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
         } else {
-            bmsProductStockTb.setReturnNumber(bmsProductStockTb.getReturnNumber() + bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
+            bmsProductStockTb.setReturnNumber(bmsProductStockTb.getReturnNumber().add(bmsProductStockInLogReturnStockReqDTO.getReturnNumber()));
         }
         bmsProductStockTbMapper.updateById(bmsProductStockTb);
 
@@ -163,7 +163,7 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
         BmsReturnOrderDetailTb bmsReturnOrderDetailTb = new BmsReturnOrderDetailTb();
         bmsReturnOrderDetailTb.setOrderDetailNum(bmsProductStockInLog.getOrderDetailNum());
         bmsReturnOrderDetailTb.setReturnNumber(bmsProductStockInLogReturnStockReqDTO.getReturnNumber());
-        bmsReturnOrderDetailTb.setReturnAmount(new BigDecimal(bmsProductStockInLogReturnStockReqDTO.getReturnNumber()).multiply(bmsProductStockInLog.getProductPrice()));
+        bmsReturnOrderDetailTb.setReturnAmount(bmsProductStockInLogReturnStockReqDTO.getReturnNumber().multiply(bmsProductStockInLog.getProductPrice()));
         bmsReturnOrderDetailTb.setApplyUserId(SecurityContextHolder.getUserId());
         bmsReturnOrderDetailTb.setApplyUserName(SecurityContextHolder.getNickName());
         bmsReturnOrderDetailTb.setProductName(bmsProductStockInLog.getProductName());

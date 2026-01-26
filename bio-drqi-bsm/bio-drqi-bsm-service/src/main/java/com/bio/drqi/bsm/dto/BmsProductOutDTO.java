@@ -27,7 +27,7 @@ public class BmsProductOutDTO {
     private String productSpecs;
 
     @NotNull(message = "参数缺失：出库数量")
-    private Integer number;
+    private BigDecimal number;
 
     @NotNull(message = "参数缺失：所在库房")
     private String stockCode;

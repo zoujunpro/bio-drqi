@@ -128,7 +128,7 @@ public class BmsProductServiceImpl implements BmsProductService {
             String nextProductInnerCode = String.valueOf(maxProductInnerCode + 1);
             productInnerCode = BioBsmContents.product_prefix + StringUtils.padl(nextProductInnerCode, 5, '0');
         }
-        BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(bmsProductAddReqDTO.getProductName(), bmsProductAddReqDTO.getBrandCode(), bmsProductAddReqDTO.getProductSpecs());
+        BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecsAndProductOutCode(bmsProductAddReqDTO.getProductName(), bmsProductAddReqDTO.getBrandCode(), bmsProductAddReqDTO.getProductSpecs(),bmsProductAddReqDTO.getProductOutCode());
         if (bmsProductTb != null) {
             throw new BusinessException("已有此商品");
         }

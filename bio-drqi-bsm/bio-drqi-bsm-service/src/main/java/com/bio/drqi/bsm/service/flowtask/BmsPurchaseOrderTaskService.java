@@ -262,7 +262,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 if (StringUtils.isEmpty(product.getProductName())) {
                     throw new BusinessException("商品名称必填");
                 }
-                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(product.getProductName(), product.getBrandCode(), product.getProductSpecs());
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecsAndProductOutCode(product.getProductName(), product.getBrandCode(), product.getProductSpecs(),product.getProductOutCode());
                 if (bmsProductTb != null) {
                     if (BioDrQiContents.N.equals(bmsProductTb.getProductStatus())) {
                         throw new BusinessException("商品已经禁用，请先启用");

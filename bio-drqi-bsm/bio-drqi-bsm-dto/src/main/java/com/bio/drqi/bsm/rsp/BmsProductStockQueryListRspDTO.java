@@ -2,6 +2,8 @@ package com.bio.drqi.bsm.rsp;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class BmsProductStockQueryListRspDTO {
 
@@ -24,7 +26,7 @@ public class BmsProductStockQueryListRspDTO {
     /**
      * 当前库存数量
      */
-    private Integer currentStockNumber;
+    private BigDecimal currentStockNumber;
     /**
      * 单位
      */

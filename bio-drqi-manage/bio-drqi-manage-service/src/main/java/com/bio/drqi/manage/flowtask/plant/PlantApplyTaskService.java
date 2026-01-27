@@ -67,7 +67,7 @@ public class PlantApplyTaskService extends AbstractPlantBaseTaskService {
         List<String> checkReginCodeAndSeedNumList = new ArrayList<>();
         for (ExperimentExcelDTO experimentExcelDTO : experimentExcelDTOList) {
             BeanUtils.trimFiledSpace(experimentExcelDTO);
-            ValidatorUtil.validator(plantExperimentTaskDTO);
+            ValidatorUtil.validator(experimentExcelDTO);
             SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(experimentExcelDTO.getSeedNum());
             if (seedStockTb == null) {
                 throw new BusinessException("上传数据在种子库中找不到材料信息" + experimentExcelDTO.getSeedNum());

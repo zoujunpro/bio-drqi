@@ -28,7 +28,7 @@ public class ExperimentExcelDTO {
     private Integer plantNumber;
 
     @ExcelProperty("种植时间(*)")
-    @NotNull(message = "种植时间缺失")
+    @NotBlank(message = "种植时间缺失")
     private String plantTime;
 
     @ExcelProperty("备注")

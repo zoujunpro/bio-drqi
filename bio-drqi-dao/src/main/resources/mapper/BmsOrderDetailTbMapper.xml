@@ -18,8 +18,8 @@
         <result property="productOutCode" column="product_out_code" jdbcType="VARCHAR"/>
         <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
         <result property="purchasePrice" column="purchase_price" jdbcType="DECIMAL"/>
-        <result property="purchaseNumber" column="purchase_number" jdbcType="INTEGER"/>
-        <result property="receiveNumber" column="receive_number" jdbcType="INTEGER"/>
+        <result property="purchaseNumber" column="purchase_number" jdbcType="DECIMAL"/>
+        <result property="receiveNumber" column="receive_number" jdbcType="DECIMAL"/>
         <result property="payAmount" column="pay_amount" jdbcType="DECIMAL"/>
         <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -40,7 +40,7 @@
         <result property="demandUsageTime" column="demand_usage_time" jdbcType="VARCHAR"/>
         <result property="expectedDeliveryTime" column="expected_delivery_time" jdbcType="VARCHAR"/>
         <result property="taxRate" column="tax_rate" jdbcType="VARCHAR"/>
-        <result property="returnNumber" column="return_number" jdbcType="INTEGER"/>
+        <result property="returnNumber" column="return_number" jdbcType="DECIMAL"/>
 
     </resultMap>
 

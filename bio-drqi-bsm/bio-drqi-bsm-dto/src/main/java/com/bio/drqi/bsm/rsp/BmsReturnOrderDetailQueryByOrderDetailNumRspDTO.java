@@ -17,7 +17,7 @@ public class BmsReturnOrderDetailQueryByOrderDetailNumRspDTO {
     /**
      * 退货数量
      */
-    private Integer returnNumber;
+    private BigDecimal returnNumber;
 
     /**
      * 退货金额

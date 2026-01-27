@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class BmsCountPeriodTaskDTO {
 
@@ -33,6 +35,6 @@ public class BmsCountPeriodTaskDTO {
     /**
      * 当前库存
      */
-    private Integer currentStockNumber;
+    private BigDecimal currentStockNumber;
 
 }

@@ -90,7 +90,7 @@ public class BmsOrderDetailTb implements Serializable {
     /**
      * 采购数量
      */
-    private Integer purchaseNumber;
+    private BigDecimal purchaseNumber;
 
     /**
      * 付款金额
@@ -131,7 +131,7 @@ public class BmsOrderDetailTb implements Serializable {
 
     private String purchaseDepartment;
 
-    private Integer receiveNumber;
+    private BigDecimal receiveNumber;
 
 
     private String contractNumber;
@@ -160,7 +160,7 @@ public class BmsOrderDetailTb implements Serializable {
 
     private String taxRate;
 
-    private Integer returnNumber;
+    private BigDecimal returnNumber;
 
     /**
      * 过滤0标识

@@ -118,7 +118,7 @@ public class BmsMoveOrderDetailListPageRspDTO {
     /**
      * 移库数量
      */
-    private Integer moveNumber;
+    private BigDecimal moveNumber;
 
     /**
      * 创建人

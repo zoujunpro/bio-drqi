@@ -101,7 +101,7 @@ public class BmsPurchaseOrderDTO {
         /**
          * 采购数量
          */
-        private Integer purchaseNumber;
+        private BigDecimal purchaseNumber;
         /**
          * 采购单价
          */

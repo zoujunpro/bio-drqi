@@ -72,7 +72,7 @@ public class BmsProductStockInLogQueryByTaskNumRspDTO {
     /**
      * 入库数量
      */
-    private Integer storeNumber;
+    private BigDecimal storeNumber;
 
     /**
      * 入库金额

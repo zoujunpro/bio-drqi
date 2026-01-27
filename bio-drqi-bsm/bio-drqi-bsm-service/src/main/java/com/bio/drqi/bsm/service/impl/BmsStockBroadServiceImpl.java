@@ -99,13 +99,13 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
                 bmsStockBroadCountStockDetailListRspDTO.setInAmount(bmsProductStockInLog.getStoreAmount());
                 bmsStockBroadCountStockDetailListRspDTO.setInNumber(bmsProductStockInLog.getStoreNumber());
                 bmsStockBroadCountStockDetailListRspDTO.setOutAmount(new BigDecimal(0));
-                bmsStockBroadCountStockDetailListRspDTO.setOutNumber(0);
+                bmsStockBroadCountStockDetailListRspDTO.setOutNumber(new BigDecimal(0));
                 bmsStockBroadCountStockDetailListRspDTO.setReturnAmount(new BigDecimal(0));
-                bmsStockBroadCountStockDetailListRspDTO.setReturnNumber(0);
+                bmsStockBroadCountStockDetailListRspDTO.setReturnNumber(new BigDecimal(0));
                 bmsStockBroadCountStockDetailListRspDTO.setMoveInAmount(new BigDecimal(0));
                 bmsStockBroadCountStockDetailListRspDTO.setMoveOutAmount(new BigDecimal(0));
-                bmsStockBroadCountStockDetailListRspDTO.setMoveInNumber(0);
-                bmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(0);
+                bmsStockBroadCountStockDetailListRspDTO.setMoveInNumber(new BigDecimal(0));
+                bmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(new BigDecimal(0));
                 result.add(bmsStockBroadCountStockDetailListRspDTO);
             });
         }
@@ -135,15 +135,15 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
                     bmsStockBroadCountStockDetailListRspDTO.setStockCode(bmsProductStockOutLog.getStockCode());
                     bmsStockBroadCountStockDetailListRspDTO.setStockName(bmsStockDictMap.get(bmsStockBroadCountStockDetailListRspDTO.getStockCode()));
                     bmsStockBroadCountStockDetailListRspDTO.setInAmount(new BigDecimal(0));
-                    bmsStockBroadCountStockDetailListRspDTO.setInNumber(0);
+                    bmsStockBroadCountStockDetailListRspDTO.setInNumber(new BigDecimal(0));
                     bmsStockBroadCountStockDetailListRspDTO.setOutAmount(bmsProductStockOutLog.getOutAmount());
                     bmsStockBroadCountStockDetailListRspDTO.setOutNumber(bmsProductStockOutLog.getOutNumber());
                     bmsStockBroadCountStockDetailListRspDTO.setReturnAmount(new BigDecimal(0));
-                    bmsStockBroadCountStockDetailListRspDTO.setReturnNumber(0);
+                    bmsStockBroadCountStockDetailListRspDTO.setReturnNumber(new BigDecimal(0));
                     bmsStockBroadCountStockDetailListRspDTO.setMoveInAmount(new BigDecimal(0));
                     bmsStockBroadCountStockDetailListRspDTO.setMoveOutAmount(new BigDecimal(0));
-                    bmsStockBroadCountStockDetailListRspDTO.setMoveInNumber(0);
-                    bmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(0);
+                    bmsStockBroadCountStockDetailListRspDTO.setMoveInNumber(new BigDecimal(0));
+                    bmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(new BigDecimal(0));
                     result.add(bmsStockBroadCountStockDetailListRspDTO);
                 }
             });
@@ -174,15 +174,15 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
                     bmsStockBroadCountStockDetailListRspDTO.setStockCode(bmsReturnOrderDetailTb.getStockCode());
                     bmsStockBroadCountStockDetailListRspDTO.setStockName(bmsStockDictMap.get(bmsStockBroadCountStockDetailListRspDTO.getStockCode()));
                     bmsStockBroadCountStockDetailListRspDTO.setInAmount(new BigDecimal(0));
-                    bmsStockBroadCountStockDetailListRspDTO.setInNumber(0);
+                    bmsStockBroadCountStockDetailListRspDTO.setInNumber(new BigDecimal(0));
                     bmsStockBroadCountStockDetailListRspDTO.setReturnNumber(bmsReturnOrderDetailTb.getReturnNumber());
                     bmsStockBroadCountStockDetailListRspDTO.setReturnAmount(bmsReturnOrderDetailTb.getReturnAmount());
                     bmsStockBroadCountStockDetailListRspDTO.setReturnAmount(new BigDecimal(0));
-                    bmsStockBroadCountStockDetailListRspDTO.setReturnNumber(0);
+                    bmsStockBroadCountStockDetailListRspDTO.setReturnNumber(new BigDecimal(0));
                     bmsStockBroadCountStockDetailListRspDTO.setMoveInAmount(new BigDecimal(0));
                     bmsStockBroadCountStockDetailListRspDTO.setMoveOutAmount(new BigDecimal(0));
-                    bmsStockBroadCountStockDetailListRspDTO.setMoveInNumber(0);
-                    bmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(0);
+                    bmsStockBroadCountStockDetailListRspDTO.setMoveInNumber(new BigDecimal(0));
+                    bmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(new BigDecimal(0));
                     result.add(bmsStockBroadCountStockDetailListRspDTO);
                 }
             });
@@ -218,15 +218,15 @@ public class BmsStockBroadServiceImpl implements BmsStockBroadService {
                     inBmsStockBroadCountStockDetailListRspDTO.setStockCode(bmsMoveOrderDetailTb.getToStockCode());
                     inBmsStockBroadCountStockDetailListRspDTO.setStockName(bmsStockDictMap.get(inBmsStockBroadCountStockDetailListRspDTO.getStockCode()));
                     inBmsStockBroadCountStockDetailListRspDTO.setInAmount(new BigDecimal(0));
-                    inBmsStockBroadCountStockDetailListRspDTO.setInNumber(0);
-                    inBmsStockBroadCountStockDetailListRspDTO.setReturnNumber(0);
+                    inBmsStockBroadCountStockDetailListRspDTO.setInNumber(new BigDecimal(0));
+                    inBmsStockBroadCountStockDetailListRspDTO.setReturnNumber(new BigDecimal(0));
                     inBmsStockBroadCountStockDetailListRspDTO.setReturnAmount(new BigDecimal(0));
                     inBmsStockBroadCountStockDetailListRspDTO.setReturnAmount(new BigDecimal(0));
-                    inBmsStockBroadCountStockDetailListRspDTO.setReturnNumber(0);
+                    inBmsStockBroadCountStockDetailListRspDTO.setReturnNumber(new BigDecimal(0));
                     inBmsStockBroadCountStockDetailListRspDTO.setMoveInAmount(bmsMoveOrderDetailTb.getMoveAmount());
                     inBmsStockBroadCountStockDetailListRspDTO.setMoveOutAmount(new BigDecimal(0));
                     inBmsStockBroadCountStockDetailListRspDTO.setMoveInNumber(bmsMoveOrderDetailTb.getMoveNumber());
-                    inBmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(0);
+                    inBmsStockBroadCountStockDetailListRspDTO.setMoveOutNumber(new BigDecimal(0));
                     result.add(inBmsStockBroadCountStockDetailListRspDTO);
                 }
 

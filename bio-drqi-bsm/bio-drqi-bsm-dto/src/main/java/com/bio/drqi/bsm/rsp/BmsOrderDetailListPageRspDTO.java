@@ -86,7 +86,7 @@ public class BmsOrderDetailListPageRspDTO {
     /**
      * 采购数量
      */
-    private Integer purchaseNumber;
+    private BigDecimal purchaseNumber;
 
     /**
      * 付款金额
@@ -137,7 +137,7 @@ public class BmsOrderDetailListPageRspDTO {
     /**
      * 到货数量
      */
-    private Integer receiveNumber;
+    private BigDecimal receiveNumber;
 
 
     private String contractNumber;
@@ -166,7 +166,7 @@ public class BmsOrderDetailListPageRspDTO {
 
     private String taxRate;
 
-    private Integer returnNumber;
+    private BigDecimal returnNumber;
 
 
 }

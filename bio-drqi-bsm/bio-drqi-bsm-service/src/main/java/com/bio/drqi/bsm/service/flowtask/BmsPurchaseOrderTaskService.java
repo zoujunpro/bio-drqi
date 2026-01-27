@@ -155,13 +155,13 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 bmsOrderDetailTb.setExpectedDeliveryTime(product.getExpectedDeliveryTime());
                 bmsOrderDetailTb.setDemandUsageTime(bmsOrderTb.getDemandUsageTime());
                 bmsOrderDetailTb.setDemandRequireTime(bmsOrderTb.getDemandRequireTime());
-                bmsOrderDetailTb.setReceiveNumber(0);
+                bmsOrderDetailTb.setReceiveNumber(new BigDecimal(0));
                 bmsOrderDetailTb.setInvoiceUrls(null);
                 bmsOrderDetailTb.setContractUrls(null);
                 bmsOrderDetailTb.setReportAccountTime(null);
                 bmsOrderDetailTb.setContractNumber(null);
                 bmsOrderDetailTb.setPaymentVoucherUrls(null);
-                bmsOrderDetailTb.setReturnNumber(0);
+                bmsOrderDetailTb.setReturnNumber(new BigDecimal(0));
                 bmsOrderDetailTbMapper.insert(bmsOrderDetailTb);
             }
         }
@@ -262,7 +262,7 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
                 if (StringUtils.isEmpty(product.getProductName())) {
                     throw new BusinessException("商品名称必填");
                 }
-                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecs(product.getProductName(), product.getBrandCode(), product.getProductSpecs());
+                BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecsAndProductOutCode(product.getProductName(), product.getBrandCode(), product.getProductSpecs(),product.getProductOutCode());
                 if (bmsProductTb != null) {
                     if (BioDrQiContents.N.equals(bmsProductTb.getProductStatus())) {
                         throw new BusinessException("商品已经禁用，请先启用");

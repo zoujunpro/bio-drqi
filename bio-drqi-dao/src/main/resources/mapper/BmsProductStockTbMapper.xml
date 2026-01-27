@@ -13,10 +13,10 @@
         <result property="brandCode" column="brand_code" jdbcType="VARCHAR"/>
         <result property="productSpecs" column="product_specs" jdbcType="VARCHAR"/>
         <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
-        <result property="returnNumber" column="return_number" jdbcType="INTEGER"/>
-        <result property="totalStoreNumber" column="total_store_number" jdbcType="INTEGER"/>
-        <result property="currentStockNumber" column="current_stock_number" jdbcType="INTEGER"/>
-        <result property="totalOutNumber" column="total_out_number" jdbcType="INTEGER"/>
+        <result property="returnNumber" column="return_number" jdbcType="DECIMAL"/>
+        <result property="totalStoreNumber" column="total_store_number" jdbcType="DECIMAL"/>
+        <result property="currentStockNumber" column="current_stock_number" jdbcType="DECIMAL"/>
+        <result property="totalOutNumber" column="total_out_number" jdbcType="DECIMAL"/>
         <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
         <result property="stockLocationNumber" column="stock_location_number" jdbcType="VARCHAR"/>
         <result property="supplierCode" column="supplier_code" jdbcType="VARCHAR"/>

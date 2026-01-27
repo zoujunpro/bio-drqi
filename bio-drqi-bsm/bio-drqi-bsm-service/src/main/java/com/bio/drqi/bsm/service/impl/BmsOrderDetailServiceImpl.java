@@ -318,7 +318,7 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
 
         //修改订单金额和总金额
         bmsOrderDetailTb.setPurchasePrice(bmsOrderDetailModifyPriceReqDTO.getPurchasePrice());
-        bmsOrderDetailTb.setPayAmount(bmsOrderDetailTb.getPurchasePrice().multiply(new BigDecimal(bmsOrderDetailTb.getPurchaseNumber())));
+        bmsOrderDetailTb.setPayAmount(bmsOrderDetailTb.getPurchasePrice().multiply(bmsOrderDetailTb.getPurchaseNumber()));
         bmsOrderDetailTbMapper.updateById(bmsOrderDetailTb);
 
 
@@ -326,7 +326,7 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
         if (CollectionUtil.isNotEmpty(bmsProductStockInLogList)) {
             bmsProductStockInLogList.forEach(bmsProductStockInLog -> {
                 bmsProductStockInLog.setProductPrice(bmsOrderDetailModifyPriceReqDTO.getPurchasePrice());
-                bmsProductStockInLog.setStoreAmount(new BigDecimal(bmsProductStockInLog.getStoreNumber()).multiply(bmsProductStockInLog.getProductPrice()));
+                bmsProductStockInLog.setStoreAmount(bmsProductStockInLog.getStoreNumber().multiply(bmsProductStockInLog.getProductPrice()));
                 bmsProductStockInLogMapper.updateById(bmsProductStockInLog);
             });
         }
@@ -335,7 +335,7 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
         if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList)) {
             bmsReturnOrderDetailTbList.forEach(bmsReturnOrderDetailTb -> {
                 bmsReturnOrderDetailTb.setProductPrice(bmsOrderDetailModifyPriceReqDTO.getPurchasePrice());
-                bmsReturnOrderDetailTb.setReturnAmount(bmsReturnOrderDetailTb.getProductPrice().multiply(new BigDecimal(bmsReturnOrderDetailTb.getReturnNumber())));
+                bmsReturnOrderDetailTb.setReturnAmount(bmsReturnOrderDetailTb.getProductPrice().multiply(bmsReturnOrderDetailTb.getReturnNumber()));
                 bmsReturnOrderDetailTbMapper.updateById(bmsReturnOrderDetailTb);
             });
         }

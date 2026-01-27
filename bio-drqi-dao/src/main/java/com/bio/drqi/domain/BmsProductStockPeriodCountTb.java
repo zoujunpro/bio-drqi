@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import lombok.Data;
 
 /**
@@ -78,22 +80,22 @@ public class BmsProductStockPeriodCountTb implements Serializable {
     /**
      * 期初数据
      */
-    private Integer periodBeginNumber;
+    private BigDecimal periodBeginNumber;
 
     /**
      * 期末数据
      */
-    private Integer periodEndNumber;
+    private BigDecimal periodEndNumber;
 
     /**
      * 入库数量
      */
-    private Integer totalInNumber;
+    private BigDecimal totalInNumber;
 
     /**
      * 出库数量
      */
-    private Integer totalOutNumber;
+    private BigDecimal totalOutNumber;
 
     /**
      * 期数
@@ -103,17 +105,17 @@ public class BmsProductStockPeriodCountTb implements Serializable {
     /**
      * 退货总数量
      */
-    private Integer returnNumber;
+    private BigDecimal returnNumber;
 
     /**
      * 调入数量
      */
-    private Integer moveInNumber;
+    private BigDecimal moveInNumber;
 
     /**
      * 调出数量
      */
-    private Integer moveOutNumber;
+    private BigDecimal moveOutNumber;
 
     @TableField(exist = false)
     private String beginDateTime;

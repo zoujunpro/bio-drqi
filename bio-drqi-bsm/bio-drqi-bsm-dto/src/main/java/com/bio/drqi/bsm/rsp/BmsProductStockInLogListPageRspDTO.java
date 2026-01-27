@@ -82,7 +82,7 @@ public class BmsProductStockInLogListPageRspDTO {
     /**
      * 入库数量
      */
-    private Integer storeNumber;
+    private BigDecimal storeNumber;
 
     /**
      * 入库金额
@@ -146,7 +146,7 @@ public class BmsProductStockInLogListPageRspDTO {
 
     private String taxRate;
 
-    private Integer returnNumber;
+    private BigDecimal returnNumber;
 
     private String stockCode;
 

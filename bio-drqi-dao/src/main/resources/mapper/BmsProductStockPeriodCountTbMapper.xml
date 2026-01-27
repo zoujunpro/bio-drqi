@@ -17,14 +17,14 @@
             <result property="productInnerCode" column="product_inner_code" jdbcType="VARCHAR"/>
             <result property="uniqueCode" column="unique_code" jdbcType="VARCHAR"/>
             <result property="stockCode" column="stock_code" jdbcType="VARCHAR"/>
-            <result property="periodBeginNumber" column="period_begin_number" jdbcType="INTEGER"/>
-            <result property="periodEndNumber" column="period_end_number" jdbcType="INTEGER"/>
-            <result property="totalInNumber" column="total_in_number" jdbcType="INTEGER"/>
-            <result property="totalOutNumber" column="total_out_number" jdbcType="INTEGER"/>
+            <result property="periodBeginNumber" column="period_begin_number" jdbcType="DECIMAL"/>
+            <result property="periodEndNumber" column="period_end_number" jdbcType="DECIMAL"/>
+            <result property="totalInNumber" column="total_in_number" jdbcType="DECIMAL"/>
+            <result property="totalOutNumber" column="total_out_number" jdbcType="DECIMAL"/>
             <result property="periodTime" column="period_time" jdbcType="VARCHAR"/>
-            <result property="returnNumber" column="return_number" jdbcType="INTEGER"/>
-            <result property="moveInNumber" column="move_in_number" jdbcType="INTEGER"/>
-            <result property="moveOutNumber" column="move_out_number" jdbcType="INTEGER"/>
+            <result property="returnNumber" column="return_number" jdbcType="DECIMAL"/>
+            <result property="moveInNumber" column="move_in_number" jdbcType="DECIMAL"/>
+            <result property="moveOutNumber" column="move_out_number" jdbcType="DECIMAL"/>
     </resultMap>
 
     <sql id="Base_Column_List">

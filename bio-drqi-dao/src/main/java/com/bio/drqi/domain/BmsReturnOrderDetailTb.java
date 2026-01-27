@@ -37,7 +37,7 @@ public class BmsReturnOrderDetailTb implements Serializable {
     /**
      * 退货数量
      */
-    private Integer returnNumber;
+    private BigDecimal returnNumber;
 
     /**
      * 退货金额

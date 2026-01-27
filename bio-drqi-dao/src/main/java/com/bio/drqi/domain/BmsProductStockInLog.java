@@ -89,7 +89,7 @@ public class BmsProductStockInLog implements Serializable {
     /**
      * 入库数量
      */
-    private Integer storeNumber;
+    private BigDecimal storeNumber;
 
     /**
      * 入库金额
@@ -147,7 +147,7 @@ public class BmsProductStockInLog implements Serializable {
 
     private String taxRate;
 
-    private Integer returnNumber;
+    private BigDecimal returnNumber;
 
     private String stockCode;
 

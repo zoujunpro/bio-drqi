@@ -67,7 +67,7 @@ public class BmsProductStockOutLog implements Serializable {
     /**
      * 出库数量
      */
-    private Integer outNumber;
+    private BigDecimal outNumber;
 
     /**
      * 申请人ID

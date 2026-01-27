@@ -53,7 +53,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
             if (bmsProductStockTb == null) {
                 throw new BusinessException("数据库中不存在此商品信息");
             }
-            if (bmsProductStockTb.getCurrentStockNumber() < bmsProductOutDTO.getNumber()) {
+            if (bmsProductStockTb.getCurrentStockNumber().compareTo(bmsProductOutDTO.getNumber()) < 0) {
                 throw new BusinessException("批次号为：" + bmsProductOutDTO.getBatchNo() + "的" + bmsProductOutDTO.getProductName() + "库存不足");
             }
         }
@@ -80,8 +80,8 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
 
     public void doOutStock(BioTaskDtlTb bioTaskDtlTb, BmsProductOutDTO bmsProductOutDTO) {
         BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByUniqueCode(bmsProductOutDTO.getUniqueCode());
-        bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber() - bmsProductOutDTO.getNumber());
-        bmsProductStockTb.setTotalOutNumber(bmsProductStockTb.getTotalOutNumber() + bmsProductOutDTO.getNumber());
+        bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber().subtract(bmsProductOutDTO.getNumber()));
+        bmsProductStockTb.setTotalOutNumber(bmsProductStockTb.getTotalOutNumber().add(bmsProductOutDTO.getNumber()));
         bmsProductStockTbMapper.updateById(bmsProductStockTb);
         //生成出库记录
         //找出入库记录
@@ -108,7 +108,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockOutLog.setExpirationDate(bmsProductStockTb.getExpirationDate());
         bmsProductStockOutLog.setStockCode(bmsProductStockTb.getStockCode());
         bmsProductStockOutLog.setProductPrice(bmsProductStockInLogList.get(0).getProductPrice());
-        bmsProductStockOutLog.setOutAmount(bmsProductStockOutLog.getProductPrice().multiply(new BigDecimal(bmsProductStockOutLog.getOutNumber())));
+        bmsProductStockOutLog.setOutAmount(bmsProductStockOutLog.getProductPrice().multiply(bmsProductStockOutLog.getOutNumber()));
         bmsProductStockOutLogMapper.insert(bmsProductStockOutLog);
     }
 

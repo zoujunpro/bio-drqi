@@ -45,7 +45,7 @@ public class BmsSynKdController {
      * @return
      */
     @PostMapping("execute")
-    //@RequirePermissions("bms:bmsSynKd:execute")
+    @RequirePermissions("bms:bmsSynKd:execute")
     @WebLog(desc = "星空云数据同步-执行同步")
     @RequestLog("星空云数据同步-执行同步")
     public ResponseResult<String> execute(@Validated @RequestBody BmsSynKdExecuteReqDTO bmsSynKdExecuteReqDTO) {

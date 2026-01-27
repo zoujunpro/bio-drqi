@@ -21,10 +21,10 @@ public enum KdParentGroupEnum {
     LOCAL_CODE_4("2536294","危废处置","WFCZ","local"),
 
 
-    PROD_CODE_1("2536291","试剂耗材","SJHC","prod"),
-    PROD_CODE_2("2536292","技术服务","JSFW","prod"),
-    PROD_CODE_3("2536293","设备维修","SBWX","prod"),
-    PROD_CODE_4("2536294","危废处置","WFCZ","prod"),
+    PROD_CODE_1("3013436","试剂耗材","SJHC","prod"),
+    PROD_CODE_2("3013437","技术服务","JSFW","prod"),
+    PROD_CODE_3("3013438","设备维修","SBWX","prod"),
+    PROD_CODE_4("3013439","危废处置","WFCZ","prod"),
 
     ;
     public String code;

@@ -61,7 +61,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
     public void synProjectTask() {
         Long startTime = System.currentTimeMillis();
         log.info("*****************项目同步开始**************************");
-        List<BmsProjectDict> bmsProjectDictList = bmsProjectDictMapper.selectList(null);
+        List<BmsProjectDict> bmsProjectDictList = bmsProjectDictMapper.selectSelective(null);
         Map<String, List<BmsProjectDict>> mapList = bmsProjectDictList.stream().filter(bmsProjectDict -> StringUtils.isNotEmpty(bmsProjectDict.getKdProjectType())).collect(Collectors.groupingBy(BmsProjectDict::getKdProjectCode));
         mapList.forEach((kdProjectCode, list) -> {
             if (StringUtils.isNotEmpty(kdProjectCode)) {
@@ -159,16 +159,19 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
     public void synSupplierTask() {
         Long startTime = System.currentTimeMillis();
         log.info("*****************供应商同步开始**************************");
-        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectSelective(null);
-        bmsSupplierTbList = bmsSupplierTbList.stream().filter(bmsSupplierTb -> bmsSupplierTb.getKdNumber() == null).collect(Collectors.toList());
+        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectList(null);
+        bmsSupplierTbList = bmsSupplierTbList.stream().filter(bmsSupplierTb -> StringUtils.isEmpty(bmsSupplierTb.getKdNumber())).collect(Collectors.toList());
         if (CollectionUtil.isEmpty(bmsSupplierTbList)) {
             log.info("无新增供应商数据需要同步");
             return;
         }
         List<QuerySupplierDTO> querySupplierDTOList = kdApiService.querySupplier();
+        querySupplierDTOList.forEach(querySupplierDTO -> {
+            querySupplierDTO.setFName(querySupplierDTO.getFName().replace("(","").replace("（","").replace("）","").replace(")",""));
+        });
         Map<String, List<QuerySupplierDTO>> querySupplierDTOMap = querySupplierDTOList.stream().collect(Collectors.groupingBy(QuerySupplierDTO::getFName));
         for (BmsSupplierTb bmsSupplierTb : bmsSupplierTbList) {
-            List<QuerySupplierDTO> querySupplierDTOS = querySupplierDTOMap.get(bmsSupplierTb.getSupplierName());
+            List<QuerySupplierDTO> querySupplierDTOS = querySupplierDTOMap.get(bmsSupplierTb.getSupplierName().trim().replace("(","").replace("（","").replace("）","").replace(")",""));
             if (CollectionUtil.isNotEmpty(querySupplierDTOS)) {
                 bmsSupplierTb.setKdNumber(querySupplierDTOS.get(0).getFNumber());
                 bmsSupplierTbMapper.updateById(bmsSupplierTb);
@@ -188,7 +191,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         log.info("*****************材料同步开始**************************");
         checkBefSynMaterialTask();
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
-        List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectList(null).stream().filter(bmsProductTb -> bmsProductCategoryCodeList.contains(bmsProductTb.getProductCategoryCode())&&StringUtils.isNotEmpty(bmsProductTb.getKdNumber())).collect(Collectors.toList());
+        List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectList(null).stream().filter(bmsProductTb -> bmsProductCategoryCodeList.contains(bmsProductTb.getProductCategoryCode())&&StringUtils.isEmpty(bmsProductTb.getKdNumber())).collect(Collectors.toList());
         for (BmsProductTb bmsProductTb : bmsProductTbList) {
             if (StringUtils.isNotEmpty(bmsProductTb.getKdNumber())) {
                 kdApiService.execute(OperateEnum.materialModify, bmsProductTb, PurchaseUnitEnum.default_.name());

@@ -8,10 +8,7 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.kd.dto.*;
 import com.bio.drqi.bsm.kd.dto.model.*;
-import com.bio.drqi.bsm.kd.enums.FormIdEnum;
-import com.bio.drqi.bsm.kd.enums.KdParentGroupEnum;
-import com.bio.drqi.bsm.kd.enums.OperateEnum;
-import com.bio.drqi.bsm.kd.enums.OrgEnum;
+import com.bio.drqi.bsm.kd.enums.*;
 import com.bio.drqi.bsm.kd.util.KdRequestUtil;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
@@ -169,8 +166,8 @@ public class KdApiServiceImpl implements KdApiService {
         ExecuteBillQueryModelDTO executeBillQueryModelDTO = new ExecuteBillQueryModelDTO();
         executeBillQueryModelDTO.setFormId(FormIdEnum.BOS_ASSISTANTDATA_DETAIL.name());
         executeBillQueryModelDTO.setFieldKeys("FEntryID,FNUMBER,FDataValue");
-        String filterString = "FId.FNUMBER='XM' and Fnumber='%s'";
-        executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsProjectDict.getKdProjectCode()));
+        String filterString = "FId.FNUMBER='%s' and Fnumber='%s'";
+        executeBillQueryModelDTO.setFilterString(String.format(filterString, bmsProjectDict.getKdProjectType(), ProjectTypeEnum.queryFIDByProjectType(bmsProjectDict.getKdProjectType())));
         List<List<Object>> result = KdRequestUtil.query(executeBillQueryModelDTO);
         if (CollectionUtil.isNotEmpty(result) && CollectionUtil.isNotEmpty(result.get(0))) {
             return result.get(0).get(0).toString();
@@ -280,10 +277,7 @@ public class KdApiServiceImpl implements KdApiService {
      */
     private String executeProjectSave(Object obj, String unitCode) {
         BmsProjectDict bmsProjectDict = (BmsProjectDict) obj;
-        ProjectModel projectModel = new ProjectModel();
-        projectModel.setFEntryID("0");
-        projectModel.setFnumber(bmsProjectDict.getKdProjectCode());
-        projectModel.setFDataValue(bmsProjectDict.getKdProjectName());
+        ProjectModel projectModel = new ProjectModel("0", bmsProjectDict.getKdProjectCode(), bmsProjectDict.getKdProjectName(), ProjectTypeEnum.queryFIDByProjectType(bmsProjectDict.getKdProjectType()));
         return KdRequestUtil.save(FormIdEnum.BOS_ASSISTANTDATA_DETAIL, KdApiBaseSaveRequestDTO.buildOfSave(projectModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
     }
 
@@ -296,10 +290,7 @@ public class KdApiServiceImpl implements KdApiService {
      */
     private String executeProjectModify(Object obj) {
         BmsProjectDict bmsProjectDict = (BmsProjectDict) obj;
-        ProjectModel projectModel = new ProjectModel();
-        projectModel.setFEntryID(bmsProjectDict.getKdNumber());
-        projectModel.setFnumber(bmsProjectDict.getKdProjectCode());
-        projectModel.setFDataValue(bmsProjectDict.getKdProjectName());
+        ProjectModel projectModel = new ProjectModel(bmsProjectDict.getKdNumber(), bmsProjectDict.getKdProjectCode(), bmsProjectDict.getKdProjectName(), ProjectTypeEnum.queryFIDByProjectType(bmsProjectDict.getKdProjectType()));
         return KdRequestUtil.save(FormIdEnum.BOS_ASSISTANTDATA_DETAIL, KdApiBaseSaveRequestDTO.buildOfModify(projectModel));
     }
 

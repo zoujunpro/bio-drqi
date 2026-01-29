@@ -85,7 +85,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockTbMapper.updateById(bmsProductStockTb);
         //生成出库记录
         //找出入库记录
-        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().productInnerCode(bmsProductStockTb.getProductInnerCode()).unitCode(bmsProductStockTb.getUnitCode()).batchNo(bmsProductStockTb.getBatchNo()).endDate(DateUtil.format(new Date(), DatePattern.NORM_DATE_PATTERN)).build());
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().productInnerCode(bmsProductStockTb.getProductInnerCode()).unitCode(bmsProductStockTb.getUnitCode()).batchNo(bmsProductStockTb.getBatchNo()).build());
         BmsProductStockOutLog bmsProductStockOutLog = new BmsProductStockOutLog();
         bmsProductStockOutLog.setProductName(bmsProductStockTb.getProductName());
         bmsProductStockOutLog.setProductOutCode(bmsProductStockTb.getProductOutCode());

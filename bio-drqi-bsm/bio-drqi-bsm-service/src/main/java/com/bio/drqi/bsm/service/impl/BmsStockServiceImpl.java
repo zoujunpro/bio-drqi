@@ -189,7 +189,7 @@ public class BmsStockServiceImpl implements BmsStockService {
                 BmsProjectDict bmsProjectDict = bmsProjectDictMapper.selectOneByProjectCode(projectCode);
                 bmsStock.setProjectCode(bmsProjectDict.getProjectCode());
                 bmsStock.setProjectType(bmsProjectDict.getKdProjectType());
-                bmsStock.setProductName(bmsProjectDict.getKdProjectName());
+                bmsStock.setProjectName(bmsProjectDict.getKdProjectName());
             }
             bmsStock.setStockName(bmsStockDictMap.get(bmsStock.getStockCode()));
             bmsStock.setProductCategoryName(bmsProductCategoryTbMap.get(bmsStock.getProductCategoryCode()));

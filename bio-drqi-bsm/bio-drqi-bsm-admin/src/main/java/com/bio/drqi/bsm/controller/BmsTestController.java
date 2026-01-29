@@ -168,9 +168,6 @@ public class BmsTestController {
     }
 
 
-
-
-
     @GetMapping("/cleanAmount")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanAmount() {
@@ -178,22 +175,25 @@ public class BmsTestController {
         for (BmsProductStockTb bmsProductStockTb : bmsProductStockTbList) {
             log.info("bmsProductStockTb=" + JSONUtil.toJsonStr(bmsProductStockTb));
             List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().productInnerCode(bmsProductStockTb.getProductInnerCode()).unitCode(bmsProductStockTb.getUnitCode()).build());
-            bmsProductStockTb.setProductPrice(bmsProductStockInLogList.get(0).getProductPrice());
+            bmsProductStockInLogList = bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductStockInLog.getProductPrice().doubleValue() > 0).collect(Collectors.toList());
+            bmsProductStockTb.setProductPrice(CollectionUtil.isNotEmpty(bmsProductStockInLogList)?bmsProductStockInLogList.get(0).getProductPrice():new BigDecimal("0"));
             bmsProductStockTbMapper.updateById(bmsProductStockTb);
         }
         bmsProductStockOutLogMapper.selectSelective(null).forEach(bmsProductStockOutLog -> {
             log.info("bmsProductStockOutLog=" + JSONUtil.toJsonStr(bmsProductStockOutLog));
             List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().productInnerCode(bmsProductStockOutLog.getProductInnerCode()).unitCode(bmsProductStockOutLog.getUnitCode()).batchNo(bmsProductStockOutLog.getBatchNo()).build());
-            bmsProductStockOutLog.setProductPrice(bmsProductStockInLogList.get(0).getProductPrice());
-            bmsProductStockOutLog.setOutAmount(bmsProductStockInLogList.get(0).getProductPrice().multiply(bmsProductStockOutLog.getOutNumber()));
+            bmsProductStockInLogList = bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductStockInLog.getProductPrice().doubleValue() > 0).collect(Collectors.toList());
+            bmsProductStockOutLog.setProductPrice(CollectionUtil.isNotEmpty(bmsProductStockInLogList)?bmsProductStockInLogList.get(0).getProductPrice():new BigDecimal("0"));
+            bmsProductStockOutLog.setOutAmount(bmsProductStockOutLog.getProductPrice().multiply(bmsProductStockOutLog.getOutNumber()));
             bmsProductStockOutLogMapper.updateById(bmsProductStockOutLog);
         });
 
         bmsMoveOrderDetailTbMapper.selectSelective(null).forEach(bmsMoveOrderDetailTb -> {
             log.info("bmsMoveOrderDetailTb=" + JSONUtil.toJsonStr(bmsMoveOrderDetailTb));
             List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().productInnerCode(bmsMoveOrderDetailTb.getProductInnerCode()).unitCode(bmsMoveOrderDetailTb.getUnitCode()).batchNo(bmsMoveOrderDetailTb.getBatchNo()).build());
-            bmsMoveOrderDetailTb.setProductPrice(bmsProductStockInLogList.get(0).getProductPrice());
-            bmsMoveOrderDetailTb.setMoveAmount(bmsProductStockInLogList.get(0).getProductPrice().multiply(bmsMoveOrderDetailTb.getMoveNumber()));
+            bmsProductStockInLogList = bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductStockInLog.getProductPrice().doubleValue() > 0).collect(Collectors.toList());
+            bmsMoveOrderDetailTb.setProductPrice(CollectionUtil.isNotEmpty(bmsProductStockInLogList)?bmsProductStockInLogList.get(0).getProductPrice():new BigDecimal("0"));
+            bmsMoveOrderDetailTb.setMoveAmount(bmsMoveOrderDetailTb.getProductPrice().multiply(bmsMoveOrderDetailTb.getMoveNumber()));
             bmsMoveOrderDetailTbMapper.updateById(bmsMoveOrderDetailTb);
         });
         return ResponseResult.getSuccess("ok");
@@ -303,9 +303,6 @@ public class BmsTestController {
         return ResponseResult.getSuccess("ok");
 
     }
-
-
-
 
 
 }

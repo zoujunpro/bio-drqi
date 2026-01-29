@@ -185,7 +185,9 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
                 currentStockLocationNumberList.addAll(inputOrderDetail.getStockLocationNumberList());
                 bmsProductStockTb.setStockLocationNumber(JSONUtil.toJsonStr(currentStockLocationNumberList));
             }
-            bmsProductStockTb.setProductPrice(inputOrderDetail.getPurchasePrice());
+            if(inputOrderDetail.getPurchasePrice().doubleValue()>0){
+                bmsProductStockTb.setProductPrice(inputOrderDetail.getPurchasePrice());
+            }
             bmsProductStockTbMapper.updateById(bmsProductStockTb);
         }
 

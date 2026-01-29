@@ -86,6 +86,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         //生成出库记录
         //找出入库记录
         List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BmsProductStockInLog.builder().productInnerCode(bmsProductStockTb.getProductInnerCode()).unitCode(bmsProductStockTb.getUnitCode()).batchNo(bmsProductStockTb.getBatchNo()).endDate(DateUtil.format(new Date(), DatePattern.NORM_DATE_PATTERN)).build());
+        bmsProductStockInLogList = bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductStockInLog.getProductPrice().doubleValue() > 0).collect(Collectors.toList());
         BmsProductStockOutLog bmsProductStockOutLog = new BmsProductStockOutLog();
         bmsProductStockOutLog.setProductName(bmsProductStockTb.getProductName());
         bmsProductStockOutLog.setProductOutCode(bmsProductStockTb.getProductOutCode());
@@ -107,7 +108,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockOutLog.setProduceDate(bmsProductStockTb.getProduceDate());
         bmsProductStockOutLog.setExpirationDate(bmsProductStockTb.getExpirationDate());
         bmsProductStockOutLog.setStockCode(bmsProductStockTb.getStockCode());
-        bmsProductStockOutLog.setProductPrice(bmsProductStockInLogList.get(0).getProductPrice());
+        bmsProductStockOutLog.setProductPrice(CollectionUtil.isNotEmpty(bmsProductStockInLogList)?bmsProductStockInLogList.get(0).getProductPrice():new BigDecimal("0"));
         bmsProductStockOutLog.setOutAmount(bmsProductStockOutLog.getProductPrice().multiply(bmsProductStockOutLog.getOutNumber()));
         bmsProductStockOutLogMapper.insert(bmsProductStockOutLog);
     }

@@ -19,8 +19,9 @@ public enum OrgEnum {
     LOCAL_TIANJIN_ORG("local", "tianjin", "1003"),
     LOCAL_DEFAULT_ORG("local", "default_", "1001"),
 
-    PROD_TIANJIN_ORG("prod", "tianjin", "1002"),
-    PROD_BEIJING_ORG("prod", "beijing", "1003"),
+
+    PROD_BEIJING_ORG("prod", "beijing", "1002"),
+    PROD_TIANJIN_ORG("prod", "tianjin", "1003"),
     PROD_DEFAULT_ORG("prod", "default_", "1001"),
     ;
 

@@ -191,7 +191,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         log.info("*****************材料同步开始**************************");
         checkBefSynMaterialTask();
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
-        List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectList(null).stream().filter(bmsProductTb -> bmsProductCategoryCodeList.contains(bmsProductTb.getProductCategoryCode()) && StringUtils.isEmpty(bmsProductTb.getKdNumber())).collect(Collectors.toList());
+        List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectList(null).stream().filter(bmsProductTb -> bmsProductCategoryCodeList.contains(bmsProductTb.getProductCategoryCode())).collect(Collectors.toList());
         for (BmsProductTb bmsProductTb : bmsProductTbList) {
             if (StringUtils.isNotEmpty(bmsProductTb.getKdNumber())) {
                 kdApiService.execute(OperateEnum.materialModify, bmsProductTb, PurchaseUnitEnum.default_.name());

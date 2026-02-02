@@ -65,6 +65,9 @@ public class OutStockSaveModel extends KdModel {
 
     private String FNote;
 
+    private String FStockDirect;
+
+
 
     public OutStockSaveModel(String outDetailId, String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdMaterialId, BigDecimal FQty, String stockId) {
         this.F_WAUJ_UUID = outDetailId;
@@ -76,10 +79,17 @@ public class OutStockSaveModel extends KdModel {
         this.FOwnerTypeIdHead = KdContents.OWNER;
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
-        this.FEntity = Arrays.asList(new FEntityModel(kdMaterialId, FQty, stockId, orgCode));
+        this.FEntity = Arrays.asList(new FEntityModel(kdMaterialId, FQty.abs(), stockId, orgCode));
         this.FDeptId = new FDeptIdModel("BM000008");
         this.FNote = " ";
+        if(FQty.compareTo(new BigDecimal(0))<0){
+            this.FStockDirect="RETURN";
+        }else {
+            this.FStockDirect="GENERAL";
+        }
     }
+
+
 
 
     @Data

@@ -71,9 +71,14 @@ public class OutStockSaveModel extends KdModel {
 
     public OutStockSaveModel(String outDetailId, String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdMaterialId, BigDecimal FQty, String stockId) {
         this.F_WAUJ_UUID = outDetailId;
+        if(FQty.compareTo(new BigDecimal(0))<0){
+            this.FStockDirect="RETURN";
+        }else {
+            this.FStockDirect="GENERAL";
+        }
         this.FDate = FDate;
         this.F_WAUJ_CRKLX = kdParentGroupEnum.type;
-        this.fFBillTypeID = new FBillTypeIDModel(KdFBillTypeIDEnum.ofKdParentGroupEnum(kdParentGroupEnum).code);
+        this.fFBillTypeID = new FBillTypeIDModel("QTCKD01_SYS");
         this.FRequireOrgId = new FRequireOrgIdModel(orgCode);
         this.FStockOrgId=new FStockOrgIdModel(orgCode);
         this.FOwnerTypeIdHead = KdContents.OWNER;
@@ -82,11 +87,7 @@ public class OutStockSaveModel extends KdModel {
         this.FEntity = Arrays.asList(new FEntityModel(kdMaterialId, FQty.abs(), stockId, orgCode));
         this.FDeptId = new FDeptIdModel("BM000008");
         this.FNote = " ";
-        if(FQty.compareTo(new BigDecimal(0))<0){
-            this.FStockDirect="RETURN";
-        }else {
-            this.FStockDirect="GENERAL";
-        }
+
     }
 
 

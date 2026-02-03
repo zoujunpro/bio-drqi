@@ -73,6 +73,9 @@
             <if test="supplierStatus != null and supplierStatus!=''">and
                 supplier_status=#{supplierStatus,jdbcType=VARCHAR}
             </if>
+            <if test="endDate != null and endDate != ''">
+                and date_format(create_time,'%Y-%m-%d') &lt;= #{endDate,jdbcType=VARCHAR}
+            </if>
         </where>
         order by id desc
     </select>

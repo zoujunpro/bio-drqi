@@ -156,10 +156,10 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
     }
 
     @Override
-    public void synSupplierTask() {
+    public void synSupplierTask(String endDate) {
         Long startTime = System.currentTimeMillis();
         log.info("*****************供应商同步开始**************************");
-        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectList(null);
+        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectSelective(BmsSupplierTb.builder().endDate(endDate).build());
         bmsSupplierTbList = bmsSupplierTbList.stream().filter(bmsSupplierTb -> StringUtils.isEmpty(bmsSupplierTb.getKdNumber())).collect(Collectors.toList());
         if (CollectionUtil.isEmpty(bmsSupplierTbList)) {
             log.info("无新增供应商数据需要同步");
@@ -179,7 +179,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                 log.error("供应商同步,供应商{}没有同步到金蝶数据", bmsSupplierTb.getSupplierName());
             }
         }
-        checkAftSynSupplierTask();
+        checkAftSynSupplierTask(endDate);
         log.info("*****************供应商同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
 
 
@@ -374,7 +374,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         try {
             synStockTask();
             synMaterialGroupTask();
-            synSupplierTask();
+            synSupplierTask(bmsSynKdTaskLog.getEndDate());
             synProjectTask();
             synMaterialTask();
             synInStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
@@ -408,8 +408,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         }
     }
 
-    private void checkAftSynSupplierTask() {
-        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectSelective(null);
+    private void checkAftSynSupplierTask(String endDate) {
+        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectSelective(BmsSupplierTb.builder().endDate(endDate).build());
         bmsSupplierTbList = bmsSupplierTbList.stream().filter(bmsSupplierTb -> bmsSupplierTb.getKdNumber() == null).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(bmsSupplierTbList)) {
             throw new BusinessException("部分供应商未同步");

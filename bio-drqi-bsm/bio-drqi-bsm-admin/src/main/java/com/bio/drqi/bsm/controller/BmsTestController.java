@@ -157,7 +157,6 @@ public class BmsTestController {
 
     @GetMapping("/cleanStockLocation")
     public ResponseResult<String> cleanStockLocation() {
-
         bmsStockLocationDictMapper.selectList(null).forEach(bmsStockLocationDict -> {
             if (bmsStockLocationDict.getStockCode().length() > 30) {
                 bmsStockLocationDict.setStockCode(bmsStockLocationDict.getStockCode().substring(0, 30));
@@ -303,6 +302,4 @@ public class BmsTestController {
         return ResponseResult.getSuccess("ok");
 
     }
-
-
 }

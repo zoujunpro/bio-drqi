@@ -28,6 +28,7 @@
         <result property="kdNumber" column="kd_number" jdbcType="INTEGER"/>
         <result property="productPrice" column="product_price" jdbcType="DECIMAL"/>
         <result property="moveAmount" column="move_amount" jdbcType="DECIMAL"/>
+        <result property="payType" column="pay_type" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -39,7 +40,7 @@
         product_inner_code,produce_date,expiration_date,
         from_stock_code,from_stock_location_number,to_stock_code,
         to_stock_location_number,move_number,create_user_id,
-        create_user_name,create_time,kd_number,product_price,move_amount
+        create_user_name,create_time,kd_number,product_price,move_amount,pay_type
     </sql>
     <select id="selectAllByUnitCode" resultMap="BaseResultMap">
         select
@@ -83,6 +84,7 @@
             <if test="startDate != null and startDate != ''">
                 and date_format(create_time,'%Y-%m-%d') &gt;= #{startDate,jdbcType=VARCHAR}
             </if>
+            <if test="payType != null and payType!=''">and pay_type=#{payType,jdbcType=VARCHAR}</if>
             <if test="endDate != null and endDate != ''">
                 and date_format(create_time,'%Y-%m-%d') &lt;= #{endDate,jdbcType=VARCHAR}
             </if>

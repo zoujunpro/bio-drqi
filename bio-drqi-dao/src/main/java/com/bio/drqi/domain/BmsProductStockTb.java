@@ -99,6 +99,8 @@ public class BmsProductStockTb implements Serializable {
 
     private BigDecimal productPrice;
 
+    private String payType;
+
     @TableField(exist = false)
     private String filterZeroFlag;
 

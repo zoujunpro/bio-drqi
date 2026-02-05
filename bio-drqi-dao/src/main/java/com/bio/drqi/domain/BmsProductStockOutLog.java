@@ -121,6 +121,8 @@ public class BmsProductStockOutLog implements Serializable {
 
     private String stockCode;
 
+    private String payType;
+
     @TableField(exist = false)
     private String startDate;
 

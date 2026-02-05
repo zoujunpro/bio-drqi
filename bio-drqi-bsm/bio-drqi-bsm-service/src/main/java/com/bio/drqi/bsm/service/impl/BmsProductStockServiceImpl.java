@@ -154,7 +154,7 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         bmsProductStockTbMapper.updateById(bmsProductStockTb);
 
         //移入库存添加
-        BmsProductStockTb newBmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCode(bmsProductStockTb.getProductInnerCode(), bmsProductStockTb.getUnitCode(), bmsProductStockTb.getBatchNo(), bmsProductStockMoveStockReqDTO.getNewStockCode());
+        BmsProductStockTb newBmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCodeAndPayType(bmsProductStockTb.getProductInnerCode(), bmsProductStockTb.getUnitCode(), bmsProductStockTb.getBatchNo(), bmsProductStockMoveStockReqDTO.getNewStockCode(),bmsProductStockTb.getPayType());
         if (newBmsProductStockTb != null) {
             newBmsProductStockTb.setCurrentStockNumber(newBmsProductStockTb.getCurrentStockNumber().add(bmsProductStockMoveStockReqDTO.getMoveNumber()));
             newBmsProductStockTb.setTotalStoreNumber(newBmsProductStockTb.getTotalStoreNumber().add(bmsProductStockMoveStockReqDTO.getMoveNumber()));
@@ -183,6 +183,7 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
             newBmsProductStockTb.setReturnNumber(new BigDecimal(0));
             newBmsProductStockTb.setStockCode(bmsProductStockMoveStockReqDTO.getNewStockCode());
             newBmsProductStockTb.setProductPrice(bmsProductStockTb.getProductPrice());
+            newBmsProductStockTb.setPayType(bmsProductStockTb.getPayType());
             bmsProductStockTbMapper.insert(newBmsProductStockTb);
         }
         //记录移库流水
@@ -208,6 +209,7 @@ public class BmsProductStockServiceImpl implements BmsProductStockService {
         bmsMoveOrderDetailTb.setCreateTime(new Date());
         bmsMoveOrderDetailTb.setProductPrice(newBmsProductStockTb.getProductPrice());
         bmsMoveOrderDetailTb.setMoveAmount(bmsMoveOrderDetailTb.getProductPrice().multiply(bmsMoveOrderDetailTb.getMoveNumber()));
+        bmsMoveOrderDetailTb.setPayType(newBmsProductStockTb.getPayType());
         bmsMoveOrderDetailTbMapper.insert(bmsMoveOrderDetailTb);
     }
 }

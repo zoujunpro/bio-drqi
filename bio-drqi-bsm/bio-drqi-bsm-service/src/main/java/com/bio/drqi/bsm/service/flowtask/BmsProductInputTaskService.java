@@ -150,7 +150,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
 
 
     private BmsProductStockTb updateOrInsertBmsProductStock(BmsProductInputDTO.OrderDetail inputOrderDetail, BmsOrderDetailTb bmsOrderDetailTb, String batchNo) {
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCode(bmsOrderDetailTb.getProductInnerCode(), bmsOrderDetailTb.getApplyUnitCode(), batchNo, inputOrderDetail.getStockCode());
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCodeAndPayType(bmsOrderDetailTb.getProductInnerCode(), bmsOrderDetailTb.getApplyUnitCode(), batchNo, inputOrderDetail.getStockCode(),bmsOrderDetailTb.getPayType());
         if (bmsProductStockTb == null) {
             bmsProductStockTb = new BmsProductStockTb();
             bmsProductStockTb.setProductName(bmsOrderDetailTb.getProductName());
@@ -173,6 +173,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
             bmsProductStockTb.setStockCode(inputOrderDetail.getStockCode());
             bmsProductStockTb.setProductPrice(inputOrderDetail.getPurchasePrice());
             bmsProductStockTb.setReturnNumber(new BigDecimal(0));
+            bmsProductStockTb.setPayType(bmsOrderDetailTb.getPayType());
             bmsProductStockTbMapper.insert(bmsProductStockTb);
         } else {
             bmsProductStockTb.setCurrentStockNumber(bmsProductStockTb.getCurrentStockNumber().add(inputOrderDetail.getNumber()));
@@ -222,6 +223,7 @@ public class BmsProductInputTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockInLog.setTaxRate(bmsOrderDetailTb.getTaxRate());
         bmsProductStockInLog.setStockCode(inputOrderDetail.getStockCode());
         bmsProductStockInLog.setReturnNumber(new BigDecimal(0));
+        bmsProductStockInLog.setPayType(bmsOrderDetailTb.getPayType());
         bmsProductStockInLogMapper.insert(bmsProductStockInLog);
     }
 

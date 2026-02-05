@@ -32,6 +32,7 @@
         <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
         <result property="productCategoryCode" column="product_category_code" jdbcType="VARCHAR"/>
         <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
+        <result property="payType" column="pay_type" jdbcType="VARCHAR"/>
 
     </resultMap>
 
@@ -44,7 +45,7 @@
         brand_code,batch_no,
         unit_code,supplier_code,
         product_inner_code,expiration_date,produce_date,
-        product_out_code,tax_rate,in_stock_id,stock_code,unique_code,project_code,product_category_code,kd_number
+        product_out_code,tax_rate,in_stock_id,stock_code,unique_code,project_code,product_category_code,kd_number,pay_type
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsReturnOrderDetailTb" resultMap="BaseResultMap">
         select
@@ -81,6 +82,7 @@
             <if test="taxRate != null"> and tax_rate=#{taxRate,jdbcType=VARCHAR}</if>
             <if test="stockCode != null and stockCode!=''"> and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
             <if test="productCategoryCode != null">and product_category_code=#{productCategoryCode,jdbcType=VARCHAR}</if>
+            <if test="payType != null and payType!=''">and pay_type=#{payType,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

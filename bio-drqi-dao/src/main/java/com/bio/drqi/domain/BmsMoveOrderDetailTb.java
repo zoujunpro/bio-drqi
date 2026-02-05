@@ -126,6 +126,8 @@ public class BmsMoveOrderDetailTb implements Serializable {
 
     private BigDecimal productPrice;
 
+    private String payType;
+
     @TableField(exist = false)
     private String startDate;
 

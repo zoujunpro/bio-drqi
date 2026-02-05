@@ -41,7 +41,7 @@
         <result property="expectedDeliveryTime" column="expected_delivery_time" jdbcType="VARCHAR"/>
         <result property="taxRate" column="tax_rate" jdbcType="VARCHAR"/>
         <result property="returnNumber" column="return_number" jdbcType="DECIMAL"/>
-
+        <result property="payType" column="pay_type" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -54,7 +54,7 @@
         apply_user_name,task_num,picture_urls,
         purchase_date,apply_unit_code,apply_unit_name,purchase_department,receive_number,
         payment_voucher_urls,contract_number,invoice_urls,report_account_time,contract_urls,
-        demand_require_time,demand_usage_time,expected_delivery_time,tax_rate,return_number
+        demand_require_time,demand_usage_time,expected_delivery_time,tax_rate,return_number,pay_type
     </sql>
     <select id="selectAllByOrderNum" resultMap="BaseResultMap">
         select
@@ -76,6 +76,7 @@
                 contact_user_telephone=#{contactUserTelephone,jdbcType=VARCHAR}
             </if>
             <if test="contactUserName != null">and contact_user_name=#{contactUserName,jdbcType=VARCHAR}</if>
+            <if test="payType != null and payType!=''">and pay_type=#{payType,jdbcType=VARCHAR}</if>
             <if test="brandCode != null and brandCode!=''">and brand_code=#{brandCode,jdbcType=VARCHAR}</if>
             <if test="productName != null and productName !=''">and product_name=#{productName,jdbcType=VARCHAR}</if>
             <if test="productSpecs != null and productSpecs!=''">and product_specs=#{productSpecs,jdbcType=VARCHAR}</if>

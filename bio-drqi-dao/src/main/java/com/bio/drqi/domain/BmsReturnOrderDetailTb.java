@@ -139,6 +139,8 @@ public class BmsReturnOrderDetailTb implements Serializable {
 
     private String projectCode;
 
+    private String payType;
+
 
     @TableField(exist = false)
     private String startDate;

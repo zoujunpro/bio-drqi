@@ -162,6 +162,8 @@ public class BmsOrderDetailTb implements Serializable {
 
     private BigDecimal returnNumber;
 
+    private String payType;
+
     /**
      * 过滤0标识
      */

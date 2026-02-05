@@ -28,6 +28,8 @@
         <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
         <result property="productPrice" column="product_price" jdbcType="DECIMAL"/>
         <result property="outAmount" column="out_amount" jdbcType="DECIMAL"/>
+        <result property="payType" column="pay_type" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -38,7 +40,7 @@
         batch_no,out_number,apply_user_id,
         apply_user_name,create_time,task_num,
         remark,out_type,unit_code,kd_number,
-        supplier_code,unique_code,produce_date,expiration_date,stock_code,product_price,out_amount
+        supplier_code,unique_code,produce_date,expiration_date,stock_code,product_price,out_amount,pay_type
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsProductStockOutLog" resultMap="BaseResultMap">
         select
@@ -79,6 +81,7 @@
             <if test="produceDate != null">and produce_date=#{produceDate,jdbcType=VARCHAR}</if>
             <if test="expirationDate != null">and expiration_date=#{expirationDate,jdbcType=VARCHAR}</if>
             <if test="stockCode != null and stockCode!=''">and stock_code=#{stockCode,jdbcType=VARCHAR}</if>
+            <if test="payType != null and payType!=''">and pay_type=#{payType,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

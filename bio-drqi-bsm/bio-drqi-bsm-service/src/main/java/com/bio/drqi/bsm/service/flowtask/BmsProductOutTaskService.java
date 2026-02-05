@@ -110,6 +110,7 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         bmsProductStockOutLog.setStockCode(bmsProductStockTb.getStockCode());
         bmsProductStockOutLog.setProductPrice(CollectionUtil.isNotEmpty(bmsProductStockInLogList)?bmsProductStockInLogList.get(0).getProductPrice():new BigDecimal("0"));
         bmsProductStockOutLog.setOutAmount(bmsProductStockOutLog.getProductPrice().multiply(bmsProductStockOutLog.getOutNumber()));
+        bmsProductStockOutLog.setPayType(bmsProductStockTb.getPayType());
         bmsProductStockOutLogMapper.insert(bmsProductStockOutLog);
     }
 

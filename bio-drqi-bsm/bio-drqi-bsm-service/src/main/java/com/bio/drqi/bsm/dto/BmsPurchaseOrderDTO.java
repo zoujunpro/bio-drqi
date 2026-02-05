@@ -154,6 +154,9 @@ public class BmsPurchaseOrderDTO {
 
         private String expectedDeliveryTime;
 
+        @NotBlank(message = "参数缺失：付款类型")
+        private String payType;
+
 
     }
 

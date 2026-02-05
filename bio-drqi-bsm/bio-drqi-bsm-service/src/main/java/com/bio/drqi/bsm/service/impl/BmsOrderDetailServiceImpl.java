@@ -9,6 +9,7 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.dto.BmsOrderDetailExcelDTO;
+import com.bio.drqi.bsm.enums.PayTypeEnum;
 import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsOrderDetailQueryByOrderNumRspDTO;
@@ -283,6 +284,7 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
                 bmsOrderDetailExcelDTO.setBrandName(bmsBrandTbMap.get(bmsOrderDetailExcelDTO.getBrandCode()));
                 bmsOrderDetailExcelDTO.setProductCategoryName(bmsProductCategoryMap.get(bmsOrderDetailExcelDTO.getProductCategoryCode()));
                 bmsOrderDetailExcelDTO.setProjectName(bmsProjectDictMap.get(bmsOrderDetailExcelDTO.getProjectCode()));
+                bmsOrderDetailExcelDTO.setPayTypeName(PayTypeEnum.getNameByName(bmsOrderDetailExcelDTO.getPayType()));
             });
         }
         ExcelUtil.writeExcel("订单明细" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xlsx", "sheet", bmsOrderDetailExcelDTOList, BmsOrderDetailExcelDTO.class, httpServletResponse);

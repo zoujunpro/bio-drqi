@@ -44,13 +44,15 @@ public class BmsCodeScanService extends AbstractBaseCodeScanService<BmsUniqueCod
         bmsUniqueCodeDTO.setBatchNo(uniqueCodeArr[1]);
         bmsUniqueCodeDTO.setUnitCode(uniqueCodeArr[2]);
         bmsUniqueCodeDTO.setStockCode(uniqueCodeArr[3]);
+        bmsUniqueCodeDTO.setPayType(uniqueCodeArr[4]);
+
         return bmsUniqueCodeDTO;
     }
 
 
     @Override
     public ScanCodeBmsRspDTO dealCodeContent(BmsUniqueCodeDTO bmsUniqueCodeDTO) {
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCode(bmsUniqueCodeDTO.getProductInnerCode(), bmsUniqueCodeDTO.getUnitCode(), bmsUniqueCodeDTO.getBatchNo(), bmsUniqueCodeDTO.getStockCode());
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCodeAndPayType(bmsUniqueCodeDTO.getProductInnerCode(), bmsUniqueCodeDTO.getUnitCode(), bmsUniqueCodeDTO.getBatchNo(), bmsUniqueCodeDTO.getStockCode(),bmsUniqueCodeDTO.getPayType());
         if (bmsProductStockTb == null) {
             log.error("扫码失败，找不到库存数据，{}", JSONUtil.toJsonStr(bmsUniqueCodeDTO));
             throw new BusinessException("扫码失败，找不到库存数据:" + " 商品编号:" + bmsUniqueCodeDTO.getProductInnerCode() + "批次号：" + bmsUniqueCodeDTO.getBatchNo() + "单位：" + bmsUniqueCodeDTO.getUnitCode());

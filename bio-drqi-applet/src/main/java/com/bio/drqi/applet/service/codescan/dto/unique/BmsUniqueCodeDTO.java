@@ -13,4 +13,6 @@ public class BmsUniqueCodeDTO {
 
     private String stockCode;
 
+    private String payType;
+
 }

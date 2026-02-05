@@ -136,4 +136,6 @@ public class BmsOrderDetailQueryByOrderNumRspDTO {
     private String purchaseDepartment;
 
     private Integer receiveNumber;
+
+    private String payType;
 }

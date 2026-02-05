@@ -150,4 +150,10 @@ public class BmsOrderDetailExcelDTO {
     @ExcelProperty("货期")
     private String expectedDeliveryTime;
 
+    @ExcelIgnore
+    private String payType;
+
+    @ExcelProperty("付款类型")
+    private String payTypeName;
+
 }

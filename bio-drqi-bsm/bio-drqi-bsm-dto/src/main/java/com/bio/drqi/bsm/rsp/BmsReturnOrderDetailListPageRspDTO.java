@@ -128,4 +128,6 @@ public class BmsReturnOrderDetailListPageRspDTO {
     private String productCategoryCode;
 
     private String productCategoryName;
+
+    private String payType;
 }

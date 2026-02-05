@@ -126,4 +126,6 @@ public class BmsProductStockInLogDetailRspDTO {
 
     private String stockName;
 
+    private String payType;
+
 }

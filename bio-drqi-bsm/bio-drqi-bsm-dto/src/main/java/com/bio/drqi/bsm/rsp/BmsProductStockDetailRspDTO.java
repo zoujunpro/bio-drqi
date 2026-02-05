@@ -100,4 +100,6 @@ public class BmsProductStockDetailRspDTO {
     private String stockName;
 
     private BigDecimal productPrice;
+
+    private String payType;
 }

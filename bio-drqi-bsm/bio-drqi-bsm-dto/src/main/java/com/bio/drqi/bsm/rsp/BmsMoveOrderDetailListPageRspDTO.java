@@ -138,4 +138,6 @@ public class BmsMoveOrderDetailListPageRspDTO {
     private BigDecimal productPrice;
 
     private BigDecimal moveAmount;
+
+    private String payType;
 }

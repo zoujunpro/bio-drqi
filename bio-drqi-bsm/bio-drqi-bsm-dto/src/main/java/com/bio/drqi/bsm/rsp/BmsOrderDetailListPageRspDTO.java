@@ -168,5 +168,7 @@ public class BmsOrderDetailListPageRspDTO {
 
     private BigDecimal returnNumber;
 
+    private String payType;
+
 
 }

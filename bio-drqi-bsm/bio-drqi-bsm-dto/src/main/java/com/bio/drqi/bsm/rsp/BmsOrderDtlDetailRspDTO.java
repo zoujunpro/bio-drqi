@@ -164,5 +164,7 @@ public class BmsOrderDtlDetailRspDTO {
 
     private String taxRate;
 
+    private String payType;
+
 
 }

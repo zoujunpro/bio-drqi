@@ -111,7 +111,6 @@ public class BmsProductStockController {
     public ResponseResult<String> moveStock(@RequestBody @Validated BmsProductStockMoveStockReqDTO bmsProductStockMoveStockReqDTO) {
         bmsProductStockService.moveStock(bmsProductStockMoveStockReqDTO);
         return ResponseResult.getSuccess("ok");
-
     }
 
 }

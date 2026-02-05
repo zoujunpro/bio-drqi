@@ -5,6 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.enums.BmsKdSynStatusEnum;
+import com.bio.drqi.bsm.enums.PayTypeEnum;
 import com.bio.drqi.bsm.enums.PurchaseUnitEnum;
 import com.bio.drqi.bsm.kd.dto.QuerySupplierDTO;
 import com.bio.drqi.bsm.kd.enums.OperateEnum;
@@ -221,6 +222,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         BmsProductStockInLog selectBmsProductStockInLog = new BmsProductStockInLog();
         selectBmsProductStockInLog.setStartDate(startDate);
         selectBmsProductStockInLog.setEndDate(endDate);
+        selectBmsProductStockInLog.setPayType(PayTypeEnum.TYPE_1.type);
         List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(selectBmsProductStockInLog);
         bmsProductStockInLogList = bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> StringUtils.isEmpty(bmsProductStockInLog.getKdNumber())).collect(Collectors.toList());
         //过滤出不需要同步的项目
@@ -259,6 +261,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         BmsProductStockOutLog selectBmsProductStockOutLog = new BmsProductStockOutLog();
         selectBmsProductStockOutLog.setStartDate(startDate);
         selectBmsProductStockOutLog.setEndDate(endDate);
+        selectBmsProductStockOutLog.setPayType(PayTypeEnum.TYPE_1.type);
         List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectSelective(selectBmsProductStockOutLog);
         bmsProductStockOutLogList = bmsProductStockOutLogList.stream().filter(bmsProductStockOutLog -> StringUtils.isEmpty(bmsProductStockOutLog.getKdNumber())).collect(Collectors.toList());
 
@@ -299,6 +302,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         BmsReturnOrderDetailTb selectBmsReturnOrderDetailTb = new BmsReturnOrderDetailTb();
         selectBmsReturnOrderDetailTb.setStartDate(startDate);
         selectBmsReturnOrderDetailTb.setEndDate(endDate);
+        selectBmsReturnOrderDetailTb.setPayType(PayTypeEnum.TYPE_1.type);
         List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectSelective(selectBmsReturnOrderDetailTb);
         bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> StringUtils.isEmpty(bmsReturnOrderDetailTb.getKdNumber())).collect(Collectors.toList());
 
@@ -338,6 +342,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         BmsMoveOrderDetailTb selectBmsMoveOrderDetailTb = new BmsMoveOrderDetailTb();
         selectBmsMoveOrderDetailTb.setStartDate(startDate);
         selectBmsMoveOrderDetailTb.setEndDate(endDate);
+        selectBmsMoveOrderDetailTb.setPayType(PayTypeEnum.TYPE_1.type);
         List<BmsMoveOrderDetailTb> bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbMapper.selectSelective(selectBmsMoveOrderDetailTb);
         bmsMoveOrderDetailTbList = bmsMoveOrderDetailTbList.stream().filter(bmsMoveOrderDetailTb -> StringUtils.isEmpty(bmsMoveOrderDetailTb.getKdNumber())).collect(Collectors.toList());
 

@@ -103,6 +103,18 @@ public class BmsOrderDetailExcelDTO {
     private BigDecimal payAmount;
 
     /**
+     * 到货数量
+     */
+    @ExcelProperty("到货数量")
+    private BigDecimal receiveNumber;
+
+    /**
+     * 退货数量
+     */
+    @ExcelProperty("退货数量")
+    private BigDecimal returnNumber;
+
+    /**
      * 商品类别名称
      */
     @ExcelProperty("商品类别")

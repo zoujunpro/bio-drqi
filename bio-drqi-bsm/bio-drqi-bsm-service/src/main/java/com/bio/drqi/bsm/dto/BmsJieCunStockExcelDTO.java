@@ -19,7 +19,11 @@ public class BmsJieCunStockExcelDTO {
     @ExcelProperty("商品名称")
     private String productName;
 
+    @ExcelProperty("付款类型")
+    private String payTypeName;
 
+    @ExcelIgnore
+    private String payType;
     /**
      * 所属类别编号
      */

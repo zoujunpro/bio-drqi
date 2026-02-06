@@ -11,6 +11,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.bsm.dto.BmsCountPeriodTaskDTO;
 import com.bio.drqi.bsm.dto.BmsJieCunStockExcelDTO;
+import com.bio.drqi.bsm.enums.PayTypeEnum;
 import com.bio.drqi.bsm.kd.KdTaskExecuteService;
 import com.bio.drqi.bsm.req.BmsStockAddReqDTO;
 import com.bio.drqi.bsm.req.BmsStockEditReqDTO;
@@ -194,6 +195,7 @@ public class BmsStockServiceImpl implements BmsStockService {
             bmsStock.setStockName(bmsStockDictMap.get(bmsStock.getStockCode()));
             bmsStock.setProductCategoryName(bmsProductCategoryTbMap.get(bmsStock.getProductCategoryCode()));
             bmsStock.setBrandName(bmsBrandMap.get(bmsStock.getBrandCode()));
+            bmsStock.setPayTypeName(PayTypeEnum.getNameByName(bmsStock.getPayType()));
             bmsStock.setSupplierName(bmsSupplierTbMap.get(bmsStock.getSupplierCode()));
         }
 

@@ -1,5 +1,6 @@
 package com.bio.drqi.manage.controller.project;
 
+import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.manage.project.req.CerConversionAndTransConfirmReqDTO;
 import com.bio.drqi.manage.project.req.ConversionAndTransDetailReqDTO;
 import com.bio.drqi.manage.project.req.ConversionAndTransReqDTO;
@@ -86,6 +87,7 @@ public class CerConversionAndTransController {
      */
     @PostMapping("/transAccept")
     @WebLog(desc = "转化移苗-移苗接受")
+    @RequestLog("转化移苗-移苗接受")
     public ResponseResult<String> transAccept(@RequestBody @Validated CerConversionAndTransConfirmReqDTO cerConversionAndTransConfirmReqDTO){
         cerConversionAndTransService.transAccept(cerConversionAndTransConfirmReqDTO);
         return ResponseResult.getSuccess("成功");

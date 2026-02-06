@@ -211,7 +211,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
                 bmsProductTbMapper.updateById(bmsProductTb);
             }
         }
-        checkAftSynMaterialTask();
+        checkAftSynMaterialTask(endDate);
         log.info("*****************材料同步结束，耗时={}ms**************************", System.currentTimeMillis() - startTime);
     }
 
@@ -397,8 +397,8 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
 
     }
 
-    private void checkAftSynMaterialTask() {
-        List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectList(null);
+    private void checkAftSynMaterialTask(String endDate) {
+        List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectSelective(BmsProductTb.builder().endDate(endDate).build());
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
         bmsProductTbList = bmsProductTbList.stream().filter(bmsProductTb -> bmsProductCategoryCodeList.contains(bmsProductTb.getProductCategoryCode())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(bmsProductTbList.stream().filter(bmsProductTb -> bmsProductTb.getKdNumber() == null).collect(Collectors.toList()))) {

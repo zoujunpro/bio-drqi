@@ -143,6 +143,7 @@ public class BmsProductServiceImpl implements BmsProductService {
         bmsProductTb.setCreateUserId(SecurityContextHolder.getUserId());
         bmsProductTb.setCreateUserName(SecurityContextHolder.getNickName());
         bmsProductTb.setProductStatus(BioDrQiContents.Y);
+        bmsProductTb.setUpdateTime(new Date());
         log.info("商品入库={}", bmsProductTb);
         try {
             bmsProductTbMapper.insert(bmsProductTb);
@@ -190,6 +191,7 @@ public class BmsProductServiceImpl implements BmsProductService {
         bmsProductTb.setProductOutCode(bmsProductEditReqDTO.getProductOutCode());
         bmsProductTb.setProductCategoryCode(bmsProductEditReqDTO.getProductCategoryCode());
         bmsProductTb.setProductSpecs(bmsProductEditReqDTO.getProductSpecs());
+        bmsProductTb.setUpdateTime(new Date());
         try {
             bmsProductTbMapper.updateById(bmsProductTb);
         } catch (DuplicateKeyException e) {

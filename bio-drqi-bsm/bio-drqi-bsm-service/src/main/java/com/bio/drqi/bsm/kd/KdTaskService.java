@@ -26,7 +26,7 @@ public interface KdTaskService {
      /**
       * 同步材料
       */
-    void synMaterialTask();
+    void synMaterialTask(String startDate, String endDate);
 
 
      /**

@@ -84,6 +84,14 @@ public class BmsProductTb implements Serializable {
 
     private String kdNumber;
 
+    private Date updateTime;
+
+    @TableField(exist = false)
+    private String startDate;
+
+    @TableField(exist = false)
+    private String endDate;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

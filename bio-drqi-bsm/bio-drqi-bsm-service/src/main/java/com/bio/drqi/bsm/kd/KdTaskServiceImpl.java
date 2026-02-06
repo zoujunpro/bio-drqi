@@ -187,12 +187,12 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
     }
 
     @Override
-    public void synMaterialTask() {
+    public void synMaterialTask(String startDate, String endDate) {
         Long startTime = System.currentTimeMillis();
         log.info("*****************材料同步开始**************************");
         checkBefSynMaterialTask();
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
-        List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectList(null).stream().filter(bmsProductTb -> bmsProductCategoryCodeList.contains(bmsProductTb.getProductCategoryCode())).collect(Collectors.toList());
+        List<BmsProductTb> bmsProductTbList = bmsProductTbMapper.selectSelective(BmsProductTb.builder().startDate(startDate).endDate(endDate).build()).stream().filter(bmsProductTb -> bmsProductCategoryCodeList.contains(bmsProductTb.getProductCategoryCode())).collect(Collectors.toList());
         for (BmsProductTb bmsProductTb : bmsProductTbList) {
             if (StringUtils.isNotEmpty(bmsProductTb.getKdNumber())) {
                 kdApiService.execute(OperateEnum.materialModify, bmsProductTb, PurchaseUnitEnum.default_.name());
@@ -381,7 +381,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             synMaterialGroupTask();
             synSupplierTask(bmsSynKdTaskLog.getEndDate());
             synProjectTask();
-            synMaterialTask();
+            synMaterialTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
             synInStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
             synMoveStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
             synOutStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());

@@ -91,6 +91,8 @@
             <if test="dateTime!=null and dateTime!=''">
                 and date_format(create_time,'%Y-%m') =#{dateTime,jdbcType=VARCHAR}
             </if>
+            <if test='ifSynJinDieFlag=="Y"'> and kd_number is not null</if>
+            <if test='ifSynJinDieFlag=="N"'> and kd_number is null</if>
         </where>
         order by id desc
     </select>

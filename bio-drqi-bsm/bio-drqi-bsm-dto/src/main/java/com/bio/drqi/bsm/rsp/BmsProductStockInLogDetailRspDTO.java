@@ -128,4 +128,6 @@ public class BmsProductStockInLogDetailRspDTO {
 
     private String payType;
 
+    private String kdNumber;
+
 }

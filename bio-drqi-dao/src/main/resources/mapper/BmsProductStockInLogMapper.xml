@@ -93,6 +93,8 @@
             <if test="productInnerCode != null and productInnerCode!=''">and
                 product_inner_code=#{productInnerCode,jdbcType=VARCHAR}
             </if>
+            <if test='ifSynJinDieFlag=="Y"'> and kd_number is not null</if>
+            <if test='ifSynJinDieFlag=="N"'> and kd_number is null</if>
         </where>
         order by id desc
     </select>

@@ -41,5 +41,10 @@ public class BmsReturnOrderDetailListPageReqDTO extends PageDTO {
      */
     private String productInnerCode;
 
+    /**
+     * 是否同步到金蝶
+     */
+    private String ifSynJinDieFlag;
+
 
 }

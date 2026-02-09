@@ -64,6 +64,11 @@ public class BmsProductStockOutLogListPageReqDTO  extends PageDTO {
      */
     private String productCategoryCode;
 
+    /**
+     * 是否同步到金蝶
+     */
+    private String ifSynJinDieFlag;
+
 
 
 }

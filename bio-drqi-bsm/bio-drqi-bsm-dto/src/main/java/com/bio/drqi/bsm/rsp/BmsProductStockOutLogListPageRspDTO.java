@@ -129,4 +129,5 @@ public class BmsProductStockOutLogListPageRspDTO {
     private BigDecimal outAmount;
 
     private String payType;
+
 }

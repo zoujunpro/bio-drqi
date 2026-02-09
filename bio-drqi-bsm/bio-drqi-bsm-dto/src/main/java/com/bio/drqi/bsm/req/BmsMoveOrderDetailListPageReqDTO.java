@@ -37,4 +37,9 @@ public class BmsMoveOrderDetailListPageReqDTO extends PageDTO {
      * 商品内部编号
      */
     private String productInnerCode;
+
+    /**
+     * 是否同步到金蝶
+     */
+    private String ifSynJinDieFlag;
 }

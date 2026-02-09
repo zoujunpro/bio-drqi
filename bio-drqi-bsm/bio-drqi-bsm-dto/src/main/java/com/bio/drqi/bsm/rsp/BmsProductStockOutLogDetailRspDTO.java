@@ -125,4 +125,6 @@ public class BmsProductStockOutLogDetailRspDTO {
 
     private String payType;
 
+    private String kdNumber;
+
 }

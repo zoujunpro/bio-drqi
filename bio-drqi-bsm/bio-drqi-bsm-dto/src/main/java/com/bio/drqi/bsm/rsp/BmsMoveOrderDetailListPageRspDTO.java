@@ -140,4 +140,6 @@ public class BmsMoveOrderDetailListPageRspDTO {
     private BigDecimal moveAmount;
 
     private String payType;
+
+    private String kdNumber;
 }

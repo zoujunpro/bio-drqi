@@ -130,4 +130,6 @@ public class BmsReturnOrderDetailListPageRspDTO {
     private String productCategoryName;
 
     private String payType;
+
+    private String kdNumber;
 }

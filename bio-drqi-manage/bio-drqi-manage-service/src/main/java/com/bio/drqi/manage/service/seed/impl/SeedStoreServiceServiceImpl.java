@@ -8,7 +8,9 @@ import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
@@ -16,6 +18,7 @@ import com.bio.drqi.enums.DataPermissionTypeEnum;
 import com.bio.drqi.enums.DataPermissionValueEnum;
 import com.bio.drqi.enums.SeedOperateEnum;
 import com.bio.drqi.enums.SeedTaskTypeEnum;
+import com.bio.drqi.manage.dto.seed.DownSpotCheckResultExcelDTO;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
 import com.bio.drqi.manage.dto.seed.SeedOutDTO;
 import com.bio.drqi.manage.service.seed.SeedStoreService;
@@ -23,13 +26,17 @@ import com.bio.drqi.mapper.*;
 import com.bio.drqi.manage.seed.*;
 import com.bio.drqi.manage.seedtask.SeedInDataReqDTO;
 import com.bio.drqi.manage.seedtask.SeedTaskSeedNumRspDTO;
+import com.bio.drqi.tc.service.dto.TcTestExcelDTO;
 import com.bio.drqi.util.PaginationHelper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +44,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
     @Resource
@@ -71,6 +79,10 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
     @Resource
     private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
+
+
+    @Resource
+    private OssService ossService;
 
     @Override
     public SeedDetailRspDTO querySeedByNum(String seedNum) {
@@ -230,7 +242,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
             seedMapDTO.setVectorTaskCode(seedStockTb.getVectorTaskCode() == null ? "" : seedStockTb.getVectorTaskCode());
             seedMapDTO.setGeneration(seedStockTb.getGeneration());
             seedMapDTO.setPollinationMethod(bioDict != null ? bioDict.getDictValueName() : "");
-            seedMapDTO.setPollinationMethodCode(bioDict!=null?bioDict.getDictValueCode():"");
+            seedMapDTO.setPollinationMethodCode(bioDict != null ? bioDict.getDictValueCode() : "");
             seedMapDTO.setBreedName(cerBreedDictMap.get(seedStockTb.getBreedCode()));
             return seedMapDTO;
         } else {
@@ -247,6 +259,48 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         }
         seedStockTbMapper.updateRemarksById(seedStockRemarkReqDTO.getRemarks(), seedStockTb.getId());
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void spotCheckResult(SeedStockSpotCheckResultReqDTO seedStockSpotCheckResultReqDTO) {
+        if (CollectionUtil.isNotEmpty(seedStockSpotCheckResultReqDTO.getContentList())) {
+            seedStockSpotCheckResultReqDTO.getContentList().forEach(content -> {
+                SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(content.getSeedNum());
+                if (seedStockTb == null) {
+                    throw new BusinessException("找不到种子信息：" + content.getSeedNum());
+                }
+                seedStockTbMapper.updateSpotCheckResultById(content.getSpotCheckResult(), seedStockTb.getId());
+            });
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void uploadSpotCheckResultExcel(SeedStockUploadSpotCheckResultExcelReqDTO seedStockUploadSpotCheckResultExcelReqDTO) {
+        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + seedStockUploadSpotCheckResultExcelReqDTO.getExcelUrl();
+        try {
+            ossService.downloadPath(tempFilePath, seedStockUploadSpotCheckResultExcelReqDTO.getExcelUrl());
+        } catch (Exception e) {
+            log.error("【种子抽检反馈文件下载失败】文件从oss下载失败", e);
+            throw new BusinessException("文件处理异常");
+        }
+        List<DownSpotCheckResultExcelDTO> list = ExcelUtil.readExcel(tempFilePath, DownSpotCheckResultExcelDTO.class);
+        if(CollectionUtil.isNotEmpty(list)){
+            list.forEach(downSpotCheckResultExcelDTO -> {
+                SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(downSpotCheckResultExcelDTO.getSeedNum());
+                if (seedStockTb == null) {
+                    throw new BusinessException("找不到种子信息：" + downSpotCheckResultExcelDTO.getSeedNum());
+                }
+                seedStockTbMapper.updateSpotCheckResultById(downSpotCheckResultExcelDTO.getSpotCheckResult(), seedStockTb.getId());
+            });
+        }
+
+    }
+
+    @Override
+    public void downSpotCheckResultExcel(HttpServletResponse httpServletResponse) {
+        ExcelUtil.writeExcel("鉴定结果反馈表", "sheet1", null, DownSpotCheckResultExcelDTO.class, httpServletResponse);
     }
 
     @Override

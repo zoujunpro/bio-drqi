@@ -230,4 +230,7 @@ public class SeedDetailRspDTO {
     private String pdImplementCode;
 
 
+    private String spotCheckResult;
+
+
 }

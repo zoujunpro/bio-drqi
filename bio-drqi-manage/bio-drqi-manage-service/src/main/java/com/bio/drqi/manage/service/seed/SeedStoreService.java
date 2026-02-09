@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
@@ -26,19 +27,24 @@ public interface SeedStoreService {
     List<SeedOperateDetailRspDTO> seedOperateDetail(String seedNum);
 
 
-
     PageInfo<SeedInStoreDTO.ExecuteFormContent> seedInData(@RequestParam @Validated SeedInDataReqDTO seedInDataReqDTO);
 
     List<SeedTaskSeedNumRspDTO> findAllSeedNum(String taskNum);
 
 
-    SeedMapRspDTO findSeedMap( String seedNum);
+    SeedMapRspDTO findSeedMap(String seedNum);
 
-   void remark( SeedStockRemarkReqDTO seedStockRemarkReqDTO);
+    void remark(SeedStockRemarkReqDTO seedStockRemarkReqDTO);
+
+    void spotCheckResult(SeedStockSpotCheckResultReqDTO seedStockSpotCheckResultReqDTO);
+
+    void uploadSpotCheckResultExcel(SeedStockUploadSpotCheckResultExcelReqDTO seedStockUploadSpotCheckResultExcelReqDTO);
+
+    void downSpotCheckResultExcel(HttpServletResponse httpServletResponse);
 
     List<String> queryChildSeed(String seedNum);
 
-    List<SeedStockQueryPlantListRspDTO>  queryPlantList(String seedNum);
+    List<SeedStockQueryPlantListRspDTO> queryPlantList(String seedNum);
 
     List<SeedStockQueryListRspDTO> queryUserList();
 }

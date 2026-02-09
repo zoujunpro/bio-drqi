@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
@@ -153,6 +154,44 @@ public class SeedStockController {
     }
 
 
+    /**
+     * 种子库存-抽检反馈
+     *
+     * @return
+     */
+    @PostMapping("/spotCheckResult")
+    @WebLog(desc = "种子库存-抽检反馈")
+    @RequestLog("种子库存-抽检反馈")
+    @RequirePermissions("seed:stock:spotCheckResult")
+    public ResponseResult<String> spotCheckResult(@RequestBody SeedStockSpotCheckResultReqDTO seedStockSpotCheckResultReqDTO) {
+        seedStoreService.spotCheckResult(seedStockSpotCheckResultReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
+
+
+    /**
+     * 种子库存-下载抽检反馈表
+     *
+     * @return
+     */
+    @PostMapping("/downSpotCheckResultExcel")
+    @WebLog(desc = "种子库存-下载抽检反馈表")
+    public void downSpotCheckResultExcel(HttpServletResponse httpServletResponse) {
+        seedStoreService.downSpotCheckResultExcel(httpServletResponse);
+    }
+
+    /**
+     * 种子库存-上传抽检反馈表
+     *
+     * @return
+     */
+    @PostMapping("/uploadSpotCheckResultExcel")
+    @WebLog(desc = "种子库存-上传抽检反馈表")
+    @RequestLog("种子库存-上传抽检反馈表")
+    public ResponseResult<String> uploadSpotCheckResultExcel(@RequestBody  @Validated SeedStockUploadSpotCheckResultExcelReqDTO seedStockUploadSpotCheckResultExcelReqDTO) {
+        seedStoreService.uploadSpotCheckResultExcel(seedStockUploadSpotCheckResultExcelReqDTO);
+        return ResponseResult.getSuccess("ok");
+    }
     /**
      * 种子库-查询某一个种子所有直系子代
      *

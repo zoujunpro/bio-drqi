@@ -225,6 +225,7 @@ public class SeedStockPageRspDTO {
 
     private String pdImplementCode;
 
+    private String spotCheckResult;
 
 
 

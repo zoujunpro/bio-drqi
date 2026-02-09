@@ -46,7 +46,7 @@
         <result property="fatherSingleNum" column="father_single_num" jdbcType="VARCHAR"/>
         <result property="matherSingleNum" column="mather_single_num" jdbcType="VARCHAR"/>
         <result property="pdImplementCode" column="pd_implement_code" jdbcType="VARCHAR"/>
-
+        <result property="spotCheckResult" column="spot_check_result" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -62,7 +62,7 @@
         check_result,material_type,
         mather_seed_num,father_seed_num,father_region_num,mather_region_num,
         genealogy,gene_separate_flag,trans_flag,
-        vector_task_code,experiment_num,father_single_num,mather_single_num
+        vector_task_code,experiment_num,father_single_num,mather_single_num,spot_check_result
     </sql>
     <select id="selectOneBySeedNum" resultMap="BaseResultMap">
         select
@@ -235,5 +235,10 @@
         where
         plant_code = #{plantCode,jdbcType=VARCHAR}
     </select>
+    <update id="updateSpotCheckResultById">
+        update seed_stock_tb
+        set spot_check_result = #{spotCheckResult,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=NUMERIC}
+    </update>
 
 </mapper>

@@ -224,6 +224,8 @@ public class SeedStockTb implements Serializable {
 
     private String pdImplementCode;
 
+    private String spotCheckResult;
+
 
     /**
      * yyyyMMdd

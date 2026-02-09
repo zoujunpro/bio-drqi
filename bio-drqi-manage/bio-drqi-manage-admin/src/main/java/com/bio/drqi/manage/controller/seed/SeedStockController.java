@@ -176,6 +176,7 @@ public class SeedStockController {
      */
     @PostMapping("/downSpotCheckResultExcel")
     @WebLog(desc = "种子库存-下载抽检反馈表")
+    @RequirePermissions("seed:stock:spotCheckResult")
     public void downSpotCheckResultExcel(HttpServletResponse httpServletResponse) {
         seedStoreService.downSpotCheckResultExcel(httpServletResponse);
     }
@@ -188,6 +189,7 @@ public class SeedStockController {
     @PostMapping("/uploadSpotCheckResultExcel")
     @WebLog(desc = "种子库存-上传抽检反馈表")
     @RequestLog("种子库存-上传抽检反馈表")
+    @RequirePermissions("seed:stock:spotCheckResult")
     public ResponseResult<String> uploadSpotCheckResultExcel(@RequestBody  @Validated SeedStockUploadSpotCheckResultExcelReqDTO seedStockUploadSpotCheckResultExcelReqDTO) {
         seedStoreService.uploadSpotCheckResultExcel(seedStockUploadSpotCheckResultExcelReqDTO);
         return ResponseResult.getSuccess("ok");

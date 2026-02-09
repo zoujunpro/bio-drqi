@@ -148,6 +148,10 @@ public class BmsProductStockOutLog implements Serializable {
     @TableField(exist = false)
     private String dateTime;
 
+
+    @TableField(exist = false)
+    private String ifSynJinDieFlag;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

@@ -142,4 +142,5 @@ public class BmsMoveOrderDetailListPageRspDTO {
     private String payType;
 
     private String kdNumber;
+
 }

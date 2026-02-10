@@ -57,7 +57,7 @@
   "header": {
     "title": {
       "tag": "plain_text",
-      "content": "耗材管理系统商品即将过期通知"
+      "content": "耗材管理系统商品过期或即将过期通知"
     },
     "subtitle": {
       "tag": "plain_text",

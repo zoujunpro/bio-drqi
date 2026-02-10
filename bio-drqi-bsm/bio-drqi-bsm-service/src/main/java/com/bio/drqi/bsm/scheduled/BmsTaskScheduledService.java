@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.dto.BmsCountPeriodTaskDTO;
+import com.bio.drqi.bsm.listener.BmsSpotCheckResultTaskListener;
 import com.bio.drqi.bsm.service.BmsCountPeriodTaskService;
 import com.bio.drqi.domain.BmsProductStockTb;
 import com.bio.drqi.mapper.BmsProductStockTbMapper;
@@ -32,6 +33,9 @@ public class BmsTaskScheduledService {
     @Resource
     private BmsCountPeriodTaskService bmsCountPeriodTaskService;
 
+    @Resource
+    private BmsSpotCheckResultTaskListener bmsSpotCheckResultTaskListener;
+
     @Value("${spring.profiles.active}")
     private String active;
 
@@ -43,5 +47,13 @@ public class BmsTaskScheduledService {
         List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
         List<BmsCountPeriodTaskDTO> bmsCountPeriodTaskDTOList = BeanUtils.copyListProperties(bmsProductStockTbList, BmsCountPeriodTaskDTO.class);
         bmsCountPeriodTaskService.createPeriodData(StringUtils.isEmpty(bmsStockPeriodCountScheduledCron) ? DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN) : bmsStockPeriodCountScheduledCron, bmsCountPeriodTaskDTOList);
+    }
+
+    @Scheduled(cron = "0 0 10 * * ?")
+    public void BmsSpotCheckResultScheduledCronTask() {
+        if (!active.equals("prod")) {
+            return;
+        }
+        bmsSpotCheckResultTaskListener.notice();
     }
 }

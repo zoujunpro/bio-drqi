@@ -124,14 +124,7 @@ public class BmsTestController {
 
     @GetMapping("/testNotice")
     public ResponseResult<String> testNotice() {
-        List<BmsProductStockTb> list=new ArrayList<>();
-        List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
-        for (int i = 0; i < 10; i ++) {
-            list.add(bmsProductStockTbList.get(i));
-
-        }
-
-        bmsSpotCheckResultTaskListener.notice(list);
+        bmsSpotCheckResultTaskListener.notice();
 
         return ResponseResult.getSuccess("ok");
     }

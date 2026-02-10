@@ -87,6 +87,7 @@
             <if test="notEmptySeedNumberFlag ">and seed_number>0</if>
             <if test="plantCode != null and plantCode != '' ">and plant_code  LIKE   CONCAT('%',#{plantCode,jdbcType=VARCHAR},'%') </if>
             <if test="seedNum != null and seedNum != ''">and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null and vectorTaskCode != ''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
             <if test="projectCode != null and projectCode != ''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
             <if test="parentNum != null and parentNum!='' ">and plant_code=#{parentNum,jdbcType=VARCHAR}</if>
             <if test="generation != null and generation!=''">and generation=#{generation,jdbcType=VARCHAR}</if>

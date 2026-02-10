@@ -22,6 +22,7 @@ import com.bio.drqi.bsm.enums.PurchaseTypeEnum;
 import com.bio.drqi.bsm.kd.KdTaskService;
 import com.bio.drqi.bsm.kd.enums.FormIdEnum;
 import com.bio.drqi.bsm.kd.properties.KdProperties;
+import com.bio.drqi.bsm.listener.BmsSpotCheckResultTaskListener;
 import com.bio.drqi.bsm.req.BmsProductAddReqDTO;
 import com.bio.drqi.bsm.service.BmsCountPeriodTaskService;
 import com.bio.drqi.bsm.service.BmsProductService;
@@ -40,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -121,15 +123,30 @@ public class BmsTestController {
     @Resource
     private BmsCountPeriodTaskService bmsCountPeriodTaskService;
 
+    @Resource
+    private BmsSpotCheckResultTaskListener bmsSpotCheckResultTaskListener;
+
+
+    @GetMapping("/testNotice")
+    public ResponseResult<String> testNotice() {
+
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectById(109);
+
+        bmsSpotCheckResultTaskListener.notice(Arrays.asList(bmsProductStockTb));
+
+        return ResponseResult.getSuccess("ok");
+    }
+
+
     @GetMapping("/cleanBmsType")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanBmsType() {
         List<BioPrintLabelInfoTb> bioPrintLabelInfoTbList = bioPrintLabelInfoTbMapper.searchAllByLabelType("bms_label_print");
-        for (BioPrintLabelInfoTb bioPrintLabelInfoTb:bioPrintLabelInfoTbList){
+        for (BioPrintLabelInfoTb bioPrintLabelInfoTb : bioPrintLabelInfoTbList) {
             String[] uniqueCodeArr = bioPrintLabelInfoTb.getUniqueCode().split("\\|");
-            if(uniqueCodeArr.length==4){
-                bioPrintLabelInfoTb.setUniqueCode(bioPrintLabelInfoTb.getUniqueCode()+"|"+"1");
-                BmsLabelPrintDTO bmsLabelPrintDTO=JSONUtil.toBean(bioPrintLabelInfoTb.getLabelText(),BmsLabelPrintDTO.class);
+            if (uniqueCodeArr.length == 4) {
+                bioPrintLabelInfoTb.setUniqueCode(bioPrintLabelInfoTb.getUniqueCode() + "|" + "1");
+                BmsLabelPrintDTO bmsLabelPrintDTO = JSONUtil.toBean(bioPrintLabelInfoTb.getLabelText(), BmsLabelPrintDTO.class);
                 bmsLabelPrintDTO.setPayType("1");
                 bioPrintLabelInfoTb.setLabelText(JSONUtil.toJsonStr(bmsLabelPrintDTO));
                 bioPrintLabelInfoTbMapper.updateById(bioPrintLabelInfoTb);

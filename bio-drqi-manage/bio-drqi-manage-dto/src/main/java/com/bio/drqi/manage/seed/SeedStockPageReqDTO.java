@@ -25,7 +25,7 @@ public class SeedStockPageReqDTO extends PageDTO {
      */
     private String stockLocationNum;
     /**
-     * 项目编号
+     * 实施方案编号
      */
     private String vectorTaskCode;
     /**

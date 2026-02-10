@@ -20,8 +20,25 @@ public class MessageUtil {
             return replaceAlarmContent(message);
         } else if (MessageTypeEnum.drqi.getMessageCategory().equals(messageTypeEnum.getMessageCategory())) {
             return replaceDRqiContent(message);
+        } else if (MessageTypeEnum.spot_check_result.getMessageCategory().equals(messageTypeEnum.getMessageCategory())) {
+            return replaceSpotCheckResult(message);
         }else {
             throw new BusinessException("消息类型找不到");
+        }
+    }
+
+    private static String replaceSpotCheckResult(Message message) {
+        try {
+            Resource classPathResource = new ClassPathResource("json/spot_message.json");
+            InputStream inputStream = classPathResource.getInputStream();
+            String s = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            JSONObject json = JSONUtil.parseObj(s);
+            for (int i=0;i<message.getMsgList().size();i++){
+                //json.putByPath("content.elements."+(i+2), JSONUtil.parseObj(message.getMsgList().get(i)));
+            }
+            return json.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

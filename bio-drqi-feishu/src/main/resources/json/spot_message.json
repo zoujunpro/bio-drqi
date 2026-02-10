@@ -1,0 +1,123 @@
+{
+  "templateId": "ctp_AA2UqsmpDNsf",
+  "content": {
+    "elements": [{
+      "tag": "hr"
+    }, {
+      "tag": "column_set",
+      "flex_mode": "stretch",
+      "background_style": "grey",
+      "columns": [{
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "商品名称",
+            "tag": "plain_text"
+          }
+        }]
+      }, {
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "商品编号",
+            "tag": "plain_text"
+          }
+        }]
+      }, {
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "库房",
+            "tag": "plain_text"
+          }
+        }]
+      }, {
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "有效期",
+            "tag": "lark_md"
+          }
+        }]
+      }]
+    }, {
+      "tag": "column_set",
+      "flex_mode": "stretch",
+      "background_style": "grey",
+      "columns": [{
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "QB00420",
+            "tag": "plain_text"
+          }
+        }]
+      }, {
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "头孢噻污钠 Cefotaxime sodium",
+            "tag": "plain_text"
+          }
+        }]
+      }, {
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "1号库",
+            "tag": "plain_text"
+          }
+        }]
+      }, {
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "2024-05-06",
+            "tag": "plain_text"
+          }
+        }]
+      }]
+    }],
+    "header": {
+      "template": "blue",
+      "title": {
+        "content": "耗材管理系统商品即将过期通知",
+        "tag": "plain_text"
+      }
+    }
+  },
+  "mock_data": "{}",
+  "variables": []
+}

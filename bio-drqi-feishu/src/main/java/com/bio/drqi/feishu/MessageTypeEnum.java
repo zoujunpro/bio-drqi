@@ -4,7 +4,8 @@ import com.bio.common.core.dto.BusinessException;
 
 public enum MessageTypeEnum {
     alarm("interactive", "alarm"),
-    drqi("interactive", "drqi");
+    drqi("interactive", "drqi"),
+    spot_check_result("interactive", "spot_check_result");
 
     private String messageType;
 

@@ -1,0 +1,129 @@
+{
+  "templateId": "ctp_AA2UqsmpDNsf",
+  "content": {
+    "elements": [{
+      "tag": "hr"
+    }, {
+      "tag": "column_set",
+      "flex_mode": "none",
+      "background_style": "grey",
+      "columns": [{
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "商品名称",
+            "tag": "plain_text"
+          }
+        }]
+      }, {
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "商品编号",
+            "tag": "plain_text"
+          }
+        }]
+      }, {
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "库房",
+            "tag": "plain_text"
+          }
+        }]
+      }, {
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "有效期",
+            "tag": "lark_md"
+          }
+        }]
+      }]
+    }, {
+      "tag": "column_set",
+      "flex_mode": "none",
+      "background_style": "grey",
+      "columns": [{
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "%s",
+            "tag": "plain_text"
+          }
+        }]
+      }, {
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "%s",
+            "tag": "plain_text"
+          }
+        }]
+      }, {
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "%s",
+            "tag": "plain_text"
+          }
+        }]
+      }, {
+        "tag": "column",
+        "width": "weighted",
+        "weight": 1,
+        "vertical_align": "top",
+        "elements": [{
+          "tag": "div",
+          "text": {
+            "content": "%s",
+            "tag": "plain_text"
+          }
+        }]
+      }]
+    }],
+    "header": {
+      "template": "blue",
+      "title": {
+        "content": "耗材管理系统商品即将过期通知",
+        "tag": "plain_text"
+      }
+    }
+  },
+  "mock_data": "{\"productInnerCode\":\"\"}",
+  "variables": [{
+    "type": "Text",
+    "name": "productInnerCode",
+    "description": "productInnerCode",
+    "variable_id": 0,
+    "config": "{}"
+  }]
+}

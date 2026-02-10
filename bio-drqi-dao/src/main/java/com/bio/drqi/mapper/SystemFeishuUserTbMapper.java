@@ -13,7 +13,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface SystemFeishuUserTbMapper extends BaseMapper<SystemFeishuUserTb> {
 
     SystemFeishuUserTb selectOneByLocalUserId(@Param("localUserId") Integer localUserId);
-
 }
 
 

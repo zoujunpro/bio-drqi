@@ -33,9 +33,7 @@ public class MessageUtil {
             InputStream inputStream = classPathResource.getInputStream();
             String s = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             JSONObject json = JSONUtil.parseObj(s);
-            for (int i=0;i<message.getMsgList().size();i++){
-                //json.putByPath("content.elements."+(i+2), JSONUtil.parseObj(message.getMsgList().get(i)));
-            }
+            json.putByPath("body.elements.0.rows", message.getRowList());
             return json.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);

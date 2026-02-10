@@ -11,5 +11,17 @@ public class Message {
     private String content;
     private String url;
     private String time;
-    private List<String> msgList=new ArrayList<>();
+    private List<Row> rowList=new ArrayList<>();
+
+
+    @Data
+    public static class Row {
+        private String productInnerCode;
+
+        private String productName;
+
+        private String stockName;
+
+        private String expirationDate;
+    }
 }

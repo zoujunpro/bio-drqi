@@ -41,10 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -120,8 +117,6 @@ public class BmsTestController {
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
-    @Resource
-    private BmsCountPeriodTaskService bmsCountPeriodTaskService;
 
     @Resource
     private BmsSpotCheckResultTaskListener bmsSpotCheckResultTaskListener;
@@ -129,10 +124,14 @@ public class BmsTestController {
 
     @GetMapping("/testNotice")
     public ResponseResult<String> testNotice() {
+        List<BmsProductStockTb> list=new ArrayList<>();
+        List<BmsProductStockTb> bmsProductStockTbList = bmsProductStockTbMapper.selectSelective(null);
+        for (int i = 0; i < 10; i ++) {
+            list.add(bmsProductStockTbList.get(i));
 
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectById(109);
+        }
 
-        bmsSpotCheckResultTaskListener.notice(Arrays.asList(bmsProductStockTb));
+        bmsSpotCheckResultTaskListener.notice(list);
 
         return ResponseResult.getSuccess("ok");
     }

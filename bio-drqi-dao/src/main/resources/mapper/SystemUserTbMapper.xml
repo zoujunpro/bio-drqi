@@ -52,5 +52,12 @@
         from system_user_tb
         where id=(select leader_id from system_dept_tb where  parent_id=0 and ldap_dn like CONCAT('%',#{deptName,jdbcType=VARCHAR},'%'))
     </select>
+    <select id="selectOneByEmail" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from system_user_tb
+        where
+        email = #{email,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

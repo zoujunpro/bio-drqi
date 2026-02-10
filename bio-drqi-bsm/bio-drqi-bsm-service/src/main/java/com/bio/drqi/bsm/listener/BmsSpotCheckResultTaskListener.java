@@ -1,16 +1,26 @@
 package com.bio.drqi.bsm.listener;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.bio.drqi.domain.BmsProductStockTb;
+import com.bio.drqi.domain.BmsStockDict;
+import com.bio.drqi.domain.SystemFeishuUserTb;
+import com.bio.drqi.domain.SystemUserTb;
 import com.bio.drqi.feishu.FeiShuService;
 import com.bio.drqi.feishu.MessageTypeEnum;
 import com.bio.drqi.feishu.dto.Message;
 import com.bio.drqi.feishu.dto.NoticeUserDTO;
+import com.bio.drqi.mapper.BmsStockDictMapper;
+import com.bio.drqi.mapper.SystemFeishuUserTbMapper;
+import com.bio.drqi.mapper.SystemUserTbMapper;
+import com.lark.oapi.service.attendance.v1.enums.UnitEnum;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class BmsSpotCheckResultTaskListener {
@@ -18,77 +28,48 @@ public class BmsSpotCheckResultTaskListener {
     @Resource
     private FeiShuService feiShuService;
 
+    @Resource
+    private BmsStockDictMapper bmsStockDictMapper;
 
-    private String messageBody = "{\n" +
-            "      \"tag\": \"column_set\",\n" +
-            "      \"flex_mode\": \"none\",\n" +
-            "      \"background_style\": \"grey\",\n" +
-            "      \"columns\": [{\n" +
-            "        \"tag\": \"column\",\n" +
-            "        \"width\": \"weighted\",\n" +
-            "        \"weight\": 1,\n" +
-            "        \"vertical_align\": \"top\",\n" +
-            "        \"elements\": [{\n" +
-            "          \"tag\": \"div\",\n" +
-            "          \"text\": {\n" +
-            "            \"content\": \"'%s'\",\n" +
-            "            \"tag\": \"plain_text\"\n" +
-            "          }\n" +
-            "        }]\n" +
-            "      }, {\n" +
-            "        \"tag\": \"column\",\n" +
-            "        \"width\": \"weighted\",\n" +
-            "        \"weight\": 1,\n" +
-            "        \"vertical_align\": \"top\",\n" +
-            "        \"elements\": [{\n" +
-            "          \"tag\": \"div\",\n" +
-            "          \"text\": {\n" +
-            "            \"content\": \"'%s'\",\n" +
-            "            \"tag\": \"plain_text\"\n" +
-            "          }\n" +
-            "        }]\n" +
-            "      }, {\n" +
-            "        \"tag\": \"column\",\n" +
-            "        \"width\": \"weighted\",\n" +
-            "        \"weight\": 1,\n" +
-            "        \"vertical_align\": \"top\",\n" +
-            "        \"elements\": [{\n" +
-            "          \"tag\": \"div\",\n" +
-            "          \"text\": {\n" +
-            "            \"content\": \"'%s'\",\n" +
-            "            \"tag\": \"plain_text\"\n" +
-            "          }\n" +
-            "        }]\n" +
-            "      }, {\n" +
-            "        \"tag\": \"column\",\n" +
-            "        \"width\": \"weighted\",\n" +
-            "        \"weight\": 1,\n" +
-            "        \"vertical_align\": \"top\",\n" +
-            "        \"elements\": [{\n" +
-            "          \"tag\": \"div\",\n" +
-            "          \"text\": {\n" +
-            "            \"content\": \"'%s'\",\n" +
-            "            \"tag\": \"plain_text\"\n" +
-            "          }\n" +
-            "        }]\n" +
-            "      }]\n" +
-            "    }";
+    @Resource
+    private SystemUserTbMapper systemUserTbMapper;
+
+    @Resource
+    private SystemFeishuUserTbMapper systemFeishuUserTbMapper;
 
 
     public void notice(List<BmsProductStockTb> bmsProductStockTbList) {
-        Message message = new Message();
-        for (BmsProductStockTb bmsProductStockTb : bmsProductStockTbList) {
-            StringBuffer stringBuffer = new StringBuffer(messageBody);
-            String tempMessageBody = stringBuffer.toString();
-            String.format(tempMessageBody, bmsProductStockTb.getProductInnerCode(), "test", bmsProductStockTb.getStockCode(), bmsProductStockTb.getExpirationDate());
-            message.getMsgList().add(tempMessageBody);
+        if (CollectionUtil.isEmpty(bmsProductStockTbList)) {
+            return;
         }
-        List<NoticeUserDTO> noticeUserDTOList = new ArrayList<>();
-        NoticeUserDTO noticeUserDTO = new NoticeUserDTO();
-        noticeUserDTO.setUsername("zoujun");
-        noticeUserDTO.setOpenId("ou_05b17b1a6234bbd3ed50587599b5162d");
-        noticeUserDTOList.add(noticeUserDTO);
-        feiShuService.sendCardMessage(noticeUserDTOList, message, MessageTypeEnum.spot_check_result);
-
+        Map<String, List<BmsProductStockTb>> bmsProductStockTbListMap = bmsProductStockTbList.stream().collect(Collectors.groupingBy(BmsProductStockTb::getUnitCode));
+        bmsProductStockTbListMap.forEach((unitCode, list) -> {
+            List<NoticeUserDTO> noticeUserDTOList = new ArrayList<>();
+            Message message = new Message();
+            NoticeUserDTO noticeUserDTO = new NoticeUserDTO();
+            if ("beijing".equals(unitCode)) {
+                SystemUserTb systemUserTb = systemUserTbMapper.selectOneByEmail("liuru@qi-biodesign.com");
+                SystemFeishuUserTb systemFeishuUserTb = systemFeishuUserTbMapper.selectOneByLocalUserId(systemUserTb.getId());
+                noticeUserDTO.setUsername(systemUserTb.getUsername());
+                noticeUserDTO.setOpenId(systemFeishuUserTb.getFeishuUserId());
+                noticeUserDTOList.add(noticeUserDTO);
+            }else {
+                SystemUserTb systemUserTb = systemUserTbMapper.selectOneByEmail("leixing@qi-biodesign.com");
+                SystemFeishuUserTb systemFeishuUserTb = systemFeishuUserTbMapper.selectOneByLocalUserId(systemUserTb.getId());
+                noticeUserDTO.setUsername(systemUserTb.getUsername());
+                noticeUserDTO.setOpenId(systemFeishuUserTb.getFeishuUserId());
+                noticeUserDTOList.add(noticeUserDTO);
+            }
+            list.forEach(bmsProductStockTb -> {
+                BmsStockDict bmsStockDict = bmsStockDictMapper.selectOneByStockCode(bmsProductStockTb.getStockCode());
+                Message.Row row = new Message.Row();
+                row.setProductInnerCode(bmsProductStockTb.getProductInnerCode());
+                row.setProductName(bmsProductStockTb.getProductName());
+                row.setStockName(bmsStockDict.getStockName());
+                row.setExpirationDate(bmsProductStockTb.getExpirationDate());
+                message.getRowList().add(row);
+            });
+            feiShuService.sendCardMessage(noticeUserDTOList, message, MessageTypeEnum.spot_check_result);
+        });
     }
 }

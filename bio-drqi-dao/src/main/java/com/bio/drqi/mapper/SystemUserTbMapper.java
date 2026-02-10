@@ -20,6 +20,8 @@ public interface SystemUserTbMapper extends BaseMapper<SystemUserTb> {
 
     SystemUserTb  selectDeptLeaderByDeptName(@Param("deptName") String deptName);
 
+    SystemUserTb selectOneByEmail(@Param("email") String email);
+
 
 
 }

@@ -36,7 +36,7 @@ public class BmsCodeScanService extends AbstractBaseCodeScanService<BmsUniqueCod
     @Override
     public BmsUniqueCodeDTO parseUniqueCode(String uniqueCode) {
         String[] uniqueCodeArr = uniqueCode.split("\\|");
-        if (uniqueCodeArr.length != 4) {
+        if (uniqueCodeArr.length != 5) {
             throw new BusinessException("旧二维码已经废弃，请重新打印");
         }
         BmsUniqueCodeDTO bmsUniqueCodeDTO = new BmsUniqueCodeDTO();

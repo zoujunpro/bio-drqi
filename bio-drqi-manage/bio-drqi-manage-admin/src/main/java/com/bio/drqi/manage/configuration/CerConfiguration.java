@@ -5,7 +5,11 @@ import com.bio.common.core.util.EncryptUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+/**
+ * @Description: 邮件配置
+ * @Author: zj
+ * @Date: 2020/5/11 10:05
+ */
 public class CerConfiguration {
 
 
@@ -15,6 +19,10 @@ public class CerConfiguration {
     @Value("${cer.properties.email.emailPassword}")
     private String emailPassword;
 
+    /**
+     * 初始化邮件账户
+     * @return
+     */
     @Bean
     public MailAccount initMailAccount() {
         MailAccount account = new MailAccount();

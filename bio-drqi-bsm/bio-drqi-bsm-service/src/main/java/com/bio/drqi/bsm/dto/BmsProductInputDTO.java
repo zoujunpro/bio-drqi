@@ -169,6 +169,8 @@ public class BmsProductInputDTO {
         @NotBlank(message = "入库参数缺少：库房必填")
         private String stockCode;
 
+        private String payType;
+
         /**
          * 库存位置号
          */

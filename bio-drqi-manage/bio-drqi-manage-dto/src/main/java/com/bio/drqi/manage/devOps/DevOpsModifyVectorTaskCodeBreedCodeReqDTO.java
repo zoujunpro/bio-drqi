@@ -7,4 +7,5 @@ public class DevOpsModifyVectorTaskCodeBreedCodeReqDTO {
     private String vectorTaskCode;
 
     private String breedName;
+    
 }

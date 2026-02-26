@@ -235,7 +235,7 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
             //更新检测结果标识（取样信息上加入检测人）
             List<String> synNgsSuccessList = bioSampleTwoResultTbList.stream().filter(bioSampleSampleOneResultTb -> BioDrQiContents.Y.equals(bioSampleSampleOneResultTb.getSynResult())).map(sampleSampleTwoResultTb -> sampleSampleTwoResultTb.getApplyNo() + sampleSampleTwoResultTb.getSampleCode()).collect(Collectors.toList());
             //只有匹配成功的才认为审核成功
-            updateBioSampleTestTbList = updateBioSampleTestTbList.stream().filter(bioSampleTestTb -> synNgsSuccessList.equals(bioSampleTestTb.getApplyNo() + bioSampleTestTb.getSampleCode())).collect(Collectors.toList());
+            updateBioSampleTestTbList = updateBioSampleTestTbList.stream().filter(bioSampleTestTb -> synNgsSuccessList.contains(bioSampleTestTb.getApplyNo() + bioSampleTestTb.getSampleCode())).collect(Collectors.toList());
 
             if (CollectionUtil.isNotEmpty(updateBioSampleTestTbList)) {
                 bioSampleTestTbMapper.updateBatchById(updateBioSampleTestTbList);

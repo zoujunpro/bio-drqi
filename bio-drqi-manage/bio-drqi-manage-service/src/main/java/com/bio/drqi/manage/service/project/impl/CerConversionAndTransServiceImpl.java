@@ -163,8 +163,8 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
                     plantMultipleStockTb.setSourceCode(SourceCodeEnum.project.name());
                     plantMultipleStockTb.setRemark("转化移苗数据");
                     plantMultipleStockTb.setCreateTime(new Date());
-                    plantMultipleStockTb.setCreateUserId(SecurityContextHolder.getUserId());
-                    plantMultipleStockTb.setCreateUserName(SecurityContextHolder.getNickName());
+                    plantMultipleStockTb.setCreateUserId(cerConversionAndTransTb.getCreateUserId());
+                    plantMultipleStockTb.setCreateUserName(cerConversionAndTransTb.getCreateUserName());
                     plantMultipleStockTb.setTaskNum(bioTaskDtlTb.getTaskNum());
                     plantMultipleStockTb.setSpeciesCode(cerVectorTaskTb.getSpeciesCode());
                     plantMultipleStockTb.setBreedCode(cerVectorTaskTb.getBreedCode());
@@ -242,8 +242,8 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
             cerConversionAndTransTb = new CerConversionAndTransTb();
             cerConversionAndTransTb.setHandoverDate(conversionAndTransDTO.getHandoverDate());
             cerConversionAndTransTb.setCreateTime(new Date());
-            cerConversionAndTransTb.setCreateUserId(SecurityContextHolder.getUserId());
-            cerConversionAndTransTb.setCreateUserName(SecurityContextHolder.getNickName());
+            cerConversionAndTransTb.setCreateUserId(bioTaskDtlTb.getApplyUserId());
+            cerConversionAndTransTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
             cerConversionAndTransTb.setTaskNum(bioTaskDtlTb.getTaskNum());
             cerConversionAndTransTb.setRemark(conversionAndTransDTO.getRemark());
             cerConversionAndTransTb.setTransNumber(0);

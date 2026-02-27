@@ -22,6 +22,7 @@ import com.bio.print.PlantApplyPrintDTO;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.Jar;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -87,10 +88,37 @@ public class CleanTestController {
 
     @Resource
     private CerTransformTbMapper cerTransformTbMapper;
+    @Autowired
+    private CerConversionAndTransTbMapper cerConversionAndTransTbMapper;
+    @Autowired
+    private CerConversionAndTransRefMapper cerConversionAndTransRefMapper;
 
 
+    @GetMapping("cleanTrans20260227")
+    public ResponseResult<String> cleanTrans20260227() {
+        List<CerConversionAndTransTb> cerConversionAndTransTbList = cerConversionAndTransTbMapper.selectSelective(null);
+        for (CerConversionAndTransTb cerConversionAndTransTb : cerConversionAndTransTbList) {
+            if (StringUtils.isNotEmpty(cerConversionAndTransTb.getTaskNum())) {
+                BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(cerConversionAndTransTb.getTaskNum());
+                if (bioTaskDtlTb != null) {
+                    cerConversionAndTransTb.setCreateUserId(bioTaskDtlTb.getApplyUserId());
+                    cerConversionAndTransTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
+                    cerConversionAndTransTbMapper.updateById(cerConversionAndTransTb);
 
+                    List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectAllByConversionAndTransId(cerConversionAndTransTb.getId());
+                    if (CollectionUtil.isNotEmpty(cerConversionAndTransRefList)) {
+                        cerConversionAndTransRefList.forEach(cerConversionAndTransRef -> {
+                            cerConversionAndTransRef.setCreateUserId(cerConversionAndTransTb.getCreateUserId());
+                            cerConversionAndTransRef.setCreateUserName(cerConversionAndTransTb.getCreateUserName());
+                            cerConversionAndTransRefMapper.updateById(cerConversionAndTransRef);
+                        });
+                    }
+                }
 
+            }
+        }
+        return ResponseResult.getSuccess("成功");
+    }
 
 
     @GetMapping("cleanVectorTaskCode")

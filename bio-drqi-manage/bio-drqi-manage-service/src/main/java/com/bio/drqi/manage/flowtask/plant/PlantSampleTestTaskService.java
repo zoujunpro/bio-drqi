@@ -207,6 +207,8 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     for (BioSampleTestTb bioSampleTestTb : plantSampleTestTbList) {
                         PlantMultipleStockTb plantMultipleStockTb = findPlantMultipleStockTb(bioSampleTestTb);
                         PlantSingleStockTb plantSingleStockTb = PlantSingleStockTb.of(bioSampleTestTb, PlantStatusEnum.STATUS_1, plantMultipleStockTb.getPlantDate(), bioSampleTestTb.getApplyNo(), bioSampleTestTb.getSourceCode(), "CER种植申请首次取样产出的苗");
+                        plantSingleStockTb.setCreateUserId(plantMultipleStockTb.getCreateUserId());
+                        plantSingleStockTb.setCreateUserName(plantMultipleStockTb.getCreateUserName());
                         plantSingleStockTbList.add(plantSingleStockTb);
                     }
                     plantSingleStockTbMapper.insertBatch(plantSingleStockTbList);

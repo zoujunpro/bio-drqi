@@ -565,10 +565,12 @@ public class KdApiServiceImpl implements KdApiService {
 
     private String executeMaterialModify(Object obj) {
         BmsProductTb bmsProductTb = (BmsProductTb) obj;
+        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsProductTb.getBrandCode());
         MaterialSaveModel materialSaveModel = new MaterialSaveModel();
         materialSaveModel.setFMATERIALID(bmsProductTb.getKdNumber());
         materialSaveModel.setFname(bmsProductTb.getProductName());
         materialSaveModel.setFspecification(bmsProductTb.getProductSpecs());
+        materialSaveModel.setF_WAUJ_PP(bmsBrandTb.getBrandName());
         return KdRequestUtil.save(FormIdEnum.BD_MATERIAL, KdApiBaseSaveRequestDTO.buildOfModify(materialSaveModel));
     }
 

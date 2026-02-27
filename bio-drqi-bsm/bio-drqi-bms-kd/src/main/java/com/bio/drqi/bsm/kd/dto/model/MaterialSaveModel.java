@@ -175,6 +175,7 @@ public class MaterialSaveModel extends KdModel {
         list.add("Fnumber");
         list.add("FSpecification");
         list.add("Fname");
+        list.add("F_WAUJ_PP");
         return list;
     }
 

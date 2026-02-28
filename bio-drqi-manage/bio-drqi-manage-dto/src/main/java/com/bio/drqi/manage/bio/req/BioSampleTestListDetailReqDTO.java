@@ -43,4 +43,9 @@ public class BioSampleTestListDetailReqDTO extends PageDTO {
 
     private String sourceCode;
 
+    /**
+     * 检测结果 noTest,noResult,haveResult
+     */
+    private String testResult;
+
 }

@@ -315,6 +315,7 @@
             </if>
             <if test="regionNum != null and regionNum!=''">and region_num=#{regionNum,jdbcType=VARCHAR}</if>
             <if test="seedNum != null and seedNum!=''">and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
+            <if test="testResult != null and testResult!=''">and test_result=#{testResult,jdbcType=VARCHAR}</if>
             <if test='cloneSampleFlag =="Y"'>and clone_sample_code is not null</if>
             <if test='cloneSampleFlag =="N"'>and clone_sample_code is null</if>
             <if test='testFlag =="Y"'>and test_user_id is not null</if>

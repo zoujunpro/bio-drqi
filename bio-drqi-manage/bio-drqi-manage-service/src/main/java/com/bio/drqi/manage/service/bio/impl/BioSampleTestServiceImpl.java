@@ -560,7 +560,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                 bioSampleSampleTwoResultTb.setSynResult(BioDrQiContents.O);
             } else {
                 //更新检测人（检测标志）
-                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(bioSampleTestTb.getId()).testTime(DateUtil.formatDate(new Date())).testResult(TestResultEnum.haveResult.name()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
+                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(bioSampleTestTb.getId()).sampleCode(sampleTestBioInfoExcelDTO.getSampleCode()).applyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo()).testTime(DateUtil.formatDate(new Date())).testResult(TestResultEnum.haveResult.name()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
             }
             bioSampleSampleTwoResultTbList.add(bioSampleSampleTwoResultTb);
         }

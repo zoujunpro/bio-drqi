@@ -101,6 +101,7 @@ public class CleanTestController {
         List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectSelective(null);
         bioSampleTestTbList = bioSampleTestTbList.stream().filter(bioSampleTestTb -> bioSampleTestTb.getTestUserId() != null).collect(Collectors.toList());
         for (BioSampleTestTb bioSampleTestTb : bioSampleTestTbList) {
+            log.info("清洗数据："+bioSampleTestTb.getSampleCode());
             if (bioSampleTestTb.ifHaveTestResult()) {
                 bioSampleTestTb.setTestResult(TestResultEnum.haveResult.name());
                 bioSampleTestTbMapper.updateById(bioSampleTestTb);

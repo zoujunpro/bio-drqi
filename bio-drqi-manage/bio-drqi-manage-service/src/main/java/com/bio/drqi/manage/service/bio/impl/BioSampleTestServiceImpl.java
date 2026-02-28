@@ -15,6 +15,7 @@ import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
+import com.bio.drqi.common.enums.TestResultEnum;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.base.SampleUnitDTO;
@@ -251,6 +252,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                 updateBioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
                 updateBioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
                 updateBioSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
+                updateBioSampleTestTb.setTestResult(TestResultEnum.haveResult.name());
             }
             updateList.add(updateBioSampleTestTb);
             bioSampleSampleOneResultTbList.add(BioSampleTestOneResultTb.of(updateBioSampleTestTb, SourceCodeEnum.project.name(), bioTaskDtlTb.getTaskNum(), bioTaskDtlTb.getTaskNum()));
@@ -558,7 +560,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                 bioSampleSampleTwoResultTb.setSynResult(BioDrQiContents.O);
             } else {
                 //更新检测人（检测标志）
-                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(bioSampleTestTb.getId()).testTime(DateUtil.formatDate(new Date())).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
+                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(bioSampleTestTb.getId()).testTime(DateUtil.formatDate(new Date())).testResult(TestResultEnum.haveResult.name()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
             }
             bioSampleSampleTwoResultTbList.add(bioSampleSampleTwoResultTb);
         }

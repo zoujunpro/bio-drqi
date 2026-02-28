@@ -353,7 +353,8 @@
             check_user_id   = #{checkUserId,jdbcType=NUMERIC},
             check_user_name = #{checkUserName,jdbcType=VARCHAR},
             test_user_id    = #{testUserId,jdbcType=NUMERIC},
-            test_user_name  = #{testUserName,jdbcType=VARCHAR}
+            test_user_name  = #{testUserName,jdbcType=VARCHAR},
+            test_result  = #{testResult,jdbcType=VARCHAR}
         where apply_no = #{applyNo,jdbcType=VARCHAR}
           AND check_result = #{oldCheckResult,jdbcType=VARCHAR}
     </update>

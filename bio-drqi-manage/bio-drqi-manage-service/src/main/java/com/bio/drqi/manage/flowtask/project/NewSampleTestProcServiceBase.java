@@ -127,9 +127,8 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
-            bioSampleTestTbMapper.updateNoCheckDataByApplyNoAndCheckResult(CheckResultEnum.remove.name(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioSampleApplyTb.getApplyNo(), CheckResultEnum.noCheck.name());
+            bioSampleTestTbMapper.updateNoCheckDataByApplyNoAndCheckResult(CheckResultEnum.remove.name(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), TestResultEnum.noResult.name(), bioSampleApplyTb.getApplyNo(), CheckResultEnum.noCheck.name());
         }
-
     }
 
     @Override
@@ -203,6 +202,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     repeatBioSampleTestTb.setBreedCode(bioSampleTestTbList.get(0).getBreedCode());
                     repeatBioSampleTestTb.setSpeciesCode(bioSampleTestTbList.get(0).getSpeciesCode());
                     repeatBioSampleTestTb.setGeneration(bioSampleTestTbList.get(0).getGeneration());
+                    repeatBioSampleTestTb.setTestResult(TestResultEnum.noTest.name());
                     targetBioSampleTestTbList.add(repeatBioSampleTestTb);
                 }
             }
@@ -231,8 +231,8 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 List<BioSampleTestTb> cerSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCodeLike(bioSampleCodePrefixTb.getSampleCodePrefix());
                 Integer maxSampleNumber = null;
                 if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
-                    cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> !cerSampleTestTb.getSampleCode().contains("-") && cerSampleTestTb.getSampleCode().startsWith(bioSampleCodePrefixTb.getSampleCodePrefix())&& LetterUtil.isNumeric(cerSampleTestTb.getSampleCode().substring(bioSampleCodePrefixTb.getSampleCodePrefix().length()))).collect(Collectors.toList());
-                    if(CollectionUtil.isNotEmpty(cerSampleTestTbList)){
+                    cerSampleTestTbList = cerSampleTestTbList.stream().filter(cerSampleTestTb -> !cerSampleTestTb.getSampleCode().contains("-") && cerSampleTestTb.getSampleCode().startsWith(bioSampleCodePrefixTb.getSampleCodePrefix()) && LetterUtil.isNumeric(cerSampleTestTb.getSampleCode().substring(bioSampleCodePrefixTb.getSampleCodePrefix().length()))).collect(Collectors.toList());
+                    if (CollectionUtil.isNotEmpty(cerSampleTestTbList)) {
                         maxSampleNumber = cerSampleTestTbList.stream().map(cerSampleTestTb -> Integer.valueOf(cerSampleTestTb.getSampleCode().substring(bioSampleCodePrefixTb.getSampleCodePrefix().length()))).max(Integer::compare).get();
                     }
                 }
@@ -253,6 +253,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                     bioSampleTestTb.setBreedCode(cerTransformTb.getBreedCode());
                     bioSampleTestTb.setSpeciesCode(cerTransformTb.getSpeciesCode());
                     bioSampleTestTb.setGeneration(GenerationEnum.T0.code);
+                    bioSampleTestTb.setTestResult(TestResultEnum.noTest.name());
                     targetBioSampleTestTbList.add(bioSampleTestTb);
                 }
                 logStep(cerVectorTaskTb.getId(), ImplementationPlanTypeEnum.sample_and_test, bioTaskDtlTb.getTaskNum());

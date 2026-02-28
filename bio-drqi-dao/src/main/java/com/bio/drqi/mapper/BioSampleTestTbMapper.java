@@ -27,7 +27,7 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
     BioSampleTestTb selectOneBySampleCodeOrderByIdDesc(@Param("sampleCode") String sampleCode);
 
-    int updateNoCheckDataByApplyNoAndCheckResult(@Param("checkResult") String checkResult, @Param("checkUserId") Integer checkUserId, @Param("checkUserName") String checkUserName, @Param("testUserId") Integer testUserId, @Param("testUserName") String testUserName, @Param("applyNo") String applyNo, @Param("oldCheckResult") String oldCheckResult);
+    int updateNoCheckDataByApplyNoAndCheckResult(@Param("checkResult") String checkResult, @Param("checkUserId") Integer checkUserId, @Param("checkUserName") String checkUserName, @Param("testUserId") Integer testUserId, @Param("testUserName") String testUserName, @Param("testResult") String testResult, @Param("applyNo") String applyNo, @Param("oldCheckResult") String oldCheckResult);
     List<BioSampleTestTb> selectAllByApplyNo(@Param("applyNo") String applyNo);
 
     List<BioSampleTestTb> selectAllBySampleCodeIn(@Param("sampleCodeList") Collection<String> sampleCodeList);

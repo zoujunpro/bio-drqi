@@ -10,6 +10,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.SourceCodeEnum;
+import com.bio.drqi.common.enums.TestResultEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SampleResultFileTypeENum;
 import com.bio.drqi.manage.dto.project.SampleTestBioInfoExcelDTO;
@@ -205,7 +206,7 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
                     BioSampleTestTb bioSampleTestTb = bioSampleTestTbList.get(i);
                     if (bioSampleTestTb.getTestUserId() == null) {
                         bioSampleTwoResultTbList.add(buildBioSampleSampleTwoResultTb(sampleTestBioInfoExcelDTO, bioSampleTestTb, bioSampleTestResultFileTb.getUploadNum()));
-                        updateBioSampleTestTbList.add(BioSampleTestTb.builder().applyNo(bioSampleTestTb.getApplyNo()).sampleCode(bioSampleTestTb.getSampleCode()).id(bioSampleTestTb.getId()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getUserName()).build());
+                        updateBioSampleTestTbList.add(BioSampleTestTb.builder().applyNo(bioSampleTestTb.getApplyNo()).sampleCode(bioSampleTestTb.getSampleCode()).id(bioSampleTestTb.getId()).testResult(TestResultEnum.haveResult.name()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getUserName()).build());
 
                     }
                 }
@@ -276,6 +277,7 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
         updateBioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
         updateBioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
         updateBioSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
+        updateBioSampleTestTb.setTestResult(TestResultEnum.haveResult.name());
         updateBioSampleTestTb.setUpdateTime(new Date());
         return updateBioSampleTestTb;
     }

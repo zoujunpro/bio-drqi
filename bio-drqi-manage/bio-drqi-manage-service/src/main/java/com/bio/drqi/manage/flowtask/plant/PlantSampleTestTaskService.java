@@ -107,7 +107,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                 for (int i = 1; i <= firstSampleApply.getSampleNumber(); i++) {
                     maxSampleNumber = maxSampleNumber == null ? 1 : maxSampleNumber + 1;
                     String sampleCode = sampleCodePrefix + maxSampleNumber;
-                    BioSampleTestTb plantSampleTestTb = BioSampleTestTb.ofFirst(plantMultipleStockTb, sampleCode, bioTaskDtlTb, CheckResultEnum.noCheck);
+                    BioSampleTestTb plantSampleTestTb = BioSampleTestTb.ofFirst(plantMultipleStockTb, sampleCode, bioTaskDtlTb, CheckResultEnum.noCheck,TestResultEnum.noTest);
                     sampleTestTbList.add(plantSampleTestTb);
                 }
                 //首次取样更新临时苗取样数量
@@ -141,7 +141,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
                     throw new BusinessException("只有正常或者异常苗方可进行取样");
                 }
                 BioSampleTestTb bioSampleTestTb = bioSampleTestTbMapper.selectOneBySampleCodeOrderByIdDesc(repeatSampleTest.getSampleCode());
-                BioSampleTestTb plantSampleTestTb = BioSampleTestTb.ofRepeat(bioSampleTestTb, bioTaskDtlTb, CheckResultEnum.noCheck);
+                BioSampleTestTb plantSampleTestTb = BioSampleTestTb.ofRepeat(bioSampleTestTb, bioTaskDtlTb, CheckResultEnum.noCheck,TestResultEnum.noTest);
                 sampleTestTbList.add(plantSampleTestTb);
             }
             try {
@@ -197,7 +197,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
             bioSampleTestHisTbMapper.deleteByApplyNo(bioTaskDtlTb.getTaskNum());
-            bioSampleTestTbMapper.updateNoCheckDataByApplyNoAndCheckResult(CheckResultEnum.remove.name(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), bioSampleApplyTb.getApplyNo(), CheckResultEnum.noCheck.name());
+            bioSampleTestTbMapper.updateNoCheckDataByApplyNoAndCheckResult(CheckResultEnum.remove.name(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), TestResultEnum.noResult.name(),bioSampleApplyTb.getApplyNo(), CheckResultEnum.noCheck.name());
 
             //首次CER取样需要生成种植编号
             if (SampleTestApplyTypeEnum.first.name().equals(bioSampleApplyTb.getApplyType())) {

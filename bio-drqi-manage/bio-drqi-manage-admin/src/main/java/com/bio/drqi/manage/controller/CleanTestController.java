@@ -9,6 +9,7 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.TestResultEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SeedSourceEnum;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
@@ -94,6 +95,27 @@ public class CleanTestController {
     private CerConversionAndTransRefMapper cerConversionAndTransRefMapper;
 
 
+    @GetMapping("cleanSampleTestResult")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanSampleTestResult() {
+        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectSelective(null);
+        bioSampleTestTbList = bioSampleTestTbList.stream().filter(bioSampleTestTb -> bioSampleTestTb.getTestUserId() != null).collect(Collectors.toList());
+        for (BioSampleTestTb bioSampleTestTb : bioSampleTestTbList) {
+            if (bioSampleTestTb.ifHaveTestResult()) {
+                bioSampleTestTb.setTestResult(TestResultEnum.haveResult.name());
+                bioSampleTestTbMapper.updateById(bioSampleTestTb);
+            } else {
+                List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectAllBySampleCode(bioSampleTestTb.getSampleCode());
+                if (CollectionUtil.isNotEmpty(cerConversionAndTransRefList)) {
+                    bioSampleTestTb.setTestResult(TestResultEnum.haveResult.name());
+                    bioSampleTestTbMapper.updateById(bioSampleTestTb);
+                }
+            }
+
+        }
+        return ResponseResult.getSuccess("ok");
+
+    }
 
 
     @GetMapping("cleanTrans20260227")

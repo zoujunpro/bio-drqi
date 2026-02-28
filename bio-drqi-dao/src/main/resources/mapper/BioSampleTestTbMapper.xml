@@ -45,6 +45,7 @@
         <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
         <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
         <result property="transformCode" column="transform_code" jdbcType="VARCHAR"/>
+        <result property="testResult" column="test_result" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -59,7 +60,7 @@
         test_time,check_user_name,check_user_id,
         check_result,create_time,update_time,apply_no,identify_primer,
         unique_code,remark,clone_sample_code,
-        source_code,test_org_result,experiment_num,region_num,seed_num,transform_code
+        source_code,test_org_result,experiment_num,region_num,seed_num,transform_code,test_result
     </sql>
 
     <select id="selectAllByApplyNo" resultMap="BaseResultMap">
@@ -96,7 +97,7 @@
         remark,clone_sample_code,source_code,
         test_org_result,generation,species_code,
         breed_code,experiment_num,region_num,
-        seed_num,transform_code)
+        seed_num,transform_code,test_result)
         values
         <foreach collection="bioSampleTestTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.vectorTaskCode,jdbcType=VARCHAR},#{item.sampleCode,jdbcType=VARCHAR},
@@ -112,7 +113,7 @@
             #{item.remark,jdbcType=VARCHAR},#{item.cloneSampleCode,jdbcType=VARCHAR},#{item.sourceCode,jdbcType=VARCHAR},
             #{item.testOrgResult,jdbcType=VARCHAR},#{item.generation,jdbcType=VARCHAR},#{item.speciesCode,jdbcType=VARCHAR},
             #{item.breedCode,jdbcType=VARCHAR},#{item.experimentNum,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},
-            #{item.seedNum,jdbcType=VARCHAR},  #{item.transformCode,jdbcType=VARCHAR})
+            #{item.seedNum,jdbcType=VARCHAR},  #{item.transformCode,jdbcType=VARCHAR},  #{item.testResult,jdbcType=VARCHAR})
         </foreach>
     </insert>
     <select id="selectAllByApplyNoAndSampleCodeIn" resultMap="BaseResultMap">
@@ -188,6 +189,7 @@
                 <if test="item.experimentNum != null">experiment_num=#{item.experimentNum,jdbcType=VARCHAR},</if>
                 <if test="item.regionNum != null">region_num=#{item.regionNum,jdbcType=VARCHAR},</if>
                 <if test="item.seedNum != null">seed_num=#{item.seedNum,jdbcType=VARCHAR},</if>
+                <if test="item.testResult != null">test_result=#{item.testResult,jdbcType=VARCHAR},</if>
             </set>
             where id = ${item.id}
         </foreach>

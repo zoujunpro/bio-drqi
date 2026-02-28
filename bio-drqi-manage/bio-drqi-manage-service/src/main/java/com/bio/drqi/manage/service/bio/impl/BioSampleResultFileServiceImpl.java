@@ -198,7 +198,7 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
                 bioSampleTestTbList = bioSampleTestTbList.stream().sorted(Comparator.comparing(BioSampleTestTb::getId).reversed()).collect(Collectors.toList());
                 //第一个取样一定更新
                 BioSampleTestTb firstBioSampleTestTb = bioSampleTestTbList.get(0);
-                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(firstBioSampleTestTb.getId()).sampleCode(firstBioSampleTestTb.getSampleCode()).applyNo(firstBioSampleTestTb.getApplyNo()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getUserName()).build());
+                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(firstBioSampleTestTb.getId()).sampleCode(firstBioSampleTestTb.getSampleCode()).applyNo(firstBioSampleTestTb.getApplyNo()).testResult(TestResultEnum.haveResult.name()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getUserName()).build());
 
                 bioSampleTwoResultTbList.add(buildBioSampleSampleTwoResultTb(sampleTestBioInfoExcelDTO, firstBioSampleTestTb, bioSampleTestResultFileTb.getUploadNum()));
                 //剩下的，如果没有上传过结果，则补更新结果

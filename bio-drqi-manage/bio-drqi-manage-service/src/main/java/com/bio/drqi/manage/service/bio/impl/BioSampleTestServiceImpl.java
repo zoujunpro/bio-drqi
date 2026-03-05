@@ -167,6 +167,9 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
     private boolean checkTaskStatusIfRefuse(BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO) {
         if (StringUtils.isNotEmpty(bioSampleTestListDetailReqDTO.getApplyNo())) {
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(bioSampleTestListDetailReqDTO.getApplyNo());
+            if(bioTaskDtlTb==null){
+                throw new BusinessException("查询不到此工单编号："+bioSampleTestListDetailReqDTO.getApplyNo());
+            }
             if (BioTaskStatusEnum.TASK_STATUS_3.status.equals(bioTaskDtlTb.getTaskStatus()) || BioTaskStatusEnum.TASK_STATUS_3.status.equals(bioTaskDtlTb.getTaskStatus())) {
                 return true;
             }

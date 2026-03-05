@@ -18,7 +18,10 @@ public interface BioSampleTestTwoResultDetailTbMapper extends BaseMapper<BioSamp
     int deleteByTwoResultId(@Param("twoResultId") Integer twoResultId);
 
     List<BioSampleTestTwoResultDetailTb> selectAllByTwoResultIdAndConfirmStatus(@Param("twoResultId") Integer twoResultId, @Param("confirmStatus") String confirmStatus);
+
+
     List<BioSampleTestTwoResultDetailTb> selectAllByTwoResultId(@Param("twoResultId") Integer twoResultId);
+
     int deleteByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
 
     List<BioSampleTestTwoResultDetailTb> selectAllByApplyNoAndSampleCode(@Param("applyNo") String applyNo, @Param("sampleCode") String sampleCode);
@@ -28,6 +31,7 @@ public interface BioSampleTestTwoResultDetailTbMapper extends BaseMapper<BioSamp
     List<BioSampleTestTwoResultDetailTb> selectAllByUniqueDbCode(@Param("uniqueDbCode") String uniqueDbCode);
 
     int insertBatch(@Param("bioSampleTestTwoResultDetailTbCollection") Collection<BioSampleTestTwoResultDetailTb> bioSampleTestTwoResultDetailTbCollection);
+
     List<BioSampleTestTwoResultDetailTb> selectAllBySampleCodeIn(@Param("sampleCodeList") Collection<String> sampleCodeList);
 
 }

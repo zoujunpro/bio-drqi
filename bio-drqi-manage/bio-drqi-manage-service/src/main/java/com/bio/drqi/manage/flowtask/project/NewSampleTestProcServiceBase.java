@@ -100,6 +100,12 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
 
             }
         }
+        //取样备注上区分是单管还是孔板取样
+        if("one".equals(newSampleTestDTO.getTestType())){
+            bioTaskDtlTb.setTaskDesc(bioTaskDtlTb.getTaskDesc()+"(单管取样)");
+        }else {
+            bioTaskDtlTb.setTaskDesc(bioTaskDtlTb.getTaskDesc()+"(96孔板取样)");
+        }
         //数据入库
         synchronized (this) {
             BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
@@ -120,6 +126,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 }
             }
         }
+
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
     }
 
@@ -168,7 +175,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         bioSampleApplyTb.setApplyTime(new Date());
         bioSampleApplyTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
         bioSampleApplyTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
-        bioSampleApplyTb.setApplyDesc(bioTaskDtlTb.getTaskDesc());
         bioSampleApplyTb.setApplyType(CollectionUtil.isNotEmpty(newSampleTestDTO.getRepeatSampleApplyList()) ? SampleTestApplyTypeEnum.repeat.name() : SampleTestApplyTypeEnum.first.name());
         bioSampleApplyTb.setIdentifyExcelUrl(null);
         bioSampleApplyTb.setCloneFlag(newSampleTestDTO.isCloneFlag() ? BioDrQiContents.Y : BioDrQiContents.N);

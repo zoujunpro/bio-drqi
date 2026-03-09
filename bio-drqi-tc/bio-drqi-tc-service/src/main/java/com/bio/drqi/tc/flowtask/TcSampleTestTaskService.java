@@ -60,6 +60,13 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
             throw new BusinessException("非进行中试验，无法进行任何操作");
         }
 
+        //取样备注上区分是单管还是孔板取样
+        if("one".equals(tcSampleTestTaskDTO.getTestType())){
+            bioTaskDtlTb.setTaskDesc(bioTaskDtlTb.getTaskDesc()+"(单管取样)");
+        }else {
+            bioTaskDtlTb.setTaskDesc(bioTaskDtlTb.getTaskDesc()+"(96孔板取样)");
+        }
+
         //插入数据库
         synchronized (this) {
             TcSampleTestApplyTb tcSampleTestApplyTb = tcSampleTestApplyTbMapper.selectOneByTaskNum(bioTaskDtlTb.getTaskNum());

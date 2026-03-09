@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
+    private static final String oneTestType = "one";
+
     @Resource
     private CerSpeciesConfMapper cerSpeciesConfMapper;
 
@@ -77,6 +79,13 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         if (cerSpeciesConf == null) {
             throw new BusinessException("物种找不到");
         }
+        //取样备注上区分是单管还是孔板取样
+        if("one".equals(plantExperimentTaskDTO.getTestType())){
+            bioTaskDtlTb.setTaskDesc(bioTaskDtlTb.getTaskDesc()+"(单管取样)");
+        }else {
+            bioTaskDtlTb.setTaskDesc(bioTaskDtlTb.getTaskDesc()+"(96孔板取样)");
+        }
+
         //初始化取样申请工单
         BioSampleApplyTb bioSampleApplyTb = initPlantSampleApplyTb(bioTaskDtlTb, plantExperimentTaskDTO);
 
@@ -183,7 +192,6 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         bioSampleApplyTb.setApplyTime(new Date());
         bioSampleApplyTb.setApplyUserId(SecurityContextHolder.getUserId());
         bioSampleApplyTb.setApplyUserName(SecurityContextHolder.getNickName());
-        bioSampleApplyTb.setApplyDesc(bioTaskDtlTb.getTaskDesc());
         bioSampleApplyTb.setApplyType(plantExperimentTaskDTO.getApplyType());
         bioSampleApplyTb.setLayoutFlag(plantExperimentTaskDTO.getTestType());
         bioSampleApplyTb.setVectorTaskCodes(null);

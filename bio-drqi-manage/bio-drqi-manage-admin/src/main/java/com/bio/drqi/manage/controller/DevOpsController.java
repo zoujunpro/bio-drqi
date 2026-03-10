@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.StringUtils;
+import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
@@ -26,6 +27,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -159,7 +161,10 @@ public class DevOpsController {
         return ResponseResult.getSuccess("ok");
     }
 
-    public static void main(String[] args) {
-        System.out.println("TC001-04");
+    @GetMapping("/exportSeedStock")
+    @WebLog( desc = "运维接口exportSeedStock")
+    public void exportSeedStock(HttpServletResponse httpServletResponse) {
+        devOpsService.exportSeedStock(httpServletResponse);
     }
+
 }

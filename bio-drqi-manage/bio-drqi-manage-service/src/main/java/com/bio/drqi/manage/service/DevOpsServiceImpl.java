@@ -4,15 +4,21 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.SeedMaterialTypeEnum;
+import com.bio.drqi.enums.SeedSourceEnum;
 import com.bio.drqi.manage.devOps.DevOpsModifyProjectCodeReqDTO;
 import com.bio.drqi.manage.devOps.DevOpsModifySubProjectCodeReqDTO;
 import com.bio.drqi.manage.devOps.DevOpsModifyVectorTaskCodeBreedCodeReqDTO;
 import com.bio.drqi.manage.devOps.DevOpsModifyVectorTaskCodeReqDTO;
 import com.bio.drqi.manage.dto.plant.task.PlantExperimentTaskDTO;
 import com.bio.drqi.manage.dto.project.*;
+import com.bio.drqi.manage.dto.seed.SeedStockDevOpsExcelDTO;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.service.dto.TcExperimentTaskDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,6 +81,9 @@ public class DevOpsServiceImpl implements DevOpsService {
     private SeedStockTbMapper seedStockTbMapper;
 
     @Resource
+    private SeedStockOutLogMapper seedStockOutLogMapper;
+
+    @Resource
     private CerPlasmidQualityTbMapper cerPlasmidQualityTbMapper;
 
     @Resource
@@ -88,6 +100,16 @@ public class DevOpsServiceImpl implements DevOpsService {
 
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
+    @Resource
+    private CerSpeciesConfMapper cerSpeciesConfMapper;
+
+    @Resource
+    private BioDictMapper bioDictMapper;
+
+    @Resource
+    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
+
 
     public void modifyVectorTaskCodeBreedCode(@RequestBody DevOpsModifyVectorTaskCodeBreedCodeReqDTO devOpsModifyVectorTaskCodeBreedCodeReqDTO) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(devOpsModifyVectorTaskCodeBreedCodeReqDTO.getVectorTaskCode());
@@ -235,7 +257,7 @@ public class DevOpsServiceImpl implements DevOpsService {
     @Override
     public void deleteBySubProjectCode(String subProjectCode) {
         CerSubProjectTb cerSubProjectTb = cerSubProjectTbMapper.selectOneBySubProjectCode(subProjectCode);
-        if(cerSubProjectTb==null){
+        if (cerSubProjectTb == null) {
             throw new BusinessException("找不到子项目信息");
         }
         bioTaskDtlTbMapper.deleteByTaskNum(cerSubProjectTb.getTaskNum());
@@ -317,6 +339,50 @@ public class DevOpsServiceImpl implements DevOpsService {
         if (bioSampleCodePrefixTb != null) {
             bioSampleCodePrefixTbMapper.deleteById(bioSampleCodePrefixTb);
         }
+
+    }
+
+    @Override
+    public void exportSeedStock(HttpServletResponse httpServletResponse) {
+        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectAllForexportSeedStock();
+        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
+        List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectAll();
+        List<SeedProduceAddressDict> seedProduceAddressDictList = seedProduceAddressDictMapper.selectAll();
+        Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictList.stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
+        Map<String, String> speciesMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
+        Map<String, String> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+        List<BioDict> bioDictList = bioDictMapper.selectAll();
+        Map<String, BioDict> bioDictMap = bioDictList.stream().collect(Collectors.toMap(bioDict -> bioDict.getDictType() + ":" + bioDict.getDictValueCode(), bioDict -> bioDict));
+        List<SeedStockDevOpsExcelDTO> seedStockDevOpsExcelDTOList = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(seedStockTbList)) {
+            seedStockDevOpsExcelDTOList = BeanUtils.copyToList(seedStockTbList, SeedStockDevOpsExcelDTO.class);
+            for (SeedStockDevOpsExcelDTO seedStockDevOpsExcelDTO : seedStockDevOpsExcelDTOList) {
+                seedStockDevOpsExcelDTO.setSpeciesName(speciesMap.get(seedStockDevOpsExcelDTO.getSpeciesCode()));
+                seedStockDevOpsExcelDTO.setBreedName(cerBreedDictMap.get(seedStockDevOpsExcelDTO.getBreedCode()));
+                seedStockDevOpsExcelDTO.setProductionLocationCodeName(seedProduceAddressDictMap.get(seedStockDevOpsExcelDTO.getProductionLocationCode()));
+                seedStockDevOpsExcelDTO.setSourceTypeName(SeedSourceEnum.getByCode(seedStockDevOpsExcelDTO.getSourceType()).name);
+                seedStockDevOpsExcelDTO.setMaterialType(SeedMaterialTypeEnum.getSeedMaterialTypeEnumByType(seedStockDevOpsExcelDTO.getMaterialType()).name);
+                List<SeedStockOutLog> seedStockOutLogList = seedStockOutLogMapper.selectAllBySeedNum(seedStockDevOpsExcelDTO.getSeedNum());
+                if (CollectionUtil.isNotEmpty(seedStockOutLogList)) {
+                    seedStockDevOpsExcelDTO.setOutTaskNum(JSONUtil.toJsonStr(seedStockOutLogList.stream().map(SeedStockOutLog::getTaskNum).collect(Collectors.toList())));
+                }
+                if (StringUtils.isNotEmpty(seedStockDevOpsExcelDTO.getPollinationMethod())) {
+                    BioDict pollinationMethodBioDict = bioDictMap.get(BioDictTypeEnum.POLLINATE_TYPE + ":" + seedStockDevOpsExcelDTO.getPollinationMethod());
+                    if (pollinationMethodBioDict != null) {
+                        seedStockDevOpsExcelDTO.setPollinationMethodName(pollinationMethodBioDict.getDictValueName());
+                    }
+                }
+                if (StringUtils.isNotEmpty(seedStockDevOpsExcelDTO.getHarvestType())) {
+                    BioDict pollinationMethodBioDict = bioDictMap.get(BioDictTypeEnum.HARVEST_TYPE + ":" + seedStockDevOpsExcelDTO.getHarvestType());
+                    if (pollinationMethodBioDict != null) {
+                        seedStockDevOpsExcelDTO.setHarvestTypeName(pollinationMethodBioDict.getDictValueName());
+                    }
+
+
+                }
+            }
+        }
+        ExcelUtil.writeExcel("种子库", "sheet1", seedStockDevOpsExcelDTOList, SeedStockDevOpsExcelDTO.class, httpServletResponse);
 
     }
 

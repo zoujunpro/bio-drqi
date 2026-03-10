@@ -4,7 +4,8 @@ import com.bio.drqi.manage.devOps.DevOpsModifyProjectCodeReqDTO;
 import com.bio.drqi.manage.devOps.DevOpsModifySubProjectCodeReqDTO;
 import com.bio.drqi.manage.devOps.DevOpsModifyVectorTaskCodeBreedCodeReqDTO;
 import com.bio.drqi.manage.devOps.DevOpsModifyVectorTaskCodeReqDTO;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletResponse;
 
 public interface DevOpsService {
 
@@ -21,4 +22,6 @@ public interface DevOpsService {
     void deleteBySubProjectCode( String subProjectCode);
 
     void deleteByVectorTaskCode(String vectorTaskCode);
+
+    void exportSeedStock(HttpServletResponse httpServletResponse);
 }

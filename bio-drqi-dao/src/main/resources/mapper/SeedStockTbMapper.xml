@@ -241,5 +241,21 @@
         set spot_check_result = #{spotCheckResult,jdbcType=VARCHAR}
         where id = #{id,jdbcType=NUMERIC}
     </update>
+    <select id="selectAllForexportSeedStock" resultType="com.bio.drqi.domain.SeedStockTb">
+        select * from seed_stock_tb where vector_task_code in ('EM00703-01a','EM00703-01b') and date_format(update_time,'%Y')='2025'
+
+        union
+
+
+        select * from seed_stock_tb where vector_task_code in ('EM00703-01a','EM00703-01b') and date_format(update_time,'%Y')='2025' and mather_seed_num in (select seed_num from seed_stock_tb where vector_task_code in ('EM00703-01a','EM00703-01b') and date_format(update_time,'%Y')='2025' )
+
+
+        union
+
+        select * from seed_stock_tb where vector_task_code in ('EM00703-01a','EM00703-01b') and date_format(update_time,'%Y')='2025'
+                                      and mather_seed_num in
+                                          (select seed_num from seed_stock_tb where vector_task_code in ('EM00703-01a','EM00703-01b') and date_format(update_time,'%Y')='2025' and mather_seed_num in (select seed_num from seed_stock_tb where vector_task_code in ('EM00703-01a','EM00703-01b') and date_format(update_time,'%Y')='2025' ))
+
+    </select>
 
 </mapper>

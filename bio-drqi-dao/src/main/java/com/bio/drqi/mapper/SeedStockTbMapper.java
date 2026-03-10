@@ -46,6 +46,8 @@ public interface SeedStockTbMapper extends BaseMapper<SeedStockTb> {
     List<SeedStockTb> selectSubmitUserIdAndSubmitUserName();
 
     int updateSpotCheckResultById(@Param("spotCheckResult") String spotCheckResult, @Param("id") Integer id);
+
+    List<SeedStockTb> selectAllForexportSeedStock();
 }
 
 

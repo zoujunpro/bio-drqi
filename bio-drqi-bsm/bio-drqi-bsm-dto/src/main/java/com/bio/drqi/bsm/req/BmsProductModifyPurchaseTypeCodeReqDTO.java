@@ -12,6 +12,6 @@ public class BmsProductModifyPurchaseTypeCodeReqDTO {
     @NotNull(message = "缺失主键")
     private Integer id;
 
-    @EnumValue(message = "物料常规采购状态入参错误",strValues = {"Y","N"})
+    @EnumValue(message = "物料常规采购状态入参错误",strValues = {"1","2"})
     private String  purchaseTypeCode;
 }

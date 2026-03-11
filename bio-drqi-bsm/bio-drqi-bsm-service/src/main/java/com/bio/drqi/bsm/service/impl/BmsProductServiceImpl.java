@@ -81,6 +81,7 @@ public class BmsProductServiceImpl implements BmsProductService {
 
     @Override
     public List<BmsProductQueryListRspDTO> queryList(BmsProductQueryListReqDTO bmsProductQueryListReqDTO) {
+
         BmsProductTb bmsProductTb = BeanUtils.copyProperties(bmsProductQueryListReqDTO, BmsProductTb.class);
         bmsProductTb.setProductStatus(BioDrQiContents.Y);
         List<BmsProductTb> bmsProductTbLit = bmsProductTbMapper.selectSelective(bmsProductTb);
@@ -88,11 +89,14 @@ public class BmsProductServiceImpl implements BmsProductService {
         List<BmsProductQueryListRspDTO> result = BeanUtils.copyListProperties(bmsProductTbLit, BmsProductQueryListRspDTO.class);
         if (CollectionUtil.isNotEmpty(result)) {
             //类别
+            List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(null);
             List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+            Map<String, String> bmsBrandMap = bmsBrandTbList.stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
             Map<String, String> bmsProductCategoryMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
 
             result.forEach(bmsProductQueryListRspDTO -> {
                 bmsProductQueryListRspDTO.setProductCategoryName(bmsProductCategoryMap.get(bmsProductQueryListRspDTO.getProductCategoryCode()));
+                bmsProductQueryListRspDTO.setBrandName(bmsBrandMap.get(bmsProductQueryListRspDTO.getBrandCode()));
             });
         }
         return result;

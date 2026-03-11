@@ -82,6 +82,8 @@ public class BmsProductTb implements Serializable {
      */
     private String pictureUrls;
 
+    private String purchaseTypeCode;
+
     private String kdNumber;
 
     private Date updateTime;

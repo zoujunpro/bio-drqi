@@ -16,13 +16,15 @@
         <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
         <result property="productStatus" column="product_status" jdbcType="VARCHAR"/>
+        <result property="purchaseTypeCode" column="purchase_type_code" jdbcType="VARCHAR"/>
         <result property="kdNumber" column="kd_number" jdbcType="VARCHAR"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
         id,
-        product_name,product_out_code,
+        product_name,product_out_code,purchase_type_code,
         product_inner_code,product_category_code,brand_code,
         product_specs,create_time,create_user_id,
         create_user_name,product_status,kd_number,update_time
@@ -51,6 +53,7 @@
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
             <if test="productStatus != null and productStatus!=''">and product_status=#{productStatus,jdbcType=VARCHAR}</if>
+            <if test="purchaseTypeCode != null and purchaseTypeCode!=''">and purchase_type_code=#{purchaseTypeCode,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

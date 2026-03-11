@@ -88,6 +88,9 @@ public class BmsPurchaseOrderDTO {
         @NotBlank(message = "参数缺失：归属项目")
         private String projectCode;
 
+        @NotBlank(message = "参数缺失：付款类型")
+        private String payType;
+
         /**
          * 供应商名称
          */
@@ -96,6 +99,7 @@ public class BmsPurchaseOrderDTO {
         /**
          * 供应商编号
          */
+        @NotBlank(message = "参数缺失：供应商编号")
         private String supplierCode;
 
         /**
@@ -130,6 +134,7 @@ public class BmsPurchaseOrderDTO {
         /**
          * 内部编号
          */
+        @NotBlank(message = "参数缺失：商品内部编号")
         private String productInnerCode;
 
         /**
@@ -154,8 +159,7 @@ public class BmsPurchaseOrderDTO {
 
         private String expectedDeliveryTime;
 
-        @NotBlank(message = "参数缺失：付款类型")
-        private String payType;
+
 
 
     }

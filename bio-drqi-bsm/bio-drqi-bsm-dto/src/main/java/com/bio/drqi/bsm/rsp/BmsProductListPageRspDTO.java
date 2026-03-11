@@ -70,4 +70,6 @@ public class BmsProductListPageRspDTO {
     private String pictureUrls;
 
     private String kdNumber;
+
+    private String purchaseTypeCode;
 }

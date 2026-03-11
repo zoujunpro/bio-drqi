@@ -76,20 +76,14 @@ public class BmsProductServiceImpl implements BmsProductService {
 
     @Override
     public List<BmsProductListAllRspDTO> listAll() {
-        return BeanUtils.copyListProperties(bmsProductTbMapper.selectSelective(null),BmsProductListAllRspDTO.class);
+        return BeanUtils.copyListProperties(bmsProductTbMapper.selectSelective(null), BmsProductListAllRspDTO.class);
     }
 
     @Override
     public List<BmsProductQueryListRspDTO> queryList(BmsProductQueryListReqDTO bmsProductQueryListReqDTO) {
-        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsProductQueryListReqDTO.getBrandCode());
-        if (bmsBrandTb == null) {
-            throw new BusinessException("品牌不存在");
-        }
-        if (BioDrQiContents.N.equals(bmsBrandTb.getBrandStatus())) {
-            throw new BusinessException("品牌已经禁用");
-        }
-
-        List<BmsProductTb> bmsProductTbLit = bmsProductTbMapper.selectSelective(BmsProductTb.builder().brandCode(bmsProductQueryListReqDTO.getBrandCode()).productStatus(BioDrQiContents.Y).build());
+        BmsProductTb bmsProductTb = BeanUtils.copyProperties(bmsProductQueryListReqDTO, BmsProductTb.class);
+        bmsProductTb.setProductStatus(BioDrQiContents.Y);
+        List<BmsProductTb> bmsProductTbLit = bmsProductTbMapper.selectSelective(bmsProductTb);
 
         List<BmsProductQueryListRspDTO> result = BeanUtils.copyListProperties(bmsProductTbLit, BmsProductQueryListRspDTO.class);
         if (CollectionUtil.isNotEmpty(result)) {
@@ -122,13 +116,13 @@ public class BmsProductServiceImpl implements BmsProductService {
         }
         String productInnerCode = null;
         Integer maxProductInnerCode = bmsProductTbMapper.selectList(null).stream().map(BmsProductTb::getProductInnerCode).map(code -> Integer.valueOf(code.substring(2))).max(Integer::compareTo).get();
-        if (maxProductInnerCode==null) {
+        if (maxProductInnerCode == null) {
             productInnerCode = BioBsmContents.product_prefix + StringUtils.padl("1", 5, '0');
         } else {
             String nextProductInnerCode = String.valueOf(maxProductInnerCode + 1);
             productInnerCode = BioBsmContents.product_prefix + StringUtils.padl(nextProductInnerCode, 5, '0');
         }
-        BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecsAndProductOutCode(bmsProductAddReqDTO.getProductName(), bmsProductAddReqDTO.getBrandCode(), bmsProductAddReqDTO.getProductSpecs(),bmsProductAddReqDTO.getProductOutCode());
+        BmsProductTb bmsProductTb = bmsProductTbMapper.selectOneByProductNameAndBrandCodeAndProductSpecsAndProductOutCode(bmsProductAddReqDTO.getProductName(), bmsProductAddReqDTO.getBrandCode(), bmsProductAddReqDTO.getProductSpecs(), bmsProductAddReqDTO.getProductOutCode());
         if (bmsProductTb != null) {
             throw new BusinessException("已有此商品");
         }
@@ -198,5 +192,12 @@ public class BmsProductServiceImpl implements BmsProductService {
             throw new BusinessException("系统已存在此材料信息，不能修改");
         }
 
+    }
+
+    @Override
+    public void modifyNormalPurchaseFlag(BmsProductModifyNormalPurchaseFlagReqDTO bmsProductModifyNormalPurchaseFlagReqDTO) {
+        BmsProductTb bmsProductTb = bmsProductTbMapper.selectById(bmsProductModifyNormalPurchaseFlagReqDTO.getId());
+        bmsProductTb.setNormalPurchaseFlag(bmsProductModifyNormalPurchaseFlagReqDTO.getNormalPurchaseFlag());
+        bmsProductTbMapper.updateById(bmsProductTb);
     }
 }

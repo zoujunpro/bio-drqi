@@ -6,8 +6,6 @@ import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
 import com.bio.drqi.domain.BmsProductTb;
 import com.github.pagehelper.PageInfo;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -70,5 +68,5 @@ public interface BmsProductService {
      */
     void edit(BmsProductEditReqDTO bmsProductEditReqDTO);
 
-    void modifyNormalPurchaseFlag(BmsProductModifyNormalPurchaseFlagReqDTO bmsProductModifyNormalPurchaseFlagReqDTO);
+    void modifyPurchaseTypeCode(BmsProductModifyPurchaseTypeCodeReqDTO bmsProductModifyPurchaseTypeCodeReqDTO);
 }

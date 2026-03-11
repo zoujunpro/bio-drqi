@@ -150,15 +150,15 @@ public class BmsProductController {
     /**
      * 材料管理-常规采购标记更新
      *
-     * @param bmsProductModifyNormalPurchaseFlagReqDTO
+     * @param bmsProductModifyPurchaseTypeCodeReqDTO
      * @return
      */
     @PostMapping("/modifyNormalPurchaseFlag")
     @WebLog(desc = "材料管理-常规采购标记更新")
     @RequirePermissions("bms:product:edit")
     @RequestLog("材料管理-常规采购标记更新")
-    public ResponseResult<String> modifyNormalPurchaseFlag(@RequestBody @Validated BmsProductModifyNormalPurchaseFlagReqDTO bmsProductModifyNormalPurchaseFlagReqDTO) {
-        bmsProductService.modifyNormalPurchaseFlag(bmsProductModifyNormalPurchaseFlagReqDTO);
+    public ResponseResult<String> modifyNormalPurchaseFlag(@RequestBody @Validated BmsProductModifyPurchaseTypeCodeReqDTO bmsProductModifyPurchaseTypeCodeReqDTO) {
+        bmsProductService.modifyPurchaseTypeCode(bmsProductModifyPurchaseTypeCodeReqDTO);
         return ResponseResult.getSuccess("常规采购标记更新成功");
 
     }

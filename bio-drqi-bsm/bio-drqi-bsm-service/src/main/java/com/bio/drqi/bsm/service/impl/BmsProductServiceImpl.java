@@ -195,9 +195,9 @@ public class BmsProductServiceImpl implements BmsProductService {
     }
 
     @Override
-    public void modifyNormalPurchaseFlag(BmsProductModifyNormalPurchaseFlagReqDTO bmsProductModifyNormalPurchaseFlagReqDTO) {
-        BmsProductTb bmsProductTb = bmsProductTbMapper.selectById(bmsProductModifyNormalPurchaseFlagReqDTO.getId());
-        bmsProductTb.setNormalPurchaseFlag(bmsProductModifyNormalPurchaseFlagReqDTO.getNormalPurchaseFlag());
+    public void modifyPurchaseTypeCode(BmsProductModifyPurchaseTypeCodeReqDTO bmsProductModifyPurchaseTypeCodeReqDTO) {
+        BmsProductTb bmsProductTb = bmsProductTbMapper.selectById(bmsProductModifyPurchaseTypeCodeReqDTO.getId());
+        bmsProductTb.setPurchaseTypeCode(bmsProductModifyPurchaseTypeCodeReqDTO.getPurchaseTypeCode());
         bmsProductTbMapper.updateById(bmsProductTb);
     }
 }

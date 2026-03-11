@@ -28,7 +28,6 @@ public class BmsProductQueryListReqDTO {
     private String productInnerCode;
 
 
-    @EnumValue(message = "商品的采购类型入参错误",strValues = {"Y","N"})
     private String purchaseTypeCode;
 
 }

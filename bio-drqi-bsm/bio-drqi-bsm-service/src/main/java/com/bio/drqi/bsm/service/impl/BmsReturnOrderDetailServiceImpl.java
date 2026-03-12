@@ -2,7 +2,10 @@ package com.bio.drqi.bsm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
+import com.bio.drqi.bsm.enums.PayTypeEnum;
 import com.bio.drqi.bsm.req.BmsReturnOrderDetailListPageReqDTO;
+import com.bio.drqi.bsm.rsp.BmsMoveOrderDetailListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsReturnOrderDetailListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsReturnOrderDetailQueryByOrderDetailNumRspDTO;
 import com.bio.drqi.bsm.service.BmsReturnOrderDetailService;
@@ -13,6 +16,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -80,4 +84,28 @@ public class BmsReturnOrderDetailServiceImpl implements BmsReturnOrderDetailServ
         }
         return list;
       }
+
+    @Override
+    public void exportExcel(BmsReturnOrderDetailListPageReqDTO bmsReturnOrderDetailListPageReqDTO, HttpServletResponse httpServletResponse) {
+        List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectSelective(BeanUtils.copyProperties(bmsReturnOrderDetailListPageReqDTO, BmsReturnOrderDetailTb.class));
+        List<BmsReturnOrderDetailListPageRspDTO> bmsReturnOrderDetailListPageRspDTOList = BeanUtils.copyListProperties(bmsReturnOrderDetailTbList, BmsReturnOrderDetailListPageRspDTO.class);
+        if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailListPageRspDTOList)) {
+            List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
+            List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(null);
+            List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+            Map<String, String> bmsSupplierTbMap = bmsSupplierTbMapper.selectSelective(null).stream().collect(Collectors.toMap(BmsSupplierTb::getSupplierCode, BmsSupplierTb::getSupplierName));
+            Map<String, String> bmsBrandMap = bmsBrandTbList.stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
+            Map<String, String> bmsProductCategoryTbMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+            Map<String, String> bmsStockDictMap = bmsStockDictList.stream().collect(Collectors.toMap(BmsStockDict::getStockCode, BmsStockDict::getStockName));
+            bmsReturnOrderDetailListPageRspDTOList.forEach(bmsReturnOrderDetailListPageRspDTO -> {
+                bmsReturnOrderDetailListPageRspDTO.setStockName(bmsStockDictMap.get(bmsReturnOrderDetailListPageRspDTO.getStockCode()));
+                bmsReturnOrderDetailListPageRspDTO.setBrandName(bmsBrandMap.get(bmsReturnOrderDetailListPageRspDTO.getBrandCode()));
+                bmsReturnOrderDetailListPageRspDTO.setSupplierName(bmsSupplierTbMap.get(bmsReturnOrderDetailListPageRspDTO.getSupplierCode()));
+                bmsReturnOrderDetailListPageRspDTO.setProductCategoryName(bmsProductCategoryTbMap.get(bmsReturnOrderDetailListPageRspDTO.getProductCategoryCode()));
+                bmsReturnOrderDetailListPageRspDTO.setPayTypeName(PayTypeEnum.getNameByName(bmsReturnOrderDetailListPageRspDTO.getPayType()));
+            });
+        }
+        ExcelUtil.writeExcel("退货记录导出", "sheet1",bmsReturnOrderDetailListPageRspDTOList, BmsReturnOrderDetailListPageRspDTO.class, httpServletResponse);
+
+    }
 }

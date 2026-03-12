@@ -4,7 +4,9 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
 import com.bio.drqi.bsm.contents.BioBsmContents;
+import com.bio.drqi.bsm.enums.PayTypeEnum;
 import com.bio.drqi.bsm.req.BmsProductStockInLogListPageReqDTO;
 import com.bio.drqi.bsm.req.BmsProductStockInLogReturnStockReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockInLogDetailRspDTO;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -93,7 +96,7 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
         BmsProductCategoryTb bmsProductCategoryTb = bmsProductCategoryTbMapper.selectOneByProductCategoryCode(bmsProductStockInLog.getProductCategoryCode());
         bmsProductStockOutLogDetailRspDTO.setStockName(bmsStockDict != null ? bmsStockDict.getStockName() : null);
         bmsProductStockOutLogDetailRspDTO.setBrandName(bmsBrandTb == null ? null : bmsBrandTb.getBrandName());
-        bmsProductStockOutLogDetailRspDTO.setProductCategoryCode(bmsProductCategoryTb==null?null:bmsProductCategoryTb.getProductCategoryCode());
+        bmsProductStockOutLogDetailRspDTO.setProductCategoryCode(bmsProductCategoryTb == null ? null : bmsProductCategoryTb.getProductCategoryCode());
         return bmsProductStockOutLogDetailRspDTO;
     }
 
@@ -105,7 +108,7 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public synchronized void  returnStock(BmsProductStockInLogReturnStockReqDTO bmsProductStockInLogReturnStockReqDTO) {
+    public synchronized void returnStock(BmsProductStockInLogReturnStockReqDTO bmsProductStockInLogReturnStockReqDTO) {
         BmsProductStockInLog bmsProductStockInLog = bmsProductStockInLogMapper.selectById(bmsProductStockInLogReturnStockReqDTO.getId());
         if (bmsProductStockInLog == null) {
             throw new BusinessException("不存在此商品");
@@ -118,7 +121,7 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
         if (bmsProductStockInLog.getStoreNumber().doubleValue() < bmsProductStockInLogReturnStockReqDTO.getReturnNumber().doubleValue()) {
             throw new BusinessException("退货数量过多，最多可退货：" + bmsProductStockInLog.getStoreNumber());
         }
-        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCodeAndPayType(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo(), bmsProductStockInLog.getStockCode(),bmsProductStockInLog.getPayType());
+        BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCodeAndPayType(bmsProductStockInLog.getProductInnerCode(), bmsProductStockInLog.getUnitCode(), bmsProductStockInLog.getBatchNo(), bmsProductStockInLog.getStockCode(), bmsProductStockInLog.getPayType());
         if (bmsProductStockTb == null) {
             throw new BusinessException("库存中不存在此耗材");
         }
@@ -190,5 +193,29 @@ public class BmsProductStockInServiceImpl implements BmsProductStockInService {
         bmsReturnOrderDetailTbMapper.insert(bmsReturnOrderDetailTb);
 
 
+    }
+
+    @Override
+    public void exportExcel(BmsProductStockInLogListPageReqDTO bmsProductStockInLogListPageReqDTO, HttpServletResponse httpServletResponse) {
+
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(BeanUtils.copyProperties(bmsProductStockInLogListPageReqDTO, BmsProductStockInLog.class));
+        List<BmsProductStockInLogListPageRspDTO> bmsProductStockInLogListPageRspDTOList = BeanUtils.copyListProperties(bmsProductStockInLogList, BmsProductStockInLogListPageRspDTO.class);
+        if (CollectionUtil.isNotEmpty(bmsProductStockInLogListPageRspDTOList)) {
+            List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
+            List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(null);
+            List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+            Map<String, String> bmsSupplierTbMap = bmsSupplierTbMapper.selectSelective(null).stream().collect(Collectors.toMap(BmsSupplierTb::getSupplierCode, BmsSupplierTb::getSupplierName));
+            Map<String, String> bmsBrandMap = bmsBrandTbList.stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
+            Map<String, String> bmsProductCategoryTbMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+            Map<String, String> bmsStockDictMap = bmsStockDictList.stream().collect(Collectors.toMap(BmsStockDict::getStockCode, BmsStockDict::getStockName));
+            bmsProductStockInLogListPageRspDTOList.forEach(bmsProductStockInLogListPageRspDTO -> {
+                bmsProductStockInLogListPageRspDTO.setStockName(bmsStockDictMap.get(bmsProductStockInLogListPageRspDTO.getStockCode()));
+                bmsProductStockInLogListPageRspDTO.setSupplierName(bmsSupplierTbMap.get(bmsProductStockInLogListPageRspDTO.getSupplierCode()));
+                bmsProductStockInLogListPageRspDTO.setBrandName(bmsBrandMap.get(bmsProductStockInLogListPageRspDTO.getBrandCode()));
+                bmsProductStockInLogListPageRspDTO.setProductCategoryName(bmsProductCategoryTbMap.get(bmsProductStockInLogListPageRspDTO.getProductCategoryCode()));
+                bmsProductStockInLogListPageRspDTO.setPayTypeName(PayTypeEnum.getNameByName(bmsProductStockInLogListPageRspDTO.getPayType()));
+            });
+        }
+        ExcelUtil.writeExcel("入库记录导出", "sheet1", bmsProductStockInLogListPageRspDTOList, BmsProductStockInLogListPageRspDTO.class, httpServletResponse);
     }
 }

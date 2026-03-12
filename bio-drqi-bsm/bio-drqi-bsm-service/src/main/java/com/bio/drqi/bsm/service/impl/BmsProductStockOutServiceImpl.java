@@ -2,8 +2,12 @@ package com.bio.drqi.bsm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
+import com.bio.drqi.bsm.enums.OutTypeEnum;
+import com.bio.drqi.bsm.enums.PayTypeEnum;
 import com.bio.drqi.bsm.req.BmsProductStockOutLogListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockDetailRspDTO;
+import com.bio.drqi.bsm.rsp.BmsProductStockInLogListPageRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockOutLogDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockOutLogListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsProductStockOutService;
@@ -15,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -77,5 +82,30 @@ public class BmsProductStockOutServiceImpl implements BmsProductStockOutService 
         bmsProductStockOutLogDetailRspDTO.setSupplierName(bmsSupplierTb == null ? null : bmsSupplierTb.getSupplierName());
         bmsProductStockOutLogDetailRspDTO.setProductCategoryName(bmsProductCategoryTb == null ? null : bmsProductCategoryTb.getProductCategoryName());
         return bmsProductStockOutLogDetailRspDTO;
+    }
+
+    @Override
+    public void exportExcel(BmsProductStockOutLogListPageReqDTO bmsProductStockOutLogListPageReqDTO, HttpServletResponse httpServletResponse) {
+        List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectSelective(BeanUtils.copyProperties(bmsProductStockOutLogListPageReqDTO, BmsProductStockOutLog.class));
+        List<BmsProductStockOutLogListPageRspDTO> bmsProductStockOutLogListPageRspDTOList = BeanUtils.copyListProperties(bmsProductStockOutLogList, BmsProductStockOutLogListPageRspDTO.class);
+        if (CollectionUtil.isNotEmpty(bmsProductStockOutLogListPageRspDTOList)) {
+            List<BmsStockDict> bmsStockDictList = bmsStockDictMapper.selectList(null);
+            List<BmsBrandTb> bmsBrandTbList = bmsBrandTbMapper.selectSelective(null);
+            List<BmsProductCategoryTb> bmsProductCategoryTbList = bmsProductCategoryTbMapper.selectSelective(null);
+            Map<String, String> bmsSupplierTbMap = bmsSupplierTbMapper.selectSelective(null).stream().collect(Collectors.toMap(BmsSupplierTb::getSupplierCode, BmsSupplierTb::getSupplierName));
+            Map<String, String> bmsBrandMap = bmsBrandTbList.stream().collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
+            Map<String, String> bmsProductCategoryTbMap = bmsProductCategoryTbList.stream().collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+            Map<String, String> bmsStockDictMap = bmsStockDictList.stream().collect(Collectors.toMap(BmsStockDict::getStockCode, BmsStockDict::getStockName));
+            bmsProductStockOutLogListPageRspDTOList.forEach(bmsProductStockOutLogListPageRspDTO -> {
+                bmsProductStockOutLogListPageRspDTO.setStockName(bmsStockDictMap.get(bmsProductStockOutLogListPageRspDTO.getStockCode()));
+                bmsProductStockOutLogListPageRspDTO.setSupplierName(bmsSupplierTbMap.get(bmsProductStockOutLogListPageRspDTO.getSupplierCode()));
+                bmsProductStockOutLogListPageRspDTO.setProductCategoryName(bmsProductCategoryTbMap.get(bmsProductStockOutLogListPageRspDTO.getProductCategoryCode()));
+                bmsProductStockOutLogListPageRspDTO.setBrandName(bmsBrandMap.get(bmsProductStockOutLogListPageRspDTO.getBrandCode()));
+                bmsProductStockOutLogListPageRspDTO.setPayTypeName(PayTypeEnum.getNameByName(bmsProductStockOutLogListPageRspDTO.getPayType()));
+                bmsProductStockOutLogListPageRspDTO.setOutTypeName(OutTypeEnum.getNameByCode(bmsProductStockOutLogListPageRspDTO.getOutType()));
+            });
+        }
+        ExcelUtil.writeExcel("出库记录导出", "sheet1", bmsProductStockOutLogListPageRspDTOList, BmsProductStockOutLogListPageRspDTO.class, httpServletResponse);
+
     }
 }

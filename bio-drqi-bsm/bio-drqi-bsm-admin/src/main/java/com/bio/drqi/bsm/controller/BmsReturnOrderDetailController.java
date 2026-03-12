@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
@@ -51,4 +52,17 @@ public class BmsReturnOrderDetailController {
     public ResponseResult<List<BmsReturnOrderDetailQueryByOrderDetailNumRspDTO>> queryByOrderDetailNum(@RequestParam @Validated @NotBlank(message = "订单明细入参缺失") String orderDetailNum) {
         return ResponseResult.getSuccess(bmsReturnOrderDetailService.queryByOrderDetailNum(orderDetailNum));
     }
+
+    /**
+     * 退回订单管理-退货数据导出
+     *
+     * @param bmsReturnOrderDetailListPageReqDTO
+     * @return
+     */
+    @PostMapping("/listPage")
+    @WebLog(desc = "退回订单管理-退货数据导出")
+    public void exportExcel(@RequestBody BmsReturnOrderDetailListPageReqDTO bmsReturnOrderDetailListPageReqDTO, HttpServletResponse httpServletResponse) {
+        bmsReturnOrderDetailService.exportExcel(bmsReturnOrderDetailListPageReqDTO, httpServletResponse);
+    }
+
 }

@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -80,5 +81,18 @@ public class BmsProductStockInLogController {
     public ResponseResult<String> returnStock(@RequestBody @Validated BmsProductStockInLogReturnStockReqDTO bmsProductStockInLogReturnStockReqDTO) {
         bmsProductStockInService.returnStock(bmsProductStockInLogReturnStockReqDTO);
         return ResponseResult.getSuccess("ok");
+    }
+
+
+    /**
+     * 入库存明细管理-导出入库记录
+     *
+     * @param bmsProductStockInLogListPageReqDTO
+     * @return
+     */
+    @PostMapping("/exportExcel")
+    @WebLog(desc = "入库存明细管理-导出入库记录")
+    public void exportExcel(@RequestBody BmsProductStockInLogListPageReqDTO bmsProductStockInLogListPageReqDTO, HttpServletResponse httpServletResponse) {
+        bmsProductStockInService.exportExcel(bmsProductStockInLogListPageReqDTO,httpServletResponse);
     }
 }

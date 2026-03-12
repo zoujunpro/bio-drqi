@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 库存调拨
@@ -28,13 +29,26 @@ public class BmsMoveOrderDetailController {
 
     /**
      * 库存调拨-分页查询
+     *
      * @param bmsMoveOrderDetailListPageReqDTO
      * @return
      */
     @PostMapping("/listPage")
     @WebLog(desc = "库存调拨-分页查询")
     @RequirePermissions("bms:moveStock:listPage")
-    public ResponseResult<PageInfo<BmsMoveOrderDetailListPageRspDTO>> listPage(@RequestBody @Validated BmsMoveOrderDetailListPageReqDTO bmsMoveOrderDetailListPageReqDTO){
+    public ResponseResult<PageInfo<BmsMoveOrderDetailListPageRspDTO>> listPage(@RequestBody @Validated BmsMoveOrderDetailListPageReqDTO bmsMoveOrderDetailListPageReqDTO) {
         return ResponseResult.getSuccess(bmsMoveOrderDetailService.listPage(bmsMoveOrderDetailListPageReqDTO));
+    }
+
+    /**
+     * 库存调拨-移库记录导出
+     *
+     * @param bmsMoveOrderDetailListPageReqDTO
+     * @return
+     */
+    @PostMapping("/exportExcel")
+    @WebLog(desc = "库存调拨-移库记录导出")
+    public void exportExcel(@RequestBody @Validated BmsMoveOrderDetailListPageReqDTO bmsMoveOrderDetailListPageReqDTO, HttpServletResponse httpServletResponse) {
+        bmsMoveOrderDetailService.exportExcel(bmsMoveOrderDetailListPageReqDTO, httpServletResponse);
     }
 }

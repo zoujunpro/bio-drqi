@@ -4,6 +4,9 @@ import com.bio.drqi.bsm.req.BmsProductStockOutLogListPageReqDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockOutLogDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductStockOutLogListPageRspDTO;
 import com.github.pagehelper.PageInfo;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.servlet.http.HttpServletResponse;
 
 public interface BmsProductStockOutService {
 
@@ -23,4 +26,6 @@ public interface BmsProductStockOutService {
      * @return
      */
     BmsProductStockOutLogDetailRspDTO detail(Integer id);
+
+    void exportExcel(BmsProductStockOutLogListPageReqDTO bmsProductStockOutLogListPageReqDTO, HttpServletResponse httpServletResponse);
 }

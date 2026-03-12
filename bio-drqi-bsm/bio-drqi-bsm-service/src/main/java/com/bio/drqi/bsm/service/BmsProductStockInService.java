@@ -10,6 +10,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 
@@ -28,5 +29,7 @@ public interface BmsProductStockInService {
 
 
     void returnStock(BmsProductStockInLogReturnStockReqDTO bmsProductStockInLogReturnStockReqDTO);
+
+    void exportExcel(BmsProductStockInLogListPageReqDTO bmsProductStockInLogListPageReqDTO, HttpServletResponse httpServletResponse);
 
 }

@@ -11,6 +11,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 出库存明细管理
@@ -33,7 +34,6 @@ public class BmsProductStockOutLogController {
     @RequirePermissions("bms:productStockOutLog:listPage")
     public ResponseResult<PageInfo<BmsProductStockOutLogListPageRspDTO>> listPage(@RequestBody BmsProductStockOutLogListPageReqDTO bmsProductStockOutLogListPageReqDTO) {
         return ResponseResult.getSuccess(bmsProductStockOutService.listPage(bmsProductStockOutLogListPageReqDTO));
-
     }
 
     /**
@@ -48,4 +48,17 @@ public class BmsProductStockOutLogController {
     public ResponseResult<BmsProductStockOutLogDetailRspDTO> detail(@RequestParam Integer id) {
         return ResponseResult.getSuccess(bmsProductStockOutService.detail(id));
     }
+
+    /**
+     * 出库存明细管理-出库记录导出
+     *
+     * @param bmsProductStockOutLogListPageReqDTO
+     * @return
+     */
+    @PostMapping("/exportExcel")
+    @WebLog(desc = "出库存明细管理-出库记录导出")
+    public void exportExcel(@RequestBody BmsProductStockOutLogListPageReqDTO bmsProductStockOutLogListPageReqDTO, HttpServletResponse httpServletResponse) {
+        bmsProductStockOutService.exportExcel(bmsProductStockOutLogListPageReqDTO, httpServletResponse);
+    }
+
 }

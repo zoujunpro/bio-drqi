@@ -37,4 +37,6 @@ public class BmsProductListPageReqDTO extends PageDTO {
     private String productStatus;
 
     private String purchaseTypeCode;
+
+    private String createUserName;
 }

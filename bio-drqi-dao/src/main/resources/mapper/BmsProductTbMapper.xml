@@ -51,7 +51,7 @@
                 and date_format(update_time,'%Y-%m-%d') &lt;= #{endDate,jdbcType=VARCHAR}
             </if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
-            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="createUserName != null and createUserName!=''">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
             <if test="productStatus != null and productStatus!=''">and product_status=#{productStatus,jdbcType=VARCHAR}</if>
             <if test="purchaseTypeCode != null and purchaseTypeCode!=''">and purchase_type_code=#{purchaseTypeCode,jdbcType=VARCHAR}</if>
         </where>

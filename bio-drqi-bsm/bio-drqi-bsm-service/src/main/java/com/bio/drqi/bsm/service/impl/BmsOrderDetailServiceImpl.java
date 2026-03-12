@@ -309,14 +309,14 @@ public class BmsOrderDetailServiceImpl implements BmsOrderDetailService {
         }
 
         List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectAllByOrderDetailNum(bmsOrderDetailTb.getOrderDetailNum());
-        if (CollectionUtil.isNotEmpty(bmsProductStockInLogList) && bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductStockInLog.getKdNumber() != null).collect(Collectors.toList()).size() > 0) {
+     /*   if (CollectionUtil.isNotEmpty(bmsProductStockInLogList) && bmsProductStockInLogList.stream().filter(bmsProductStockInLog -> bmsProductStockInLog.getKdNumber() != null).collect(Collectors.toList()).size() > 0) {
             throw new BusinessException("此订单已经入库且已经和金蝶进行过账务同步，无法更改");
-        }
+        }*/
 
         List<BmsReturnOrderDetailTb> bmsReturnOrderDetailTbList = bmsReturnOrderDetailTbMapper.selectAllByOrderDetailNum(bmsOrderDetailTb.getOrderDetailNum());
-        if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList) && bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsReturnOrderDetailTb.getKdNumber() != null).collect(Collectors.toList()).size() > 0) {
+     /*   if (CollectionUtil.isNotEmpty(bmsReturnOrderDetailTbList) && bmsReturnOrderDetailTbList.stream().filter(bmsReturnOrderDetailTb -> bmsReturnOrderDetailTb.getKdNumber() != null).collect(Collectors.toList()).size() > 0) {
             throw new BusinessException("此订单的退货订单已经同步到金蝶系统，无法更改");
-        }
+        }*/
 
         //修改订单金额和总金额
         bmsOrderDetailTb.setPurchasePrice(bmsOrderDetailModifyPriceReqDTO.getPurchasePrice());

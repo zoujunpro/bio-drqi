@@ -18,6 +18,13 @@ public class BmsOrderDetailExcelDTO {
 
 
     /**
+     * 订单明细编号
+     */
+    @ExcelProperty("订单明细编号")
+    private String orderDetailNum;
+
+
+    /**
      * 项目编号
      */
     @ExcelProperty("项目编号")

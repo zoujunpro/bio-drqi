@@ -60,4 +60,10 @@ public class BmsProductStockInLogListPageReqDTO extends PageDTO {
      */
     private String ifSynJinDieFlag;
 
+
+    /**
+     * 供应商编号
+     */
+    private String supplierCode;
+
 }

@@ -69,6 +69,4 @@ public class BmsProductStockOutLogListPageReqDTO  extends PageDTO {
      */
     private String ifSynJinDieFlag;
 
-
-
 }

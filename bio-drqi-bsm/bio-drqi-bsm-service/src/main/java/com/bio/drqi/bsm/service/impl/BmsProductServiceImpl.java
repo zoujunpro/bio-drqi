@@ -142,6 +142,7 @@ public class BmsProductServiceImpl implements BmsProductService {
         bmsProductTb.setCreateUserName(SecurityContextHolder.getNickName());
         bmsProductTb.setProductStatus(BioDrQiContents.Y);
         bmsProductTb.setUpdateTime(new Date());
+        bmsProductTb.setPurchaseTypeCode(bmsProductAddReqDTO.getPurchaseTypeCode());
         log.info("商品入库={}", bmsProductTb);
         try {
             bmsProductTbMapper.insert(bmsProductTb);

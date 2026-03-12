@@ -39,4 +39,6 @@ public class BmsProductAddReqDTO {
     @NotBlank(message = "规格必填")
     private String productSpecs;
 
+
+    private String purchaseTypeCode;
 }

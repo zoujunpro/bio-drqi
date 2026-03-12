@@ -59,7 +59,7 @@ public class BmsReturnOrderDetailController {
      * @param bmsReturnOrderDetailListPageReqDTO
      * @return
      */
-    @PostMapping("/listPage")
+    @PostMapping("/exportExcel")
     @WebLog(desc = "退回订单管理-退货数据导出")
     public void exportExcel(@RequestBody BmsReturnOrderDetailListPageReqDTO bmsReturnOrderDetailListPageReqDTO, HttpServletResponse httpServletResponse) {
         bmsReturnOrderDetailService.exportExcel(bmsReturnOrderDetailListPageReqDTO, httpServletResponse);

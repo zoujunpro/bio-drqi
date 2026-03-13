@@ -33,7 +33,7 @@
         from plant_apply_tb
         <where>
             <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
-            <if test="experimentType != null and experimentType!=''">and experiment_type=#{experimentType,jdbcType=VARCHAR}</if>
+            <if test="experimentType != null and experimentType!=''">and experiment_type   like  CONCAT('%',#{experimentType,jdbcType=VARCHAR},'%')</if>
             <if test="plantApplyNum != null and plantApplyNum!=''">and plant_apply_num=#{plantApplyNum,jdbcType=VARCHAR}</if>
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>

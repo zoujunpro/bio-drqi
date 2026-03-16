@@ -19,6 +19,8 @@
             <result property="vectorTaskCodes" column="vector_task_codes" jdbcType="VARCHAR"/>
             <result property="sampleCodeRange" column="sample_code_range" jdbcType="VARCHAR"/>
             <result property="taskStatus" column="task_status" jdbcType="VARCHAR"/>
+            <result property="sampleOrganize" column="sample_organize" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -26,7 +28,7 @@
         apply_time,apply_user_id,apply_user_name,
         apply_desc,apply_type,identify_excel_url,
         clone_flag,layout_flag,vector_task_codes,
-        sample_code_range,task_status
+        sample_code_range,task_status,sample_organize
     </sql>
     <select id="selectOneByApplyNo" resultMap="BaseResultMap">
         select

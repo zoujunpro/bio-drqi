@@ -2,6 +2,7 @@ package com.bio.drqi.manage.controller;
 
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.bio.common.core.context.SecurityContextHolder;
@@ -9,6 +10,8 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.common.enums.TestResultEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.SeedSourceEnum;
@@ -19,6 +22,7 @@ import com.bio.drqi.manage.sample.req.ApproveSampleResultReqDTO;
 import com.bio.drqi.manage.service.bio.BioSampleTestService;
 import com.bio.drqi.manage.service.common.SeedPlantService;
 import com.bio.drqi.mapper.*;
+import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
 import com.bio.print.PlantApplyPrintDTO;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -94,6 +98,170 @@ public class CleanTestController {
     @Autowired
     private CerConversionAndTransRefMapper cerConversionAndTransRefMapper;
 
+    @Resource
+    private TcSampleTestApplyTbMapper tcSampleTestApplyTbMapper;
+
+    @Resource
+    private TcSampleTestTbMapper tcSampleTestTbMapper;
+
+    @Resource
+    private TcSampleLayoutTbMapper tcSampleLayoutTbMapper;
+
+    @Resource
+    private TcSampleTestBioInfoResultTbMapper tcSampleTestBioInfoResultTbMapper;
+
+    @Resource
+    private TcSampleTestBioResultRefMapper tcSampleTestBioResultRefMapper;
+
+    @Resource
+    private BioSampleLayoutTbMapper bioSampleLayoutTbMapper;
+
+    @Resource
+    private BioSampleApplyTbMapper bioSampleApplyTbMapper;
+
+    @Resource
+    private BioSampleTestTwoResultTbMapper bioSampleTestTwoResultTbMapper;
+
+    @Resource
+    private BioSampleTestTwoResultDetailTbMapper bioSampleTestTwoResultDetailTbMapper;
+
+
+    @GetMapping("cleanTcSampleData20260316")
+    public ResponseResult<String> cleanTcSampleData20260316() {
+        //取样检测的孔板迁移
+        List<TcSampleLayoutTb> tcSampleLayoutTbList = tcSampleLayoutTbMapper.selectList(null);
+        for (TcSampleLayoutTb tcSampleLayoutTb : tcSampleLayoutTbList) {
+            BioSampleLayoutTb bioSampleLayoutTb = bioSampleLayoutTbMapper.selectOneByApplyNo(tcSampleLayoutTb.getApplyNo());
+            if (bioSampleLayoutTb != null) {
+                bioSampleLayoutTb = new BioSampleLayoutTb();
+                bioSampleLayoutTb.setApplyNo(tcSampleLayoutTb.getApplyNo());
+                bioSampleLayoutTb.setSingleContent(tcSampleLayoutTb.getSingleContent());
+                bioSampleLayoutTb.setPlateContent(tcSampleLayoutTb.getPlateContent());
+                bioSampleLayoutTb.setCreateTime(tcSampleLayoutTb.getCreateTime());
+                bioSampleLayoutTbMapper.insert(bioSampleLayoutTb);
+            }
+        }
+        //迁移田测取样检测申请表
+        List<TcSampleTestApplyTb> tcSampleTestApplyTbs = tcSampleTestApplyTbMapper.selectSelective(null);
+        for (TcSampleTestApplyTb tcSampleTestApplyTb : tcSampleTestApplyTbs) {
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcSampleTestApplyTb.getTaskNum());
+            TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
+            BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
+            if (tcSampleTestTaskDTO != null && bioSampleApplyTb == null) {
+                bioSampleApplyTb = new BioSampleApplyTb();
+                bioSampleApplyTb.setApplyNo(tcSampleTestApplyTb.getSampleApplyNum());
+                bioSampleApplyTb.setApplyTime(tcSampleTestApplyTb.getCreateTime());
+                bioSampleApplyTb.setApplyUserId(tcSampleTestApplyTb.getCreateUserId());
+                bioSampleApplyTb.setApplyUserName(tcSampleTestApplyTb.getCreateUserName());
+                bioSampleApplyTb.setApplyDesc(null);
+                bioSampleApplyTb.setApplyType(tcSampleTestApplyTb.getApplyType());
+                bioSampleApplyTb.setIdentifyExcelUrl(tcSampleTestApplyTb.getIdentifyPrimerExcelUrl());
+                bioSampleApplyTb.setSampleOrganize(tcSampleTestApplyTb.getSampleOrganize());
+                bioSampleApplyTb.setCloneFlag("N");
+                bioSampleApplyTb.setLayoutFlag(tcSampleTestTaskDTO.getTestType());
+                bioSampleApplyTb.setVectorTaskCodes(null);
+                bioSampleApplyTb.setSampleCodeRange(null);
+                bioSampleApplyTbMapper.insert(bioSampleApplyTb);
+            }
+        }
+        //迁移取样表
+        List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectSelective(null);
+        for (TcSampleTestTb tcSampleTestTb : tcSampleTestTbList) {
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcSampleTestTb.getSampleApplyNum());
+            BioSampleTestTb bioSampleTestTb = new BioSampleTestTb();
+            bioSampleTestTb.setVectorTaskCode(tcSampleTestTb.getVectorTaskCode());
+            bioSampleTestTb.setSampleCode(tcSampleTestTb.getSampleCode());
+            bioSampleTestTb.setApplyTime(DateUtil.parse(tcSampleTestTb.getSampleTime(), "yyyy-MM-dd"));
+            bioSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
+            bioSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
+            bioSampleTestTb.setTestIdentifyPrimer(tcSampleTestTb.getTestIdentifyPrimer());
+            bioSampleTestTb.setTestMethod(tcSampleTestTb.getTestMethod());
+            bioSampleTestTb.setTestEditType(tcSampleTestTb.getTestEditType());
+            bioSampleTestTb.setTestNoTransIdentityPrimer(tcSampleTestTb.getTestNoTransIdentityPrimer());
+            bioSampleTestTb.setTestIsGeneModifyPositive(tcSampleTestTb.getTestIsGeneModifyPositive());
+            bioSampleTestTb.setTestIfFixedPoint(tcSampleTestTb.getTestIfFixedPoint());
+            bioSampleTestTb.setTestIfCopyInsert(tcSampleTestTb.getTestIfCopyInsert());
+            bioSampleTestTb.setTestFixedPointType(tcSampleTestTb.getTestFixedPointType());
+            bioSampleTestTb.setTestDonorResidueInfo(tcSampleTestTb.getTestDonorResidueInfo());
+            bioSampleTestTb.setTestInsertionSite(tcSampleTestTb.getTestInsertionSite());
+            bioSampleTestTb.setTestElisaResult(tcSampleTestTb.getTestElisaResult());
+            bioSampleTestTb.setTestQbzrSeq(tcSampleTestTb.getTestQbzrSeq());
+            bioSampleTestTb.setTestEditResidueInfo(tcSampleTestTb.getTestEditResidueInfo());
+            bioSampleTestTb.setTestUserId(tcSampleTestTb.getTestUserId());
+            bioSampleTestTb.setTestUserName(tcSampleTestTb.getTestUserName());
+            bioSampleTestTb.setTestTime(tcSampleTestTb.getTestTime());
+            bioSampleTestTb.setCheckUserName(null);
+            bioSampleTestTb.setCheckUserId(null);
+            bioSampleTestTb.setCheckResult(tcSampleTestTb.getCheckResult());
+            bioSampleTestTb.setCreateTime(bioTaskDtlTb.getCreateTime());
+            bioSampleTestTb.setUpdateTime(bioTaskDtlTb.getCreateTime());
+            bioSampleTestTb.setApplyNo(tcSampleTestTb.getSampleApplyNum());
+            bioSampleTestTb.setIdentifyPrimer(tcSampleTestTb.getIdentifyPrimer());
+            bioSampleTestTb.setUniqueCode(StringUtils.isEmpty(tcSampleTestTb.getUniqueCode()) ? null : tcSampleTestTb.getSampleCode());
+            bioSampleTestTb.setRemark(null);
+            bioSampleTestTb.setCloneSampleCode(null);
+            bioSampleTestTb.setSourceCode(SourceCodeEnum.field.name());
+            bioSampleTestTb.setTestOrgResult(tcSampleTestTb.getTestOrgResult());
+            bioSampleTestTb.setGeneration(tcSampleTestTb.getGenerationCode());
+            bioSampleTestTb.setSpeciesCode(tcSampleTestTb.getSpeciesCode());
+            bioSampleTestTb.setBreedCode(tcSampleTestTb.getBreedCode());
+            bioSampleTestTb.setExperimentNum(tcSampleTestTb.getExperimentNum());
+            bioSampleTestTb.setRegionNum(tcSampleTestTb.getRegionNum());
+            bioSampleTestTb.setSeedNum(tcSampleTestTb.getSeedNum());
+            bioSampleTestTb.setTransformCode(null);
+            bioSampleTestTb.setTestResult(TestResultEnum.noTest.name());
+            List<TcSampleTestBioInfoResultTb> tcSampleTestBioInfoResultTbList = tcSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(bioSampleTestTb.getApplyNo(), bioSampleTestTb.getSampleCode());
+            if (CollectionUtil.isNotEmpty(tcSampleTestBioInfoResultTbList) || bioSampleTestTb.ifHaveTestResult()) {
+                bioSampleTestTb.setTestResult(TestResultEnum.haveResult.name());
+            } else {
+                if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
+                    bioSampleTestTb.setTestResult(TestResultEnum.noResult.name());
+                }
+            }
+            bioSampleTestTbMapper.insert(bioSampleTestTb);
+        }
+        //迁移二代测序
+        List<TcSampleTestBioResultRef> tcSampleTestBioResultRefList = tcSampleTestBioResultRefMapper.selectList(null);
+        for (TcSampleTestBioResultRef tcSampleTestBioResultRef : tcSampleTestBioResultRefList) {
+            List<TcSampleTestBioInfoResultTb> bioInfoResultTbList = tcSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(tcSampleTestBioResultRef.getApplyNo(), tcSampleTestBioResultRef.getSampleCode());
+            bioInfoResultTbList = bioInfoResultTbList.stream().filter(tcSampleTestBioInfoResultTb -> "checked".equals(tcSampleTestBioInfoResultTb.getConfirmStatus())).collect(Collectors.toList());
+            BioSampleTestTwoResultTb bioSampleTestTwoResultTb = new BioSampleTestTwoResultTb();
+            bioSampleTestTwoResultTb.setApplyNo(tcSampleTestBioResultRef.getApplyNo());
+            bioSampleTestTwoResultTb.setSampleCode(tcSampleTestBioResultRef.getSampleCode());
+            bioSampleTestTwoResultTb.setSampleId(tcSampleTestBioResultRef.getSampleId());
+            bioSampleTestTwoResultTb.setRunId(tcSampleTestBioResultRef.getRunId());
+            bioSampleTestTwoResultTb.setCreateTime(tcSampleTestBioResultRef.getCreateTime());
+            bioSampleTestTwoResultTb.setUploadNum(null);
+            bioSampleTestTwoResultTb.setTestChannel(SourceCodeEnum.field.name());
+            if (CollectionUtil.isNotEmpty(bioInfoResultTbList)) {
+                bioSampleTestTwoResultTb.setSynResult("Y");
+            }
+            bioSampleTestTwoResultTbMapper.insert(bioSampleTestTwoResultTb);
+            for (TcSampleTestBioInfoResultTb tcSampleTestBioInfoResultTb : bioInfoResultTbList) {
+                BioSampleTestTwoResultDetailTb bioSampleTestTwoResultDetailTb = new BioSampleTestTwoResultDetailTb();
+                bioSampleTestTwoResultDetailTb.setApplyNo(tcSampleTestBioInfoResultTb.getApplyNo());
+                bioSampleTestTwoResultDetailTb.setSampleCode(tcSampleTestBioInfoResultTb.getSampleCode());
+                bioSampleTestTwoResultDetailTb.setSampleId(tcSampleTestBioInfoResultTb.getSampleId());
+                bioSampleTestTwoResultDetailTb.setUniqueDbCode(tcSampleTestBioInfoResultTb.getUniqueDbCode());
+                bioSampleTestTwoResultDetailTb.setRunId(tcSampleTestBioInfoResultTb.getRunId());
+                bioSampleTestTwoResultDetailTb.setHapId(tcSampleTestBioInfoResultTb.getHapId());
+                bioSampleTestTwoResultDetailTb.setVarType(tcSampleTestBioInfoResultTb.getVarType());
+                bioSampleTestTwoResultDetailTb.setMutate(tcSampleTestBioInfoResultTb.getMutate());
+                bioSampleTestTwoResultDetailTb.setRatio(tcSampleTestBioInfoResultTb.getRatio());
+                bioSampleTestTwoResultDetailTb.setCreateTime(tcSampleTestBioInfoResultTb.getCreateTime());
+                bioSampleTestTwoResultDetailTb.setConfirmStatus(tcSampleTestBioInfoResultTb.getConfirmStatus());
+                bioSampleTestTwoResultDetailTb.setResultKey(tcSampleTestBioInfoResultTb.getResultKey());
+                bioSampleTestTwoResultDetailTb.setMatchFlag(tcSampleTestBioInfoResultTb.getMatchFlag());
+                bioSampleTestTwoResultDetailTb.setTwoResultId(tcSampleTestBioResultRef.getId());
+                bioSampleTestTwoResultDetailTbMapper.insert(bioSampleTestTwoResultDetailTb);
+
+            }
+
+
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
 
     @GetMapping("cleanSampleTestResult")
     @Transactional(rollbackFor = Exception.class)
@@ -101,7 +269,7 @@ public class CleanTestController {
         List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectSelective(null);
         bioSampleTestTbList = bioSampleTestTbList.stream().filter(bioSampleTestTb -> bioSampleTestTb.getTestUserId() != null).collect(Collectors.toList());
         for (BioSampleTestTb bioSampleTestTb : bioSampleTestTbList) {
-            log.info("清洗数据："+bioSampleTestTb.getSampleCode());
+            log.info("清洗数据：" + bioSampleTestTb.getSampleCode());
             if (bioSampleTestTb.ifHaveTestResult()) {
                 bioSampleTestTb.setTestResult(TestResultEnum.haveResult.name());
                 bioSampleTestTbMapper.updateById(bioSampleTestTb);

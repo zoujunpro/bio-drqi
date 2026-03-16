@@ -13,6 +13,7 @@ import java.util.List;
 * @Entity com.bio.drqi.domain.BioSampleApplyTb
 */
 public interface BioSampleApplyTbMapper extends BaseMapper<BioSampleApplyTb> {
+
     BioSampleApplyTb selectOneByApplyNo(@Param("applyNo") String applyNo);
 
     int deleteByApplyNo(@Param("applyNo") String applyNo);

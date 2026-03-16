@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.bio.drqi.domain.TcPollinationSingleNumTb
 */
 public interface TcPollinationSingleNumTbMapper extends BaseMapper<TcPollinationSingleNumTb> {
+
     List<TcPollinationSingleNumTb> selectAllByExperimentNumAndPollinationApplyNumIsNull(@Param("experimentNum") String experimentNum);
 
     int deleteByExperimentNumAndPollinationApplyNumIsNull(@Param("experimentNum") String experimentNum);
@@ -24,10 +25,12 @@ public interface TcPollinationSingleNumTbMapper extends BaseMapper<TcPollination
     TcPollinationSingleNumTb selectOneByExperimentNumAndTcSingleNumber(@Param("experimentNum") String experimentNum, @Param("tcSingleNumber") String tcSingleNumber);
 
     List<TcPollinationSingleNumTb> selectAllByExperimentNumOrderByIdDesc(@Param("experimentNum") String experimentNum);
+
     List<TcPollinationSingleNumTb> selectAllByExperimentNumAndRegionNumOrderByIdDesc(@Param("experimentNum") String experimentNum, @Param("regionNum") String regionNum);
 
     int updatePollinationApplyNumByExperimentNumAndPollinationApplyNumIsNull(@Param("pollinationApplyNum") String pollinationApplyNum, @Param("experimentNum") String experimentNum);
 
+    int deleteBySampleApplyNum(@Param("sampleApplyNum") String sampleApplyNum);
 }
 
 

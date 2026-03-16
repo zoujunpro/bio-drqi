@@ -239,7 +239,6 @@ public class BioSampleTestTb implements Serializable {
         bioSampleTestTb.setSpeciesCode(plantMultipleStockTb.getSpeciesCode());
         bioSampleTestTb.setTransformCode(plantMultipleStockTb.getTransformCode());
         bioSampleTestTb.setSeedNum(plantMultipleStockTb.getSeedNum());
-        bioSampleTestTb.setExperimentNum(null);
         bioSampleTestTb.setRegionNum(plantMultipleStockTb.getRegionNum());
         bioSampleTestTb.setApplyTime(bioTaskDtlTb.getApplyTime());
         bioSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
@@ -285,7 +284,7 @@ public class BioSampleTestTb implements Serializable {
         bioSampleTestTb.setSpeciesCode(targetSampleTestTb.getSpeciesCode());
         bioSampleTestTb.setTransformCode(targetSampleTestTb.getTransformCode());
         bioSampleTestTb.setSeedNum(targetSampleTestTb.getSeedNum());
-        bioSampleTestTb.setExperimentNum(null);
+        bioSampleTestTb.setExperimentNum(targetSampleTestTb.getExperimentNum());
         bioSampleTestTb.setRegionNum(targetSampleTestTb.getRegionNum());
         bioSampleTestTb.setApplyTime(bioTaskDtlTb.getApplyTime());
         bioSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());

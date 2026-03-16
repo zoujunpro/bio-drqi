@@ -36,9 +36,6 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
     private PlantSingleStockTbMapper plantSingleStockTbMapper;
 
     @Resource
-    private CerVectorTaskTbMapper cerVectorTaskTbMapper;
-
-    @Resource
     private BioSampleCodePrefixTbMapper bioSampleCodePrefixTbMapper;
 
     @Resource
@@ -67,6 +64,9 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
     @Resource
     private BioSampleTestOneResultTbMapper bioSampleTestOneResultTbMapper;
+
+    @Resource
+    private BioSampleTestResultFileTbMapper bioSampleTestResultFileTbMapper;
 
 
     @Override
@@ -265,6 +265,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
 
         plantSingleStockTbMapper.deleteByTaskNum(bioTaskDtlTb.getTaskNum());
         bioSampleTestOneResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
+        bioSampleTestResultFileTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
         //首次取样回退取样苗信息
         if (SampleTestApplyTypeEnum.first.name().equals(plantExperimentTaskDTO.getApplyType())) {
 

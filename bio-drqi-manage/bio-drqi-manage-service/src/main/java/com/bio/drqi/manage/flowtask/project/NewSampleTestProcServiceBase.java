@@ -65,6 +65,9 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     @Resource
     private BioSampleTestOneResultTbMapper bioSampleTestOneResultTbMapper;
 
+    @Resource
+    private BioSampleTestResultFileTbMapper bioSampleTestResultFileTbMapper;
+
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -156,6 +159,8 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
             });
         }
         bioSampleTestOneResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
+        bioSampleTestResultFileTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
+
         cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.cer_plant.name());
         cerVectorStepLogMapper.deleteByTaskNumAndStepCode(bioTaskDtlTb.getTaskNum(), ImplementationPlanTypeEnum.sample_and_test.name());
 

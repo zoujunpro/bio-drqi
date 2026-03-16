@@ -11,9 +11,10 @@ import java.util.Date;
 
 /**
  * 授粉无取样编号的单珠编号区间
+ *
  * @TableName tc_pollination_single_num_tb
  */
-@TableName(value ="tc_pollination_single_num_tb")
+@TableName(value = "tc_pollination_single_num_tb")
 @Data
 public class TcPollinationSingleNumTb implements Serializable {
     /**
@@ -54,7 +55,26 @@ public class TcPollinationSingleNumTb implements Serializable {
 
     private String tcSingleNumber;
 
+    private String sampleCode;
+
+    private String sampleApplyNum;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+
+    public static TcPollinationSingleNumTb of(String experimentNum, String seedNum, String regionNum, String tcSingleNumber, String sampleCode, String sampleApplyNum, String createUserName) {
+        TcPollinationSingleNumTb tcPollinationSingleNumTb = new TcPollinationSingleNumTb();
+        tcPollinationSingleNumTb.setExperimentNum(experimentNum);
+        tcPollinationSingleNumTb.setPollinationApplyNum(null);
+        tcPollinationSingleNumTb.setSeedNum(seedNum);
+        tcPollinationSingleNumTb.setRegionNum(regionNum);
+        tcPollinationSingleNumTb.setCreateTime(new Date());
+        tcPollinationSingleNumTb.setCreateUserName(createUserName);
+        tcPollinationSingleNumTb.setTcSingleNumber(tcSingleNumber);
+        tcPollinationSingleNumTb.setSampleCode(sampleCode);
+        tcPollinationSingleNumTb.setSampleApplyNum(sampleApplyNum);
+        return tcPollinationSingleNumTb;
+    }
 
 }

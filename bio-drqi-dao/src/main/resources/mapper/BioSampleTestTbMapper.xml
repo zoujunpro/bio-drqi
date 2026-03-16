@@ -418,4 +418,11 @@
         where
         vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByExperimentNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_test_tb
+        where
+        experiment_num = #{experimentNum,jdbcType=VARCHAR}
+    </select>
 </mapper>

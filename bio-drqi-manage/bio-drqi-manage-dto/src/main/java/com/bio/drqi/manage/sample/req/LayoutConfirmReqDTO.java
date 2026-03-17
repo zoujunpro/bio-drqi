@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.sample.req;
 
-import com.bio.drqi.manage.base.SampleUnitDTO;
+import com.bio.drqi.common.dto.SampleUnitDTO;
 import lombok.Data;
 
 import java.util.ArrayList;

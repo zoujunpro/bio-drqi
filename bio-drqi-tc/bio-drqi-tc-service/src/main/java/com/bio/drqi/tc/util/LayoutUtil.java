@@ -1,7 +1,6 @@
 package com.bio.drqi.tc.util;
 
 import com.bio.drqi.domain.TcSampleTestTb;
-import com.bio.drqi.tc.SampleUnitDTO;
 import lombok.Data;
 
 import java.util.ArrayList;

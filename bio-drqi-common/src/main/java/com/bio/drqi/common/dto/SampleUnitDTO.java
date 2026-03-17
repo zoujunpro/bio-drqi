@@ -1,4 +1,4 @@
-package com.bio.drqi.manage.base;
+package com.bio.drqi.common.dto;
 
 import com.bio.common.core.util.StringUtils;
 import lombok.Data;

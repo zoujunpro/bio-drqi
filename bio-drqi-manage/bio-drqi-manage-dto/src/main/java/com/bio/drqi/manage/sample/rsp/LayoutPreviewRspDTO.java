@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.sample.rsp;
 
 
-import com.bio.drqi.manage.base.SampleUnitDTO;
+import com.bio.drqi.common.dto.SampleUnitDTO;
 import lombok.Data;
 
 import java.util.ArrayList;

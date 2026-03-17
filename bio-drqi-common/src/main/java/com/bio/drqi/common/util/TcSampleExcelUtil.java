@@ -1,11 +1,10 @@
-package com.bio.drqi.tc.util;
+package com.bio.drqi.common.util;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.dto.SampleUnitDTO;
 import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
-import com.bio.drqi.domain.TcExperimentTb;
-import com.bio.drqi.domain.TcSampleTestApplyTb;
-import com.bio.drqi.tc.SampleUnitDTO;
+
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFCell;
@@ -23,13 +22,13 @@ import java.util.List;
 
 public class TcSampleExcelUtil {
 
-    private static final String tcSampleCode="tcSampleCode";
+    private static final String tcSampleCode = "tcSampleCode";
 
-    private static final String sampleCode="sampleCode";
+    private static final String sampleCode = "sampleCode";
 
 
-    public static void createExcel(TcSampleTestApplyTb tcSampleTestApplyTb, TcExperimentTb tcExperimentTb, List<List<List<SampleUnitDTO>>> layoutList, List<SampleUnitDTO> singleList, HttpServletResponse response, String fileName) {
-        SXSSFWorkbook workbook = createExcel(tcSampleTestApplyTb, tcExperimentTb, layoutList, singleList);
+    public static void createExcel(String applyNo, String experimentNum, String speciesName, String sampleOrganize, String applyType, List<List<List<SampleUnitDTO>>> layoutList, List<SampleUnitDTO> singleList, HttpServletResponse response, String fileName) {
+        SXSSFWorkbook workbook = createExcel(applyNo, experimentNum, speciesName, sampleOrganize, applyType, layoutList, singleList);
 
         ServletOutputStream out = null;
         try {
@@ -54,26 +53,26 @@ public class TcSampleExcelUtil {
 
     }
 
-    private static SXSSFWorkbook createExcel(TcSampleTestApplyTb tcSampleTestApplyTb, TcExperimentTb tcExperimentTb, List<List<List<SampleUnitDTO>>> layoutList, List<SampleUnitDTO> singleList) {
+    private static SXSSFWorkbook createExcel(String applyNo, String experimentNum, String speciesName, String sampleOrganize, String applyType, List<List<List<SampleUnitDTO>>> layoutList, List<SampleUnitDTO> singleList) {
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         if (CollectionUtil.isNotEmpty(layoutList)) {
-            initNinetySixByLayoutSheet(tcSampleTestApplyTb, tcExperimentTb, layoutList, workbook,tcSampleCode);
-            initNinetySixByLayoutSheet(tcSampleTestApplyTb, tcExperimentTb, layoutList, workbook,sampleCode);
+            initNinetySixByLayoutSheet(applyNo, experimentNum, speciesName, sampleOrganize, applyType, layoutList, workbook, tcSampleCode);
+            initNinetySixByLayoutSheet(applyNo, experimentNum, speciesName, sampleOrganize, applyType, layoutList, workbook, sampleCode);
 
 
-            initNinetySixByRowSheet(tcSampleTestApplyTb, layoutList, workbook,tcSampleCode);
-            initNinetySixByRowSheet(tcSampleTestApplyTb, layoutList, workbook,sampleCode);
+            initNinetySixByRowSheet(applyNo, layoutList, workbook, tcSampleCode);
+            initNinetySixByRowSheet(applyNo, layoutList, workbook, sampleCode);
         }
         if (CollectionUtil.isNotEmpty(singleList)) {
-            initSingleSheet(singleList, workbook,tcSampleCode);
-            initSingleSheet(singleList, workbook,sampleCode);
+            initSingleSheet(singleList, workbook, tcSampleCode);
+            initSingleSheet(singleList, workbook, sampleCode);
         }
         return workbook;
 
     }
 
-    private static void createExcel(TcSampleTestApplyTb tcSampleTestApplyTb, TcExperimentTb tcExperimentTb, List<List<List<SampleUnitDTO>>> layoutList, List<SampleUnitDTO> singleList, String path) {
-        SXSSFWorkbook workbook = createExcel(tcSampleTestApplyTb, tcExperimentTb, layoutList, singleList);
+    private static void createExcel(String applyNo, String experimentNum, String speciesName, String sampleOrganize, String applyType, List<List<List<SampleUnitDTO>>> layoutList, List<SampleUnitDTO> singleList, String path) {
+        SXSSFWorkbook workbook = createExcel(applyNo, experimentNum, speciesName, sampleOrganize, applyType, layoutList, singleList);
         FileOutputStream output = null;
         try {
             File target = new File(path);
@@ -93,8 +92,8 @@ public class TcSampleExcelUtil {
         }
     }
 
-    private static void initSingleSheet(List<SampleUnitDTO> singleList, SXSSFWorkbook workbook,String sampleCodeType) {
-        SXSSFSheet sheet = workbook.createSheet(tcSampleCode.equals(sampleCodeType)?"单管数据(田测版)":"单管数据(分子版)");
+    private static void initSingleSheet(List<SampleUnitDTO> singleList, SXSSFWorkbook workbook, String sampleCodeType) {
+        SXSSFSheet sheet = workbook.createSheet(tcSampleCode.equals(sampleCodeType) ? "单管数据(田测版)" : "单管数据(分子版)");
         CellStyle headCellStyle = getHeadHSSFCellStyle(workbook);
         CellStyle cellStyle = getBodyHSSFCellStyle(workbook);
 
@@ -110,7 +109,7 @@ public class TcSampleExcelUtil {
         //取样编号
         SXSSFCell headCell3 = headRow.createCell(2);
         headCell3.setCellStyle(headCellStyle);
-        headCell3.setCellValue(tcSampleCode.equals(sampleCodeType)?"取样编号(田测)":"取样编号(分子)");
+        headCell3.setCellValue(tcSampleCode.equals(sampleCodeType) ? "取样编号(田测)" : "取样编号(分子)");
         for (int i = 0; i < singleList.size(); i++) {
             SampleUnitDTO sampleUnitDTO = singleList.get(i);
             if (sampleUnitDTO != null && !sampleUnitDTO.ifNull()) {
@@ -128,15 +127,15 @@ public class TcSampleExcelUtil {
 
                 //种子编号
                 SXSSFCell cell3 = row.createCell(2);
-                cell3.setCellValue(tcSampleCode.equals(sampleCodeType)?sampleUnitDTO.getTcSampleCode():sampleUnitDTO.getSampleCode());
+                cell3.setCellValue(tcSampleCode.equals(sampleCodeType) ? sampleUnitDTO.getTcSampleCode() : sampleUnitDTO.getSampleCode());
                 cell3.setCellStyle(cellStyle);
             }
         }
     }
 
-    private static void initNinetySixByRowSheet(TcSampleTestApplyTb tcSampleTestApplyTb, List<List<List<SampleUnitDTO>>> layoutList, SXSSFWorkbook workbook,String sampleCodeType) {
+    private static void initNinetySixByRowSheet(String applyNo, List<List<List<SampleUnitDTO>>> layoutList, SXSSFWorkbook workbook, String sampleCodeType) {
         CellStyle cellStyle = getBodyHSSFCellStyle(workbook);
-        SXSSFSheet sheet = workbook.createSheet(tcSampleCode.equals(sampleCodeType)?"96孔板（田测版列表排布）":"96孔板（分子版列表排布）");
+        SXSSFSheet sheet = workbook.createSheet(tcSampleCode.equals(sampleCodeType) ? "96孔板（田测版列表排布）" : "96孔板（分子版列表排布）");
         CellStyle headCellStyle = getHeadHSSFCellStyle(workbook);
         //按列更新数据
         int index = 0;
@@ -152,7 +151,7 @@ public class TcSampleExcelUtil {
         headCell3.setCellValue("种子编号");
         headCell3.setCellStyle(headCellStyle);
         SXSSFCell headCell4 = headRow.createCell(3);
-        headCell4.setCellValue(tcSampleCode.equals(sampleCodeType)?"取样编号(田测)":"9取样编号(分子)");
+        headCell4.setCellValue(tcSampleCode.equals(sampleCodeType) ? "取样编号(田测)" : "9取样编号(分子)");
         headCell4.setCellStyle(headCellStyle);
         for (int i = 0; i < layoutList.size(); i++) {
 
@@ -162,7 +161,7 @@ public class TcSampleExcelUtil {
                     if (cellData != null && !cellData.ifNull()) {
                         SXSSFRow row = sheet.createRow(++index);
                         SXSSFCell cell1 = row.createCell(0);
-                        cell1.setCellValue(tcSampleTestApplyTb.getSampleApplyNum() + "-" + StringUtils.padl(String.valueOf(i + 1), 2, '0'));
+                        cell1.setCellValue(applyNo + "-" + StringUtils.padl(String.valueOf(i + 1), 2, '0'));
                         cell1.setCellStyle(cellStyle);
 
                         SXSSFCell cell2 = row.createCell(1);
@@ -174,7 +173,7 @@ public class TcSampleExcelUtil {
                         cell3.setCellStyle(cellStyle);
 
                         SXSSFCell cell4 = row.createCell(3);
-                        cell4.setCellValue(tcSampleCode.equals(sampleCodeType)?cellData.getTcSampleCode():cellData.getSampleCode());
+                        cell4.setCellValue(tcSampleCode.equals(sampleCodeType) ? cellData.getTcSampleCode() : cellData.getSampleCode());
                         cell4.setCellStyle(cellStyle);
                     }
 
@@ -183,11 +182,11 @@ public class TcSampleExcelUtil {
         }
     }
 
-    private static void initNinetySixByLayoutSheet(TcSampleTestApplyTb tcSampleTestApplyTb, TcExperimentTb tcExperimentTb, List<List<List<SampleUnitDTO>>> layoutList, SXSSFWorkbook workbook,String sampleCodeType) {
-        SXSSFSheet sheet = workbook.createSheet(tcSampleCode.equals(sampleCodeType)?"96孔板（田测孔板排布）":"96孔板（分子孔板排布）");
+    private static void initNinetySixByLayoutSheet(String applyNo, String experimentNum, String speciesName, String sampleOrganize, String applyType, List<List<List<SampleUnitDTO>>> layoutList, SXSSFWorkbook workbook, String sampleCodeType) {
+        SXSSFSheet sheet = workbook.createSheet(tcSampleCode.equals(sampleCodeType) ? "96孔板（田测孔板排布）" : "96孔板（分子孔板排布）");
         CellStyle cellStyle = getBodyHSSFCellStyle(workbook);
         for (int layoutIndex = 0; layoutIndex < layoutList.size(); layoutIndex++) {
-            creatNinetySixHead(tcSampleTestApplyTb,tcExperimentTb, sheet, workbook, layoutIndex * 10);
+            creatNinetySixHead(applyNo, experimentNum, speciesName, sampleOrganize, applyType, sheet, workbook, layoutIndex * 10);
             List<List<SampleUnitDTO>> layout = layoutList.get(layoutIndex);
             //遍历孔板每一行
             for (int rowIndex = 0; rowIndex < layout.size(); rowIndex++) {
@@ -198,7 +197,7 @@ public class TcSampleExcelUtil {
                     SampleUnitDTO cellValue = layoutRow.get(cellIndex);
                     SXSSFCell cell = row.createCell(cellIndex);
                     if (cellValue != null && StringUtils.isNotEmpty(cellValue.getSampleCode())) {
-                        cell.setCellValue(tcSampleCode.equals(sampleCodeType)?cellValue.getTcSampleCode():cellValue.getSampleCode());
+                        cell.setCellValue(tcSampleCode.equals(sampleCodeType) ? cellValue.getTcSampleCode() : cellValue.getSampleCode());
                     }
                     cell.setCellStyle(cellStyle);
                 }
@@ -207,7 +206,7 @@ public class TcSampleExcelUtil {
     }
 
 
-    private static void creatNinetySixHead(TcSampleTestApplyTb tcSampleTestApplyTb, TcExperimentTb tcExperimentTb,SXSSFSheet sheet, SXSSFWorkbook workbook, Integer rowNum) {
+    private static void creatNinetySixHead(String applyNo, String experimentNum, String speciesName, String sampleOrganize, String applyType, SXSSFSheet sheet, SXSSFWorkbook workbook, Integer rowNum) {
         //设置样式
         CellStyle cellStyle = getHeadHSSFCellStyle(workbook);
         SXSSFRow titleRow = sheet.createRow(rowNum);
@@ -217,7 +216,7 @@ public class TcSampleExcelUtil {
         titleCell1.setCellValue("试验编号");
         SXSSFCell titleCell2 = titleRow.createCell(1);
         titleCell2.setCellStyle(cellStyle);
-        titleCell2.setCellValue(tcSampleTestApplyTb.getExperimentNum());
+        titleCell2.setCellValue(experimentNum);
         SXSSFCell titleCell3 = titleRow.createCell(2);
         titleCell3.setCellStyle(cellStyle);
         //合并列1,2
@@ -229,7 +228,7 @@ public class TcSampleExcelUtil {
         titleCell4.setCellValue("作物");
         SXSSFCell titleCell5 = titleRow.createCell(4);
         titleCell5.setCellStyle(cellStyle);
-        titleCell5.setCellValue(tcExperimentTb.getSpeciesName());
+        titleCell5.setCellValue(speciesName);
 
         //取样组织
         SXSSFCell titleCell6 = titleRow.createCell(5);
@@ -238,7 +237,7 @@ public class TcSampleExcelUtil {
 
         SXSSFCell titleCell7 = titleRow.createCell(6);
         titleCell7.setCellStyle(cellStyle);
-        titleCell7.setCellValue(tcSampleTestApplyTb.getSampleOrganize());
+        titleCell7.setCellValue(sampleOrganize);
 
 
         SXSSFCell titleCell8 = titleRow.createCell(7);
@@ -250,7 +249,7 @@ public class TcSampleExcelUtil {
         SXSSFCell titleCell10 = titleRow.createCell(9);
         titleCell9.setCellStyle(cellStyle);
         titleCell10.setCellStyle(cellStyle);
-        titleCell9.setCellValue(tcSampleTestApplyTb.getSampleApplyNum() + "-" + StringUtils.padl(String.valueOf((rowNum / 10 + 1)), 2, '0'));
+        titleCell9.setCellValue(applyNo + "-" + StringUtils.padl(String.valueOf((rowNum / 10 + 1)), 2, '0'));
         //合并列8,9
         sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, 8, 9));
 
@@ -260,7 +259,7 @@ public class TcSampleExcelUtil {
         titleCell11.setCellValue("重复取样");
         SXSSFCell titleCell12 = titleRow.createCell(11);
         titleCell12.setCellStyle(cellStyle);
-        titleCell12.setCellValue(SampleTestApplyTypeEnum.first.name().equals(tcSampleTestApplyTb.getApplyType())?"否":"是");
+        titleCell12.setCellValue(SampleTestApplyTypeEnum.first.name().equals(applyType) ? "否" : "是");
 
 
         SXSSFRow headRow = sheet.createRow(rowNum + 1);

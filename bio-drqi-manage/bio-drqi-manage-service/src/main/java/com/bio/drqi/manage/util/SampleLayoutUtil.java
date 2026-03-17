@@ -1,7 +1,7 @@
 package com.bio.drqi.manage.util;
 
 import com.bio.drqi.domain.BioSampleTestTb;
-import com.bio.drqi.manage.base.SampleUnitDTO;
+import com.bio.drqi.common.dto.SampleUnitDTO;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 
 @Data
 public class SampleLayoutUtil {
-
-
     public static List<List<List<SampleUnitDTO>>> fillSampleToNinetySixList(List<BioSampleTestTb> bioSampleTestTbList) {
         List<List<List<SampleUnitDTO>>> ninetySixList = new ArrayList<List<List<SampleUnitDTO>>>();
 

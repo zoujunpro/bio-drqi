@@ -1,7 +1,6 @@
 package com.bio.drqi.manage.service.bio.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
@@ -16,9 +15,10 @@ import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.common.enums.TestResultEnum;
+import com.bio.drqi.common.util.TcSampleExcelUtil;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.manage.base.SampleUnitDTO;
+import com.bio.drqi.common.dto.SampleUnitDTO;
 import com.bio.drqi.manage.bio.req.BioSampleTestListDetailReqDTO;
 import com.bio.drqi.manage.bio.req.BioSampleTestUploadTestTemplateReqDTO;
 import com.bio.drqi.manage.bio.rsp.BioSampleTestListDetailRspDTO;
@@ -100,6 +100,9 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
     @Resource
     private BioSampleTestHisTbMapper bioSampleTestHisTbMapper;
 
+    @Resource
+    private BioSampleApplyTbMapper bioSampleApplyTbMapper;
+
 
     @Override
     public PageInfo<BioSampleTestListDetailRspDTO> listPage(BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO) {
@@ -167,8 +170,8 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
     private boolean checkTaskStatusIfRefuse(BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO) {
         if (StringUtils.isNotEmpty(bioSampleTestListDetailReqDTO.getApplyNo())) {
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(bioSampleTestListDetailReqDTO.getApplyNo());
-            if(bioTaskDtlTb==null){
-                throw new BusinessException("查询不到此工单编号："+bioSampleTestListDetailReqDTO.getApplyNo());
+            if (bioTaskDtlTb == null) {
+                throw new BusinessException("查询不到此工单编号：" + bioSampleTestListDetailReqDTO.getApplyNo());
             }
             if (BioTaskStatusEnum.TASK_STATUS_3.status.equals(bioTaskDtlTb.getTaskStatus()) || BioTaskStatusEnum.TASK_STATUS_3.status.equals(bioTaskDtlTb.getTaskStatus())) {
                 return true;
@@ -412,7 +415,17 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                 }
 
             }
-            SampleExcelUtil.createExcel(applyNo, layoutList, singleSampleUnitDTOList, httpServletResponse, "取样标签排版.xlsx");
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(applyNo);
+            if ("tc_sample_test_task_apply".equals(bioTaskDtlTb.getTaskTypeCode())) {
+                BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(applyNo);
+                BioSampleTestTb bioSampleTestTb = bioSampleTestTbMapper.selectAllByApplyNo(applyNo).get(0);
+                CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(bioSampleTestTb.getSpeciesCode());
+                TcSampleExcelUtil.createExcel(applyNo, bioSampleTestTb.getExperimentNum(), cerSpeciesConf.getSpeciesName(), bioSampleApplyTb.getSampleOrganize(), bioSampleApplyTb.getApplyType(), layoutList, singleSampleUnitDTOList, httpServletResponse, "取样标签排版.xlsx");
+            } else {
+                SampleExcelUtil.createExcel(applyNo, layoutList, singleSampleUnitDTOList, httpServletResponse, "取样标签排版.xlsx");
+
+            }
+
         } else {
             //默认排版
             LayoutConfirmReqDTO layoutConfirmReqDTO = getLayoutConfirmReqDTO(applyNo);
@@ -496,7 +509,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
             }
         }
 
-        if(bioSampleTestTb.getTestUserId()==null&&BioDrQiContents.Y.equals(bioSampleSampleTwoResultTbList.get(0).getSynResult())){
+        if (bioSampleTestTb.getTestUserId() == null && BioDrQiContents.Y.equals(bioSampleSampleTwoResultTbList.get(0).getSynResult())) {
             bioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
             bioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
             bioSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
@@ -685,7 +698,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         List<BioSampleTestTb> noIdentifyPrimerList = bioSampleTestTbList.stream().filter(bioSampleTestTb -> StringUtils.isEmpty(bioSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(noIdentifyPrimerList)) {
             noIdentifyPrimerList.forEach(cerSampleTestTb -> {
-                layoutPreviewRspDTO.fillSampleToSingleList(cerSampleTestTb.getVectorTaskCode(), cerSampleTestTb.getTransformCode(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getIdentifyPrimer(),cerSampleTestTb.getRegionNum(),cerSampleTestTb.getSeedNum(),cerSampleTestTb.getTcSampleCode());
+                layoutPreviewRspDTO.fillSampleToSingleList(cerSampleTestTb.getVectorTaskCode(), cerSampleTestTb.getTransformCode(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getIdentifyPrimer(), cerSampleTestTb.getRegionNum(), cerSampleTestTb.getSeedNum(), cerSampleTestTb.getTcSampleCode());
             });
         }
         //96孔板
@@ -707,7 +720,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         List<BioSampleTestTb> noIdentifyPrimerList = bioSampleTestTbList.stream().filter(bioSampleTestTb -> StringUtils.isEmpty(bioSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(noIdentifyPrimerList)) {
             noIdentifyPrimerList.forEach(bioSampleTestTb -> {
-                layoutConfirmReqDTO.fillSampleToSingleList(bioSampleTestTb.getVectorTaskCode(), bioSampleTestTb.getTransformCode(), bioSampleTestTb.getSampleCode(), bioSampleTestTb.getIdentifyPrimer(),bioSampleTestTb.getRegionNum(),bioSampleTestTb.getSeedNum(),bioSampleTestTb.getTcSampleCode());
+                layoutConfirmReqDTO.fillSampleToSingleList(bioSampleTestTb.getVectorTaskCode(), bioSampleTestTb.getTransformCode(), bioSampleTestTb.getSampleCode(), bioSampleTestTb.getIdentifyPrimer(), bioSampleTestTb.getRegionNum(), bioSampleTestTb.getSeedNum(), bioSampleTestTb.getTcSampleCode());
             });
         }
         //96孔板

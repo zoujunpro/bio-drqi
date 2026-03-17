@@ -328,6 +328,13 @@
         sample_apply_num = #{sampleApplyNum,jdbcType=VARCHAR}
         AND tc_sample_code = #{tcSampleCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByTcSampleCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_sample_test_tb
+        where
+        tc_sample_code = #{tcSampleCode,jdbcType=VARCHAR}
+    </select>
 
 
 </mapper>

@@ -179,7 +179,9 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         if (CollectionUtil.isNotEmpty(tcPollinationSingleNumTbList)) {
             tcPollinationSingleNumTbList.forEach(tcPollinationSingleNumTb -> {
                 if (reginofMaxSampleCodeListMap.get(tcPollinationSingleNumTb.getRegionNum()) == null) {
-                    reginofMaxSampleCodeListMap.put(tcPollinationSingleNumTb.getRegionNum(), Arrays.asList(tcPollinationSingleNumTb.getTcSingleNumber()));
+                    List<String> tcSingleNumberList=new ArrayList<>();
+                    tcSingleNumberList.add(tcPollinationSingleNumTb.getTcSingleNumber());
+                    reginofMaxSampleCodeListMap.put(tcPollinationSingleNumTb.getRegionNum(), tcSingleNumberList);
                 } else {
                     reginofMaxSampleCodeListMap.get(tcPollinationSingleNumTb.getRegionNum()).add(tcPollinationSingleNumTb.getTcSingleNumber());
                 }

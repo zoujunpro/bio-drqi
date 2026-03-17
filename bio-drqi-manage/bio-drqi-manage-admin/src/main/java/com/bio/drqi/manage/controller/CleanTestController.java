@@ -126,13 +126,17 @@ public class CleanTestController {
     private BioSampleTestTwoResultDetailTbMapper bioSampleTestTwoResultDetailTbMapper;
 
 
+    @Resource
+    private TcPollinationSingleNumTbMapper tcPollinationSingleNumTbMapper;
+
+
     @GetMapping("cleanTcSampleData20260316")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanTcSampleData20260316() {
         //取样检测的孔板迁移
         List<TcSampleLayoutTb> tcSampleLayoutTbList = tcSampleLayoutTbMapper.selectList(null);
         for (TcSampleLayoutTb tcSampleLayoutTb : tcSampleLayoutTbList) {
-            log.info("cleanTcSampleData20260316#迁移TcSampleLayoutTb="+JSONUtil.toJsonStr(tcSampleLayoutTb));
+            log.info("cleanTcSampleData20260316#迁移TcSampleLayoutTb=" + JSONUtil.toJsonStr(tcSampleLayoutTb));
             BioSampleLayoutTb bioSampleLayoutTb = bioSampleLayoutTbMapper.selectOneByApplyNo(tcSampleLayoutTb.getApplyNo());
             if (bioSampleLayoutTb != null) {
                 bioSampleLayoutTb = new BioSampleLayoutTb();
@@ -146,13 +150,13 @@ public class CleanTestController {
         //迁移田测取样检测申请表
         List<TcSampleTestApplyTb> tcSampleTestApplyTbs = tcSampleTestApplyTbMapper.selectSelective(null);
         for (TcSampleTestApplyTb tcSampleTestApplyTb : tcSampleTestApplyTbs) {
-            log.info("cleanTcSampleData20260316#迁移tcSampleTestApplyTb="+JSONUtil.toJsonStr(tcSampleTestApplyTb));
+            log.info("cleanTcSampleData20260316#迁移tcSampleTestApplyTb=" + JSONUtil.toJsonStr(tcSampleTestApplyTb));
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcSampleTestApplyTb.getTaskNum());
-            if(bioTaskDtlTb==null){
+            if (bioTaskDtlTb == null) {
                 continue;
             }
             TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
-            if(tcSampleTestTaskDTO==null){
+            if (tcSampleTestTaskDTO == null) {
                 continue;
             }
             BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
@@ -176,9 +180,9 @@ public class CleanTestController {
         //迁移取样表
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectSelective(null);
         for (TcSampleTestTb tcSampleTestTb : tcSampleTestTbList) {
-            log.info("cleanTcSampleData20260316#迁移tcSampleTestTb="+JSONUtil.toJsonStr(tcSampleTestTb));
+            log.info("cleanTcSampleData20260316#迁移tcSampleTestTb=" + JSONUtil.toJsonStr(tcSampleTestTb));
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcSampleTestTb.getSampleApplyNum());
-            if(bioTaskDtlTb==null){
+            if (bioTaskDtlTb == null) {
                 continue;
             }
             BioSampleTestTb bioSampleTestTb = new BioSampleTestTb();
@@ -236,7 +240,7 @@ public class CleanTestController {
         //迁移二代测序
         List<TcSampleTestBioResultRef> tcSampleTestBioResultRefList = tcSampleTestBioResultRefMapper.selectList(null);
         for (TcSampleTestBioResultRef tcSampleTestBioResultRef : tcSampleTestBioResultRefList) {
-            log.info("cleanTcSampleData20260316#迁移TcSampleTestBioResultRef="+JSONUtil.toJsonStr(tcSampleTestBioResultRef));
+            log.info("cleanTcSampleData20260316#迁移TcSampleTestBioResultRef=" + JSONUtil.toJsonStr(tcSampleTestBioResultRef));
             List<TcSampleTestBioInfoResultTb> bioInfoResultTbList = tcSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(tcSampleTestBioResultRef.getApplyNo(), tcSampleTestBioResultRef.getSampleCode());
             bioInfoResultTbList = bioInfoResultTbList.stream().filter(tcSampleTestBioInfoResultTb -> "checked".equals(tcSampleTestBioInfoResultTb.getConfirmStatus())).collect(Collectors.toList());
             BioSampleTestTwoResultTb bioSampleTestTwoResultTb = new BioSampleTestTwoResultTb();
@@ -274,6 +278,26 @@ public class CleanTestController {
 
         }
         return ResponseResult.getSuccess("ok");
+    }
+
+    @GetMapping("cleanTcPollinationSingleNumTb")
+    public ResponseResult<String> cleanTcPollinationSingleNumTb() {
+        List<TcPollinationSingleNumTb> tcPollinationSingleNumTbList = tcPollinationSingleNumTbMapper.selectList(null);
+        for (TcPollinationSingleNumTb tcPollinationSingleNumTb : tcPollinationSingleNumTbList) {
+            List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllByTcSampleCode(tcPollinationSingleNumTb.getTcSingleNumber());
+            List<TcSampleTestTb> tc = tcSampleTestTbList.stream().filter(tcSampleTestTb -> tcSampleTestTb.getUniqueCode() != null).collect(Collectors.toList());
+            if (CollectionUtil.isNotEmpty(tc)) {
+                tcPollinationSingleNumTb.setSampleCode(tc.get(0).getSampleCode());
+                tcPollinationSingleNumTb.setSampleApplyNum(tc.get(0).getSampleApplyNum());
+                tcPollinationSingleNumTbMapper.updateById(tcPollinationSingleNumTb);
+            } else if (CollectionUtil.isNotEmpty(tcSampleTestTbList)) {
+                tcPollinationSingleNumTb.setSampleCode(tcSampleTestTbList.get(0).getSampleCode());
+                tcPollinationSingleNumTb.setSampleApplyNum(tcSampleTestTbList.get(0).getSampleApplyNum());
+                tcPollinationSingleNumTbMapper.updateById(tcPollinationSingleNumTb);
+            }
+        }
+        return ResponseResult.getSuccess("ok");
+
     }
 
 

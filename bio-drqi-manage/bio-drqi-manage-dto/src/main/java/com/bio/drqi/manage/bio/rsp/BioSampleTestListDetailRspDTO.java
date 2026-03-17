@@ -196,6 +196,8 @@ public class BioSampleTestListDetailRspDTO {
 
     private String transformCode;
 
+    private String tcSampleCode;
+
 
 
     private List<BioInfoResult> bioInfoResultList = new ArrayList<>();

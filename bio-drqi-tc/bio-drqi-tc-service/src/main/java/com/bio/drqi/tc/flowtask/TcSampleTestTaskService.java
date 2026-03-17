@@ -145,9 +145,10 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                     bioSampleTestTb.setExperimentNum(experimentNum);
                     bioSampleTestTb.setTestResult(TestResultEnum.noTest.name());
                     bioSampleTestTb.setApplyTime(new Date());
+                    bioSampleTestTb.setTcSampleCode(firstSampleApply.getRegionNum() + StringUtils.padl(nextTcSampleCodeNumber.toString(), 3, '0'));
                     batchList.add(bioSampleTestTb);
 
-                    TcPollinationSingleNumTb tcPollinationSingleNumTb = TcPollinationSingleNumTb.of(experimentNum, bioSampleTestTb.getSeedNum(), bioSampleTestTb.getRegionNum(), firstSampleApply.getRegionNum() + StringUtils.padl(nextTcSampleCodeNumber.toString(), 3, '0'), bioSampleTestTb.getSampleCode(), bioSampleTestTb.getApplyNo(), bioSampleTestTb.getApplyUserName());
+                    TcPollinationSingleNumTb tcPollinationSingleNumTb = TcPollinationSingleNumTb.of(experimentNum, bioSampleTestTb.getSeedNum(), bioSampleTestTb.getRegionNum(), bioSampleTestTb.getTcSampleCode(), bioSampleTestTb.getSampleCode(), bioSampleTestTb.getApplyNo(), bioSampleTestTb.getApplyUserName());
                     tcPollinationSingleNumTbList.add(tcPollinationSingleNumTb);
 
                 }

@@ -214,6 +214,8 @@ public class BioSampleTestTb implements Serializable {
 
     private String testResult;
 
+    private String tcSampleCode;
+
     @TableField(exist = false)
     private Integer countNum;
 
@@ -290,6 +292,7 @@ public class BioSampleTestTb implements Serializable {
         bioSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
         bioSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
         bioSampleTestTb.setSourceCode(targetSampleTestTb.getSourceCode());
+        bioSampleTestTb.setTcSampleCode(targetSampleTestTb.getTcSampleCode());
         bioSampleTestTb.setApplyNo(bioTaskDtlTb.getTaskNum());
         bioSampleTestTb.setCheckResult(checkResultEnum.name());
         bioSampleTestTb.setTestResult(testResultEnum.name());

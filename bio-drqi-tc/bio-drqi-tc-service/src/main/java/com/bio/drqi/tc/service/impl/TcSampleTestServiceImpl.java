@@ -11,6 +11,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.contents.BioDrQiContents;
+import com.bio.drqi.common.dto.SampleUnitDTO;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
@@ -344,7 +345,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
                 }
 
             }
-            TcSampleExcelUtil.createExcel(tcSampleTestApplyTb,tcExperimentTb, layoutList, singleSampleUnitDTOList, httpServletResponse, "取样标签排版.xlsx");
+           // TcSampleExcelUtil.createExcel(tcSampleTestApplyTb,tcExperimentTb, layoutList, singleSampleUnitDTOList, httpServletResponse, "取样标签排版.xlsx");
         } else {
             //默认排版
             TcSampleTestLayoutConfirmReqDTO tcSampleTestLayoutConfirmReqDTO = getLayoutConfirmReqDTO(applyNo);

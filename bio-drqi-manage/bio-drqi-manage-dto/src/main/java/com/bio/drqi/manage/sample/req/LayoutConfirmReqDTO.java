@@ -22,7 +22,7 @@ public class LayoutConfirmReqDTO {
      */
     private List<List<List<SampleUnitDTO>>> ninetySixList = new ArrayList<List<List<SampleUnitDTO>>>();
 
-    public void fillSampleToSingleList(String vectorTaskCode, String transFormCode, String sampleCode, String identifyPrimer) {
-        singleList.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer));
+    public void fillSampleToSingleList(String vectorTaskCode, String transFormCode, String sampleCode, String identifyPrimer,String regionCode,String seedNum,String tcSampleCode) {
+        singleList.add(new SampleUnitDTO(vectorTaskCode, transFormCode, sampleCode, identifyPrimer,regionCode,seedNum,tcSampleCode));
     }
 }

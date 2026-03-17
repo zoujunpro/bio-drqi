@@ -21,8 +21,8 @@ public class LayoutPreviewRspDTO {
     private List<List<List<SampleUnitDTO>>> ninetySixList = new ArrayList<>();
 
 
-    public void fillSampleToSingleList(String vectorTaskCode, String transFormCode, String sampleCode,String identifyPrimer) {
-        singleList.add( new SampleUnitDTO(vectorTaskCode,transFormCode,sampleCode,identifyPrimer));
+    public void fillSampleToSingleList(String vectorTaskCode, String transFormCode, String sampleCode,String identifyPrimer,String regionNum, String seedNum, String tcSampleCode) {
+        singleList.add( new SampleUnitDTO(vectorTaskCode,transFormCode,sampleCode,identifyPrimer,regionNum,seedNum,tcSampleCode));
     }
 
 

@@ -1,12 +1,15 @@
+/*
 package com.bio.drqi.manage.base;
 
 import lombok.Data;
 
 @Data
 public class NinetySixDTO {
-    /**
+    */
+/**
      * 一个96公板
-     */
+     *//*
+
     private Row row1 = new Row();
     private Row row2 = new Row();
     private Row row3 = new Row();
@@ -109,3 +112,4 @@ public class NinetySixDTO {
 
 
 }
+*/

@@ -685,7 +685,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         List<BioSampleTestTb> noIdentifyPrimerList = bioSampleTestTbList.stream().filter(bioSampleTestTb -> StringUtils.isEmpty(bioSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(noIdentifyPrimerList)) {
             noIdentifyPrimerList.forEach(cerSampleTestTb -> {
-                layoutPreviewRspDTO.fillSampleToSingleList(cerSampleTestTb.getVectorTaskCode(), null, cerSampleTestTb.getSampleCode(), cerSampleTestTb.getIdentifyPrimer());
+                layoutPreviewRspDTO.fillSampleToSingleList(cerSampleTestTb.getVectorTaskCode(), cerSampleTestTb.getTransformCode(), cerSampleTestTb.getSampleCode(), cerSampleTestTb.getIdentifyPrimer(),cerSampleTestTb.getRegionNum(),cerSampleTestTb.getSeedNum(),cerSampleTestTb.getTcSampleCode());
             });
         }
         //96孔板
@@ -707,7 +707,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         List<BioSampleTestTb> noIdentifyPrimerList = bioSampleTestTbList.stream().filter(bioSampleTestTb -> StringUtils.isEmpty(bioSampleTestTb.getIdentifyPrimer())).collect(Collectors.toList());
         if (CollectionUtil.isNotEmpty(noIdentifyPrimerList)) {
             noIdentifyPrimerList.forEach(bioSampleTestTb -> {
-                layoutConfirmReqDTO.fillSampleToSingleList(bioSampleTestTb.getVectorTaskCode(), null, bioSampleTestTb.getSampleCode(), bioSampleTestTb.getIdentifyPrimer());
+                layoutConfirmReqDTO.fillSampleToSingleList(bioSampleTestTb.getVectorTaskCode(), bioSampleTestTb.getTransformCode(), bioSampleTestTb.getSampleCode(), bioSampleTestTb.getIdentifyPrimer(),bioSampleTestTb.getRegionNum(),bioSampleTestTb.getSeedNum(),bioSampleTestTb.getTcSampleCode());
             });
         }
         //96孔板

@@ -121,7 +121,7 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                         LayoutConfirmReqDTO layoutConfirmReqDTO = new LayoutConfirmReqDTO();
                         layoutConfirmReqDTO.setApplyNo(bioTaskDtlTb.getTaskNum());
                         for (BioSampleTestTb bioSampleTestTb : bioSampleTestTbList) {
-                            layoutConfirmReqDTO.fillSampleToSingleList(bioSampleTestTb.getVectorTaskCode(), bioSampleTestTb.getTransformCode(), bioSampleTestTb.getSampleCode(), bioSampleTestTb.getIdentifyPrimer());
+                            layoutConfirmReqDTO.fillSampleToSingleList(bioSampleTestTb.getVectorTaskCode(), bioSampleTestTb.getTransformCode(), bioSampleTestTb.getSampleCode(), bioSampleTestTb.getIdentifyPrimer(),bioSampleTestTb.getRegionNum(),bioSampleTestTb.getSeedNum(),bioSampleTestTb.getTcSampleCode());
                         }
                         bioSampleTestService.layoutConfirm(layoutConfirmReqDTO);
                     }

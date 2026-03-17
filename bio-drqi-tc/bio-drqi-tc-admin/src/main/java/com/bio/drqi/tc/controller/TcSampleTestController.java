@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * 田测取样检测管理
  */
-@RestController
-@RequestMapping("/tcSampleTest")
 public class TcSampleTestController {
 
     @Resource

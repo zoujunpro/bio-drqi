@@ -127,10 +127,12 @@ public class CleanTestController {
 
 
     @GetMapping("cleanTcSampleData20260316")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanTcSampleData20260316() {
         //取样检测的孔板迁移
         List<TcSampleLayoutTb> tcSampleLayoutTbList = tcSampleLayoutTbMapper.selectList(null);
         for (TcSampleLayoutTb tcSampleLayoutTb : tcSampleLayoutTbList) {
+            log.info("cleanTcSampleData20260316#迁移TcSampleLayoutTb="+JSONUtil.toJsonStr(tcSampleLayoutTb));
             BioSampleLayoutTb bioSampleLayoutTb = bioSampleLayoutTbMapper.selectOneByApplyNo(tcSampleLayoutTb.getApplyNo());
             if (bioSampleLayoutTb != null) {
                 bioSampleLayoutTb = new BioSampleLayoutTb();
@@ -144,8 +146,15 @@ public class CleanTestController {
         //迁移田测取样检测申请表
         List<TcSampleTestApplyTb> tcSampleTestApplyTbs = tcSampleTestApplyTbMapper.selectSelective(null);
         for (TcSampleTestApplyTb tcSampleTestApplyTb : tcSampleTestApplyTbs) {
+            log.info("cleanTcSampleData20260316#迁移tcSampleTestApplyTb="+JSONUtil.toJsonStr(tcSampleTestApplyTb));
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcSampleTestApplyTb.getTaskNum());
+            if(bioTaskDtlTb==null){
+                continue;
+            }
             TcSampleTestTaskDTO tcSampleTestTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcSampleTestTaskDTO.class);
+            if(tcSampleTestTaskDTO==null){
+                continue;
+            }
             BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
             if (tcSampleTestTaskDTO != null && bioSampleApplyTb == null) {
                 bioSampleApplyTb = new BioSampleApplyTb();
@@ -167,7 +176,11 @@ public class CleanTestController {
         //迁移取样表
         List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectSelective(null);
         for (TcSampleTestTb tcSampleTestTb : tcSampleTestTbList) {
+            log.info("cleanTcSampleData20260316#迁移tcSampleTestTb="+JSONUtil.toJsonStr(tcSampleTestTb));
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(tcSampleTestTb.getSampleApplyNum());
+            if(bioTaskDtlTb==null){
+                continue;
+            }
             BioSampleTestTb bioSampleTestTb = new BioSampleTestTb();
             bioSampleTestTb.setVectorTaskCode(tcSampleTestTb.getVectorTaskCode());
             bioSampleTestTb.setSampleCode(tcSampleTestTb.getSampleCode());
@@ -223,6 +236,7 @@ public class CleanTestController {
         //迁移二代测序
         List<TcSampleTestBioResultRef> tcSampleTestBioResultRefList = tcSampleTestBioResultRefMapper.selectList(null);
         for (TcSampleTestBioResultRef tcSampleTestBioResultRef : tcSampleTestBioResultRefList) {
+            log.info("cleanTcSampleData20260316#迁移TcSampleTestBioResultRef="+JSONUtil.toJsonStr(tcSampleTestBioResultRef));
             List<TcSampleTestBioInfoResultTb> bioInfoResultTbList = tcSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(tcSampleTestBioResultRef.getApplyNo(), tcSampleTestBioResultRef.getSampleCode());
             bioInfoResultTbList = bioInfoResultTbList.stream().filter(tcSampleTestBioInfoResultTb -> "checked".equals(tcSampleTestBioInfoResultTb.getConfirmStatus())).collect(Collectors.toList());
             BioSampleTestTwoResultTb bioSampleTestTwoResultTb = new BioSampleTestTwoResultTb();

@@ -104,6 +104,8 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         bioSampleApplyTb.setApplyUserName(SecurityContextHolder.getNickName());
         bioSampleApplyTb.setApplyType(tcSampleTestTaskDTO.getApplyType());
         bioSampleApplyTb.setLayoutFlag(tcSampleTestTaskDTO.getTestType());
+        bioSampleApplyTb.setSampleOrganize(tcSampleTestTaskDTO.getSampleOrganize());
+        bioSampleApplyTb.setCloneFlag(BioDrQiContents.N);
         bioSampleApplyTb.setVectorTaskCodes(null);
         bioSampleApplyTb.setSampleCodeRange(null);
         bioSampleApplyTbMapper.insert(bioSampleApplyTb);

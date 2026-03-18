@@ -34,12 +34,7 @@ public class TcHarvestExcelDTO {
     @ExcelProperty(value ={"母本","分子取样编号(母)"})
     @NotBlank(message = "参数缺失：分子取样编号(母)")
     private String motherSampleCode;
-    /**
-     * 母本大田取样编号
-     */
-    @ExcelProperty(value ={"母本","大田取样编号(母)"})
-    @NotBlank(message = "参数缺失：大田取样编号(母)")
-    private String motherTcSampleCode;
+
     /**
      * 母本品种
      */
@@ -91,12 +86,6 @@ public class TcHarvestExcelDTO {
     @NotBlank(message = "参数缺失：分子取样编号(父)")
     private String fatherSampleCode;
 
-    /**
-     * 父本大田取样编号
-     */
-    @ExcelProperty(value ={"父本","大田取样编号(父)"})
-    @NotBlank(message = "参数缺失：大田取样编号(父)")
-    private String fatherTcSampleCode;
     /**
      * 父本品种
      */

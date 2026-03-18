@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("tc_sample_test_task_apply")
 public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
@@ -166,10 +167,29 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
                 batchList.add(bioSampleTestTb);
             }
         }
-
+        //如果是首次取样，更新取样区间
+        if (SampleTestApplyTypeEnum.first.name().equals(tcSampleTestTaskDTO.getApplyType())) {
+            StringBuffer sampleCodeRangeBuff = new StringBuffer();
+            Map<String, List<BioSampleTestTb>> plantSampleTestTbMap = batchList.stream().collect(Collectors.groupingBy(sampleTestTb -> sampleTestTb.getSampleCode().replaceAll("\\d", "")));
+            plantSampleTestTbMap.forEach((sampleCodePrefix, sampleTestList) -> {
+                sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(sampleCodePrefix)).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(sampleCodePrefix.length())))).collect(Collectors.toList());
+                if (CollectionUtil.isNotEmpty(sampleTestList)) {
+                    sampleCodeRangeBuff.append(sampleTestList.get(0).getSampleCode() + "-" + sampleTestList.get(sampleTestList.size() - 1).getSampleCode()).append(",");
+                }
+            });
+            if (StringUtils.isNotEmpty(sampleCodeRangeBuff.toString())) {
+                bioSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));
+                bioSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(batchList.stream().filter(plantSampleTestTb -> StringUtils.isNotEmpty(plantSampleTestTb.getVectorTaskCode())).map(BioSampleTestTb::getVectorTaskCode).distinct().collect(Collectors.toList())).replace("[", "").replace("]", "").replace("\"", ""));
+            }
+            bioSampleApplyTb.setApplyNumber(tcSampleTestTaskDTO.getFirstSampleApplyList().stream().map(TcSampleTestTaskDTO.FirstSampleApply::getSampleNum).mapToInt(Integer::intValue).sum());
+        } else {
+            bioSampleApplyTb.setApplyNumber(tcSampleTestTaskDTO.getRepeatSampleApplyList().size());
+        }
         if (CollectionUtil.isNotEmpty(tcPollinationSingleNumTbList)) {
             tcPollinationSingleNumTbMapper.insertBatch(tcPollinationSingleNumTbList);
         }
+
+        bioSampleApplyTbMapper.updateById(bioSampleApplyTb);
         bioSampleTestTbMapper.insertBatch(batchList);
     }
 

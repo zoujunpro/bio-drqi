@@ -59,9 +59,6 @@ public class TcPollinationServiceImpl implements TcPollinationService {
     private TcExperimentTbMapper tcExperimentTbMapper;
 
     @Resource
-    private BioSampleTestTbMapper bioSampleTestTbMapper;
-
-    @Resource
     private OssService ossService;
 
     @Resource
@@ -161,8 +158,6 @@ public class TcPollinationServiceImpl implements TcPollinationService {
 
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAllBySpeciesCode(tcExperimentTb.getSpeciesCode());
         Map<String, String> codeNameCerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
-        //找到这个试验的所有的取样编号,并按照小区分类
-        Map<String, List<BioSampleTestTb>> reginBioSampleTestTbListMap = bioSampleTestTbMapper.selectAllByExperimentNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum()).stream().collect(Collectors.groupingBy(BioSampleTestTb::getRegionNum));
         //循环选中的授粉数据
         for (TcPollinationCreatePollinationExcelReqDTO.Content content : tcPollinationCreatePollinationExcelReqDTO.getContentList()) {
             //一定要清空

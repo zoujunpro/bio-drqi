@@ -59,7 +59,7 @@ public class TcPollinationServiceImpl implements TcPollinationService {
     private TcExperimentTbMapper tcExperimentTbMapper;
 
     @Resource
-    private TcSampleTestTbMapper tcSampleTestTbMapper;
+    private BioSampleTestTbMapper bioSampleTestTbMapper;
 
     @Resource
     private OssService ossService;
@@ -139,9 +139,6 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         if (!ExperimentStatusEnum.INIT.status.equals(tcExperimentTb.getExperimentStatus())) {
             throw new BusinessException("非进行中试验，无法进行任何操作");
         }
-        if (tcExperimentTb.getHarvestApplyNum() != null) {
-            throw new BusinessException("该试验已经收获，无需再授粉");
-        }
         //进行中授粉校验，如果有进行中授粉，不能再次发起新的授粉，因为新发起的授粉会清空旧的授粉虚拟单株编号
         List<String> regionNumList = tcPollinationCreatePollinationExcelReqDTO.getContentList().stream().map(TcPollinationCreatePollinationExcelReqDTO.Content::getRegionNum).collect(Collectors.toList());
         for (String regionNum : regionNumList) {
@@ -160,12 +157,12 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         }
 
         //清空上次下载授粉表格数据
-        tcPollinationSingleNumTbMapper.deleteByExperimentNumAndPollinationApplyNumIsNull(tcExperimentTb.getExperimentNum());
+        tcPollinationSingleNumTbMapper.deleteByExperimentNumAndPollinationApplyNumIsNullAndSampleCodeIsNotNull(tcExperimentTb.getExperimentNum());
 
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAllBySpeciesCode(tcExperimentTb.getSpeciesCode());
         Map<String, String> codeNameCerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         //找到这个试验的所有的取样编号,并按照小区分类
-        Map<String, List<TcSampleTestTb>> reginTcSampleTestTbListMap = tcSampleTestTbMapper.selectAllByExperimentNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum()).stream().collect(Collectors.groupingBy(TcSampleTestTb::getRegionNum));
+        Map<String, List<BioSampleTestTb>> reginBioSampleTestTbListMap = bioSampleTestTbMapper.selectAllByExperimentNum(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum()).stream().collect(Collectors.groupingBy(BioSampleTestTb::getRegionNum));
         //循环选中的授粉数据
         for (TcPollinationCreatePollinationExcelReqDTO.Content content : tcPollinationCreatePollinationExcelReqDTO.getContentList()) {
             //一定要清空
@@ -177,50 +174,35 @@ public class TcPollinationServiceImpl implements TcPollinationService {
             //没有单株编号,非单株取样
             if (BioDrQiContents.N.equals(content.getSinglePlantFlag())) {
                 if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {
-                    TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, null, null, null, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
+                    TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, null, null, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
                     fatherList.add(tcPollinationExcelDTO);
 
                 } else if (PollinationParentFlagEnum.mother.name().equals(content.getParentFlag())) {
-                    TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofMother(tcExperimentDesignTb, null, null, null, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
+                    TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofMother(tcExperimentDesignTb, null, null, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
                     MotherList.add(tcPollinationExcelDTO);
                 } else if (PollinationParentFlagEnum.parent.name().equals(content.getParentFlag())) {
-                    TcPollinationExcelDTO fatherTcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, null, null, null, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
+                    TcPollinationExcelDTO fatherTcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, null, null, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
                     fatherList.add(fatherTcPollinationExcelDTO);
-                    TcPollinationExcelDTO MotherTcPollinationExcelDTO = TcPollinationExcelDTO.ofMother(tcExperimentDesignTb, null, null, null, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
+                    TcPollinationExcelDTO MotherTcPollinationExcelDTO = TcPollinationExcelDTO.ofMother(tcExperimentDesignTb, null, null, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
                     MotherList.add(MotherTcPollinationExcelDTO);
                 }
 
             } else {
-                //单株授粉，如果取样编号不够，需要生成虚拟的单株编号
-                List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNumAndSeedNumAndRegionNumAndCheckResult(tcPollinationCreatePollinationExcelReqDTO.getSampleApplyNum(), content.getSeedNum(), content.getRegionNum(), SampleTestCheckResultEnum.stay.name());
-                Map<String, List<TcSampleTestTb>> tcSampleCodeListMap = tcSampleTestTbList.stream().collect(Collectors.groupingBy(TcSampleTestTb::getTcSampleCode));
-                List<String> tcSampleCodeList = tcSampleTestTbList.stream().map(TcSampleTestTb::getTcSampleCode).distinct().collect(Collectors.toList());
+                //找到这个小区的目前所有的单株编号
                 List<TcPollinationSingleNumTb> tcPollinationSingleNumTbList = tcPollinationSingleNumTbMapper.selectAllByExperimentNumAndRegionNumOrderByIdDesc(tcPollinationCreatePollinationExcelReqDTO.getExperimentNum(), content.getRegionNum());
-                //找出当前最大的田测取样编号
-                List<String> tcSingleNumberList = new ArrayList<>();
-                if (CollectionUtil.isNotEmpty(tcPollinationSingleNumTbList)) {
-                    tcSingleNumberList.addAll(tcPollinationSingleNumTbList.stream().map(TcPollinationSingleNumTb::getTcSingleNumber).collect(Collectors.toList()));
-                }
-                if (reginTcSampleTestTbListMap.get(content.getRegionNum()) != null) {
-                    tcSingleNumberList.addAll(reginTcSampleTestTbListMap.get(content.getRegionNum()).stream().map(TcSampleTestTb::getTcSampleCode).collect(Collectors.toList()));
-                }
                 Integer maxNumber = null;
-                if (CollectionUtil.isNotEmpty(tcSingleNumberList)) {
-                    maxNumber = tcSingleNumberList.stream().distinct().map(tcSingleNumber -> Integer.valueOf(tcSingleNumber.substring(content.getRegionNum().length()))).max(Integer::compare).get();
+                if (CollectionUtil.isNotEmpty(tcPollinationSingleNumTbList)) {
+                    maxNumber = tcPollinationSingleNumTbList.stream().distinct().map(tcPollinationSingleNumTb -> Integer.valueOf(tcPollinationSingleNumTb.getTcSingleNumber().substring(content.getRegionNum().length()))).max(Integer::compare).get();
                 }
 
                 for (int i = 0; i < content.getSinglePlantNumber(); i++) {
-                    String singleNumber = null;
-                    String tcSampleCode = null;
-                    String sampleCode = null;
-                    if (i < tcSampleCodeList.size()) {
-                        tcSampleCode = tcSampleCodeList.get(i);
-                        sampleCode = tcSampleCodeListMap.get(tcSampleCode).get(0).getSampleCode();
+                    TcPollinationSingleNumTb tcPollinationSingleNumTb = null;
+                    if (i < tcPollinationSingleNumTbList.size()) {
+                        tcPollinationSingleNumTb = tcPollinationSingleNumTbList.get(i);
                     } else {
                         maxNumber = maxNumber == null ? 1 : maxNumber + 1;
-                        singleNumber = content.getRegionNum() + StringUtils.padl(maxNumber.toString(), 3, '0');
-
-                        TcPollinationSingleNumTb tcPollinationSingleNumTb = new TcPollinationSingleNumTb();
+                        String singleNumber = content.getRegionNum() + StringUtils.padl(maxNumber.toString(), 3, '0');
+                        tcPollinationSingleNumTb = new TcPollinationSingleNumTb();
                         tcPollinationSingleNumTb.setExperimentNum(tcExperimentTb.getExperimentNum());
                         tcPollinationSingleNumTb.setPollinationApplyNum(null);
                         tcPollinationSingleNumTb.setSeedNum(content.getSeedNum());
@@ -231,15 +213,15 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                         currentTcPollinationSingleNumTbList.add(tcPollinationSingleNumTb);
                     }
                     if (PollinationParentFlagEnum.father.name().equals(content.getParentFlag())) {
-                        TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, sampleCode, tcSampleCode, StringUtils.isNotEmpty(tcSampleCode) ? tcSampleCode : singleNumber, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
+                        TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, tcPollinationSingleNumTb.getSampleCode(), tcPollinationSingleNumTb.getTcSingleNumber(), codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
                         fatherList.add(tcPollinationExcelDTO);
                     } else if (PollinationParentFlagEnum.mother.name().equals(content.getParentFlag())) {
-                        TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofMother(tcExperimentDesignTb, sampleCode, tcSampleCode, StringUtils.isNotEmpty(tcSampleCode) ? tcSampleCode : singleNumber, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
+                        TcPollinationExcelDTO tcPollinationExcelDTO = TcPollinationExcelDTO.ofMother(tcExperimentDesignTb, tcPollinationSingleNumTb.getSampleCode(),tcPollinationSingleNumTb.getTcSingleNumber(), codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
                         MotherList.add(tcPollinationExcelDTO);
                     } else if (PollinationParentFlagEnum.parent.name().equals(content.getParentFlag())) {
-                        TcPollinationExcelDTO fatherTcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, sampleCode, tcSampleCode, StringUtils.isNotEmpty(tcSampleCode) ? tcSampleCode : singleNumber, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
+                        TcPollinationExcelDTO fatherTcPollinationExcelDTO = TcPollinationExcelDTO.ofFather(tcExperimentDesignTb, tcPollinationSingleNumTb.getSampleCode(),tcPollinationSingleNumTb.getTcSingleNumber(), codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
                         fatherList.add(fatherTcPollinationExcelDTO);
-                        TcPollinationExcelDTO MotherTcPollinationExcelDTO = TcPollinationExcelDTO.ofMother(tcExperimentDesignTb, sampleCode, tcSampleCode, StringUtils.isNotEmpty(tcSampleCode) ? tcSampleCode : singleNumber, codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
+                        TcPollinationExcelDTO MotherTcPollinationExcelDTO = TcPollinationExcelDTO.ofMother(tcExperimentDesignTb, tcPollinationSingleNumTb.getSampleCode(),tcPollinationSingleNumTb.getTcSingleNumber(), codeNameCerBreedDictMap.get(tcExperimentDesignTb.getBreedCode()));
                         MotherList.add(MotherTcPollinationExcelDTO);
                     }
                 }
@@ -264,7 +246,6 @@ public class TcPollinationServiceImpl implements TcPollinationService {
                     MotherTcPollinationExcelDTO.setFatherTcGene(fatherTcPollinationExcelDTO.getFatherTcGene());
                     MotherTcPollinationExcelDTO.setFatherSingleNumber(fatherTcPollinationExcelDTO.getFatherSingleNumber());
                     MotherTcPollinationExcelDTO.setFatherSampleCode(fatherTcPollinationExcelDTO.getFatherSampleCode());
-                    MotherTcPollinationExcelDTO.setFatherTcSampleCode(fatherTcPollinationExcelDTO.getFatherTcSampleCode());
                 } else {
                     MotherList.add(fatherList.get(i));
                 }
@@ -287,7 +268,6 @@ public class TcPollinationServiceImpl implements TcPollinationService {
             tcPollinationExcelDTO.setMotherRegionNum(content.getMotherRegionNum());
             tcPollinationExcelDTO.setMotherSeedNum(content.getMotherSeedNum());
             tcPollinationExcelDTO.setMotherSampleCode(content.getMotherSampleCode());
-            tcPollinationExcelDTO.setMotherTcSampleCode(content.getMotherTcSampleCode());
             tcPollinationExcelDTO.setMotherSingleNumber(content.getMotherSingleNumber());
             tcPollinationExcelDTO.setMotherBreedName(content.getMotherBreedName());
             tcPollinationExcelDTO.setMotherVectorTaskCode(content.getMotherVectorTaskCode());
@@ -295,7 +275,6 @@ public class TcPollinationServiceImpl implements TcPollinationService {
             tcPollinationExcelDTO.setMotherTcGene(content.getMotherTcGene());
             tcPollinationExcelDTO.setFatherRegionNum(content.getFatherRegionNum());
             tcPollinationExcelDTO.setFatherSeedNum(content.getFatherSeedNum());
-            tcPollinationExcelDTO.setFatherTcSampleCode(content.getFatherTcSampleCode());
             tcPollinationExcelDTO.setFatherSampleCode(content.getFatherSampleCode());
             tcPollinationExcelDTO.setFatherSingleNumber(content.getFatherSingleNumber());
             tcPollinationExcelDTO.setFatherBreedName(content.getFatherBreedName());

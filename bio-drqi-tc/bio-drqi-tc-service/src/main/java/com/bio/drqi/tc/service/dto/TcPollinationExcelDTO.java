@@ -31,12 +31,6 @@ public class TcPollinationExcelDTO {
     private String motherSampleCode;
 
     /**
-     * 母本大田取样编号
-     */
-    @ExcelProperty(value ={"母本","母本大田取样编号"})
-    private String motherTcSampleCode;
-
-    /**
      * 母本单株编号
      */
     @ExcelProperty(value ={"母本","母本单株编号"})
@@ -82,11 +76,6 @@ public class TcPollinationExcelDTO {
     @NotBlank(message = "参数缺失：父本种子编号")
     private String fatherSeedNum;
 
-    /**
-     * 父本大田单株编号
-     */
-    @ExcelProperty(value ={"父本","父本大田取样编号"})
-    private String fatherTcSampleCode;
 
     /**
      * 父本单株编号
@@ -153,7 +142,7 @@ public class TcPollinationExcelDTO {
     private String remark;
 
 
-    public static TcPollinationExcelDTO ofMother(TcExperimentDesignTb tcExperimentDesignTb, String sampleCode,String tcSampleCode,String motherSingleNumber,String breedName) {
+    public static TcPollinationExcelDTO ofMother(TcExperimentDesignTb tcExperimentDesignTb, String sampleCode,String motherSingleNumber,String breedName) {
         TcPollinationExcelDTO tcPollinationExcelDTO = new TcPollinationExcelDTO();
         tcPollinationExcelDTO.setMotherRegionNum(tcExperimentDesignTb.getRegionNum());
         tcPollinationExcelDTO.setMotherSeedNum(tcExperimentDesignTb.getSeedNum());
@@ -163,11 +152,10 @@ public class TcPollinationExcelDTO {
         tcPollinationExcelDTO.setMotherVectorTaskCode(tcExperimentDesignTb.getVectorTaskCode());
         tcPollinationExcelDTO.setMotherGenerationName(tcExperimentDesignTb.getGenerationCode());
         tcPollinationExcelDTO.setMotherTcGene(tcExperimentDesignTb.getTcGene());
-        tcPollinationExcelDTO.setMotherTcSampleCode(tcSampleCode);
         return tcPollinationExcelDTO;
     }
 
-    public static TcPollinationExcelDTO ofFather(TcExperimentDesignTb tcExperimentDesignTb, String sampleCode,String tcSampleCode,String fatherSingleNumber,String breedName) {
+    public static TcPollinationExcelDTO ofFather(TcExperimentDesignTb tcExperimentDesignTb, String sampleCode,String fatherSingleNumber,String breedName) {
         TcPollinationExcelDTO tcPollinationExcelDTO = new TcPollinationExcelDTO();
         tcPollinationExcelDTO.setFatherRegionNum(tcExperimentDesignTb.getRegionNum());
         tcPollinationExcelDTO.setFatherSeedNum(tcExperimentDesignTb.getSeedNum());
@@ -177,7 +165,6 @@ public class TcPollinationExcelDTO {
         tcPollinationExcelDTO.setFatherGenerationName(tcExperimentDesignTb.getGenerationCode());
         tcPollinationExcelDTO.setFatherTcGene(tcExperimentDesignTb.getTcGene());
         tcPollinationExcelDTO.setFatherSampleCode(sampleCode);
-        tcPollinationExcelDTO.setFatherTcSampleCode(tcSampleCode);
 
         return tcPollinationExcelDTO;
     }

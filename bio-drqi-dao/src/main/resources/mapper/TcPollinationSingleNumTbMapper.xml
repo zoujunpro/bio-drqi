@@ -30,12 +30,6 @@
         experiment_num = #{experimentNum,jdbcType=VARCHAR}
         AND pollination_apply_num is null
     </select>
-    <delete id="deleteByExperimentNumAndPollinationApplyNumIsNull">
-        delete
-        from tc_pollination_single_num_tb
-        where experiment_num = #{experimentNum,jdbcType=VARCHAR}
-          AND pollination_apply_num is null
-    </delete>
     <insert id="insertBatch">
         insert into tc_pollination_single_num_tb(id,experiment_num,pollination_apply_num,
         seed_num,region_num,tc_single_number,
@@ -94,5 +88,12 @@
         delete
         from tc_pollination_single_num_tb
         where sample_apply_num = #{sampleApplyNum,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteByExperimentNumAndPollinationApplyNumIsNullAndSampleCodeIsNotNull">
+        delete from tc_pollination_single_num_tb
+        where
+        experiment_num = #{experimentNum,jdbcType=VARCHAR}
+        AND pollination_apply_num is null
+        AND sample_code is not null
     </delete>
 </mapper>

@@ -68,5 +68,7 @@ public class BioSampleApplyListPageRspDTO {
      */
     private String sampleCodeRange;
 
+    private String sampleOrganize;
+
 
 }

@@ -11,6 +11,7 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.common.enums.TestResultEnum;
 import com.bio.drqi.domain.*;
@@ -34,10 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -160,6 +158,7 @@ public class CleanTestController {
             if (tcSampleTestTaskDTO == null) {
                 continue;
             }
+            List<TcSampleTestTb> tcSampleTestTbList= tcSampleTestTbMapper.selectAllBySampleApplyNum(tcSampleTestApplyTb.getSampleApplyNum());
             BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
             if (tcSampleTestTaskDTO != null && bioSampleApplyTb == null) {
                 bioSampleApplyTb = new BioSampleApplyTb();
@@ -173,6 +172,24 @@ public class CleanTestController {
                 bioSampleApplyTb.setSampleOrganize(tcSampleTestApplyTb.getSampleOrganize());
                 bioSampleApplyTb.setCloneFlag("N");
                 bioSampleApplyTb.setLayoutFlag(tcSampleTestTaskDTO.getTestType());
+                //如果是首次取样，更新取样区间
+                if (SampleTestApplyTypeEnum.first.name().equals(tcSampleTestTaskDTO.getApplyType())) {
+                    StringBuffer sampleCodeRangeBuff = new StringBuffer();
+                    Map<String, List<TcSampleTestTb>> plantSampleTestTbMap = tcSampleTestTbList.stream().collect(Collectors.groupingBy(tcSampleTestTb -> tcSampleTestTb.getSampleCode().replaceAll("\\d", "")));
+                    plantSampleTestTbMap.forEach((sampleCodePrefix, sampleTestList) -> {
+                        sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(sampleCodePrefix)).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(sampleCodePrefix.length())))).collect(Collectors.toList());
+                        if (CollectionUtil.isNotEmpty(sampleTestList)) {
+                            sampleCodeRangeBuff.append(sampleTestList.get(0).getSampleCode() + "-" + sampleTestList.get(sampleTestList.size() - 1).getSampleCode()).append(",");
+                        }
+                    });
+                    if (StringUtils.isNotEmpty(sampleCodeRangeBuff.toString())) {
+                        bioSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));
+                        bioSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(tcSampleTestTbList.stream().filter(tcSampleTestTb -> StringUtils.isNotEmpty(tcSampleTestTb.getVectorTaskCode())).map(TcSampleTestTb::getVectorTaskCode).distinct().collect(Collectors.toList())).replace("[", "").replace("]", "").replace("\"", ""));
+                    }
+                    bioSampleApplyTb.setApplyNumber(tcSampleTestTaskDTO.getFirstSampleApplyList().stream().map(TcSampleTestTaskDTO.FirstSampleApply::getSampleNum).mapToInt(Integer::intValue).sum());
+                } else {
+                    bioSampleApplyTb.setApplyNumber(tcSampleTestTaskDTO.getRepeatSampleApplyList().size());
+                }
                 bioSampleApplyTb.setVectorTaskCodes(null);
                 bioSampleApplyTb.setSampleCodeRange(null);
                 bioSampleApplyTbMapper.insert(bioSampleApplyTb);

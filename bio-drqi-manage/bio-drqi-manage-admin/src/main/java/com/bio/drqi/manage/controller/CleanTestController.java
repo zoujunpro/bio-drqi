@@ -227,6 +227,7 @@ public class CleanTestController {
             bioSampleTestTb.setSeedNum(tcSampleTestTb.getSeedNum());
             bioSampleTestTb.setTransformCode(null);
             bioSampleTestTb.setTestResult(TestResultEnum.noTest.name());
+            bioSampleTestTb.setTcSampleCode(tcSampleTestTb.getTcSampleCode());
             List<TcSampleTestBioInfoResultTb> tcSampleTestBioInfoResultTbList = tcSampleTestBioInfoResultTbMapper.selectAllByApplyNoAndSampleCode(bioSampleTestTb.getApplyNo(), bioSampleTestTb.getSampleCode());
             if (CollectionUtil.isNotEmpty(tcSampleTestBioInfoResultTbList) || bioSampleTestTb.ifHaveTestResult()) {
                 bioSampleTestTb.setTestResult(TestResultEnum.haveResult.name());

@@ -149,7 +149,11 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_large_cer_print.name(), samplePrintDataList));
             }
         } else {
-            return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_small_cer_print.name(), samplePrintDataList));
+            if ("董文华".equals(SecurityContextHolder.getNickName())) {
+                return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_5.printName, printDataSave(PrintTypeEnum.sample_label_small_cer_print.name(), samplePrintDataList));
+            } else {
+                return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_small_cer_print.name(), samplePrintDataList));
+            }
         }
     }
 
@@ -174,7 +178,12 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_large_project_print.name(), samplePrintDataList));
             }
         } else {
-            return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_small_project_print.name(), samplePrintDataList));
+            if ("董文华".equals(SecurityContextHolder.getNickName())) {
+                return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_5.printName, printDataSave(PrintTypeEnum.sample_label_small_project_print.name(), samplePrintDataList));
+            } else {
+                return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_small_project_print.name(), samplePrintDataList));
+            }
+
         }
 
     }
@@ -221,7 +230,6 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 if (SourceCodeEnum.project.name().equals(sourceCode)) {
                     if ("董文华".equals(SecurityContextHolder.getNickName())) {
                         printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_4.printName, printDataSave(PrintTypeEnum.plant_label_project_print.name(), plantPrintDataList)));
-
                     } else {
                         printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_label_project_print.name(), plantPrintDataList)));
                     }

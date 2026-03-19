@@ -128,6 +128,36 @@ public class CleanTestController {
     private TcPollinationSingleNumTbMapper tcPollinationSingleNumTbMapper;
 
 
+    @GetMapping("cleanTcSampleApply20260316")
+    public ResponseResult<Seed> cleanTcSampleApply20260316() {
+        List<TcSampleTestApplyTb> tcSampleTestApplyTbList = tcSampleTestApplyTbMapper.selectSelective(null);
+        for (TcSampleTestApplyTb tcSampleTestApplyTb : tcSampleTestApplyTbList) {
+            BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(tcSampleTestApplyTb.getSampleApplyNum());
+            if (bioSampleApplyTb == null) {
+                continue;
+            }
+            List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNo(bioSampleApplyTb.getApplyNo());
+
+            if (SampleTestApplyTypeEnum.first.name().equals(bioSampleApplyTb.getApplyType())) {
+                StringBuffer sampleCodeRangeBuff = new StringBuffer();
+                Map<String, List<BioSampleTestTb>> plantSampleTestTbMap = bioSampleTestTbList.stream().collect(Collectors.groupingBy(bioSampleTestTb -> bioSampleTestTb.getSampleCode().replaceAll("\\d", "")));
+                plantSampleTestTbMap.forEach((sampleCodePrefix, sampleTestList) -> {
+                    sampleTestList = sampleTestList.stream().filter(sampleTest -> sampleTest.getSampleCode().startsWith(sampleCodePrefix)).sorted(Comparator.comparing(sampleTest -> Integer.valueOf(sampleTest.getSampleCode().substring(sampleCodePrefix.length())))).collect(Collectors.toList());
+                    if (CollectionUtil.isNotEmpty(sampleTestList)) {
+                        sampleCodeRangeBuff.append(sampleTestList.get(0).getSampleCode() + "-" + sampleTestList.get(sampleTestList.size() - 1).getSampleCode()).append(",");
+                    }
+                });
+                if (StringUtils.isNotEmpty(sampleCodeRangeBuff.toString())) {
+                    bioSampleApplyTb.setSampleCodeRange(sampleCodeRangeBuff.substring(0, sampleCodeRangeBuff.length() - 1));
+                    bioSampleApplyTb.setVectorTaskCodes(JSONUtil.toJsonStr(bioSampleTestTbList.stream().filter(tcSampleTestTb -> StringUtils.isNotEmpty(tcSampleTestTb.getVectorTaskCode())).map(BioSampleTestTb::getVectorTaskCode).distinct().collect(Collectors.toList())).replace("[", "").replace("]", "").replace("\"", ""));
+                }
+            }
+            bioSampleApplyTb.setApplyNumber(bioSampleTestTbList.size());
+            bioSampleApplyTbMapper.updateById(bioSampleApplyTb);
+        }
+        return ResponseResult.getSuccess("ok");
+    }
+
 
     @GetMapping("cleanTcSampleData20260316")
     @Transactional(rollbackFor = Exception.class)
@@ -158,7 +188,7 @@ public class CleanTestController {
             if (tcSampleTestTaskDTO == null) {
                 continue;
             }
-            List<TcSampleTestTb> tcSampleTestTbList= tcSampleTestTbMapper.selectAllBySampleApplyNum(tcSampleTestApplyTb.getSampleApplyNum());
+            List<TcSampleTestTb> tcSampleTestTbList = tcSampleTestTbMapper.selectAllBySampleApplyNum(tcSampleTestApplyTb.getSampleApplyNum());
             BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
             if (tcSampleTestTaskDTO != null && bioSampleApplyTb == null) {
                 bioSampleApplyTb = new BioSampleApplyTb();
@@ -203,10 +233,11 @@ public class CleanTestController {
             if (bioTaskDtlTb == null) {
                 continue;
             }
+            TcSampleTestApplyTb tcSampleTestApplyTb = tcSampleTestApplyTbMapper.selectOneByTaskNum(tcSampleTestTb.getTaskNum());
             BioSampleTestTb bioSampleTestTb = new BioSampleTestTb();
             bioSampleTestTb.setVectorTaskCode(tcSampleTestTb.getVectorTaskCode());
             bioSampleTestTb.setSampleCode(tcSampleTestTb.getSampleCode());
-            bioSampleTestTb.setApplyTime(DateUtil.parse(tcSampleTestTb.getSampleTime(), "yyyy-MM-dd"));
+            bioSampleTestTb.setApplyTime(tcSampleTestApplyTb.getCreateTime());
             bioSampleTestTb.setApplyUserId(bioTaskDtlTb.getApplyUserId());
             bioSampleTestTb.setApplyUserName(bioTaskDtlTb.getApplyUserName());
             bioSampleTestTb.setTestIdentifyPrimer(tcSampleTestTb.getTestIdentifyPrimer());

@@ -219,10 +219,20 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                     }
                 }
                 if (SourceCodeEnum.project.name().equals(sourceCode)) {
-                    printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_label_project_print.name(), plantPrintDataList)));
+                    if ("董文华".equals(SecurityContextHolder.getNickName())) {
+                        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_4.printName, printDataSave(PrintTypeEnum.plant_label_project_print.name(), plantPrintDataList)));
+
+                    } else {
+                        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_label_project_print.name(), plantPrintDataList)));
+                    }
 
                 } else if (SourceCodeEnum.cer.name().equals(sourceCode)) {
-                    printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_label_cer_print.name(), plantPrintDataList)));
+                    if ("董文华".equals(SecurityContextHolder.getNickName())) {
+                        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_4.printName, printDataSave(PrintTypeEnum.plant_label_cer_print.name(), plantPrintDataList)));
+                    } else {
+                        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_label_cer_print.name(), plantPrintDataList)));
+
+                    }
                 }
             });
         }

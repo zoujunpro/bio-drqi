@@ -5,7 +5,7 @@ public enum SeedMaterialTypeEnum {
     TYPE_1("1", "基因编辑材料", "yellow_seed_print"),
     TYPE_2("2", "转基因材料", "blue_seed_print"),
     TYPE_3("3", "常规材料", "Godex GE330"),
-    TYPE_4("4", "文华取样大签打印", "smaple_large_print"),
+    TYPE_4("4", "文华取样大签打印", "large_print"),
     ;
     public String name;
     public String type;

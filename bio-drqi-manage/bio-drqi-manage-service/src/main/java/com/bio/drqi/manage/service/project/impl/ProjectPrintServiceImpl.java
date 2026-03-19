@@ -2,6 +2,7 @@ package com.bio.drqi.manage.service.project.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.enums.PrintSizeEnum;
 import com.bio.drqi.common.enums.PrintTypeEnum;
@@ -142,7 +143,11 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             }
         }
         if (PrintSizeEnum.large.name().equals(printType)) {
-            return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_large_cer_print.name(), samplePrintDataList));
+            if ("董文华".equals(SecurityContextHolder.getNickName())) {
+                return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_4.printName, printDataSave(PrintTypeEnum.sample_label_large_cer_print.name(), samplePrintDataList));
+            } else {
+                return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_large_cer_print.name(), samplePrintDataList));
+            }
         } else {
             return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_small_cer_print.name(), samplePrintDataList));
         }
@@ -163,7 +168,11 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
             }
         }
         if (PrintSizeEnum.large.name().equals(printType)) {
-            return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_large_project_print.name(), samplePrintDataList));
+            if ("董文华".equals(SecurityContextHolder.getNickName())) {
+                return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_4.printName, printDataSave(PrintTypeEnum.sample_label_large_project_print.name(), samplePrintDataList));
+            } else {
+                return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_large_project_print.name(), samplePrintDataList));
+            }
         } else {
             return new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.sample_label_small_project_print.name(), samplePrintDataList));
         }

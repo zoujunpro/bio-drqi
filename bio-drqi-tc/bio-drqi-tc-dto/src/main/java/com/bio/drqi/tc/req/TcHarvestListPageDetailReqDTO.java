@@ -9,6 +9,10 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class TcHarvestListPageDetailReqDTO extends PageDTO {
     /**
+     * 实验编号
+     */
+    private String experimentNum;
+    /**
      * 收获批次号
      */
     private String harvestApplyNum;

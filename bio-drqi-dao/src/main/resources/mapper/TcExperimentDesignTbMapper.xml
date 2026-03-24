@@ -186,6 +186,13 @@
         </where>
         order by id desc
     </select>
+    <select id="selectAllByExperimentNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_experiment_design_tb
+        where
+        experiment_num = #{experimentNum,jdbcType=VARCHAR}
+    </select>
 
 
 </mapper>

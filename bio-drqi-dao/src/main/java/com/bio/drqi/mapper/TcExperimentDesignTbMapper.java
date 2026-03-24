@@ -22,6 +22,8 @@ public interface TcExperimentDesignTbMapper extends BaseMapper<TcExperimentDesig
 
     List<TcExperimentDesignTb> selectSelective(TcExperimentDesignTb tcExperimentDesignTb);
 
+    List<TcExperimentDesignTb> selectAllByExperimentNum(@Param("experimentNum") String experimentNum);
+
 
     List<TcExperimentDesignTb> selectAllByRegionNum(@Param("regionNum") String regionNum);
 

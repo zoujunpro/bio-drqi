@@ -120,6 +120,8 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 printRspDTOList.add(doProjectSamplePrint(list, samplePrintReqDTO.getLabelType(), cerBreedDictMap, samplePrintReqDTO.getSampleCodeList()));
             } else if (SourceCodeEnum.cer.name().equals(sourceCode)) {
                 printRspDTOList.add(doCerSamplePrint(list, samplePrintReqDTO.getLabelType(), cerBreedDictMap, samplePrintReqDTO.getSampleCodeList()));
+            }else if (SourceCodeEnum.field.name().equals(sourceCode)) {
+                printRspDTOList.add(doCerSamplePrint(list, samplePrintReqDTO.getLabelType(), cerBreedDictMap, samplePrintReqDTO.getSampleCodeList()));
             }
         });
         return printRspDTOList;

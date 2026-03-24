@@ -135,6 +135,8 @@ public class TcPollinationTb implements Serializable {
      */
     private String harvestTypeName;
 
+    private String harvestTime;
+
     /**
      * 备注
      */

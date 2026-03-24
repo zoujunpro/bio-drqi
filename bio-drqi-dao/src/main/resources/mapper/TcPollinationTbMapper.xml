@@ -28,6 +28,7 @@
         <result property="pollinationMethodName" column="pollination_method_name" jdbcType="VARCHAR"/>
         <result property="harvestTypeCode" column="harvest_type_code" jdbcType="VARCHAR"/>
         <result property="harvestTypeName" column="harvest_type_name" jdbcType="VARCHAR"/>
+        <result property="harvestTime" column="harvest_time" jdbcType="VARCHAR"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
         <result property="seedNumber" column="seed_number" jdbcType="DECIMAL"/>
         <result property="unit" column="unit" jdbcType="VARCHAR"/>
@@ -51,7 +52,7 @@
         harvest_type_code,harvest_type_name,remark,
         seed_number,unit,
         seed_type,harvest_apply_num,harvest_remark,
-        f_single_number,m_single_number,seed_nums
+        f_single_number,m_single_number,seed_nums,harvestTime
     </sql>
 
     <select id="selectAllByPollinationApplyNum" resultMap="BaseResultMap">
@@ -198,7 +199,7 @@
         f_tc_gene,pollination_date,pollination_method_code,
         pollination_method_name,harvest_type_code,harvest_type_name,
         remark,unit,seed_number,
-        harvest_apply_num,harvest_remark,seed_nums)
+        harvest_apply_num,harvest_remark,seed_nums,harvest_time)
         values
         <foreach collection="tcPollinationTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.sampleApplyNum,jdbcType=VARCHAR},
@@ -210,7 +211,7 @@
             #{item.fTcGene,jdbcType=VARCHAR},#{item.pollinationDate,jdbcType=VARCHAR},#{item.pollinationMethodCode,jdbcType=VARCHAR},
             #{item.pollinationMethodName,jdbcType=VARCHAR},#{item.harvestTypeCode,jdbcType=VARCHAR},#{item.harvestTypeName,jdbcType=VARCHAR},
             #{item.remark,jdbcType=VARCHAR},#{item.unit,jdbcType=VARCHAR},#{item.seedNumber,jdbcType=DECIMAL},
-            #{item.harvestApplyNum,jdbcType=VARCHAR},#{item.harvestRemark,jdbcType=VARCHAR},#{item.seedNums,jdbcType=VARCHAR})
+            #{item.harvestApplyNum,jdbcType=VARCHAR},#{item.harvestRemark,jdbcType=VARCHAR},#{item.seedNums,jdbcType=VARCHAR},#{item.harvestTime,jdbcType=VARCHAR})
         </foreach>
     </insert>
 </mapper>

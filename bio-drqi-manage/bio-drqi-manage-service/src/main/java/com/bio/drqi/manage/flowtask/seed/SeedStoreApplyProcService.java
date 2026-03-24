@@ -9,7 +9,7 @@ import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.SeedSourceEnum;
+import com.bio.drqi.common.enums.SeedSourceEnum;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
 import com.bio.drqi.manage.service.common.SeedPlantService;
 import com.bio.drqi.mapper.*;

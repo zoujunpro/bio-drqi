@@ -22,8 +22,6 @@ public interface TcExperimentApplyService {
 
     List<TcExperimentApplyListAllRspDTO> listAll();
 
-    List<TcExperimentListNoHarvestRspDTO> listNoHarvest();
-
     void downTemplate(HttpServletResponse httpServletResponse);
 
     /**

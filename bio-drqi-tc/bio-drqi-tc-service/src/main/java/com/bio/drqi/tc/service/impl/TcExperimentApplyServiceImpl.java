@@ -115,19 +115,6 @@ public class TcExperimentApplyServiceImpl implements TcExperimentApplyService {
         return tcExperimentListAllRspDTOApplyList;
     }
 
-    @Override
-    public List<TcExperimentListNoHarvestRspDTO> listNoHarvest() {
-        List<TcExperimentTb> tcExperimentTbList = tcExperimentTbMapper.selectAllByExperimentStatusAndHarvestApplyNumIsNullOrderByIdDesc(ExperimentStatusEnum.INIT.status);
-        List<TcExperimentListNoHarvestRspDTO> tcExperimentListNoHarvestRspDTOList = BeanUtils.copyListProperties(tcExperimentTbList, TcExperimentListNoHarvestRspDTO.class);
-        if (CollectionUtil.isNotEmpty(tcExperimentListNoHarvestRspDTOList)) {
-            Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
-            tcExperimentListNoHarvestRspDTOList.forEach(tcExperimentListNoHarvestRspDTO -> {
-                tcExperimentListNoHarvestRspDTO.setExperimentAddressName(seedProduceAddressDictMap.get(tcExperimentListNoHarvestRspDTO.getExperimentAddressCode()));
-
-            });
-        }
-        return tcExperimentListNoHarvestRspDTOList;
-    }
 
     @Override
     public void downTemplate(HttpServletResponse httpServletResponse) {

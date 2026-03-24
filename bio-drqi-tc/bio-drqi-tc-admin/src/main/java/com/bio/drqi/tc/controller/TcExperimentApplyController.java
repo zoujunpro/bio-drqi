@@ -65,18 +65,6 @@ public class TcExperimentApplyController {
 
 
     /**
-     * 试验申请管理-查询未收获试验
-     *
-     * @param
-     * @return
-     */
-    @GetMapping("/listNoHarvest")
-    @WebLog(desc = "试验申请管理-查询未收获试验")
-    public ResponseResult<List<TcExperimentListNoHarvestRspDTO>> listNoHarvest() {
-        return ResponseResult.getSuccess(tcExperimentApplyService.listNoHarvest());
-    }
-
-    /**
      * 试验申请管理-文件下载
      *
      * @param httpServletResponse

@@ -37,23 +37,23 @@ public class TcPollinationApplyController {
     @Resource
     private OssService ossService;
     /**
-     * 授粉管理-分页查询
+     * 授粉申请管理-分页查询
      *
      * @return
      */
     @PostMapping("/listPage")
-    @WebLog(desc = "授粉管理-分页查询")
+    @WebLog(desc = "授粉申请管理-分页查询")
     @RequirePermissions("tc:tcPollinationApply:listPage")
     public ResponseResult<PageInfo<TcPollinationApplyListPageRspDTO>> listPage(@RequestBody @Validated TcPollinationApplyListPageReqDTO tcPollinationApplyListPageReqDTO) {
         return ResponseResult.getSuccess(tcPollinationApplyService.listPage(tcPollinationApplyListPageReqDTO));
     }
 
     /**
-     * 授粉管理-查询未收获的授粉申请批次号
+     * 授粉申请管理-查询未收获的授粉申请批次号
      * @return
      */
     @GetMapping("/listPollinationApplyNumNotHarvest")
-    @WebLog(desc = "授粉管理-查询未收获的授粉申请批次号")
+    @WebLog(desc = "授粉申请管理-查询未收获的授粉申请批次号")
     public ResponseResult<List<TcPollinationApplyListPollinationApplyNumNotHarvestRspDTO>> listPollinationApplyNumNotHarvest(){
         return ResponseResult.getSuccess(tcPollinationApplyService.listPollinationApplyNumNotHarvest());
     }
@@ -61,10 +61,10 @@ public class TcPollinationApplyController {
 
 
     /**
-     * 授粉管理-生成授粉excel
+     * 授粉申请管理-生成授粉excel
      */
     @PostMapping("/createPollinationExcel")
-    @WebLog(desc = "授粉管理-生成授粉excel")
+    @WebLog(desc = "授粉申请管理-生成授粉excel")
     @Transactional(rollbackFor = Exception.class)
     @RequirePermissions("tc:tcPollinationApply:createPollinationExcel")
     public ResponseResult<List<TcPollinationExcelDTO>> createPollinationExcel(@RequestBody @Validated TcPollinationCreatePollinationExcelReqDTO tcPollinationCreatePollinationExcelReqDTO) {
@@ -75,10 +75,10 @@ public class TcPollinationApplyController {
 
 
     /**
-     * 授粉管理-生成最终授粉excel
+     * 授粉申请管理-生成最终授粉excel
      */
     @PostMapping("/exportPollinationExcel")
-    @WebLog(desc = "授粉管理-生成授粉excel")
+    @WebLog(desc = "授粉申请管理-生成授粉excel")
     @Transactional(rollbackFor = Exception.class)
     @RequirePermissions("tc:tcPollinationApply:createPollinationExcel")
     public void exportPollinationExcel(@RequestBody @Validated TcPollinationApplyExportPollinationExcelReqDTO tcPollinationApplyExportPollinationExcelReqDTO, HttpServletResponse httpServletResponse) {
@@ -88,12 +88,12 @@ public class TcPollinationApplyController {
 
 
     /**
-     * 授粉管理-授粉结果表下载
+     * 授粉申请管理-授粉结果表下载
      * @param httpServletResponse
      * @return
      */
     @PostMapping("/downTemplate")
-    @WebLog(desc = "授粉管理-授粉结果表下载")
+    @WebLog(desc = "授粉申请管理-授粉结果表下载")
     public void downTemplate(HttpServletResponse httpServletResponse) {
         try {
             ossService.downloadFile(httpServletResponse, "template", "田测授粉结果表单模板V1.0.xlsx");

@@ -49,8 +49,6 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         if (CollectionUtil.isNotEmpty(tcExperimentDesignTbList)) {
             PageInfo<TcExperimentListPageRspDTO> result = BeanUtils.copyPageInfoProperties(srcPageInfo, TcExperimentListPageRspDTO.class);
                 result.getList().forEach(tcExperimentListPageRspDTO -> {
-                    List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNoAndSeedNumAndRegionNumAndCheckResult(tcExperimentListPageReqDTO.getSampleApplyNum(), tcExperimentListPageRspDTO.getSeedNum(), tcExperimentListPageRspDTO.getRegionNum(), SampleTestCheckResultEnum.stay.name());
-                    tcExperimentListPageRspDTO.setStayNumber(StringUtils.isNotEmpty(bioSampleTestTbList) ? bioSampleTestTbList.size() : 0);
                     tcExperimentListPageRspDTO.setSpeciesName(speciesCodeOfNameMap.get(tcExperimentListPageRspDTO.getSpeciesCode()));
                     tcExperimentListPageRspDTO.setBreedName(breedCodeOfNameMap.get(tcExperimentListPageRspDTO.getBreedCode()));
                 });

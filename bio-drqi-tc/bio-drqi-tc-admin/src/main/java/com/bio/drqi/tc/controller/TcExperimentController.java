@@ -6,6 +6,7 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListPageRspDTO;
 import com.bio.drqi.tc.service.TcExperimentService;
+import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +34,7 @@ public class TcExperimentController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "试验详情管理-条件查询试验设计详情")
-    public ResponseResult<List<TcExperimentListPageRspDTO>> listPage(@Validated @RequestBody TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
+    public ResponseResult<PageInfo<TcExperimentListPageRspDTO>> listPage(@Validated @RequestBody TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
         return ResponseResult.getSuccess(tcExperimentService.listPage(tcExperimentListPageReqDTO));
     }
 

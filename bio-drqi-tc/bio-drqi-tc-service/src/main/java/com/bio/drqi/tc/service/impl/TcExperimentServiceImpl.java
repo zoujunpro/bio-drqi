@@ -13,6 +13,7 @@ import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListPageRspDTO;
 import com.bio.drqi.tc.service.TcExperimentService;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -37,17 +38,18 @@ public class TcExperimentServiceImpl implements TcExperimentService {
     private  BioSampleTestTbMapper bioSampleTestTbMapper;
 
     @Override
-    public List<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
+    public PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
         PageHelper.startPage(tcExperimentListPageReqDTO.getPageNum(),tcExperimentListPageReqDTO.getPageSize());
         List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectSelective(BeanUtils.copyProperties(tcExperimentListPageReqDTO,TcExperimentDesignTb.class));
+        PageInfo<TcExperimentDesignTb> srcPageInfo=new PageInfo<>(tcExperimentDesignTbList);
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
         List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectAll();
         Map<String, String> breedCodeOfNameMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         Map<String, String> speciesCodeOfNameMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
         if (CollectionUtil.isNotEmpty(tcExperimentDesignTbList)) {
-            List<TcExperimentListPageRspDTO> result = BeanUtils.copyListProperties(tcExperimentDesignTbList, TcExperimentListPageRspDTO.class);
+            PageInfo<TcExperimentListPageRspDTO> result = BeanUtils.copyPageInfoProperties(srcPageInfo, TcExperimentListPageRspDTO.class);
             if (StringUtils.isNotEmpty(tcExperimentListPageReqDTO.getSampleApplyNum())) {
-                result.forEach(obj -> {
+                result.getList().forEach(obj -> {
                     List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNoAndSeedNumAndRegionNumAndCheckResult(tcExperimentListPageReqDTO.getSampleApplyNum(), obj.getSeedNum(), obj.getRegionNum(), SampleTestCheckResultEnum.stay.name());
                     obj.setStayNumber(StringUtils.isNotEmpty(bioSampleTestTbList) ? bioSampleTestTbList.size() : 0);
                     obj.setSpeciesName(speciesCodeOfNameMap.get(obj.getSpeciesCode()));

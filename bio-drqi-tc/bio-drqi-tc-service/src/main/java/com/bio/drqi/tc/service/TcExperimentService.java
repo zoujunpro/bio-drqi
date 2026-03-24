@@ -11,6 +11,7 @@ import com.bio.drqi.domain.TcSampleTestTb;
 import com.bio.drqi.tc.enums.SampleTestCheckResultEnum;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
 import com.bio.drqi.tc.rsp.TcExperimentListPageRspDTO;
+import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -19,5 +20,5 @@ import java.util.stream.Collectors;
 public interface TcExperimentService {
 
 
-    List<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO) ;
+    PageInfo<TcExperimentListPageRspDTO> listPage(TcExperimentListPageReqDTO tcExperimentListPageReqDTO) ;
 }

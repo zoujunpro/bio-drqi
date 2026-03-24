@@ -1,5 +1,6 @@
 package com.bio.drqi.tc.controller;
 
+
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
@@ -15,7 +16,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 试验管理
+ * 试验详情管理
  */
 @RestController
 @RequestMapping("/tcExperiment")
@@ -25,13 +26,13 @@ public class TcExperimentController {
     private TcExperimentService tcExperimentService;
 
     /**
-     * 试验方案申请管理-条件查询试验设计
+     * 试验详情管理-条件查询试验设计详情
      *
      * @param
      * @return
      */
     @PostMapping("/listPage")
-    @WebLog(desc = "试验方案申请管理-条件查询试验设计")
+    @WebLog(desc = "试验详情管理-条件查询试验设计详情")
     public ResponseResult<List<TcExperimentListPageRspDTO>> listPage(@Validated @RequestBody TcExperimentListPageReqDTO tcExperimentListPageReqDTO) {
         return ResponseResult.getSuccess(tcExperimentService.listPage(tcExperimentListPageReqDTO));
     }

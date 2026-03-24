@@ -48,14 +48,12 @@ public class TcExperimentServiceImpl implements TcExperimentService {
         Map<String, String> speciesCodeOfNameMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
         if (CollectionUtil.isNotEmpty(tcExperimentDesignTbList)) {
             PageInfo<TcExperimentListPageRspDTO> result = BeanUtils.copyPageInfoProperties(srcPageInfo, TcExperimentListPageRspDTO.class);
-            if (StringUtils.isNotEmpty(tcExperimentListPageReqDTO.getSampleApplyNum())) {
-                result.getList().forEach(obj -> {
-                    List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNoAndSeedNumAndRegionNumAndCheckResult(tcExperimentListPageReqDTO.getSampleApplyNum(), obj.getSeedNum(), obj.getRegionNum(), SampleTestCheckResultEnum.stay.name());
-                    obj.setStayNumber(StringUtils.isNotEmpty(bioSampleTestTbList) ? bioSampleTestTbList.size() : 0);
-                    obj.setSpeciesName(speciesCodeOfNameMap.get(obj.getSpeciesCode()));
-                    obj.setBreedName(breedCodeOfNameMap.get(obj.getBreedCode()));
+                result.getList().forEach(tcExperimentListPageRspDTO -> {
+                    List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllByApplyNoAndSeedNumAndRegionNumAndCheckResult(tcExperimentListPageReqDTO.getSampleApplyNum(), tcExperimentListPageRspDTO.getSeedNum(), tcExperimentListPageRspDTO.getRegionNum(), SampleTestCheckResultEnum.stay.name());
+                    tcExperimentListPageRspDTO.setStayNumber(StringUtils.isNotEmpty(bioSampleTestTbList) ? bioSampleTestTbList.size() : 0);
+                    tcExperimentListPageRspDTO.setSpeciesName(speciesCodeOfNameMap.get(tcExperimentListPageRspDTO.getSpeciesCode()));
+                    tcExperimentListPageRspDTO.setBreedName(breedCodeOfNameMap.get(tcExperimentListPageRspDTO.getBreedCode()));
                 });
-            }
             return result;
 
         }

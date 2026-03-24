@@ -5,9 +5,10 @@ import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcHarvestCreateHarvestExcelReqDTO;
 import com.bio.drqi.tc.req.TcHarvestListPageDetailReqDTO;
-import com.bio.drqi.tc.req.TcHarvestListPageReqDTO;
+import com.bio.drqi.tc.req.TcHarvestApplyListPageReqDTO;
 import com.bio.drqi.tc.rsp.TcHarvestListPageDetailRspDTO;
-import com.bio.drqi.tc.rsp.TcHarvestListPageRspDTO;
+import com.bio.drqi.tc.rsp.TcHarvestApplyListPageRspDTO;
+import com.bio.drqi.tc.service.TcHarvestApplyService;
 import com.bio.drqi.tc.service.TcHarvestService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
@@ -23,23 +24,12 @@ import javax.servlet.http.HttpServletResponse;
  * 田测收获管理
  */
 @RestController
-@RequestMapping("/tcHarvest")
+@RequestMapping("/tcHarvestApply")
 public class TcHarvestController {
 
     @Resource
     private TcHarvestService tcHarvestService;
 
-    /**
-     * 田测收获管理-分页查询申请列表
-     * @param tcHarvestListPageReqDTO
-     * @return
-     */
-    @PostMapping("/listPage")
-    @WebLog(desc = "田测收获管理-分页查询申请列表")
-    @RequirePermissions("tc:tcHarvest:listPage")
-    public ResponseResult<PageInfo<TcHarvestListPageRspDTO>> listPage(@RequestBody TcHarvestListPageReqDTO tcHarvestListPageReqDTO) {
-        return ResponseResult.getSuccess(tcHarvestService.listPage(tcHarvestListPageReqDTO));
-    }
 
     /**
      * 田测收获管理-分页查询收获详情列表
@@ -49,18 +39,8 @@ public class TcHarvestController {
      */
     @PostMapping("/listPageDetail")
     @WebLog(desc = "田测收获管理-分页查询收获详情列表")
-    public ResponseResult<PageInfo<TcHarvestListPageDetailRspDTO>> listPageDetail(@RequestBody @Validated TcHarvestListPageDetailReqDTO tcHarvestListPageDetailReqDTO) {
-        return ResponseResult.getSuccess(tcHarvestService.listPageDetail(tcHarvestListPageDetailReqDTO));
+    public ResponseResult<PageInfo<TcHarvestListPageDetailRspDTO>> listPage(@RequestBody @Validated TcHarvestListPageDetailReqDTO tcHarvestListPageDetailReqDTO) {
+        return ResponseResult.getSuccess(tcHarvestService.listPage(tcHarvestListPageDetailReqDTO));
     }
 
-
-    /**
-     * 田测收获管理-生成收获excel
-     */
-    @PostMapping("/createHarvestExcel")
-    @WebLog(desc = "田测收获管理-生成收获excel")
-    @RequirePermissions("tc:tcHarvest:createHarvestExcel")
-    public void createHarvestExcel(@RequestBody @Validated TcHarvestCreateHarvestExcelReqDTO tcHarvestCreateHarvestExcelReqDTO, HttpServletResponse httpServletResponse) {
-        tcHarvestService.createHarvestExcel(tcHarvestCreateHarvestExcelReqDTO, httpServletResponse);
-    }
 }

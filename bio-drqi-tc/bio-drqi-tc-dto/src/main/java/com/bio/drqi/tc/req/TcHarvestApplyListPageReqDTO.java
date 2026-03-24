@@ -4,7 +4,7 @@ import com.bio.drqi.common.dto.PageDTO;
 import lombok.Data;
 
 @Data
-public class TcHarvestListPageReqDTO extends PageDTO {
+public class TcHarvestApplyListPageReqDTO extends PageDTO {
      private String harvestApplyNum;
 
      private String experimentNum;

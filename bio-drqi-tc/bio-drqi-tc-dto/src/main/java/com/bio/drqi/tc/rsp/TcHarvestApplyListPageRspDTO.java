@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class TcHarvestListPageRspDTO {
+public class TcHarvestApplyListPageRspDTO {
     private Integer id;
 
     /**

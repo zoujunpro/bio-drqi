@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  * 收获详情管理
  */
 @RestController
-@RequestMapping("/tcHarvestApply")
+@RequestMapping("/tcHarvest")
 public class TcHarvestController {
 
     @Resource
@@ -37,7 +37,7 @@ public class TcHarvestController {
      * @param tcHarvestListPageDetailReqDTO
      * @return
      */
-    @PostMapping("/listPageDetail")
+    @PostMapping("/listPage")
     @WebLog(desc = "收获详情管理-分页查询收获详情列表")
     public ResponseResult<PageInfo<TcHarvestListPageDetailRspDTO>> listPage(@RequestBody @Validated TcHarvestListPageDetailReqDTO tcHarvestListPageDetailReqDTO) {
         return ResponseResult.getSuccess(tcHarvestService.listPage(tcHarvestListPageDetailReqDTO));

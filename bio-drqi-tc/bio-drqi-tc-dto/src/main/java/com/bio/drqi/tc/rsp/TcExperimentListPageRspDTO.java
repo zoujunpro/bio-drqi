@@ -2,105 +2,68 @@ package com.bio.drqi.tc.rsp;
 
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
 public class TcExperimentListPageRspDTO {
+    /**
+     * 小区编号
+     */
+    private String regionNum;
 
-    private Integer id;
+    /**
+     * 种子编号
+     */
+    private String seedNum;
 
     /**
      * 项目编号
      */
-    private String projectCodes;
+    private String projectCode;
 
     /**
      * 实施方案编号
      */
-    private String vectorTaskCodes;
+    private String vectorTaskCode;
 
     /**
-     * 物种编码
+     * 物种
      */
     private String speciesCode;
 
     /**
-     * 物种名称
+     * 物种
      */
     private String speciesName;
 
     /**
-     * 上传附件
+     * 品种
      */
-    private String fileUrl;
+    private String breedName;
 
     /**
-     * 实验目的
+     * 品种
      */
-    private String experimentGoal;
+    private String breedCode;
 
     /**
-     * 实验地点
+     * 目标性状
      */
-    private String experimentAddressCode;
-    /**
-     * 实验地点
-     */
-    private String experimentAddressName;
+    private String targetCharacter;
 
     /**
-     * 申请人
+     * 代次编号
      */
-    private String applyUserName;
+    private String generationCode;
 
     /**
-     * 申请人iD
+     * 田测基因型
      */
-    private Integer applyUserId;
+    private String tcGene;
+
 
     /**
-     * 创建时间
+     * 保留苗数量
      */
-    private Date createTime;
+    private Integer stayNumber;
 
-    /**
-     * 实验编号
-     */
-    private String experimentNum;
-
-    /**
-     * 任务编号
-     */
-    private String taskNum;
-
-    /**
-     * 田间设计附件
-     */
-    private String designUrl;
-
-
-    private String sampleCodePrefix;
-
-    private Integer nextSampleNumber;
-
-    /**
-     *
-     * 试验状态 1 进行中  2试验结束 3试验终止
-     */
-    private String experimentStatus;
-
-    /**
-     * 收获批次号
-     */
-    private String harvestApplyNum;
-
-    private String harvestFlag;
-
-    private String pollinationFlag;
-
-
-    private String experimentType;
-
-    private String pdImplementCodes;
-
+    private String pdNum;
 }

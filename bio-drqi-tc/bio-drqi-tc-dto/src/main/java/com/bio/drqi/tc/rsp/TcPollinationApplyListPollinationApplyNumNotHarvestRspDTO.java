@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class TcPollinationListPollinationApplyNumNotHarvestRspDTO {
+public class TcPollinationApplyListPollinationApplyNumNotHarvestRspDTO {
     /**
      * 授粉方式
      */

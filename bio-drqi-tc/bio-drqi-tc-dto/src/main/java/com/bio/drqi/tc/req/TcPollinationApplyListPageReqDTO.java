@@ -3,9 +3,8 @@ package com.bio.drqi.tc.req;
 import com.bio.drqi.common.dto.PageDTO;
 import lombok.Data;
 
-import java.util.Date;
 @Data
-public class TcPollinationListPageReqDTO extends PageDTO {
+public class TcPollinationApplyListPageReqDTO extends PageDTO {
 
     /**
      * 实验编号

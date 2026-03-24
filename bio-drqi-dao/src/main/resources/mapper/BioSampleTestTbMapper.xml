@@ -426,4 +426,14 @@
         where
         experiment_num = #{experimentNum,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllByApplyNoAndSeedNumAndRegionNumAndCheckResult" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_test_tb
+        where
+        apply_no = #{applyNo,jdbcType=VARCHAR}
+        AND seed_num = #{seedNum,jdbcType=VARCHAR}
+        AND region_num = #{regionNum,jdbcType=VARCHAR}
+        AND check_result = #{checkResult,jdbcType=VARCHAR}
+    </select>
 </mapper>

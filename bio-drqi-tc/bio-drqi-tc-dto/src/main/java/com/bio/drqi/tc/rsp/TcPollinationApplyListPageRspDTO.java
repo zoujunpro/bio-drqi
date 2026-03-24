@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class TcPollinationListPageRspDTO {
+public class TcPollinationApplyListPageRspDTO {
     private Integer id;
 
     /**

@@ -91,7 +91,7 @@
     <update id="updatePdImplementCodeAndVectorTaskCodeById">
         update tc_experiment_design_tb
         set pd_implement_code = #{pdImplementCode,jdbcType=VARCHAR},
-            vector_task_code  = #{vectorTaskCode,jdbcType=VARCHAR}
+        vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
         where id = #{id,jdbcType=NUMERIC}
     </update>
     <select id="selectOneByRegionNumAndSeedNum" resultMap="BaseResultMap">
@@ -113,7 +113,7 @@
         select DISTINCT vector_task_code, pd_implement_code, experiment_num
         from tc_experiment_design_tb
         where vector_task_code is not null
-           or pd_implement_code is not null
+        or pd_implement_code is not null
     </select>
     <select id="selectAllByVectorTaskCodeAndPdImplementCode" resultMap="BaseResultMap">
         select
@@ -121,11 +121,15 @@
         from tc_experiment_design_tb
         where 1=1
         <choose>
-            <when test="vectorTaskCode!=null and vectorTaskCode !=''">AND vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}</when>
-            <otherwise> AND vector_task_code is null</otherwise>
+            <when test="vectorTaskCode!=null and vectorTaskCode !=''">AND vector_task_code =
+                #{vectorTaskCode,jdbcType=VARCHAR}
+            </when>
+            <otherwise>AND vector_task_code is null</otherwise>
         </choose>
         <choose>
-            <when test="pdImplementCode!=null and pdImplementCode !=''"> AND pd_implement_code = #{pdImplementCode,jdbcType=VARCHAR} </when>
+            <when test="pdImplementCode!=null and pdImplementCode !=''">AND pd_implement_code =
+                #{pdImplementCode,jdbcType=VARCHAR}
+            </when>
             <otherwise>AND pd_implement_code is null</otherwise>
         </choose>
     </select>
@@ -145,6 +149,42 @@
         from tc_experiment_design_tb
         where
         vector_task_code = #{vectorTaskCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.TcExperimentDesignTb">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_experiment_design_tb
+        <where>
+            <if test="experimentNum != null and experimentNum!=''"> and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
+            <if test="regionNum != null and regionNum!=''">and region_num=#{regionNum,jdbcType=VARCHAR}</if>
+            <if test="seedNum != null and seedNum!=''">and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
+            <if test="projectCode != null and projectCode!=''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>
+            <if test="vectorTaskCode != null and vectorTaskCode!=''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
+            <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
+            <if test="breedCode != null and breedCode!=''">and breed_code=#{breedCode,jdbcType=VARCHAR}</if>
+            <if test="targetCharacter != null">and target_character=#{targetCharacter,jdbcType=VARCHAR}</if>
+            <if test="generationCode != null">and generation_code=#{generationCode,jdbcType=VARCHAR}</if>
+            <if test="tcGene != null">and tc_gene=#{tcGene,jdbcType=VARCHAR}</if>
+            <if test="regionArea != null">and region_area=#{regionArea,jdbcType=VARCHAR}</if>
+            <if test="areaUnit != null">and area_unit=#{areaUnit,jdbcType=VARCHAR}</if>
+            <if test="plantSpace != null">and plant_space=#{plantSpace,jdbcType=VARCHAR}</if>
+            <if test="rowsNumber != null">and rows_number=#{rowsNumber,jdbcType=VARCHAR}</if>
+            <if test="rowsLength != null">and rows_length=#{rowsLength,jdbcType=VARCHAR}</if>
+            <if test="rowsSpace != null">and rows_space=#{rowsSpace,jdbcType=VARCHAR}</if>
+            <if test="seedingType != null">and seeding_type=#{seedingType,jdbcType=VARCHAR}</if>
+            <if test="seedingNumber != null">and seeding_number=#{seedingNumber,jdbcType=NUMERIC}</if>
+            <if test="seedingUnit != null">and seeding_unit=#{seedingUnit,jdbcType=VARCHAR}</if>
+            <if test="seedingTime != null">and seeding_time=#{seedingTime,jdbcType=VARCHAR}</if>
+            <if test="remark != null">and remark=#{remark,jdbcType=VARCHAR}</if>
+            <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
+            <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="emergenceRate != null">and emergence_rate=#{emergenceRate,jdbcType=VARCHAR}</if>
+            <if test="transplantTime != null">and transplant_time=#{transplantTime,jdbcType=VARCHAR}</if>
+            <if test="pdImplementCode != null and pdImplementCode!=''">and pd_implement_code=#{pdImplementCode,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
     </select>
 
 

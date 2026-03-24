@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class TcExperimentQueryByPdAndVectorTaskCodeRspDTO {
+public class TcExperimentApplyQueryByPdAndVectorTaskCodeRspDTO {
     private Integer id;
 
     /**

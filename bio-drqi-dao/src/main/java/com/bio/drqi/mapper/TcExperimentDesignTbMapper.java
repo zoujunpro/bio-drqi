@@ -1,30 +1,38 @@
 package com.bio.drqi.mapper;
+
 import java.util.Collection;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.bio.drqi.domain.TcExperimentDesignTb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
-* @author zou'jun
-* @description 针对表【tc_experiment_design_tb(田间试验设计表)】的数据库操作Mapper
-* @createDate 2025-05-15 16:45:50
-* @Entity com.bio.drqi.domain.TcExperimentDesignTb
-*/
+ * @author zou'jun
+ * @description 针对表【tc_experiment_design_tb(田间试验设计表)】的数据库操作Mapper
+ * @createDate 2025-05-15 16:45:50
+ * @Entity com.bio.drqi.domain.TcExperimentDesignTb
+ */
 public interface TcExperimentDesignTbMapper extends BaseMapper<TcExperimentDesignTb> {
 
     List<TcExperimentDesignTb> selectAllByExperimentNumIn(@Param("experimentNumList") Collection<String> experimentNumList);
+
     List<TcExperimentDesignTb> selectAllForBroadOne();
-    List<TcExperimentDesignTb> selectAllByExperimentNum(@Param("experimentNum") String experimentNum);
+
+    List<TcExperimentDesignTb> selectSelective(TcExperimentDesignTb tcExperimentDesignTb);
+
 
     List<TcExperimentDesignTb> selectAllByRegionNum(@Param("regionNum") String regionNum);
+
     TcExperimentDesignTb selectOneByRegionNumAndSeedNum(@Param("regionNum") String regionNum, @Param("seedNum") String seedNum);
+
     int insertBatch(@Param("tcExperimentDesignTbCollection") Collection<TcExperimentDesignTb> tcExperimentDesignTbCollection);
 
     List<TcExperimentDesignTb> selectAllBySeedNum(@Param("seedNum") String seedNum);
 
     List<TcExperimentDesignTb> selectAllByVectorTaskCode(@Param("vectorTaskCode") String vectorTaskCode);
+
     List<TcExperimentDesignTb> selectAllByVectorTaskCodeAndPdImplementCode(@Param("vectorTaskCode") String vectorTaskCode, @Param("pdImplementCode") String pdImplementCode);
 
     int updatePdImplementCodeAndVectorTaskCodeById(@Param("pdImplementCode") String pdImplementCode, @Param("vectorTaskCode") String vectorTaskCode, @Param("id") Integer id);

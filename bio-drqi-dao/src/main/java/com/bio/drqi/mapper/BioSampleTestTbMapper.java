@@ -74,6 +74,8 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
     List<BioSampleTestTb> selectAllByRegionNumAndSeedNum(@Param("regionNum") String regionNum, @Param("seedNum") String seedNum);
 
     List<BioSampleTestTb> selectAllByExperimentNum(@Param("experimentNum") String experimentNum);
+
+    List<BioSampleTestTb> selectAllByApplyNoAndSeedNumAndRegionNumAndCheckResult(@Param("applyNo") String applyNo, @Param("seedNum") String seedNum, @Param("regionNum") String regionNum, @Param("checkResult") String checkResult);
 }
 
 

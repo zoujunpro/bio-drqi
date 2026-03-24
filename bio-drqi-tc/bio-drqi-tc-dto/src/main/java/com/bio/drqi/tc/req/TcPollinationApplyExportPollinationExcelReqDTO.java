@@ -1,8 +1,6 @@
 package com.bio.drqi.tc.req;
 
 
-import com.alibaba.excel.annotation.ExcelProperty;
-import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -11,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
-public class TcPollinationExportPollinationExcelReqDTO {
+public class TcPollinationApplyExportPollinationExcelReqDTO {
 
     @NotBlank(message = "参数缺失：试验编号")
     private String experimentNum;

@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class TcExperimentListAllRspDTO {
+public class TcExperimentApplyListAllRspDTO {
 
     /**
      * 实验编号

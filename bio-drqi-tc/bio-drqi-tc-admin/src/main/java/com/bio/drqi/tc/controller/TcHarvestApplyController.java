@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 田测收获申请管理
+ * 收获申请管理
  */
 @RestController
 @RequestMapping("/tcHarvestApply")
@@ -28,12 +28,12 @@ public class TcHarvestApplyController {
     private TcHarvestApplyService tcHarvestApplyService;
 
     /**
-     * 田测收获申请管理-分页查询申请列表
+     * 收获申请管理-分页查询申请列表
      * @param tcHarvestApplyListPageReqDTO
      * @return
      */
     @PostMapping("/listPage")
-    @WebLog(desc = "田测收获申请管理-分页查询申请列表")
+    @WebLog(desc = "收获申请管理-分页查询申请列表")
     @RequirePermissions("tc:tcHarvestApply:listPage")
     public ResponseResult<PageInfo<TcHarvestApplyListPageRspDTO>> listPage(@RequestBody TcHarvestApplyListPageReqDTO tcHarvestApplyListPageReqDTO) {
         return ResponseResult.getSuccess(tcHarvestApplyService.listPage(tcHarvestApplyListPageReqDTO));
@@ -43,10 +43,10 @@ public class TcHarvestApplyController {
 
 
     /**
-     * 田测收获申请管理-生成收获excel
+     * 收获申请管理-生成收获excel
      */
     @PostMapping("/createHarvestExcel")
-    @WebLog(desc = "田测收获申请管理-生成收获excel")
+    @WebLog(desc = "收获申请管理-生成收获excel")
     @RequirePermissions("tc:tcHarvestApply:createHarvestExcel")
     public void createHarvestExcel(@RequestBody @Validated TcHarvestCreateHarvestExcelReqDTO tcHarvestCreateHarvestExcelReqDTO, HttpServletResponse httpServletResponse) {
         tcHarvestApplyService.createHarvestExcel(tcHarvestCreateHarvestExcelReqDTO, httpServletResponse);

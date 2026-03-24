@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 田测收获管理
+ * 收获详情管理
  */
 @RestController
 @RequestMapping("/tcHarvestApply")
@@ -32,13 +32,13 @@ public class TcHarvestController {
 
 
     /**
-     * 田测收获管理-分页查询收获详情列表
+     * 收获详情管理-分页查询收获详情列表
      *
      * @param tcHarvestListPageDetailReqDTO
      * @return
      */
     @PostMapping("/listPageDetail")
-    @WebLog(desc = "田测收获管理-分页查询收获详情列表")
+    @WebLog(desc = "收获详情管理-分页查询收获详情列表")
     public ResponseResult<PageInfo<TcHarvestListPageDetailRspDTO>> listPage(@RequestBody @Validated TcHarvestListPageDetailReqDTO tcHarvestListPageDetailReqDTO) {
         return ResponseResult.getSuccess(tcHarvestService.listPage(tcHarvestListPageDetailReqDTO));
     }

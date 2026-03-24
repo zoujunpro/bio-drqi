@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
+import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.SeedSourceEnum;
 import com.bio.drqi.domain.CerBreedDict;
@@ -101,8 +102,10 @@ public class TcHarvestServiceImpl implements TcHarvestService {
                 tcSeedInStockExcelDTO.setFatherInfo(null);
                 tcSeedInStockExcelDTO.setMatherSeedNum(tcPollinationTb.getFSeedNum());
                 tcSeedInStockExcelDTO.setFatherSeedNum(tcPollinationTb.getFSeedNum());
-                tcSeedInStockExcelDTO.setSpeciesName(codeNameCerSpeciesDictMap.get(codeNameCerBreedDictMap.get(tcPollinationTb.getMBreedCode()).getBreedCode()));
-                tcSeedInStockExcelDTO.setBreedName(codeNameCerBreedDictMap.get(tcPollinationTb.getMBreedCode()).getBreedName());
+                if(StringUtils.isNotEmpty(tcPollinationTb.getMBreedCode())){
+                    tcSeedInStockExcelDTO.setSpeciesName(codeNameCerSpeciesDictMap.get(codeNameCerBreedDictMap.get(tcPollinationTb.getMBreedCode()).getBreedCode()));
+                    tcSeedInStockExcelDTO.setBreedName(codeNameCerBreedDictMap.get(tcPollinationTb.getMBreedCode()).getBreedName());
+                }
                 tcSeedInStockExcelDTO.setHarvestTypeName(tcPollinationTb.getHarvestTypeName());
                 tcSeedInStockExcelDTO.setHarvestTime(tcPollinationTb.getHarvestTime());
                 tcSeedInStockExcelDTO.setPollinationMethodName(tcPollinationTb.getPollinationMethodName());

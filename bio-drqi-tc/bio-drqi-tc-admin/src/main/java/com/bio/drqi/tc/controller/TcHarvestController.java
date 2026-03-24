@@ -49,6 +49,6 @@ public class TcHarvestController {
      */
     @PostMapping("downSeedStockInExcel")
     public void downSeedStockInExcel(@Validated @RequestBody TcHavestDownSeedStockInExcelReqDTO tcHavestDownSeedStockInExcelReqDTO, HttpServletResponse httpServletResponse) {
-
+        tcHarvestService.downSeedStockInExcel(tcHavestDownSeedStockInExcelReqDTO,httpServletResponse);
     }
 }

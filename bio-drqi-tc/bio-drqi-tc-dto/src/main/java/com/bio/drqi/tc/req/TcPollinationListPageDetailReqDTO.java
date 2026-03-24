@@ -20,26 +20,32 @@ public class TcPollinationListPageDetailReqDTO extends PageDTO {
     /**
      * 母本种子编号
      */
+    @JsonProperty("mSeedNum")
     private String mSeedNum;
 
     /**
      * 父本种子编号
      */
+    @JsonProperty("fSeedNum")
     private String fSeedNum;
 
 
     /**
      * 母本小区编号
      */
+    @JsonProperty("mRegionNum")
     private String mRegionNum;
 
     /**
      * 父本小区编号
      */
+    @JsonProperty("fRegionNum")
     private String fRegionNum;
 
+    @JsonProperty("mSingleNumber")
     private String mSingleNumber;
 
+    @JsonProperty("fSingleNumber")
     private String fSingleNumber;
 
 }

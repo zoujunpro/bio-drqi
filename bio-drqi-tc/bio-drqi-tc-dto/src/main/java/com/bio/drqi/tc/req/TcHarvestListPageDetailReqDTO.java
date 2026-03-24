@@ -11,7 +11,6 @@ public class TcHarvestListPageDetailReqDTO extends PageDTO {
     /**
      * 收获批次号
      */
-    @NotBlank(message = "收获批次号缺失")
     private String harvestApplyNum;
 
     /**

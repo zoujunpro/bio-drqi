@@ -52,7 +52,7 @@
         harvest_type_code,harvest_type_name,remark,
         seed_number,unit,
         seed_type,harvest_apply_num,harvest_remark,
-        f_single_number,m_single_number,seed_nums,harvestTime
+        f_single_number,m_single_number,seed_nums,harvest_time
     </sql>
 
     <select id="selectAllByPollinationApplyNum" resultMap="BaseResultMap">

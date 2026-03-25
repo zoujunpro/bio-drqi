@@ -120,6 +120,8 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
                 printRspDTOList.add(doProjectSamplePrint(list, samplePrintReqDTO.getLabelType(), cerBreedDictMap, samplePrintReqDTO.getSampleCodeList()));
             } else if (SourceCodeEnum.cer.name().equals(sourceCode)) {
                 printRspDTOList.add(doCerSamplePrint(list, samplePrintReqDTO.getLabelType(), cerBreedDictMap, samplePrintReqDTO.getSampleCodeList()));
+            } else if (SourceCodeEnum.field.name().equals(sourceCode)) {
+                printRspDTOList.add(doCerSamplePrint(list, samplePrintReqDTO.getLabelType(), cerBreedDictMap, samplePrintReqDTO.getSampleCodeList()));
             }
         });
         return printRspDTOList;
@@ -193,7 +195,11 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         List<PrintRspDTO> printRspDTOList = new ArrayList<>();
         LayoutNumberPrintDTO layoutNumberPrintDTO = new LayoutNumberPrintDTO();
         layoutNumberPrintDTO.setLayoutNumber(layoutNumber);
-        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave("layout_number_label_print", Arrays.asList(layoutNumberPrintDTO))));
+        if ("董文华".equals(SecurityContextHolder.getNickName())) {
+            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_5.printName, printDataSave("layout_number_label_print", Arrays.asList(layoutNumberPrintDTO))));
+        } else {
+            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave("layout_number_label_print", Arrays.asList(layoutNumberPrintDTO))));
+        }
         return printRspDTOList;
     }
 
@@ -342,7 +348,11 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         }
 
         if (CollectionUtil.isNotEmpty(plantApplyPrintDTOList)) {
-            printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_apply_label_print.name(), plantApplyPrintDTOList)));
+            if ("董文华".equals(SecurityContextHolder.getNickName())) {
+                printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_4.printName, printDataSave(PrintTypeEnum.plant_apply_label_print.name(), plantApplyPrintDTOList)));
+            } else {
+                printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.plant_apply_label_print.name(), plantApplyPrintDTOList)));
+            }
         }
         return printRspDTOList;
     }

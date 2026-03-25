@@ -92,8 +92,11 @@ public class TcHarvestServiceImpl implements TcHarvestService {
                 seedInStockExcelDTO.setMatherSeedNum(tcPollinationTb.getFSeedNum());
                 seedInStockExcelDTO.setFatherSeedNum(tcPollinationTb.getFSeedNum());
                 if(StringUtils.isNotEmpty(tcPollinationTb.getMBreedCode())){
-                    seedInStockExcelDTO.setSpeciesName(codeNameCerSpeciesDictMap.get(codeNameCerBreedDictMap.get(tcPollinationTb.getMBreedCode()).getBreedCode()));
-                    seedInStockExcelDTO.setBreedName(codeNameCerBreedDictMap.get(tcPollinationTb.getMBreedCode()).getBreedName());
+                    CerBreedDict cerBreedDict=  codeNameCerBreedDictMap.get(tcPollinationTb.getMBreedCode());
+                    if(cerBreedDict!=null){
+                        seedInStockExcelDTO.setBreedName(cerBreedDict.getBreedName());
+                        seedInStockExcelDTO.setSpeciesName(codeNameCerSpeciesDictMap.get(cerBreedDict.getSpeciesCode()));
+                    }
                 }
                 seedInStockExcelDTO.setHarvestTypeName(tcPollinationTb.getHarvestTypeName());
                 seedInStockExcelDTO.setHarvestTime(tcPollinationTb.getHarvestTime());

@@ -49,11 +49,7 @@ public class SeedStockInController {
      */
     @GetMapping("/downSampleTemplate")
     public void downSampleTemplate(HttpServletResponse response) {
-        try {
-            ossService.downloadFile(response, "template", "种子批量入库导入模板V1.0.xlsx");
-        } catch (Exception e) {
-            throw new BusinessException("模板下载失败，请联系管理员检测模板配置");
-        }
+        seedStockInService.downSampleTemplate(response);
     }
 
     /**

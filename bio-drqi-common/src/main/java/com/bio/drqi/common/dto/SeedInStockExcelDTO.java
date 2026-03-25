@@ -1,7 +1,7 @@
 package com.bio.drqi.common.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.bio.common.core.dto.ExcelSelected;
+import com.alibaba.excel.annotation.format.DateTimeFormat;import com.bio.common.core.dto.ExcelSelected;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -113,6 +113,7 @@ public class SeedInStockExcelDTO {
     private String harvestTypeName;
 
     @ExcelProperty( "收获时间")
+    @DateTimeFormat("yyyy-MM-dd")
     private String harvestTime;
     /**
      * 授粉方式

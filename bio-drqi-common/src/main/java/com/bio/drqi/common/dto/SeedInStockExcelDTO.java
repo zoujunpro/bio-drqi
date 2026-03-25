@@ -1,4 +1,4 @@
-package com.bio.drqi.tc.service.dto;
+package com.bio.drqi.common.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.bio.common.core.dto.ExcelSelected;
@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 
 @Data
-public class TcSeedInStockExcelDTO {
+public class SeedInStockExcelDTO {
     /**
      * 来源
      */

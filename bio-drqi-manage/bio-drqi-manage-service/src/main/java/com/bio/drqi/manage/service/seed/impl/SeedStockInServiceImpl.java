@@ -33,7 +33,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -207,6 +209,12 @@ public class SeedStockInServiceImpl implements SeedStockInService {
     @Override
     public PageInfo<SeedInStoreDTO.ExecuteFormContent> seedInData(SeedInDataReqDTO seedInDataReqDTO) {
         return null;
+    }
+
+    @Override
+    public void downSampleTemplate(HttpServletResponse response) {
+        ExcelUtil.writeExcel("种子入库数据模板", "sheet1", new ArrayList<>(), com.bio.drqi.common.dto.SeedInStockExcelDTO.class, response);
+
     }
 
 

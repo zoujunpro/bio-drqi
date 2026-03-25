@@ -1,30 +1,20 @@
 package com.bio.drqi.tc.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
-import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.SeedSourceEnum;
 import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.CerSpeciesConf;
-import com.bio.drqi.domain.TcHarvestSeedApplyTb;
 import com.bio.drqi.domain.TcPollinationTb;
 import com.bio.drqi.mapper.CerBreedDictMapper;
 import com.bio.drqi.mapper.CerSpeciesConfMapper;
-import com.bio.drqi.mapper.TcHarvestSeedApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
-import com.bio.drqi.tc.req.TcHarvestApplyListPageReqDTO;
-import com.bio.drqi.tc.req.TcHarvestCreateHarvestExcelReqDTO;
 import com.bio.drqi.tc.req.TcHarvestListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcHavestDownSeedStockInExcelReqDTO;
-import com.bio.drqi.tc.rsp.TcHarvestApplyListPageRspDTO;
 import com.bio.drqi.tc.rsp.TcHarvestListPageDetailRspDTO;
-import com.bio.drqi.tc.service.TcHarvestApplyService;
 import com.bio.drqi.tc.service.TcHarvestService;
-import com.bio.drqi.tc.service.dto.TcHarvestExcelDTO;
-import com.bio.drqi.tc.service.dto.TcSeedInStockExcelDTO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,45 +68,45 @@ public class TcHarvestServiceImpl implements TcHarvestService {
     @Override
     public void downSeedStockInExcel(TcHavestDownSeedStockInExcelReqDTO tcHavestDownSeedStockInExcelReqDTO, HttpServletResponse httpServletResponse) {
         List<TcPollinationTb> tcPollinationTbList = tcPollinationTbMapper.selectBatchIds(tcHavestDownSeedStockInExcelReqDTO.getIdList());
-        List<TcSeedInStockExcelDTO> tcSeedInStockExcelDTOList = new ArrayList<>();
+        List<com.bio.drqi.common.dto.SeedInStockExcelDTO> seedInStockExcelDTOList = new ArrayList<>();
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
         List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectAll();
         Map<String, CerBreedDict> codeNameCerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, cerBreedDict -> cerBreedDict));
         Map<String, String> codeNameCerSpeciesDictMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
         if (CollectionUtil.isNotEmpty(tcPollinationTbList)) {
             for (TcPollinationTb tcPollinationTb : tcPollinationTbList) {
-                TcSeedInStockExcelDTO tcSeedInStockExcelDTO = new TcSeedInStockExcelDTO();
-                tcSeedInStockExcelDTO.setSource(SeedSourceEnum.CODE_4.name);
-                tcSeedInStockExcelDTO.setGeneration(null);
-                tcSeedInStockExcelDTO.setPlantCode(null);
-                tcSeedInStockExcelDTO.setVectorTaskCode(null);
-                tcSeedInStockExcelDTO.setMaterialTypeName(null);
-                tcSeedInStockExcelDTO.setExperimentNum(tcPollinationTb.getExperimentNum());
-                tcSeedInStockExcelDTO.setFatherRegionNum(tcPollinationTb.getFRegionNum());
-                tcSeedInStockExcelDTO.setMatherRegionNum(tcPollinationTb.getFRegionNum());
-                tcSeedInStockExcelDTO.setFatherSingleNum(tcPollinationTb.getFSingleNumber());
-                tcSeedInStockExcelDTO.setMatherSingleNum(tcPollinationTb.getMSingleNumber());
-                tcSeedInStockExcelDTO.setProductionLocationName("武清大田");
-                tcSeedInStockExcelDTO.setMatherInfo(null);
-                tcSeedInStockExcelDTO.setFatherInfo(null);
-                tcSeedInStockExcelDTO.setMatherSeedNum(tcPollinationTb.getFSeedNum());
-                tcSeedInStockExcelDTO.setFatherSeedNum(tcPollinationTb.getFSeedNum());
+                com.bio.drqi.common.dto.SeedInStockExcelDTO seedInStockExcelDTO = new com.bio.drqi.common.dto.SeedInStockExcelDTO();
+                seedInStockExcelDTO.setSource(SeedSourceEnum.CODE_4.name);
+                seedInStockExcelDTO.setGeneration(null);
+                seedInStockExcelDTO.setPlantCode(null);
+                seedInStockExcelDTO.setVectorTaskCode(null);
+                seedInStockExcelDTO.setMaterialTypeName(null);
+                seedInStockExcelDTO.setExperimentNum(tcPollinationTb.getExperimentNum());
+                seedInStockExcelDTO.setFatherRegionNum(tcPollinationTb.getFRegionNum());
+                seedInStockExcelDTO.setMatherRegionNum(tcPollinationTb.getFRegionNum());
+                seedInStockExcelDTO.setFatherSingleNum(tcPollinationTb.getFSingleNumber());
+                seedInStockExcelDTO.setMatherSingleNum(tcPollinationTb.getMSingleNumber());
+                seedInStockExcelDTO.setProductionLocationName("武清大田");
+                seedInStockExcelDTO.setMatherInfo(null);
+                seedInStockExcelDTO.setFatherInfo(null);
+                seedInStockExcelDTO.setMatherSeedNum(tcPollinationTb.getFSeedNum());
+                seedInStockExcelDTO.setFatherSeedNum(tcPollinationTb.getFSeedNum());
                 if(StringUtils.isNotEmpty(tcPollinationTb.getMBreedCode())){
-                    tcSeedInStockExcelDTO.setSpeciesName(codeNameCerSpeciesDictMap.get(codeNameCerBreedDictMap.get(tcPollinationTb.getMBreedCode()).getBreedCode()));
-                    tcSeedInStockExcelDTO.setBreedName(codeNameCerBreedDictMap.get(tcPollinationTb.getMBreedCode()).getBreedName());
+                    seedInStockExcelDTO.setSpeciesName(codeNameCerSpeciesDictMap.get(codeNameCerBreedDictMap.get(tcPollinationTb.getMBreedCode()).getBreedCode()));
+                    seedInStockExcelDTO.setBreedName(codeNameCerBreedDictMap.get(tcPollinationTb.getMBreedCode()).getBreedName());
                 }
-                tcSeedInStockExcelDTO.setHarvestTypeName(tcPollinationTb.getHarvestTypeName());
-                tcSeedInStockExcelDTO.setHarvestTime(tcPollinationTb.getHarvestTime());
-                tcSeedInStockExcelDTO.setPollinationMethodName(tcPollinationTb.getPollinationMethodName());
-                tcSeedInStockExcelDTO.setSeedNumber(null);
-                tcSeedInStockExcelDTO.setUnit(null);
-                tcSeedInStockExcelDTO.setAliasName(null);
-                tcSeedInStockExcelDTO.setRemarks(null);
-                tcSeedInStockExcelDTOList.add(tcSeedInStockExcelDTO);
+                seedInStockExcelDTO.setHarvestTypeName(tcPollinationTb.getHarvestTypeName());
+                seedInStockExcelDTO.setHarvestTime(tcPollinationTb.getHarvestTime());
+                seedInStockExcelDTO.setPollinationMethodName(tcPollinationTb.getPollinationMethodName());
+                seedInStockExcelDTO.setSeedNumber(null);
+                seedInStockExcelDTO.setUnit(null);
+                seedInStockExcelDTO.setAliasName(null);
+                seedInStockExcelDTO.setRemarks(null);
+                seedInStockExcelDTOList.add(seedInStockExcelDTO);
             }
 
         }
-        ExcelUtil.writeExcel("种子入库数据", "sheet1", tcSeedInStockExcelDTOList, TcSeedInStockExcelDTO.class, httpServletResponse);
+        ExcelUtil.writeExcel("种子入库数据", "sheet1", seedInStockExcelDTOList, com.bio.drqi.common.dto.SeedInStockExcelDTO.class, httpServletResponse);
     }
 
 }

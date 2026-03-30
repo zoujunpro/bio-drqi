@@ -42,7 +42,7 @@ public class PlantProjectTaskListener extends DefaultDuplicateCopyHandler implem
     private final static Map<String, String> vieMap = new ConcurrentHashMap<>();
 
     @Value("${cer.properties.feiShuCerJumpUrl}")
-    private String feiShuProjectJumpUrl;
+    private String feiShuCerJumpUrl;
 
 
     @Resource
@@ -106,7 +106,7 @@ public class PlantProjectTaskListener extends DefaultDuplicateCopyHandler implem
         Message message = new Message();
         message.setTitle(title);
         message.setContent(content);
-        message.setUrl(String.format(feiShuProjectJumpUrl, vieMap.get(bioTaskDtlTb.getTaskTypeCode()), bioTaskDtlTb.getId()));
+        message.setUrl(String.format(feiShuCerJumpUrl, vieMap.get(bioTaskDtlTb.getTaskTypeCode()), bioTaskDtlTb.getId()));
         feiShuService.sendCardMessage(noticeUserDTOList, message, MessageTypeEnum.drqi);
     }
 

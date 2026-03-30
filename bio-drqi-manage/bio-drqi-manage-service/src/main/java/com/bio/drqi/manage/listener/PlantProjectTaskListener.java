@@ -118,7 +118,7 @@ public class PlantProjectTaskListener extends DefaultDuplicateCopyHandler implem
         } else {
             bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByInstanceId(instanceId);
         }
-        if (Objects.nonNull(bioTaskDtlTb) && BioTaskCategoryEnum.project.name().equals(bioTaskDtlTb.getTaskCategory())) {
+        if (Objects.nonNull(bioTaskDtlTb) && BioTaskCategoryEnum.tc.name().equals(bioTaskDtlTb.getTaskCategory())) {
             String title = bioTaskDtlTb.getTaskTypeName() + "抄送通知";
             sendMessage(bioTaskDtlTb, title, flowActorList.stream().map(flowActor -> Integer.valueOf(flowActor.getCreateId())).collect(Collectors.toList()));
         }

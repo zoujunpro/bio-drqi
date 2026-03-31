@@ -31,6 +31,8 @@ public interface TcPollinationSingleNumTbMapper extends BaseMapper<TcPollination
     int updatePollinationApplyNumByExperimentNumAndPollinationApplyNumIsNull(@Param("pollinationApplyNum") String pollinationApplyNum, @Param("experimentNum") String experimentNum);
 
     int deleteBySampleApplyNum(@Param("sampleApplyNum") String sampleApplyNum);
+
+    List<TcPollinationSingleNumTb> selectSelective(TcPollinationSingleNumTb tcPollinationSingleNumTb);
 }
 
 

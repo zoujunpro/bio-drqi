@@ -5,16 +5,16 @@
 <mapper namespace="com.bio.drqi.mapper.TcPollinationSingleNumTbMapper">
 
     <resultMap id="BaseResultMap" type="com.bio.drqi.domain.TcPollinationSingleNumTb">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
-            <result property="pollinationApplyNum" column="pollination_apply_num" jdbcType="VARCHAR"/>
-            <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
-            <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
-            <result property="tcSingleNumber" column="tc_single_number" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
-            <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
-            <result property="sampleApplyNum" column="sample_apply_num" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="experimentNum" column="experiment_num" jdbcType="VARCHAR"/>
+        <result property="pollinationApplyNum" column="pollination_apply_num" jdbcType="VARCHAR"/>
+        <result property="seedNum" column="seed_num" jdbcType="VARCHAR"/>
+        <result property="regionNum" column="region_num" jdbcType="VARCHAR"/>
+        <result property="tcSingleNumber" column="tc_single_number" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+        <result property="sampleCode" column="sample_code" jdbcType="VARCHAR"/>
+        <result property="sampleApplyNum" column="sample_apply_num" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -52,7 +52,7 @@
         update tc_pollination_single_num_tb
         set pollination_apply_num = #{pollinationApplyNum,jdbcType=VARCHAR}
         where experiment_num = #{experimentNum,jdbcType=VARCHAR}
-          AND pollination_apply_num is null
+        AND pollination_apply_num is null
     </update>
     <update id="updatePollinationApplyNumIsNullByPollinationApplyNum">
         update tc_pollination_single_num_tb
@@ -96,4 +96,22 @@
         AND pollination_apply_num is null
         AND sample_code is not null
     </delete>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.TcPollinationSingleNumTb">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_pollination_single_num_tb
+        <where>
+            <if test="experimentNum != null and experimentNum!=''">and experiment_num=#{experimentNum,jdbcType=VARCHAR}</if>
+            <if test="pollinationApplyNum != null and pollinationApplyNum!=''">and pollination_apply_num=#{pollinationApplyNum,jdbcType=VARCHAR}
+            </if>
+            <if test="seedNum != null and seedNum!=''">and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
+            <if test="regionNum != null and regionNum!=''">and region_num=#{regionNum,jdbcType=VARCHAR}</if>
+            <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
+            <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
+            <if test="tcSingleNumber != null and tcSingleNumber!=''">and tc_single_number=#{tcSingleNumber,jdbcType=VARCHAR}</if>
+            <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
+            <if test="sampleApplyNum != null and sampleApplyNum!=''">and sample_apply_num=#{sampleApplyNum,jdbcType=VARCHAR}</if>
+        </where>
+        order by id desc
+    </select>
 </mapper>

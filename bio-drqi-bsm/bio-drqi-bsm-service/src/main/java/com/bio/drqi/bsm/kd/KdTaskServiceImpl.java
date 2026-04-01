@@ -157,11 +157,22 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
     }
 
     @Override
-    public void synSupplierTask(String endDate) {
+    public void synSupplierTask(String startDate, String endDate) {
         Long startTime = System.currentTimeMillis();
         log.info("*****************供应商同步开始**************************");
-        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectSelective(BmsSupplierTb.builder().endDate(endDate).build());
+
+        BmsProductStockInLog selectBmsProductStockInLog = new BmsProductStockInLog();
+        selectBmsProductStockInLog.setStartDate(startDate);
+        selectBmsProductStockInLog.setEndDate(endDate);
+        selectBmsProductStockInLog.setPayType(PayTypeEnum.TYPE_1.type);
+        List<BmsProductStockInLog> bmsProductStockInLogList = bmsProductStockInLogMapper.selectSelective(selectBmsProductStockInLog);
+        if (CollectionUtil.isEmpty(bmsProductStockInLogList)) {
+            log.info("本次无入库订单，代表没有新增供应商");
+            return;
+        }
+        List<BmsSupplierTb> bmsSupplierTbList = bmsSupplierTbMapper.selectAllBySupplierCodeIn(bmsProductStockInLogList.stream().map(BmsProductStockInLog::getSupplierCode).collect(Collectors.toList()));
         bmsSupplierTbList = bmsSupplierTbList.stream().filter(bmsSupplierTb -> StringUtils.isEmpty(bmsSupplierTb.getKdNumber())).collect(Collectors.toList());
+
         if (CollectionUtil.isEmpty(bmsSupplierTbList)) {
             log.info("无新增供应商数据需要同步");
             return;
@@ -379,7 +390,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         try {
             synStockTask();
             synMaterialGroupTask();
-            synSupplierTask(bmsSynKdTaskLog.getEndDate());
+            synSupplierTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
             synProjectTask();
             synMaterialTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());
             synInStockTask(bmsSynKdTaskLog.getBeginDate(), bmsSynKdTaskLog.getEndDate());

@@ -21,7 +21,7 @@ public interface KdTaskService {
      /**
       * 同步供应商
       */
-    void synSupplierTask(String endDate);
+    void synSupplierTask(String startDate,String endDate);
 
      /**
       * 同步材料

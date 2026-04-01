@@ -1,4 +1,5 @@
 package com.bio.drqi.mapper;
+import java.util.Collection;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -22,6 +23,9 @@ public interface BmsSupplierTbMapper extends BaseMapper<BmsSupplierTb> {
     BmsSupplierTb selectOneBySupplierCode(@Param("supplierCode") String supplierCode);
 
     BmsSupplierTb selectOneBySupplierName(@Param("supplierName") String supplierName);
+
+    List<BmsSupplierTb> selectAllBySupplierCodeIn(@Param("supplierCodeList") Collection<String> supplierCodeList);
+
     String selectMaxSupplierCode();
 
 }

@@ -105,6 +105,16 @@
         where supplier_status = #{supplierStatus,jdbcType=VARCHAR}
         order by id desc
     </select>
+    <select id="selectAllBySupplierCodeIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bms_supplier_tb
+        where
+        supplier_code in
+        <foreach collection="supplierCodeList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 
 
 </mapper>

@@ -85,7 +85,7 @@ public class InStockSaveModel extends KdModel {
         this.FOwnerIdHead = new FOwnerIdHeadModel(orgCode);
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
         this.FSupplierId = new FSupplierIdModel(kdSupplierId);
-        this.FStockOrgId=new FStockOrgIdModel(orgCode);
+        this.FStockOrgId = new FStockOrgIdModel(orgCode);
         this.FInStockEntry = Arrays.asList(new FInStockEntryModel(kdProjectType, kdMaterialId, fTaxPrice, reqlQty, orgCode, projectCode, stockCode, taxRate));
     }
 
@@ -129,6 +129,8 @@ public class InStockSaveModel extends KdModel {
 
         private BigDecimal FEntryTaxRate;
 
+        private Boolean FGiveAway;
+
         public FInStockEntryModel(String kdProjectType, String MaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty, String orgCode, String projectCode, String stockCode, BigDecimal taxRate) {
             this.setFMaterialId(new FMaterialIdModel(MaterialId));
             this.setFTaxPrice(fTaxPrice);
@@ -139,6 +141,11 @@ public class InStockSaveModel extends KdModel {
             this.FStockId = new FStockIdModel(stockCode);
             this.FEntryTaxRate = taxRate;
             this.F_WAUJ_XMLX = kdProjectType;
+            if (fTaxPrice.doubleValue() == 0) {
+                FGiveAway = true;
+            } else {
+                FGiveAway = false;
+            }
         }
     }
 

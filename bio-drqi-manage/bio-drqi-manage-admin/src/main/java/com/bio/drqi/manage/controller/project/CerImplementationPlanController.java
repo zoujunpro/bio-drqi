@@ -43,7 +43,7 @@ public class CerImplementationPlanController {
      */
     @PostMapping("/listPage")
     @WebLog(desc = "分页查询载体信息")
-    @RequirePermissions("cer:implementationPlan:listPage")
+    //@RequirePermissions("cer:implementationPlan:listPage")
     public ResponseResult<PageInfo<VectorListPageRspDTO>> listPage(@Validated @RequestBody QueryPageVectorReqDTO queryPageVectorReqDTO) {
         PageInfo<VectorListPageRspDTO> pageInfo = vectorTaskService.listPage(queryPageVectorReqDTO);
         return ResponseResult.getSuccess(pageInfo);

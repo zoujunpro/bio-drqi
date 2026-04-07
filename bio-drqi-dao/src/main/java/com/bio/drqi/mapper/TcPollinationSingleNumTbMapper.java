@@ -14,8 +14,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface TcPollinationSingleNumTbMapper extends BaseMapper<TcPollinationSingleNumTb> {
 
-    List<TcPollinationSingleNumTb> selectAllByExperimentNumAndPollinationApplyNumIsNull(@Param("experimentNum") String experimentNum);
-
     int deleteByExperimentNumAndPollinationApplyNumIsNullAndSampleCodeIsNotNull(@Param("experimentNum") String experimentNum);
 
     int insertBatch(@Param("tcPollinationSingleNumTbCollection") Collection<TcPollinationSingleNumTb> tcPollinationSingleNumTbCollection);

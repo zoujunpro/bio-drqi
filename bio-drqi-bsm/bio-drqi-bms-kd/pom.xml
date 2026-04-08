@@ -23,8 +23,6 @@
             <groupId>com.bio</groupId>
             <artifactId>com.bio.k3cloud-webapi-sdk</artifactId>
             <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/k3cloud-webapi-sdk-java1.8-v8.2.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>bio.common</groupId>

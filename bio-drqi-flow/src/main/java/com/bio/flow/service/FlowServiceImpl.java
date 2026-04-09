@@ -160,6 +160,7 @@ public class FlowServiceImpl implements FlowService {
                 result.put(entry.getKey(), entry.getValue());
             }
         }
+        log.info("解析后的数据"+JSONUtil.toJsonStr(result));
         return result;
     }
 
@@ -179,7 +180,7 @@ public class FlowServiceImpl implements FlowService {
 
             }
         }
-        log.info("解析后的数据"+JSONUtil.toJsonStr(map));
+
         return map;
     }
 

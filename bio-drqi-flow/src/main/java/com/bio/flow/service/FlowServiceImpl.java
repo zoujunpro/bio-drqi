@@ -179,6 +179,7 @@ public class FlowServiceImpl implements FlowService {
 
             }
         }
+        log.info("解析后的数据"+JSONUtil.toJsonStr(map));
         return map;
     }
 

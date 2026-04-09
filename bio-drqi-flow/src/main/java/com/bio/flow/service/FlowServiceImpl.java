@@ -1,13 +1,14 @@
 package com.bio.flow.service;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.domain.BioTaskConf;
 import com.bio.drqi.domain.BioTaskDtlTb;
-import com.bio.drqi.domain.CerProjectTb;
 import com.bio.drqi.mapper.BioTaskConfMapper;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.drqi.mapper.CerProjectTbMapper;
@@ -20,17 +21,16 @@ import com.easyflow.engine.entity.*;
 import com.easyflow.engine.enums.TaskState;
 import com.easyflow.engine.model.NodeModel;
 import com.easyflow.engine.model.SelfFlowActor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class FlowServiceImpl implements FlowService {
-
-    private static final List<String> conditionType = Arrays.asList("seed_out_apply", "implementation_plan","vector_build", "sample_and_test", "project_create", "bms_purchase_apply", "bms_product_out", "bms_product_input", "tc_sample_test_task_apply","tc_experiment_task_apply","plant_sample_test_task");
-
 
     private static final String tenantId = "1000";
 
@@ -49,12 +49,12 @@ public class FlowServiceImpl implements FlowService {
 
 
     @Override
-    public FlowHisInstanceTb start(String userName, Integer userId, Long processId, Map<String, Object> args, String remarks, List<SelfFlowActor> selfFlowActorList, String instanceName,String businessKey) {
+    public FlowHisInstanceTb start(String userName, Integer userId, Long processId, Map<String, Object> args, String remarks, List<SelfFlowActor> selfFlowActorList, String instanceName, String businessKey) {
         FlowActor flowActor = FlowActor.of(tenantId, String.valueOf(userId), userName);
         if (processId == null) {
             throw new BusinessException("流程未配置");
         }
-        Optional<FlowInstanceTb> flowInstanceTbOptional = flowEngineService.startInstanceByProcessId(processId, flowActor, args, () -> selfFlowActorList, instanceName,businessKey);
+        Optional<FlowInstanceTb> flowInstanceTbOptional = flowEngineService.startInstanceByProcessId(processId, flowActor, args, () -> selfFlowActorList, instanceName, businessKey);
         if (!flowInstanceTbOptional.isPresent()) {
             throw new BusinessException("启动流程失败");
         }
@@ -131,31 +131,41 @@ public class FlowServiceImpl implements FlowService {
 
 
     public Map<String, Object> getArgs(String str, String taskTypeCode) {
+        if (StringUtils.isBlank(str)) {
+            return new HashMap<>();
+        }
+        try {
+            Object json = JSONUtil.parse(str);
+            if (json instanceof JSONArray) {
+                JSONArray jsonArray = (JSONArray) json;
+                if (CollectionUtil.isEmpty(jsonArray)) {
+                    return new HashMap<>();
+                }
+                return extractBasicTypeFields(jsonArray.get(0));
+            }
+            return extractBasicTypeFields(json);
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage());
+        }
+    }
 
-        //过滤大字节
-        if (conditionType.contains(taskTypeCode)) {
-            Map<String, Object> args = new HashMap<>();
-            if (!isJSONObject(str)) {
-                List<Object> list = JSONUtil.toList(str, Object.class);
-                if (CollectionUtil.isEmpty(list)) {
-                    return args;
-                }
-                args = JSONUtil.toBean(JSONUtil.toJsonStr(list.get(0)), Map.class);
-                return args;
-            } else {
-                if (isJSONObject(str)) {
-                    args = JSONUtil.toBean(str, Map.class);
-                    if (Objects.nonNull(args.get("applyFrom"))) {
-                        return (Map<String, Object>) args.get("applyFrom");
-                    }
-                    return args;
-                }
-                args = JSONUtil.toBean(str, Map.class);
-                return args;
+    private Map<String, Object> extractBasicTypeFields(Object source) {
+        if (!(source instanceof JSONObject)) {
+            return new HashMap<>();
+        }
+        Map<String, Object> result = new HashMap<>();
+        JSONObject jsonObject = (JSONObject) source;
+        for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+            if (isBasicType(entry.getValue())) {
+                result.put(entry.getKey(), entry.getValue());
             }
         }
-        return null;
-        }
+        return result;
+    }
+
+    private boolean isBasicType(Object value) {
+        return value == null || value instanceof String || value instanceof Boolean || value instanceof Character || value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long || value instanceof Float || value instanceof Double;
+    }
 
     @Override
     public Map<Long, String> queryListFlowTaskByInstanceIds(List<Long> instanceIdList) {
@@ -163,30 +173,13 @@ public class FlowServiceImpl implements FlowService {
         if (CollectionUtil.isNotEmpty(instanceIdList)) {
             List<FlowTaskTb> flowTaskTbList = flowEngineService.getQueryService().getActiveTaskByInstanceIds(instanceIdList);
             for (FlowTaskTb flowTaskTb : flowTaskTbList) {
-                if(!map.containsKey(flowTaskTb.getInstanceId())){
-                    map.put(flowTaskTb.getInstanceId(),String.valueOf(flowTaskTb.getTaskType()));
+                if (!map.containsKey(flowTaskTb.getInstanceId())) {
+                    map.put(flowTaskTb.getInstanceId(), String.valueOf(flowTaskTb.getTaskType()));
                 }
 
             }
         }
         return map;
-    }
-
-    private boolean isJSONObject(String str) {
-        try {
-            Object object = JSONUtil.toBean(str, Object.class);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
-    private boolean isJSONArray(String str) {
-        try {
-            List<Object> object = JSONUtil.toList(str, Object.class);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
     }
 
 

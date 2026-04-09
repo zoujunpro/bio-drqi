@@ -1,5 +1,6 @@
 package com.bio.drqi.manage.dto.project;
 
+import com.bio.drqi.common.dto.BaseBioTaskDTO;
 import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class SubProjectCreateDTO {
+public class SubProjectCreateDTO extends BaseBioTaskDTO {
 
     @NotNull(message = "项目ID参数缺失")
     private Integer projectId;

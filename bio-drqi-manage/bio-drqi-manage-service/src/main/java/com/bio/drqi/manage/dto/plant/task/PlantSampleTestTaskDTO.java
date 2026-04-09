@@ -1,5 +1,6 @@
 package com.bio.drqi.manage.dto.plant.task;
 
+import com.bio.drqi.common.dto.BaseBioTaskDTO;
 import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 
@@ -7,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-public class PlantSampleTestTaskDTO {
+public class PlantSampleTestTaskDTO extends BaseBioTaskDTO {
 
 
     /**

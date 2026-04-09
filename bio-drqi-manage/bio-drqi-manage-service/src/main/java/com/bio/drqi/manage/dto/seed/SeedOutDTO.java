@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.dto.seed;
 
 import cn.hutool.json.JSONUtil;
+import com.bio.drqi.common.dto.BaseBioTaskDTO;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Data
-public class SeedOutDTO extends SeedProcDTO {
+public class SeedOutDTO extends BaseBioTaskDTO {
 
 
     /**

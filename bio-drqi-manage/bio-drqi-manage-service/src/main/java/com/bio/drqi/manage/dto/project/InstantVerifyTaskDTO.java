@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.dto.project;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.bio.drqi.common.dto.BaseBioTaskDTO;
 import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class InstantVerifyTaskDTO {
+public class InstantVerifyTaskDTO extends BaseBioTaskDTO {
 
     @NotBlank(message = "实施方案编号缺失")
     private String vectorTaskCode;

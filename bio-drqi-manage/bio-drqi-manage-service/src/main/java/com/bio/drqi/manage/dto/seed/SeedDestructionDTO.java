@@ -1,14 +1,14 @@
 package com.bio.drqi.manage.dto.seed;
 
+import com.bio.drqi.common.dto.BaseBioTaskDTO;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-public class SeedDestructionDTO extends SeedProcDTO{
+public class SeedDestructionDTO extends BaseBioTaskDTO {
 
 
     private String destructionLocation;

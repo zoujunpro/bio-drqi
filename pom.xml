@@ -156,6 +156,12 @@
         </dependencies>
     </dependencyManagement>
 
+    <repositories>
+        <repository>
+            <id>project-local-repo</id>
+            <url>file://${maven.multiModuleProjectDirectory}/.mvn/local-repo</url>
+        </repository>
+    </repositories>
 
     <distributionManagement>
         <repository>

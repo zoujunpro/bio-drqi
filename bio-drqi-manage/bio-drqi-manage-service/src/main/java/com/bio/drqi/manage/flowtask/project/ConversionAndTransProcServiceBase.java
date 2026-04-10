@@ -2,13 +2,13 @@ package com.bio.drqi.manage.flowtask.project;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
-import com.bio.common.core.util.BeanUtils;
-import com.bio.drqi.contents.CerProjectContents;
-import com.bio.drqi.common.enums.BioTaskStatusEnum;
-import com.bio.drqi.enums.ImplementationPlanTypeEnum;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.ImplementationPlanTypeEnum;
 import com.bio.drqi.manage.dto.project.ConversionAndTransDTO;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
@@ -98,6 +98,16 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
                 }
             }
         }
+
+
+        //填充个性化处理，实施方案条件判断值
+       if(CollectionUtil.isNotEmpty(conversionAndTransDTO.getTransFormList())){
+           conversionAndTransDTO.setConditionVectorTaskCodeList(conversionAndTransDTO.getTransFormList().stream().map(ConversionAndTransDTO.TransForm::getVectorTaskCode).distinct().collect(Collectors.toList()));
+       }
+        if(CollectionUtil.isNotEmpty(conversionAndTransDTO.getSampleCodeList())){
+            conversionAndTransDTO.setConditionVectorTaskCodeList(conversionAndTransDTO.getSampleCodeList().stream().map(ConversionAndTransDTO.SampleCode::getVectorTaskCode).distinct().collect(Collectors.toList()));
+        }
+
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(conversionAndTransDTO));
 
     }

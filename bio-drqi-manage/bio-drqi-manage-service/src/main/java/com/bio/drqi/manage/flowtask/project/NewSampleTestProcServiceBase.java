@@ -129,7 +129,11 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 }
             }
         }
-
+        if(CollectionUtil.isNotEmpty(newSampleTestDTO.getFirstSampleApplyList())){
+            newSampleTestDTO.setConditionVectorTaskCodeList(newSampleTestDTO.getFirstSampleApplyList().stream().map(NewSampleTestDTO.FirstSampleApply::getVectorTaskCode).distinct().collect(Collectors.toList()));
+        }else if(CollectionUtil.isNotEmpty(newSampleTestDTO.getRepeatSampleApplyList())){
+            newSampleTestDTO.setConditionVectorTaskCodeList(newSampleTestDTO.getRepeatSampleApplyList().stream().map(NewSampleTestDTO.RepeatSampleApply::getVectorTaskCode).distinct().collect(Collectors.toList()));
+        }
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
     }
 

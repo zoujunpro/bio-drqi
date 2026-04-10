@@ -19,8 +19,8 @@ public interface BioTaskService {
     /**
      * 重新启动任务
      *
-     * @param bioReStartTaskReqDTO
      * @return
+     * @param bioReStartTaskReqDTO
      */
     BioTaskDtlTb reStartTask(BioReStartTaskReqDTO bioReStartTaskReqDTO);
 

@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -66,7 +67,10 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plasmidDTO));
         log.info("【任务工单】质粒质检校验结束");
 
-
+        //填充个性化处理，实施方案条件判断值
+         List<String> list= new ArrayList<>();
+        list.add(plasmidDTO.getVectorTaskCode());
+        plasmidDTO.setConditionVectorTaskCodeList(list);
         /**
          * 更新当前执行步骤
          */

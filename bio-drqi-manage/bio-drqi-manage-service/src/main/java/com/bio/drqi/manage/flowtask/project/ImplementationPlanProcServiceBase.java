@@ -111,7 +111,6 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
                         }
                     }
                     implementPlanAddDTO.setSampleCodePrefix(bioSampleCodePrefixTb.getSampleCodePrefix());
-
                 }
             }
         }

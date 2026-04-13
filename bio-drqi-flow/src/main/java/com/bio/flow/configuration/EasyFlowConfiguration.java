@@ -169,11 +169,16 @@ public class EasyFlowConfiguration {
                         SystemUserTb deptSystemUserTb = systemUserTbMapper.selectById(systemDeptTb.getLeaderId());
                         return transSystemUserTbToFlowActor(Arrays.asList(deptSystemUserTb), nodeModel, applyAdmin);
                     } else if (SetApprove.project_leader.getValue() == nodeModel.getSetApprove()) {
-                        List<String> vectorTaskCodeList = nodeModel.getNodeActorList().stream().map(NodeActor::getId).collect(Collectors.toList());
-                        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByVectorTaskCodeIn(vectorTaskCodeList);
-                        List<Integer> userIdList = cerVectorTaskTbList.stream().map(CerVectorTaskTb::getCreateUserId).collect(Collectors.toList());
-                        List<SystemUserTb> systemUserTbList = systemUserTbMapper.selectBatchIds(userIdList);
-                        return transSystemUserTbToFlowActor(systemUserTbList, null, null);
+                        /**
+                         *项目负责人
+                         */
+                        List<Integer> idList = nodeModel.getNodeActorList().stream().map(nodeActor -> Integer.valueOf(nodeActor.getId())).collect(Collectors.toList());
+                        if (CollectionUtil.isNotEmpty(idList)) {
+                            List<SystemUserTb> systemUserTbList = systemUserTbMapper.selectBatchIds(idList);
+                            return transSystemUserTbToFlowActor(systemUserTbList, nodeModel, applyAdmin);
+                        } else {
+                            return new ArrayList<>();
+                        }
                     } else if (nodeModel.getSetApprove() == null && NodeType.copy.getValue() == nodeModel.getNodeType()) {
                         //兼容旧逻辑
                         if (CollectionUtil.isNotEmpty(nodeModel.getNodeActorList())) {

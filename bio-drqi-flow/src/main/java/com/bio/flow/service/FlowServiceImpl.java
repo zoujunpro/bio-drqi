@@ -38,9 +38,6 @@ public class FlowServiceImpl implements FlowService {
     private FlowEngineService flowEngineService;
 
     @Resource
-    private CerProjectTbMapper cerProjectTbMapper;
-
-    @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
 

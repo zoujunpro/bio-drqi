@@ -57,8 +57,6 @@ public enum GenerationEnum {
     F15("F15", "F15"),
     F16("F16", "F16"),
     F17("F17", "F17"),
-
-
     ;
     public String code;
     public String desc;

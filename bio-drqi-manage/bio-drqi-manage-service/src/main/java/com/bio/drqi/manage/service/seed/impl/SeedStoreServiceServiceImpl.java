@@ -11,7 +11,6 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
-import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
@@ -22,12 +21,11 @@ import com.bio.drqi.enums.SeedTaskTypeEnum;
 import com.bio.drqi.manage.dto.seed.DownSpotCheckResultExcelDTO;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
 import com.bio.drqi.manage.dto.seed.SeedOutDTO;
-import com.bio.drqi.manage.service.seed.SeedStoreService;
-import com.bio.drqi.mapper.*;
 import com.bio.drqi.manage.seed.*;
 import com.bio.drqi.manage.seedtask.SeedInDataReqDTO;
 import com.bio.drqi.manage.seedtask.SeedTaskSeedNumRspDTO;
-import com.bio.drqi.tc.service.dto.TcTestExcelDTO;
+import com.bio.drqi.manage.service.seed.SeedStoreService;
+import com.bio.drqi.mapper.*;
 import com.bio.drqi.util.PaginationHelper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -41,11 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -271,7 +265,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
                 if (seedStockTb == null) {
                     throw new BusinessException("找不到种子信息：" + content.getSeedNum());
                 }
-                seedStockTbMapper.updateSpotCheckResultById(content.getSpotCheckResult(), seedStockTb.getId());
+                seedStockTbMapper.updateSpotCheckResultById(StringUtils.isEmpty(seedStockTb.getSpotCheckResult()) ? content.getSpotCheckResult() : seedStockTb.getSpotCheckResult() + ";" + content.getSpotCheckResult(), seedStockTb.getId());
             });
         }
     }
@@ -307,11 +301,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
                 if (seedStockTb == null) {
                     throw new BusinessException("找不到种子信息：" + downSpotCheckResultExcelDTO.getSeedNum());
                 }
-                if (BioDrQiContents.Y.equals(seedStockUploadSpotCheckResultExcelReqDTO.getOverFlag())) {
-                    seedStockTbMapper.updateSpotCheckResultById(downSpotCheckResultExcelDTO.getSpotCheckResult(), seedStockTb.getId());
-                } else {
-                    seedStockTbMapper.updateSpotCheckResultById(seedStockTb.getSpotCheckResult() + "," + downSpotCheckResultExcelDTO.getSpotCheckResult(), seedStockTb.getId());
-                }
+                seedStockTbMapper.updateSpotCheckResultById(StringUtils.isEmpty(seedStockTb.getSpotCheckResult()) ? downSpotCheckResultExcelDTO.getSpotCheckResult() : seedStockTb.getSpotCheckResult() + ";" + downSpotCheckResultExcelDTO.getSpotCheckResult(), seedStockTb.getId());
             });
         }
     }

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-public class SeedDestructionDTO extends BaseBioTaskDTO {
+public class SeedDestructionDTO{
 
 
     private String destructionLocation;

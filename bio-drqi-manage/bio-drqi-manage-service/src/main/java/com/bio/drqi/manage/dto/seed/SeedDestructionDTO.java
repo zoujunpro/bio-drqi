@@ -1,6 +1,5 @@
 package com.bio.drqi.manage.dto.seed;
 
-import com.bio.drqi.common.dto.BaseBioTaskDTO;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;

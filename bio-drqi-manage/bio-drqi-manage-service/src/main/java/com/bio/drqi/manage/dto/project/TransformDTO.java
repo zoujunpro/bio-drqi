@@ -1,5 +1,4 @@
 package com.bio.drqi.manage.dto.project;
-import com.bio.drqi.common.dto.BaseBioTaskDTO;
 import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 
@@ -9,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-public class TransformDTO extends BaseBioTaskDTO {
+public class TransformDTO {
 
     /**
      * 项目ID

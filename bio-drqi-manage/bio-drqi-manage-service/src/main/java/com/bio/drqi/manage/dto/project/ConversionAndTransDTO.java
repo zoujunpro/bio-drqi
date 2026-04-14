@@ -1,13 +1,12 @@
 package com.bio.drqi.manage.dto.project;
 
-import com.bio.drqi.common.dto.BaseBioTaskDTO;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class ConversionAndTransDTO extends BaseBioTaskDTO {
+public class ConversionAndTransDTO {
 
 
     /**

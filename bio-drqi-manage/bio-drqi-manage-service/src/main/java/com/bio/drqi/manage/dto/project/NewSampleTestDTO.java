@@ -1,6 +1,5 @@
 package com.bio.drqi.manage.dto.project;
 
-import com.bio.drqi.common.dto.BaseBioTaskDTO;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -8,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-public class NewSampleTestDTO extends BaseBioTaskDTO {
+public class NewSampleTestDTO {
 
     /**
      * one 单管检测   more 96孔板检测

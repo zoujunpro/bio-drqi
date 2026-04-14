@@ -98,16 +98,6 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
                 }
             }
         }
-
-
-        //填充个性化处理，实施方案条件判断值
-       if(CollectionUtil.isNotEmpty(conversionAndTransDTO.getTransFormList())){
-           conversionAndTransDTO.setConditionVectorTaskCodeList(conversionAndTransDTO.getTransFormList().stream().map(ConversionAndTransDTO.TransForm::getVectorTaskCode).distinct().collect(Collectors.toList()));
-       }
-        if(CollectionUtil.isNotEmpty(conversionAndTransDTO.getSampleCodeList())){
-            conversionAndTransDTO.setConditionVectorTaskCodeList(conversionAndTransDTO.getSampleCodeList().stream().map(ConversionAndTransDTO.SampleCode::getVectorTaskCode).distinct().collect(Collectors.toList()));
-        }
-
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(conversionAndTransDTO));
 
     }

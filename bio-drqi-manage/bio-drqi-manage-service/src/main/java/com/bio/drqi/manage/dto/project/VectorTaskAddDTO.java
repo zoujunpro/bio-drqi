@@ -1,6 +1,5 @@
 package com.bio.drqi.manage.dto.project;
 
-import com.bio.drqi.common.dto.BaseBioTaskDTO;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -9,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
-public class VectorTaskAddDTO extends BaseBioTaskDTO {
+public class VectorTaskAddDTO{
 
     private String projectName;
 

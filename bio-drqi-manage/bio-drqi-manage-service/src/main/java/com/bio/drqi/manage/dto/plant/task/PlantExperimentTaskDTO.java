@@ -1,6 +1,5 @@
 package com.bio.drqi.manage.dto.plant.task;
 
-import com.bio.drqi.common.dto.BaseBioTaskDTO;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -8,7 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
-public class PlantExperimentTaskDTO extends BaseBioTaskDTO {
+public class PlantExperimentTaskDTO {
 
 
     private String sampleCodePrefix;

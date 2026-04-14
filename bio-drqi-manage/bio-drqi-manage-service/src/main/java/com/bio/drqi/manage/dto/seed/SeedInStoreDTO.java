@@ -1,6 +1,5 @@
 package com.bio.drqi.manage.dto.seed;
 
-import com.bio.drqi.common.dto.BaseBioTaskDTO;
 import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class SeedInStoreDTO extends BaseBioTaskDTO {
+public class SeedInStoreDTO {
 
     /**
      * 申请表单

@@ -2,12 +2,13 @@ package com.bio.drqi.manage.flowtask.project;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
-import com.bio.drqi.common.enums.BioTaskStatusEnum;
-import com.bio.drqi.enums.*;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.ImplementationPlanTypeEnum;
+import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.drqi.manage.dto.project.TransformDTO;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,11 +89,6 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
         transformDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(transformDTO));
         log.info("【任务工单】转化再生完毕完毕");
-
-        //填充个性化处理，实施方案条件判断值
-        List<String> list= new ArrayList<>();
-        list.add(transformDTO.getVectorTaskCode());
-        transformDTO.setConditionVectorTaskCodeList(list);
 
         /**
          * 更新当前执行步骤

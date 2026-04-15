@@ -11,7 +11,6 @@ import com.bio.drqi.domain.BioTaskConf;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.mapper.BioTaskConfMapper;
 import com.bio.drqi.mapper.BioTaskDtlTbMapper;
-import com.bio.drqi.mapper.CerProjectTbMapper;
 import com.bio.flow.dto.ApproveDetailRspDTO;
 import com.bio.flow.dto.ProcessDetailReqDTO;
 import com.bio.flow.dto.ProcessDetailRspDTO;
@@ -132,7 +131,12 @@ public class FlowServiceImpl implements FlowService {
             return new HashMap<>();
         }
         try {
-            Object json = JSONUtil.parse(str);
+            String jsonStr = str.trim();
+            if ("undefined".equalsIgnoreCase(jsonStr) || "null".equalsIgnoreCase(jsonStr)) {
+                log.warn("流程参数为空字符串标记，taskTypeCode={}, formObject={}", taskTypeCode, jsonStr);
+                return new HashMap<>();
+            }
+            Object json = JSONUtil.parse(jsonStr);
             if (json instanceof JSONArray) {
                 JSONArray jsonArray = (JSONArray) json;
                 if (CollectionUtil.isEmpty(jsonArray)) {
@@ -142,23 +146,39 @@ public class FlowServiceImpl implements FlowService {
             }
             return extractBasicTypeFields(json);
         } catch (Exception e) {
-            throw new BusinessException(e.getMessage());
+            log.error("流程参数解析失败，taskTypeCode={}, formObject={}", taskTypeCode, str, e);
+            throw new BusinessException("流程参数解析失败:" + e.getMessage());
         }
     }
 
     private Map<String, Object> extractBasicTypeFields(Object source) {
-        if (!(source instanceof JSONObject)) {
-            return new HashMap<>();
-        }
         Map<String, Object> result = new HashMap<>();
-        JSONObject jsonObject = (JSONObject) source;
-        for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
-            if (isBasicType(entry.getValue())) {
-                result.put(entry.getKey(), entry.getValue());
-            }
-        }
+        collectBasicTypeFields(source, null, result);
         log.info("解析后的数据"+JSONUtil.toJsonStr(result));
         return result;
+    }
+
+    private void collectBasicTypeFields(Object source, String path, Map<String, Object> result) {
+        if (source instanceof JSONObject) {
+            JSONObject jsonObject = (JSONObject) source;
+            for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+                String currentPath = StringUtils.isEmpty(path) ? entry.getKey() : path + "." + entry.getKey();
+                collectBasicTypeFields(entry.getValue(), currentPath, result);
+            }
+            return;
+        }
+        if (source instanceof JSONArray) {
+            JSONArray jsonArray = (JSONArray) source;
+            for (int i = 0; i < jsonArray.size(); i++) {
+                collectBasicTypeFields(jsonArray.get(i), path, result);
+            }
+            return;
+        }
+        if (isBasicType(source) && StringUtils.isNotEmpty(path)) {
+            result.put(path, source);
+            String fieldName = path.contains(".") ? path.substring(path.lastIndexOf(".") + 1) : path;
+            result.putIfAbsent(fieldName, source);
+        }
     }
 
     private boolean isBasicType(Object value) {

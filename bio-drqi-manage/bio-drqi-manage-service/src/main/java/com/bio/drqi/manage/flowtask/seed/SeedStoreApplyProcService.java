@@ -120,7 +120,6 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
             }
 
             //CER 校验
-
             if (SeedSourceEnum.CODE_1.code.equals(executeFormContent.getSource())&&GenerationEnum.T0.code.equals(executeFormContent.getGeneration())) {
                 if(StringUtils.isEmpty(executeFormContent.getPlantCode())){
                     throw new BusinessException("来源自CER的种子必然有种植编号");
@@ -129,12 +128,8 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 if (plantSingleStockTb == null) {
                     throw new BusinessException(executeFormContent.getPlantCode() + "种植编号不存在:" + executeFormContent.getPlantCode());
                 }
-                if(StringUtils.isEmpty(executeFormContent.getVectorTaskCode())){
-                    executeFormContent.setSeedNum(plantSingleStockTb.getVectorTaskCode());
-                }else {
-                    if(StringUtils.isEmpty(plantSingleStockTb.getVectorTaskCode())){
-                        throw new BusinessException("种植编号为："+executeFormContent.getPlantCode()+"的种子实施方案填写不正确");
-                    }
+                if(!StringUtils.equals(executeFormContent.getVectorTaskCode(),plantSingleStockTb.getVectorTaskCode())){
+                    throw new BusinessException("种植编号为："+executeFormContent.getPlantCode()+"的种子实施方案编号填写不正确");
                 }
                 if(!StringUtils.equals(executeFormContent.getSpeciesCode(),plantSingleStockTb.getSpeciesCode())){
                     throw new BusinessException("种植编号为："+executeFormContent.getPlantCode()+"的种子物种填写不正确");
@@ -177,7 +172,6 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                     throw new BusinessException("无此授粉信息或者授粉信息不匹配：当前对应数据行的试验方案：" + executeFormContent.getExperimentNum() + " 父本种子编号：" + executeFormContent.getFatherSeedNum() + " 母本种子编号：" + executeFormContent.getMatherSeedNum());
                 }
             }
-
             executeFormContent.setBreedName(cerBreedDict.getBreedName());
             executeFormContent.setSpeciesName(cerSpeciesConf.getSpeciesName());
         }

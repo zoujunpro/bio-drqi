@@ -38,6 +38,7 @@ public class SeedOutApplyProcService extends AbstractSeedTaskService {
                 checkSeedStock(seedNum, numCount);
             });
         }
+        //不要做序列化，前端给的有自定义数据
     }
 
     @Override

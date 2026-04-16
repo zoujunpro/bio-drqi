@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class InstantVerifyTaskDTO {
+public class InstantVerifyTaskDTO{
 
     @NotBlank(message = "实施方案编号缺失")
     private String vectorTaskCode;

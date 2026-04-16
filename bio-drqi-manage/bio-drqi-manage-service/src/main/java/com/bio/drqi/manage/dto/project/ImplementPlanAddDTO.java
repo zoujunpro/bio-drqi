@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class ImplementPlanAddDTO {
+public class ImplementPlanAddDTO{
 
     /**
      * 项目ID

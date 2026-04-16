@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-public class PlasmidDTO {
+public class PlasmidDTO{
     /**
      * 项目ID
      */

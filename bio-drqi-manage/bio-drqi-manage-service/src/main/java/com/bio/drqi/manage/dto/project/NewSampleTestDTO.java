@@ -2,12 +2,9 @@ package com.bio.drqi.manage.dto.project;
 
 import lombok.Data;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 public class NewSampleTestDTO {

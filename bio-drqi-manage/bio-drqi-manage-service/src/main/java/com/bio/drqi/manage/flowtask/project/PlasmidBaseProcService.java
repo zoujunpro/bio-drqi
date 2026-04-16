@@ -2,15 +2,18 @@ package com.bio.drqi.manage.flowtask.project;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
-import com.bio.drqi.common.enums.BioTaskStatusEnum;
-import com.bio.drqi.enums.ImplementationPlanTypeEnum;
-import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.ValidatorUtil;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.ImplementationPlanTypeEnum;
+import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.drqi.manage.dto.project.PlasmidDTO;
-import com.bio.drqi.mapper.*;
+import com.bio.drqi.mapper.CerPlasmidQualityTbMapper;
+import com.bio.drqi.mapper.CerProjectTbMapper;
+import com.bio.drqi.mapper.CerSubProjectTbMapper;
+import com.bio.drqi.mapper.CerVectorTaskTbMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +68,6 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         plasmidDTO.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(plasmidDTO));
         log.info("【任务工单】质粒质检校验结束");
-
 
         /**
          * 更新当前执行步骤

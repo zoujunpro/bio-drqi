@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.common.enums.SeedSourceEnum;
 import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.CerSpeciesConf;
@@ -77,7 +78,8 @@ public class TcHarvestServiceImpl implements TcHarvestService {
             for (TcPollinationTb tcPollinationTb : tcPollinationTbList) {
                 com.bio.drqi.common.dto.SeedInStockExcelDTO seedInStockExcelDTO = new com.bio.drqi.common.dto.SeedInStockExcelDTO();
                 seedInStockExcelDTO.setSource(SeedSourceEnum.CODE_4.name);
-                seedInStockExcelDTO.setGeneration(null);
+
+                seedInStockExcelDTO.setGeneration(StringUtils.isNotEmpty(tcPollinationTb.getMGenerationCode()) ? GenerationEnum.nextGenerationCode(tcPollinationTb.getMGenerationCode()) : null);
                 seedInStockExcelDTO.setPlantCode(null);
                 seedInStockExcelDTO.setVectorTaskCode(null);
                 seedInStockExcelDTO.setMaterialTypeName(null);
@@ -91,9 +93,9 @@ public class TcHarvestServiceImpl implements TcHarvestService {
                 seedInStockExcelDTO.setFatherInfo(null);
                 seedInStockExcelDTO.setMatherSeedNum(tcPollinationTb.getFSeedNum());
                 seedInStockExcelDTO.setFatherSeedNum(tcPollinationTb.getFSeedNum());
-                if(StringUtils.isNotEmpty(tcPollinationTb.getMBreedCode())){
-                    CerBreedDict cerBreedDict=  codeNameCerBreedDictMap.get(tcPollinationTb.getMBreedCode());
-                    if(cerBreedDict!=null){
+                if (StringUtils.isNotEmpty(tcPollinationTb.getMBreedCode())) {
+                    CerBreedDict cerBreedDict = codeNameCerBreedDictMap.get(tcPollinationTb.getMBreedCode());
+                    if (cerBreedDict != null) {
                         seedInStockExcelDTO.setBreedName(cerBreedDict.getBreedName());
                         seedInStockExcelDTO.setSpeciesName(codeNameCerSpeciesDictMap.get(cerBreedDict.getSpeciesCode()));
                     }

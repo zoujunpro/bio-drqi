@@ -1,6 +1,5 @@
 package com.bio.drqi.manage.dto.plant.task;
 
-import com.bio.drqi.common.validator.EnumValue;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

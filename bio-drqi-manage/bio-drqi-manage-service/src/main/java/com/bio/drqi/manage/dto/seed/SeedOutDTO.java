@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Data
-public class SeedOutDTO extends SeedProcDTO {
+public class SeedOutDTO {
 
 
     /**

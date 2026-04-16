@@ -1,12 +1,14 @@
 package com.bio.drqi.manage.seed;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 public class SeedStockUploadSpotCheckResultExcelReqDTO {
 
-    @NotBlank(message = "上传的excel参数缺失")
-    private String excelUrl;
+    @NotNull(message = "上传文件缺失")
+    private MultipartFile file;
+
 }

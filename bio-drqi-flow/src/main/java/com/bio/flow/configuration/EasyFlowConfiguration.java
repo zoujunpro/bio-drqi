@@ -4,9 +4,11 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.domain.SystemDeptTb;
 import com.bio.drqi.domain.SystemUserRoleRef;
 import com.bio.drqi.domain.SystemUserTb;
+import com.bio.drqi.mapper.CerVectorTaskTbMapper;
 import com.bio.drqi.mapper.SystemDeptTbMapper;
 import com.bio.drqi.mapper.SystemUserRoleRefMapper;
 import com.bio.drqi.mapper.SystemUserTbMapper;
@@ -42,14 +44,17 @@ public class EasyFlowConfiguration {
     @Resource
     private SystemDeptTbMapper systemDeptTbMapper;
 
+    @Resource
+    private CerVectorTaskTbMapper cerVectorTaskTbMapper;
+
     @Bean
     public DuplicateCopyHandler getDuplicateCopyHandler() {
         return new DuplicateCopyHandler() {
             @Override
-            public void handle(List<FlowActor> flowActorList, Long instanceId,String businessId) {
+            public void handle(List<FlowActor> flowActorList, Long instanceId, String businessId) {
                 Map<String, DefaultDuplicateCopyHandler> map = SpringUtil.getBeansOfType(DefaultDuplicateCopyHandler.class);
                 map.values().forEach(duplicateCopyHandler -> {
-                    duplicateCopyHandler.doHandle(flowActorList, instanceId,businessId);
+                    duplicateCopyHandler.doHandle(flowActorList, instanceId, businessId);
                 });
             }
         };
@@ -88,7 +93,8 @@ public class EasyFlowConfiguration {
                         return transSystemUserTbToFlowActor(systemUserTbList, null, null);
                     }
                 } else if (NodeType.deal.getValue() == nodeModel.getNodeType()
-                        || NodeType.approve.getValue() == nodeModel.getNodeType()) {
+                        || NodeType.approve.getValue() == nodeModel.getNodeType()
+                        || NodeType.copy.getValue() == nodeModel.getNodeType()) {
                     /**
                      * 审批或者执行节点
                      */
@@ -150,23 +156,35 @@ public class EasyFlowConfiguration {
 
                         SystemUserTb leaderSystemUserTb = systemUserTbMapper.selectById(firstDeptTb.getLeaderId());
                         return transSystemUserTbToFlowActor(Arrays.asList(leaderSystemUserTb), nodeModel, applyAdmin);
-                    }else if (SetApprove.appoint_manager.getValue() == nodeModel.getSetApprove()){
+                    } else if (SetApprove.appoint_manager.getValue() == nodeModel.getSetApprove()) {
                         //指定部门负责人
                         List<Integer> deptIdList = nodeModel.getNodeActorList().stream().map(nodeActor -> Integer.valueOf(nodeActor.getId())).collect(Collectors.toList());
-                        if(CollectionUtil.isEmpty(deptIdList)){
+                        if (CollectionUtil.isEmpty(deptIdList)) {
                             throw new BusinessException("指定部门时没选择部门信息");
                         }
                         SystemDeptTb systemDeptTb = systemDeptTbMapper.selectById(deptIdList.get(0));
-                        if(systemDeptTb==null){
+                        if (systemDeptTb == null) {
                             throw new BusinessException("部门信息不存在");
                         }
                         SystemUserTb deptSystemUserTb = systemUserTbMapper.selectById(systemDeptTb.getLeaderId());
                         return transSystemUserTbToFlowActor(Arrays.asList(deptSystemUserTb), nodeModel, applyAdmin);
-                    }
-                } else if (NodeType.copy.getValue() == nodeModel.getNodeType()) {
-                    if (CollectionUtil.isNotEmpty(nodeModel.getNodeActorList())) {
-                        List<SystemUserTb> systemUserTbList = systemUserTbMapper.selectBatchIds(nodeModel.getNodeActorList().stream().map(nodeActor -> Integer.valueOf(nodeActor.getId())).collect(Collectors.toList()));
-                        return transSystemUserTbToFlowActor(systemUserTbList, nodeModel, applyAdmin);
+                    } else if (SetApprove.project_leader.getValue() == nodeModel.getSetApprove()) {
+                        /**
+                         *项目负责人
+                         */
+                        List<Integer> idList = nodeModel.getNodeActorList().stream().map(nodeActor -> Integer.valueOf(nodeActor.getId())).collect(Collectors.toList());
+                        if (CollectionUtil.isNotEmpty(idList)) {
+                            List<SystemUserTb> systemUserTbList = systemUserTbMapper.selectBatchIds(idList);
+                            return transSystemUserTbToFlowActor(systemUserTbList, nodeModel, applyAdmin);
+                        } else {
+                            return new ArrayList<>();
+                        }
+                    } else if (nodeModel.getSetApprove() == null && NodeType.copy.getValue() == nodeModel.getNodeType()) {
+                        //兼容旧逻辑
+                        if (CollectionUtil.isNotEmpty(nodeModel.getNodeActorList())) {
+                            List<SystemUserTb> systemUserTbList = systemUserTbMapper.selectBatchIds(nodeModel.getNodeActorList().stream().map(nodeActor -> Integer.valueOf(nodeActor.getId())).collect(Collectors.toList()));
+                            return transSystemUserTbToFlowActor(systemUserTbList, nodeModel, applyAdmin);
+                        }
                     }
                 }
                 return new ArrayList<>();

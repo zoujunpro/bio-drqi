@@ -129,7 +129,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
                 }
             }
         }
-
         bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(newSampleTestDTO));
     }
 

@@ -78,6 +78,9 @@ public class SeedStockInServiceImpl implements SeedStockInService {
     @Resource
     private SeedPlantService seedPlantService;
 
+    @Resource
+    private CerProjectTbMapper cerProjectTbMapper;
+
 
     @Override
     public PageInfo<SeedStockInRspDTO> listPage(SeedStockInReqDTO seedStockInReqDTO) {
@@ -136,10 +139,11 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             SeedStockTb seedStockTb = new SeedStockTb();
             if (StringUtils.isNotEmpty(executeFormContent.getVectorTaskCode())) {
                 CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(executeFormContent.getVectorTaskCode());
-                if (cerVectorTaskTb == null) {
-                    throw new BusinessException("实施方案不存在：" + executeFormContent.getVectorTaskCode());
-                }
+                CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
+                seedStockTb.setTargetCharacter(cerProjectTb.getProjectName());
                 seedStockTb.setProjectCode(cerVectorTaskTb.getProjectCode());
+            }else {
+                seedStockTb.setTargetCharacter(executeFormContent.getTargetCharacter());
             }
             seedStockTb.setVectorTaskCode(executeFormContent.getVectorTaskCode());
             seedStockTb.setPlantCode(executeFormContent.getPlantCode());
@@ -155,7 +159,6 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             seedStockTb.setSourceType(executeFormContent.getSource());
             seedStockTb.setProductionLocationCode(executeFormContent.getProductionLocationCode());
             seedStockTb.setSubmitUserId(bioTaskDtlTb.getApplyUserId());
-            seedStockTb.setTargetCharacter(executeFormContent.getTargetCharacter());
             seedStockTb.setSubmitUserName(bioTaskDtlTb.getApplyUserName());
             seedStockTb.setCreateTime(new Date());
             seedStockTb.setUpdateTime(new Date());

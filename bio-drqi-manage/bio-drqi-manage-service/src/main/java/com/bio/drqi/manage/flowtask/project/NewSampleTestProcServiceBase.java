@@ -69,6 +69,12 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
     @Resource
     private BioSampleTestResultFileTbMapper bioSampleTestResultFileTbMapper;
 
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
+
+    @Resource
+    private CerSpeciesConfMapper cerSpeciesConfMapper;
+
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -304,7 +310,106 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
 
     @Override
     public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
-        return Collections.emptyList();
+        NewSampleTestDTO dto = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), NewSampleTestDTO.class);
+        if (dto == null) {
+            return Collections.emptyList();
+        }
+
+        List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
+        Map<String, String> speciesMap = cerSpeciesConfMapper.selectAll().stream()
+                .collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
+
+        List<BioHtmlModelDTO.ModelField> applyInfoFields = new ArrayList<>();
+        applyInfoFields.add(buildField("检测方式", testTypeName(dto.getTestType())));
+        applyInfoFields.add(buildField("物种", speciesMap.getOrDefault(dto.getSpeciesCode(), dto.getSpeciesCode())));
+        applyInfoFields.add(buildField("是否克隆苗", dto.isCloneFlag() ? "是" : "否"));
+        applyInfoFields.add(buildField("首次取样数量", String.valueOf(CollectionUtil.isEmpty(dto.getFirstSampleApplyList()) ? 0 : dto.getFirstSampleApplyList().size())));
+        applyInfoFields.add(buildField("重复取样数量", String.valueOf(CollectionUtil.isEmpty(dto.getRepeatSampleApplyList()) ? 0 : dto.getRepeatSampleApplyList().size())));
+        if (StringUtils.isNotEmpty(dto.getCancelTaskSampleList())) {
+            applyInfoFields.add(buildField("取消取样编号", dto.getCancelTaskSampleList()));
+        }
+        sections.add(buildFieldSection("申请信息", applyInfoFields));
+
+        if (CollectionUtil.isNotEmpty(dto.getFirstSampleApplyList())) {
+            List<String> headers = Arrays.asList("实施方案编号", "转化编号", "受体材料", "载体名称", "取样数量", "鉴定引物", "取样时间", "取样代次");
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (NewSampleTestDTO.FirstSampleApply item : dto.getFirstSampleApplyList()) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("实施方案编号", item.getVectorTaskCode());
+                row.put("转化编号", item.getTransformCode());
+                row.put("受体材料", item.getAcceptorMaterial());
+                row.put("载体名称", item.getPlasmidName());
+                row.put("取样数量", item.getSampleNum());
+                row.put("鉴定引物", item.getIdentifyPrimer());
+                row.put("取样时间", item.getSampleTime());
+                row.put("取样代次", item.getSampleGeneration());
+                rows.add(row);
+            }
+            sections.add(buildTableSection("首次取样申请明细", headers, rows));
+        }
+
+        List<BioSampleTestTb> sampleList = bioSampleTestTbMapper.selectAllByApplyNo(bioTaskDtlTb.getTaskNum());
+        if (CollectionUtil.isNotEmpty(sampleList)) {
+            Map<String, String> breedMap = cerBreedDictMapper.selectAll().stream()
+                    .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+            List<String> headers = Arrays.asList("取样编号", "实施方案编号", "转化编号", "品种名称", "代次", "检测人", "审核结果");
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (BioSampleTestTb item : sampleList) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("取样编号", item.getSampleCode());
+                row.put("实施方案编号", item.getVectorTaskCode());
+                row.put("转化编号", item.getTransformCode());
+                row.put("品种名称", breedMap.get(item.getBreedCode()));
+                row.put("代次", item.getGeneration());
+                row.put("检测人", item.getTestUserName());
+                row.put("审核结果", checkResultName(item.getCheckResult()));
+                rows.add(row);
+            }
+            sections.add(buildTableSection("取样信息明细", headers, rows));
+        }
+
+        return sections;
+    }
+
+    private String testTypeName(String code) {
+        if (oneTestType.equals(code)) {
+            return "单管取样";
+        }
+        if ("more".equals(code)) {
+            return "96孔板取样";
+        }
+        return code;
+    }
+
+    private String operateTypeName(String code) {
+        if ("1".equals(code)) {
+            return "发起取样申请提交";
+        }
+        if ("2".equals(code)) {
+            return "取样结果上送提交";
+        }
+        if ("3".equals(code)) {
+            return "检测结果上送提交";
+        }
+        if ("4".equals(code)) {
+            return "取样检测结果审核提交";
+        }
+        return code;
+    }
+
+    private String checkResultName(String code) {
+        if (StringUtils.isEmpty(code)) {
+            return "";
+        }
+        if (CheckResultEnum.stay.name().equals(code)) {
+            return "保留";
+        }
+        if (CheckResultEnum.remove.name().equals(code)) {
+            return "剔除";
+        }
+        if (CheckResultEnum.noCheck.name().equals(code)) {
+            return "未审核";
+        }
+        return code;
     }
 }
-

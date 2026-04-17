@@ -3,9 +3,6 @@ package com.bio.flow.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.json.JSONUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
@@ -22,6 +19,7 @@ import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import com.bio.flow.dto.*;
 import com.bio.flow.enums.EventType;
 import com.bio.flow.enums.QueryTypeEnum;
+import com.bio.flow.hander.DefaultBuildHtmlModelHandler;
 import com.easyflow.engine.entity.FlowHisInstanceTb;
 import com.easyflow.engine.enums.InstanceState;
 import com.github.pagehelper.PageHelper;
@@ -39,12 +37,7 @@ import org.springframework.util.Assert;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -229,7 +222,7 @@ public class BioTaskServiceImpl implements BioTaskService {
         if (!BioTaskStatusEnum.TASK_STATUS_0.status.equals(bioTaskDtlTb.getTaskStatus())) {
             throw new BusinessException("草稿状态任务可以删除");
         }
-        if(SecurityContextHolder.getUserId().intValue()!=bioTaskDtlTb.getApplyUserId()){
+        if (SecurityContextHolder.getUserId().intValue() != bioTaskDtlTb.getApplyUserId()) {
             throw new BusinessException("只有发起人自己人可以删除");
         }
         bioTaskDtlTbMapper.deleteById(id);
@@ -265,19 +258,19 @@ public class BioTaskServiceImpl implements BioTaskService {
         if (QueryTypeEnum.TYPE_1 == queryTypeEnum) {
             bioTaskDtlTbList = bioTaskDtlTbMapper.selectSelectiveNoDraft(BioTaskDtlTb.builder().taskDesc(bioTaskListPageReqDTO.getTaskDesc()).applyDate(bioTaskListPageReqDTO.getApplyDate()).taskNum(bioTaskListPageReqDTO.getTaskNum()).taskTypeCode(bioTaskListPageReqDTO.getTaskTypeCode()).taskStatus(bioTaskListPageReqDTO.getTaskStatus()).applyUserId(bioTaskListPageReqDTO.getApplyUserId()).taskCategory(bioTaskListPageReqDTO.getTaskCategory()).build());
         } else if (QueryTypeEnum.TYPE_2 == queryTypeEnum) {
-            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForPendingApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(), bioTaskListPageReqDTO.getApplyUserId(), bioTaskListPageReqDTO.getApplyDate(),bioTaskListPageReqDTO.getTaskDesc());
+            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForPendingApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(), bioTaskListPageReqDTO.getApplyUserId(), bioTaskListPageReqDTO.getApplyDate(), bioTaskListPageReqDTO.getTaskDesc());
         } else if (QueryTypeEnum.TYPE_3 == queryTypeEnum) {
             bioTaskDtlTbList = bioTaskDtlTbMapper.selectSelective(BioTaskDtlTb.builder().taskDesc(bioTaskListPageReqDTO.getTaskDesc()).applyDate(bioTaskListPageReqDTO.getApplyDate()).taskNum(bioTaskListPageReqDTO.getTaskNum()).taskStatus(bioTaskListPageReqDTO.getTaskStatus()).taskTypeCode(bioTaskListPageReqDTO.getTaskTypeCode()).applyUserId(SecurityContextHolder.getUserId()).taskCategory(bioTaskListPageReqDTO.getTaskCategory()).build());
         } else if (QueryTypeEnum.TYPE_4 == queryTypeEnum) {
-            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForAlreadyApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(), bioTaskListPageReqDTO.getTaskStatus(), bioTaskListPageReqDTO.getApplyUserId(), bioTaskListPageReqDTO.getApplyDate(),bioTaskListPageReqDTO.getTaskDesc());
+            bioTaskDtlTbList = bioTaskDtlTbMapper.selectForAlreadyApproval(String.valueOf(SecurityContextHolder.getUserId()), bioTaskListPageReqDTO.getTaskNum(), bioTaskListPageReqDTO.getTaskTypeCode(), bioTaskListPageReqDTO.getTaskCategory(), bioTaskListPageReqDTO.getTaskStatus(), bioTaskListPageReqDTO.getApplyUserId(), bioTaskListPageReqDTO.getApplyDate(), bioTaskListPageReqDTO.getTaskDesc());
         }
         PageInfo<BioTaskDtlTb> pageInfo = new PageInfo<>(bioTaskDtlTbList);
         List<BioTaskListPageRspDTO> bioTaskListPageRspDTOList = getTaskListPageRspDTOS(bioTaskDtlTbList);
         List<Long> instanceIdList = bioTaskListPageRspDTOList.stream().filter(bioTaskListPageRspDTO -> bioTaskListPageRspDTO.getInstanceId() != null).map(bioTaskListPageRspDTO -> Long.valueOf(bioTaskListPageRspDTO.getInstanceId())).collect(Collectors.toList());
-        if(CollectionUtil.isNotEmpty(instanceIdList)){
+        if (CollectionUtil.isNotEmpty(instanceIdList)) {
             Map<Long, String> instanceTaskTypeMap = flowService.queryListFlowTaskByInstanceIds(instanceIdList);
             bioTaskListPageRspDTOList.forEach(bioTaskListPageRspDTO -> {
-                if(bioTaskListPageRspDTO.getInstanceId()!=null){
+                if (bioTaskListPageRspDTO.getInstanceId() != null) {
                     bioTaskListPageRspDTO.setNodeType(instanceTaskTypeMap.get(Long.valueOf(bioTaskListPageRspDTO.getInstanceId())));
                 }
             });
@@ -489,9 +482,13 @@ public class BioTaskServiceImpl implements BioTaskService {
 
     @Override
     public void printReview(Integer id, HttpServletResponse httpServletResponse) {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(id);
+        DefaultBuildHtmlModelHandler defaultBuildHtmlModelHandler = findBuildHtmlModelHandler(bioTaskDtlTb.getTaskTypeCode());
+        if (defaultBuildHtmlModelHandler == null) {
+            throw new BusinessException("缺少工单打印的配置" + bioTaskDtlTb.getTaskTypeCode());
+        }
         try {
-            String html = buildPrintHtml(id);
-            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(id);
+            String html = renderPrintTemplate(resolvePrintTemplate(bioTaskDtlTb.getTaskTypeCode()), defaultBuildHtmlModelHandler.handler(bioTaskDtlTb));
             PdfUtil.htmlToPdf(html, httpServletResponse, bioTaskDtlTb.getTaskNum(), fontPath);
         } catch (BusinessException e) {
             throw e;
@@ -503,8 +500,13 @@ public class BioTaskServiceImpl implements BioTaskService {
 
     @Override
     public String printPreview(Integer id) {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(id);
+        DefaultBuildHtmlModelHandler defaultBuildHtmlModelHandler = findBuildHtmlModelHandler(bioTaskDtlTb.getTaskTypeCode());
+        if (defaultBuildHtmlModelHandler == null) {
+            throw new BusinessException("缺少工单打印的配置" + bioTaskDtlTb.getTaskTypeCode());
+        }
         try {
-            return buildPrintHtml(id);
+            return renderPrintTemplate(resolvePrintTemplate(bioTaskDtlTb.getTaskTypeCode()), defaultBuildHtmlModelHandler.handler(bioTaskDtlTb));
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
@@ -513,77 +515,15 @@ public class BioTaskServiceImpl implements BioTaskService {
         }
     }
 
-    private String buildPrintHtml(Integer id) throws Exception {
-        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(id);
-        Assert.notNull(bioTaskDtlTb, "不存在此任务");
-        Map<String, Object> model = buildPrintModel(bioTaskDtlTb);
-        return renderPrintTemplate(resolvePrintTemplate(bioTaskDtlTb.getTaskTypeCode()), model);
+    private DefaultBuildHtmlModelHandler findBuildHtmlModelHandler(String taskTypeCode) {
+        Map<String, DefaultBuildHtmlModelHandler> handlerMap = SpringUtil.getBeansOfType(DefaultBuildHtmlModelHandler.class);
+        DefaultBuildHtmlModelHandler handler = handlerMap.get(taskTypeCode);
+        if (handler != null) {
+            return handler;
+        }
+        return handlerMap.get("defaultBuildHtmlModelHandler");
     }
 
-    private Map<String, Object> buildPrintModel(BioTaskDtlTb bioTaskDtlTb) {
-        Map<String, Object> model = new HashMap<>();
-        model.put("taskNum", bioTaskDtlTb.getTaskNum());
-        model.put("taskTypeCode", bioTaskDtlTb.getTaskTypeCode());
-        model.put("taskTypeName", bioTaskDtlTb.getTaskTypeName());
-        model.put("taskDesc", bioTaskDtlTb.getTaskDesc());
-        model.put("applyUserName", bioTaskDtlTb.getApplyUserName());
-        model.put("applyTime", bioTaskDtlTb.getApplyTime() == null ? "" : DateUtil.format(bioTaskDtlTb.getApplyTime(), DatePattern.NORM_DATE_PATTERN));
-        model.put("taskStatusName", BioTaskStatusEnum.getNameByStatus(bioTaskDtlTb.getTaskStatus()));
-        model.put("refTaskNum", bioTaskDtlTb.getRefTaskNum());
-        model.put("printUser", SecurityContextHolder.getNickName());
-        model.put("printTime", DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
-        model.put("taskFormPretty", prettyTaskForm(bioTaskDtlTb.getTaskForm()));
-        model.put("approveRecords", buildApproveRecords(bioTaskDtlTb));
-        return model;
-    }
-
-    private List<Map<String, Object>> buildApproveRecords(BioTaskDtlTb bioTaskDtlTb) {
-        List<Map<String, Object>> records = new ArrayList<>();
-        if (bioTaskDtlTb.getInstanceId() == null) {
-            return records;
-        }
-        ApproveDetailRspDTO approveDetailRspDTO = flowService.approveDetail(String.valueOf(bioTaskDtlTb.getInstanceId()));
-        if (approveDetailRspDTO == null || CollectionUtil.isEmpty(approveDetailRspDTO.getModelList())) {
-            return records;
-        }
-        for (ApproveDetailRspDTO.Model model : approveDetailRspDTO.getModelList()) {
-            if (CollectionUtil.isEmpty(model.getNodeUserList())) {
-                Map<String, Object> emptyRecord = new HashMap<>();
-                emptyRecord.put("nodeName", model.getNodeName());
-                emptyRecord.put("username", "");
-                emptyRecord.put("approveResult", "");
-                emptyRecord.put("approveRemark", "");
-                emptyRecord.put("approveTime", "");
-                records.add(emptyRecord);
-                continue;
-            }
-            List<ApproveDetailRspDTO.NodeUser> nodeUserList = model.getNodeUserList().stream()
-                    .sorted(Comparator.comparing(ApproveDetailRspDTO.NodeUser::getApproveTime, Comparator.nullsLast(Date::compareTo)))
-                    .collect(Collectors.toList());
-            for (ApproveDetailRspDTO.NodeUser nodeUser : nodeUserList) {
-                Map<String, Object> record = new HashMap<>();
-                record.put("nodeName", model.getNodeName());
-                record.put("username", nodeUser.getUsername());
-                record.put("approveResult", nodeUser.getApproveResult());
-                record.put("approveRemark", nodeUser.getApproveRemark());
-                record.put("approveTime", nodeUser.getApproveTime() == null ? "" : DateUtil.format(nodeUser.getApproveTime(), DatePattern.NORM_DATETIME_PATTERN));
-                records.add(record);
-            }
-        }
-        return records;
-    }
-
-    private String prettyTaskForm(String taskForm) {
-        if (StringUtils.isBlank(taskForm)) {
-            return "";
-        }
-        try {
-            return JSONUtil.toJsonPrettyStr(JSONUtil.parse(taskForm));
-        } catch (Exception e) {
-            log.warn("工单表单非标准JSON，按原文打印，taskForm={}", taskForm);
-            return taskForm;
-        }
-    }
 
     private String resolvePrintTemplate(String taskTypeCode) {
         if (StringUtils.isBlank(taskTypeCode)) {
@@ -594,11 +534,39 @@ public class BioTaskServiceImpl implements BioTaskService {
         return classPathResource.exists() ? templateName : DEFAULT_PRINT_TEMPLATE;
     }
 
-    private String renderPrintTemplate(String templateName, Map<String, Object> model) throws Exception {
+    private String renderPrintTemplate(String templateName, BioHtmlModelDTO bioHtmlModelDTO) throws Exception {
         Template template = freeMarkerConfiguration.getTemplate(templateName, "UTF-8");
         StringWriter stringWriter = new StringWriter();
+        Map<String, Object> model = buildTemplateModel(bioHtmlModelDTO);
         template.process(model, stringWriter);
         return stringWriter.toString();
+    }
+
+    private Map<String, Object> buildTemplateModel(BioHtmlModelDTO bioHtmlModelDTO) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("modelHeader", objectToMap(bioHtmlModelDTO.getModelHeader()));
+        result.put("sections", objectListToMapList(bioHtmlModelDTO.getSections()));
+        result.put("modelBottomList", objectListToMapList(bioHtmlModelDTO.getModelBottomList()));
+        return result;
+    }
+
+    private Map<String, Object> objectToMap(Object object) {
+        if (object == null) {
+            return new HashMap<>();
+        }
+        Map<String, Object> source = BeanUtil.beanToMap(object, false, true);
+        Map<String, Object> result = new HashMap<>();
+        source.forEach((key, value) -> result.put(key, value == null ? "" : value));
+        return result;
+    }
+
+    private List<Map<String, Object>> objectListToMapList(List<?> sourceList) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        if (CollectionUtil.isEmpty(sourceList)) {
+            return result;
+        }
+        sourceList.forEach(item -> result.add(objectToMap(item)));
+        return result;
     }
 
 

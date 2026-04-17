@@ -281,15 +281,11 @@ public class BioTaskController {
         bioTaskService.exportExcel(bioExportExcelReqDTO, httpServletResponse);
     }
 
-    @PostMapping("printReview")
+    @GetMapping("printReview")
     @WebLog(desc = "工单打印")
+    @RequestLog("工单打印")
     public void printReview(@RequestParam Integer id, HttpServletResponse httpServletResponse) {
         bioTaskService.printReview(id, httpServletResponse);
     }
 
-    @GetMapping(value = "printPreview", produces = "text/html;charset=UTF-8")
-    @WebLog(desc = "工单打印预览")
-    public String printPreview(@RequestParam Integer id) {
-        return bioTaskService.printPreview(id);
-    }
 }

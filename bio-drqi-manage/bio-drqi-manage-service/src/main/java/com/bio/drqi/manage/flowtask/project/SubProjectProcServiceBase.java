@@ -13,11 +13,13 @@ import com.bio.drqi.domain.CerSubProjectTb;
 import com.bio.drqi.manage.dto.project.SubProjectCreateDTO;
 import com.bio.drqi.mapper.CerProjectTbMapper;
 import com.bio.drqi.mapper.CerSubProjectTbMapper;
+import com.bio.flow.dto.BioHtmlModelDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -105,5 +107,10 @@ public class SubProjectProcServiceBase extends AbstractProjectBaseTaskService {
             }
 
         }
+    }
+
+    @Override
+    public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
+        return Collections.emptyList();
     }
 }

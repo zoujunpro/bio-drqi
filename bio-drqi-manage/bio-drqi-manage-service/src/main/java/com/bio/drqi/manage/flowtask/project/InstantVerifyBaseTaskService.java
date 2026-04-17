@@ -10,10 +10,13 @@ import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.manage.dto.project.InstantVerifyTaskDTO;
 import com.bio.drqi.mapper.CerInstantVerifyTaskTbMapper;
 import com.bio.drqi.mapper.CerVectorTaskTbMapper;
+import com.bio.flow.dto.BioHtmlModelDTO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 瞬时验证任务
@@ -77,5 +80,10 @@ public class InstantVerifyBaseTaskService extends AbstractProjectBaseTaskService
         InstantVerifyTaskDTO instantVerifyTaskDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), InstantVerifyTaskDTO.class);
         cerInstantVerifyTaskTbMapper.deleteByInstantVerifyCode(instantVerifyTaskDTO.getVerifyTaskCode());
 
+    }
+
+    @Override
+    public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
+        return Collections.emptyList();
     }
 }

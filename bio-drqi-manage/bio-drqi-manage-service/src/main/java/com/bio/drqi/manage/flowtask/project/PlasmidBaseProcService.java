@@ -14,10 +14,12 @@ import com.bio.drqi.mapper.CerPlasmidQualityTbMapper;
 import com.bio.drqi.mapper.CerProjectTbMapper;
 import com.bio.drqi.mapper.CerSubProjectTbMapper;
 import com.bio.drqi.mapper.CerVectorTaskTbMapper;
+import com.bio.flow.dto.BioHtmlModelDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -120,4 +122,8 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
     }
 
 
+    @Override
+    public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
+        return Collections.emptyList();
+    }
 }

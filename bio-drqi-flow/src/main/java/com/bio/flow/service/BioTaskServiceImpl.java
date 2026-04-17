@@ -3,6 +3,9 @@ package com.bio.flow.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSONUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
@@ -11,6 +14,7 @@ import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.SpringUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.util.PdfUtil;
 import com.bio.drqi.domain.BioTaskConf;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.mapper.BioTaskConfMapper;
@@ -19,11 +23,14 @@ import com.bio.flow.dto.*;
 import com.bio.flow.enums.EventType;
 import com.bio.flow.enums.QueryTypeEnum;
 import com.easyflow.engine.entity.FlowHisInstanceTb;
-import com.easyflow.engine.entity.FlowTaskTb;
 import com.easyflow.engine.enums.InstanceState;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +38,11 @@ import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,6 +50,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class BioTaskServiceImpl implements BioTaskService {
+    private static final String DEFAULT_PRINT_TEMPLATE = "task_print.ftl";
+
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
 
@@ -48,6 +60,12 @@ public class BioTaskServiceImpl implements BioTaskService {
 
     @Resource
     private FlowService flowService;
+
+    @Resource
+    private Configuration freeMarkerConfiguration;
+
+    @Value("${spring.freemarker.fontPath}")
+    private String fontPath;
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW, timeout = 120000)
@@ -467,6 +485,120 @@ public class BioTaskServiceImpl implements BioTaskService {
             bioTaskExcelDTO.setTaskStatusName(BioTaskStatusEnum.getNameByStatus(bioTaskExcelDTO.getTaskStatus()));
         });
         ExcelUtil.writeExcel("任务工单" + System.currentTimeMillis() + ".xlsx", "sheet1", bioTaskExcelDTOList, BioTaskExcelDTO.class, httpServletResponse);
+    }
+
+    @Override
+    public void printReview(Integer id, HttpServletResponse httpServletResponse) {
+        try {
+            String html = buildPrintHtml(id);
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(id);
+            PdfUtil.htmlToPdf(html, httpServletResponse, bioTaskDtlTb.getTaskNum(), fontPath);
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("工单打印失败，id={}", id, e);
+            throw new BusinessException("工单打印失败");
+        }
+    }
+
+    @Override
+    public String printPreview(Integer id) {
+        try {
+            return buildPrintHtml(id);
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("工单打印预览失败，id={}", id, e);
+            throw new BusinessException("工单打印预览失败");
+        }
+    }
+
+    private String buildPrintHtml(Integer id) throws Exception {
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(id);
+        Assert.notNull(bioTaskDtlTb, "不存在此任务");
+        Map<String, Object> model = buildPrintModel(bioTaskDtlTb);
+        return renderPrintTemplate(resolvePrintTemplate(bioTaskDtlTb.getTaskTypeCode()), model);
+    }
+
+    private Map<String, Object> buildPrintModel(BioTaskDtlTb bioTaskDtlTb) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("taskNum", bioTaskDtlTb.getTaskNum());
+        model.put("taskTypeCode", bioTaskDtlTb.getTaskTypeCode());
+        model.put("taskTypeName", bioTaskDtlTb.getTaskTypeName());
+        model.put("taskDesc", bioTaskDtlTb.getTaskDesc());
+        model.put("applyUserName", bioTaskDtlTb.getApplyUserName());
+        model.put("applyTime", bioTaskDtlTb.getApplyTime() == null ? "" : DateUtil.format(bioTaskDtlTb.getApplyTime(), DatePattern.NORM_DATE_PATTERN));
+        model.put("taskStatusName", BioTaskStatusEnum.getNameByStatus(bioTaskDtlTb.getTaskStatus()));
+        model.put("refTaskNum", bioTaskDtlTb.getRefTaskNum());
+        model.put("printUser", SecurityContextHolder.getNickName());
+        model.put("printTime", DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
+        model.put("taskFormPretty", prettyTaskForm(bioTaskDtlTb.getTaskForm()));
+        model.put("approveRecords", buildApproveRecords(bioTaskDtlTb));
+        return model;
+    }
+
+    private List<Map<String, Object>> buildApproveRecords(BioTaskDtlTb bioTaskDtlTb) {
+        List<Map<String, Object>> records = new ArrayList<>();
+        if (bioTaskDtlTb.getInstanceId() == null) {
+            return records;
+        }
+        ApproveDetailRspDTO approveDetailRspDTO = flowService.approveDetail(String.valueOf(bioTaskDtlTb.getInstanceId()));
+        if (approveDetailRspDTO == null || CollectionUtil.isEmpty(approveDetailRspDTO.getModelList())) {
+            return records;
+        }
+        for (ApproveDetailRspDTO.Model model : approveDetailRspDTO.getModelList()) {
+            if (CollectionUtil.isEmpty(model.getNodeUserList())) {
+                Map<String, Object> emptyRecord = new HashMap<>();
+                emptyRecord.put("nodeName", model.getNodeName());
+                emptyRecord.put("username", "");
+                emptyRecord.put("approveResult", "");
+                emptyRecord.put("approveRemark", "");
+                emptyRecord.put("approveTime", "");
+                records.add(emptyRecord);
+                continue;
+            }
+            List<ApproveDetailRspDTO.NodeUser> nodeUserList = model.getNodeUserList().stream()
+                    .sorted(Comparator.comparing(ApproveDetailRspDTO.NodeUser::getApproveTime, Comparator.nullsLast(Date::compareTo)))
+                    .collect(Collectors.toList());
+            for (ApproveDetailRspDTO.NodeUser nodeUser : nodeUserList) {
+                Map<String, Object> record = new HashMap<>();
+                record.put("nodeName", model.getNodeName());
+                record.put("username", nodeUser.getUsername());
+                record.put("approveResult", nodeUser.getApproveResult());
+                record.put("approveRemark", nodeUser.getApproveRemark());
+                record.put("approveTime", nodeUser.getApproveTime() == null ? "" : DateUtil.format(nodeUser.getApproveTime(), DatePattern.NORM_DATETIME_PATTERN));
+                records.add(record);
+            }
+        }
+        return records;
+    }
+
+    private String prettyTaskForm(String taskForm) {
+        if (StringUtils.isBlank(taskForm)) {
+            return "";
+        }
+        try {
+            return JSONUtil.toJsonPrettyStr(JSONUtil.parse(taskForm));
+        } catch (Exception e) {
+            log.warn("工单表单非标准JSON，按原文打印，taskForm={}", taskForm);
+            return taskForm;
+        }
+    }
+
+    private String resolvePrintTemplate(String taskTypeCode) {
+        if (StringUtils.isBlank(taskTypeCode)) {
+            return DEFAULT_PRINT_TEMPLATE;
+        }
+        String templateName = taskTypeCode + "_print.ftl";
+        ClassPathResource classPathResource = new ClassPathResource("templates/" + templateName);
+        return classPathResource.exists() ? templateName : DEFAULT_PRINT_TEMPLATE;
+    }
+
+    private String renderPrintTemplate(String templateName, Map<String, Object> model) throws Exception {
+        Template template = freeMarkerConfiguration.getTemplate(templateName, "UTF-8");
+        StringWriter stringWriter = new StringWriter();
+        template.process(model, stringWriter);
+        return stringWriter.toString();
     }
 
 

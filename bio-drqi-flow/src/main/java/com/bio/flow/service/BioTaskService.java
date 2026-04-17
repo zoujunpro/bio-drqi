@@ -1,13 +1,10 @@
 package com.bio.flow.service;
 
 
-import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.flow.dto.*;
 import com.bio.flow.enums.QueryTypeEnum;
 import com.github.pagehelper.PageInfo;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
@@ -73,5 +70,9 @@ public interface BioTaskService {
     List<BioQueryAllTaskUserRspDTO> queryAllTaskUser(String taskCategory);
 
     void exportExcel(BioExportExcelReqDTO bioExportExcelReqDTO, HttpServletResponse httpServletResponse);
+
+    void printReview(@RequestParam Integer id, HttpServletResponse httpServletResponse);
+
+    String printPreview(@RequestParam Integer id);
 
 }

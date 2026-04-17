@@ -76,7 +76,7 @@ public class PlasmidServiceImpl implements PlasmidService {
         String excelTemplateName = "测试质粒质检模板V1.0.xlsx";
         String templateDir = System.getProperty("java.io.tmpdir") + File.separator + System.currentTimeMillis() + File.separator + excelTemplateName;
         try {
-            ossService.downloadPath(templateDir, "template", excelTemplateName);
+            ossService.downloadPath(templateDir, "templates", excelTemplateName);
 
             ExcelUtil.fillExcel(templateDir, plasmidCheckExcelDTOList, PlasmidDTO.Content.class, response);
         } catch (Exception e) {

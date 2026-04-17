@@ -79,7 +79,7 @@ public class PlantSingleStockController {
     @WebLog(desc = "种植明细-种植模板")
     public void downSampleTemplate(HttpServletResponse response) {
         try {
-            ossService.downloadFile(response, "template", "CER种植结果上传数据模板_V1.xlsx");
+            ossService.downloadFile(response, "templates", "CER种植结果上传数据模板_V1.xlsx");
         } catch (Exception e) {
             throw new BusinessException("CER种植结果上传数据模板下载失败，请联系管理员检测模板配置");
         }

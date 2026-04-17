@@ -75,7 +75,7 @@ public class CerConversionAndTransController {
     @GetMapping("/downVectorTemplate")
     public void downVectorTemplate(HttpServletResponse response) {
         try {
-            ossService.downloadFile(response, "template", "取样检测数据移苗模板V1.0.xlsx");
+            ossService.downloadFile(response, "templates", "取样检测数据移苗模板V1.0.xlsx");
         } catch (Exception e) {
             throw new BusinessException("移苗转化取样编号模板下载失败，请联系管理员检测模板配置");
         }

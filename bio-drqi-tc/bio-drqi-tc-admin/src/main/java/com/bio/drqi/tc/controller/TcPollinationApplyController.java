@@ -8,9 +8,7 @@ import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.tc.req.TcPollinationCreatePollinationExcelReqDTO;
 import com.bio.drqi.tc.req.TcPollinationApplyExportPollinationExcelReqDTO;
-import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcPollinationApplyListPageReqDTO;
-import com.bio.drqi.tc.rsp.TcPollinationListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcPollinationApplyListPageRspDTO;
 import com.bio.drqi.tc.rsp.TcPollinationApplyListPollinationApplyNumNotHarvestRspDTO;
 import com.bio.drqi.tc.service.TcPollinationApplyService;
@@ -96,7 +94,7 @@ public class TcPollinationApplyController {
     @WebLog(desc = "授粉申请管理-授粉结果表下载")
     public void downTemplate(HttpServletResponse httpServletResponse) {
         try {
-            ossService.downloadFile(httpServletResponse, "template", "田测授粉结果表单模板V1.0.xlsx");
+            ossService.downloadFile(httpServletResponse, "templates", "田测授粉结果表单模板V1.0.xlsx");
         } catch (Exception e) {
             throw new BusinessException("田测授粉数据表单模板下载失败，请联系管理员检测模板配置");
         }

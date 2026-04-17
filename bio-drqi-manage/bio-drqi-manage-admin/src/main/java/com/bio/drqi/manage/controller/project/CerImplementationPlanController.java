@@ -11,9 +11,7 @@ import com.bio.drqi.manage.vector.rsp.VectorListPageRspDTO;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.oss.service.OssService;
-import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
-import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.service.project.VectorTaskService;
 import com.bio.drqi.manage.vector.rsp.VectorTaskSpeciesRspDTO;
 import com.github.pagehelper.PageInfo;
@@ -138,7 +136,7 @@ public class CerImplementationPlanController {
     @GetMapping("/downVectorTemplate")
     public void downVectorTemplate(HttpServletResponse response) {
         try {
-            ossService.downloadFile(response, "template", "质粒上传模板V1.0.xlsx");
+            ossService.downloadFile(response, "templates", "质粒上传模板V1.0.xlsx");
         } catch (Exception e) {
             throw new BusinessException("质粒上传模板下载失败，请联系管理员检测模板配置");
         }

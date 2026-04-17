@@ -7,7 +7,7 @@
     <title>${title!''}</title>
     <style type="text/css">
         html {
-            background: #e9edf2;
+            background: <#if previewMode?? && previewMode>#e9edf2<#else>#fff</#if>;
         }
 
         @page {
@@ -21,21 +21,20 @@
             font-family: "Microsoft YaHei", SimSun, sans-serif;
             font-size: 13px;
             line-height: 1.6;
-            background: #e9edf2;
+            background: <#if previewMode?? && previewMode>#e9edf2<#else>#fff</#if>;
         }
 
         .preview-shell {
-            padding: 16px 0 32px;
+            padding: <#if previewMode?? && previewMode>16px 0 32px<#else>0</#if>;
         }
 
         .page {
             width: 190mm;
-            min-height: 267mm;
             margin: 0 auto;
             padding: 10mm 8mm 10mm;
             box-sizing: border-box;
             background: #fff;
-            box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+            box-shadow: <#if previewMode?? && previewMode>0 2px 14px rgba(0, 0, 0, 0.08)<#else>none</#if>;
         }
 
         .header {
@@ -175,6 +174,8 @@
         @media print {
             html, body {
                 background: #fff;
+                width: auto;
+                height: auto;
             }
 
             body {
@@ -188,7 +189,6 @@
 
             .page {
                 width: 100%;
-                min-height: auto;
                 margin: 0;
                 padding: 0;
                 box-shadow: none;

@@ -55,6 +55,7 @@ public class TaskPrintTemplatePreviewTest {
 
     private Map<String, Object> buildTemplateModel(BioHtmlModelDTO bioHtmlModelDTO) {
         Map<String, Object> result = new HashMap<>();
+        result.put("previewMode", true);
         result.put("modelHeader", bioHtmlModelDTO.getModelHeader());
         result.put("sections", bioHtmlModelDTO.getSections());
         result.put("modelBottomList", bioHtmlModelDTO.getModelBottomList());

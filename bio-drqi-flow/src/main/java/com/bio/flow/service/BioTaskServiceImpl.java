@@ -488,7 +488,7 @@ public class BioTaskServiceImpl implements BioTaskService {
             throw new BusinessException("缺少工单打印的配置" + bioTaskDtlTb.getTaskTypeCode());
         }
         try {
-            String html = renderPrintTemplate(resolvePrintTemplate(bioTaskDtlTb.getTaskTypeCode()), defaultBuildHtmlModelHandler.handler(bioTaskDtlTb));
+            String html = renderPrintTemplate(resolvePrintTemplate(bioTaskDtlTb.getTaskTypeCode()), defaultBuildHtmlModelHandler.handler(bioTaskDtlTb), false);
             PdfUtil.htmlToPdf(html, httpServletResponse, bioTaskDtlTb.getTaskNum(), fontPath);
         } catch (BusinessException e) {
             throw e;
@@ -506,7 +506,7 @@ public class BioTaskServiceImpl implements BioTaskService {
             throw new BusinessException("缺少工单打印的配置" + bioTaskDtlTb.getTaskTypeCode());
         }
         try {
-            return renderPrintTemplate(resolvePrintTemplate(bioTaskDtlTb.getTaskTypeCode()), defaultBuildHtmlModelHandler.handler(bioTaskDtlTb));
+            return renderPrintTemplate(resolvePrintTemplate(bioTaskDtlTb.getTaskTypeCode()), defaultBuildHtmlModelHandler.handler(bioTaskDtlTb), true);
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
@@ -534,16 +534,17 @@ public class BioTaskServiceImpl implements BioTaskService {
         return classPathResource.exists() ? templateName : DEFAULT_PRINT_TEMPLATE;
     }
 
-    private String renderPrintTemplate(String templateName, BioHtmlModelDTO bioHtmlModelDTO) throws Exception {
+    private String renderPrintTemplate(String templateName, BioHtmlModelDTO bioHtmlModelDTO, boolean previewMode) throws Exception {
         Template template = freeMarkerConfiguration.getTemplate(templateName, "UTF-8");
         StringWriter stringWriter = new StringWriter();
-        Map<String, Object> model = buildTemplateModel(bioHtmlModelDTO);
+        Map<String, Object> model = buildTemplateModel(bioHtmlModelDTO, previewMode);
         template.process(model, stringWriter);
         return stringWriter.toString();
     }
 
-    private Map<String, Object> buildTemplateModel(BioHtmlModelDTO bioHtmlModelDTO) {
+    private Map<String, Object> buildTemplateModel(BioHtmlModelDTO bioHtmlModelDTO, boolean previewMode) {
         Map<String, Object> result = new HashMap<>();
+        result.put("previewMode", previewMode);
         result.put("modelHeader", objectToMap(bioHtmlModelDTO.getModelHeader()));
         result.put("sections", objectListToMapList(bioHtmlModelDTO.getSections()));
         result.put("modelBottomList", objectListToMapList(bioHtmlModelDTO.getModelBottomList()));

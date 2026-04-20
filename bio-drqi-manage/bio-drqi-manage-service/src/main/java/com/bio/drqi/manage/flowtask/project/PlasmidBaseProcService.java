@@ -8,7 +8,6 @@ import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.ImplementationPlanTypeEnum;
-import com.bio.drqi.enums.GeneEditTypeEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.drqi.manage.dto.project.PlasmidDTO;
 import com.bio.drqi.mapper.CerPlasmidQualityTbMapper;
@@ -141,9 +140,6 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         fieldList.add(buildField("项目编号", dto.getProjectCode()));
         fieldList.add(buildField("子项目编号", dto.getSubProjectCode()));
         fieldList.add(buildField("实施方案编号", dto.getVectorTaskCode()));
-        fieldList.add(buildField("编辑方式", geneEditMethodName(dto.getGeneEditMethod())));
-        fieldList.add(buildField("质检数量", String.valueOf(CollectionUtil.isEmpty(dto.getContentList()) ? 0 : dto.getContentList().size())));
-        fieldList.add(buildField("载体构建备注", dto.getVectorBuildRemark()));
         sections.add(buildFieldSection("申请信息", fieldList));
 
         if (CollectionUtil.isNotEmpty(dto.getContentList())) {
@@ -167,23 +163,27 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         return sections;
     }
 
-    private String geneEditMethodName(String code) {
-        for (GeneEditTypeEnum value : GeneEditTypeEnum.values()) {
-            if (value.code.equals(code)) {
-                return value.name;
+    private String qualityInspectionTypeName(String code) {
+        if (code == null) {
+            return null;
+        }
+        List<String> codeList;
+        if (code.startsWith("[")) {
+            codeList = JSONUtil.toList(code, String.class);
+        } else {
+            codeList = Collections.singletonList(code);
+        }
+        List<String> nameList = new ArrayList<>();
+        for (String item : codeList) {
+            if ("1".equals(item)) {
+                nameList.add("质粒制备");
+            } else if ("2".equals(item)) {
+                nameList.add("农杆菌转化");
+            } else if (item != null) {
+                nameList.add(item);
             }
         }
-        return code;
-    }
-
-    private String qualityInspectionTypeName(String code) {
-        if ("1".equals(code)) {
-            return "质粒制备";
-        }
-        if ("2".equals(code)) {
-            return "农杆菌转化";
-        }
-        return code;
+        return String.join("、", nameList);
     }
 
     private String qualityInspectionResultName(String code) {

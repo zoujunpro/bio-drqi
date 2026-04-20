@@ -180,11 +180,13 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
         fieldList.add(buildField("交接日期", dto.getHandoverDate()));
         if (hasSample) {
             fieldList.add(buildField("移苗类型", "取样移苗"));
-            fieldList.add(buildField("取样移苗数量", String.valueOf(dto.getSampleCodeList().size())));
+            fieldList.add(buildField("申请总苗数", String.valueOf(dto.getSampleCodeList().size())));
+            fieldList.add(buildField("接收总苗数", String.valueOf(dto.getSampleCodeList().stream().filter(item -> CerProjectContents.Y.equals(item.getDealResult())).count())));
         }
         if (hasTransform) {
             fieldList.add(buildField("移苗类型", "转化移苗"));
-            fieldList.add(buildField("转化移苗数量", String.valueOf(dto.getTransFormList().size())));
+            fieldList.add(buildField("申请总苗数", String.valueOf(dto.getTransFormList().stream().mapToInt(item -> item.getTransNum() == null ? 0 : item.getTransNum()).sum())));
+            fieldList.add(buildField("接收总苗数", String.valueOf(dto.getTransFormList().stream().mapToInt(item -> CerProjectContents.Y.equals(item.getDealResult()) ? (item.getAcceptNum() == null ? 0 : item.getAcceptNum()) : 0).sum())));
         }
         fieldList.add(buildField("备注", dto.getRemark()));
         sections.add(buildFieldSection("申请信息", fieldList));
@@ -207,15 +209,15 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
         }
 
         if (hasTransform) {
-            List<String> headers = Arrays.asList("实施方案编号", "转化编号", "受体材料", "移苗数量", "是否转基因", "是否接收", "接收数量", "备注");
+            List<String> headers = Arrays.asList("实施方案编号", "转化编号", "受体材料", "是否转基因",  "移苗数量","是否接收", "接收数量", "备注");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (ConversionAndTransDTO.TransForm item : dto.getTransFormList()) {
                 Map<String, Object> row = new LinkedHashMap<>();
                 row.put("实施方案编号", item.getVectorTaskCode());
                 row.put("转化编号", item.getTransformCode());
                 row.put("受体材料", item.getAcceptorMaterial());
-                row.put("移苗数量", item.getTransNum());
                 row.put("是否转基因", transGeneFlagName(item.getTransGeneFlag()));
+                row.put("移苗数量", item.getTransNum());
                 row.put("是否接收", receiveResultName(item.getDealResult()));
                 row.put("接收数量", item.getAcceptNum());
                 row.put("备注", item.getRemark());

@@ -178,7 +178,6 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
 
         List<BioHtmlModelDTO.ModelField> fieldList = new ArrayList<>();
         fieldList.add(buildField("交接日期", dto.getHandoverDate()));
-        fieldList.add(buildField("总数量", dto.getTotalNum() == null ? "" : String.valueOf(dto.getTotalNum())));
         if (hasSample) {
             fieldList.add(buildField("移苗类型", "取样移苗"));
             fieldList.add(buildField("取样移苗数量", String.valueOf(dto.getSampleCodeList().size())));
@@ -191,7 +190,7 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
         sections.add(buildFieldSection("申请信息", fieldList));
 
         if (hasSample) {
-            List<String> headers = Arrays.asList("实施方案编号", "取样编号", "是否编辑纯合", "受体材料", "是否转基因", "质粒名称", "是否接收", "备注");
+            List<String> headers = Arrays.asList("实施方案编号", "取样编号", "是否编辑纯合", "受体材料", "是否转基因", "是否接收", "备注");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (ConversionAndTransDTO.SampleCode item : dto.getSampleCodeList()) {
                 Map<String, Object> row = new LinkedHashMap<>();
@@ -200,7 +199,6 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
                 row.put("是否编辑纯合", yesNoDesc(item.getEditPureUnion()));
                 row.put("受体材料", item.getAcceptorMaterial());
                 row.put("是否转基因", transGeneFlagName(item.getTransGeneFlag()));
-                row.put("质粒名称", item.getPlasmidName());
                 row.put("是否接收", receiveResultName(item.getDealResult()));
                 row.put("备注", item.getRemark());
                 rows.add(row);
@@ -209,7 +207,7 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
         }
 
         if (hasTransform) {
-            List<String> headers = Arrays.asList("实施方案编号", "转化编号", "受体材料", "移苗数量", "是否转基因", "质粒名称", "是否接收", "确认接收数量", "备注");
+            List<String> headers = Arrays.asList("实施方案编号", "转化编号", "受体材料", "移苗数量", "是否转基因", "是否接收", "接收数量", "备注");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (ConversionAndTransDTO.TransForm item : dto.getTransFormList()) {
                 Map<String, Object> row = new LinkedHashMap<>();
@@ -218,9 +216,8 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
                 row.put("受体材料", item.getAcceptorMaterial());
                 row.put("移苗数量", item.getTransNum());
                 row.put("是否转基因", transGeneFlagName(item.getTransGeneFlag()));
-                row.put("质粒名称", item.getPlasmidName());
                 row.put("是否接收", receiveResultName(item.getDealResult()));
-                row.put("确认接收数量", item.getAcceptNum());
+                row.put("接收数量", item.getAcceptNum());
                 row.put("备注", item.getRemark());
                 rows.add(row);
             }

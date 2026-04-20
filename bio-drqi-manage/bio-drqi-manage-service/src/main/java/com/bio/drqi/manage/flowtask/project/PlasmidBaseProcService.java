@@ -8,6 +8,7 @@ import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.ImplementationPlanTypeEnum;
+import com.bio.drqi.enums.GeneEditTypeEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.drqi.manage.dto.project.PlasmidDTO;
 import com.bio.drqi.mapper.CerPlasmidQualityTbMapper;
@@ -19,9 +20,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("plasmid_check")
 @Slf4j
@@ -124,6 +129,70 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
 
     @Override
     public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
-        return Collections.emptyList();
+        PlasmidDTO dto = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlasmidDTO.class);
+        if (dto == null) {
+            return Collections.emptyList();
+        }
+
+        List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
+
+        List<BioHtmlModelDTO.ModelField> fieldList = new ArrayList<>();
+        fieldList.add(buildField("项目名称", dto.getProjectName()));
+        fieldList.add(buildField("项目编号", dto.getProjectCode()));
+        fieldList.add(buildField("子项目编号", dto.getSubProjectCode()));
+        fieldList.add(buildField("实施方案编号", dto.getVectorTaskCode()));
+        fieldList.add(buildField("编辑方式", geneEditMethodName(dto.getGeneEditMethod())));
+        fieldList.add(buildField("质检数量", String.valueOf(CollectionUtil.isEmpty(dto.getContentList()) ? 0 : dto.getContentList().size())));
+        fieldList.add(buildField("载体构建备注", dto.getVectorBuildRemark()));
+        sections.add(buildFieldSection("申请信息", fieldList));
+
+        if (CollectionUtil.isNotEmpty(dto.getContentList())) {
+            List<String> headers = Arrays.asList("质粒名称", "下一步安排", "质检结果", "农杆菌信息", "农杆菌抗性", "质粒浓度", "提取试剂盒", "备注");
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (PlasmidDTO.Content item : dto.getContentList()) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("质粒名称", item.getPlasmidName());
+                row.put("下一步安排", qualityInspectionTypeName(item.getQualityInspectionType()));
+                row.put("质检结果", qualityInspectionResultName(item.getQualityInspectionResult()));
+                row.put("农杆菌信息", item.getAgrobacteriumInformation());
+                row.put("农杆菌抗性", item.getAgrobacteriumResistance());
+                row.put("质粒浓度", item.getPlasmidConcentration());
+                row.put("提取试剂盒", item.getExtractionKit());
+                row.put("备注", item.getRemark());
+                rows.add(row);
+            }
+            sections.add(buildTableSection("质粒质检明细", headers, rows));
+        }
+
+        return sections;
+    }
+
+    private String geneEditMethodName(String code) {
+        for (GeneEditTypeEnum value : GeneEditTypeEnum.values()) {
+            if (value.code.equals(code)) {
+                return value.name;
+            }
+        }
+        return code;
+    }
+
+    private String qualityInspectionTypeName(String code) {
+        if ("1".equals(code)) {
+            return "质粒制备";
+        }
+        if ("2".equals(code)) {
+            return "农杆菌转化";
+        }
+        return code;
+    }
+
+    private String qualityInspectionResultName(String code) {
+        if ("pass".equals(code)) {
+            return "合格";
+        }
+        if ("refuse".equals(code)) {
+            return "不合格";
+        }
+        return code;
     }
 }

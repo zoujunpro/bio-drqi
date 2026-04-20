@@ -1,12 +1,12 @@
 package com.bio.drqi.manage.controller.seed;
 
-import com.bio.drqi.common.aspect.RequestLog;
-import com.bio.drqi.manage.seed.*;
-import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.oss.service.OssService;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.common.aspect.RequestLog;
+import com.bio.drqi.common.dto.SeedInStockExcelDTO;
+import com.bio.drqi.manage.seed.*;
 import com.bio.drqi.manage.service.seed.SeedStockInService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
@@ -60,7 +60,7 @@ public class SeedStockInController {
      */
     @PostMapping("/parseSeedInExcel")
     @WebLog(desc = "解析入库excel")
-    public ResponseResult<List<ParseSeedInExcelRspDTO>> parseSeedInExcel(@RequestBody ParseSeedInExcelReqDTO parseSeedInExcelReqDTO) {
+    public ResponseResult<List<SeedInStockExcelDTO>> parseSeedInExcel(@RequestBody ParseSeedInExcelReqDTO parseSeedInExcelReqDTO) {
         return ResponseResult.getSuccess(seedStockInService.parseSeedInExcel(parseSeedInExcelReqDTO));
     }
 

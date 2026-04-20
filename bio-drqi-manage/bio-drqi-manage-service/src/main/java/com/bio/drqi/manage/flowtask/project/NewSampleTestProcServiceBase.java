@@ -324,7 +324,6 @@ public class NewSampleTestProcServiceBase extends AbstractProjectBaseTaskService
         applyInfoFields.add(buildField("物种", speciesMap.getOrDefault(dto.getSpeciesCode(), dto.getSpeciesCode())));
         applyInfoFields.add(buildField("是否克隆苗", dto.isCloneFlag() ? "是" : "否"));
         applyInfoFields.add(buildField("首次取样数量", String.valueOf(CollectionUtil.isEmpty(dto.getFirstSampleApplyList()) ? 0 : dto.getFirstSampleApplyList().size())));
-        applyInfoFields.add(buildField("重复取样数量", String.valueOf(CollectionUtil.isEmpty(dto.getRepeatSampleApplyList()) ? 0 : dto.getRepeatSampleApplyList().size())));
         if (StringUtils.isNotEmpty(dto.getCancelTaskSampleList())) {
             applyInfoFields.add(buildField("取消取样编号", dto.getCancelTaskSampleList()));
         }

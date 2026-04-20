@@ -8,6 +8,7 @@ import com.bio.drqi.common.contents.BioDrQiContents;
 
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.enums.ImplementationPlanTypeEnum;
+import com.bio.drqi.enums.GeneEditTypeEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.domain.*;
@@ -23,7 +24,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service("vector_build")
@@ -162,6 +166,135 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
 
     @Override
     public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
-        return Collections.emptyList();
+        VectorTaskAddDTO dto = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
+        if (dto == null) {
+            return Collections.emptyList();
+        }
+
+        List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
+        CerVectorTaskTb vectorTask = cerVectorTaskTbMapper.selectOneByVectorTaskCode(dto.getVectorTaskCode());
+
+        List<BioHtmlModelDTO.ModelField> applyInfoFields = new ArrayList<>();
+        applyInfoFields.add(buildField("项目名称", dto.getProjectName()));
+        applyInfoFields.add(buildField("项目编号", dto.getProjectCode()));
+        applyInfoFields.add(buildField("子项目编号", dto.getSubProjectCode()));
+        applyInfoFields.add(buildField("实施方案编号", dto.getVectorTaskCode()));
+        applyInfoFields.add(buildField("材料类型", transFlagName(dto.getTransFlag())));
+        applyInfoFields.add(buildField("载体数量", String.valueOf(CollectionUtil.isEmpty(dto.getVectorList()) ? 0 : dto.getVectorList().size())));
+        if (vectorTask != null) {
+            applyInfoFields.add(buildField("递送方式", deliveryMethodName(vectorTask.getDeliveryMethod())));
+            applyInfoFields.add(buildField("受体材料", vectorTask.getAcceptorMaterial()));
+            applyInfoFields.add(buildField("编辑类型", editTypeName(vectorTask.getEditType())));
+            applyInfoFields.add(buildField("期望阳性苗", vectorTask.getExpectedPositiveSeed()));
+        }
+        applyInfoFields.add(buildField("备注", dto.getRemark()));
+        sections.add(buildFieldSection("申请信息", applyInfoFields));
+
+        if (dto.getTransportStart() != null) {
+            List<BioHtmlModelDTO.ModelField> transportStartFields = new ArrayList<>();
+            transportStartFields.add(buildField("发货地", dto.getTransportStart().getDeliveryLocation()));
+            transportStartFields.add(buildField("发货日期", dto.getTransportStart().getDeliveryDate()));
+            transportStartFields.add(buildField("快递公司", dto.getTransportStart().getExpressName()));
+            transportStartFields.add(buildField("运单号", dto.getTransportStart().getExpressNumber()));
+            transportStartFields.add(buildField("样品信息", dto.getTransportStart().getSampleInfo()));
+            transportStartFields.add(buildField("外层包装类型及数量", dto.getTransportStart().getNumDesc()));
+            transportStartFields.add(buildField("备注", dto.getTransportStart().getRemark()));
+            if (hasFieldValue(transportStartFields)) {
+                sections.add(buildFieldSection("运输发出信息", transportStartFields));
+            }
+        }
+
+        if (dto.getTransportEnd() != null) {
+            List<BioHtmlModelDTO.ModelField> transportEndFields = new ArrayList<>();
+            transportEndFields.add(buildField("收货地", dto.getTransportEnd().getReceiptLocation()));
+            transportEndFields.add(buildField("收货日期", dto.getTransportEnd().getReceiptDate()));
+            transportEndFields.add(buildField("包装是否完好", yesNoDesc(dto.getTransportEnd().getCheck1())));
+            transportEndFields.add(buildField("数量是否匹配", yesNoDesc(dto.getTransportEnd().getCheck2())));
+            transportEndFields.add(buildField("备注", dto.getTransportEnd().getRemark()));
+            if (hasFieldValue(transportEndFields)) {
+                sections.add(buildFieldSection("运输接收信息", transportEndFields));
+            }
+        }
+
+        if (CollectionUtil.isNotEmpty(dto.getVectorList())) {
+            List<String> headers = Arrays.asList("质粒名称", "靶位点", "细菌抗性", "质粒特异性引物", "细菌复制子", "拷贝数", "农杆菌信息", "植物筛选标记", "目标特性", "浓度", "体积");
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (VectorTaskAddDTO.Vector item : dto.getVectorList()) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("质粒名称", item.getPlasmidName());
+                row.put("靶位点", item.getTargetSite());
+                row.put("细菌抗性", item.getBacterialResistance());
+                row.put("质粒特异性引物", item.getPlasmidSpecificPrimers());
+                row.put("细菌复制子", item.getBacterialReplicon());
+                row.put("拷贝数", item.getCopyNumber());
+                row.put("农杆菌信息", item.getAgrobacteriumInformation());
+                row.put("植物筛选标记", item.getSelectionMarker());
+                row.put("目标特性", item.getGeneCharacter());
+                row.put("浓度", item.getConcentration());
+                row.put("体积", item.getCapacity());
+                rows.add(row);
+            }
+            sections.add(buildTableSection("载体构建明细", headers, rows));
+        }
+
+        return sections;
+    }
+
+    private boolean hasFieldValue(List<BioHtmlModelDTO.ModelField> fieldList) {
+        return fieldList.stream().anyMatch(field -> cn.hutool.core.util.StrUtil.isNotBlank(field.getValue()));
+    }
+
+    private String deliveryMethodName(String code) {
+        if ("A".equals(code)) {
+            return "农杆菌转化";
+        }
+        if ("B".equals(code)) {
+            return "基因枪";
+        }
+        if ("P".equals(code)) {
+            return "原生质体转化";
+        }
+        if ("V".equals(code)) {
+            return "病毒载体";
+        }
+        return code;
+    }
+
+    private String editTypeName(String code) {
+        if ("1".equals(code)) {
+            return "KO";
+        }
+        if ("2".equals(code)) {
+            return "点突变";
+        }
+        if ("3".equals(code)) {
+            return "精准小";
+        }
+        if ("4".equals(code)) {
+            return "精准大";
+        }
+        if ("5".equals(code)) {
+            return "随机转基因";
+        }
+        return code;
+    }
+
+    private String transFlagName(String code) {
+        for (GeneEditTypeEnum value : GeneEditTypeEnum.values()) {
+            if (value.code.equals(code)) {
+                return value.name;
+            }
+        }
+        return code;
+    }
+
+    private String yesNoDesc(String value) {
+        if (BioDrQiContents.Y.equals(value)) {
+            return "是";
+        }
+        if (BioDrQiContents.N.equals(value)) {
+            return "否";
+        }
+        return value;
     }
 }

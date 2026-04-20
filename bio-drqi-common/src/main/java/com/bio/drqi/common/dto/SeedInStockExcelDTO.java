@@ -1,7 +1,9 @@
 package com.bio.drqi.common.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.format.DateTimeFormat;import com.alibaba.excel.annotation.write.style.ContentStyle;import com.bio.common.core.dto.ExcelSelected;
+import com.alibaba.excel.annotation.write.style.ContentStyle;
+import com.bio.common.core.dto.ExcelSelected;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -139,5 +141,28 @@ public class SeedInStockExcelDTO {
     @ExcelProperty( "备注")
     private String remarks;
 
+    @ExcelIgnore
+    private String harvestType;
+
+    @ExcelIgnore
+    private String pollinationMethod;
+
+    @ExcelIgnore
+    private String speciesCode;
+
+    @ExcelIgnore
+    private String breedCode;
+
+    @ExcelIgnore
+    private String productionLocationCode;
+
+    @ExcelIgnore
+    private String storeFlag;
+
+    @ExcelIgnore
+    private String uniqueCode;
+
+    @ExcelIgnore
+    private String materialType;
 
 }

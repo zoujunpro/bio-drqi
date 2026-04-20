@@ -6,14 +6,6 @@ import cn.hutool.json.JSONConfig;
 import cn.hutool.json.JSONUtil;
 import com.bio.base.api.RemoteUserService;
 import com.bio.base.user.rsp.UserDetailRspDTO;
-import com.bio.drqi.common.enums.BioDictTypeEnum;
-import com.bio.drqi.common.enums.BioTaskStatusEnum;
-import com.bio.drqi.common.enums.GenerationEnum;
-import com.bio.drqi.contents.CerProjectContents;
-
-import com.bio.drqi.enums.*;
-import com.bio.drqi.manage.seed.*;
-import com.bio.drqi.manage.seedtask.SeedInDataReqDTO;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
@@ -21,8 +13,18 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.dto.SeedInStockExcelDTO;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
+import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.GenerationEnum;
+import com.bio.drqi.common.enums.SeedSourceEnum;
+import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.DataPermissionTypeEnum;
+import com.bio.drqi.enums.DataPermissionValueEnum;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
+import com.bio.drqi.manage.seed.*;
+import com.bio.drqi.manage.seedtask.SeedInDataReqDTO;
 import com.bio.drqi.manage.service.common.SeedPlantService;
 import com.bio.drqi.manage.service.seed.SeedStockInService;
 import com.bio.drqi.mapper.*;
@@ -104,7 +106,7 @@ public class SeedStockInServiceImpl implements SeedStockInService {
     }
 
     @Override
-    public List<ParseSeedInExcelRspDTO> parseSeedInExcel(ParseSeedInExcelReqDTO parseSeedInExcelReqDTO) {
+    public List<SeedInStockExcelDTO> parseSeedInExcel(ParseSeedInExcelReqDTO parseSeedInExcelReqDTO) {
         String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + parseSeedInExcelReqDTO.getExcelUrl();
         try {
             ossService.downloadPath(tempFilePath, parseSeedInExcelReqDTO.getExcelUrl());
@@ -216,12 +218,12 @@ public class SeedStockInServiceImpl implements SeedStockInService {
 
     @Override
     public void downSampleTemplate(HttpServletResponse response) {
-        ExcelUtil.writeExcel("种子入库数据模板", "sheet1", new ArrayList<>(), com.bio.drqi.common.dto.SeedInStockExcelDTO.class, response);
+        ExcelUtil.writeExcel("种子入库数据模板", "sheet1", new ArrayList<>(), SeedInStockExcelDTO.class, response);
 
     }
 
 
-    private List<ParseSeedInExcelRspDTO> parseExcelToExecuteFormContent(String tempFilePath) {
+    private List<SeedInStockExcelDTO> parseExcelToExecuteFormContent(String tempFilePath) {
         List<BioDict> bioDictList = bioDictMapper.selectAll();
         List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectList(null);
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
@@ -230,73 +232,73 @@ public class SeedStockInServiceImpl implements SeedStockInService {
         Map<String, CerBreedDict> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode() + ":" + cerBreedDict.getBreedName(), cerBreedDict -> cerBreedDict));
         Map<String, CerSpeciesConf> cerSpeciesConfMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesName, cerSpeciesConf -> cerSpeciesConf));
         Map<String, BioDict> bioDictMap = bioDictList.stream().collect(Collectors.toMap(bioDict -> bioDict.getDictType() + ":" + bioDict.getDictValueName(), bioDict -> bioDict));
-        List<ParseSeedInExcelRspDTO> parseSeedInExcelRspDTOList = ExcelUtil.readExcel(tempFilePath, ParseSeedInExcelRspDTO.class);
-        for (ParseSeedInExcelRspDTO parseSeedInExcelRspDTO : parseSeedInExcelRspDTOList) {
-            log.info("种子入库：parseSeedInExcelRspDTO={}", JSONUtil.toJsonStr(parseSeedInExcelRspDTO));
+        List<SeedInStockExcelDTO> seedInStockExcelDTOList = ExcelUtil.readExcel(tempFilePath, SeedInStockExcelDTO.class);
+        for (SeedInStockExcelDTO seedInStockExcelDTO : seedInStockExcelDTOList) {
+            log.info("种子入库：seedInStockExcelDTO={}", JSONUtil.toJsonStr(seedInStockExcelDTO));
             //翻译种子来源
-            com.bio.drqi.common.enums.SeedSourceEnum seedSourceEnum = com.bio.drqi.common.enums.SeedSourceEnum.getByName(parseSeedInExcelRspDTO.getSource());
+          SeedSourceEnum seedSourceEnum= SeedSourceEnum.getByName(seedInStockExcelDTO.getSource());
             if (seedSourceEnum == null) {
-                throw new BusinessException("种子来源填写错误：" + parseSeedInExcelRspDTO.getSource());
+                throw new BusinessException("种子来源填写错误：" + seedInStockExcelDTO.getSource());
             }
-            parseSeedInExcelRspDTO.setSource(seedSourceEnum.code);
+            seedInStockExcelDTO.setSource(seedSourceEnum.code);
 
             //翻译收获方式
-            if (StringUtils.isNotEmpty(parseSeedInExcelRspDTO.getHarvestType())) {
-                BioDict harvestTypeBioDict = bioDictMap.get(BioDictTypeEnum.HARVEST_TYPE + ":" + parseSeedInExcelRspDTO.getHarvestType());
+            if (StringUtils.isNotEmpty(seedInStockExcelDTO.getHarvestTypeName())) {
+                BioDict harvestTypeBioDict = bioDictMap.get(BioDictTypeEnum.HARVEST_TYPE + ":" + seedInStockExcelDTO.getHarvestTypeName());
                 if (harvestTypeBioDict == null) {
-                    throw new BusinessException("收获方式填写错误：" + parseSeedInExcelRspDTO.getHarvestType());
+                    throw new BusinessException("收获方式填写错误：" + seedInStockExcelDTO.getHarvestTypeName());
                 }
-                parseSeedInExcelRspDTO.setHarvestType(harvestTypeBioDict.getDictValueCode());
+                seedInStockExcelDTO.setHarvestType(harvestTypeBioDict.getDictValueCode());
             }
             //翻译授粉方式
-            if (StringUtils.isNotEmpty(parseSeedInExcelRspDTO.getPollinationMethod())) {
-                BioDict pollinationMethodBioDict = bioDictMap.get(BioDictTypeEnum.POLLINATE_TYPE + ":" + parseSeedInExcelRspDTO.getPollinationMethod());
+            if (StringUtils.isNotEmpty(seedInStockExcelDTO.getPollinationMethodName())) {
+                BioDict pollinationMethodBioDict = bioDictMap.get(BioDictTypeEnum.POLLINATE_TYPE + ":" + seedInStockExcelDTO.getPollinationMethodName());
                 if (pollinationMethodBioDict == null) {
-                    throw new BusinessException("授粉方式填写错误：" + parseSeedInExcelRspDTO.getPollinationMethod());
+                    throw new BusinessException("授粉方式填写错误：" + seedInStockExcelDTO.getPollinationMethodName());
                 }
-                parseSeedInExcelRspDTO.setPollinationMethod(pollinationMethodBioDict.getDictValueCode());
+                seedInStockExcelDTO.setPollinationMethod(pollinationMethodBioDict.getDictValueCode());
             }
             //翻译物种
-            CerSpeciesConf cerSpeciesConf = cerSpeciesConfMap.get(parseSeedInExcelRspDTO.getSpecieName());
+            CerSpeciesConf cerSpeciesConf = cerSpeciesConfMap.get(seedInStockExcelDTO.getSpeciesName());
             if (cerSpeciesConf == null) {
-                throw new BusinessException("物种填写错误：" + parseSeedInExcelRspDTO.getSpecieName());
+                throw new BusinessException("物种填写错误：" + seedInStockExcelDTO.getSpeciesName());
             }
-            parseSeedInExcelRspDTO.setSpeciesCode(cerSpeciesConf.getSpeciesCode());
-            parseSeedInExcelRspDTO.setSpecieName(cerSpeciesConf.getSpeciesName());
+            seedInStockExcelDTO.setSpeciesCode(cerSpeciesConf.getSpeciesCode());
+            seedInStockExcelDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
             //翻译品种
-            CerBreedDict cerBreedDict = cerBreedDictMap.get(cerSpeciesConf.getSpeciesCode() + ":" + parseSeedInExcelRspDTO.getBreedName());
+            CerBreedDict cerBreedDict = cerBreedDictMap.get(cerSpeciesConf.getSpeciesCode() + ":" + seedInStockExcelDTO.getBreedName());
             if (cerBreedDict == null) {
-                throw new BusinessException("品种填写错误：" + parseSeedInExcelRspDTO.getBreedName());
+                throw new BusinessException("品种填写错误：" + seedInStockExcelDTO.getBreedName());
             }
-            parseSeedInExcelRspDTO.setBreedName(cerBreedDict.getBreedName());
-            parseSeedInExcelRspDTO.setBreedCode(cerBreedDict.getBreedCode());
+            seedInStockExcelDTO.setBreedName(cerBreedDict.getBreedName());
+            seedInStockExcelDTO.setBreedCode(cerBreedDict.getBreedCode());
             //翻译材料类型
-            BioDict materialTypeBioDict = bioDictMap.get(BioDictTypeEnum.MATERIAL_TYPE + ":" + parseSeedInExcelRspDTO.getMaterialType());
+            BioDict materialTypeBioDict = bioDictMap.get(BioDictTypeEnum.MATERIAL_TYPE + ":" + seedInStockExcelDTO.getMaterialTypeName());
             if (materialTypeBioDict == null) {
-                throw new BusinessException("材料类型填写错误：" + parseSeedInExcelRspDTO.getMaterialType());
+                throw new BusinessException("材料类型填写错误：" + seedInStockExcelDTO.getMaterialTypeName());
             }
-            parseSeedInExcelRspDTO.setMaterialType(materialTypeBioDict.getDictValueCode());
+            seedInStockExcelDTO.setMaterialType(materialTypeBioDict.getDictValueCode());
 
             //翻译代次
-            GenerationEnum generationEnum = GenerationEnum.getGeneration(parseSeedInExcelRspDTO.getGeneration());
+            GenerationEnum generationEnum = GenerationEnum.getGeneration(seedInStockExcelDTO.getGeneration());
             if (generationEnum == null) {
-                throw new BusinessException("代次填写错误：" + parseSeedInExcelRspDTO.getGeneration());
+                throw new BusinessException("代次填写错误：" + seedInStockExcelDTO.getGeneration());
             }
-            parseSeedInExcelRspDTO.setGeneration(generationEnum.code);
+            seedInStockExcelDTO.setGeneration(generationEnum.code);
 
             //校验生产地址
-            if (StringUtils.isNotEmpty(parseSeedInExcelRspDTO.getProductionLocationName())) {
-                if (seedProduceAddressDictMap.get(parseSeedInExcelRspDTO.getProductionLocationName()) == null) {
-                    throw new BusinessException("生产地址填写错误：" + parseSeedInExcelRspDTO.getProductionLocationName());
+            if (StringUtils.isNotEmpty(seedInStockExcelDTO.getProductionLocationName())) {
+                if (seedProduceAddressDictMap.get(seedInStockExcelDTO.getProductionLocationName()) == null) {
+                    throw new BusinessException("生产地址填写错误：" + seedInStockExcelDTO.getProductionLocationName());
                 }
-                parseSeedInExcelRspDTO.setProductionLocationCode(seedProduceAddressDictMap.get(parseSeedInExcelRspDTO.getProductionLocationName()));
+                seedInStockExcelDTO.setProductionLocationCode(seedProduceAddressDictMap.get(seedInStockExcelDTO.getProductionLocationName()));
             }
 
-            parseSeedInExcelRspDTO.setStoreFlag(CerProjectContents.N);
-            parseSeedInExcelRspDTO.setUniqueCode(UUID.fastUUID().toString().replace("-", ""));
+            seedInStockExcelDTO.setStoreFlag(CerProjectContents.N);
+            seedInStockExcelDTO.setUniqueCode(UUID.fastUUID().toString().replace("-", ""));
         }
 
-        return parseSeedInExcelRspDTOList;
+        return seedInStockExcelDTOList;
     }
 
 }

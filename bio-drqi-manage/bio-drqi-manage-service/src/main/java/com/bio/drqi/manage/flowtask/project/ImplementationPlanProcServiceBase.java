@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.util.LetterUtil;
@@ -17,6 +18,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +46,12 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
 
     @Resource
     private BioSampleCodePrefixTbMapper bioSampleCodePrefixTbMapper;
+
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
+
+    @Resource
+    private CerSpeciesConfMapper cerSpeciesConfMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -157,6 +165,94 @@ public class ImplementationPlanProcServiceBase extends AbstractProjectBaseTaskSe
 
     @Override
     public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
-        return Collections.emptyList();
+        ImplementPlanAddDTO dto = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), ImplementPlanAddDTO.class);
+        if (dto == null) {
+            return Collections.emptyList();
+        }
+
+        CerVectorTaskTb vectorTask = cerVectorTaskTbMapper.selectOneByVectorTaskCode(dto.getVectorTaskCode());
+        CerBreedDict breed = StringUtils.isEmpty(dto.getBreedCode()) ? null : cerBreedDictMapper.selectOneByBreedCode(dto.getBreedCode());
+        CerSpeciesConf species = StringUtils.isEmpty(dto.getSpeciesCode()) ? null : cerSpeciesConfMapper.selectOneBySpeciesCode(dto.getSpeciesCode());
+
+        List<BioHtmlModelDTO.ModelField> fieldList = new ArrayList<>();
+        fieldList.add(buildField("项目名称", dto.getProjectName()));
+        fieldList.add(buildField("项目编号", dto.getProjectCode()));
+        fieldList.add(buildField("子项目编号", dto.getSubProjectCode()));
+        fieldList.add(buildField("实施方案编号", dto.getVectorTaskCode()));
+        fieldList.add(buildField("物种", species == null ? dto.getSpeciesCode() : species.getSpeciesName()));
+        fieldList.add(buildField("品种", breed == null ? dto.getBreedCode() : breed.getBreedName()));
+        fieldList.add(buildField("递送方式", deliveryMethodName(dto.getDeliveryMethod())));
+        fieldList.add(buildField("受体材料", dto.getAcceptorMaterial()));
+        fieldList.add(buildField("监管级别", supervisionLevelName(dto.getSupervisionLevelCode())));
+        fieldList.add(buildField("编辑类型", editTypeName(dto.getEditType())));
+        fieldList.add(buildField("期望阳性苗", dto.getExpectedPositiveSeed()));
+        fieldList.add(buildField("取样编号前缀", dto.getSampleCodePrefix()));
+        fieldList.add(buildField("无质粒递送", yesNoDesc(dto.getNoPlasmidFlag())));
+        fieldList.add(buildField("预计开始日期", dto.getExpectStartDate()));
+        fieldList.add(buildField("预计项目周期", dto.getExpectPeriod()));
+
+        if (vectorTask != null) {
+            fieldList.add(buildField("当前状态", BioTaskStatusEnum.getNameByStatus(vectorTask.getTaskStatus())));
+        }
+
+        return Collections.singletonList(buildFieldSection("实施方案信息", fieldList));
+    }
+
+    private String deliveryMethodName(String code) {
+        if ("A".equals(code)) {
+            return "农杆菌转化";
+        }
+        if ("B".equals(code)) {
+            return "基因枪";
+        }
+        if ("P".equals(code)) {
+            return "原生质体转化";
+        }
+        if ("V".equals(code)) {
+            return "病毒载体";
+        }
+        return code;
+    }
+
+    private String supervisionLevelName(String code) {
+        if ("1".equals(code)) {
+            return "无";
+        }
+        if ("2".equals(code)) {
+            return "DNA-free";
+        }
+        if ("3".equals(code)) {
+            return "transgene-free";
+        }
+        return code;
+    }
+
+    private String editTypeName(String code) {
+        if ("1".equals(code)) {
+            return "KO";
+        }
+        if ("2".equals(code)) {
+            return "点突变";
+        }
+        if ("3".equals(code)) {
+            return "精准小";
+        }
+        if ("4".equals(code)) {
+            return "精准大";
+        }
+        if ("5".equals(code)) {
+            return "随机转基因";
+        }
+        return code;
+    }
+
+    private String yesNoDesc(String value) {
+        if ("Y".equals(value)) {
+            return "是";
+        }
+        if ("N".equals(value)) {
+            return "否";
+        }
+        return value;
     }
 }

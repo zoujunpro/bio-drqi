@@ -16,8 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service("conversion_and_trans")
@@ -163,6 +167,91 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
 
     @Override
     public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
-        return Collections.emptyList();
+        ConversionAndTransDTO dto = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), ConversionAndTransDTO.class);
+        if (dto == null) {
+            return Collections.emptyList();
+        }
+
+        List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
+
+        List<BioHtmlModelDTO.ModelField> fieldList = new ArrayList<>();
+        fieldList.add(buildField("交接日期", dto.getHandoverDate()));
+        fieldList.add(buildField("总数量", dto.getTotalNum() == null ? "" : String.valueOf(dto.getTotalNum())));
+        fieldList.add(buildField("取样移苗数量", String.valueOf(CollectionUtil.isEmpty(dto.getSampleCodeList()) ? 0 : dto.getSampleCodeList().size())));
+        fieldList.add(buildField("转化移苗数量", String.valueOf(CollectionUtil.isEmpty(dto.getTransFormList()) ? 0 : dto.getTransFormList().size())));
+        fieldList.add(buildField("备注", dto.getRemark()));
+        sections.add(buildFieldSection("申请信息", fieldList));
+
+        if (CollectionUtil.isNotEmpty(dto.getSampleCodeList())) {
+            List<String> headers = Arrays.asList("实施方案编号", "取样编号", "是否编辑纯合", "受体材料", "是否转基因", "质粒名称", "是否接收", "备注");
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (ConversionAndTransDTO.SampleCode item : dto.getSampleCodeList()) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("实施方案编号", item.getVectorTaskCode());
+                row.put("取样编号", item.getSampleCode());
+                row.put("是否编辑纯合", yesNoDesc(item.getEditPureUnion()));
+                row.put("受体材料", item.getAcceptorMaterial());
+                row.put("是否转基因", transGeneFlagName(item.getTransGeneFlag()));
+                row.put("质粒名称", item.getPlasmidName());
+                row.put("是否接收", receiveResultName(item.getDealResult()));
+                row.put("备注", item.getRemark());
+                rows.add(row);
+            }
+            sections.add(buildTableSection("取样移苗明细", headers, rows));
+        }
+
+        if (CollectionUtil.isNotEmpty(dto.getTransFormList())) {
+            List<String> headers = Arrays.asList("实施方案编号", "转化编号", "受体材料", "移苗数量", "是否转基因", "质粒名称", "是否接收", "确认接收数量", "备注");
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (ConversionAndTransDTO.TransForm item : dto.getTransFormList()) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("实施方案编号", item.getVectorTaskCode());
+                row.put("转化编号", item.getTransformCode());
+                row.put("受体材料", item.getAcceptorMaterial());
+                row.put("移苗数量", item.getTransNum());
+                row.put("是否转基因", transGeneFlagName(item.getTransGeneFlag()));
+                row.put("质粒名称", item.getPlasmidName());
+                row.put("是否接收", receiveResultName(item.getDealResult()));
+                row.put("确认接收数量", item.getAcceptNum());
+                row.put("备注", item.getRemark());
+                rows.add(row);
+            }
+            sections.add(buildTableSection("转化移苗明细", headers, rows));
+        }
+
+        return sections;
+    }
+
+    private String yesNoDesc(String value) {
+        if (CerProjectContents.Y.equals(value)) {
+            return "是";
+        }
+        if (CerProjectContents.N.equals(value)) {
+            return "否";
+        }
+        return value;
+    }
+
+    private String transGeneFlagName(String value) {
+        if (CerProjectContents.Y.equals(value)) {
+            return "是";
+        }
+        if (CerProjectContents.N.equals(value)) {
+            return "否";
+        }
+        if ("O".equals(value)) {
+            return "N/A";
+        }
+        return value;
+    }
+
+    private String receiveResultName(String value) {
+        if (CerProjectContents.Y.equals(value)) {
+            return "接收";
+        }
+        if (CerProjectContents.N.equals(value)) {
+            return "不接收";
+        }
+        return value;
     }
 }

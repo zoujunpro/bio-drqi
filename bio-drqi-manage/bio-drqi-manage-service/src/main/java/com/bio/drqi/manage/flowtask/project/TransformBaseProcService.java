@@ -7,7 +7,6 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.enums.GeneEditTypeEnum;
 import com.bio.drqi.enums.ImplementationPlanTypeEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.drqi.manage.dto.project.TransformDTO;
@@ -192,16 +191,14 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
         fieldList.add(buildField("项目编号", dto.getProjectCode()));
         fieldList.add(buildField("子项目编号", dto.getSubProjectCode()));
         fieldList.add(buildField("实施方案编号", dto.getVectorTaskCode()));
-        fieldList.add(buildField("编辑方式", geneEditMethodName(dto.getGeneEditMethod())));
-        fieldList.add(buildField("转化数量", String.valueOf(CollectionUtil.isEmpty(dto.getContentList()) ? 0 : dto.getContentList().size())));
         sections.add(buildFieldSection("申请信息", fieldList));
 
         if (CollectionUtil.isNotEmpty(dto.getContentList())) {
-            List<String> headers = Arrays.asList("侵染数量", "侵染日期", "递送方式", "转化编号", "受体材料");
+            List<String> headers = Arrays.asList("转化数量", "侵染日期", "递送方式", "转化编号", "受体材料");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (TransformDTO.Content item : dto.getContentList()) {
                 Map<String, Object> row = new LinkedHashMap<>();
-                row.put("侵染数量", item.getInfectNumber());
+                row.put("转化数量", item.getInfectNumber());
                 row.put("侵染日期", item.getInfectDate());
                 row.put("递送方式", deliveryMethodName(item.getDeliveryMethod()));
                 row.put("转化编号", item.getTransformCode());
@@ -212,15 +209,6 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
         }
 
         return sections;
-    }
-
-    private String geneEditMethodName(String code) {
-        for (GeneEditTypeEnum value : GeneEditTypeEnum.values()) {
-            if (value.code.equals(code)) {
-                return value.name;
-            }
-        }
-        return code;
     }
 
     private String deliveryMethodName(String code) {

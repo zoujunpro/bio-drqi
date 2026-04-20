@@ -4,20 +4,16 @@ package com.bio.drqi.manage.controller;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
-import com.bio.drqi.common.enums.BioTaskStatusEnum;
-import com.bio.drqi.common.enums.SampleTestApplyTypeEnum;
-import com.bio.drqi.common.enums.SourceCodeEnum;
-import com.bio.drqi.common.enums.TestResultEnum;
+import com.bio.drqi.common.enums.*;
 import com.bio.drqi.domain.*;
-import com.bio.drqi.common.enums.SeedSourceEnum;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
 import com.bio.drqi.manage.flowtask.plant.PlantSampleTestTaskService;
-import com.bio.drqi.manage.service.bio.BioSampleTestService;
 import com.bio.drqi.manage.service.common.SeedPlantService;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
@@ -49,7 +45,7 @@ public class CleanTestController {
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
     @Resource
-    private BioSampleTestService bioSampleTestService;
+    private CerProjectTbMapper cerProjectTbMapper;
 
     @Resource
     private BioSampleTestTbMapper bioSampleTestTbMapper;
@@ -68,6 +64,15 @@ public class CleanTestController {
 
     @Resource
     private CerBreedDictMapper cerBreedDictMapper;
+
+    @Resource
+    private CerSpeciesConfMapper cerSpeciesConfMapper;
+
+    @Resource
+    private BioDictMapper bioDictMapper;
+
+    @Resource
+    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
 
 
     @Resource
@@ -683,6 +688,140 @@ public class CleanTestController {
 
     }
 
+    @GetMapping("/cleanSeedStockIn20260420")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanSeedStockIn20260420() {
+        String excelPath = "/Users/zoujun/Downloads/种子批量入库导入模板-海南-yxq-2026-04-20.xlsx";
+        List<SeedInStockCleanExcelDTO> excelList = ExcelUtil.readExcel(excelPath, SeedInStockCleanExcelDTO.class);
+        if (CollectionUtil.isEmpty(excelList)) {
+            throw new BusinessException("Excel无数据");
+        }
+
+        List<BioDict> bioDictList = bioDictMapper.selectAll();
+        List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectList(null);
+        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
+        List<SeedProduceAddressDict> seedProduceAddressDictList = seedProduceAddressDictMapper.selectAll();
+        Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictList.stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressName, SeedProduceAddressDict::getAddressCode));
+        Map<String, CerBreedDict> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode() + ":" + cerBreedDict.getBreedName(), cerBreedDict -> cerBreedDict));
+        Map<String, CerSpeciesConf> cerSpeciesConfMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesName, cerSpeciesConf -> cerSpeciesConf));
+        Map<String, BioDict> bioDictMap = bioDictList.stream().collect(Collectors.toMap(bioDict -> bioDict.getDictType() + ":" + bioDict.getDictValueName(), bioDict -> bioDict));
+
+        for (SeedInStockCleanExcelDTO excelDTO : excelList) {
+            if (StringUtils.isEmpty(excelDTO.getSpeciesName()) && StringUtils.isEmpty(excelDTO.getBreedName())) {
+                continue;
+            }
+            log.info("cleanSeedStockIn20260420#excelDTO={}", JSONUtil.toJsonStr(excelDTO));
+            fillSeedInStockExcelCode(excelDTO, bioDictMap, cerSpeciesConfMap, cerBreedDictMap, seedProduceAddressDictMap);
+
+            SeedStockTb seedStockTb = new SeedStockTb();
+            seedStockTb.setPlantCode(excelDTO.getPlantCode());
+            seedStockTb.setGeneration(excelDTO.getGeneration());
+            seedStockTb.setSpeciesCode(excelDTO.getSpeciesCode());
+            seedStockTb.setBreedCode(excelDTO.getBreedCode());
+            seedStockTb.setPollinationMethod(excelDTO.getPollinationMethod());
+            seedStockTb.setHarvestType(excelDTO.getHarvestType());
+            seedStockTb.setHarvestTime(excelDTO.getHarvestTime());
+            seedStockTb.setSeedNumber(excelDTO.getSeedNumber());
+            seedStockTb.setTotalNumber(excelDTO.getSeedNumber());
+            seedStockTb.setUnit(excelDTO.getUnit());
+            seedStockTb.setSourceType(excelDTO.getSource());
+            seedStockTb.setProductionLocationCode(excelDTO.getProductionLocationCode());
+            seedStockTb.setSubmitUserId(SecurityContextHolder.getUserId());
+            seedStockTb.setSubmitUserName(StringUtils.isEmpty(SecurityContextHolder.getNickName()) ? "数据清洗" : SecurityContextHolder.getNickName());
+            seedStockTb.setCreateTime(new Date());
+            seedStockTb.setUpdateTime(new Date());
+            seedStockTb.setRemarks(excelDTO.getRemarks());
+            seedStockTb.setAliasName(excelDTO.getAliasName());
+            seedStockTb.setMaterialType(excelDTO.getMaterialType());
+            seedStockTb.setExperimentNum(excelDTO.getExperimentNum());
+            seedStockTb.setVectorTaskCode(excelDTO.getVectorTaskCode());
+            seedStockTb.setMatherSeedNum(excelDTO.getMatherSeedNum());
+            seedStockTb.setFatherSeedNum(excelDTO.getFatherSeedNum());
+            seedStockTb.setFatherRegionNum(excelDTO.getFatherRegionNum());
+            seedStockTb.setMatherRegionNum(excelDTO.getMatherRegionNum());
+            seedStockTb.setFatherSingleNum(excelDTO.getFatherSingleNum());
+            seedStockTb.setMatherSingleNum(excelDTO.getMatherSingleNum());
+            seedStockTb.setFatherInfo(excelDTO.getFatherInfo());
+            seedStockTb.setMatherInfo(excelDTO.getMatherInfo());
+            if (StringUtils.isNotEmpty(excelDTO.getVectorTaskCode())) {
+                CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(excelDTO.getVectorTaskCode());
+                if (cerVectorTaskTb != null) {
+                    seedStockTb.setProjectCode(cerVectorTaskTb.getProjectCode());
+                    CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerVectorTaskTb.getProjectCode());
+                    if (cerProjectTb != null) {
+                        seedStockTb.setTargetCharacter(cerProjectTb.getProjectName());
+                    }
+                }
+            }
+            seedStockTbMapper.insert(seedStockTb);
+            CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(excelDTO.getSpeciesCode());
+            seedStockTb.setSeedNum(cerSpeciesConf.getNumPrefix() + StringUtils.padl(String.valueOf(seedStockTb.getId()), 8, '0'));
+            seedStockTbMapper.updateById(seedStockTb);
+        }
+
+        return ResponseResult.getSuccess("ok");
+    }
+
+    private void fillSeedInStockExcelCode(SeedInStockCleanExcelDTO excelDTO,
+                                          Map<String, BioDict> bioDictMap,
+                                          Map<String, CerSpeciesConf> cerSpeciesConfMap,
+                                          Map<String, CerBreedDict> cerBreedDictMap,
+                                          Map<String, String> seedProduceAddressDictMap) {
+        SeedSourceEnum seedSourceEnum = SeedSourceEnum.getByName(excelDTO.getSource());
+        if (seedSourceEnum == null) {
+            throw new BusinessException("种子来源填写错误：" + excelDTO.getSource());
+        }
+        excelDTO.setSource(seedSourceEnum.code);
+
+        if (StringUtils.isNotEmpty(excelDTO.getHarvestTypeName())) {
+            BioDict harvestTypeBioDict = bioDictMap.get(BioDictTypeEnum.HARVEST_TYPE + ":" + excelDTO.getHarvestTypeName());
+            if (harvestTypeBioDict == null) {
+                throw new BusinessException("收获方式填写错误：" + excelDTO.getHarvestTypeName());
+            }
+            excelDTO.setHarvestType(harvestTypeBioDict.getDictValueCode());
+        }
+
+        if (StringUtils.isNotEmpty(excelDTO.getPollinationMethodName())) {
+            BioDict pollinationMethodBioDict = bioDictMap.get(BioDictTypeEnum.POLLINATE_TYPE + ":" + excelDTO.getPollinationMethodName());
+            if (pollinationMethodBioDict == null) {
+                throw new BusinessException("授粉方式填写错误：" + excelDTO.getPollinationMethodName());
+            }
+            excelDTO.setPollinationMethod(pollinationMethodBioDict.getDictValueCode());
+        }
+
+        CerSpeciesConf cerSpeciesConf = cerSpeciesConfMap.get(excelDTO.getSpeciesName());
+        if (cerSpeciesConf == null) {
+            throw new BusinessException("物种填写错误：" + excelDTO.getSpeciesName());
+        }
+        excelDTO.setSpeciesCode(cerSpeciesConf.getSpeciesCode());
+
+        CerBreedDict cerBreedDict = cerBreedDictMap.get(cerSpeciesConf.getSpeciesCode() + ":" + excelDTO.getBreedName());
+        if (cerBreedDict == null) {
+            throw new BusinessException("品种填写错误：" + excelDTO.getBreedName());
+        }
+        excelDTO.setBreedCode(cerBreedDict.getBreedCode());
+
+        BioDict materialTypeBioDict = bioDictMap.get(BioDictTypeEnum.MATERIAL_TYPE + ":" + excelDTO.getMaterialTypeName());
+        if (materialTypeBioDict == null) {
+            throw new BusinessException("材料类型填写错误：" + excelDTO.getMaterialTypeName());
+        }
+        excelDTO.setMaterialType(materialTypeBioDict.getDictValueCode());
+
+        GenerationEnum generationEnum = GenerationEnum.getGeneration(excelDTO.getGeneration());
+        if (generationEnum == null) {
+            throw new BusinessException("代次填写错误：" + excelDTO.getGeneration());
+        }
+        excelDTO.setGeneration(generationEnum.code);
+
+        if (StringUtils.isNotEmpty(excelDTO.getProductionLocationName())) {
+            String productionLocationCode = seedProduceAddressDictMap.get(excelDTO.getProductionLocationName());
+            if (productionLocationCode == null) {
+                throw new BusinessException("生产地址填写错误：" + excelDTO.getProductionLocationName());
+            }
+            excelDTO.setProductionLocationCode(productionLocationCode);
+        }
+    }
+
     @Data
     public static class Plasmid {
 
@@ -741,4 +880,94 @@ public class CleanTestController {
         @ExcelProperty("实施方案编号")
         private String vectorTaskCode;
     }
+
+    @Data
+    public static class SeedInStockCleanExcelDTO {
+
+        @ExcelProperty("种子来源")
+        private String source;
+
+        @ExcelProperty("代次")
+        private String generation;
+
+        @ExcelProperty("种植编号")
+        private String plantCode;
+
+        @ExcelProperty("实施方案编号")
+        private String vectorTaskCode;
+
+        @ExcelProperty("材料类型")
+        private String materialTypeName;
+
+        @ExcelProperty("试验方案编号")
+        private String experimentNum;
+
+        @ExcelProperty("父本小区编号")
+        private String fatherRegionNum;
+
+        @ExcelProperty("母本小区编号")
+        private String matherRegionNum;
+
+        @ExcelProperty("父本单株编号")
+        private String fatherSingleNum;
+
+        @ExcelProperty("母本单株编号")
+        private String matherSingleNum;
+
+        @ExcelProperty("生产地点")
+        private String productionLocationName;
+
+        @ExcelProperty("母本信息")
+        private String matherInfo;
+
+        @ExcelProperty("父本信息")
+        private String fatherInfo;
+
+        @ExcelProperty("母本种子编号")
+        private String matherSeedNum;
+
+        @ExcelProperty("父本种子编号")
+        private String fatherSeedNum;
+
+        @ExcelProperty("作物")
+        private String speciesName;
+
+        @ExcelProperty("品种")
+        private String breedName;
+
+        @ExcelProperty("收获方式")
+        private String harvestTypeName;
+
+        @ExcelProperty("收获时间")
+        private String harvestTime;
+
+        @ExcelProperty("授粉方式")
+        private String pollinationMethodName;
+
+        @ExcelProperty("数量")
+        private java.math.BigDecimal seedNumber;
+
+        @ExcelProperty("计量单位")
+        private String unit;
+
+        @ExcelProperty("别名")
+        private String aliasName;
+
+        @ExcelProperty("备注")
+        private String remarks;
+
+        private String harvestType;
+
+        private String pollinationMethod;
+
+        private String speciesCode;
+
+        private String breedCode;
+
+        private String productionLocationCode;
+
+        private String materialType;
+    }
+
+
 }

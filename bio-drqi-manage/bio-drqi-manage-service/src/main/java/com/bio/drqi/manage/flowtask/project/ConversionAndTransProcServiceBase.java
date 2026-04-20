@@ -173,16 +173,24 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
         }
 
         List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
+        boolean hasSample = CollectionUtil.isNotEmpty(dto.getSampleCodeList());
+        boolean hasTransform = CollectionUtil.isNotEmpty(dto.getTransFormList());
 
         List<BioHtmlModelDTO.ModelField> fieldList = new ArrayList<>();
         fieldList.add(buildField("交接日期", dto.getHandoverDate()));
         fieldList.add(buildField("总数量", dto.getTotalNum() == null ? "" : String.valueOf(dto.getTotalNum())));
-        fieldList.add(buildField("取样移苗数量", String.valueOf(CollectionUtil.isEmpty(dto.getSampleCodeList()) ? 0 : dto.getSampleCodeList().size())));
-        fieldList.add(buildField("转化移苗数量", String.valueOf(CollectionUtil.isEmpty(dto.getTransFormList()) ? 0 : dto.getTransFormList().size())));
+        if (hasSample) {
+            fieldList.add(buildField("移苗类型", "取样移苗"));
+            fieldList.add(buildField("取样移苗数量", String.valueOf(dto.getSampleCodeList().size())));
+        }
+        if (hasTransform) {
+            fieldList.add(buildField("移苗类型", "转化移苗"));
+            fieldList.add(buildField("转化移苗数量", String.valueOf(dto.getTransFormList().size())));
+        }
         fieldList.add(buildField("备注", dto.getRemark()));
         sections.add(buildFieldSection("申请信息", fieldList));
 
-        if (CollectionUtil.isNotEmpty(dto.getSampleCodeList())) {
+        if (hasSample) {
             List<String> headers = Arrays.asList("实施方案编号", "取样编号", "是否编辑纯合", "受体材料", "是否转基因", "质粒名称", "是否接收", "备注");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (ConversionAndTransDTO.SampleCode item : dto.getSampleCodeList()) {
@@ -200,7 +208,7 @@ public class ConversionAndTransProcServiceBase extends AbstractProjectBaseTaskSe
             sections.add(buildTableSection("取样移苗明细", headers, rows));
         }
 
-        if (CollectionUtil.isNotEmpty(dto.getTransFormList())) {
+        if (hasTransform) {
             List<String> headers = Arrays.asList("实施方案编号", "转化编号", "受体材料", "移苗数量", "是否转基因", "质粒名称", "是否接收", "确认接收数量", "备注");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (ConversionAndTransDTO.TransForm item : dto.getTransFormList()) {

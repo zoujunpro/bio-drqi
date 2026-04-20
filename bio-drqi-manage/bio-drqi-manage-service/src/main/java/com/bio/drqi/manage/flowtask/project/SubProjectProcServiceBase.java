@@ -130,7 +130,6 @@ public class SubProjectProcServiceBase extends AbstractProjectBaseTaskService {
         List<BioHtmlModelDTO.ModelField> fieldList = new ArrayList<>();
         fieldList.add(buildField("项目名称", dto.getProjectName()));
         fieldList.add(buildField("项目编号", dto.getProjectCode()));
-        fieldList.add(buildField("子项目数量", String.valueOf(CollectionUtil.isEmpty(dto.getContentList()) ? 0 : dto.getContentList().size())));
         sections.add(buildFieldSection("申请信息", fieldList));
 
         if (CollectionUtil.isNotEmpty(dto.getContentList())) {

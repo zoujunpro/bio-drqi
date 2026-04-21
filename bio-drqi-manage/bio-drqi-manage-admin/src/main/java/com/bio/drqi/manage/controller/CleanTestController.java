@@ -9,7 +9,9 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.common.enums.*;
+import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -762,6 +765,78 @@ public class CleanTestController {
         return ResponseResult.getSuccess("ok");
     }
 
+    @GetMapping("/supplementSeedStockInTask20260421")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> supplementSeedStockInTask20260421() {
+        String excelPath = "/Users/zoujun/Downloads/种子批量入库导入模板-海南-yxq-2026-04-20.xlsx";
+        String taskNum = "S0007502";
+        List<SeedInStockCleanExcelDTO> excelList = ExcelUtil.readExcel(excelPath, SeedInStockCleanExcelDTO.class);
+        if (CollectionUtil.isEmpty(excelList)) {
+            throw new BusinessException("Excel无数据");
+        }
+
+        List<BioDict> bioDictList = bioDictMapper.selectAll();
+        List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectList(null);
+        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
+        List<SeedProduceAddressDict> seedProduceAddressDictList = seedProduceAddressDictMapper.selectAll();
+        Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictList.stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressName, SeedProduceAddressDict::getAddressCode));
+        Map<String, CerBreedDict> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(cerBreedDict -> cerBreedDict.getSpeciesCode() + ":" + cerBreedDict.getBreedName(), cerBreedDict -> cerBreedDict));
+        Map<String, CerSpeciesConf> cerSpeciesConfMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesName, cerSpeciesConf -> cerSpeciesConf));
+        Map<String, BioDict> bioDictMap = bioDictList.stream().collect(Collectors.toMap(bioDict -> bioDict.getDictType() + ":" + bioDict.getDictValueName(), bioDict -> bioDict));
+
+        BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(taskNum);
+        if (bioTaskDtlTb == null) {
+            throw new BusinessException("找不到指定工单：" + taskNum);
+        }
+        bioTaskDtlTb.setTaskStatus(BioTaskStatusEnum.TASK_STATUS_2.status);
+
+        SeedInStoreDTO seedInStoreDTO = new SeedInStoreDTO();
+        SeedInStoreDTO.ApplyForm applyForm = new SeedInStoreDTO.ApplyForm();
+        seedInStoreDTO.setApplyForm(applyForm);
+        SeedInStoreDTO.ExecuteForm executeForm = new SeedInStoreDTO.ExecuteForm();
+        executeForm.setExcelUrl(excelPath);
+        List<SeedInStoreDTO.ExecuteFormContent> executeFormContentList = new ArrayList<>();
+
+        for (SeedInStockCleanExcelDTO excelDTO : excelList) {
+            if (StringUtils.isEmpty(excelDTO.getSpeciesName()) && StringUtils.isEmpty(excelDTO.getBreedName())) {
+                continue;
+            }
+            fillSeedInStockExcelCode(excelDTO, bioDictMap, cerSpeciesConfMap, cerBreedDictMap, seedProduceAddressDictMap);
+            SeedStockTb seedStockTb = findSeedStockForClean(excelDTO);
+            SeedInStoreDTO.ExecuteFormContent content = buildExecuteFormContent(excelDTO, seedStockTb);
+            executeFormContentList.add(content);
+
+            SeedStockInLog seedStockInLog = seedStockInLogMapper.selectOneBySeedNum(seedStockTb.getSeedNum());
+            if (seedStockInLog == null) {
+                seedStockInLog = new SeedStockInLog();
+                seedStockInLog.setSeedNum(seedStockTb.getSeedNum());
+                seedStockInLog.setRemarks(seedStockTb.getRemarks());
+                seedStockInLog.setUnit(seedStockTb.getUnit());
+                seedStockInLog.setSeedNumber(seedStockTb.getSeedNumber());
+                seedStockInLog.setSourceType(seedStockTb.getSourceType());
+                seedStockInLog.setTaskNum(taskNum);
+                seedStockInLog.setApplyUserId(bioTaskDtlTb.getApplyUserId());
+                seedStockInLog.setApplyUserName(bioTaskDtlTb.getApplyUserName());
+                seedStockInLog.setCreateTime(seedStockTb.getCreateTime());
+                seedStockInLog.setUniqueCode(content.getUniqueCode());
+                seedStockInLogMapper.insert(seedStockInLog);
+            } else {
+                seedStockInLog.setTaskNum(taskNum);
+                seedStockInLog.setApplyUserId(bioTaskDtlTb.getApplyUserId());
+                seedStockInLog.setApplyUserName(bioTaskDtlTb.getApplyUserName());
+                seedStockInLog.setUniqueCode(content.getUniqueCode());
+                seedStockInLogMapper.updateById(seedStockInLog);
+            }
+        }
+        executeForm.setExecuteFormContentList(executeFormContentList);
+        seedInStoreDTO.setExecuteForm(executeForm);
+        bioTaskDtlTb.setTaskForm(JSONUtil.toJsonStr(seedInStoreDTO));
+
+        bioTaskDtlTb.setUpdateTime(new Date());
+        bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
+        return ResponseResult.getSuccess(taskNum);
+    }
+
     private void fillSeedInStockExcelCode(SeedInStockCleanExcelDTO excelDTO,
                                           Map<String, BioDict> bioDictMap,
                                           Map<String, CerSpeciesConf> cerSpeciesConfMap,
@@ -820,6 +895,81 @@ public class CleanTestController {
             }
             excelDTO.setProductionLocationCode(productionLocationCode);
         }
+    }
+
+    private SeedStockTb findSeedStockForClean(SeedInStockCleanExcelDTO excelDTO) {
+        SeedStockTb query = new SeedStockTb();
+        query.setPlantCode(excelDTO.getPlantCode());
+        query.setGeneration(excelDTO.getGeneration());
+        query.setSpeciesCode(excelDTO.getSpeciesCode());
+        query.setBreedCode(excelDTO.getBreedCode());
+        query.setHarvestTime(excelDTO.getHarvestTime());
+        query.setSourceType(excelDTO.getSource());
+        query.setExperimentNum(excelDTO.getExperimentNum());
+        query.setVectorTaskCode(excelDTO.getVectorTaskCode());
+        query.setMatherSeedNum(excelDTO.getMatherSeedNum());
+        query.setFatherSeedNum(excelDTO.getFatherSeedNum());
+        query.setFatherRegionNum(excelDTO.getFatherRegionNum());
+        query.setMatherRegionNum(excelDTO.getMatherRegionNum());
+        query.setFatherSingleNum(excelDTO.getFatherSingleNum());
+        query.setMatherSingleNum(excelDTO.getMatherSingleNum());
+        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectSelective(query);
+        seedStockTbList = seedStockTbList.stream()
+                .filter(seedStockTb -> numberEquals(seedStockTb.getSeedNumber(), excelDTO.getSeedNumber()))
+                .collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(seedStockTbList)) {
+            throw new BusinessException("找不到已清洗入库的种子记录：" + JSONUtil.toJsonStr(excelDTO));
+        }
+        if (seedStockTbList.size() > 1) {
+            throw new BusinessException("匹配到多条种子库存，请人工确认：" + JSONUtil.toJsonStr(excelDTO));
+        }
+        return seedStockTbList.get(0);
+    }
+
+    private SeedInStoreDTO.ExecuteFormContent buildExecuteFormContent(SeedInStockCleanExcelDTO excelDTO, SeedStockTb seedStockTb) {
+        SeedInStoreDTO.ExecuteFormContent content = new SeedInStoreDTO.ExecuteFormContent();
+        content.setSeedNum(seedStockTb.getSeedNum());
+        content.setSource(excelDTO.getSource());
+        content.setPlantCode(excelDTO.getPlantCode());
+        content.setVectorTaskCode(excelDTO.getVectorTaskCode());
+        content.setFatherInfo(excelDTO.getFatherInfo());
+        content.setMatherInfo(excelDTO.getMatherInfo());
+        content.setMatherSeedNum(excelDTO.getMatherSeedNum());
+        content.setFatherSeedNum(excelDTO.getFatherSeedNum());
+        content.setGeneration(excelDTO.getGeneration());
+        content.setSpeciesCode(excelDTO.getSpeciesCode());
+        content.setSpeciesName(excelDTO.getSpeciesName());
+        content.setBreedCode(excelDTO.getBreedCode());
+        content.setBreedName(excelDTO.getBreedName());
+        content.setPollinationMethod(excelDTO.getPollinationMethod());
+        content.setHarvestType(excelDTO.getHarvestType());
+        content.setHarvestTime(excelDTO.getHarvestTime());
+        content.setSeedNumber(excelDTO.getSeedNumber());
+        content.setUnit(excelDTO.getUnit());
+        content.setProductionLocationName(excelDTO.getProductionLocationName());
+        content.setProductionLocationCode(excelDTO.getProductionLocationCode());
+        content.setTargetCharacter(seedStockTb.getTargetCharacter());
+        content.setRemarks(excelDTO.getRemarks());
+        content.setAliasName(excelDTO.getAliasName());
+        content.setMaterialType(excelDTO.getMaterialType());
+        content.setStoreFlag(CerProjectContents.Y);
+        content.setUniqueCode(IdUtils.simpleUUID());
+        content.setMatherRegionNum(excelDTO.getMatherRegionNum());
+        content.setFatherRegionNum(excelDTO.getFatherRegionNum());
+        content.setExperimentNum(excelDTO.getExperimentNum());
+        content.setFatherSingleNum(excelDTO.getFatherSingleNum());
+        content.setMatherSingleNum(excelDTO.getMatherSingleNum());
+        return content;
+    }
+
+    private boolean numberEquals(BigDecimal left, BigDecimal right) {
+        if (left == null && right == null) {
+            return true;
+        }
+        if (left == null || right == null) {
+            return false;
+        }
+        return left.compareTo(right) == 0;
     }
 
     @Data

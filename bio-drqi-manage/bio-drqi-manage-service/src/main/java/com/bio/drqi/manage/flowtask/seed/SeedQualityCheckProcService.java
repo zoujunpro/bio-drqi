@@ -154,6 +154,38 @@ public class SeedQualityCheckProcService extends AbstractSeedTaskService {
 
     @Override
     public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
-        return Collections.emptyList();
+        SeedQualityCheckDTO seedQualityCheckDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedQualityCheckDTO.class);
+        if (seedQualityCheckDTO == null || StringUtils.isEmpty(seedQualityCheckDTO.getExcelUrl())) {
+            return Collections.emptyList();
+        }
+
+        String tempFilePath = System.getProperty("java.io.tmpdir") + File.separator + seedQualityCheckDTO.getExcelUrl();
+        try {
+            ossService.downloadPath(tempFilePath, seedQualityCheckDTO.getExcelUrl());
+        } catch (Exception e) {
+            log.error("【种子日常质检打印】文件从oss下载失败", e);
+            throw new BusinessException("质检文件处理异常");
+        }
+
+        ExcelData excelData = ExcelUtil.readExcelToExcelData(tempFilePath);
+        List<Map<String, Object>> cellMapList = getCellMap(excelData);
+        List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
+
+        List<BioHtmlModelDTO.ModelField> fieldList = new ArrayList<>();
+        fieldList.add(buildField("质检文件", seedQualityCheckDTO.getExcelUrl()));
+        fieldList.add(buildField("质检份数", String.valueOf(cellMapList.size())));
+        sections.add(buildFieldSection("申请信息", fieldList));
+
+        if (CollectionUtil.isNotEmpty(cellMapList)) {
+            List<String> headers = new ArrayList<>(cellMapList.get(0).keySet());
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (Map<String, Object> cellMap : cellMapList) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                headers.forEach(header -> row.put(header, cellMap.get(header)));
+                rows.add(row);
+            }
+            sections.add(buildTableSection("质检明细", headers, rows));
+        }
+        return sections;
     }
 }

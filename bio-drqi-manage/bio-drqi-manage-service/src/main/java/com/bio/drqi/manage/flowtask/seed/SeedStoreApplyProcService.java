@@ -266,7 +266,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
             row.put("备注", content.getRemarks());
             rows.add(row);
         }
-        sections.add(buildTableSection("入库明细（入库份数：" + contentList.size() + "）", headers, rows));
+        sections.add(buildTableSection("入库明细（份数：" + contentList.size() + "）", headers, rows));
         return sections;
     }
 

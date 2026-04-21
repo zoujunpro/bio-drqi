@@ -3,13 +3,27 @@ package com.bio.drqi.manage.flowtask.seed;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.GenerationEnum;
+import com.bio.drqi.common.enums.SeedSourceEnum;
 import com.bio.drqi.domain.BioTaskDtlTb;
+import com.bio.drqi.domain.BioDict;
+import com.bio.drqi.domain.CerBreedDict;
+import com.bio.drqi.domain.CerSpeciesConf;
+import com.bio.drqi.domain.SeedProduceAddressDict;
+import com.bio.drqi.domain.SeedStockTb;
 import com.bio.drqi.manage.dto.seed.SeedOutDTO;
+import com.bio.drqi.mapper.BioDictMapper;
+import com.bio.drqi.mapper.CerBreedDictMapper;
+import com.bio.drqi.mapper.CerSpeciesConfMapper;
+import com.bio.drqi.mapper.SeedProduceAddressDictMapper;
+import com.bio.drqi.mapper.SeedStockTbMapper;
 import com.bio.flow.dto.BioHtmlModelDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,6 +36,21 @@ import java.util.stream.Collectors;
 public class SeedOutApplyProcService extends AbstractSeedTaskService {
 
     private static final String USE_TO_DESC = "其他";
+
+    @Resource
+    private SeedStockTbMapper seedStockTbMapper;
+
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
+
+    @Resource
+    private CerSpeciesConfMapper cerSpeciesConfMapper;
+
+    @Resource
+    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
+
+    @Resource
+    private BioDictMapper bioDictMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -84,15 +113,15 @@ public class SeedOutApplyProcService extends AbstractSeedTaskService {
         applyFields.add(buildField("备注", applyFrom.getApplyRemark()));
         sections.add(buildFieldSection("申请信息", applyFields));
 
-        List<SeedOutDTO.ApplyFromContent> contentList = applyFrom.getApplyFromContentList();
-        if (CollectionUtil.isNotEmpty(contentList)) {
+        List<SeedOutDTO.ApplyFromContent> applyContentList = applyFrom.getApplyFromContentList();
+        if (CollectionUtil.isNotEmpty(applyContentList)) {
             List<String> headers = Arrays.asList(
                     "种子编号", "项目编号", "项目名称", "子项目编号", "实施方案编号",
                     "基因型", "物种", "品种", "产地", "年份", "发芽率", "性状纯度",
                     "申请数量", "单位", "是否包衣", "备注"
             );
             List<Map<String, Object>> rows = new ArrayList<>();
-            for (SeedOutDTO.ApplyFromContent content : contentList) {
+            for (SeedOutDTO.ApplyFromContent content : applyContentList) {
                 Map<String, Object> row = new LinkedHashMap<>();
                 row.put("种子编号", content.getSeedNum());
                 row.put("项目编号", content.getProjectCode());
@@ -112,7 +141,46 @@ public class SeedOutApplyProcService extends AbstractSeedTaskService {
                 row.put("备注", content.getRemark());
                 rows.add(row);
             }
-            sections.add(buildTableSection("出库明细", headers, rows));
+            sections.add(buildTableSection("申请种子信息", headers, rows));
+        }
+
+        if (seedOutDTO.getExecuteForm() != null && CollectionUtil.isNotEmpty(seedOutDTO.getExecuteForm().getExecuteFormContentList())) {
+            Map<String, String> speciesNameMap = cerSpeciesConfMapper.selectList(null).stream()
+                    .collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName, (left, right) -> left));
+            Map<String, String> breedNameMap = cerBreedDictMapper.selectAll().stream()
+                    .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName, (left, right) -> left));
+            Map<String, String> addressNameMap = seedProduceAddressDictMapper.selectAll().stream()
+                    .collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName, (left, right) -> left));
+
+            List<String> headers = Arrays.asList(
+                    "种子编号", "出库数量", "备注", "来源", "代次", "物种", "品种",
+                    "当前库存", "单位", "收获方式", "授粉方式", "收获时间", "生产地点",
+                    "材料类型", "实施方案编号", "试验方案编号", "种植编号"
+            );
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (SeedOutDTO.ExecuteFormContent content : seedOutDTO.getExecuteForm().getExecuteFormContentList()) {
+                SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(content.getSeedNum());
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("种子编号", content.getSeedNum());
+                row.put("出库数量", content.getNum());
+                row.put("备注", content.getRemark());
+                row.put("来源", seedStockTb == null ? "" : translateSeedSource(seedStockTb.getSourceType()));
+                row.put("代次", seedStockTb == null ? "" : GenerationEnum.getGenerationDesc(seedStockTb.getGeneration()));
+                row.put("物种", seedStockTb == null ? "" : speciesNameMap.get(seedStockTb.getSpeciesCode()));
+                row.put("品种", seedStockTb == null ? "" : breedNameMap.get(seedStockTb.getBreedCode()));
+                row.put("当前库存", seedStockTb == null ? "" : formatNumber(seedStockTb.getSeedNumber()));
+                row.put("单位", seedStockTb == null ? "" : seedStockTb.getUnit());
+                row.put("收获方式", seedStockTb == null ? "" : translateDict(BioDictTypeEnum.HARVEST_TYPE, seedStockTb.getHarvestType()));
+                row.put("授粉方式", seedStockTb == null ? "" : translateDict(BioDictTypeEnum.POLLINATE_TYPE, seedStockTb.getPollinationMethod()));
+                row.put("收获时间", seedStockTb == null ? "" : seedStockTb.getHarvestTime());
+                row.put("生产地点", seedStockTb == null ? "" : addressNameMap.get(seedStockTb.getProductionLocationCode()));
+                row.put("材料类型", seedStockTb == null ? "" : translateDict(BioDictTypeEnum.MATERIAL_TYPE, seedStockTb.getMaterialType()));
+                row.put("实施方案编号", seedStockTb == null ? "" : seedStockTb.getVectorTaskCode());
+                row.put("试验方案编号", seedStockTb == null ? "" : seedStockTb.getExperimentNum());
+                row.put("种植编号", seedStockTb == null ? "" : seedStockTb.getPlantCode());
+                rows.add(row);
+            }
+            sections.add(buildTableSection("出库种子明细", headers, rows));
         }
 
         return sections;
@@ -142,6 +210,26 @@ public class SeedOutApplyProcService extends AbstractSeedTaskService {
             return "否";
         }
         return coatingFlag;
+    }
+
+    private String translateSeedSource(String sourceCode) {
+        SeedSourceEnum seedSourceEnum = SeedSourceEnum.getByCode(sourceCode);
+        return seedSourceEnum == null ? sourceCode : seedSourceEnum.name;
+    }
+
+    private String translateDict(BioDictTypeEnum dictTypeEnum, String dictValueCode) {
+        if (StringUtils.isEmpty(dictValueCode)) {
+            return "";
+        }
+        BioDict bioDict = bioDictMapper.selectOneByDictTypeAndDictValueCode(dictTypeEnum.name(), dictValueCode);
+        return bioDict == null ? dictValueCode : bioDict.getDictValueName();
+    }
+
+    private String formatNumber(BigDecimal value) {
+        if (value == null) {
+            return "";
+        }
+        return value.stripTrailingZeros().toPlainString();
     }
 
     private String defaultString(String value) {

@@ -483,6 +483,9 @@ public class BioTaskServiceImpl implements BioTaskService {
     @Override
     public void printReview(Integer id, HttpServletResponse httpServletResponse) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(id);
+        if (bioTaskDtlTb == null) {
+            throw new BusinessException("工单不存在，id=" + id);
+        }
         DefaultBuildHtmlModelHandler defaultBuildHtmlModelHandler = findBuildHtmlModelHandler(bioTaskDtlTb.getTaskTypeCode());
         if (defaultBuildHtmlModelHandler == null) {
             throw new BusinessException("缺少工单打印的配置" + bioTaskDtlTb.getTaskTypeCode());
@@ -501,6 +504,9 @@ public class BioTaskServiceImpl implements BioTaskService {
     @Override
     public String printPreview(Integer id) {
         BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectById(id);
+        if (bioTaskDtlTb == null) {
+            throw new BusinessException("工单不存在，id=" + id);
+        }
         DefaultBuildHtmlModelHandler defaultBuildHtmlModelHandler = findBuildHtmlModelHandler(bioTaskDtlTb.getTaskTypeCode());
         if (defaultBuildHtmlModelHandler == null) {
             throw new BusinessException("缺少工单打印的配置" + bioTaskDtlTb.getTaskTypeCode());

@@ -50,7 +50,7 @@ public class SeedQualityCheckProcService extends AbstractSeedTaskService {
             ossService.downloadPath(tempFilePath, seedQualityCheckDTO.getExcelUrl());
         } catch (Exception e) {
             log.error("【种子日常质检】文件从oss下载失败", e);
-            throw new BusinessException("文件处理异常");
+            throw new BusinessException("质检文件下载失败：" + seedQualityCheckDTO.getExcelUrl());
         }
         ExcelData excelData = ExcelUtil.readExcelToExcelData(tempFilePath);
         List<SeedQualityCheckConfig> seedQualityCheckConfigList = seedQualityCheckConfigMapper.selectAllOrderByIdDesc();
@@ -89,7 +89,7 @@ public class SeedQualityCheckProcService extends AbstractSeedTaskService {
             ossService.downloadPath(tempFilePath, seedQualityCheckDTO.getExcelUrl());
         } catch (Exception e) {
             log.error("【种子日常质检】文件从oss下载失败", e);
-            throw new BusinessException("文件处理异常");
+            throw new BusinessException("质检文件下载失败：" + seedQualityCheckDTO.getExcelUrl());
         }
         ExcelData excelData = ExcelUtil.readExcelToExcelData(tempFilePath);
         List<Map<String, Object>> cellMapList = getCellMap(excelData);
@@ -164,7 +164,7 @@ public class SeedQualityCheckProcService extends AbstractSeedTaskService {
             ossService.downloadPath(tempFilePath, seedQualityCheckDTO.getExcelUrl());
         } catch (Exception e) {
             log.error("【种子日常质检打印】文件从oss下载失败", e);
-            throw new BusinessException("质检文件处理异常");
+            throw new BusinessException("质检打印文件下载失败：" + seedQualityCheckDTO.getExcelUrl());
         }
 
         ExcelData excelData = ExcelUtil.readExcelToExcelData(tempFilePath);

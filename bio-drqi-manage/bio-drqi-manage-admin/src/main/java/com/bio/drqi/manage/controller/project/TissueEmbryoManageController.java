@@ -50,5 +50,3 @@ public class TissueEmbryoManageController {
         return ResponseResult.getSuccess(tissueEmbryoManageService.parseExcel(file));
     }
 }
-
-

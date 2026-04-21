@@ -4,7 +4,6 @@ import com.bio.drqi.manage.plasmid.req.PlasmidListPageReqDTO;
 import com.bio.drqi.manage.plasmid.req.QueryPagePlasmidReqDTO;
 import com.bio.drqi.manage.plasmid.rsp.PlasmidListPageRspDTO;
 import com.bio.drqi.manage.plasmid.rsp.QueryPagePlasmidRspDTO;
-import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
@@ -57,11 +56,7 @@ public class PlasmidController {
     @GetMapping("/downPlasmidCheckTemplate")
     @WebLog(desc = "质粒质检-质粒质检模板下载")
     public void downPlasmidCheckTemplate(@RequestParam @Validated String vectorTaskCode, HttpServletResponse response) {
-        try {
-            plasmidService.downPlasmidCheckTemplate(vectorTaskCode, response);
-        } catch (Exception e) {
-            throw new BusinessException("质粒上传模板下载失败，请联系管理员检测模板配置");
-        }
+        plasmidService.downPlasmidCheckTemplate(vectorTaskCode, response);
     }
 
 }

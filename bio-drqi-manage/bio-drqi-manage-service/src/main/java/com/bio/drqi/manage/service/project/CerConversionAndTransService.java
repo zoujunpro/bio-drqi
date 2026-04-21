@@ -7,6 +7,7 @@ import com.bio.drqi.manage.project.rsp.ConversionAndTransDetailRspDTO;
 import com.bio.drqi.manage.project.rsp.ConversionAndTransRspDTO;
 import com.github.pagehelper.PageInfo;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface CerConversionAndTransService {
@@ -16,5 +17,7 @@ public interface CerConversionAndTransService {
 
     PageInfo<ConversionAndTransDetailRspDTO> listPageDetail( ConversionAndTransDetailReqDTO conversionAndTransDetailReqDTO);
 
-   void transAccept( CerConversionAndTransConfirmReqDTO cerConversionAndTransConfirmReqDTO);
+    void transAccept(CerConversionAndTransConfirmReqDTO cerConversionAndTransConfirmReqDTO);
+
+    void downVectorTemplate(HttpServletResponse response);
 }

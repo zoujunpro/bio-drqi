@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
@@ -17,6 +18,7 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.ConversionAndTransTypeEnum;
 import com.bio.drqi.enums.VectorTaskStatusEnum;
 import com.bio.drqi.manage.dto.project.ConversionAndTransDTO;
+import com.bio.drqi.manage.dto.project.ConversionAndTransTemplateExcelDTO;
 import com.bio.drqi.manage.project.req.CerConversionAndTransConfirmReqDTO;
 import com.bio.drqi.manage.project.req.ConversionAndTransDetailReqDTO;
 import com.bio.drqi.manage.project.req.ConversionAndTransReqDTO;
@@ -32,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -93,6 +96,16 @@ public class CerConversionAndTransServiceImpl implements CerConversionAndTransSe
         List<CerConversionAndTransRef> cerConversionAndTransRefList = cerConversionAndTransRefMapper.selectSelective(BeanUtils.copyProperties(conversionAndTransDetailReqDTO, CerConversionAndTransRef.class));
         PageInfo<CerConversionAndTransRef> srcPageInfo = new PageInfo<>(cerConversionAndTransRefList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, ConversionAndTransDetailRspDTO.class);
+    }
+
+    @Override
+    public void downVectorTemplate(HttpServletResponse response) {
+        try {
+            ExcelUtil.writeExcel("移苗转化取样编号模板", "sheet1", new ArrayList<>(), ConversionAndTransTemplateExcelDTO.class, response);
+        } catch (Exception e) {
+            log.error("移苗转化取样编号模板下载失败", e);
+            throw new BusinessException("移苗转化取样编号模板下载失败，请联系管理员检测模板配置");
+        }
     }
 
 

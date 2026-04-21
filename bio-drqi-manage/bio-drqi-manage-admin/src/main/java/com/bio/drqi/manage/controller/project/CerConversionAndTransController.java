@@ -6,9 +6,7 @@ import com.bio.drqi.manage.project.req.ConversionAndTransDetailReqDTO;
 import com.bio.drqi.manage.project.req.ConversionAndTransReqDTO;
 import com.bio.drqi.manage.project.rsp.ConversionAndTransDetailRspDTO;
 import com.bio.drqi.manage.project.rsp.ConversionAndTransRspDTO;
-import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
-import com.bio.common.oss.service.OssService;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.service.project.CerConversionAndTransService;
@@ -29,9 +27,6 @@ public class CerConversionAndTransController {
 
     @Resource
     private CerConversionAndTransService cerConversionAndTransService;
-
-    @Resource
-    private OssService ossService;
     /**
      * 分页查询
      * @param conversionAndTransReqDTO
@@ -74,11 +69,7 @@ public class CerConversionAndTransController {
      */
     @GetMapping("/downVectorTemplate")
     public void downVectorTemplate(HttpServletResponse response) {
-        try {
-            ossService.downloadFile(response, "templates", "取样检测数据移苗模板V1.0.xlsx");
-        } catch (Exception e) {
-            throw new BusinessException("移苗转化取样编号模板下载失败，请联系管理员检测模板配置");
-        }
+        cerConversionAndTransService.downVectorTemplate(response);
     }
 
     /**

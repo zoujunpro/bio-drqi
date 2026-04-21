@@ -171,11 +171,6 @@ public class SeedQualityCheckProcService extends AbstractSeedTaskService {
         List<Map<String, Object>> cellMapList = getCellMap(excelData);
         List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
 
-        List<BioHtmlModelDTO.ModelField> fieldList = new ArrayList<>();
-        fieldList.add(buildField("质检文件", seedQualityCheckDTO.getExcelUrl()));
-        fieldList.add(buildField("质检份数", String.valueOf(cellMapList.size())));
-        sections.add(buildFieldSection("申请信息", fieldList));
-
         if (CollectionUtil.isNotEmpty(cellMapList)) {
             List<String> headers = new ArrayList<>(cellMapList.get(0).keySet());
             List<Map<String, Object>> rows = new ArrayList<>();

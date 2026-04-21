@@ -9,6 +9,7 @@ import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.domain.SeedStockTb;
 import com.bio.drqi.manage.dto.seed.SeedModifyTaskDTO;
 import com.bio.drqi.mapper.SeedStockTbMapper;
+import com.bio.flow.dto.BioHtmlModelDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +17,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service("seed_modify_apply")
 public class SeedModifyApplyProcService extends AbstractSeedTaskService {
@@ -157,5 +153,10 @@ public class SeedModifyApplyProcService extends AbstractSeedTaskService {
             return DateUtil.parse(value);
         }
         return value;
+    }
+
+    @Override
+    public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
+        return Collections.emptyList();
     }
 }

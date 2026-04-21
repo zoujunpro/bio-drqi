@@ -6,6 +6,7 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.contents.CerProjectContents;
 import com.bio.drqi.domain.*;
@@ -13,13 +14,13 @@ import com.bio.drqi.common.enums.SeedSourceEnum;
 import com.bio.drqi.manage.dto.seed.SeedInStoreDTO;
 import com.bio.drqi.manage.service.common.SeedPlantService;
 import com.bio.drqi.mapper.*;
+import com.bio.flow.dto.BioHtmlModelDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -61,6 +62,9 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
 
     @Resource
     private TcPollinationTbMapper tcPollinationTbMapper;
+
+    @Resource
+    private BioDictMapper bioDictMapper;
 
     @Resource
     private SeedPlantService seedPlantService;
@@ -214,4 +218,79 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
         return date.matches(pattern);
     }
 
+    @Override
+    public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
+        SeedInStoreDTO seedInStoreDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), SeedInStoreDTO.class);
+        if (seedInStoreDTO == null || seedInStoreDTO.getExecuteForm() == null || CollectionUtil.isEmpty(seedInStoreDTO.getExecuteForm().getExecuteFormContentList())) {
+            return Collections.emptyList();
+        }
+
+        List<SeedInStoreDTO.ExecuteFormContent> contentList = seedInStoreDTO.getExecuteForm().getExecuteFormContentList();
+        Map<String, String> speciesNameMap = cerSpeciesConfMapper.selectList(null).stream()
+                .collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName, (left, right) -> left));
+        Map<String, String> breedNameMap = cerBreedDictMapper.selectAll().stream()
+                .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName, (left, right) -> left));
+        Map<String, String> addressNameMap = seedProduceAddressDictMapper.selectAll().stream()
+                .collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName, (left, right) -> left));
+
+        List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
+        List<BioHtmlModelDTO.ModelField> applyFields = new ArrayList<>();
+        applyFields.add(buildField("入库数量", String.valueOf(contentList.size())));
+        applyFields.add(buildField("导入文件", seedInStoreDTO.getExecuteForm().getExcelUrl()));
+        sections.add(buildFieldSection("申请信息", applyFields));
+
+        List<String> headers = Arrays.asList(
+                "种子编号", "来源", "代次", "物种", "品种", "种子数量", "单位",
+                "收获方式", "授粉方式", "收获时间", "生产地点", "材料类型",
+                "实施方案编号", "试验方案编号", "种植编号", "父本种子编号",
+                "母本种子编号", "父本小区编号", "母本小区编号", "备注"
+        );
+        List<Map<String, Object>> rows = new ArrayList<>();
+        for (SeedInStoreDTO.ExecuteFormContent content : contentList) {
+            Map<String, Object> row = new LinkedHashMap<>();
+            row.put("种子编号", content.getSeedNum());
+            row.put("来源", translateSeedSource(content.getSource()));
+            row.put("代次", GenerationEnum.getGenerationDesc(content.getGeneration()));
+            row.put("物种", StringUtils.isNotEmpty(content.getSpeciesName()) ? content.getSpeciesName() : speciesNameMap.get(content.getSpeciesCode()));
+            row.put("品种", StringUtils.isNotEmpty(content.getBreedName()) ? content.getBreedName() : breedNameMap.get(content.getBreedCode()));
+            row.put("种子数量", formatSeedNumber(content.getSeedNumber()));
+            row.put("单位", content.getUnit());
+            row.put("收获方式", translateDict(BioDictTypeEnum.HARVEST_TYPE, content.getHarvestType()));
+            row.put("授粉方式", translateDict(BioDictTypeEnum.POLLINATE_TYPE, content.getPollinationMethod()));
+            row.put("收获时间", content.getHarvestTime());
+            row.put("生产地点", StringUtils.isNotEmpty(content.getProductionLocationName()) ? content.getProductionLocationName() : addressNameMap.get(content.getProductionLocationCode()));
+            row.put("材料类型", translateDict(BioDictTypeEnum.MATERIAL_TYPE, content.getMaterialType()));
+            row.put("实施方案编号", content.getVectorTaskCode());
+            row.put("试验方案编号", content.getExperimentNum());
+            row.put("种植编号", content.getPlantCode());
+            row.put("父本种子编号", content.getFatherSeedNum());
+            row.put("母本种子编号", content.getMatherSeedNum());
+            row.put("父本小区编号", content.getFatherRegionNum());
+            row.put("母本小区编号", content.getMatherRegionNum());
+            row.put("备注", content.getRemarks());
+            rows.add(row);
+        }
+        sections.add(buildTableSection("入库明细", headers, rows));
+        return sections;
+    }
+
+    private String translateSeedSource(String sourceCode) {
+        SeedSourceEnum seedSourceEnum = SeedSourceEnum.getByCode(sourceCode);
+        return seedSourceEnum == null ? sourceCode : seedSourceEnum.name;
+    }
+
+    private String translateDict(BioDictTypeEnum dictTypeEnum, String dictValueCode) {
+        if (StringUtils.isEmpty(dictValueCode)) {
+            return "";
+        }
+        BioDict bioDict = bioDictMapper.selectOneByDictTypeAndDictValueCode(dictTypeEnum.name(), dictValueCode);
+        return bioDict == null ? dictValueCode : bioDict.getDictValueName();
+    }
+
+    private String formatSeedNumber(BigDecimal seedNumber) {
+        if (seedNumber == null) {
+            return "";
+        }
+        return seedNumber.stripTrailingZeros().toPlainString();
+    }
 }

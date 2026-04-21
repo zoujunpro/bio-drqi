@@ -11,10 +11,13 @@ import com.bio.drqi.mapper.SeedStockTbMapper;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
+import com.bio.flow.dto.BioHtmlModelDTO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 种子销毁申请
@@ -89,5 +92,10 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
         seedStockDestructionLog.setDestructionEvidence(JSONUtil.toJsonStr(seedDestructionDTO.getDestructionEvidenceList()));
         seedStockDestructionLog.setDestructionTime(new Date());
         seedStockDestructionLogMapper.insert(seedStockDestructionLog);
+    }
+
+    @Override
+    public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
+        return Collections.emptyList();
     }
 }

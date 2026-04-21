@@ -7,6 +7,7 @@ import com.bio.drqi.domain.SeedStockOutLog;
 import com.bio.drqi.domain.SeedStockTb;
 import com.bio.drqi.mapper.SeedStockOutLogMapper;
 import com.bio.drqi.mapper.SeedStockTbMapper;
+import com.bio.flow.hander.DefaultBuildHtmlModelHandler;
 import com.bio.flow.service.BaseTaskService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,7 +16,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Slf4j
-public abstract class AbstractSeedTaskService implements BaseTaskService {
+public abstract class AbstractSeedTaskService extends DefaultBuildHtmlModelHandler implements BaseTaskService {
 
     @Resource
     private SeedStockTbMapper seedStockTbMapper;

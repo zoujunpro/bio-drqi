@@ -234,9 +234,6 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 .collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName, (left, right) -> left));
 
         List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
-        List<BioHtmlModelDTO.ModelField> applyFields = new ArrayList<>();
-        applyFields.add(buildField("入库分数", String.valueOf(contentList.size())));
-        sections.add(buildFieldSection("申请信息", applyFields));
 
         List<String> headers = Arrays.asList(
                 "种子编号", "来源", "代次", "物种", "品种", "种子数量", "单位",
@@ -269,7 +266,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
             row.put("备注", content.getRemarks());
             rows.add(row);
         }
-        sections.add(buildTableSection("入库明细", headers, rows));
+        sections.add(buildTableSection("入库明细（入库份数：" + contentList.size() + "）", headers, rows));
         return sections;
     }
 

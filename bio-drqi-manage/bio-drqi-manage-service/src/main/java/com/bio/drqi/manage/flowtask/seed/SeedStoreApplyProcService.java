@@ -235,8 +235,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
 
         List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
         List<BioHtmlModelDTO.ModelField> applyFields = new ArrayList<>();
-        applyFields.add(buildField("入库数量", String.valueOf(contentList.size())));
-        applyFields.add(buildField("导入文件", seedInStoreDTO.getExecuteForm().getExcelUrl()));
+        applyFields.add(buildField("入库分数", String.valueOf(contentList.size())));
         sections.add(buildFieldSection("申请信息", applyFields));
 
         List<String> headers = Arrays.asList(

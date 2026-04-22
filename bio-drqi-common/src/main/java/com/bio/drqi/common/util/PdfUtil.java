@@ -41,9 +41,25 @@ public final class PdfUtil {
             throw new IllegalArgumentException("fontPath不能为空");
         }
         try {
+            applyPdfHeaders(response, fileName);
             HtmlToPdfUtils.html2Pdf(htmlInputStream, new PdfFileNameResponseWrapper(response, fileName), fileName, fontPath);
         } catch (Exception e) {
             throw new RuntimeException("PDF生成失败", e);
+        }
+    }
+
+    private static void applyPdfHeaders(HttpServletResponse response, String fileName) {
+        String encodedFileName = encodeFileName(fileName);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment;filename=" + encodedFileName);
+    }
+
+    private static String encodeFileName(String fileName) {
+        try {
+            return URLEncoder.encode(fileName + ".pdf", StandardCharsets.UTF_8.name());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("文件名编码失败", e);
         }
     }
 
@@ -52,11 +68,7 @@ public final class PdfUtil {
 
         private PdfFileNameResponseWrapper(HttpServletResponse response, String fileName) {
             super(response);
-            try {
-                this.encodedFileName = URLEncoder.encode(fileName + ".pdf", StandardCharsets.UTF_8.name());
-            } catch (Exception e) {
-                throw new IllegalArgumentException("文件名编码失败", e);
-            }
+            this.encodedFileName = encodeFileName(fileName);
         }
 
         @Override

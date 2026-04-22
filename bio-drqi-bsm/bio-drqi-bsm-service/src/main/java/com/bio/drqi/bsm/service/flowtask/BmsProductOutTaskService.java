@@ -9,6 +9,7 @@ import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.bsm.dto.BmsProductOutDTO;
+import com.bio.drqi.bsm.enums.PurchaseUnitEnum;
 import com.bio.drqi.bsm.enums.OutTypeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
@@ -45,6 +46,9 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
 
     @Resource
     private BmsStockLocationDictMapper bmsStockLocationDictMapper;
+
+    @Resource
+    private BmsStockDictMapper bmsStockDictMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -136,14 +140,11 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
         }
 
         List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
-        List<BioHtmlModelDTO.ModelField> applyFields = new ArrayList<>();
-        applyFields.add(buildField("出库商品数", String.valueOf(dtoList.size())));
-        sections.add(buildFieldSection("申请信息", applyFields));
-
         List<String> headers = java.util.Arrays.asList("商品名称", "规格", "批次号", "出库数量", "单位", "库房", "当前库存", "累计出库", "库位", "备注");
         List<Map<String, Object>> rows = new ArrayList<>();
         for (BmsProductOutDTO item : dtoList) {
             BmsProductStockTb stockTb = bmsProductStockTbMapper.selectOneByUniqueCode(item.getUniqueCode());
+            BmsStockDict stockDict = stockTb == null || StringUtils.isEmpty(stockTb.getStockCode()) ? null : bmsStockDictMapper.selectOneByStockCode(stockTb.getStockCode());
             Map<String, String> locationNameMap = stockTb == null ? Collections.emptyMap() :
                     bmsStockLocationDictMapper.selectAllByStockCode(stockTb.getStockCode()).stream()
                             .collect(Collectors.toMap(BmsStockLocationDict::getLocationNumber, BmsStockLocationDict::getStockName, (left, right) -> left));
@@ -152,8 +153,8 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
             row.put("规格", item.getProductSpecs());
             row.put("批次号", item.getBatchNo());
             row.put("出库数量", decimalText(item.getNumber()));
-            row.put("单位", item.getUnitCode());
-            row.put("库房", item.getStockCode());
+            row.put("单位", unitName(stockTb == null ? item.getUnitCode() : stockTb.getUnitCode()));
+            row.put("库房", stockDict == null ? item.getStockCode() : stockDict.getStockName());
             row.put("当前库存", stockTb == null ? "" : decimalText(stockTb.getCurrentStockNumber()));
             row.put("累计出库", stockTb == null ? "" : decimalText(stockTb.getTotalOutNumber()));
             row.put("库位", stockTb == null || StringUtils.isEmpty(stockTb.getStockLocationNumber()) ? "" : locationText(JSONUtil.toList(stockTb.getStockLocationNumber(), String.class), locationNameMap));
@@ -179,5 +180,21 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
 
     private String decimalText(BigDecimal value) {
         return value == null ? "" : value.stripTrailingZeros().toPlainString();
+    }
+
+    private String unitName(String unitCode) {
+        if (StringUtils.isEmpty(unitCode)) {
+            return "";
+        }
+        if (PurchaseUnitEnum.beijing.name().equals(unitCode)) {
+            return "北京";
+        }
+        if (PurchaseUnitEnum.tianjin.name().equals(unitCode)) {
+            return "天津";
+        }
+        if (PurchaseUnitEnum.default_.name().equals(unitCode)) {
+            return "默认";
+        }
+        return unitCode;
     }
 }

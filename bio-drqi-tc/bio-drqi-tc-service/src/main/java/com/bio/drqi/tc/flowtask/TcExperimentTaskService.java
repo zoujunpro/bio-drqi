@@ -227,11 +227,11 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         if (CollectionUtil.isNotEmpty(designList)) {
             Map<String, String> breedNameMap = cerBreedDictMapper.selectAll().stream()
                     .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName, (left, right) -> left));
-            List<String> headers = Arrays.asList("小区编号", "种子编号", "实施方案编号", "PD实施方案编号", "品种", "目标性状", "世代", "基因型", "小区面积", "播种方式", "播种数量", "播种时间", "移栽时间", "备注");
+            List<String> headers = Arrays.asList("区域编号", "种子编号", "实施方案编号", "PD实施方案编号", "品种", "目标性状", "世代", "基因型", "小区面积", "播种方式", "播种数量", "播种时间", "移栽时间", "备注");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (TcExperimentDesignTb item : designList) {
                 Map<String, Object> row = new LinkedHashMap<>();
-                row.put("小区编号", item.getRegionNum());
+                row.put("区域编号", item.getRegionNum());
                 row.put("种子编号", item.getSeedNum());
                 row.put("实施方案编号", item.getVectorTaskCode());
                 row.put("PD实施方案编号", item.getPdImplementCode());
@@ -254,11 +254,11 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         if (StringUtils.isNotEmpty(dto.getExperimentDesignUrl())) {
             List<ExperimentDesignExcelDTO> excelList = validatorExcel(dto);
             if (CollectionUtil.isNotEmpty(excelList)) {
-                List<String> headers = Arrays.asList("小区编号", "种子编号", "实施方案编号", "PD实施方案编号", "品种", "目标性状", "世代", "基因型", "小区面积", "播种方式", "播种数量", "播种时间", "移栽时间", "备注");
+                List<String> headers = Arrays.asList("区域编号", "种子编号", "实施方案编号", "PD实施方案编号", "品种", "目标性状", "世代", "基因型", "小区面积", "播种方式", "播种数量", "播种时间", "移栽时间", "备注");
                 List<Map<String, Object>> rows = new ArrayList<>();
                 for (ExperimentDesignExcelDTO item : excelList) {
                     Map<String, Object> row = new LinkedHashMap<>();
-                    row.put("小区编号", item.getRegionNum());
+                    row.put("区域编号", item.getRegionNum());
                     row.put("种子编号", item.getSeedNum());
                     row.put("实施方案编号", item.getVectorTaskCode());
                     row.put("PD实施方案编号", item.getPdImplementCode());

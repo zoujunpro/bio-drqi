@@ -199,8 +199,6 @@ public class PlantApplyTaskService extends AbstractPlantBaseTaskService {
         applyFields.add(buildField("取样编号前缀", dto.getSampleCodePrefix()));
         applyFields.add(buildField("实施方案编号", joinValues(dto.getVectorTaskCodeList())));
         applyFields.add(buildField("PD实施方案编号", joinValues(dto.getPdImplementCodeList())));
-        applyFields.add(buildField("种植明细文件", dto.getPlantDetailUrl()));
-        applyFields.add(buildField("附件", dto.getFileUrl()));
         sections.add(buildFieldSection("申请信息", applyFields));
 
         PlantApplyDetailTb query = new PlantApplyDetailTb();

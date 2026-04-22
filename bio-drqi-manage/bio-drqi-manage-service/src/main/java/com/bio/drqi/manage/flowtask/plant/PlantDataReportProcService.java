@@ -97,11 +97,6 @@ public class PlantDataReportProcService extends AbstractPlantBaseTaskService {
         }
 
         List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
-        List<BioHtmlModelDTO.ModelField> applyFields = new ArrayList<>();
-        applyFields.add(buildField("数据文件", dto.getExcelUrl()));
-        applyFields.add(buildField("数据条数", String.valueOf(CollectionUtil.isEmpty(dto.getContentList()) ? 0 : dto.getContentList().size())));
-        sections.add(buildFieldSection("申请信息", applyFields));
-
         if (CollectionUtil.isEmpty(dto.getContentList())) {
             return sections;
         }

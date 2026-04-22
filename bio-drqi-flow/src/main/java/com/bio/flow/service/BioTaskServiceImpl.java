@@ -3,6 +3,8 @@ package com.bio.flow.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
@@ -495,7 +497,7 @@ public class BioTaskServiceImpl implements BioTaskService {
         }
         try {
             String html = renderPrintTemplate(resolvePrintTemplate(bioTaskDtlTb.getTaskTypeCode()), defaultBuildHtmlModelHandler.handler(bioTaskDtlTb), false);
-            PdfUtil.htmlToPdf(html, httpServletResponse, bioTaskDtlTb.getTaskNum(), fontPath);
+            PdfUtil.htmlToPdf(html, httpServletResponse, buildPrintFileName(bioTaskDtlTb), fontPath);
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
@@ -549,6 +551,20 @@ public class BioTaskServiceImpl implements BioTaskService {
         Map<String, Object> model = buildTemplateModel(bioHtmlModelDTO, previewMode);
         template.process(model, stringWriter);
         return stringWriter.toString();
+    }
+
+    private String buildPrintFileName(BioTaskDtlTb bioTaskDtlTb) {
+        String taskNum = StringUtils.isBlank(bioTaskDtlTb.getTaskNum()) ? "未知工单号" : bioTaskDtlTb.getTaskNum();
+        String taskTypeName = StringUtils.isBlank(bioTaskDtlTb.getTaskTypeName()) ? "工单" : bioTaskDtlTb.getTaskTypeName();
+        String timeText = DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN);
+        return sanitizeFileName(taskNum + taskTypeName + timeText);
+    }
+
+    private String sanitizeFileName(String fileName) {
+        if (StringUtils.isBlank(fileName)) {
+            return "工单打印";
+        }
+        return fileName.replaceAll("[\\\\/:*?\"<>|]", "_");
     }
 
     private Map<String, Object> buildTemplateModel(BioHtmlModelDTO bioHtmlModelDTO, boolean previewMode) {

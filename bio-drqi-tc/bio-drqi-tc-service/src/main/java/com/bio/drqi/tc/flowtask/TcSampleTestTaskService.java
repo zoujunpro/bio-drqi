@@ -13,8 +13,7 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.service.dto.TcSampleTestTaskDTO;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.bio.flow.dto.BioHtmlModelDTO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -247,5 +246,10 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
         bioSampleTestResultFileTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
         bioSampleTestOneResultTbMapper.deleteByUploadNum(bioTaskDtlTb.getTaskNum());
         tcPollinationSingleNumTbMapper.deleteBySampleApplyNum(bioTaskDtlTb.getTaskNum());
+    }
+
+    @Override
+    public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
+        return Collections.emptyList();
     }
 }

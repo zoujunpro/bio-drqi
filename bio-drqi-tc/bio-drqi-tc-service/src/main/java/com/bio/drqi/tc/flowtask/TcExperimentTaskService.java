@@ -18,15 +18,13 @@ import com.bio.drqi.mapper.TcExperimentTbMapper;
 import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.service.dto.ExperimentDesignExcelDTO;
 import com.bio.drqi.tc.service.dto.TcExperimentTaskDTO;
+import com.bio.flow.dto.BioHtmlModelDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("tc_experiment_task_apply")
@@ -199,5 +197,10 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         } else {
             return SampleGroupPergixEnum.T.name() + LetterUtil.nextLetterForInstantVerify(maxSampleCodePrefix.substring(1));
         }
+    }
+
+    @Override
+    public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
+        return Collections.emptyList();
     }
 }

@@ -15,12 +15,14 @@ import com.bio.drqi.mapper.TcPollinationTbMapper;
 import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.service.dto.TcHarvestExcelDTO;
 import com.bio.drqi.tc.service.dto.TcHarvestTaskDTO;
+import com.bio.flow.dto.BioHtmlModelDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -137,5 +139,10 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
 
+    }
+
+    @Override
+    public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
+        return Collections.emptyList();
     }
 }

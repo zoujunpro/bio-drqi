@@ -14,6 +14,7 @@ import com.bio.drqi.mapper.*;
 import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.service.dto.TcPollinationExcelDTO;
 import com.bio.drqi.tc.service.dto.TcPollinationTaskDTO;
+import com.bio.flow.dto.BioHtmlModelDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -222,5 +224,10 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
         tcPollinationSingleNumTbMapper.updatePollinationApplyNumIsNullByPollinationApplyNum(bioTaskDtlTb.getTaskNum());
 
+    }
+
+    @Override
+    public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
+        return Collections.emptyList();
     }
 }

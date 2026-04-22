@@ -233,12 +233,8 @@ public class BmsPurchaseOrderTaskService extends AbstractBsmBaseTaskService {
         applyFields.add(buildField("需求提出日期", dto.getDemandRequireTime()));
         applyFields.add(buildField("需求使用日期", dto.getDemandUsageTime()));
         applyFields.add(buildField("采购总金额", decimalText(dto.getPurchaseTotalAmount())));
+        applyFields.add(buildField("申购事由", dto.getPurchaseReasonRemark()));
         sections.add(buildFieldSection("申请信息", applyFields));
-        if (StringUtils.isNotEmpty(dto.getPurchaseReasonRemark())) {
-            List<BioHtmlModelDTO.ModelField> reasonFields = new ArrayList<>();
-            reasonFields.add(buildField("申购事由", dto.getPurchaseReasonRemark()));
-            sections.add(buildFieldSection("申购事由", reasonFields));
-        }
 
         Map<String, String> projectNameMap = bmsProjectDictMapper.selectAllOrderByIdDesc().stream()
                 .collect(Collectors.toMap(BmsProjectDict::getProjectCode, BmsProjectDict::getProjectName, (left, right) -> left));

@@ -15,12 +15,12 @@
                         <#if field_index % 2 == 0>
                             <tr>
                                 <td class="label">${field.label!''}</td>
-                                <#if ((field_index + 1) gte fieldList?size) && (field.label!'') == "备注">
+                                <#if ((field_index + 1) gte fieldList?size) && ((field.label!'') == "备注" || (field.label!'') == "申购事由")>
                                     <td class="value" colspan="3">${field.value!''}</td>
                                 <#else>
                                     <td class="value">${field.value!''}</td>
                                 </#if>
-                                <#if (((field_index + 1) gte fieldList?size) && (field.label!'') == "备注")>
+                                <#if (((field_index + 1) gte fieldList?size) && ((field.label!'') == "备注" || (field.label!'') == "申购事由"))>
                                 <#elseif (field_index + 1) lt fieldList?size>
                                     <td class="label">${fieldList[field_index + 1].label!''}</td>
                                     <td class="value">${fieldList[field_index + 1].value!''}</td>

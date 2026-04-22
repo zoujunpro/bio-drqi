@@ -356,11 +356,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         List<BioHtmlModelDTO.ModelField> applyFields = new ArrayList<>();
         applyFields.add(buildField("物种", speciesConf == null ? dto.getSpeciesCode() : speciesConf.getSpeciesName()));
         applyFields.add(buildField("取样类型", sampleApplyTypeName(dto.getApplyType())));
-        applyFields.add(buildField("检测方式", testTypeName(dto.getTestType())));
-        applyFields.add(buildField("重复取样文件", dto.getRepeatSampleApplyExcelUrl()));
-        applyFields.add(buildField("检测数据文件", dto.getTestDataExcelUrl()));
-        applyFields.add(buildField("引物模板文件", dto.getIdentifyPrimerTemplateExcelUrl()));
-        applyFields.add(buildField("生信结果文件", dto.getBioInfoResultExcelUrl()));
+        applyFields.add(buildField("取样方式", testTypeName(dto.getTestType())));
         sections.add(buildFieldSection("申请信息", applyFields));
 
         if (CollectionUtil.isNotEmpty(dto.getFirstSampleApplyList())) {
@@ -437,7 +433,7 @@ public class PlantSampleTestTaskService extends AbstractPlantBaseTaskService {
         return code;
     }
 
-    private String testTypeName(String code) {
+    private String  testTypeName(String code) {
         if (oneTestType.equals(code)) {
             return "单管取样";
         }

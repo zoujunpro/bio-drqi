@@ -1,5 +1,6 @@
 package com.bio.drqi.tc.flowtask;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
@@ -9,6 +10,7 @@ import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.mapper.CerBreedDictMapper;
 import com.bio.drqi.mapper.TcExperimentTbMapper;
 import com.bio.drqi.mapper.TcHarvestSeedApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
@@ -22,9 +24,13 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service("tc_harvest_task_apply")
@@ -43,6 +49,9 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
 
     @Resource
     private TcPollinationTbMapper tcPollinationTbMapper;
+
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -143,6 +152,69 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
 
     @Override
     public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
-        return Collections.emptyList();
+        TcHarvestTaskDTO dto = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcHarvestTaskDTO.class);
+        if (dto == null) {
+            return Collections.emptyList();
+        }
+
+        List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
+        List<BioHtmlModelDTO.ModelField> applyFields = new ArrayList<>();
+        applyFields.add(buildField("试验编号", dto.getExperimentNum()));
+        applyFields.add(buildField("收获时间", dto.getHarvestTime()));
+        sections.add(buildFieldSection("申请信息", applyFields));
+
+        TcPollinationTb query = new TcPollinationTb();
+        query.setHarvestApplyNum(bioTaskDtlTb.getTaskNum());
+        List<TcPollinationTb> pollinationList = tcPollinationTbMapper.selectSelective(query);
+        if (CollectionUtil.isNotEmpty(pollinationList)) {
+            Map<String, String> breedNameMap = cerBreedDictMapper.selectAll().stream()
+                    .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName, (left, right) -> left));
+            List<String> headers = java.util.Arrays.asList("母本小区编号", "母本种子编号", "母本单株编号", "母本取样编号", "母本品种", "父本小区编号", "父本种子编号", "父本单株编号", "父本取样编号", "父本品种", "收获数量", "收获方式", "收获备注");
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (TcPollinationTb item : pollinationList) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("母本小区编号", item.getMRegionNum());
+                row.put("母本种子编号", item.getMSeedNum());
+                row.put("母本单株编号", item.getMSingleNumber());
+                row.put("母本取样编号", item.getMSampleCode());
+                row.put("母本品种", breedNameMap.getOrDefault(item.getMBreedCode(), item.getMBreedCode()));
+                row.put("父本小区编号", item.getFRegionNum());
+                row.put("父本种子编号", item.getFSeedNum());
+                row.put("父本单株编号", item.getFSingleNumber());
+                row.put("父本取样编号", item.getFSampleCode());
+                row.put("父本品种", breedNameMap.getOrDefault(item.getFBreedCode(), item.getFBreedCode()));
+                row.put("收获数量", item.getSeedNumber() == null ? "" : item.getSeedNumber().stripTrailingZeros().toPlainString() + (StringUtils.isEmpty(item.getUnit()) ? "" : item.getUnit()));
+                row.put("收获方式", item.getHarvestTypeName());
+                row.put("收获备注", item.getHarvestRemark());
+                rows.add(row);
+            }
+            sections.add(buildTableSection("收获明细", headers, rows));
+            return sections;
+        }
+
+        if (dto.getTcHarvestExcelDTOList() != null && !dto.getTcHarvestExcelDTOList().isEmpty()) {
+            List<String> headers = java.util.Arrays.asList("母本小区编号", "母本种子编号", "母本单株编号", "母本取样编号", "母本品种", "父本小区编号", "父本种子编号", "父本单株编号", "父本取样编号", "父本品种", "收获数量", "收获方式", "备注");
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (TcHarvestExcelDTO item : dto.getTcHarvestExcelDTOList()) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("母本小区编号", item.getMotherRegionNum());
+                row.put("母本种子编号", item.getMotherSeedNum());
+                row.put("母本单株编号", item.getMotherSingleNumber());
+                row.put("母本取样编号", item.getMotherSampleCode());
+                row.put("母本品种", item.getMotherBreedName());
+                row.put("父本小区编号", item.getFatherRegionNum());
+                row.put("父本种子编号", item.getFatherSeedNum());
+                row.put("父本单株编号", item.getFatherSingleNumber());
+                row.put("父本取样编号", item.getFatherSampleCode());
+                row.put("父本品种", item.getFatherBreedName());
+                row.put("收获数量", item.getSeedNumber() + item.getUnit());
+                row.put("收获方式", item.getHarvestTypeName());
+                row.put("备注", item.getRemark());
+                rows.add(row);
+            }
+            sections.add(buildTableSection("收获明细", headers, rows));
+        }
+
+        return sections;
     }
 }

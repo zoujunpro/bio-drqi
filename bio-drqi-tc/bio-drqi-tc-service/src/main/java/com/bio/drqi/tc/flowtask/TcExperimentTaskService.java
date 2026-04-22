@@ -8,6 +8,7 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.ExperimentTypeEnum;
 import com.bio.drqi.common.enums.SampleGroupPergixEnum;
 import com.bio.drqi.common.util.LetterUtil;
 import com.bio.drqi.domain.*;
@@ -201,6 +202,108 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
 
     @Override
     public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
-        return Collections.emptyList();
+        TcExperimentTaskDTO dto = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), TcExperimentTaskDTO.class);
+        if (dto == null) {
+            return Collections.emptyList();
+        }
+
+        List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
+        SeedProduceAddressDict addressDict = StringUtils.isEmpty(dto.getExperimentAddressCode()) ? null : seedProduceAddressDictMapper.selectOneByAddressCode(dto.getExperimentAddressCode());
+
+        List<BioHtmlModelDTO.ModelField> applyFields = new ArrayList<>();
+        applyFields.add(buildField("试验编号", bioTaskDtlTb.getTaskNum()));
+        applyFields.add(buildField("物种", dto.getSpeciesName()));
+        applyFields.add(buildField("试验地点", addressDict == null ? dto.getExperimentAddressCode() : addressDict.getAddressName()));
+        applyFields.add(buildField("试验类型", experimentTypeNames(dto.getExperimentType())));
+        applyFields.add(buildField("试验目标", dto.getExperimentGoal()));
+        applyFields.add(buildField("取样编号前缀", dto.getSampleCodePrefix()));
+        applyFields.add(buildField("实施方案编号", joinValues(dto.getVectorTaskCodeList())));
+        applyFields.add(buildField("PD实施方案编号", joinValues(dto.getPdImplementCodeList())));
+        sections.add(buildFieldSection("申请信息", applyFields));
+
+        TcExperimentDesignTb query = new TcExperimentDesignTb();
+        query.setExperimentNum(bioTaskDtlTb.getTaskNum());
+        List<TcExperimentDesignTb> designList = tcExperimentDesignTbMapper.selectSelective(query);
+        if (CollectionUtil.isNotEmpty(designList)) {
+            Map<String, String> breedNameMap = cerBreedDictMapper.selectAll().stream()
+                    .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName, (left, right) -> left));
+            List<String> headers = Arrays.asList("小区编号", "种子编号", "实施方案编号", "PD实施方案编号", "品种", "目标性状", "世代", "基因型", "小区面积", "播种方式", "播种数量", "播种时间", "移栽时间", "备注");
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (TcExperimentDesignTb item : designList) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("小区编号", item.getRegionNum());
+                row.put("种子编号", item.getSeedNum());
+                row.put("实施方案编号", item.getVectorTaskCode());
+                row.put("PD实施方案编号", item.getPdImplementCode());
+                row.put("品种", breedNameMap.getOrDefault(item.getBreedCode(), item.getBreedCode()));
+                row.put("目标性状", item.getTargetCharacter());
+                row.put("世代", item.getGenerationCode());
+                row.put("基因型", item.getTcGene());
+                row.put("小区面积", joinText(item.getRegionArea(), item.getAreaUnit()));
+                row.put("播种方式", item.getSeedingType());
+                row.put("播种数量", joinText(item.getSeedingNumber() == null ? null : String.valueOf(item.getSeedingNumber()), item.getSeedingUnit()));
+                row.put("播种时间", item.getSeedingTime());
+                row.put("移栽时间", item.getTransplantTime());
+                row.put("备注", item.getRemark());
+                rows.add(row);
+            }
+            sections.add(buildTableSection("田间设计明细", headers, rows));
+            return sections;
+        }
+
+        if (StringUtils.isNotEmpty(dto.getExperimentDesignUrl())) {
+            List<ExperimentDesignExcelDTO> excelList = validatorExcel(dto);
+            if (CollectionUtil.isNotEmpty(excelList)) {
+                List<String> headers = Arrays.asList("小区编号", "种子编号", "实施方案编号", "PD实施方案编号", "品种", "目标性状", "世代", "基因型", "小区面积", "播种方式", "播种数量", "播种时间", "移栽时间", "备注");
+                List<Map<String, Object>> rows = new ArrayList<>();
+                for (ExperimentDesignExcelDTO item : excelList) {
+                    Map<String, Object> row = new LinkedHashMap<>();
+                    row.put("小区编号", item.getRegionNum());
+                    row.put("种子编号", item.getSeedNum());
+                    row.put("实施方案编号", item.getVectorTaskCode());
+                    row.put("PD实施方案编号", item.getPdImplementCode());
+                    row.put("品种", item.getBreedName());
+                    row.put("目标性状", item.getTargetCharacter());
+                    row.put("世代", item.getGenerationCode());
+                    row.put("基因型", item.getTcGene());
+                    row.put("小区面积", joinText(item.getRegionArea(), item.getAreaUnit()));
+                    row.put("播种方式", item.getSeedingType());
+                    row.put("播种数量", joinText(item.getSeedingNumber() == null ? null : String.valueOf(item.getSeedingNumber()), item.getSeedingUnit()));
+                    row.put("播种时间", item.getSeedingTime());
+                    row.put("移栽时间", item.getTransplantTime());
+                    row.put("备注", item.getRemark());
+                    rows.add(row);
+                }
+                sections.add(buildTableSection("田间设计明细", headers, rows));
+            }
+        }
+
+        return sections;
+    }
+
+    private String experimentTypeNames(List<String> experimentTypeList) {
+        if (CollectionUtil.isEmpty(experimentTypeList)) {
+            return "";
+        }
+        return experimentTypeList.stream()
+                .map(code -> {
+                    String desc = ExperimentTypeEnum.getDescByCode(code);
+                    return StringUtils.isEmpty(desc) ? code : desc;
+                })
+                .collect(Collectors.joining("、"));
+    }
+
+    private String joinValues(List<String> values) {
+        if (CollectionUtil.isEmpty(values)) {
+            return "";
+        }
+        return values.stream().filter(StringUtils::isNotEmpty).distinct().collect(Collectors.joining("、"));
+    }
+
+    private String joinText(String first, String second) {
+        if (StringUtils.isEmpty(first)) {
+            return "";
+        }
+        return StringUtils.isEmpty(second) ? first : first + second;
     }
 }

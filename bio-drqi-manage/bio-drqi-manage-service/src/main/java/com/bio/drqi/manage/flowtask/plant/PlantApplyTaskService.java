@@ -2,7 +2,6 @@ package com.bio.drqi.manage.flowtask.plant;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
-import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
@@ -10,13 +9,15 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.ExperimentTypeEnum;
 import com.bio.drqi.common.enums.SampleGroupPergixEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.common.util.LetterUtil;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.manage.dto.plant.ExperimentExcelDTO;
-import com.bio.drqi.mapper.*;
 import com.bio.drqi.manage.dto.plant.task.PlantExperimentTaskDTO;
+import com.bio.drqi.mapper.*;
+import com.bio.flow.dto.BioHtmlModelDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,11 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service("plant_apply_task")
@@ -53,6 +57,12 @@ public class PlantApplyTaskService extends AbstractPlantBaseTaskService {
 
     @Resource
     private BioSampleCodePrefixTbMapper bioSampleCodePrefixTbMapper;
+
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
+
+    @Resource
+    private SeedProduceAddressDictMapper seedProduceAddressDictMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -168,5 +178,99 @@ public class PlantApplyTaskService extends AbstractPlantBaseTaskService {
         } else {
             return SampleGroupPergixEnum.C.name() + LetterUtil.nextLetterForInstantVerify(maxSampleCodePrefix.substring(1));
         }
+    }
+
+    @Override
+    public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
+        PlantExperimentTaskDTO dto = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), PlantExperimentTaskDTO.class);
+        if (dto == null) {
+            return Collections.emptyList();
+        }
+
+        List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
+        CerSpeciesConf speciesConf = StringUtils.isEmpty(dto.getSpeciesCode()) ? null : cerSpeciesConfMapper.selectOneBySpeciesCode(dto.getSpeciesCode());
+        SeedProduceAddressDict addressDict = StringUtils.isEmpty(dto.getExperimentAddressCode()) ? null : seedProduceAddressDictMapper.selectOneByAddressCode(dto.getExperimentAddressCode());
+
+        List<BioHtmlModelDTO.ModelField> applyFields = new ArrayList<>();
+        applyFields.add(buildField("物种", speciesConf == null ? dto.getSpeciesCode() : speciesConf.getSpeciesName()));
+        applyFields.add(buildField("试验类型", experimentTypeNames(dto.getExperimentType())));
+        applyFields.add(buildField("种植目标", dto.getPlantTarget()));
+        applyFields.add(buildField("试验地点", addressDict == null ? dto.getExperimentAddressCode() : addressDict.getAddressName()));
+        applyFields.add(buildField("取样编号前缀", dto.getSampleCodePrefix()));
+        applyFields.add(buildField("实施方案编号", joinValues(dto.getVectorTaskCodeList())));
+        applyFields.add(buildField("PD实施方案编号", joinValues(dto.getPdImplementCodeList())));
+        applyFields.add(buildField("种植明细文件", dto.getPlantDetailUrl()));
+        applyFields.add(buildField("附件", dto.getFileUrl()));
+        sections.add(buildFieldSection("申请信息", applyFields));
+
+        PlantApplyDetailTb query = new PlantApplyDetailTb();
+        query.setPlantApplyNum(bioTaskDtlTb.getTaskNum());
+        List<PlantApplyDetailTb> detailList = plantApplyDetailTbMapper.selectSelective(query);
+        if (CollectionUtil.isNotEmpty(detailList)) {
+            Map<String, String> speciesNameMap = cerSpeciesConfMapper.selectAll().stream()
+                    .collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName, (left, right) -> left));
+            Map<String, String> breedNameMap = cerBreedDictMapper.selectAll().stream()
+                    .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName, (left, right) -> left));
+            List<String> headers = java.util.Arrays.asList("小区编号", "种子编号", "实施方案编号", "PD实施方案编号", "种植编号", "物种", "品种", "代次", "基因型", "种植时间", "种植数量", "单位", "备注");
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (PlantApplyDetailTb detail : detailList) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("小区编号", detail.getRegionNum());
+                row.put("种子编号", detail.getSeedNum());
+                row.put("实施方案编号", detail.getVectorTaskCode());
+                row.put("PD实施方案编号", detail.getPdImplementCode());
+                row.put("种植编号", detail.getPlantCode());
+                row.put("物种", speciesNameMap.getOrDefault(detail.getSpeciesCode(), detail.getSpeciesCode()));
+                row.put("品种", breedNameMap.getOrDefault(detail.getBreedCode(), detail.getBreedCode()));
+                row.put("代次", detail.getGenerationCode());
+                row.put("基因型", detail.getGeneType());
+                row.put("种植时间", detail.getPlantTime());
+                row.put("种植数量", detail.getPlantNumber());
+                row.put("单位", detail.getPlantUnit());
+                row.put("备注", detail.getRemarks());
+                rows.add(row);
+            }
+            sections.add(buildTableSection("种植明细", headers, rows));
+            return sections;
+        }
+
+        List<ExperimentExcelDTO> excelDTOList = getExperimentExcelDTOS(dto);
+        if (CollectionUtil.isNotEmpty(excelDTOList)) {
+            List<String> headers = java.util.Arrays.asList("小区编号", "种子编号", "实施方案编号", "PD实施方案编号", "种植数量", "种植时间", "备注");
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (ExperimentExcelDTO item : excelDTOList) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("小区编号", item.getRegionNum());
+                row.put("种子编号", item.getSeedNum());
+                row.put("实施方案编号", item.getVectorTaskCode());
+                row.put("PD实施方案编号", item.getPdImplementCode());
+                row.put("种植数量", item.getPlantNumber());
+                row.put("种植时间", item.getPlantTime());
+                row.put("备注", item.getRemark());
+                rows.add(row);
+            }
+            sections.add(buildTableSection("种植明细", headers, rows));
+        }
+
+        return sections;
+    }
+
+    private String experimentTypeNames(List<String> experimentTypeList) {
+        if (CollectionUtil.isEmpty(experimentTypeList)) {
+            return "";
+        }
+        return experimentTypeList.stream()
+                .map(code -> {
+                    String desc = ExperimentTypeEnum.getDescByCode(code);
+                    return StringUtils.isEmpty(desc) ? code : desc;
+                })
+                .collect(Collectors.joining("、"));
+    }
+
+    private String joinValues(List<String> values) {
+        if (CollectionUtil.isEmpty(values)) {
+            return "";
+        }
+        return values.stream().filter(StringUtils::isNotEmpty).distinct().collect(Collectors.joining("、"));
     }
 }

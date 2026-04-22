@@ -6,18 +6,24 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.StringUtils;
 import com.bio.common.core.util.ValidatorUtil;
 import com.bio.drqi.bsm.dto.BmsProductOutDTO;
 import com.bio.drqi.bsm.enums.OutTypeEnum;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.mapper.*;
+import com.bio.flow.dto.BioHtmlModelDTO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +42,9 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
 
     @Resource
     private BmsProductStockInLogMapper bmsProductStockInLogMapper;
+
+    @Resource
+    private BmsStockLocationDictMapper bmsStockLocationDictMapper;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -117,5 +126,58 @@ public class BmsProductOutTaskService extends AbstractBsmBaseTaskService {
     @Override
     public void cancelTask(BioTaskDtlTb bioTaskDtlTb) {
 
+    }
+
+    @Override
+    public List<BioHtmlModelDTO.ModelSection> getSections(BioTaskDtlTb bioTaskDtlTb) {
+        List<BmsProductOutDTO> dtoList = JSONUtil.toList(bioTaskDtlTb.getTaskForm(), BmsProductOutDTO.class);
+        if (CollectionUtil.isEmpty(dtoList)) {
+            return Collections.emptyList();
+        }
+
+        List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
+        List<BioHtmlModelDTO.ModelField> applyFields = new ArrayList<>();
+        applyFields.add(buildField("出库商品数", String.valueOf(dtoList.size())));
+        sections.add(buildFieldSection("申请信息", applyFields));
+
+        List<String> headers = java.util.Arrays.asList("商品名称", "规格", "批次号", "出库数量", "单位", "库房", "当前库存", "累计出库", "库位", "备注");
+        List<Map<String, Object>> rows = new ArrayList<>();
+        for (BmsProductOutDTO item : dtoList) {
+            BmsProductStockTb stockTb = bmsProductStockTbMapper.selectOneByUniqueCode(item.getUniqueCode());
+            Map<String, String> locationNameMap = stockTb == null ? Collections.emptyMap() :
+                    bmsStockLocationDictMapper.selectAllByStockCode(stockTb.getStockCode()).stream()
+                            .collect(Collectors.toMap(BmsStockLocationDict::getLocationNumber, BmsStockLocationDict::getStockName, (left, right) -> left));
+            Map<String, Object> row = new LinkedHashMap<>();
+            row.put("商品名称", item.getProductName());
+            row.put("规格", item.getProductSpecs());
+            row.put("批次号", item.getBatchNo());
+            row.put("出库数量", decimalText(item.getNumber()));
+            row.put("单位", item.getUnitCode());
+            row.put("库房", item.getStockCode());
+            row.put("当前库存", stockTb == null ? "" : decimalText(stockTb.getCurrentStockNumber()));
+            row.put("累计出库", stockTb == null ? "" : decimalText(stockTb.getTotalOutNumber()));
+            row.put("库位", stockTb == null || StringUtils.isEmpty(stockTb.getStockLocationNumber()) ? "" : locationText(JSONUtil.toList(stockTb.getStockLocationNumber(), String.class), locationNameMap));
+            row.put("备注", item.getRemark());
+            rows.add(row);
+        }
+        sections.add(buildTableSection("出库明细", headers, rows));
+        return sections;
+    }
+
+    private String locationText(List<String> locationNumberList, Map<String, String> locationNameMap) {
+        if (CollectionUtil.isEmpty(locationNumberList)) {
+            return "";
+        }
+        return locationNumberList.stream()
+                .filter(StringUtils::isNotEmpty)
+                .map(locationNumber -> {
+                    String stockName = locationNameMap.get(locationNumber);
+                    return StringUtils.isEmpty(stockName) ? locationNumber : stockName + "/" + locationNumber;
+                })
+                .collect(Collectors.joining("、"));
+    }
+
+    private String decimalText(BigDecimal value) {
+        return value == null ? "" : value.stripTrailingZeros().toPlainString();
     }
 }

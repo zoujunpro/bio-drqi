@@ -145,7 +145,6 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
             cerVectorTb.setPlasmidName(vector.getPlasmidName());
             cerVectorTb.setTargetSite(vector.getTargetSite());
             cerVectorTb.setBacterialResistance(vector.getBacterialResistance());
-            cerVectorTb.setPlasmidSpecificPrimers(vector.getPlasmidSpecificPrimers());
             cerVectorTb.setBacterialReplicon(vector.getBacterialReplicon());
             cerVectorTb.setCopyNumber(vector.getCopyNumber());
             cerVectorTb.setAgrobacteriumInformation(vector.getAgrobacteriumInformation());
@@ -217,14 +216,13 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
         }
 
         if (CollectionUtil.isNotEmpty(dto.getVectorList())) {
-            List<String> headers = Arrays.asList("质粒名称", "靶位点", "细菌抗性", "质粒特异性引物", "细菌复制子", "拷贝数", "农杆菌信息", "植物筛选标记", "目标特性", "浓度", "体积");
+            List<String> headers = Arrays.asList("质粒名称", "靶位点", "细菌抗性", "细菌复制子", "拷贝数", "农杆菌信息", "植物筛选标记", "目标特性", "浓度", "体积");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (VectorTaskAddDTO.Vector item : dto.getVectorList()) {
                 Map<String, Object> row = new LinkedHashMap<>();
                 row.put("质粒名称", item.getPlasmidName());
                 row.put("靶位点", item.getTargetSite());
                 row.put("细菌抗性", item.getBacterialResistance());
-                row.put("质粒特异性引物", item.getPlasmidSpecificPrimers());
                 row.put("细菌复制子", item.getBacterialReplicon());
                 row.put("拷贝数", item.getCopyNumber());
                 row.put("农杆菌信息", item.getAgrobacteriumInformation());

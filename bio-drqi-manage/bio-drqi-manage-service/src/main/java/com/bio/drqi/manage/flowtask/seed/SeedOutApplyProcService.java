@@ -115,6 +115,12 @@ public class SeedOutApplyProcService extends AbstractSeedTaskService {
 
         List<SeedOutDTO.ApplyFromContent> applyContentList = resolveApplyContentList(seedOutDTO, applyFrom);
         if (CollectionUtil.isNotEmpty(applyContentList)) {
+            Map<String, String> speciesNameMap = cerSpeciesConfMapper.selectList(null).stream()
+                    .collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName, (left, right) -> left));
+            Map<String, String> breedNameMap = cerBreedDictMapper.selectAll().stream()
+                    .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName, (left, right) -> left));
+            Map<String, String> addressNameMap = seedProduceAddressDictMapper.selectAll().stream()
+                    .collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName, (left, right) -> left));
             List<String> headers = Arrays.asList(
                     "种子编号", "项目编号", "项目名称", "子项目编号", "实施方案编号",
                     "基因型", "物种", "品种", "产地", "年份", "发芽率", "性状纯度",
@@ -129,9 +135,9 @@ public class SeedOutApplyProcService extends AbstractSeedTaskService {
                 row.put("子项目编号", content.getSubProjectCode());
                 row.put("实施方案编号", content.getVectorTaskCode());
                 row.put("基因型", content.getGeneType());
-                row.put("物种", StringUtils.isNotEmpty(content.getSpeciesName()) ? content.getSpeciesName() : content.getSpeciesCode());
-                row.put("品种", StringUtils.isNotEmpty(content.getBreedName()) ? content.getBreedName() : content.getBreedCode());
-                row.put("产地", content.getProductAddress());
+                row.put("物种", resolveSpeciesName(content, speciesNameMap));
+                row.put("品种", resolveBreedName(content, breedNameMap));
+                row.put("产地", resolveAddressName(content.getProductAddress(), addressNameMap));
                 row.put("年份", content.getYear());
                 row.put("发芽率", content.getSgr());
                 row.put("性状纯度", content.getTpur());
@@ -234,6 +240,33 @@ public class SeedOutApplyProcService extends AbstractSeedTaskService {
 
     private String defaultString(String value) {
         return value == null ? "" : value;
+    }
+
+    private String resolveSpeciesName(SeedOutDTO.ApplyFromContent content, Map<String, String> speciesNameMap) {
+        if (StringUtils.isNotEmpty(content.getSpeciesName())) {
+            return content.getSpeciesName();
+        }
+        if (StringUtils.isEmpty(content.getSpeciesCode())) {
+            return "";
+        }
+        return defaultString(speciesNameMap.getOrDefault(content.getSpeciesCode(), content.getSpeciesCode()));
+    }
+
+    private String resolveBreedName(SeedOutDTO.ApplyFromContent content, Map<String, String> breedNameMap) {
+        if (StringUtils.isNotEmpty(content.getBreedName())) {
+            return content.getBreedName();
+        }
+        if (StringUtils.isEmpty(content.getBreedCode())) {
+            return "";
+        }
+        return defaultString(breedNameMap.getOrDefault(content.getBreedCode(), content.getBreedCode()));
+    }
+
+    private String resolveAddressName(String productAddress, Map<String, String> addressNameMap) {
+        if (StringUtils.isEmpty(productAddress)) {
+            return "";
+        }
+        return defaultString(addressNameMap.getOrDefault(productAddress, productAddress));
     }
 
     private List<SeedOutDTO.ApplyFromContent> resolveApplyContentList(SeedOutDTO seedOutDTO, SeedOutDTO.ApplyFrom applyFrom) {

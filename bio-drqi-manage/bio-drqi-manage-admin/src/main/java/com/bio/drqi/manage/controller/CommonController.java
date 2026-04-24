@@ -64,7 +64,7 @@ public class CommonController {
      */
     @GetMapping("/getPresignedObjectUrl")
     @WebLog(desc = "获取miNio上传链接")
-    public ResponseResult<String> getPresignedObjectUrl(@RequestParam String objectName) {
+    public ResponseResult<String> getPresignedObjectUrl(@RequestParam @Validated @NotBlank(message = "参数缺失:objectName") String objectName) {
         return ResponseResult.getSuccess(commonService.getPresignedObjectUrl(objectName));
     }
 

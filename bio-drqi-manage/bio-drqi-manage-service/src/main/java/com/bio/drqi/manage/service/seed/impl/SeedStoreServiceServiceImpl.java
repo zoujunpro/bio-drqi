@@ -308,8 +308,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
     @Override
     public void downSpotCheckResultExcel(HttpServletResponse httpServletResponse) {
-        List<DownSpotCheckResultExcelDTO> dataList = BeanUtils.copyToList(seedStockTbMapper.selectSelective(new SeedStockTb()), DownSpotCheckResultExcelDTO.class);
-        ExcelUtil.writeExcel("抽检反馈模板", "sheet1", dataList, DownSpotCheckResultExcelDTO.class, httpServletResponse);
+        ExcelUtil.writeExcel("抽检反馈模板", "sheet1", null, DownSpotCheckResultExcelDTO.class, httpServletResponse);
     }
 
     @Override

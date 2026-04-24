@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: bio-drqi-es
+
+sync:
+  es:
+    enabled: false
+    realtime-enabled: true
+    realtime-auto-start: false
+    full:
+      enabled: true
+      batch-size: 1000

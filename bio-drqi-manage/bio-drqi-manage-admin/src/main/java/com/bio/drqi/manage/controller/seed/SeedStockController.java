@@ -186,7 +186,7 @@ public class SeedStockController {
      *
      * @return
      */
-    @PostMapping(value = "/uploadSpotCheckResultExcel", consumes = "multipart/form-data")
+    @PostMapping(value = "/uploadSpotCheckResultExcel")
     @WebLog(desc = "种子库存-上传抽检反馈表")
     @RequestLog("种子库存-上传抽检反馈表")
     @RequirePermissions("seed:stock:spotCheckResult")

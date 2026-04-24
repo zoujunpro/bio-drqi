@@ -16,6 +16,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
+        <module>bio-drqi-es</module>
         <module>bio-drqi-dao</module>
         <module>bio-drqi-bsm</module>
         <module>bio-drqi-common</module>

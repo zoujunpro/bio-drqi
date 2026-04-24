@@ -1,12 +1,9 @@
 spring:
   application:
     name: bio-drqi-es
+  profiles:
+    active: ${spring.profiles.active:local}
 
 sync:
   es:
     enabled: false
-    realtime-enabled: true
-    realtime-auto-start: false
-    full:
-      enabled: true
-      batch-size: 1000

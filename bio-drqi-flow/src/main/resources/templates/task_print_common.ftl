@@ -42,7 +42,7 @@
             margin-bottom: 6px;
             text-align: center;
             min-height: 88px;
-            padding-right: 96px;
+            padding: 0 96px;
             box-sizing: border-box;
         }
 
@@ -197,7 +197,7 @@
             .header {
                 min-height: 82px;
                 margin-bottom: 4px;
-                padding-right: 92px;
+                padding: 0 92px;
             }
 
             .header h1 {

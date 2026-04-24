@@ -113,7 +113,7 @@ public class SeedOutApplyProcService extends AbstractSeedTaskService {
         applyFields.add(buildField("备注", applyFrom.getApplyRemark()));
         sections.add(buildFieldSection("申请信息", applyFields));
 
-        List<SeedOutDTO.ApplyFromContent> applyContentList = applyFrom.getApplyFromContentList();
+        List<SeedOutDTO.ApplyFromContent> applyContentList = resolveApplyContentList(seedOutDTO, applyFrom);
         if (CollectionUtil.isNotEmpty(applyContentList)) {
             List<String> headers = Arrays.asList(
                     "种子编号", "项目编号", "项目名称", "子项目编号", "实施方案编号",
@@ -234,5 +234,38 @@ public class SeedOutApplyProcService extends AbstractSeedTaskService {
 
     private String defaultString(String value) {
         return value == null ? "" : value;
+    }
+
+    private List<SeedOutDTO.ApplyFromContent> resolveApplyContentList(SeedOutDTO seedOutDTO, SeedOutDTO.ApplyFrom applyFrom) {
+        if (CollectionUtil.isNotEmpty(applyFrom.getApplyFromContentList())) {
+            return applyFrom.getApplyFromContentList();
+        }
+        if (CollectionUtil.isNotEmpty(applyFrom.getApplyFormContentList())) {
+            return applyFrom.getApplyFormContentList();
+        }
+        if (seedOutDTO.getExecuteForm() == null || CollectionUtil.isEmpty(seedOutDTO.getExecuteForm().getExecuteFormContentList())) {
+            return Collections.emptyList();
+        }
+        List<SeedOutDTO.ApplyFromContent> fallbackList = new ArrayList<>();
+        for (SeedOutDTO.ExecuteFormContent executeFormContent : seedOutDTO.getExecuteForm().getExecuteFormContentList()) {
+            SeedOutDTO.ApplyFromContent applyFromContent = new SeedOutDTO.ApplyFromContent();
+            applyFromContent.setSeedNum(executeFormContent.getSeedNum());
+            applyFromContent.setNum(executeFormContent.getNum());
+            applyFromContent.setRemark(executeFormContent.getRemark());
+            SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(executeFormContent.getSeedNum());
+            if (seedStockTb != null) {
+                applyFromContent.setProjectCode(seedStockTb.getProjectCode());
+                applyFromContent.setProjectName(seedStockTb.getTargetCharacter());
+                applyFromContent.setVectorTaskCode(seedStockTb.getVectorTaskCode());
+                applyFromContent.setGeneType(seedStockTb.getGeneType());
+                applyFromContent.setSpeciesCode(seedStockTb.getSpeciesCode());
+                applyFromContent.setBreedCode(seedStockTb.getBreedCode());
+                applyFromContent.setProductAddress(seedStockTb.getProductionLocationCode());
+                applyFromContent.setYear(seedStockTb.getHarvestTime());
+                applyFromContent.setUnit(seedStockTb.getUnit());
+            }
+            fallbackList.add(applyFromContent);
+        }
+        return fallbackList;
     }
 }

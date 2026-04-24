@@ -63,6 +63,11 @@ public class SeedOutDTO {
 
 
         private List<ApplyFromContent> applyFromContentList;
+
+        /**
+         * 兼容前端字段命名（applyFormContentList）
+         */
+        private List<ApplyFromContent> applyFormContentList;
     }
 
 

@@ -5,8 +5,11 @@ import com.bio.common.core.util.StringUtils;
 import com.bio.common.freemarker.util.HtmlToPdfUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 public final class PdfUtil {
 
@@ -38,11 +41,58 @@ public final class PdfUtil {
             throw new IllegalArgumentException("fontPath不能为空");
         }
         try {
-            //region Description
-            HtmlToPdfUtils.html2Pdf(htmlInputStream, response, fileName, fontPath);
-            //endregion
+            applyPdfHeaders(response, fileName);
+            HtmlToPdfUtils.html2Pdf(htmlInputStream, new PdfFileNameResponseWrapper(response, fileName), fileName, fontPath);
         } catch (Exception e) {
             throw new RuntimeException("PDF生成失败", e);
+        }
+    }
+
+    private static void applyPdfHeaders(HttpServletResponse response, String fileName) {
+        String encodedFileName = encodeFileName(fileName);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment;filename=" + encodedFileName);
+    }
+
+    private static String encodeFileName(String fileName) {
+        try {
+            return URLEncoder.encode(fileName + ".pdf", StandardCharsets.UTF_8.name());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("文件名编码失败", e);
+        }
+    }
+
+    private static class PdfFileNameResponseWrapper extends HttpServletResponseWrapper {
+        private final String encodedFileName;
+
+        private PdfFileNameResponseWrapper(HttpServletResponse response, String fileName) {
+            super(response);
+            this.encodedFileName = encodeFileName(fileName);
+        }
+
+        @Override
+        public void setHeader(String name, String value) {
+            super.setHeader(name, rewriteContentDisposition(name, value));
+        }
+
+        @Override
+        public void addHeader(String name, String value) {
+            super.addHeader(name, rewriteContentDisposition(name, value));
+        }
+
+        private String rewriteContentDisposition(String name, String value) {
+            if (name == null || value == null) {
+                return value;
+            }
+            if (!"content-disposition".equalsIgnoreCase(name)) {
+                return value;
+            }
+            String lowerValue = value.toLowerCase(Locale.ROOT);
+            if (!lowerValue.startsWith("attachment")) {
+                return value;
+            }
+            return "attachment;filename=" + encodedFileName;
         }
     }
 }

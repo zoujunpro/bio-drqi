@@ -190,7 +190,7 @@ public class SeedStockController {
     @WebLog(desc = "种子库存-上传抽检反馈表")
     @RequestLog("种子库存-上传抽检反馈表")
     @RequirePermissions("seed:stock:spotCheckResult")
-    public ResponseResult<String> uploadSpotCheckResultExcel(@ModelAttribute @Validated SeedStockUploadSpotCheckResultExcelReqDTO seedStockUploadSpotCheckResultExcelReqDTO) {
+    public ResponseResult<String> uploadSpotCheckResultExcel(@RequestBody @Validated SeedStockUploadSpotCheckResultExcelReqDTO seedStockUploadSpotCheckResultExcelReqDTO) {
         seedStoreService.uploadSpotCheckResultExcel(seedStockUploadSpotCheckResultExcelReqDTO);
         return ResponseResult.getSuccess("ok");
     }

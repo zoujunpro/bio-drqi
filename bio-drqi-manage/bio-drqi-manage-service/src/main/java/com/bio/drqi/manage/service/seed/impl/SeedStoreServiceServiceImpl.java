@@ -11,6 +11,7 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.domain.*;
@@ -30,14 +31,12 @@ import com.bio.drqi.util.PaginationHelper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,6 +77,9 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
 
     @Resource
     private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
+
+    @Resource
+    private OssService ossService;
 
     @Override
     public SeedDetailRspDTO querySeedByNum(String seedNum) {
@@ -273,36 +275,40 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void uploadSpotCheckResultExcel(SeedStockUploadSpotCheckResultExcelReqDTO seedStockUploadSpotCheckResultExcelReqDTO) {
-        String originalFilename = seedStockUploadSpotCheckResultExcelReqDTO.getFile().getOriginalFilename();
-        if (StringUtils.isEmpty(originalFilename) || (!originalFilename.endsWith(".xlsx") && !originalFilename.endsWith(".xls"))) {
+        String excelUrl = seedStockUploadSpotCheckResultExcelReqDTO.getExcelUrl();
+        if (StringUtils.isEmpty(excelUrl) || (!excelUrl.endsWith(".xlsx") && !excelUrl.endsWith(".xls"))) {
             throw new BusinessException("请上传excel文件");
         }
-        File tempFile = FileUtil.createTempFile(originalFilename, true);
+        File tempFile = FileUtil.createTempFile("seed-spot-check-" + System.currentTimeMillis(), true);
         try {
-            FileUtils.copyToFile(seedStockUploadSpotCheckResultExcelReqDTO.getFile().getInputStream(), tempFile);
-        } catch (IOException e) {
-            log.error("【种子抽检反馈文件处理失败】上传文件保存失败", e);
+            ossService.downloadPath(tempFile.getAbsolutePath(), excelUrl);
+        } catch (Exception e) {
+            log.error("【种子抽检反馈文件处理失败】下载OSS文件失败, excelUrl={}", excelUrl, e);
             throw new BusinessException("文件处理异常");
         }
-        List<DownSpotCheckResultExcelDTO> list = ExcelUtil.readExcel(tempFile.getAbsolutePath(), DownSpotCheckResultExcelDTO.class);
-        if (CollectionUtil.isNotEmpty(list)) {
-            Set<String> seedNumSet = new HashSet<>();
-            list.forEach(downSpotCheckResultExcelDTO -> {
-                if (StringUtils.isEmpty(downSpotCheckResultExcelDTO.getSeedNum()) && StringUtils.isEmpty(downSpotCheckResultExcelDTO.getSpotCheckResult())) {
-                    return;
-                }
-                if (StringUtils.isEmpty(downSpotCheckResultExcelDTO.getSeedNum())) {
-                    throw new BusinessException("上传数据异常，存在未填写种子编号的数据");
-                }
-                if (!seedNumSet.add(downSpotCheckResultExcelDTO.getSeedNum())) {
-                    throw new BusinessException("excel中存在重复的种子编号：" + downSpotCheckResultExcelDTO.getSeedNum());
-                }
-                SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(downSpotCheckResultExcelDTO.getSeedNum());
-                if (seedStockTb == null) {
-                    throw new BusinessException("找不到种子信息：" + downSpotCheckResultExcelDTO.getSeedNum());
-                }
-                seedStockTbMapper.updateSpotCheckResultById(StringUtils.isEmpty(seedStockTb.getSpotCheckResult()) ? downSpotCheckResultExcelDTO.getSpotCheckResult() : seedStockTb.getSpotCheckResult() + ";" + downSpotCheckResultExcelDTO.getSpotCheckResult(), seedStockTb.getId());
-            });
+        try {
+            List<DownSpotCheckResultExcelDTO> list = ExcelUtil.readExcel(tempFile.getAbsolutePath(), DownSpotCheckResultExcelDTO.class);
+            if (CollectionUtil.isNotEmpty(list)) {
+                Set<String> seedNumSet = new HashSet<>();
+                list.forEach(downSpotCheckResultExcelDTO -> {
+                    if (StringUtils.isEmpty(downSpotCheckResultExcelDTO.getSeedNum()) && StringUtils.isEmpty(downSpotCheckResultExcelDTO.getSpotCheckResult())) {
+                        return;
+                    }
+                    if (StringUtils.isEmpty(downSpotCheckResultExcelDTO.getSeedNum())) {
+                        throw new BusinessException("上传数据异常，存在未填写种子编号的数据");
+                    }
+                    if (!seedNumSet.add(downSpotCheckResultExcelDTO.getSeedNum())) {
+                        throw new BusinessException("excel中存在重复的种子编号：" + downSpotCheckResultExcelDTO.getSeedNum());
+                    }
+                    SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(downSpotCheckResultExcelDTO.getSeedNum());
+                    if (seedStockTb == null) {
+                        throw new BusinessException("找不到种子信息：" + downSpotCheckResultExcelDTO.getSeedNum());
+                    }
+                    seedStockTbMapper.updateSpotCheckResultById(StringUtils.isEmpty(seedStockTb.getSpotCheckResult()) ? downSpotCheckResultExcelDTO.getSpotCheckResult() : seedStockTb.getSpotCheckResult() + ";" + downSpotCheckResultExcelDTO.getSpotCheckResult(), seedStockTb.getId());
+                });
+            }
+        } finally {
+            FileUtil.del(tempFile);
         }
     }
 

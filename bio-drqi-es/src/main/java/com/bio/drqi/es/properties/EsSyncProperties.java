@@ -1,4 +1,4 @@
-package com.bio.drqi.es.sync;
+package com.bio.drqi.es.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "sync.es")
+@ConfigurationProperties(prefix = "bio.es")
 public class EsSyncProperties {
 
     /**

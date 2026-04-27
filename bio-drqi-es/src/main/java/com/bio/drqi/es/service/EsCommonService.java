@@ -1,4 +1,4 @@
-package com.bio.drqi.es.sync;
+package com.bio.drqi.es.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -17,16 +17,24 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 @Slf4j
-@ConditionalOnProperty(prefix = "sync.es", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = "bio.es", name = "enabled", havingValue = "true")
 public class EsCommonService {
 
     private final RestHighLevelClient restHighLevelClient;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public EsCommonService(RestHighLevelClient restHighLevelClient) {
         this.restHighLevelClient = restHighLevelClient;
@@ -76,7 +84,7 @@ public class EsCommonService {
             if (idValue == null) {
                 continue;
             }
-            request.add(new IndexRequest(index).id(normalizeId(idValue)).source(row));
+            request.add(new IndexRequest(index).id(normalizeId(idValue)).source(sanitizeMap(row)));
         }
         if (request.numberOfActions() == 0) {
             return;
@@ -93,7 +101,7 @@ public class EsCommonService {
 
     public void upsert(String index, String id, Map<String, Object> doc) {
         try {
-            restHighLevelClient.index(new IndexRequest(index).id(id).source(doc), RequestOptions.DEFAULT);
+            restHighLevelClient.index(new IndexRequest(index).id(id).source(sanitizeMap(doc)), RequestOptions.DEFAULT);
         } catch (Exception e) {
             throw new IllegalStateException("ES upsert 失败", e);
         }
@@ -121,5 +129,43 @@ public class EsCommonService {
             return ((BigDecimal) idValue).stripTrailingZeros().toPlainString();
         }
         return String.valueOf(idValue);
+    }
+
+    private Map<String, Object> sanitizeMap(Map<String, Object> source) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        for (Map.Entry<String, Object> entry : source.entrySet()) {
+            result.put(entry.getKey(), sanitizeValue(entry.getValue()));
+        }
+        return result;
+    }
+
+    private Object sanitizeValue(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof java.sql.Timestamp) {
+            LocalDateTime dateTime = ((java.sql.Timestamp) value).toLocalDateTime();
+            return DATE_TIME_FORMATTER.format(dateTime);
+        }
+        if (value instanceof java.sql.Date) {
+            LocalDate localDate = ((java.sql.Date) value).toLocalDate();
+            return DATE_FORMATTER.format(localDate);
+        }
+        if (value instanceof Date) {
+            LocalDateTime dateTime = LocalDateTime.ofInstant(((Date) value).toInstant(), ZoneId.systemDefault());
+            return DATE_TIME_FORMATTER.format(dateTime);
+        }
+        if (value instanceof Map) {
+            return sanitizeMap((Map<String, Object>) value);
+        }
+        if (value instanceof List) {
+            List<?> source = (List<?>) value;
+            List<Object> list = new ArrayList<>(source.size());
+            for (Object item : source) {
+                list.add(sanitizeValue(item));
+            }
+            return list;
+        }
+        return value;
     }
 }

@@ -1,8 +1,11 @@
-package com.bio.drqi.es.sync;
+package com.bio.drqi.es.service.impl;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.bio.drqi.es.dto.req.TableSyncReqDTO;
+import com.bio.drqi.es.service.EsCommonService;
+import com.bio.drqi.es.service.EsSyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.Resource;
@@ -16,41 +19,34 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @Slf4j
 @ConditionalOnProperty(prefix = "sync.es", name = "enabled", havingValue = "true")
-public class TableToEsSyncService {
+public class EsSyncServiceImpl implements EsSyncService {
 
     private static final String DOMAIN_PACKAGE = "com.bio.drqi.domain";
     private static final String DOMAIN_PATTERN = "classpath*:com/bio/drqi/domain/*.class";
+    private static final String idField="id";
 
     private final JdbcTemplate jdbcTemplate;
     private final EsCommonService esCommonService;
     private final AtomicReference<List<Class<?>>> domainClassCache = new AtomicReference<>();
 
-    public TableToEsSyncService(JdbcTemplate jdbcTemplate, EsCommonService esCommonService) {
+    public EsSyncServiceImpl(JdbcTemplate jdbcTemplate, EsCommonService esCommonService) {
         this.jdbcTemplate = jdbcTemplate;
         this.esCommonService = esCommonService;
     }
 
-    public Map<String, Object> syncTable(String tableName, String idField) {
-        String input = tableName == null ? "" : tableName.trim();
-        if (input.isEmpty()) {
-            throw new IllegalStateException("参数缺失: tableName");
-        }
-        String[] schemaTable = splitSchemaTable(input);
+    @Override
+    public void syncTable(TableSyncReqDTO tableSyncReqDTO) {
+
+        String[] schemaTable = splitSchemaTable(tableSyncReqDTO.getTableName());
         String schema = schemaTable[0];
         String table = schemaTable[1];
         String index = table.toLowerCase(Locale.ROOT);
-
         Class<?> entityClass = resolveEntityClass(table);
         if (entityClass == null) {
             throw new IllegalStateException("在包 " + DOMAIN_PACKAGE + " 下找不到表对应实体: " + table);
@@ -65,14 +61,7 @@ public class TableToEsSyncService {
         List<Map<String, Object>> rows = jdbcTemplate.queryForList("SELECT * FROM " + schema + "." + table);
         esCommonService.saveBatch(index, idField, rows);
 
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("table", schema + "." + table);
-        result.put("index", index);
-        result.put("entityClass", entityClass.getName());
-        result.put("idField", idField);
-        result.put("fieldCount", fieldCount);
-        result.put("rowCount", rows.size());
-        return result;
+
     }
 
     private String[] splitSchemaTable(String value) {

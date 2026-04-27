@@ -3,7 +3,3 @@ spring:
     name: bio-drqi-es
   profiles:
     active: ${spring.profiles.active:local}
-
-sync:
-  es:
-    enabled: false

@@ -1,5 +1,6 @@
-package com.bio.drqi.es.sync;
+package com.bio.drqi.es.service;
 
+import com.bio.drqi.es.properties.EsSyncProperties;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -15,7 +16,7 @@ import java.net.URI;
 import java.util.List;
 
 @Configuration
-@ConditionalOnProperty(prefix = "sync.es", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = "bio.es", name = "enabled", havingValue = "true")
 public class EsSyncClientConfig {
 
     @Bean(destroyMethod = "close")

@@ -7,6 +7,15 @@ spring:
     username: root
     password: qibio2022*
     driver-class-name: com.mysql.cj.jdbc.Driver
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    consumer:
+      group-id: es-sync-consumer
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      max-poll-records: 100
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 bio:
   es:
@@ -16,3 +25,7 @@ bio:
     # 如 ES 开启鉴权，取消注释
     username: elastic
     password: elastic123
+    canal:
+      enabled: false
+      topic: canal-binlog
+      group-id: bio-drqi-es-canal

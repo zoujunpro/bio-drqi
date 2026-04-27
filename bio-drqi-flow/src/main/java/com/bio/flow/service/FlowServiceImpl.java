@@ -182,7 +182,11 @@ public class FlowServiceImpl implements FlowService {
     }
 
     private boolean isBasicType(Object value) {
-        return value == null || value instanceof String || value instanceof Boolean || value instanceof Character || value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long || value instanceof Float || value instanceof Double;
+        return value == null
+                || value instanceof String
+                || value instanceof Boolean
+                || value instanceof Character
+                || value instanceof Number;
     }
 
     @Override

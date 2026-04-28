@@ -9,6 +9,7 @@ import java.util.Map;
 public class CanalMessage {
     private String database;
     private String table;
+    private List<String> pkNames;
     private String type;
     private Boolean isDdl;
     private List<Map<String, Object>> data;

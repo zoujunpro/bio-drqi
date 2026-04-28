@@ -36,10 +36,16 @@ public class EsCommonService {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    /**
+     * 构造注入 ES 客户端，供当前服务统一执行索引和文档操作。
+     */
     public EsCommonService(RestHighLevelClient restHighLevelClient) {
         this.restHighLevelClient = restHighLevelClient;
     }
 
+    /**
+     * 确保索引存在：不存在时按传入 mapping 创建，存在时直接返回。
+     */
     public void ensureIndex(String index, Map<String, Object> mapping) {
         try {
             boolean exists = restHighLevelClient.indices().exists(new GetIndexRequest(index), RequestOptions.DEFAULT);
@@ -58,6 +64,9 @@ public class EsCommonService {
         }
     }
 
+    /**
+     * 重建索引：若索引已存在先删除，再按 mapping 重新创建。
+     */
     public void recreateIndex(String index, Map<String, Object> mapping) {
         try {
             boolean exists = restHighLevelClient.indices().exists(new GetIndexRequest(index), RequestOptions.DEFAULT);
@@ -74,6 +83,9 @@ public class EsCommonService {
         }
     }
 
+    /**
+     * 批量写入文档：按 idField 取文档ID，自动做数据清洗后执行 bulk 写入。
+     */
     public void saveBatch(String index, String idField, List<Map<String, Object>> rows) {
         if (rows == null || rows.isEmpty()) {
             return;
@@ -99,6 +111,9 @@ public class EsCommonService {
         }
     }
 
+    /**
+     * 单条新增/覆盖写入：同ID会覆盖原文档，不存在则新增。
+     */
     public void upsert(String index, String id, Map<String, Object> doc) {
         try {
             restHighLevelClient.index(new IndexRequest(index).id(id).source(sanitizeMap(doc)), RequestOptions.DEFAULT);
@@ -107,6 +122,9 @@ public class EsCommonService {
         }
     }
 
+    /**
+     * 按文档ID删除指定索引中的数据。
+     */
     public void delete(String index, String id) {
         try {
             restHighLevelClient.delete(new DeleteRequest(index, id), RequestOptions.DEFAULT);
@@ -115,6 +133,9 @@ public class EsCommonService {
         }
     }
 
+    /**
+     * 按文档ID查询并返回原始 source map，不存在时返回 null。
+     */
     public Map<String, Object> getById(String index, String id) {
         try {
             GetResponse response = restHighLevelClient.get(new GetRequest(index, id), RequestOptions.DEFAULT);
@@ -124,6 +145,9 @@ public class EsCommonService {
         }
     }
 
+    /**
+     * 统一规范化文档ID，避免 BigDecimal 出现科学计数法导致ID不一致。
+     */
     private String normalizeId(Object idValue) {
         if (idValue instanceof BigDecimal) {
             return ((BigDecimal) idValue).stripTrailingZeros().toPlainString();
@@ -131,6 +155,9 @@ public class EsCommonService {
         return String.valueOf(idValue);
     }
 
+    /**
+     * 递归清洗 map 中的值，确保可被 ES 正确序列化。
+     */
     private Map<String, Object> sanitizeMap(Map<String, Object> source) {
         Map<String, Object> result = new LinkedHashMap<>();
         for (Map.Entry<String, Object> entry : source.entrySet()) {
@@ -139,6 +166,9 @@ public class EsCommonService {
         return result;
     }
 
+    /**
+     * 清洗单个值：统一时间格式，并递归处理嵌套 Map/List。
+     */
     private Object sanitizeValue(Object value) {
         if (value == null) {
             return null;

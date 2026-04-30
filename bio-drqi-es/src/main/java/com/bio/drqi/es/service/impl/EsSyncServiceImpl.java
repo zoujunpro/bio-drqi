@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Service
 @Slf4j
-@ConditionalOnProperty(prefix = "sync.es", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = "bio.es", name = "enabled", havingValue = "true")
 public class EsSyncServiceImpl implements EsSyncService {
 
     private static final String ID_FIELD = "id";

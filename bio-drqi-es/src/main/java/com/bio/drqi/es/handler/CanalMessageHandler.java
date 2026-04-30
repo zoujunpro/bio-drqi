@@ -7,6 +7,7 @@ import com.bio.drqi.es.support.EsDocumentConverter;
 import com.bio.drqi.es.support.EsMappingBuilder;
 import com.bio.drqi.es.support.MapperTableQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -18,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "bio.es", name = "enabled", havingValue = "true")
 public class CanalMessageHandler {
 
     private static final String DEFAULT_ID_FIELD = "id";

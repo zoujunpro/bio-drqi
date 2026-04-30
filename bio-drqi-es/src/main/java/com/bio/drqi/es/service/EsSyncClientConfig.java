@@ -23,7 +23,7 @@ public class EsSyncClientConfig {
     public RestHighLevelClient restHighLevelClient(EsSyncProperties properties) {
         List<String> hosts = properties.getHosts();
         if (hosts == null || hosts.isEmpty()) {
-            throw new IllegalStateException("sync.es.hosts 未配置，无法启用 ES 增量同步");
+            throw new IllegalStateException("bio.es.hosts 未配置，无法启用 ES 增量同步");
         }
         HttpHost[] httpHosts = hosts.stream().map(this::parseHost).toArray(HttpHost[]::new);
 

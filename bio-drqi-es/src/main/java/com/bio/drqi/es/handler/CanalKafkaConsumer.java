@@ -2,10 +2,11 @@ package com.bio.drqi.es.handler;
 
 import com.alibaba.fastjson2.JSON;
 import com.bio.drqi.es.dto.CanalMessage;
+import com.bio.drqi.es.config.CanalSyncEnabledCondition;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "bio.es.canal", name = "enabled", havingValue = "true")
+@Conditional(CanalSyncEnabledCondition.class)
 public class CanalKafkaConsumer {
 
     private final CanalMessageHandler canalMessageHandler;

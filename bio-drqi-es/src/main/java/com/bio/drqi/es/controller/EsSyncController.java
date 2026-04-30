@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/syn")
-@ConditionalOnProperty(prefix = "sync.es", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = "bio.es", name = "enabled", havingValue = "true")
 public class EsSyncController {
 
     private final EsSyncService esSyncService;

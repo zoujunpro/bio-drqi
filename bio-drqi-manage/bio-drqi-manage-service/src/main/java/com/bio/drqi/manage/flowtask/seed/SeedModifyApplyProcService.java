@@ -124,6 +124,10 @@ public class SeedModifyApplyProcService extends AbstractSeedTaskService {
                 if (fieldName == null) {
                     throw new BusinessException("修改字段不能为空");
                 }
+                String newFieldValue = modifyValueContent.getNewFieldValue();
+                if (isEmptyNewFieldValue(newFieldValue)) {
+                    continue;
+                }
                 if (!fieldNameSet.add(fieldName)) {
                     throw new BusinessException("重复修改字段：" + fieldName);
                 }
@@ -131,7 +135,6 @@ public class SeedModifyApplyProcService extends AbstractSeedTaskService {
                     throw new BusinessException("非法修改字段：" + fieldName);
                 }
                 Field field = SEED_STOCK_TB_FIELD_MAP.get(fieldName);
-                String newFieldValue = modifyValueContent.getNewFieldValue();
                 // 发起时提前校验类型转换，避免审批通过后执行失败
                 try {
                     parseFieldValue(field.getType(), newFieldValue);
@@ -205,7 +208,10 @@ public class SeedModifyApplyProcService extends AbstractSeedTaskService {
             }
             String fieldName = trimToNull(modifyValueContent.getKey());
             if (FIELD_VECTOR_TASK_CODE.equals(fieldName)) {
-                return trimToNull(modifyValueContent.getNewFieldValue());
+                String vectorTaskCode = trimToNull(modifyValueContent.getNewFieldValue());
+                if (vectorTaskCode != null) {
+                    return vectorTaskCode;
+                }
             }
         }
         return trimToNull(seedModifyTaskDTO.getVectorTaskCode());
@@ -230,6 +236,9 @@ public class SeedModifyApplyProcService extends AbstractSeedTaskService {
                                     String targetFieldName) {
         SeedModifyTaskDTO.ModifyValueContent modifyValueContent = getModifyContent(modifyValueContentList, targetFieldName);
         if (modifyValueContent == null) {
+            return false;
+        }
+        if (isEmptyNewFieldValue(modifyValueContent.getNewFieldValue())) {
             return false;
         }
         Field field = SEED_STOCK_TB_FIELD_MAP.get(targetFieldName);
@@ -263,6 +272,9 @@ public class SeedModifyApplyProcService extends AbstractSeedTaskService {
                     continue;
                 }
                 String newFieldValue = modifyValueContent.getNewFieldValue();
+                if (isEmptyNewFieldValue(newFieldValue)) {
+                    continue;
+                }
                 Field field = SEED_STOCK_TB_FIELD_MAP.get(fieldName);
                 if (!isFieldValueChanged(seedStockTb, field, newFieldValue)) {
                     continue;
@@ -289,6 +301,9 @@ public class SeedModifyApplyProcService extends AbstractSeedTaskService {
     private CerVectorTaskTb getModifiedVectorTask(SeedStockTb seedStockTb, List<SeedModifyTaskDTO.ModifyValueContent> modifyValueContentList) {
         SeedModifyTaskDTO.ModifyValueContent modifyValueContent = getModifyContent(modifyValueContentList, FIELD_VECTOR_TASK_CODE);
         if (modifyValueContent == null) {
+            return null;
+        }
+        if (isEmptyNewFieldValue(modifyValueContent.getNewFieldValue())) {
             return null;
         }
         Field vectorTaskCodeField = SEED_STOCK_TB_FIELD_MAP.get(FIELD_VECTOR_TASK_CODE);
@@ -401,6 +416,10 @@ public class SeedModifyApplyProcService extends AbstractSeedTaskService {
         return value.trim();
     }
 
+    private boolean isEmptyNewFieldValue(String newFieldValue) {
+        return trimToNull(newFieldValue) == null;
+    }
+
     private Object parseFieldValue(Class<?> fieldType, String value) {
         if (String.class.equals(fieldType)) {
             return value;
@@ -456,6 +475,9 @@ public class SeedModifyApplyProcService extends AbstractSeedTaskService {
                     continue;
                 }
                 if (modifiedVectorTaskTb != null && FIELD_PROJECT_CODE.equals(fieldName)) {
+                    continue;
+                }
+                if (isEmptyNewFieldValue(modifyValueContent.getNewFieldValue())) {
                     continue;
                 }
                 Field field = SEED_STOCK_TB_FIELD_MAP.get(fieldName);

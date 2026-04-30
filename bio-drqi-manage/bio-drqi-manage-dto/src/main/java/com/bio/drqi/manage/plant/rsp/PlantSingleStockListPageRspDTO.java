@@ -154,5 +154,8 @@ public class PlantSingleStockListPageRspDTO {
      */
     private String vectorTaskCode;
 
+
+    private String pdImplementCode;
+
     private String seedNums;
 }

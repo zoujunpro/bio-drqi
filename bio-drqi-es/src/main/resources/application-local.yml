@@ -4,11 +4,11 @@ server:
 spring:
   datasource:
     url: jdbc:mysql://172.16.14.2:23306/bio_cer_dev?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
-    username: root
-    password: qibio2022*
+    username: canal
+    password: CanalQibio2026_
     driver-class-name: com.mysql.cj.jdbc.Driver
   kafka:
-    bootstrap-servers: 127.0.0.1:9092
+    bootstrap-servers: 172.16.14.2:9092
     consumer:
       group-id: es-sync-consumer
       enable-auto-commit: false
@@ -26,6 +26,6 @@ bio:
     username: elastic
     password: elastic123
     canal:
-      enabled: false
-      topic: canal-binlog
+      enabled: true
+      topic: project-search-topic
       group-id: bio-drqi-es-canal

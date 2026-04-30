@@ -25,4 +25,25 @@ public class EsSyncProperties {
     private String username;
 
     private String password;
+
+    private Canal canal = new Canal();
+
+    @Data
+    public static class Canal {
+
+        /**
+         * 是否开启 Kafka -> ES 增量同步。
+         */
+        private boolean enabled;
+
+        /**
+         * Canal 写入的 Kafka topic。
+         */
+        private String topic;
+
+        /**
+         * ES 同步消费者组。
+         */
+        private String groupId;
+    }
 }

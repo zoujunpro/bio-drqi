@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/elasticsearch")
+@RequestMapping("/syn")
 @ConditionalOnProperty(prefix = "sync.es", name = "enabled", havingValue = "true")
 public class EsSyncController {
 

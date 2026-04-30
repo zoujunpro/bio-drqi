@@ -60,6 +60,15 @@ public class PlantSingleStockController {
     }
 
     /**
+     * cer苗库管理（有具体种植编号苗库）-根据种植编号查询
+     */
+    @GetMapping("/getByPlantCode")
+    @WebLog(desc = "cer苗库管理（有具体种植编号苗库）-根据种植编号查询")
+    public ResponseResult<PlantSingleStockListPageRspDTO> getByPlantCode(@RequestParam String plantCode) {
+        return ResponseResult.getSuccess(plantSingleStockService.getByPlantCode(plantCode));
+    }
+
+    /**
      * 种植明细-实施方案下分页查询
      *
      * @param plantDtlListDetailReqDTO

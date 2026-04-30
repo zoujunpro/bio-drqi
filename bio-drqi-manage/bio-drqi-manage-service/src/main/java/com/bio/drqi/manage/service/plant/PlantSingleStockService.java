@@ -18,6 +18,8 @@ public interface PlantSingleStockService {
 
     List<PlantSingleStockQueryListRspDTO> queryList(PlantSingleStockQueryListReqDTO plantSingleStockListPageReqDTO);
 
+    PlantSingleStockListPageRspDTO getByPlantCode(String plantCode);
+
 
     PageInfo<PlantDtlListDetailRspDTO> listByVectorTaskIdDetail(PlantDtlListDetailReqDTO plantDtlListReqDTO);
 

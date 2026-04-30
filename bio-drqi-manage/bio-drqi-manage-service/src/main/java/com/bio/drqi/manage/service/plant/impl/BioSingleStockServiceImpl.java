@@ -97,6 +97,21 @@ public class BioSingleStockServiceImpl implements PlantSingleStockService {
     }
 
     @Override
+    public PlantSingleStockListPageRspDTO getByPlantCode(String plantCode) {
+        plantCode = plantCode == null ? null : plantCode.trim();
+        if (StringUtils.isEmpty(plantCode)) {
+            throw new BusinessException("种植编号不能为空");
+        }
+        PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(plantCode);
+        if (plantSingleStockTb == null) {
+            throw new BusinessException("种植编号不存在：" + plantCode);
+        }
+        PlantSingleStockListPageRspDTO result = BeanUtils.copyProperties(plantSingleStockTb, PlantSingleStockListPageRspDTO.class);
+        fillDisplayName(result);
+        return result;
+    }
+
+    @Override
     public PageInfo<PlantDtlListDetailRspDTO> listByVectorTaskIdDetail(PlantDtlListDetailReqDTO plantDtlListDetailReqDTO) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectById(plantDtlListDetailReqDTO.getVectorTaskId());
         if(cerVectorTaskTb==null){
@@ -142,6 +157,32 @@ public class BioSingleStockServiceImpl implements PlantSingleStockService {
             }
         }
         return plantDtlCountRspDTO.buildTotalCountNum();
+    }
+
+    private void fillDisplayName(PlantSingleStockListPageRspDTO plantSingleStockListPageRspDTO) {
+        if (plantSingleStockListPageRspDTO == null) {
+            return;
+        }
+        CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(plantSingleStockListPageRspDTO.getBreedCode());
+        if (cerBreedDict != null) {
+            plantSingleStockListPageRspDTO.setBreedName(cerBreedDict.getBreedName());
+        }
+        CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(plantSingleStockListPageRspDTO.getSpeciesCode());
+        if (cerSpeciesConf != null) {
+            plantSingleStockListPageRspDTO.setSpeciesName(cerSpeciesConf.getSpeciesName());
+        }
+        if (StringUtils.isNotEmpty(plantSingleStockListPageRspDTO.getPollinationMethod())) {
+            BioDict pollinationMethodBioDict = bioDictMapper.selectOneByDictTypeAndDictValueCode(BioDictTypeEnum.POLLINATE_TYPE.name(), plantSingleStockListPageRspDTO.getPollinationMethod());
+            if (pollinationMethodBioDict != null) {
+                plantSingleStockListPageRspDTO.setPollinationMethodName(pollinationMethodBioDict.getDictValueName());
+            }
+        }
+        if (StringUtils.isNotEmpty(plantSingleStockListPageRspDTO.getHarvestType())) {
+            BioDict harvestTypeBioDict = bioDictMapper.selectOneByDictTypeAndDictValueCode(BioDictTypeEnum.HARVEST_TYPE.name(), plantSingleStockListPageRspDTO.getHarvestType());
+            if (harvestTypeBioDict != null) {
+                plantSingleStockListPageRspDTO.setHarvestTypeName(harvestTypeBioDict.getDictValueName());
+            }
+        }
     }
 
 }

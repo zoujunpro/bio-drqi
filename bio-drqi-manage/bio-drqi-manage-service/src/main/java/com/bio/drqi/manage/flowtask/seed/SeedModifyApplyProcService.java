@@ -183,21 +183,27 @@ public class SeedModifyApplyProcService extends AbstractSeedTaskService {
         if (StringUtils.isEmpty(plantCode)) {
             throw new BusinessException("种植编号不能为空");
         }
-        String vectorTaskCode = getInputVectorTaskCode(seedModifyTaskDTO, modifyValueContentList);
-        if (StringUtils.isEmpty(vectorTaskCode)) {
-            throw new BusinessException("修改种植编号时实施方案编号不能为空");
-        }
-        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-        if (cerVectorTaskTb == null) {
-            throw new BusinessException("实施方案不存在：" + vectorTaskCode);
-        }
         PlantSingleStockTb plantSingleStockTb = plantSingleStockTbMapper.selectOneByPlantCode(plantCode);
         if (plantSingleStockTb == null) {
             throw new BusinessException("种植编号不存在：" + plantCode);
         }
-        if (!StringUtils.equals(vectorTaskCode, plantSingleStockTb.getVectorTaskCode())) {
-            throw new BusinessException("种植编号为：" + plantCode + "的种子实施方案编号填写不正确");
+        String vectorTaskCode = getInputVectorTaskCode(seedModifyTaskDTO, modifyValueContentList);
+        if (StringUtils.isNotEmpty(vectorTaskCode)) {
+            CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+            if (cerVectorTaskTb == null) {
+                throw new BusinessException("实施方案不存在：" + vectorTaskCode);
+            }
         }
+        if (StringUtils.isNotEmpty(plantSingleStockTb.getVectorTaskCode())) {
+            if (StringUtils.isEmpty(vectorTaskCode)) {
+                throw new BusinessException("修改种植编号时实施方案编号不能为空");
+            }
+            if (!StringUtils.equals(vectorTaskCode, plantSingleStockTb.getVectorTaskCode())) {
+                throw new BusinessException("种植编号为：" + plantCode + "的种子实施方案编号填写不正确");
+            }
+        }
+
+
     }
 
     private String getInputVectorTaskCode(SeedModifyTaskDTO seedModifyTaskDTO,

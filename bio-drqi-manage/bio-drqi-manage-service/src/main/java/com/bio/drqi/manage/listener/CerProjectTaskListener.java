@@ -6,7 +6,6 @@ import cn.hutool.core.date.DateUtil;
 import com.bio.base.api.RemoteUserService;
 import com.bio.base.user.req.QueryUserByIdListReqDTO;
 import com.bio.base.user.rsp.UserBaseInfoRspDTO;
-import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.StringUtils;
@@ -73,7 +72,6 @@ public class CerProjectTaskListener extends DefaultDuplicateCopyHandler implemen
         vieMap.put("instant_verify_task", "instantVerifyTask");
         vieMap.put("conversion_and_trans", "transplant");
         vieMap.put("sample_and_test", "sampleAll");
-
     }
 
     @Override

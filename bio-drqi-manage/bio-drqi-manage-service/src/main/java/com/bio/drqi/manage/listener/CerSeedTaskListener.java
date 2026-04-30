@@ -65,6 +65,7 @@ public class CerSeedTaskListener extends DefaultDuplicateCopyHandler implements 
         vieMap.put("seed_destruction_apply", "destroyApply");
         vieMap.put("seed_out_apply", "outboundApply");
         vieMap.put("seed_quality_check", "detectionApply");
+        vieMap.put("seed_modify_apply", "editSeed");
     }
 
 

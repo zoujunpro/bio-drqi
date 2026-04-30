@@ -43,23 +43,28 @@ public class EsSyncServiceImpl implements EsSyncService {
     @Override
     public void syncTable(TableSyncReqDTO tableSyncReqDTO) {
 
+        long start = System.currentTimeMillis();
         String table = parseTableName(tableSyncReqDTO.getTableName());
         String index = table.toLowerCase(Locale.ROOT);
+        log.info("ES 全量同步开始 table={}, index={}", table, index);
         Class<?> entityClass = domainEntityResolver.resolveEntityClass(table);
         if (entityClass == null) {
             throw new IllegalStateException("在包 com.bio.drqi.domain 下找不到表对应实体: " + table);
         }
+        log.info("ES 全量同步解析实体成功 table={}, entityClass={}", table, entityClass.getName());
         Map<String, Object> mapping = esMappingBuilder.buildMappingByEntity(entityClass);
         int fieldCount = ((Map<?, ?>) mapping.get("properties")).size();
         if (fieldCount == 0) {
             throw new IllegalStateException("实体无可用字段: " + entityClass.getName());
         }
+        log.info("ES 全量同步 mapping 构建完成 table={}, fieldCount={}", table, fieldCount);
         esCommonService.recreateIndex(index, mapping);
 
         List<Map<String, Object>> rows = queryRowsByMapper(table);
+        log.info("ES 全量同步查询数据库完成 table={}, rows={}", table, rows.size());
         esCommonService.saveBatch(index, ID_FIELD, rows);
-
-
+        log.info("ES 全量同步完成 table={}, index={}, rows={}, costMs={}",
+                table, index, rows.size(), System.currentTimeMillis() - start);
     }
 
     private String parseTableName(String value) {

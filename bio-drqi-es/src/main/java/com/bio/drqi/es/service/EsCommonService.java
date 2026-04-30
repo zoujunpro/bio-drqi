@@ -50,8 +50,10 @@ public class EsCommonService {
         try {
             boolean exists = restHighLevelClient.indices().exists(new GetIndexRequest(index), RequestOptions.DEFAULT);
             if (exists) {
+                log.info("ES 索引已存在，跳过创建 index={}", index);
                 return;
             }
+            log.info("ES 索引不存在，开始创建 index={}", index);
             CreateIndexRequest request = new CreateIndexRequest(index);
             Map<String, Object> settings = new LinkedHashMap<>();
             settings.put("number_of_shards", 1);
@@ -59,6 +61,7 @@ public class EsCommonService {
             request.settings(settings);
             request.mapping(mapping);
             restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);
+            log.info("ES 索引创建完成 index={}", index);
         } catch (Exception e) {
             throw new IllegalStateException("创建/检查索引失败: " + index, e);
         }
@@ -69,15 +72,19 @@ public class EsCommonService {
      */
     public void recreateIndex(String index, Map<String, Object> mapping) {
         try {
+            log.info("ES 索引重建开始 index={}", index);
             boolean exists = restHighLevelClient.indices().exists(new GetIndexRequest(index), RequestOptions.DEFAULT);
             if (exists) {
+                log.info("ES 索引已存在，开始删除 index={}", index);
                 AcknowledgedResponse deleteResponse = restHighLevelClient.indices()
                         .delete(new DeleteIndexRequest(index), RequestOptions.DEFAULT);
                 if (!deleteResponse.isAcknowledged()) {
                     throw new IllegalStateException("删除索引未确认: " + index);
                 }
+                log.info("ES 索引删除完成 index={}", index);
             }
             ensureIndex(index, mapping);
+            log.info("ES 索引重建完成 index={}", index);
         } catch (Exception e) {
             throw new IllegalStateException("重建索引失败: " + index, e);
         }
@@ -88,24 +95,35 @@ public class EsCommonService {
      */
     public void saveBatch(String index, String idField, List<Map<String, Object>> rows) {
         if (rows == null || rows.isEmpty()) {
+            log.info("ES 批量写入跳过，数据为空 index={}, idField={}", index, idField);
             return;
         }
+        long start = System.currentTimeMillis();
         BulkRequest request = new BulkRequest();
+        int skipped = 0;
         for (Map<String, Object> row : rows) {
             Object idValue = row.get(idField);
             if (idValue == null) {
+                skipped++;
                 continue;
             }
             request.add(new IndexRequest(index).id(normalizeId(idValue)).source(sanitizeMap(row)));
         }
         if (request.numberOfActions() == 0) {
+            log.warn("ES 批量写入跳过，没有可写入文档 index={}, idField={}, sourceRows={}, skippedRows={}",
+                    index, idField, rows.size(), skipped);
             return;
         }
         try {
+            log.info("ES 批量写入开始 index={}, idField={}, sourceRows={}, actions={}, skippedRows={}",
+                    index, idField, rows.size(), request.numberOfActions(), skipped);
             BulkResponse response = restHighLevelClient.bulk(request, RequestOptions.DEFAULT);
             if (response.hasFailures()) {
+                log.error("ES 批量写入失败 index={}, failureMessage={}", index, response.buildFailureMessage());
                 throw new IllegalStateException("ES bulk 写入失败: " + response.buildFailureMessage());
             }
+            log.info("ES 批量写入完成 index={}, actions={}, took={}, costMs={}",
+                    index, request.numberOfActions(), response.getTook(), System.currentTimeMillis() - start);
         } catch (Exception e) {
             throw new IllegalStateException("ES bulk 写入异常", e);
         }

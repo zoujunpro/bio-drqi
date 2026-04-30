@@ -26,7 +26,7 @@ public class CanalKafkaConsumer {
     public void consume(ConsumerRecord<String, String> record, Acknowledgment ack) {
         try {
             String value = record.value();
-            log.debug("收到 Canal 消息 topic={}, partition={}, offset={}, value={}",
+            log.info("收到 Canal 消息 topic={}, partition={}, offset={}, value={}",
                     record.topic(), record.partition(), record.offset(), value);
             CanalMessage message = JSON.parseObject(value, CanalMessage.class);
             canalMessageHandler.handle(message);

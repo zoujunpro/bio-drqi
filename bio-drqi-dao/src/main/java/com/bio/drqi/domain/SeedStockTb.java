@@ -298,6 +298,7 @@ public class SeedStockTb implements Serializable {
                 checkResultContent.setUserId(resultContent.getUserId());
                 checkResultContent.setUserName(resultContent.getUserName());
                 checkResultContent.setTime(resultContent.getTime());
+                currentCheckResultContentList.add(checkResultContent);
             }
         }
         this.checkResult=JSONUtil.toJsonStr(checkResultContentList);

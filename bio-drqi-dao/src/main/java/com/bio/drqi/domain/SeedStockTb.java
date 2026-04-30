@@ -301,7 +301,7 @@ public class SeedStockTb implements Serializable {
                 currentCheckResultContentList.add(checkResultContent);
             }
         }
-        this.checkResult=JSONUtil.toJsonStr(checkResultContentList);
+        this.checkResult=JSONUtil.toJsonStr(currentCheckResultContentList);
         return this;
     }
 

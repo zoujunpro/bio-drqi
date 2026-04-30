@@ -10,7 +10,7 @@ spring:
   kafka:
     bootstrap-servers: 172.16.14.2:9092
     consumer:
-      group-id: es-sync-consumer
+      group-id: bio-drqi-es-canal
       enable-auto-commit: false
       auto-offset-reset: earliest
       max-poll-records: 100

@@ -2,6 +2,8 @@ package com.bio.drqi.manage.controller;
 
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.bio.common.core.context.SecurityContextHolder;
@@ -129,6 +131,71 @@ public class CleanTestController {
 
     @Resource
     private TcPollinationSingleNumTbMapper tcPollinationSingleNumTbMapper;
+
+    @Resource
+    private SeedQualityCheckDtlTbMapper seedQualityCheckDtlTbMapper;
+
+    @Resource
+    private SeedQualityCheckConfigMapper seedQualityCheckConfigMapper;
+
+
+    @GetMapping("cleanSeedQualityCheckResult20260430")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanSeedQualityCheckResult20260430() {
+        List<SeedQualityCheckDtlTb> seedQualityCheckDtlTbList = seedQualityCheckDtlTbMapper.selectSelective(null);
+        if (CollectionUtil.isEmpty(seedQualityCheckDtlTbList)) {
+            return ResponseResult.getSuccess("无日常检测明细需要清洗");
+        }
+
+        List<SeedQualityCheckConfig> seedQualityCheckConfigList = seedQualityCheckConfigMapper.selectAllOrderByIdDesc();
+        Map<String, String> fieldDescMap = seedQualityCheckConfigList.stream()
+                .collect(Collectors.toMap(SeedQualityCheckConfig::getFieldCode, SeedQualityCheckConfig::getFieldName, (left, right) -> left));
+
+        Map<String, LinkedHashMap<String, SeedStockTb.CheckResultContent>> seedCheckResultMap = new LinkedHashMap<>();
+        for (SeedQualityCheckDtlTb seedQualityCheckDtlTb : seedQualityCheckDtlTbList) {
+            if (StringUtils.isEmpty(seedQualityCheckDtlTb.getSeedNum()) || StringUtils.isEmpty(seedQualityCheckDtlTb.getCheckResult())) {
+                continue;
+            }
+            Map<String, Object> checkResultMap = JSONUtil.toBean(seedQualityCheckDtlTb.getCheckResult(), Map.class);
+            if (checkResultMap == null || checkResultMap.isEmpty()) {
+                continue;
+            }
+            LinkedHashMap<String, SeedStockTb.CheckResultContent> currentSeedCheckResultMap =
+                    seedCheckResultMap.computeIfAbsent(seedQualityCheckDtlTb.getSeedNum(), seedNum -> new LinkedHashMap<>());
+            checkResultMap.forEach((fieldCode, value) -> {
+                if (value == null || currentSeedCheckResultMap.containsKey(fieldCode)) {
+                    return;
+                }
+                SeedStockTb.CheckResultContent checkResultContent = new SeedStockTb.CheckResultContent();
+                checkResultContent.setType(fieldCode);
+                checkResultContent.setDesc(fieldDescMap.getOrDefault(fieldCode, fieldCode));
+                checkResultContent.setValue(value);
+                checkResultContent.setUserId(null);
+                checkResultContent.setUserName(seedQualityCheckDtlTb.getCreateUser());
+                checkResultContent.setTime(seedQualityCheckDtlTb.getCreateTime() == null ? null : DateUtil.format(seedQualityCheckDtlTb.getCreateTime(), DatePattern.NORM_DATETIME_PATTERN));
+                currentSeedCheckResultMap.put(fieldCode, checkResultContent);
+            });
+        }
+
+        int updateCount = 0;
+        int skipCount = 0;
+        for (Map.Entry<String, LinkedHashMap<String, SeedStockTb.CheckResultContent>> entry : seedCheckResultMap.entrySet()) {
+            if (entry.getValue().isEmpty()) {
+                skipCount++;
+                continue;
+            }
+            SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(entry.getKey());
+            if (seedStockTb == null) {
+                skipCount++;
+                log.warn("cleanSeedQualityCheckResult20260430#种子不存在，seedNum={}", entry.getKey());
+                continue;
+            }
+            seedStockTb.setCheckResult(JSONUtil.toJsonStr(new ArrayList<>(entry.getValue().values())));
+            seedStockTbMapper.updateById(seedStockTb);
+            updateCount++;
+        }
+        return ResponseResult.getSuccess("清洗完成，更新种子数：" + updateCount + "，跳过：" + skipCount);
+    }
 
 
     @GetMapping("cleanTcSampleApply20260316")

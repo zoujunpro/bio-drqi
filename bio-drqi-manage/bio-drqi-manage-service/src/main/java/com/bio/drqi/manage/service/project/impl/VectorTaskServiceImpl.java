@@ -246,9 +246,12 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     @Override
     public CerImplementationPlanBaseInfoRspDTO detailByCode(String vectorTaskCode) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+        if (cerVectorTaskTb == null) {
+            throw new BusinessException("实施方案编号不存在");
+        }
         CerImplementationPlanBaseInfoRspDTO cerImplementationPlanBaseInfoRspDTO = BeanUtils.copyProperties(cerVectorTaskTb, CerImplementationPlanBaseInfoRspDTO.class);
-        if(cerImplementationPlanBaseInfoRspDTO!= null&&StringUtils.isNotEmpty(cerImplementationPlanBaseInfoRspDTO.getProjectCode())){
-           CerProjectTb cerProjectTb= cerProjectTbMapper.selectOneByProjectCode(cerImplementationPlanBaseInfoRspDTO.getProjectCode());
+        if (cerImplementationPlanBaseInfoRspDTO != null && StringUtils.isNotEmpty(cerImplementationPlanBaseInfoRspDTO.getProjectCode())) {
+            CerProjectTb cerProjectTb = cerProjectTbMapper.selectOneByProjectCode(cerImplementationPlanBaseInfoRspDTO.getProjectCode());
             cerImplementationPlanBaseInfoRspDTO.setProjectName(cerProjectTb.getProjectName());
         }
         return cerImplementationPlanBaseInfoRspDTO;

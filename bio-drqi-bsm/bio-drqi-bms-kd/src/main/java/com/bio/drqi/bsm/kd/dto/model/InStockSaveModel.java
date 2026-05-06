@@ -1,6 +1,5 @@
 package com.bio.drqi.bsm.kd.dto.model;
 
-import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.bsm.kd.contents.KdContents;
 import com.bio.drqi.bsm.kd.enums.KdFBillTypeIDEnum;
 import com.bio.drqi.bsm.kd.enums.KdParentGroupEnum;
@@ -74,7 +73,7 @@ public class InStockSaveModel extends KdModel {
     private List<FInStockEntryModel> FInStockEntry;
 
 
-    public InStockSaveModel(String kdProjectType, String orderDetailId, String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdSupplierId, String kdMaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty, String projectCode, String stockCode, BigDecimal taxRate) {
+    public InStockSaveModel(String kdProjectType, String orderDetailId, String FDate, KdParentGroupEnum kdParentGroupEnum, String orgCode, String kdSupplierId, String kdMaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty, String projectCode, String stockCode, BigDecimal taxRate,String orderNum) {
         this.FID = 0;
         this.FBillNo = null;
         this.FDate = FDate;
@@ -86,7 +85,7 @@ public class InStockSaveModel extends KdModel {
         this.FPurchaseOrgId = new FPurchaseOrgIdModel(orgCode);
         this.FSupplierId = new FSupplierIdModel(kdSupplierId);
         this.FStockOrgId = new FStockOrgIdModel(orgCode);
-        this.FInStockEntry = Arrays.asList(new FInStockEntryModel(kdProjectType, kdMaterialId, fTaxPrice, reqlQty, orgCode, projectCode, stockCode, taxRate));
+        this.FInStockEntry = Arrays.asList(new FInStockEntryModel(kdProjectType, kdMaterialId, fTaxPrice, reqlQty, orgCode, projectCode, stockCode, taxRate,orderNum));
     }
 
     @Override
@@ -131,9 +130,15 @@ public class InStockSaveModel extends KdModel {
 
         private Boolean FGiveAway;
 
-        public FInStockEntryModel(String kdProjectType, String MaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty, String orgCode, String projectCode, String stockCode, BigDecimal taxRate) {
+        /**
+         * 订单编号
+         */
+        private String F_WAUJ_QBSDDH;
+
+        public FInStockEntryModel(String kdProjectType, String MaterialId, BigDecimal fTaxPrice, BigDecimal reqlQty, String orgCode, String projectCode, String stockCode, BigDecimal taxRate,String orderNum) {
             this.setFMaterialId(new FMaterialIdModel(MaterialId));
             this.setFTaxPrice(fTaxPrice);
+            this.F_WAUJ_QBSDDH = orderNum;
             this.setFRealQty(reqlQty);
             this.setFOWNERTYPEID(KdContents.OWNER);
             this.setFOWNERID(new FOWNERIDModel(orgCode));

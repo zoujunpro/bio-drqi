@@ -3,7 +3,6 @@ package com.bio.drqi.bsm.kd.service;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.kd.dto.*;
@@ -13,12 +12,10 @@ import com.bio.drqi.bsm.kd.util.KdRequestUtil;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -433,7 +430,7 @@ public class KdApiServiceImpl implements KdApiService {
         String orgCode = OrgEnum.getOrgByActiveAndUnitCode(active, unitCode);
         KdParentGroupEnum kdParentGroupEnum = KdParentGroupEnum.ofCode(bmsProductCategoryTb.getKdParentId(), active);
 
-        InStockSaveModel inStockSaveModel = new InStockSaveModel(bmsProjectDict.getKdProjectType(), bmsProductStockInLog.getId().toString(), inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), bmsProductStockInLog.getStoreNumber(), bmsProductStockInLog.getProjectCode(), bmsStockDict.getStockCode(), null);
+        InStockSaveModel inStockSaveModel = new InStockSaveModel(bmsProjectDict.getKdProjectType(), bmsProductStockInLog.getId().toString(), inDate, kdParentGroupEnum, orgCode, bmsSupplierTb.getKdNumber(), bmsProductTb.getProductInnerCode(), bmsProductStockInLog.getProductPrice(), bmsProductStockInLog.getStoreNumber(), bmsProductStockInLog.getProjectCode(), bmsStockDict.getStockCode(), null,bmsProductStockInLog.getOrderNum());
 
         return KdRequestUtil.save(FormIdEnum.STK_InStock, KdApiBaseSaveRequestDTO.buildOfSave(inStockSaveModel, OrgEnum.getOrgByActiveAndUnitCode(active, unitCode)));
 

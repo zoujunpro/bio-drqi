@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.bio.drqi.common.annotation.EsFieldMapping;
+import com.bio.drqi.common.enums.EsFieldTypeEnum;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -27,11 +29,13 @@ public class TcSampleLayoutTb implements Serializable {
     /**
      * 单管集合
      */
+    @EsFieldMapping(type = EsFieldTypeEnum.TEXT, index = false)
     private String singleContent;
 
     /**
      * 板集合
      */
+    @EsFieldMapping(type = EsFieldTypeEnum.TEXT, index = false)
     private String plateContent;
 
     /**

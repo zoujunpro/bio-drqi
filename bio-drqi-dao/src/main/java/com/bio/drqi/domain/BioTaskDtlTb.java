@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.bio.drqi.common.annotation.EsFieldMapping;
+import com.bio.drqi.common.enums.EsFieldTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,6 +38,7 @@ public class BioTaskDtlTb implements Serializable {
     /**
      * 工单类型名称
      */
+    @EsFieldMapping(type = EsFieldTypeEnum.TEXT, index = false)
     private String taskTypeName;
 
     /**
@@ -51,6 +54,7 @@ public class BioTaskDtlTb implements Serializable {
     /**
      * 任务工单描述
      */
+    @EsFieldMapping(type = EsFieldTypeEnum.TEXT, index = false)
     private String taskDesc;
 
     /**
@@ -81,6 +85,7 @@ public class BioTaskDtlTb implements Serializable {
     /**
      * 任务表单
      */
+    @EsFieldMapping(type = EsFieldTypeEnum.TEXT, index = false)
     private String taskForm;
 
     /**

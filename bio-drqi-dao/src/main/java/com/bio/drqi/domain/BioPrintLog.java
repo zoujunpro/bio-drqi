@@ -2,6 +2,8 @@ package com.bio.drqi.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.bio.drqi.common.annotation.EsFieldMapping;
+import com.bio.drqi.common.enums.EsFieldTypeEnum;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -25,6 +27,7 @@ public class BioPrintLog implements Serializable {
     /**
      * 打印参数
      */
+    @EsFieldMapping(type = EsFieldTypeEnum.TEXT, index = false)
     private String printParam;
 
     /**
@@ -45,6 +48,7 @@ public class BioPrintLog implements Serializable {
     /**
      * 打印数据
      */
+    @EsFieldMapping(type = EsFieldTypeEnum.TEXT, index = false)
     private String printData;
 
     /**

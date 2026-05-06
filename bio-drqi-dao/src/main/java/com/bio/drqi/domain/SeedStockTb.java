@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.bio.drqi.common.annotation.EsFieldMapping;
+import com.bio.drqi.common.enums.EsFieldTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -158,6 +160,7 @@ public class SeedStockTb implements Serializable {
     /**
      * 检测结果
      */
+    @EsFieldMapping(type = EsFieldTypeEnum.TEXT, index = false)
     private String checkResult;
 
 

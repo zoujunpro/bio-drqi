@@ -45,6 +45,11 @@ public class BmsSynKdTaskLog implements Serializable {
     private String failReason;
 
     /**
+     * 请求参数
+     */
+    private String requestParam;
+
+    /**
      * 起始日期
      */
     private String beginDate;
@@ -142,6 +147,20 @@ public class BmsSynKdTaskLog implements Serializable {
     }
 
     /**
+     * 请求参数
+     */
+    public String getRequestParam() {
+        return requestParam;
+    }
+
+    /**
+     * 请求参数
+     */
+    public void setRequestParam(String requestParam) {
+        this.requestParam = requestParam;
+    }
+
+    /**
      * 起始日期
      */
     public String getBeginDate() {
@@ -187,6 +206,7 @@ public class BmsSynKdTaskLog implements Serializable {
             && (this.getCreateUserName() == null ? other.getCreateUserName() == null : this.getCreateUserName().equals(other.getCreateUserName()))
             && (this.getSynStatus() == null ? other.getSynStatus() == null : this.getSynStatus().equals(other.getSynStatus()))
             && (this.getFailReason() == null ? other.getFailReason() == null : this.getFailReason().equals(other.getFailReason()))
+            && (this.getRequestParam() == null ? other.getRequestParam() == null : this.getRequestParam().equals(other.getRequestParam()))
             && (this.getBeginDate() == null ? other.getBeginDate() == null : this.getBeginDate().equals(other.getBeginDate()))
             && (this.getEndDate() == null ? other.getEndDate() == null : this.getEndDate().equals(other.getEndDate()));
     }
@@ -201,6 +221,7 @@ public class BmsSynKdTaskLog implements Serializable {
         result = prime * result + ((getCreateUserName() == null) ? 0 : getCreateUserName().hashCode());
         result = prime * result + ((getSynStatus() == null) ? 0 : getSynStatus().hashCode());
         result = prime * result + ((getFailReason() == null) ? 0 : getFailReason().hashCode());
+        result = prime * result + ((getRequestParam() == null) ? 0 : getRequestParam().hashCode());
         result = prime * result + ((getBeginDate() == null) ? 0 : getBeginDate().hashCode());
         result = prime * result + ((getEndDate() == null) ? 0 : getEndDate().hashCode());
         return result;
@@ -218,6 +239,7 @@ public class BmsSynKdTaskLog implements Serializable {
         sb.append(", createUserName=").append(createUserName);
         sb.append(", synStatus=").append(synStatus);
         sb.append(", failReason=").append(failReason);
+        sb.append(", requestParam=").append(requestParam);
         sb.append(", beginDate=").append(beginDate);
         sb.append(", endDate=").append(endDate);
         sb.append(", serialVersionUID=").append(serialVersionUID);

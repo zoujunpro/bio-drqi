@@ -11,6 +11,7 @@
         <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
         <result property="synStatus" column="syn_status" jdbcType="VARCHAR"/>
         <result property="failReason" column="fail_reason" jdbcType="VARCHAR"/>
+        <result property="requestParam" column="request_param" jdbcType="VARCHAR"/>
         <result property="beginDate" column="begin_date" jdbcType="VARCHAR"/>
         <result property="endDate" column="end_date" jdbcType="VARCHAR"/>
     </resultMap>
@@ -19,7 +20,7 @@
         id
         ,create_time,create_user_id,
         create_user_name,syn_status,fail_reason,
-        begin_date,end_date
+        request_param,begin_date,end_date
     </sql>
 
     <select id="selectSelective" parameterType="com.bio.drqi.domain.BmsSynKdTaskLog" resultMap="BaseResultMap">
@@ -32,6 +33,7 @@
             <if test="createUserName != null">and create_user_name=#{createUserName,jdbcType=VARCHAR}</if>
             <if test="synStatus != null">and syn_status=#{synStatus,jdbcType=VARCHAR}</if>
             <if test="failReason != null">and fail_reason=#{failReason,jdbcType=VARCHAR}</if>
+            <if test="requestParam != null">and request_param=#{requestParam,jdbcType=VARCHAR}</if>
             <if test="beginDate != null">and begin_date=#{beginDate,jdbcType=VARCHAR}</if>
             <if test="endDate != null">and end_date=#{endDate,jdbcType=VARCHAR}</if>
         </where>

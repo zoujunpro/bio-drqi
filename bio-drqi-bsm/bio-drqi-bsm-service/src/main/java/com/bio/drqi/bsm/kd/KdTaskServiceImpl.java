@@ -10,6 +10,7 @@ import com.bio.drqi.bsm.enums.PurchaseUnitEnum;
 import com.bio.drqi.bsm.kd.dto.QuerySupplierDTO;
 import com.bio.drqi.bsm.kd.enums.OperateEnum;
 import com.bio.drqi.bsm.kd.service.KdApiService;
+import com.bio.drqi.bsm.kd.util.KdRequestUtil;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
 import lombok.extern.slf4j.Slf4j;
@@ -387,6 +388,7 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
 
     @Override
     public void executeSynKd(BmsSynKdTaskLog bmsSynKdTaskLog) {
+        KdRequestUtil.clearLastRequestParam();
         try {
             synStockTask();
             synMaterialGroupTask();
@@ -403,7 +405,10 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
             log.error("执行同步金蝶数据失败", e);
             bmsSynKdTaskLog.setSynStatus(BmsKdSynStatusEnum.fail.name());
             bmsSynKdTaskLog.setFailReason(JSONUtil.toJsonStr(e));
+            bmsSynKdTaskLog.setRequestParam(KdRequestUtil.getLastRequestParam());
             bmsSynKdTaskLogMapper.updateById(bmsSynKdTaskLog);
+        } finally {
+            KdRequestUtil.clearLastRequestParam();
         }
 
     }

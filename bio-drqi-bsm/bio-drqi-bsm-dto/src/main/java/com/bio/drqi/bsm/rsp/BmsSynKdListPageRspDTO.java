@@ -34,6 +34,11 @@ public class BmsSynKdListPageRspDTO {
     private String failReason;
 
     /**
+     * 请求参数
+     */
+    private String requestParam;
+
+    /**
      * 起始日期
      */
     private String beginDate;

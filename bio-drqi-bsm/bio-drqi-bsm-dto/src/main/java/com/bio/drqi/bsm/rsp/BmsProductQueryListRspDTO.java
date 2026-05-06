@@ -81,7 +81,7 @@ public class BmsProductQueryListRspDTO {
 
     private String productTypeName;
 
-    private Integer kdNumber;
+    private String kdNumber;
 
     private String purchaseTypeCode;
 }

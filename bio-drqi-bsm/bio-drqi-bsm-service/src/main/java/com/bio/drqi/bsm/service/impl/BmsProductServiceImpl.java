@@ -4,8 +4,10 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.contents.BioBsmContents;
+import com.bio.drqi.bsm.dto.BmsProductUnsyncedExcelDTO;
 import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsProductListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsProductListPageRspDTO;
@@ -21,6 +23,11 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +114,31 @@ public class BmsProductServiceImpl implements BmsProductService {
     @Override
     public void exportExcel(BmsProductExportExcelReqDTO bmsProductExportExcelReqDTO) {
 
+    }
+
+    @Override
+    public void exportUnsyncedExcel(BmsProductUnsyncedExportReqDTO reqDTO, HttpServletResponse httpServletResponse) {
+        YearMonth yearMonth = YearMonth.parse(reqDTO.getMonth(), DateTimeFormatter.ofPattern("yyyy-MM"));
+        LocalDate startDate = yearMonth.atDay(1);
+        LocalDate endDate = yearMonth.plusMonths(1).atDay(1);
+        Date startTime = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endTime = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        List<BmsProductTb> productList = bmsProductTbMapper.selectUnsyncedByCreateTimeRange(startTime, endTime);
+        List<BmsProductUnsyncedExcelDTO> excelDTOList = BeanUtils.copyListProperties(productList, BmsProductUnsyncedExcelDTO.class);
+        if (CollectionUtil.isNotEmpty(excelDTOList)) {
+            Map<String, String> bmsBrandTbMap = bmsBrandTbMapper.selectSelective(null)
+                    .stream()
+                    .collect(Collectors.toMap(BmsBrandTb::getBrandCode, BmsBrandTb::getBrandName));
+            Map<String, String> bmsProductCategoryMap = bmsProductCategoryTbMapper.selectSelective(null)
+                    .stream()
+                    .collect(Collectors.toMap(BmsProductCategoryTb::getProductCategoryCode, BmsProductCategoryTb::getProductCategoryName));
+            excelDTOList.forEach(excelDTO -> {
+                excelDTO.setBrandName(bmsBrandTbMap.get(excelDTO.getBrandCode()));
+                excelDTO.setProductCategoryName(bmsProductCategoryMap.get(excelDTO.getProductCategoryCode()));
+            });
+        }
+        ExcelUtil.writeExcel(reqDTO.getMonth() + "未同步商品.xlsx", "sheet1", excelDTOList, BmsProductUnsyncedExcelDTO.class, httpServletResponse);
     }
 
     @Override

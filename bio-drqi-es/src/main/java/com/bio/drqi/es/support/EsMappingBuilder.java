@@ -2,8 +2,6 @@ package com.bio.drqi.es.support;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.bio.drqi.common.annotation.EsFieldMapping;
-import com.bio.drqi.common.enums.EsFieldTypeEnum;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -27,22 +25,14 @@ public class EsMappingBuilder {
                 continue;
             }
             String columnName = resolveColumnName(field);
-            properties.put(columnName, toEsFieldMapping(field));
+            properties.put(columnName, toEsFieldMapping(field.getType()));
         }
         Map<String, Object> mapping = new LinkedHashMap<>();
         mapping.put("properties", properties);
         return mapping;
     }
 
-    private Map<String, Object> toEsFieldMapping(Field javaField) {
-        EsFieldMapping customMapping = javaField.getAnnotation(EsFieldMapping.class);
-        if (customMapping != null && !EsFieldTypeEnum.AUTO.equals(customMapping.type())) {
-            return toCustomEsFieldMapping(customMapping, javaField.getType());
-        }
-        return toDefaultEsFieldMapping(javaField.getType());
-    }
-
-    private Map<String, Object> toDefaultEsFieldMapping(Class<?> javaType) {
+    private Map<String, Object> toEsFieldMapping(Class<?> javaType) {
         Map<String, Object> field = new LinkedHashMap<>();
         if (String.class.equals(javaType)) {
             field.put("type", "keyword");
@@ -81,35 +71,6 @@ public class EsMappingBuilder {
         field.put("type", "keyword");
         field.put("ignore_above", 256);
         return field;
-    }
-
-    private Map<String, Object> toCustomEsFieldMapping(EsFieldMapping customMapping, Class<?> javaType) {
-        Map<String, Object> field = new LinkedHashMap<>();
-        String type = customMapping.type().getType();
-        field.put("type", type);
-        if (!customMapping.index()) {
-            field.put("index", false);
-        }
-        if (customMapping.ignoreAbove() > 0 && "keyword".equals(type)) {
-            field.put("ignore_above", customMapping.ignoreAbove());
-        }
-        if (notEmpty(customMapping.analyzer()) && "text".equals(type)) {
-            field.put("analyzer", customMapping.analyzer());
-        }
-        if (notEmpty(customMapping.searchAnalyzer()) && "text".equals(type)) {
-            field.put("search_analyzer", customMapping.searchAnalyzer());
-        }
-        if (notEmpty(customMapping.format()) && "date".equals(type)) {
-            field.put("format", customMapping.format());
-        } else if ("date".equals(type) && isDateType(javaType)) {
-            field.put("format", "strict_date_optional_time||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis");
-        }
-        return field;
-    }
-
-    private boolean isDateType(Class<?> javaType) {
-        return java.util.Date.class.equals(javaType) || java.sql.Date.class.equals(javaType)
-                || LocalDateTime.class.equals(javaType) || LocalDate.class.equals(javaType);
     }
 
     private List<Field> getAllFields(Class<?> clazz) {

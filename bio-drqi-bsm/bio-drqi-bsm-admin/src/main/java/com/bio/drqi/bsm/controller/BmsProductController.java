@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -86,6 +87,19 @@ public class BmsProductController {
     @RequestLog("材料管理-导出全部")
     public void exportExcel(@RequestBody @Validated BmsProductExportExcelReqDTO bmsProductExportExcelReqDTO) {
         bmsProductService.exportExcel(bmsProductExportExcelReqDTO);
+    }
+
+    /**
+     * 材料管理-按月份导出未同步商品
+     *
+     * @return
+     */
+    @PostMapping("/exportUnsyncedExcel")
+    @WebLog(desc = "材料管理-按月份导出未同步商品")
+    @RequestLog("材料管理-按月份导出未同步商品")
+    public void exportUnsyncedExcel(@RequestBody @Validated BmsProductUnsyncedExportReqDTO reqDTO,
+                                    HttpServletResponse httpServletResponse) {
+        bmsProductService.exportUnsyncedExcel(reqDTO, httpServletResponse);
     }
 
 

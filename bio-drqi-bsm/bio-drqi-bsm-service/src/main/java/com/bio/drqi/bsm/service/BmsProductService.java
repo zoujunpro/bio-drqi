@@ -7,6 +7,7 @@ import com.bio.drqi.bsm.rsp.BmsProductQueryListRspDTO;
 import com.bio.drqi.domain.BmsProductTb;
 import com.github.pagehelper.PageInfo;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface BmsProductService {
@@ -37,6 +38,11 @@ public interface BmsProductService {
      * @return
      */
     void exportExcel(BmsProductExportExcelReqDTO bmsProductExportExcelReqDTO);
+
+    /**
+     * 商品管理-按月份导出未同步商品
+     */
+    void exportUnsyncedExcel(BmsProductUnsyncedExportReqDTO reqDTO, HttpServletResponse httpServletResponse);
 
 
     /**

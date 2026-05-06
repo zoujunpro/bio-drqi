@@ -3,23 +3,25 @@ package com.bio.drqi.manage.service.project.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
+import com.bio.common.core.dto.BusinessException;
+import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.util.LetterUtil;
 import com.bio.drqi.contents.CerProjectContents;
-import com.bio.drqi.enums.*;
+import com.bio.drqi.domain.*;
+import com.bio.drqi.enums.ImplementationPlanTypeEnum;
+import com.bio.drqi.enums.ProjectStatusEnum;
+import com.bio.drqi.enums.VectorTaskStatusEnum;
 import com.bio.drqi.manage.dto.project.ImplementPlanAddDTO;
+import com.bio.drqi.manage.service.project.VectorTaskService;
 import com.bio.drqi.manage.vector.req.GetVectorTaskNumReqDTO;
 import com.bio.drqi.manage.vector.req.QueryPageVectorReqDTO;
 import com.bio.drqi.manage.vector.req.VectorTaskModifyVectorTaskCodeReqDTO;
 import com.bio.drqi.manage.vector.rsp.CerImplementationPlanBaseInfoRspDTO;
 import com.bio.drqi.manage.vector.rsp.StepListRspDTO;
 import com.bio.drqi.manage.vector.rsp.VectorListPageRspDTO;
-import com.bio.common.core.dto.BusinessException;
-import com.bio.common.core.util.BeanUtils;
-import com.bio.common.core.util.StringUtils;
-import com.bio.drqi.domain.*;
-import com.bio.drqi.manage.service.project.VectorTaskService;
-import com.bio.drqi.common.util.LetterUtil;
-import com.bio.drqi.mapper.*;
 import com.bio.drqi.manage.vector.rsp.VectorTaskSpeciesRspDTO;
+import com.bio.drqi.mapper.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -244,8 +246,12 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     @Override
     public CerImplementationPlanBaseInfoRspDTO detailByCode(String vectorTaskCode) {
         CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
-        return BeanUtils.copyProperties(cerVectorTaskTb, CerImplementationPlanBaseInfoRspDTO.class);
-
+        CerImplementationPlanBaseInfoRspDTO cerImplementationPlanBaseInfoRspDTO = BeanUtils.copyProperties(cerVectorTaskTb, CerImplementationPlanBaseInfoRspDTO.class);
+        if(cerImplementationPlanBaseInfoRspDTO!= null&&StringUtils.isNotEmpty(cerImplementationPlanBaseInfoRspDTO.getProjectCode())){
+           CerProjectTb cerProjectTb= cerProjectTbMapper.selectOneByProjectCode(cerImplementationPlanBaseInfoRspDTO.getProjectCode());
+            cerImplementationPlanBaseInfoRspDTO.setProjectName(cerProjectTb.getProjectName());
+        }
+        return cerImplementationPlanBaseInfoRspDTO;
     }
 
     @Override

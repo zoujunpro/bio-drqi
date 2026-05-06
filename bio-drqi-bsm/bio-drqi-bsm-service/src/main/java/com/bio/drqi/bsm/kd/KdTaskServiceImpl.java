@@ -276,7 +276,6 @@ public class KdTaskServiceImpl implements KdTaskService, KdTaskExecuteService {
         selectBmsProductStockOutLog.setPayType(PayTypeEnum.TYPE_1.type);
         List<BmsProductStockOutLog> bmsProductStockOutLogList = bmsProductStockOutLogMapper.selectSelective(selectBmsProductStockOutLog);
         bmsProductStockOutLogList = bmsProductStockOutLogList.stream().filter(bmsProductStockOutLog -> StringUtils.isEmpty(bmsProductStockOutLog.getKdNumber())).collect(Collectors.toList());
-
         //过滤出需要同步的数据
         List<String> bmsProductCategoryCodeList = bmsProductCategoryTbMapper.selectList(null).stream().filter(bmsProductCategoryTb -> bmsProductCategoryTb.getKdNumber() != null).map(BmsProductCategoryTb::getProductCategoryCode).collect(Collectors.toList());
         bmsProductStockOutLogList = bmsProductStockOutLogList.stream().filter(bmsProductStockOutLog -> bmsProductCategoryCodeList.contains(bmsProductStockOutLog.getProductCategoryCode())).collect(Collectors.toList());

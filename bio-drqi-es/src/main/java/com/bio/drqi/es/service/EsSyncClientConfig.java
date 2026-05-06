@@ -1,13 +1,17 @@
 package com.bio.drqi.es.service;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.json.jackson.JacksonJsonpMapper;
+import co.elastic.clients.transport.ElasticsearchTransport;
+import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.bio.drqi.es.properties.EsSyncProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +24,7 @@ import java.util.List;
 public class EsSyncClientConfig {
 
     @Bean(destroyMethod = "close")
-    public RestHighLevelClient restHighLevelClient(EsSyncProperties properties) {
+    public RestClient restClient(EsSyncProperties properties) {
         List<String> hosts = properties.getHosts();
         if (hosts == null || hosts.isEmpty()) {
             throw new IllegalStateException("bio.es.hosts 未配置，无法启用 ES 增量同步");
@@ -29,7 +33,7 @@ public class EsSyncClientConfig {
 
         String username = properties.getUsername();
         if (username == null || username.trim().isEmpty()) {
-            return new RestHighLevelClient(RestClient.builder(httpHosts));
+            return RestClient.builder(httpHosts).build();
         }
 
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
@@ -37,11 +41,19 @@ public class EsSyncClientConfig {
                 AuthScope.ANY,
                 new UsernamePasswordCredentials(username, properties.getPassword())
         );
-        return new RestHighLevelClient(
-                RestClient.builder(httpHosts).setHttpClientConfigCallback(
-                        clientBuilder -> clientBuilder.setDefaultCredentialsProvider(credentialsProvider)
-                )
-        );
+        return RestClient.builder(httpHosts)
+                .setHttpClientConfigCallback(clientBuilder -> clientBuilder.setDefaultCredentialsProvider(credentialsProvider))
+                .build();
+    }
+
+    @Bean
+    public ElasticsearchTransport elasticsearchTransport(RestClient restClient, ObjectMapper objectMapper) {
+        return new RestClientTransport(restClient, new JacksonJsonpMapper(objectMapper));
+    }
+
+    @Bean
+    public ElasticsearchClient elasticsearchClient(ElasticsearchTransport elasticsearchTransport) {
+        return new ElasticsearchClient(elasticsearchTransport);
     }
 
     private HttpHost parseHost(String raw) {

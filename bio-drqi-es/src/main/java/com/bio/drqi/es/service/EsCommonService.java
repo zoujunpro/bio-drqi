@@ -1,27 +1,27 @@
 package com.bio.drqi.es.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.support.master.AcknowledgedResponse;
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.get.GetRequest;
-import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.indices.CreateIndexRequest;
-import org.elasticsearch.client.indices.GetIndexRequest;
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
+import org.elasticsearch.client.Request;
+import org.elasticsearch.client.Response;
+import org.elasticsearch.client.ResponseException;
+import org.elasticsearch.client.RestClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,15 +32,19 @@ import java.util.Map;
 @ConditionalOnProperty(prefix = "bio.es", name = "enabled", havingValue = "true")
 public class EsCommonService {
 
-    private final RestHighLevelClient restHighLevelClient;
+    private final RestClient restClient;
+    private final ObjectMapper objectMapper;
+    private static final TypeReference<Map<String, Object>> MAP_TYPE = new TypeReference<Map<String, Object>>() {
+    };
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
-     * 构造注入 ES 客户端，供当前服务统一执行索引和文档操作。
+     * 构造注入 ES 8 低层 REST 客户端，供当前服务统一执行索引和文档操作。
      */
-    public EsCommonService(RestHighLevelClient restHighLevelClient) {
-        this.restHighLevelClient = restHighLevelClient;
+    public EsCommonService(RestClient restClient, ObjectMapper objectMapper) {
+        this.restClient = restClient;
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -48,19 +52,18 @@ public class EsCommonService {
      */
     public void ensureIndex(String index, Map<String, Object> mapping) {
         try {
-            boolean exists = restHighLevelClient.indices().exists(new GetIndexRequest(index), RequestOptions.DEFAULT);
-            if (exists) {
+            if (indexExists(index)) {
                 log.info("ES 索引已存在，跳过创建 index={}", index);
                 return;
             }
             log.info("ES 索引不存在，开始创建 index={}", index);
-            CreateIndexRequest request = new CreateIndexRequest(index);
+            Map<String, Object> body = new LinkedHashMap<>();
             Map<String, Object> settings = new LinkedHashMap<>();
             settings.put("number_of_shards", 1);
             settings.put("number_of_replicas", 1);
-            request.settings(settings);
-            request.mapping(mapping);
-            restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);
+            body.put("settings", settings);
+            body.put("mappings", mapping);
+            restClient.performRequest(jsonRequest("PUT", "/" + encodePath(index), body));
             log.info("ES 索引创建完成 index={}", index);
         } catch (Exception e) {
             throw new IllegalStateException("创建/检查索引失败: " + index, e);
@@ -73,12 +76,11 @@ public class EsCommonService {
     public void recreateIndex(String index, Map<String, Object> mapping) {
         try {
             log.info("ES 索引重建开始 index={}", index);
-            boolean exists = restHighLevelClient.indices().exists(new GetIndexRequest(index), RequestOptions.DEFAULT);
-            if (exists) {
+            if (indexExists(index)) {
                 log.info("ES 索引已存在，开始删除 index={}", index);
-                AcknowledgedResponse deleteResponse = restHighLevelClient.indices()
-                        .delete(new DeleteIndexRequest(index), RequestOptions.DEFAULT);
-                if (!deleteResponse.isAcknowledged()) {
+                Response response = restClient.performRequest(new Request("DELETE", "/" + encodePath(index)));
+                Map<String, Object> result = readMap(response.getEntity());
+                if (!Boolean.TRUE.equals(result.get("acknowledged"))) {
                     throw new IllegalStateException("删除索引未确认: " + index);
                 }
                 log.info("ES 索引删除完成 index={}", index);
@@ -99,31 +101,42 @@ public class EsCommonService {
             return;
         }
         long start = System.currentTimeMillis();
-        BulkRequest request = new BulkRequest();
+        StringBuilder body = new StringBuilder();
         int skipped = 0;
-        for (Map<String, Object> row : rows) {
-            Object idValue = row.get(idField);
-            if (idValue == null) {
-                skipped++;
-                continue;
-            }
-            request.add(new IndexRequest(index).id(normalizeId(idValue)).source(sanitizeMap(row)));
-        }
-        if (request.numberOfActions() == 0) {
-            log.warn("ES 批量写入跳过，没有可写入文档 index={}, idField={}, sourceRows={}, skippedRows={}",
-                    index, idField, rows.size(), skipped);
-            return;
-        }
+        int actions = 0;
         try {
+            for (Map<String, Object> row : rows) {
+                Object idValue = row.get(idField);
+                if (idValue == null) {
+                    skipped++;
+                    continue;
+                }
+                Map<String, Object> action = new LinkedHashMap<>();
+                Map<String, Object> indexMeta = new LinkedHashMap<>();
+                indexMeta.put("_index", index);
+                indexMeta.put("_id", normalizeId(idValue));
+                action.put("index", indexMeta);
+                body.append(objectMapper.writeValueAsString(action)).append('\n');
+                body.append(objectMapper.writeValueAsString(sanitizeMap(row))).append('\n');
+                actions++;
+            }
+            if (actions == 0) {
+                log.warn("ES 批量写入跳过，没有可写入文档 index={}, idField={}, sourceRows={}, skippedRows={}",
+                        index, idField, rows.size(), skipped);
+                return;
+            }
             log.info("ES 批量写入开始 index={}, idField={}, sourceRows={}, actions={}, skippedRows={}",
-                    index, idField, rows.size(), request.numberOfActions(), skipped);
-            BulkResponse response = restHighLevelClient.bulk(request, RequestOptions.DEFAULT);
-            if (response.hasFailures()) {
-                log.error("ES 批量写入失败 index={}, failureMessage={}", index, response.buildFailureMessage());
-                throw new IllegalStateException("ES bulk 写入失败: " + response.buildFailureMessage());
+                    index, idField, rows.size(), actions, skipped);
+            Request request = new Request("POST", "/_bulk");
+            request.setEntity(new StringEntity(body.toString(), ContentType.create("application/x-ndjson", "UTF-8")));
+            Response response = restClient.performRequest(request);
+            Map<String, Object> result = readMap(response.getEntity());
+            if (Boolean.TRUE.equals(result.get("errors"))) {
+                log.error("ES 批量写入失败 index={}, result={}", index, result);
+                throw new IllegalStateException("ES bulk 写入失败");
             }
             log.info("ES 批量写入完成 index={}, actions={}, took={}, costMs={}",
-                    index, request.numberOfActions(), response.getTook(), System.currentTimeMillis() - start);
+                    index, actions, result.get("took"), System.currentTimeMillis() - start);
         } catch (Exception e) {
             throw new IllegalStateException("ES bulk 写入异常", e);
         }
@@ -134,7 +147,11 @@ public class EsCommonService {
      */
     public void upsert(String index, String id, Map<String, Object> doc) {
         try {
-            restHighLevelClient.index(new IndexRequest(index).id(id).source(sanitizeMap(doc)), RequestOptions.DEFAULT);
+            restClient.performRequest(jsonRequest(
+                    "PUT",
+                    "/" + encodePath(index) + "/_doc/" + encodePath(id),
+                    sanitizeMap(doc)
+            ));
         } catch (Exception e) {
             throw new IllegalStateException("ES upsert 失败", e);
         }
@@ -145,7 +162,11 @@ public class EsCommonService {
      */
     public void delete(String index, String id) {
         try {
-            restHighLevelClient.delete(new DeleteRequest(index, id), RequestOptions.DEFAULT);
+            restClient.performRequest(new Request("DELETE", "/" + encodePath(index) + "/_doc/" + encodePath(id)));
+        } catch (ResponseException e) {
+            if (e.getResponse().getStatusLine().getStatusCode() != 404) {
+                throw new IllegalStateException("ES delete 失败", e);
+            }
         } catch (Exception e) {
             throw new IllegalStateException("ES delete 失败", e);
         }
@@ -156,11 +177,126 @@ public class EsCommonService {
      */
     public Map<String, Object> getById(String index, String id) {
         try {
-            GetResponse response = restHighLevelClient.get(new GetRequest(index, id), RequestOptions.DEFAULT);
-            return response.getSourceAsMap();
+            Response response = restClient.performRequest(new Request("GET", "/" + encodePath(index) + "/_doc/" + encodePath(id)));
+            Map<String, Object> result = readMap(response.getEntity());
+            return (Map<String, Object>) result.get("_source");
+        } catch (ResponseException e) {
+            if (e.getResponse().getStatusLine().getStatusCode() == 404) {
+                return null;
+            }
+            throw new IllegalStateException("ES queryById 失败", e);
         } catch (Exception e) {
             throw new IllegalStateException("ES queryById 失败", e);
         }
+    }
+
+    /**
+     * 公共 search_after 分页查询。
+     *
+     * query 和 sort 使用 ES 原生 JSON 结构。下一页时把返回的 nextSearchAfter 原样传回。
+     */
+    public EsPageResult searchAfterPage(EsPageQuery pageQuery) {
+        validatePageQuery(pageQuery);
+        try {
+            Map<String, Object> body = new LinkedHashMap<>();
+            body.put("query", pageQuery.getQuery() == null ? matchAllQuery() : pageQuery.getQuery());
+            body.put("size", pageQuery.getPageSize());
+            body.put("track_total_hits", pageQuery.isTrackTotalHits());
+            body.put("sort", pageQuery.getSorts());
+            if (pageQuery.getSearchAfter() != null && pageQuery.getSearchAfter().length > 0) {
+                body.put("search_after", pageQuery.getSearchAfter());
+            }
+            if (pageQuery.getIncludes() != null || pageQuery.getExcludes() != null) {
+                Map<String, Object> source = new LinkedHashMap<>();
+                if (pageQuery.getIncludes() != null) {
+                    source.put("includes", pageQuery.getIncludes());
+                }
+                if (pageQuery.getExcludes() != null) {
+                    source.put("excludes", pageQuery.getExcludes());
+                }
+                body.put("_source", source);
+            }
+
+            Response response = restClient.performRequest(jsonRequest(
+                    "POST",
+                    "/" + encodePath(pageQuery.getIndex()) + "/_search",
+                    body
+            ));
+            Map<String, Object> resultBody = readMap(response.getEntity());
+            Map<String, Object> hitsBody = (Map<String, Object>) resultBody.get("hits");
+            List<Map<String, Object>> hits = (List<Map<String, Object>>) hitsBody.get("hits");
+            List<String> ids = new ArrayList<>(hits.size());
+            List<Map<String, Object>> records = new ArrayList<>(hits.size());
+            Object[] nextSearchAfter = null;
+            for (Map<String, Object> hit : hits) {
+                ids.add(String.valueOf(hit.get("_id")));
+                records.add((Map<String, Object>) hit.get("_source"));
+                List<Object> sortValues = (List<Object>) hit.get("sort");
+                nextSearchAfter = sortValues == null ? null : sortValues.toArray();
+            }
+
+            EsPageResult result = new EsPageResult();
+            result.setIds(ids);
+            result.setRecords(records);
+            result.setNextSearchAfter(nextSearchAfter);
+            result.setTotal(resolveTotal(hitsBody.get("total")));
+            result.setHasNext(hits.size() == pageQuery.getPageSize());
+            return result;
+        } catch (Exception e) {
+            throw new IllegalStateException("ES search_after 分页查询失败: " + pageQuery.getIndex(), e);
+        }
+    }
+
+    private void validatePageQuery(EsPageQuery pageQuery) {
+        if (pageQuery == null) {
+            throw new IllegalArgumentException("ES 分页参数不能为空");
+        }
+        if (pageQuery.getIndex() == null || pageQuery.getIndex().trim().isEmpty()) {
+            throw new IllegalArgumentException("ES index 不能为空");
+        }
+        if (pageQuery.getPageSize() <= 0) {
+            throw new IllegalArgumentException("ES pageSize 必须大于 0");
+        }
+        if (pageQuery.getSorts() == null || pageQuery.getSorts().isEmpty()) {
+            throw new IllegalArgumentException("ES search_after 分页必须指定稳定排序");
+        }
+    }
+
+    private boolean indexExists(String index) throws Exception {
+        try {
+            Response response = restClient.performRequest(new Request("HEAD", "/" + encodePath(index)));
+            return response.getStatusLine().getStatusCode() == 200;
+        } catch (ResponseException e) {
+            if (e.getResponse().getStatusLine().getStatusCode() == 404) {
+                return false;
+            }
+            throw e;
+        }
+    }
+
+    private Request jsonRequest(String method, String endpoint, Object body) throws Exception {
+        Request request = new Request(method, endpoint);
+        request.setJsonEntity(objectMapper.writeValueAsString(body));
+        return request;
+    }
+
+    private Map<String, Object> readMap(HttpEntity entity) throws Exception {
+        String body = EntityUtils.toString(entity);
+        return objectMapper.readValue(body, MAP_TYPE);
+    }
+
+    private long resolveTotal(Object total) {
+        if (total instanceof Map) {
+            Object value = ((Map<?, ?>) total).get("value");
+            return value instanceof Number ? ((Number) value).longValue() : 0;
+        }
+        return total instanceof Number ? ((Number) total).longValue() : 0;
+    }
+
+    private Map<String, Object> matchAllQuery() {
+        Map<String, Object> query = new LinkedHashMap<>();
+        query.put("match_all", Collections.emptyMap());
+        return query;
     }
 
     /**
@@ -171,6 +307,14 @@ public class EsCommonService {
             return ((BigDecimal) idValue).stripTrailingZeros().toPlainString();
         }
         return String.valueOf(idValue);
+    }
+
+    private String encodePath(String path) {
+        try {
+            return URLEncoder.encode(path, "UTF-8").replace("+", "%20");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("ES path 编码失败: " + path, e);
+        }
     }
 
     /**
@@ -215,5 +359,128 @@ public class EsCommonService {
             return list;
         }
         return value;
+    }
+
+    public static class EsPageQuery {
+        private String index;
+        private Map<String, Object> query;
+        private List<Map<String, Object>> sorts = Collections.emptyList();
+        private int pageSize = 20;
+        private Object[] searchAfter;
+        private String[] includes;
+        private String[] excludes;
+        private boolean trackTotalHits = true;
+
+        public String getIndex() {
+            return index;
+        }
+
+        public void setIndex(String index) {
+            this.index = index;
+        }
+
+        public Map<String, Object> getQuery() {
+            return query;
+        }
+
+        public void setQuery(Map<String, Object> query) {
+            this.query = query;
+        }
+
+        public List<Map<String, Object>> getSorts() {
+            return sorts;
+        }
+
+        public void setSorts(List<Map<String, Object>> sorts) {
+            this.sorts = sorts;
+        }
+
+        public int getPageSize() {
+            return pageSize;
+        }
+
+        public void setPageSize(int pageSize) {
+            this.pageSize = pageSize;
+        }
+
+        public Object[] getSearchAfter() {
+            return searchAfter;
+        }
+
+        public void setSearchAfter(Object[] searchAfter) {
+            this.searchAfter = searchAfter;
+        }
+
+        public String[] getIncludes() {
+            return includes;
+        }
+
+        public void setIncludes(String[] includes) {
+            this.includes = includes;
+        }
+
+        public String[] getExcludes() {
+            return excludes;
+        }
+
+        public void setExcludes(String[] excludes) {
+            this.excludes = excludes;
+        }
+
+        public boolean isTrackTotalHits() {
+            return trackTotalHits;
+        }
+
+        public void setTrackTotalHits(boolean trackTotalHits) {
+            this.trackTotalHits = trackTotalHits;
+        }
+    }
+
+    public static class EsPageResult {
+        private List<String> ids = Collections.emptyList();
+        private List<Map<String, Object>> records = Collections.emptyList();
+        private Object[] nextSearchAfter;
+        private long total;
+        private boolean hasNext;
+
+        public List<String> getIds() {
+            return ids;
+        }
+
+        public void setIds(List<String> ids) {
+            this.ids = ids;
+        }
+
+        public List<Map<String, Object>> getRecords() {
+            return records;
+        }
+
+        public void setRecords(List<Map<String, Object>> records) {
+            this.records = records;
+        }
+
+        public Object[] getNextSearchAfter() {
+            return nextSearchAfter;
+        }
+
+        public void setNextSearchAfter(Object[] nextSearchAfter) {
+            this.nextSearchAfter = nextSearchAfter;
+        }
+
+        public long getTotal() {
+            return total;
+        }
+
+        public void setTotal(long total) {
+            this.total = total;
+        }
+
+        public boolean isHasNext() {
+            return hasNext;
+        }
+
+        public void setHasNext(boolean hasNext) {
+            this.hasNext = hasNext;
+        }
     }
 }

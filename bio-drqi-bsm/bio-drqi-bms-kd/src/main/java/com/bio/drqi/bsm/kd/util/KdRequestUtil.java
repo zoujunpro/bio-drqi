@@ -64,7 +64,6 @@ public class KdRequestUtil {
         try {
             Long start = System.currentTimeMillis();
             String requestParam = JSONUtil.toJsonStr(executeBillQueryModelDTO);
-            LAST_REQUEST_PARAM.set(requestParam);
             log.info("调用金蝶查询接口query开始, formid={},参数={}", executeBillQueryModelDTO.getFormId(), requestParam);
             List<List<Object>> result = k3CloudApi.executeBillQuery(requestParam);
             log.info("调用金蝶查询接口query结束，返回={},耗时={}ms", result, (System.currentTimeMillis() - start));
@@ -83,7 +82,6 @@ public class KdRequestUtil {
         try {
             Long start = System.currentTimeMillis();
             String requestParam = JSONUtil.toJsonStr(kdApiBaseDisableRequestDTO);
-            LAST_REQUEST_PARAM.set(requestParam);
             log.info("调用金蝶禁用接口disable开始, formid={},参数={}", formIdEnum, requestParam);
             String result = k3CloudApi.excuteOperation(formIdEnum.name(), "Forbid", requestParam);
             log.info("调用金蝶禁用接口disable结束，返回={},耗时={}ms", result, (System.currentTimeMillis() - start));
@@ -104,7 +102,6 @@ public class KdRequestUtil {
         K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
         Long start = System.currentTimeMillis();
         String requestParam = JSONUtil.toJsonStr(groupSaveDTO);
-        LAST_REQUEST_PARAM.set(requestParam);
         log.info("调用金蝶分组接口groupSave开始, formid={},参数={}", formIdEnum, requestParam);
         String result = null;
         try {
@@ -128,7 +125,6 @@ public class KdRequestUtil {
         List<QuerySupplierDTO> resultList = new ArrayList<>();
         K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
         Map<String, String> query = new HashMap();
-        query.put("FormId", FormIdEnum.BD_Supplier.name());
         query.put("FieldKeys", "FNUMBER,FNAME,FDocumentStatus,FForbidStatus");
         query.put("FilterString", "FDocumentStatus='C' and FForbidStatus='A'");
         try {

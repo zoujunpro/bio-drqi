@@ -26,10 +26,12 @@ public interface BmsSupplierTbMapper extends BaseMapper<BmsSupplierTb> {
 
     List<BmsSupplierTb> selectAllBySupplierCodeIn(@Param("supplierCodeList") Collection<String> supplierCodeList);
 
+    List<BmsSupplierTb> selectUnsyncedByCreateTimeRange(@Param("startTime") java.util.Date startTime,
+                                                        @Param("endTime") java.util.Date endTime);
+
     String selectMaxSupplierCode();
 
 }
-
 
 
 

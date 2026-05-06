@@ -3,15 +3,10 @@ package com.bio.drqi.bsm.controller;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
-
-import com.bio.drqi.bsm.req.BmsSupplierAddReqDTO;
-import com.bio.drqi.bsm.req.BmsSupplierEditReqDTO;
-import com.bio.drqi.bsm.req.BmsSupplierExportExcelReqDTO;
-import com.bio.drqi.bsm.req.BmsSupplierListPageReqDTO;
+import com.bio.drqi.bsm.req.*;
 import com.bio.drqi.bsm.rsp.BmsBrandDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListPageRspDTO;
-import com.bio.drqi.bsm.rsp.BmsSupplierQueryByBrandCodeRspDTO;
 import com.bio.drqi.bsm.service.BmsSupplierService;
 import com.bio.drqi.common.aspect.RequestLog;
 import com.github.pagehelper.PageInfo;
@@ -19,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -136,6 +132,20 @@ public class BmsSupplierController {
     @RequirePermissions("bms:supplier:exportExcel")
     public void exportExcel(@RequestBody BmsSupplierExportExcelReqDTO bmsSupplierExportExcelReqDTO) {
         bmsSupplierService.exportExcel(bmsSupplierExportExcelReqDTO);
+    }
+
+    /**
+     * 供应商管理-按月份导出未同步供应商
+     *
+     * @return
+     */
+    @PostMapping("/exportUnsyncedExcel")
+    @WebLog(desc = "供应商管理-按月份导出未同步供应商")
+    //@RequirePermissions("bms:supplier:exportExcel")
+    @RequestLog("供应商管理-按月份导出未同步供应商")
+    public void exportUnsyncedExcel(@RequestBody @Validated BmsSupplierUnsyncedExportReqDTO reqDTO,
+                                    HttpServletResponse httpServletResponse) {
+        bmsSupplierService.exportUnsyncedExcel(reqDTO, httpServletResponse);
     }
 
     /**

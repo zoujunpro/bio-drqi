@@ -24,9 +24,6 @@ public interface BmsProductTbMapper extends BaseMapper<BmsProductTb> {
 
     List<BmsProductTb> selectAllByProductCategoryCode(@Param("productCategoryCode") String productCategoryCode);
 
-    List<BmsProductTb> selectUnsyncedByCreateTimeRange(@Param("startTime") java.util.Date startTime,
-                                                       @Param("endTime") java.util.Date endTime);
-
 
     List<BmsProductTb> selectAllByProductNameAndBrandCode(@Param("productName") String productName, @Param("brandCode") String brandCode);
 
@@ -42,6 +39,5 @@ public interface BmsProductTbMapper extends BaseMapper<BmsProductTb> {
 
     BmsProductTb selectOneByProductNameAndBrandCodeAndProductSpecsAndProductOutCode(@Param("productName") String productName, @Param("brandCode") String brandCode, @Param("productSpecs") String productSpecs, @Param("productOutCode") String productOutCode);
 }
-
 
 

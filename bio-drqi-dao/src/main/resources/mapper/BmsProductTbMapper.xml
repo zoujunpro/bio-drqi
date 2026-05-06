@@ -71,16 +71,6 @@
         where
         product_category_code = #{productCategoryCode,jdbcType=VARCHAR}
     </select>
-    <select id="selectUnsyncedByCreateTimeRange" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from bms_product_tb
-        where
-        create_time &gt;= #{startTime,jdbcType=TIMESTAMP}
-        and create_time &lt; #{endTime,jdbcType=TIMESTAMP}
-        and (kd_number is null or kd_number = '')
-        order by id desc
-    </select>
     <select id="selectAllByProductNameAndBrandCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

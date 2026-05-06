@@ -5,12 +5,15 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.bsm.contents.BioBsmContents;
+import com.bio.drqi.bsm.dto.BmsSupplierUnsyncedExcelDTO;
 import com.bio.drqi.bsm.req.BmsSupplierAddReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierEditReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierExportExcelReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierListPageReqDTO;
+import com.bio.drqi.bsm.req.BmsSupplierUnsyncedExportReqDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListPageRspDTO;
@@ -29,6 +32,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -139,6 +147,19 @@ public class BmsSupplierServiceImpl implements BmsSupplierService {
     @Override
     public void exportExcel(BmsSupplierExportExcelReqDTO bmsSupplierExportExcelReqDTO) {
 
+    }
+
+    @Override
+    public void exportUnsyncedExcel(BmsSupplierUnsyncedExportReqDTO reqDTO, HttpServletResponse httpServletResponse) {
+        YearMonth yearMonth = YearMonth.parse(reqDTO.getMonth(), DateTimeFormatter.ofPattern("yyyy-MM"));
+        LocalDate startDate = yearMonth.atDay(1);
+        LocalDate endDate = yearMonth.plusMonths(1).atDay(1);
+        Date startTime = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endTime = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        List<BmsSupplierTb> supplierList = bmsSupplierTbMapper.selectUnsyncedByCreateTimeRange(startTime, endTime);
+        List<BmsSupplierUnsyncedExcelDTO> excelDTOList = BeanUtils.copyListProperties(supplierList, BmsSupplierUnsyncedExcelDTO.class);
+        ExcelUtil.writeExcel(reqDTO.getMonth() + "未同步供应商.xlsx", "sheet1", excelDTOList, BmsSupplierUnsyncedExcelDTO.class, httpServletResponse);
     }
 
     @Override

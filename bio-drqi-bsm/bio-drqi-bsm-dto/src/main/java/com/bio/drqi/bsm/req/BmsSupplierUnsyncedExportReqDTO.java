@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Data
-public class BmsProductUnsyncedExportReqDTO {
+public class BmsSupplierUnsyncedExportReqDTO {
 
     /**
      * 所属月份，格式：yyyy-MM

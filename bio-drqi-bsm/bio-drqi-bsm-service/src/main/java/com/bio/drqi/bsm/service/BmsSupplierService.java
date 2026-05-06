@@ -6,6 +6,7 @@ import com.bio.drqi.bsm.req.BmsSupplierAddReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierEditReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierExportExcelReqDTO;
 import com.bio.drqi.bsm.req.BmsSupplierListPageReqDTO;
+import com.bio.drqi.bsm.req.BmsSupplierUnsyncedExportReqDTO;
 import com.bio.drqi.bsm.rsp.BmsBrandDetailRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListAllRspDTO;
 import com.bio.drqi.bsm.rsp.BmsSupplierListPageRspDTO;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface BmsSupplierService {
@@ -84,6 +86,13 @@ public interface BmsSupplierService {
      * @return
      */
     void exportExcel(BmsSupplierExportExcelReqDTO bmsSupplierExportExcelReqDTO);
+
+    /**
+     * 供应商管理-按月份导出未同步供应商
+     *
+     * @return
+     */
+    void exportUnsyncedExcel(BmsSupplierUnsyncedExportReqDTO reqDTO, HttpServletResponse httpServletResponse);
 
     /**
      * 供应商管理-导入

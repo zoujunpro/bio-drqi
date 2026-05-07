@@ -5,6 +5,7 @@ import com.bio.drqi.es.service.EsCommonService;
 import com.bio.drqi.es.support.DomainEntityResolver;
 import com.bio.drqi.es.support.EsDocumentConverter;
 import com.bio.drqi.es.support.EsMappingBuilder;
+import com.bio.drqi.es.support.global.GlobalSearchSyncService;
 import com.bio.drqi.es.support.MapperTableQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -28,6 +29,7 @@ public class CanalMessageHandler {
     private final DomainEntityResolver domainEntityResolver;
     private final EsMappingBuilder esMappingBuilder;
     private final EsDocumentConverter esDocumentConverter;
+    private final GlobalSearchSyncService globalSearchSyncService;
     private final Set<String> ensuredIndexSet = ConcurrentHashMap.newKeySet();
 
     /**
@@ -107,11 +109,13 @@ public class CanalMessageHandler {
         String index = table.toLowerCase(Locale.ROOT);
         ensureIndexIfNeeded(table, index);
         esCommonService.upsert(index, targetId, doc);
+        globalSearchSyncService.upsert(table, doc);
     }
 
     private void handleDelete(String table, String id) throws Exception {
         String index = table.toLowerCase(Locale.ROOT);
         esCommonService.delete(index, id);
+        globalSearchSyncService.delete(table, id);
     }
 
     private void ensureIndexIfNeeded(String table, String index) {

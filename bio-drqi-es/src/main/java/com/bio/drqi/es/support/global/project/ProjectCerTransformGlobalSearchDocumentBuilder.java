@@ -1,0 +1,24 @@
+package com.bio.drqi.es.support.global.project;
+
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+
+@Service
+public class ProjectCerTransformGlobalSearchDocumentBuilder extends AbstractProjectGlobalSearchDocumentBuilder {
+
+    @Override
+    public String table() {
+        return "cer_transform_tb";
+    }
+
+    @Override
+    public Map<String, Object> build(Map<String, Object> row) {
+        return buildDoc(row,
+                stringValue(row.get("transform_code")),
+                join(row.get("project_code"), row.get("vector_task_code"), row.get("plasmid_name")),
+                "/project/transform/detail/",
+                display("转化编号", row.get("transform_code"), "项目编号", row.get("project_code"), "载体任务", row.get("vector_task_code"), "质粒名称", row.get("plasmid_name")),
+                row.values());
+    }
+}

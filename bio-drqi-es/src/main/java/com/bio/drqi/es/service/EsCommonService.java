@@ -173,6 +173,27 @@ public class EsCommonService {
     }
 
     /**
+     * 按查询条件删除索引中的文档，适用于清理统一搜索索引中某张业务表的旧数据。
+     */
+    public void deleteByQuery(String index, Map<String, Object> query) {
+        try {
+            Map<String, Object> body = new LinkedHashMap<>();
+            body.put("query", query == null ? matchAllQuery() : query);
+            restClient.performRequest(jsonRequest(
+                    "POST",
+                    "/" + encodePath(index) + "/_delete_by_query?conflicts=proceed&refresh=true",
+                    body
+            ));
+        } catch (ResponseException e) {
+            if (e.getResponse().getStatusLine().getStatusCode() != 404) {
+                throw new IllegalStateException("ES deleteByQuery 失败", e);
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException("ES deleteByQuery 失败", e);
+        }
+    }
+
+    /**
      * 按文档ID查询并返回原始 source map，不存在时返回 null。
      */
     public Map<String, Object> getById(String index, String id) {

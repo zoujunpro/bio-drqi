@@ -5,6 +5,7 @@ import com.bio.drqi.es.service.EsCommonService;
 import com.bio.drqi.es.service.EsSyncService;
 import com.bio.drqi.es.support.DomainEntityResolver;
 import com.bio.drqi.es.support.EsDocumentConverter;
+import com.bio.drqi.es.support.global.GlobalSearchSyncService;
 import com.bio.drqi.es.support.EsMappingBuilder;
 import com.bio.drqi.es.support.MapperTableQueryService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,17 +28,20 @@ public class EsSyncServiceImpl implements EsSyncService {
     private final EsMappingBuilder esMappingBuilder;
     private final EsDocumentConverter esDocumentConverter;
     private final MapperTableQueryService mapperTableQueryService;
+    private final GlobalSearchSyncService globalSearchSyncService;
 
     public EsSyncServiceImpl(EsCommonService esCommonService,
                              DomainEntityResolver domainEntityResolver,
                              EsMappingBuilder esMappingBuilder,
                              EsDocumentConverter esDocumentConverter,
-                             MapperTableQueryService mapperTableQueryService) {
+                             MapperTableQueryService mapperTableQueryService,
+                             GlobalSearchSyncService globalSearchSyncService) {
         this.esCommonService = esCommonService;
         this.domainEntityResolver = domainEntityResolver;
         this.esMappingBuilder = esMappingBuilder;
         this.esDocumentConverter = esDocumentConverter;
         this.mapperTableQueryService = mapperTableQueryService;
+        this.globalSearchSyncService = globalSearchSyncService;
     }
 
     @Override
@@ -59,10 +63,12 @@ public class EsSyncServiceImpl implements EsSyncService {
         }
         log.info("ES 全量同步 mapping 构建完成 table={}, fieldCount={}", table, fieldCount);
         esCommonService.recreateIndex(index, mapping);
+        globalSearchSyncService.deleteByTable(table);
 
         List<Map<String, Object>> rows = queryRowsByMapper(table);
         log.info("ES 全量同步查询数据库完成 table={}, rows={}", table, rows.size());
         esCommonService.saveBatch(index, ID_FIELD, rows);
+        globalSearchSyncService.saveBatch(table, rows);
         log.info("ES 全量同步完成 table={}, index={}, rows={}, costMs={}",
                 table, index, rows.size(), System.currentTimeMillis() - start);
     }

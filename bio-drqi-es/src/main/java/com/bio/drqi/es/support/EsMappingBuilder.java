@@ -2,6 +2,8 @@ package com.bio.drqi.es.support;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.bio.drqi.common.annotation.EsFieldMapping;
+import com.bio.drqi.common.enums.EsFieldTypeEnum;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -25,14 +27,41 @@ public class EsMappingBuilder {
                 continue;
             }
             String columnName = resolveColumnName(field);
-            properties.put(columnName, toEsFieldMapping(field.getType()));
+            properties.put(columnName, toEsFieldMapping(field));
         }
         Map<String, Object> mapping = new LinkedHashMap<>();
         mapping.put("properties", properties);
         return mapping;
     }
 
-    private Map<String, Object> toEsFieldMapping(Class<?> javaType) {
+    private Map<String, Object> toEsFieldMapping(Field field) {
+        EsFieldMapping annotation = field.getAnnotation(EsFieldMapping.class);
+        if (annotation != null && annotation.type() != EsFieldTypeEnum.AUTO) {
+            return toAnnotatedEsFieldMapping(annotation);
+        }
+        return toDefaultEsFieldMapping(field.getType());
+    }
+
+    private Map<String, Object> toAnnotatedEsFieldMapping(EsFieldMapping annotation) {
+        Map<String, Object> field = new LinkedHashMap<>();
+        field.put("type", annotation.type().getType());
+        field.put("index", annotation.index());
+        if (annotation.ignoreAbove() > 0) {
+            field.put("ignore_above", annotation.ignoreAbove());
+        }
+        if (notEmpty(annotation.analyzer())) {
+            field.put("analyzer", annotation.analyzer());
+        }
+        if (notEmpty(annotation.searchAnalyzer())) {
+            field.put("search_analyzer", annotation.searchAnalyzer());
+        }
+        if (notEmpty(annotation.format())) {
+            field.put("format", annotation.format());
+        }
+        return field;
+    }
+
+    private Map<String, Object> toDefaultEsFieldMapping(Class<?> javaType) {
         Map<String, Object> field = new LinkedHashMap<>();
         if (String.class.equals(javaType)) {
             field.put("type", "keyword");

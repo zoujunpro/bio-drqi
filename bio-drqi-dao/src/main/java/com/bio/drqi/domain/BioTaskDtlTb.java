@@ -85,7 +85,7 @@ public class BioTaskDtlTb implements Serializable {
     /**
      * 任务表单
      */
-    @EsFieldMapping(type = EsFieldTypeEnum.TEXT, index = false)
+    @EsFieldMapping(type = EsFieldTypeEnum.TEXT, analyzer = "ik_max_word", searchAnalyzer = "ik_smart")
     private String taskForm;
 
     /**

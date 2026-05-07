@@ -14,11 +14,12 @@ public class ProjectBioSampleTestTwoResultGlobalSearchDocumentBuilder extends Ab
 
     @Override
     public Map<String, Object> build(Map<String, Object> row) {
+        String synResultName = synResultName(row.get("syn_result"));
         return buildDoc(row,
                 stringValue(row.get("sample_code")),
-                join(row.get("apply_no"), row.get("run_id"), row.get("syn_result")),
+                join(row.get("apply_no"), row.get("run_id"), synResultName),
                 "/project/sample-test/two-result/detail/",
-                display("取样编号", row.get("sample_code"), "申请编号", row.get("apply_no"), "测序编号", row.get("run_id"), "同步结果", row.get("syn_result")),
-                row.values());
+                display("取样编号", row.get("sample_code"), "申请编号", row.get("apply_no"), "测序编号", row.get("run_id"), "同步结果", synResultName),
+                row.values(), synResultName);
     }
 }

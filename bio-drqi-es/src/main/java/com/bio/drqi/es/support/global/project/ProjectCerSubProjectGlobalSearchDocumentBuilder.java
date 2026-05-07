@@ -14,11 +14,12 @@ public class ProjectCerSubProjectGlobalSearchDocumentBuilder extends AbstractPro
 
     @Override
     public Map<String, Object> build(Map<String, Object> row) {
+        String taskStatusName = taskStatusName(row.get("task_status"));
         return buildDoc(row,
                 stringValue(row.get("sub_project_code")),
-                join(row.get("project_code"), row.get("create_user_name"), row.get("task_status")),
+                join(row.get("project_code"), row.get("create_user_name"), taskStatusName),
                 "/project/sub/detail/",
-                display("项目编号", row.get("project_code"), "子项目编号", row.get("sub_project_code"), "创建人", row.get("create_user_name"), "状态", row.get("task_status")),
-                row.values());
+                display("项目编号", row.get("project_code"), "子项目编号", row.get("sub_project_code"), "创建人", row.get("create_user_name"), "状态", taskStatusName),
+                row.values(), taskStatusName);
     }
 }

@@ -11,7 +11,7 @@ public abstract class AbstractGlobalSearchDocumentBuilder implements GlobalSearc
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    protected String stringValue(Object value) {
+     protected String stringValue(Object value) {
         return value == null ? "" : String.valueOf(value);
     }
 

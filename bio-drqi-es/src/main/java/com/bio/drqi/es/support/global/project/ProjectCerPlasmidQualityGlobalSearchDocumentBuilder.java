@@ -14,11 +14,13 @@ public class ProjectCerPlasmidQualityGlobalSearchDocumentBuilder extends Abstrac
 
     @Override
     public Map<String, Object> build(Map<String, Object> row) {
+        String qualityInspectionResultName = qualityInspectionResultName(row.get("quality_inspection_result"));
+        String taskStatusName = taskStatusName(row.get("task_status"));
         return buildDoc(row,
                 stringValue(row.get("quality_inspection_number")),
-                join(row.get("plasmid_name"), row.get("quality_inspection_result"), row.get("create_user_name")),
+                join(row.get("plasmid_name"), qualityInspectionResultName, row.get("create_user_name"), taskStatusName),
                 "/project/plasmid-quality/detail/",
-                display("质检编号", row.get("quality_inspection_number"), "质粒名称", row.get("plasmid_name"), "质检结果", row.get("quality_inspection_result"), "质检人", row.get("create_user_name")),
-                row.values());
+                display("质检编号", row.get("quality_inspection_number"), "质粒名称", row.get("plasmid_name"), "质检结果", qualityInspectionResultName, "质检人", row.get("create_user_name"), "状态", taskStatusName),
+                row.values(), qualityInspectionResultName, taskStatusName);
     }
 }

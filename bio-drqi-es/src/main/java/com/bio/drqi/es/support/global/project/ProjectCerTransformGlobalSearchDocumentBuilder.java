@@ -14,11 +14,12 @@ public class ProjectCerTransformGlobalSearchDocumentBuilder extends AbstractProj
 
     @Override
     public Map<String, Object> build(Map<String, Object> row) {
+        String taskStatusName = taskStatusName(row.get("task_status"));
         return buildDoc(row,
                 stringValue(row.get("transform_code")),
-                join(row.get("project_code"), row.get("vector_task_code"), row.get("plasmid_name")),
+                join(row.get("project_code"), row.get("vector_task_code"), row.get("plasmid_name"), taskStatusName),
                 "/project/transform/detail/",
-                display("转化编号", row.get("transform_code"), "项目编号", row.get("project_code"), "载体任务", row.get("vector_task_code"), "质粒名称", row.get("plasmid_name")),
-                row.values());
+                display("转化编号", row.get("transform_code"), "项目编号", row.get("project_code"), "载体任务", row.get("vector_task_code"), "质粒名称", row.get("plasmid_name"), "状态", taskStatusName),
+                row.values(), taskStatusName);
     }
 }

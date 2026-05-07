@@ -40,7 +40,7 @@ public class EsSearchController {
      *   "searchAfter": ["1.0", "2026-05-07 10:00:00", "1"]
      * }
      */
-    @PostMapping("/listpage")
+    @PostMapping("/listPage")
     public ResponseResult<EsPageResult> globalPage(@RequestBody @Validated GlobalSearchPageReqDTO reqDTO) {
 
         EsCommonService.EsPageQuery pageQuery = new EsCommonService.EsPageQuery();

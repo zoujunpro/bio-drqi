@@ -14,11 +14,12 @@ public class ProjectCerConversionAndTransRefGlobalSearchDocumentBuilder extends 
 
     @Override
     public Map<String, Object> build(Map<String, Object> row) {
+        String transGeneFlagName = transGeneFlagName(row.get("trans_gene_flag"));
         return buildDoc(row,
                 stringValue(row.get("sample_code")),
-                join(row.get("project_code"), row.get("vector_task_code"), row.get("transform_code")),
+                join(row.get("project_code"), row.get("vector_task_code"), row.get("transform_code"), transGeneFlagName),
                 "/project/conversion-trans-ref/detail/",
-                display("取样编号", row.get("sample_code"), "项目编号", row.get("project_code"), "载体任务", row.get("vector_task_code"), "转化编号", row.get("transform_code")),
-                row.values());
+                display("取样编号", row.get("sample_code"), "项目编号", row.get("project_code"), "载体任务", row.get("vector_task_code"), "转化编号", row.get("transform_code"), "是否转基因", transGeneFlagName),
+                row.values(), transGeneFlagName);
     }
 }

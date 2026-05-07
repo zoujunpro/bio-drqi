@@ -14,11 +14,12 @@ public class ProjectCerVectorTaskGlobalSearchDocumentBuilder extends AbstractPro
 
     @Override
     public Map<String, Object> build(Map<String, Object> row) {
+        String taskStatusName = taskStatusName(row.get("task_status"));
         return buildDoc(row,
                 stringValue(row.get("vector_task_code")),
-                join(row.get("project_code"), row.get("sub_project_code"), row.get("acceptor_material")),
+                join(row.get("project_code"), row.get("sub_project_code"), row.get("acceptor_material"), taskStatusName),
                 "/project/vector-task/detail/",
-                display("项目编号", row.get("project_code"), "子项目编号", row.get("sub_project_code"), "载体任务", row.get("vector_task_code"), "受体材料", row.get("acceptor_material")),
-                row.values());
+                display("项目编号", row.get("project_code"), "子项目编号", row.get("sub_project_code"), "载体任务", row.get("vector_task_code"), "受体材料", row.get("acceptor_material"), "状态", taskStatusName),
+                row.values(), taskStatusName);
     }
 }

@@ -14,11 +14,13 @@ public class ProjectBioSampleTestGlobalSearchDocumentBuilder extends AbstractPro
 
     @Override
     public Map<String, Object> build(Map<String, Object> row) {
+        String testResultName = testResultName(row.get("test_result"));
+        String checkResultName = checkResultName(row.get("check_result"));
         return buildDoc(row,
                 stringValue(row.get("sample_code")),
-                join(row.get("vector_task_code"), row.get("apply_user_name"), row.get("test_result")),
+                join(row.get("vector_task_code"), row.get("apply_user_name"), testResultName, checkResultName),
                 "/project/sample-test/detail/",
-                display("取样编号", row.get("sample_code"), "载体任务", row.get("vector_task_code"), "申请人", row.get("apply_user_name"), "检测结果", row.get("test_result")),
-                row.values());
+                display("取样编号", row.get("sample_code"), "载体任务", row.get("vector_task_code"), "申请人", row.get("apply_user_name"), "检测结果", testResultName, "审核结果", checkResultName),
+                row.values(), testResultName, checkResultName);
     }
 }

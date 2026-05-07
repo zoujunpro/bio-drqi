@@ -182,18 +182,18 @@
         </if>
         <if test='countType=="year"'>
             <if test="beginDateTime != null and beginDateTime!=''">
-                and date_format(create_time,'%Y') >=#{beginDateTime,jdbcType=VARCHAR}
+                and SUBSTRING(report_account_time,1,4) >=#{beginDateTime,jdbcType=VARCHAR}
             </if>
             <if test="endDateTime != null and endDateTime!=''">
-                and date_format(create_time,'%Y') &lt;=#{endDateTime,jdbcType=VARCHAR}
+                and SUBSTRING(report_account_time,1,4) &lt;=#{endDateTime,jdbcType=VARCHAR}
             </if>
         </if>
         <if test='countType=="month"'>
             <if test="beginDateTime != null and beginDateTime!=''">
-                and date_format(create_time,'%Y-%m') >=#{beginDateTime,jdbcType=VARCHAR}
+                and report_account_time >=#{beginDateTime,jdbcType=VARCHAR}
             </if>
             <if test="endDateTime != null and endDateTime!=''">
-                and date_format(create_time,'%Y-%m') &lt;=#{endDateTime,jdbcType=VARCHAR}
+                and report_account_time &lt;=#{endDateTime,jdbcType=VARCHAR}
             </if>
         </if>
     </select>

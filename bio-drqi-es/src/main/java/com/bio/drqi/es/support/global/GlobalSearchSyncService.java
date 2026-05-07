@@ -33,11 +33,17 @@ public class GlobalSearchSyncService {
         this.esCommonService = esCommonService;
         this.builderMap = builders == null ? Collections.emptyMap() : builders.stream()
                 .collect(Collectors.toMap(this::builderKey, Function.identity(), (left, right) -> left));
+        log.info("全局搜索同步初始化完成 builderCount={}, tables={}", builderMap.size(), builderMap.keySet());
     }
 
     public void upsert(String table, Map<String, Object> row) {
         GlobalSearchDocumentBuilder builder = resolveBuilder(table);
-        if (builder == null || row == null || row.isEmpty()) {
+        if (builder == null) {
+            log.debug("全局搜索同步跳过，未配置 builder table={}", table);
+            return;
+        }
+        if (row == null || row.isEmpty()) {
+            log.debug("全局搜索同步跳过，数据为空 table={}", table);
             return;
         }
         Object id = row.get(ID_FIELD);
@@ -47,6 +53,7 @@ public class GlobalSearchSyncService {
         }
         Map<String, Object> doc = builder.build(row);
         if (doc == null || doc.isEmpty()) {
+            log.debug("全局搜索同步跳过，builder 返回空文档 table={}, id={}", table, id);
             return;
         }
         doc.putIfAbsent("system_code", normalize(builder.systemCode()));
@@ -54,35 +61,70 @@ public class GlobalSearchSyncService {
         doc.putIfAbsent("biz_id", String.valueOf(id));
 
         String index = resolveIndex(builder.systemCode());
+        String docId = resolveDocId(builder, id);
         ensureIndex(index);
-        esCommonService.upsert(index, resolveDocId(builder, id), doc);
+        esCommonService.upsert(index, docId, doc);
+        log.info("全局搜索同步单条完成 index={}, table={}, id={}, docId={}", index, table, id, docId);
     }
 
     public void saveBatch(String table, Collection<Map<String, Object>> rows) {
         if (rows == null || rows.isEmpty()) {
+            log.info("全局搜索批量同步跳过，数据为空 table={}", table);
             return;
         }
-        for (Map<String, Object> row : rows) {
-            upsert(table, row);
+        GlobalSearchDocumentBuilder builder = resolveBuilder(table);
+        if (builder == null) {
+            log.info("全局搜索批量同步跳过，未配置 builder table={}, rows={}", table, rows.size());
+            return;
         }
+        long start = System.currentTimeMillis();
+        int success = 0;
+        int skipped = 0;
+        String index = resolveIndex(builder.systemCode());
+        log.info("全局搜索批量同步开始 system={}, table={}, index={}, rows={}",
+                builder.systemCode(), table, index, rows.size());
+        for (Map<String, Object> row : rows) {
+            if (row == null || row.get(ID_FIELD) == null) {
+                skipped++;
+                continue;
+            }
+            upsert(table, row);
+            success++;
+        }
+        log.info("全局搜索批量同步完成 system={}, table={}, index={}, rows={}, success={}, skipped={}, costMs={}",
+                builder.systemCode(), table, index, rows.size(), success, skipped, System.currentTimeMillis() - start);
     }
 
     public void deleteByTable(String table) {
         GlobalSearchDocumentBuilder builder = resolveBuilder(table);
         if (builder == null) {
+            log.info("全局搜索按表清理跳过，未配置 builder table={}", table);
             return;
         }
+        long start = System.currentTimeMillis();
         String index = resolveIndex(builder.systemCode());
+        log.info("全局搜索按表清理开始 system={}, table={}, index={}", builder.systemCode(), table, index);
         ensureIndex(index);
         esCommonService.deleteByQuery(index, tableFilterQuery(builder));
+        log.info("全局搜索按表清理完成 system={}, table={}, index={}, costMs={}",
+                builder.systemCode(), table, index, System.currentTimeMillis() - start);
     }
 
     public void delete(String table, String id) {
         GlobalSearchDocumentBuilder builder = resolveBuilder(table);
-        if (builder == null || id == null || id.trim().isEmpty()) {
+        if (builder == null) {
+            log.debug("全局搜索删除跳过，未配置 builder table={}, id={}", table, id);
             return;
         }
-        esCommonService.delete(resolveIndex(builder.systemCode()), resolveDocId(builder, id));
+        if (id == null || id.trim().isEmpty()) {
+            log.warn("全局搜索删除跳过，id 为空 table={}", table);
+            return;
+        }
+        String index = resolveIndex(builder.systemCode());
+        String docId = resolveDocId(builder, id);
+        esCommonService.delete(index, docId);
+        log.info("全局搜索删除完成 system={}, table={}, index={}, id={}, docId={}",
+                builder.systemCode(), table, index, id, docId);
     }
 
     private GlobalSearchDocumentBuilder resolveBuilder(String table) {
@@ -105,7 +147,9 @@ public class GlobalSearchSyncService {
         if (!ensuredIndexSet.add(index)) {
             return;
         }
+        log.info("全局搜索索引检查开始 index={}", index);
         esCommonService.ensureIndex(index, buildGlobalSearchMapping());
+        log.info("全局搜索索引检查完成 index={}", index);
     }
 
     private Map<String, Object> tableFilterQuery(GlobalSearchDocumentBuilder builder) {

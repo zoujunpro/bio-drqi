@@ -59,7 +59,7 @@ public class GlobalSearchSyncService {
 
     private void upsert(GlobalSearchDocumentBuilder builder, String table, Map<String, Object> row) {
         if (builder == null) {
-            log.debug("全局搜索同步跳过，未配置 builder table={}", table);
+            log.warn("全局搜索同步跳过，未配置 builder table={}", table);
             return;
         }
         if (row == null || row.isEmpty()) {
@@ -159,7 +159,7 @@ public class GlobalSearchSyncService {
     public void delete(String systemCode, String businessCode, String table, String id) {
         GlobalSearchDocumentBuilder builder = resolveBuilder(systemCode, businessCode, table);
         if (builder == null) {
-            log.debug("全局搜索删除跳过，未配置 builder table={}, id={}", table, id);
+            log.warn("全局搜索删除跳过，未配置 builder table={}, id={}", table, id);
             return;
         }
         if (id == null || id.trim().isEmpty()) {

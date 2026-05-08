@@ -89,6 +89,27 @@ public class EsCommonService {
     }
 
     /**
+     * 删除整个索引，索引不存在时直接跳过。
+     */
+    public void deleteIndex(String index) {
+        try {
+            if (!indexExists(index)) {
+                log.info("ES 索引不存在，跳过删除 index={}", index);
+                return;
+            }
+            log.info("ES 索引删除开始 index={}", index);
+            Response response = restClient.performRequest(new Request("DELETE", "/" + encodePath(index)));
+            Map<String, Object> result = readMap(response.getEntity());
+            if (!Boolean.TRUE.equals(result.get("acknowledged"))) {
+                throw new IllegalStateException("删除索引未确认: " + index);
+            }
+            log.info("ES 索引删除完成 index={}", index);
+        } catch (Exception e) {
+            throw new IllegalStateException("删除索引失败: " + index, e);
+        }
+    }
+
+    /**
      * 批量写入文档：按 idField 取文档ID，自动做数据清洗后执行 bulk 写入。
      */
     public void saveBatch(String index, String idField, List<Map<String, Object>> rows) {

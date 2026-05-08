@@ -1,6 +1,7 @@
 package com.bio.drqi.es.service.impl;
 
 import com.bio.drqi.es.dto.req.TableSyncReqDTO;
+import com.bio.drqi.es.dto.req.TablesSyncReqDTO;
 import com.bio.drqi.es.service.EsCommonService;
 import com.bio.drqi.es.service.EsSyncService;
 import com.bio.drqi.es.support.DomainEntityResolver;
@@ -71,6 +72,39 @@ public class EsSyncServiceImpl implements EsSyncService {
         globalSearchSyncService.saveBatch(table, rows);
         log.info("ES 全量同步完成 table={}, index={}, rows={}, costMs={}",
                 table, index, rows.size(), System.currentTimeMillis() - start);
+    }
+
+    @Override
+    public void syncTables(TablesSyncReqDTO tablesSyncReqDTO) {
+        if (tablesSyncReqDTO == null || tablesSyncReqDTO.getTableNames() == null || tablesSyncReqDTO.getTableNames().isEmpty()) {
+            throw new IllegalStateException("参数缺少：表名列表");
+        }
+        long start = System.currentTimeMillis();
+        int success = 0;
+        log.info("ES 批量全量同步开始 tables={}", tablesSyncReqDTO.getTableNames());
+        for (String tableName : tablesSyncReqDTO.getTableNames()) {
+            if (tableName == null || tableName.trim().isEmpty()) {
+                continue;
+            }
+            TableSyncReqDTO tableSyncReqDTO = new TableSyncReqDTO();
+            tableSyncReqDTO.setTableName(tableName);
+            syncTable(tableSyncReqDTO);
+            success++;
+        }
+        log.info("ES 批量全量同步完成 tables={}, success={}, costMs={}",
+                tablesSyncReqDTO.getTableNames(), success, System.currentTimeMillis() - start);
+    }
+
+    @Override
+    public void deleteTable(TableSyncReqDTO tableSyncReqDTO) {
+        long start = System.currentTimeMillis();
+        String table = parseTableName(tableSyncReqDTO.getTableName());
+        String index = table.toLowerCase(Locale.ROOT);
+        log.info("ES 按表删除开始 table={}, index={}", table, index);
+        esCommonService.deleteIndex(index);
+        globalSearchSyncService.deleteByTable(table);
+        log.info("ES 按表删除完成 table={}, index={}, costMs={}",
+                table, index, System.currentTimeMillis() - start);
     }
 
     private String parseTableName(String value) {

@@ -1,7 +1,10 @@
 package com.bio.drqi.es.support.global;
 
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.common.enums.CheckResultEnum;
+import com.bio.drqi.common.enums.ExperimentTypeEnum;
+import com.bio.drqi.common.enums.PlantStatusEnum;
 import com.bio.drqi.common.enums.TestResultEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.drqi.enums.ProjectTypeEnum;
@@ -91,6 +94,42 @@ public abstract class AbstractBioDrqiGlobalSearchDocumentBuilder extends Abstrac
             return bioTaskStatusName;
         }
         return status;
+    }
+
+    protected String experimentTypeName(Object value) {
+        String code = stringValue(value);
+        String name = ExperimentTypeEnum.getDescByCode(code);
+        return notEmpty(name) ? name : code;
+    }
+
+    protected String plantStatusName(Object value) {
+        String code = stringValue(value);
+        for (PlantStatusEnum plantStatusEnum : PlantStatusEnum.values()) {
+            if (plantStatusEnum.code.equals(code)) {
+                return plantStatusEnum.desc;
+            }
+        }
+        return code;
+    }
+
+    protected String speciesName(Object value) {
+        return GlobalSearchDictTranslator.speciesName(value);
+    }
+
+    protected String breedName(Object value) {
+        return GlobalSearchDictTranslator.breedName(value);
+    }
+
+    protected String breedName(Object speciesCode, Object breedCode) {
+        return GlobalSearchDictTranslator.breedName(speciesCode, breedCode);
+    }
+
+    protected String dictName(BioDictTypeEnum dictType, Object dictValueCode) {
+        return GlobalSearchDictTranslator.dictName(dictType.name(), dictValueCode);
+    }
+
+    protected String produceAddressName(Object value) {
+        return GlobalSearchDictTranslator.produceAddressName(value);
     }
 
     protected String qualityInspectionResultName(Object value) {

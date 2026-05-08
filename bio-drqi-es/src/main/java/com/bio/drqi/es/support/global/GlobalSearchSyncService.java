@@ -42,39 +42,39 @@ public class GlobalSearchSyncService {
         log.info("全局搜索同步初始化完成 builderCount={}, tables={}", builderMap.size(), builderMap.keySet());
     }
 
-    public void upsert(String table, Map<String, Object> row) {
+    public boolean upsert(String table, Map<String, Object> row) {
         GlobalSearchDocumentBuilder builder = resolveBuilder(table);
-        upsert(builder, table, row);
+        return upsert(builder, table, row);
     }
 
-    public void upsert(String businessCode, String table, Map<String, Object> row) {
+    public boolean upsert(String businessCode, String table, Map<String, Object> row) {
         GlobalSearchDocumentBuilder builder = resolveBuilder(businessCode, table);
-        upsert(builder, table, row);
+        return upsert(builder, table, row);
     }
 
-    public void upsert(String systemCode, String businessCode, String table, Map<String, Object> row) {
+    public boolean upsert(String systemCode, String businessCode, String table, Map<String, Object> row) {
         GlobalSearchDocumentBuilder builder = resolveBuilder(systemCode, businessCode, table);
-        upsert(builder, table, row);
+        return upsert(builder, table, row);
     }
 
-    private void upsert(GlobalSearchDocumentBuilder builder, String table, Map<String, Object> row) {
+    private boolean upsert(GlobalSearchDocumentBuilder builder, String table, Map<String, Object> row) {
         if (builder == null) {
             log.warn("全局搜索同步跳过，未配置 builder table={}", table);
-            return;
+            return false;
         }
         if (row == null || row.isEmpty()) {
-            log.debug("全局搜索同步跳过，数据为空 table={}", table);
-            return;
+            log.warn("全局搜索同步跳过，数据为空 table={}", table);
+            return false;
         }
         Object id = row.get(ID_FIELD);
         if (id == null) {
             log.warn("全局搜索同步跳过，缺少 id table={}", table);
-            return;
+            return false;
         }
         Map<String, Object> doc = builder.build(row);
         if (doc == null || doc.isEmpty()) {
-            log.debug("全局搜索同步跳过，builder 返回空文档 table={}, id={}", table, id);
-            return;
+            log.warn("全局搜索同步跳过，builder 返回空文档 table={}, id={}", table, id);
+            return false;
         }
         doc.putIfAbsent("system_code", normalize(builder.systemCode()));
         doc.putIfAbsent("business_code", normalize(builder.businessCode()));
@@ -86,6 +86,7 @@ public class GlobalSearchSyncService {
         ensureIndex(index);
         esCommonService.upsert(index, docId, doc);
         log.info("全局搜索同步单条完成 index={}, table={}, id={}, docId={}", index, table, id, docId);
+        return true;
     }
 
     public void saveBatch(String table, Collection<Map<String, Object>> rows) {
@@ -117,8 +118,11 @@ public class GlobalSearchSyncService {
                 skipped++;
                 continue;
             }
-            upsert(builder, table, row);
-            success++;
+            if (upsert(builder, table, row)) {
+                success++;
+            } else {
+                skipped++;
+            }
         }
         log.info("全局搜索批量同步完成 system={}, business={}, table={}, index={}, rows={}, success={}, skipped={}, costMs={}",
                 builder.systemCode(), builder.businessCode(), table, index, rows.size(), success, skipped, System.currentTimeMillis() - start);
@@ -148,29 +152,30 @@ public class GlobalSearchSyncService {
                 builder.systemCode(), builder.businessCode(), table, index, System.currentTimeMillis() - start);
     }
 
-    public void delete(String table, String id) {
-        delete(null, table, id);
+    public boolean delete(String table, String id) {
+        return delete(null, table, id);
     }
 
-    public void delete(String businessCode, String table, String id) {
-        delete(null, businessCode, table, id);
+    public boolean delete(String businessCode, String table, String id) {
+        return delete(null, businessCode, table, id);
     }
 
-    public void delete(String systemCode, String businessCode, String table, String id) {
+    public boolean delete(String systemCode, String businessCode, String table, String id) {
         GlobalSearchDocumentBuilder builder = resolveBuilder(systemCode, businessCode, table);
         if (builder == null) {
             log.warn("全局搜索删除跳过，未配置 builder table={}, id={}", table, id);
-            return;
+            return false;
         }
         if (id == null || id.trim().isEmpty()) {
             log.warn("全局搜索删除跳过，id 为空 table={}", table);
-            return;
+            return false;
         }
         String index = resolveIndex(builder.systemCode());
         String docId = resolveDocId(builder, id);
         esCommonService.delete(index, docId);
         log.info("全局搜索删除完成 system={}, business={}, table={}, index={}, id={}, docId={}",
                 builder.systemCode(), builder.businessCode(), table, index, id, docId);
+        return true;
     }
 
     private GlobalSearchDocumentBuilder resolveBuilder(String table) {

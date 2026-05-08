@@ -8,6 +8,7 @@ import com.bio.drqi.es.support.EsMappingBuilder;
 import com.bio.drqi.es.support.global.GlobalSearchSyncService;
 import com.bio.drqi.es.support.MapperTableQueryService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "bio.es", name = "enabled", havingValue = "true")
 public class CanalMessageHandler {
@@ -97,10 +99,12 @@ public class CanalMessageHandler {
     private void handleInsertOrUpdate(String table, String id) throws Exception {
         Object dbEntity = mapperTableQueryService.queryByTableAndId(table, id);
         if (dbEntity == null) {
+            log.warn("Canal 同步跳过，数据库未查询到数据 table={}, id={}", table, id);
             return;
         }
         List<Map<String, Object>> docs = esDocumentConverter.toMapList(Collections.singletonList(dbEntity));
         if (docs.isEmpty()) {
+            log.warn("Canal 同步跳过，实体转换 ES 文档为空 table={}, id={}", table, id);
             return;
         }
         Map<String, Object> doc = docs.get(0);
@@ -109,13 +113,17 @@ public class CanalMessageHandler {
         String index = table.toLowerCase(Locale.ROOT);
         ensureIndexIfNeeded(table, index);
         esCommonService.upsert(index, targetId, doc);
-        globalSearchSyncService.upsert(table, doc);
+        log.info("Canal 原表索引同步完成 table={}, index={}, id={}", table, index, targetId);
+        boolean globalSynced = globalSearchSyncService.upsert(table, doc);
+        log.info("Canal 统一索引同步结果 table={}, id={}, synced={}", table, targetId, globalSynced);
     }
 
     private void handleDelete(String table, String id) throws Exception {
         String index = table.toLowerCase(Locale.ROOT);
         esCommonService.delete(index, id);
-        globalSearchSyncService.delete(table, id);
+        log.info("Canal 原表索引删除完成 table={}, index={}, id={}", table, index, id);
+        boolean globalDeleted = globalSearchSyncService.delete(table, id);
+        log.info("Canal 统一索引删除结果 table={}, id={}, deleted={}", table, id, globalDeleted);
     }
 
     private void ensureIndexIfNeeded(String table, String index) {

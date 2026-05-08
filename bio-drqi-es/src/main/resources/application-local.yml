@@ -19,7 +19,7 @@ spring:
 
 bio:
   es:
-    enabled: true
+    enabled: false
     hosts:
       - http://172.16.14.2:9200
     # 如 ES 开启鉴权，取消注释

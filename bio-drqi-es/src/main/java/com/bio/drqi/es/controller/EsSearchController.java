@@ -38,7 +38,7 @@ public class EsSearchController {
      *   "keyword": "玉米 张三",
      *   "tables": ["cer_project_tb", "cer_vector_task_tb"],
      *   "pageSize": 20,
-     *   "searchAfter": ["1.0", "2026-05-07 10:00:00", "1"]
+     *   "searchAfter": ["1.0", "project", "cer_project_tb", "1"]
      * }
      */
     @PostMapping("/listPage")
@@ -105,7 +105,8 @@ public class EsSearchController {
     private List<Map<String, Object>> buildSorts() {
         List<Map<String, Object>> sorts = new ArrayList<>();
         sorts.add(Collections.singletonMap("_score", Collections.singletonMap("order", "desc")));
-        sorts.add(Collections.singletonMap("create_time", Collections.singletonMap("order", "desc")));
+        sorts.add(Collections.singletonMap("business_code", Collections.singletonMap("order", "asc")));
+        sorts.add(Collections.singletonMap("table_name", Collections.singletonMap("order", "asc")));
         sorts.add(Collections.singletonMap("biz_id", Collections.singletonMap("order", "asc")));
         return sorts;
     }

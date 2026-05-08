@@ -26,6 +26,8 @@ public class GlobalSearchSyncService {
 
     private final EsCommonService esCommonService;
     private final Map<String, GlobalSearchDocumentBuilder> builderMap;
+    private final Map<String, GlobalSearchDocumentBuilder> businessTableBuilderMap;
+    private final Map<String, GlobalSearchDocumentBuilder> systemBusinessTableBuilderMap;
     private final Set<String> ensuredIndexSet = ConcurrentHashMap.newKeySet();
 
     public GlobalSearchSyncService(EsCommonService esCommonService,
@@ -33,11 +35,29 @@ public class GlobalSearchSyncService {
         this.esCommonService = esCommonService;
         this.builderMap = builders == null ? Collections.emptyMap() : builders.stream()
                 .collect(Collectors.toMap(this::builderKey, Function.identity(), (left, right) -> left));
+        this.businessTableBuilderMap = builders == null ? Collections.emptyMap() : builders.stream()
+                .collect(Collectors.toMap(this::businessTableBuilderKey, Function.identity(), (left, right) -> left));
+        this.systemBusinessTableBuilderMap = builders == null ? Collections.emptyMap() : builders.stream()
+                .collect(Collectors.toMap(this::systemBusinessTableBuilderKey, Function.identity(), (left, right) -> left));
         log.info("全局搜索同步初始化完成 builderCount={}, tables={}", builderMap.size(), builderMap.keySet());
     }
 
     public void upsert(String table, Map<String, Object> row) {
         GlobalSearchDocumentBuilder builder = resolveBuilder(table);
+        upsert(builder, table, row);
+    }
+
+    public void upsert(String businessCode, String table, Map<String, Object> row) {
+        GlobalSearchDocumentBuilder builder = resolveBuilder(businessCode, table);
+        upsert(builder, table, row);
+    }
+
+    public void upsert(String systemCode, String businessCode, String table, Map<String, Object> row) {
+        GlobalSearchDocumentBuilder builder = resolveBuilder(systemCode, businessCode, table);
+        upsert(builder, table, row);
+    }
+
+    private void upsert(GlobalSearchDocumentBuilder builder, String table, Map<String, Object> row) {
         if (builder == null) {
             log.debug("全局搜索同步跳过，未配置 builder table={}", table);
             return;
@@ -57,7 +77,8 @@ public class GlobalSearchSyncService {
             return;
         }
         doc.putIfAbsent("system_code", normalize(builder.systemCode()));
-        doc.putIfAbsent("biz_type", normalize(builder.table()));
+        doc.putIfAbsent("business_code", normalize(builder.businessCode()));
+        doc.putIfAbsent("table_name", normalize(builder.table()));
         doc.putIfAbsent("biz_id", String.valueOf(id));
 
         String index = resolveIndex(builder.systemCode());
@@ -68,11 +89,19 @@ public class GlobalSearchSyncService {
     }
 
     public void saveBatch(String table, Collection<Map<String, Object>> rows) {
+        saveBatch(null, table, rows);
+    }
+
+    public void saveBatch(String businessCode, String table, Collection<Map<String, Object>> rows) {
+        saveBatch(null, businessCode, table, rows);
+    }
+
+    public void saveBatch(String systemCode, String businessCode, String table, Collection<Map<String, Object>> rows) {
         if (rows == null || rows.isEmpty()) {
             log.info("全局搜索批量同步跳过，数据为空 table={}", table);
             return;
         }
-        GlobalSearchDocumentBuilder builder = resolveBuilder(table);
+        GlobalSearchDocumentBuilder builder = resolveBuilder(systemCode, businessCode, table);
         if (builder == null) {
             log.info("全局搜索批量同步跳过，未配置 builder table={}, rows={}", table, rows.size());
             return;
@@ -81,37 +110,54 @@ public class GlobalSearchSyncService {
         int success = 0;
         int skipped = 0;
         String index = resolveIndex(builder.systemCode());
-        log.info("全局搜索批量同步开始 system={}, table={}, index={}, rows={}",
-                builder.systemCode(), table, index, rows.size());
+        log.info("全局搜索批量同步开始 system={}, business={}, table={}, index={}, rows={}",
+                builder.systemCode(), builder.businessCode(), table, index, rows.size());
         for (Map<String, Object> row : rows) {
             if (row == null || row.get(ID_FIELD) == null) {
                 skipped++;
                 continue;
             }
-            upsert(table, row);
+            upsert(builder, table, row);
             success++;
         }
-        log.info("全局搜索批量同步完成 system={}, table={}, index={}, rows={}, success={}, skipped={}, costMs={}",
-                builder.systemCode(), table, index, rows.size(), success, skipped, System.currentTimeMillis() - start);
+        log.info("全局搜索批量同步完成 system={}, business={}, table={}, index={}, rows={}, success={}, skipped={}, costMs={}",
+                builder.systemCode(), builder.businessCode(), table, index, rows.size(), success, skipped, System.currentTimeMillis() - start);
     }
 
     public void deleteByTable(String table) {
-        GlobalSearchDocumentBuilder builder = resolveBuilder(table);
+        deleteByTable(null, table);
+    }
+
+    public void deleteByTable(String businessCode, String table) {
+        deleteByTable(null, businessCode, table);
+    }
+
+    public void deleteByTable(String systemCode, String businessCode, String table) {
+        GlobalSearchDocumentBuilder builder = resolveBuilder(systemCode, businessCode, table);
         if (builder == null) {
             log.info("全局搜索按表清理跳过，未配置 builder table={}", table);
             return;
         }
         long start = System.currentTimeMillis();
         String index = resolveIndex(builder.systemCode());
-        log.info("全局搜索按表清理开始 system={}, table={}, index={}", builder.systemCode(), table, index);
+        log.info("全局搜索按表清理开始 system={}, business={}, table={}, index={}",
+                builder.systemCode(), builder.businessCode(), table, index);
         ensureIndex(index);
         esCommonService.deleteByQuery(index, tableFilterQuery(builder));
-        log.info("全局搜索按表清理完成 system={}, table={}, index={}, costMs={}",
-                builder.systemCode(), table, index, System.currentTimeMillis() - start);
+        log.info("全局搜索按表清理完成 system={}, business={}, table={}, index={}, costMs={}",
+                builder.systemCode(), builder.businessCode(), table, index, System.currentTimeMillis() - start);
     }
 
     public void delete(String table, String id) {
-        GlobalSearchDocumentBuilder builder = resolveBuilder(table);
+        delete(null, table, id);
+    }
+
+    public void delete(String businessCode, String table, String id) {
+        delete(null, businessCode, table, id);
+    }
+
+    public void delete(String systemCode, String businessCode, String table, String id) {
+        GlobalSearchDocumentBuilder builder = resolveBuilder(systemCode, businessCode, table);
         if (builder == null) {
             log.debug("全局搜索删除跳过，未配置 builder table={}, id={}", table, id);
             return;
@@ -123,16 +169,38 @@ public class GlobalSearchSyncService {
         String index = resolveIndex(builder.systemCode());
         String docId = resolveDocId(builder, id);
         esCommonService.delete(index, docId);
-        log.info("全局搜索删除完成 system={}, table={}, index={}, id={}, docId={}",
-                builder.systemCode(), table, index, id, docId);
+        log.info("全局搜索删除完成 system={}, business={}, table={}, index={}, id={}, docId={}",
+                builder.systemCode(), builder.businessCode(), table, index, id, docId);
     }
 
     private GlobalSearchDocumentBuilder resolveBuilder(String table) {
         return builderMap.get(normalize(table));
     }
 
+    private GlobalSearchDocumentBuilder resolveBuilder(String businessCode, String table) {
+        return businessTableBuilderMap.get(normalize(businessCode) + ":" + normalize(table));
+    }
+
+    private GlobalSearchDocumentBuilder resolveBuilder(String systemCode, String businessCode, String table) {
+        if (systemCode != null && businessCode != null) {
+            return systemBusinessTableBuilderMap.get(normalize(systemCode) + ":" + normalize(businessCode) + ":" + normalize(table));
+        }
+        if (businessCode != null) {
+            return resolveBuilder(businessCode, table);
+        }
+        return resolveBuilder(table);
+    }
+
     private String builderKey(GlobalSearchDocumentBuilder builder) {
         return normalize(builder.table());
+    }
+
+    private String businessTableBuilderKey(GlobalSearchDocumentBuilder builder) {
+        return normalize(builder.businessCode()) + ":" + normalize(builder.table());
+    }
+
+    private String systemBusinessTableBuilderKey(GlobalSearchDocumentBuilder builder) {
+        return normalize(builder.systemCode()) + ":" + normalize(builder.businessCode()) + ":" + normalize(builder.table());
     }
 
     private String resolveIndex(String systemCode) {
@@ -140,7 +208,7 @@ public class GlobalSearchSyncService {
     }
 
     private String resolveDocId(GlobalSearchDocumentBuilder builder, Object id) {
-        return normalize(builder.systemCode()) + "_" + normalize(builder.table()) + "_" + id;
+        return normalize(builder.systemCode()) + "_" + normalize(builder.businessCode()) + "_" + normalize(builder.table()) + "_" + id;
     }
 
     private void ensureIndex(String index) {
@@ -156,17 +224,23 @@ public class GlobalSearchSyncService {
         Map<String, Object> systemTerm = new LinkedHashMap<>();
         systemTerm.put("system_code", normalize(builder.systemCode()));
 
-        Map<String, Object> bizTypeTerm = new LinkedHashMap<>();
-        bizTypeTerm.put("biz_type", normalize(builder.table()));
+        Map<String, Object> businessTerm = new LinkedHashMap<>();
+        businessTerm.put("business_code", normalize(builder.businessCode()));
+
+        Map<String, Object> tableTerm = new LinkedHashMap<>();
+        tableTerm.put("table_name", normalize(builder.table()));
 
         Map<String, Object> systemQuery = new LinkedHashMap<>();
         systemQuery.put("term", systemTerm);
 
-        Map<String, Object> bizTypeQuery = new LinkedHashMap<>();
-        bizTypeQuery.put("term", bizTypeTerm);
+        Map<String, Object> businessQuery = new LinkedHashMap<>();
+        businessQuery.put("term", businessTerm);
+
+        Map<String, Object> tableQuery = new LinkedHashMap<>();
+        tableQuery.put("term", tableTerm);
 
         Map<String, Object> bool = new LinkedHashMap<>();
-        bool.put("filter", java.util.Arrays.asList(systemQuery, bizTypeQuery));
+        bool.put("filter", java.util.Arrays.asList(systemQuery, businessQuery, tableQuery));
 
         Map<String, Object> query = new LinkedHashMap<>();
         query.put("bool", bool);
@@ -176,7 +250,8 @@ public class GlobalSearchSyncService {
     private Map<String, Object> buildGlobalSearchMapping() {
         Map<String, Object> properties = new LinkedHashMap<>();
         properties.put("system_code", keywordField());
-        properties.put("biz_type", keywordField());
+        properties.put("business_code", keywordField());
+        properties.put("table_name", keywordField());
         properties.put("biz_id", keywordField());
         properties.put("title", textWithKeywordField());
         properties.put("summary", textField());

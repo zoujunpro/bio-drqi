@@ -33,9 +33,10 @@ public class EsSearchController {
      *
      * 示例：
      * {
-     *   "systemCode": "project",
+     *   "systemCode": "drqi",
+     *   "businessCodes": ["project"],
      *   "keyword": "玉米 张三",
-     *   "bizTypes": ["cer_project_tb", "cer_vector_task_tb"],
+     *   "tables": ["cer_project_tb", "cer_vector_task_tb"],
      *   "pageSize": 20,
      *   "searchAfter": ["1.0", "2026-05-07 10:00:00", "1"]
      * }
@@ -44,14 +45,15 @@ public class EsSearchController {
     public ResponseResult<EsPageResult> globalPage(@RequestBody @Validated GlobalSearchPageReqDTO reqDTO) {
 
         EsCommonService.EsPageQuery pageQuery = new EsCommonService.EsPageQuery();
-        pageQuery.setIndex(normalize(reqDTO.getSystemCode()) + GLOBAL_SEARCH_INDEX_SUFFIX);
+        pageQuery.setIndex(resolveIndex(reqDTO.getSystemCode()));
         pageQuery.setQuery(buildQuery(reqDTO));
         pageQuery.setSorts(buildSorts());
         pageQuery.setPageSize(resolvePageSize(reqDTO.getPageSize()));
         pageQuery.setSearchAfter(reqDTO.getSearchAfter());
         pageQuery.setIncludes(new String[]{
                 "system_code",
-                "biz_type",
+                "business_code",
+                "table_name",
                 "biz_id",
                 "title",
                 "summary",
@@ -79,9 +81,15 @@ public class EsSearchController {
         systemTerm.put("system_code", normalize(reqDTO.getSystemCode()));
         filters.add(Collections.singletonMap("term", systemTerm));
 
-        if (reqDTO.getBizTypes() != null && !reqDTO.getBizTypes().isEmpty()) {
+        if (reqDTO.getBusinessCodes() != null && !reqDTO.getBusinessCodes().isEmpty()) {
             Map<String, Object> terms = new LinkedHashMap<>();
-            terms.put("biz_type", normalizeList(reqDTO.getBizTypes()));
+            terms.put("business_code", normalizeList(reqDTO.getBusinessCodes()));
+            filters.add(Collections.singletonMap("terms", terms));
+        }
+
+        if (reqDTO.getTables() != null && !reqDTO.getTables().isEmpty()) {
+            Map<String, Object> terms = new LinkedHashMap<>();
+            terms.put("table_name", normalizeList(reqDTO.getTables()));
             filters.add(Collections.singletonMap("terms", terms));
         }
 
@@ -107,6 +115,10 @@ public class EsSearchController {
             return DEFAULT_PAGE_SIZE;
         }
         return Math.min(pageSize, MAX_PAGE_SIZE);
+    }
+
+    private String resolveIndex(String systemCode) {
+        return normalize(systemCode) + GLOBAL_SEARCH_INDEX_SUFFIX;
     }
 
     private List<String> normalizeList(List<String> values) {

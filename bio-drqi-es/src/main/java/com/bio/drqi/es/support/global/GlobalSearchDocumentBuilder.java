@@ -6,6 +6,8 @@ public interface GlobalSearchDocumentBuilder {
 
     String systemCode();
 
+    String businessCode();
+
     String table();
 
     Map<String, Object> build(Map<String, Object> row);

@@ -13,7 +13,8 @@ public  class GlobalSearchPageReqDTO {
 
     @NotBlank(message = "keyword 不能为空")
     private String keyword;
-    private List<String> bizTypes;
+    private List<String> businessCodes;
+    private List<String> tables;
     private Integer pageSize;
     private Object[] searchAfter;
 
@@ -33,12 +34,20 @@ public  class GlobalSearchPageReqDTO {
         this.keyword = keyword;
     }
 
-    public List<String> getBizTypes() {
-        return bizTypes;
+    public List<String> getBusinessCodes() {
+        return businessCodes;
     }
 
-    public void setBizTypes(List<String> bizTypes) {
-        this.bizTypes = bizTypes;
+    public void setBusinessCodes(List<String> businessCodes) {
+        this.businessCodes = businessCodes;
+    }
+
+    public List<String> getTables() {
+        return tables;
+    }
+
+    public void setTables(List<String> tables) {
+        this.tables = tables;
     }
 
     public Integer getPageSize() {

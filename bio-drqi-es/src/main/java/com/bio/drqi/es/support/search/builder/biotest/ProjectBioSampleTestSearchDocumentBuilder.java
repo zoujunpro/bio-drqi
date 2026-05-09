@@ -1,7 +1,6 @@
 package com.bio.drqi.es.support.search.builder.biotest;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.domain.BioSampleTestTb;
 import com.bio.drqi.mapper.BioSampleTestTbMapper;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ public class ProjectBioSampleTestSearchDocumentBuilder extends AbstractBioTestSe
         String checkResultName = checkResultName(row.get("check_result"));
         String speciesName = speciesName(row.get("species_code"));
         String breedName = breedName(row.get("species_code"), row.get("breed_code"));
-        String sourceCodeName = dictName(BioDictTypeEnum.SOURCE_CHANNEL, row.get("source_code"));
+        String sourceCodeName = sourceCodeName(row.get("source_code"));
         return buildDoc(row,
                 stringValue(row.get("sample_code")),
                 join(row.get("vector_task_code"), row.get("apply_user_name"), speciesName, breedName, sourceCodeName, testResultName, checkResultName),
@@ -43,7 +42,7 @@ public class ProjectBioSampleTestSearchDocumentBuilder extends AbstractBioTestSe
         row.put("check_result_name", checkResultName(row.get("check_result")));
         row.put("species_name", speciesName(row.get("species_code")));
         row.put("breed_name", breedName(row.get("species_code"), row.get("breed_code")));
-        row.put("source_code_name", dictName(BioDictTypeEnum.SOURCE_CHANNEL, row.get("source_code")));
+        row.put("source_code_name", sourceCodeName(row.get("source_code")));
         return row;
     }
 

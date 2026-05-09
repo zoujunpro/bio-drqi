@@ -154,6 +154,10 @@ public abstract class AbstractBioDrqiSearchDocumentBuilder<T> extends AbstractSe
         return GlobalSearchDictTranslator.dictName(dictType.name(), dictValueCode);
     }
 
+    protected String sourceCodeName(Object value) {
+        return GlobalSearchDictTranslator.sourceCodeName(value);
+    }
+
     protected String produceAddressName(Object value) {
         return GlobalSearchDictTranslator.produceAddressName(value);
     }

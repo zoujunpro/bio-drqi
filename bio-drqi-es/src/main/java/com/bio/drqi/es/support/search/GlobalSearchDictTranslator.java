@@ -4,6 +4,7 @@ import com.bio.drqi.domain.BioDict;
 import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.CerSpeciesConf;
 import com.bio.drqi.domain.SeedProduceAddressDict;
+import com.bio.drqi.common.enums.SourceCodeEnum;
 import com.bio.drqi.mapper.BioDictMapper;
 import com.bio.drqi.mapper.CerBreedDictMapper;
 import com.bio.drqi.mapper.CerSpeciesConfMapper;
@@ -127,6 +128,23 @@ public class GlobalSearchDictTranslator {
         String code = stringValue(dictValueCode);
         String name = dictNameMap.get(type + ":" + code);
         return notEmpty(name) ? name : code;
+    }
+
+    public static String sourceCodeName(Object value) {
+        String code = stringValue(value);
+        if (SourceCodeEnum.project.name().equals(code)) {
+            return "项目";
+        }
+        if (SourceCodeEnum.field.name().equals(code)) {
+            return "大田";
+        }
+        if (SourceCodeEnum.cer.name().equals(code)) {
+            return "CER";
+        }
+        if (SourceCodeEnum.seed.name().equals(code)) {
+            return "种子库";
+        }
+        return code;
     }
 
     public static String produceAddressName(Object value) {

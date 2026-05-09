@@ -29,7 +29,7 @@ public class PlantSingleStockSearchDocumentBuilder extends AbstractPlantSearchDo
         String breedName = breedName(row.get("species_code"), row.get("breed_code"));
         String pollinationMethodName = dictName(BioDictTypeEnum.POLLINATE_TYPE, row.get("pollination_method"));
         String harvestTypeName = dictName(BioDictTypeEnum.HARVEST_TYPE, row.get("harvest_type"));
-        String sourceCodeName = dictName(BioDictTypeEnum.SOURCE_CHANNEL, row.get("source_code"));
+        String sourceCodeName = sourceCodeName(row.get("source_code"));
         return buildDoc(row,
                 stringValue(row.get("plant_code")),
                 join(row.get("task_num"), row.get("sample_code"), speciesName, breedName, row.get("generation"), plantStatusName),
@@ -45,7 +45,7 @@ public class PlantSingleStockSearchDocumentBuilder extends AbstractPlantSearchDo
         row.put("breed_name", breedName(row.get("species_code"), row.get("breed_code")));
         row.put("pollination_method_name", dictName(BioDictTypeEnum.POLLINATE_TYPE, row.get("pollination_method")));
         row.put("harvest_type_name", dictName(BioDictTypeEnum.HARVEST_TYPE, row.get("harvest_type")));
-        row.put("source_code_name", dictName(BioDictTypeEnum.SOURCE_CHANNEL, row.get("source_code")));
+        row.put("source_code_name", sourceCodeName(row.get("source_code")));
         return row;
     }
 

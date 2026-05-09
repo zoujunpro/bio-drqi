@@ -2,20 +2,22 @@ package com.bio.drqi.es.service.impl;
 
 import com.bio.drqi.es.dto.req.TableSyncReqDTO;
 import com.bio.drqi.es.dto.req.TablesSyncReqDTO;
+import com.bio.drqi.es.enums.TableEnum;
 import com.bio.drqi.es.service.EsCommonService;
 import com.bio.drqi.es.service.EsSyncService;
-import com.bio.drqi.es.support.DomainEntityResolver;
 import com.bio.drqi.es.support.EsDocumentConverter;
-import com.bio.drqi.es.support.global.GlobalSearchSyncService;
 import com.bio.drqi.es.support.EsMappingBuilder;
-import com.bio.drqi.es.support.MapperTableQueryService;
+import com.bio.drqi.es.support.search.GlobalSearchSyncService;
+import com.bio.drqi.es.support.search.SearchDocumentBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -24,24 +26,22 @@ public class EsSyncServiceImpl implements EsSyncService {
 
     private static final String ID_FIELD = "id";
 
+    private final Map<String, SearchDocumentBuilder> builderMap;
+
     private final EsCommonService esCommonService;
-    private final DomainEntityResolver domainEntityResolver;
     private final EsMappingBuilder esMappingBuilder;
     private final EsDocumentConverter esDocumentConverter;
-    private final MapperTableQueryService mapperTableQueryService;
     private final GlobalSearchSyncService globalSearchSyncService;
 
     public EsSyncServiceImpl(EsCommonService esCommonService,
-                             DomainEntityResolver domainEntityResolver,
                              EsMappingBuilder esMappingBuilder,
                              EsDocumentConverter esDocumentConverter,
-                             MapperTableQueryService mapperTableQueryService,
-                             GlobalSearchSyncService globalSearchSyncService) {
+                             GlobalSearchSyncService globalSearchSyncService,
+                             List<SearchDocumentBuilder> builders) {
+        this.builderMap = builders == null ? Collections.emptyMap() : builders.stream().collect(Collectors.toMap(SearchDocumentBuilder::table, searchDocumentBuilder -> searchDocumentBuilder));
         this.esCommonService = esCommonService;
-        this.domainEntityResolver = domainEntityResolver;
         this.esMappingBuilder = esMappingBuilder;
         this.esDocumentConverter = esDocumentConverter;
-        this.mapperTableQueryService = mapperTableQueryService;
         this.globalSearchSyncService = globalSearchSyncService;
     }
 
@@ -49,29 +49,24 @@ public class EsSyncServiceImpl implements EsSyncService {
     public void syncTable(TableSyncReqDTO tableSyncReqDTO) {
 
         long start = System.currentTimeMillis();
-        String table = parseTableName(tableSyncReqDTO.getTableName());
-        String index = table.toLowerCase(Locale.ROOT);
-        log.info("ES 全量同步开始 table={}, index={}", table, index);
-        Class<?> entityClass = domainEntityResolver.resolveEntityClass(table);
-        if (entityClass == null) {
-            throw new IllegalStateException("在包 com.bio.drqi.domain 下找不到表对应实体: " + table);
-        }
-        log.info("ES 全量同步解析实体成功 table={}, entityClass={}", table, entityClass.getName());
+        TableEnum tableEnum = TableEnum.getTableEnum(tableSyncReqDTO.getTableName().toLowerCase());
+        log.info("ES 全量同步开始 table={}, index={}", tableEnum.name(), tableEnum.name());
+        Class<?> entityClass = tableEnum.domain;
         Map<String, Object> mapping = esMappingBuilder.buildMappingByEntity(entityClass);
         int fieldCount = ((Map<?, ?>) mapping.get("properties")).size();
         if (fieldCount == 0) {
             throw new IllegalStateException("实体无可用字段: " + entityClass.getName());
         }
-        log.info("ES 全量同步 mapping 构建完成 table={}, fieldCount={}", table, fieldCount);
-        esCommonService.recreateIndex(index, mapping);
-        globalSearchSyncService.deleteByTable(table);
+        log.info("ES 全量同步 mapping 构建完成 table={}, fieldCount={}", tableEnum.name(), fieldCount);
+        esCommonService.recreateIndex(tableEnum.name(), mapping);
+        globalSearchSyncService.deleteByTable(tableEnum.name());
 
-        List<Map<String, Object>> rows = queryRowsByMapper(table);
-        log.info("ES 全量同步查询数据库完成 table={}, rows={}", table, rows.size());
-        esCommonService.saveBatch(index, ID_FIELD, rows);
-        globalSearchSyncService.saveBatch(table, rows);
+        List<Map<String, Object>> rows = builderMap.get(tableEnum.name()).buildRows();
+        log.info("ES 全量同步查询数据库完成 table={}, rows={}", tableEnum.name(), rows.size());
+        esCommonService.saveBatch(tableEnum.name(), ID_FIELD, rows);
+        globalSearchSyncService.saveBatch(tableEnum.name(), rows);
         log.info("ES 全量同步完成 table={}, index={}, rows={}, costMs={}",
-                table, index, rows.size(), System.currentTimeMillis() - start);
+                tableEnum.name(), tableEnum.name(), rows.size(), System.currentTimeMillis() - start);
     }
 
     @Override
@@ -98,7 +93,7 @@ public class EsSyncServiceImpl implements EsSyncService {
     @Override
     public void deleteTable(TableSyncReqDTO tableSyncReqDTO) {
         long start = System.currentTimeMillis();
-        String table = parseTableName(tableSyncReqDTO.getTableName());
+        String table = TableEnum.getTableEnum(tableSyncReqDTO.getTableName().toLowerCase()).name();
         String index = table.toLowerCase(Locale.ROOT);
         log.info("ES 按表删除开始 table={}, index={}", table, index);
         esCommonService.deleteIndex(index);
@@ -107,19 +102,4 @@ public class EsSyncServiceImpl implements EsSyncService {
                 table, index, System.currentTimeMillis() - start);
     }
 
-    private String parseTableName(String value) {
-        if (value == null || value.trim().isEmpty()) {
-            throw new IllegalStateException("参数缺少：表名");
-        }
-        String input = value.trim();
-        int idx = input.indexOf('.');
-        if (idx > 0 && idx < input.length() - 1) {
-            return input.substring(idx + 1).trim();
-        }
-        return input;
-    }
-
-    private List<Map<String, Object>> queryRowsByMapper(String table) {
-        return esDocumentConverter.toMapList(mapperTableQueryService.queryAllByTable(table));
-    }
 }

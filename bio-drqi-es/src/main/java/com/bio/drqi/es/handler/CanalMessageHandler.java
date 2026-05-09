@@ -2,11 +2,9 @@ package com.bio.drqi.es.handler;
 
 import com.bio.drqi.es.dto.CanalMessage;
 import com.bio.drqi.es.service.EsCommonService;
-import com.bio.drqi.es.support.DomainEntityResolver;
 import com.bio.drqi.es.support.EsDocumentConverter;
 import com.bio.drqi.es.support.EsMappingBuilder;
-import com.bio.drqi.es.support.global.GlobalSearchSyncService;
-import com.bio.drqi.es.support.MapperTableQueryService;
+import com.bio.drqi.es.support.search.GlobalSearchSyncService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

@@ -131,6 +131,7 @@
         <include refid="Base_Column_List"/>
         from cer_transform_tb
         <where>
+            <if test="id != null">and id = #{id,jdbcType=INTEGER}</if>
             <if test="projectId != null">and project_id=#{projectId,jdbcType=NUMERIC}</if>
             <if test="vectorTaskId != null">and vector_task_id=#{vectorTaskId,jdbcType=NUMERIC}</if>
             <if test="subProjectId != null">and sub_project_id=#{subProjectId,jdbcType=NUMERIC}</if>

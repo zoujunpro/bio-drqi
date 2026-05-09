@@ -97,6 +97,7 @@ public class SeedStockInServiceImpl implements SeedStockInService {
         seedStockInLog.setSeedNum(seedStockInReqDTO.getSeedNum());
         seedStockInLog.setSourceType(seedStockInReqDTO.getSourceType());
         seedStockInLog.setTaskNum(seedStockInReqDTO.getTaskNum());
+        seedStockInLog.setId(seedStockInReqDTO.getId());
         if (CollectionUtil.isNotEmpty(dataPermissionList) && DataPermissionValueEnum.OWNER.value.equals(dataPermissionList.get(0).getPermissionValue())) {
             seedStockInLog.setApplyUserId(SecurityContextHolder.getUserId());
         }

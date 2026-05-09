@@ -55,6 +55,7 @@
         <include refid="Base_Column_List"/>
         from cer_conversion_and_trans_ref
         <where>
+            <if test="id != null">and id = #{id,jdbcType=INTEGER}</if>
             <if test="conversionAndTransId != null">and
                 conversion_and_trans_id=#{conversionAndTransId,jdbcType=NUMERIC}
             </if>

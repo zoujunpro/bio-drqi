@@ -118,7 +118,7 @@ public class BioSingleStockServiceImpl implements PlantSingleStockService {
             throw new BusinessException("找不到实施方案信息");
         }
         PageHelper.startPage(plantDtlListDetailReqDTO.getPageNum(), plantDtlListDetailReqDTO.getPageSize());
-        List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectSelective(PlantSingleStockTb.builder().plantStatus(plantDtlListDetailReqDTO.getPlantStatus()).vectorTaskCode(cerVectorTaskTb.getVectorTaskCode()).sourceCode(SourceCodeEnum.project.name()).build());
+        List<PlantSingleStockTb> plantSingleStockTbList = plantSingleStockTbMapper.selectSelective(PlantSingleStockTb.builder().id(plantDtlListDetailReqDTO.getId()).plantStatus(plantDtlListDetailReqDTO.getPlantStatus()).vectorTaskCode(cerVectorTaskTb.getVectorTaskCode()).sourceCode(SourceCodeEnum.project.name()).build());
         PageInfo<PlantSingleStockTb> srcPageInfo = new PageInfo<>(plantSingleStockTbList);
         PageInfo<PlantDtlListDetailRspDTO> result = BeanUtils.copyPageInfoProperties(srcPageInfo, PlantDtlListDetailRspDTO.class);
         if (CollectionUtil.isNotEmpty(result.getList())) {

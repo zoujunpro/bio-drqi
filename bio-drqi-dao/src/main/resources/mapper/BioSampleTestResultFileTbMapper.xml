@@ -30,6 +30,7 @@
         <include refid="Base_Column_List"/>
         from bio_sample_test_result_file_tb
         <where>
+            <if test="id != null">and id = #{id,jdbcType=INTEGER}</if>
             <if test="fileUrl != null">and file_url=#{fileUrl,jdbcType=VARCHAR}</if>
             <if test="resultType != null">and result_type=#{resultType,jdbcType=VARCHAR}</if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>

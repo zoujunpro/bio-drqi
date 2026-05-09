@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -28,9 +29,15 @@ public class SeedQualityCheckConfigServiceImpl implements SeedQualityCheckConfig
     @Override
     public PageInfo<SeedQualityCheckRspDTO> listPage(PageDTO pageDTO) {
         PageHelper.startPage(pageDTO.getPageNum(), pageDTO.getPageSize());
-        List<SeedQualityCheckConfig> seedQualityCheckConfigList = seedQualityCheckConfigMapper.selectAllOrderByIdDesc();
+        List<SeedQualityCheckConfig> seedQualityCheckConfigList = pageDTO.getId() == null
+                ? seedQualityCheckConfigMapper.selectAllOrderByIdDesc()
+                : singletonList(seedQualityCheckConfigMapper.selectById(pageDTO.getId()));
         PageInfo<SeedQualityCheckConfig> srcPageInfo = new PageInfo<>(seedQualityCheckConfigList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, SeedQualityCheckRspDTO.class);
+    }
+
+    private <T> List<T> singletonList(T item) {
+        return item == null ? Collections.emptyList() : Collections.singletonList(item);
     }
 
     @Override

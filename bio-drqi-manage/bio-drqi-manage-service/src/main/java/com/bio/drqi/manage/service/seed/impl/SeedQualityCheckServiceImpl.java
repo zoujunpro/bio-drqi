@@ -142,7 +142,7 @@ public class SeedQualityCheckServiceImpl implements SeedQualityCheckService {
     @Override
     public PageInfo<Map<String, String>> listPage(SeedQualityCheckReqDTO seedQualityCheckReqDTO) {
         PageHelper.startPage(seedQualityCheckReqDTO.getPageNum(), seedQualityCheckReqDTO.getPageSize());
-        List<SeedQualityCheckDtlTb> seedQualityCheckDtlTbList = seedQualityCheckDtlTbMapper.selectSelective(SeedQualityCheckDtlTb.builder().seedNum(seedQualityCheckReqDTO.getSeedNum()).build());
+        List<SeedQualityCheckDtlTb> seedQualityCheckDtlTbList = seedQualityCheckDtlTbMapper.selectSelective(SeedQualityCheckDtlTb.builder().id(seedQualityCheckReqDTO.getId()).seedNum(seedQualityCheckReqDTO.getSeedNum()).build());
         PageInfo<SeedQualityCheckDtlTb> pageInfo = new PageInfo(seedQualityCheckDtlTbList);
         PageInfo<Map<String, String>> resultPageInfo = new PageInfo<>();
         resultPageInfo.setTotal(pageInfo.getTotal());

@@ -47,6 +47,7 @@
         <include refid="Base_Column_List"/>
         from bio_sample_apply_tb
         <where>
+            <if test="id != null">and id = #{id,jdbcType=INTEGER}</if>
             <if test="applyNo != null and applyNo!=''">and apply_no=#{applyNo,jdbcType=VARCHAR}</if>
             <if test="applyNumber != null">and apply_number=#{applyNumber,jdbcType=NUMERIC}</if>
             <if test="applyTime != null">and apply_time=#{applyTime,jdbcType=TIMESTAMP}</if>

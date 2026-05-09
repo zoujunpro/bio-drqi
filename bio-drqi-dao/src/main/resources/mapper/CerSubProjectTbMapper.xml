@@ -63,6 +63,7 @@
         <include refid="Base_Column_List"/>
         from cer_sub_project_tb
         <where>
+            <if test="id != null">and id = #{id,jdbcType=INTEGER}</if>
             <if test="projectId != null">and project_id=#{projectId,jdbcType=NUMERIC}</if>
             <if test="subProjectCode != null and subProjectCode!=''">and sub_project_code=#{subProjectCode,jdbcType=VARCHAR}</if>
             <if test="projectCode != null and projectCode!=''">and project_code=#{projectCode,jdbcType=VARCHAR}</if>

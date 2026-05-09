@@ -1,9 +1,9 @@
 package com.bio.drqi.manage.controller.seed;
 
-import com.bio.base.base.PageDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.common.dto.PageDTO;
 import com.bio.drqi.manage.conf.SeedProduceAddressListRsp;
 import com.bio.drqi.manage.seed.SeedProduceAddressDictAddDTO;
 import com.bio.drqi.manage.seed.SeedProduceAddressDictEditDTO;

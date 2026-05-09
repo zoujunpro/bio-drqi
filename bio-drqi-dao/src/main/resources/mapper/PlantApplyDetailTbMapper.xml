@@ -41,6 +41,7 @@
         <include refid="Base_Column_List"/>
         from plant_apply_detail_tb
         <where>
+            <if test="id != null">and id = #{id,jdbcType=INTEGER}</if>
             <if test="pdImplementCode != null and pdImplementCode!=''">and
                 pd_implement_code=#{pdImplementCode,jdbcType=VARCHAR}
             </if>

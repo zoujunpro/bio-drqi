@@ -59,6 +59,7 @@
         <include refid="Base_Column_List"/>
         from cer_conversion_and_trans_tb
         <where>
+            <if test="id != null">and id = #{id,jdbcType=INTEGER}</if>
             <if test="handoverDate != null">and handover_date=#{handoverDate,jdbcType=VARCHAR}</if>
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="createUserId != null">and create_user_id=#{createUserId,jdbcType=NUMERIC}</if>

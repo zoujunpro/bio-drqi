@@ -393,6 +393,7 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
         Map<String, String> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         dataPermissionList = dataPermissionList.stream().filter(dataPermission -> dataPermission.getPermissionType().equals(DataPermissionTypeEnum.SEED_STORE.name())).collect(Collectors.toList());
         SeedStockTb seedStockTb = new SeedStockTb();
+        seedStockTb.setId(seedStockPageReqDTO.getId());
         seedStockTb.setSeedNum(seedStockPageReqDTO.getSeedNum());
         seedStockTb.setVectorTaskCode(seedStockPageReqDTO.getVectorTaskCode());
         seedStockTb.setGeneration(seedStockPageReqDTO.getGeneration());

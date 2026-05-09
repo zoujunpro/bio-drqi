@@ -84,6 +84,7 @@
         <include refid="Base_Column_List"/>
         from seed_stock_tb
         <where>
+            <if test="id != null">and id = #{id,jdbcType=INTEGER}</if>
             <if test="notEmptySeedNumberFlag ">and seed_number>0</if>
             <if test="plantCode != null and plantCode != '' ">and plant_code  LIKE   CONCAT('%',#{plantCode,jdbcType=VARCHAR},'%') </if>
             <if test="seedNum != null and seedNum != ''">and seed_num=#{seedNum,jdbcType=VARCHAR}</if>

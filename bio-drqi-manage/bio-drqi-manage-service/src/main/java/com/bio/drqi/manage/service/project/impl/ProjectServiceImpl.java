@@ -57,6 +57,7 @@ public class ProjectServiceImpl implements ProjectService {
         selectCerProjectTb.setProjectCode(projectListReqDTO.getProjectCode());
         selectCerProjectTb.setGeneEditMethod(projectListReqDTO.getGeneEditMethod());
         selectCerProjectTb.setOwnerUserId(projectListReqDTO.getOwnerUserId());
+        selectCerProjectTb.setId(projectListReqDTO.getId());
         selectCerProjectTb.setProjectStatus(projectListReqDTO.getProjectStatus());
         selectCerProjectTb.setProjectType(projectListReqDTO.getProjectType());
         if (projectListReqDTO.getOrder() != null) {

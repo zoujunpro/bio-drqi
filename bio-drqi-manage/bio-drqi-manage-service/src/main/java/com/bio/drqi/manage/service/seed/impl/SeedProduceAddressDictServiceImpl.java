@@ -1,8 +1,8 @@
 package com.bio.drqi.manage.service.seed.impl;
 
-import com.bio.base.base.PageDTO;
 import com.bio.common.core.uuid.IdUtils;
 import com.bio.drqi.domain.SeedProduceAddressDict;
+import com.bio.drqi.common.dto.PageDTO;
 import com.bio.drqi.manage.conf.SeedProduceAddressListRsp;
 import com.bio.drqi.manage.seed.SeedProduceAddressDictAddDTO;
 import com.bio.drqi.manage.seed.SeedProduceAddressDictEditDTO;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -31,9 +32,15 @@ public class SeedProduceAddressDictServiceImpl implements SeedProduceAddressDict
     @Override
     public PageInfo<SeedProduceAddressDictListRspDTO> listPage(PageDTO pageDTO) {
         PageHelper.startPage(pageDTO.getPageNum(), pageDTO.getPageSize());
-        List<SeedProduceAddressDict> seedProduceAddressDictList = seedProduceAddressDictMapper.selectAll();
+        List<SeedProduceAddressDict> seedProduceAddressDictList = pageDTO.getId() == null
+                ? seedProduceAddressDictMapper.selectAll()
+                : singletonList(seedProduceAddressDictMapper.selectById(pageDTO.getId()));
         PageInfo<SeedProduceAddressDict> srcPageInfo = new PageInfo<>(seedProduceAddressDictList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, SeedProduceAddressDictListRspDTO.class);
+    }
+
+    private <T> List<T> singletonList(T item) {
+        return item == null ? Collections.emptyList() : Collections.singletonList(item);
     }
 
     @Override

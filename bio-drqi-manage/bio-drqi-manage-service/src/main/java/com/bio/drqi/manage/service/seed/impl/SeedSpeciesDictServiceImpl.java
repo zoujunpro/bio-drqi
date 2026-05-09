@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -36,9 +37,15 @@ public class SeedSpeciesDictServiceImpl implements SeedSpeciesDictService {
     @Override
     public PageInfo<SpeciesListRspDTO> listPage(PageDTO pageDTO) {
         PageHelper.startPage(pageDTO.getPageNum(), pageDTO.getPageSize());
-        List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectAll();
+        List<CerSpeciesConf> cerSpeciesConfList = pageDTO.getId() == null
+                ? cerSpeciesConfMapper.selectAll()
+                : singletonList(cerSpeciesConfMapper.selectById(pageDTO.getId()));
         PageInfo<CerSpeciesConf> srcPageInfo = new PageInfo<>(cerSpeciesConfList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, SpeciesListRspDTO.class);
+    }
+
+    private <T> List<T> singletonList(T item) {
+        return item == null ? Collections.emptyList() : Collections.singletonList(item);
     }
 
     @Override

@@ -25,7 +25,9 @@ public class SeedDestructionServiceImpl implements SeedDestructionService {
     public PageInfo<SeedDestructionPageRspDTO> listPage(SeedDestructionPageReqDTO seedDestructionPageReqDTO) {
         PageInfo<SeedDestructionPageRspDTO> pageInfo = new PageInfo<SeedDestructionPageRspDTO>();
         PageHelper.startPage(seedDestructionPageReqDTO.getPageNum(), seedDestructionPageReqDTO.getPageSize());
-        List<SeedStockDestructionLog> seedStockDestructionLogList = seedStockDestructionLogMapper.selectSelective(null);
+        SeedStockDestructionLog selectSeedStockDestructionLog = new SeedStockDestructionLog();
+        selectSeedStockDestructionLog.setId(seedDestructionPageReqDTO.getId());
+        List<SeedStockDestructionLog> seedStockDestructionLogList = seedStockDestructionLogMapper.selectSelective(selectSeedStockDestructionLog);
         PageInfo<SeedStockDestructionLog> srcPageInfo = new PageInfo<>(seedStockDestructionLogList);
         List<SeedDestructionPageRspDTO> seedDestructionPageRspDTOList = new ArrayList<>();
         for (SeedStockDestructionLog seedStockDestructionLog : seedStockDestructionLogList) {

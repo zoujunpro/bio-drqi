@@ -3,10 +3,10 @@ package com.bio.drqi.manage.project.req;
 import com.bio.drqi.manage.base.PageDTO;
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
 public class SubProjectListPageReqDTO extends PageDTO {
+
+    private Integer id;
 
     private String projectCode;
 

@@ -69,6 +69,7 @@
         <include refid="Base_Column_List"/>
         from bio_sample_test_one_result_tb
         <where>
+            <if test="id != null">and id = #{id,jdbcType=INTEGER}</if>
             <if test="sampleCode != null and sampleCode!=''">and sample_code=#{sampleCode,jdbcType=VARCHAR}</if>
             <if test="testIdentifyPrimer != null">and test_identify_primer=#{testIdentifyPrimer,jdbcType=VARCHAR}</if>
             <if test="testMethod != null">and test_method=#{testMethod,jdbcType=VARCHAR}</if>

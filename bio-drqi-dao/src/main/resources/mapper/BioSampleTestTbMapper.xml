@@ -267,6 +267,7 @@
         <include refid="Base_Column_List"/>
         from bio_sample_test_tb
         <where>
+            <if test="id != null">and id = #{id,jdbcType=INTEGER}</if>
             <if test="vectorTaskCode != null and vectorTaskCode!=''">and
                 vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}
             </if>

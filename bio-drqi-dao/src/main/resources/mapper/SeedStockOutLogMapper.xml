@@ -31,6 +31,7 @@
         <include refid="Base_Column_List"/>
         from seed_stock_out_log
         <where>
+            <if test="id != null">and id = #{id,jdbcType=INTEGER}</if>
             <if test="seedNum != null and seedNum!=''"> and seed_num=#{seedNum,jdbcType=VARCHAR}</if>
             <if test="useToCode != null and useToCode!=''">and use_to_code=#{useToCode,jdbcType=VARCHAR}</if>
             <if test="unit != null and unit!=''">and unit=#{unit,jdbcType=VARCHAR}</if>

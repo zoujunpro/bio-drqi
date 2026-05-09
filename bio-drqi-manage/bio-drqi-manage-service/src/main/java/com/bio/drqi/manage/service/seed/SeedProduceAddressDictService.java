@@ -1,6 +1,6 @@
 package com.bio.drqi.manage.service.seed;
 
-import com.bio.base.base.PageDTO;
+import com.bio.drqi.common.dto.PageDTO;
 import com.bio.drqi.manage.conf.SeedProduceAddressListRsp;
 import com.bio.drqi.manage.seed.SeedProduceAddressDictAddDTO;
 import com.bio.drqi.manage.seed.SeedProduceAddressDictEditDTO;

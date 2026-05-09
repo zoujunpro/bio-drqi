@@ -44,6 +44,7 @@ public class SeedStockOutServiceImpl implements SeedStockOutService {
         seedStockOutLog.setSeedNum(seedStockOutReqDTO.getSeedNum());
         seedStockOutLog.setUseToCode(seedStockOutReqDTO.getUseToCode());
         seedStockOutLog.setTaskNum(seedStockOutReqDTO.getTaskNum());
+        seedStockOutLog.setId(seedStockOutReqDTO.getId());
         if(CollectionUtil.isNotEmpty(dataPermissionList)&& DataPermissionValueEnum.OWNER.value.equals(dataPermissionList.get(0).getPermissionValue())){
             seedStockOutLog.setApplyUserId(SecurityContextHolder.getUserId());
         }

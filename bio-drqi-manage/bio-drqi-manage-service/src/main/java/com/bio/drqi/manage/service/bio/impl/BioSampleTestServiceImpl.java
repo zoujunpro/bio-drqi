@@ -111,7 +111,9 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         //先判断是否是取消的工单
         if (checkTaskStatusIfRefuse(bioSampleTestListDetailReqDTO)) {
             PageHelper.startPage(bioSampleTestListDetailReqDTO.getPageNum(), bioSampleTestListDetailReqDTO.getPageSize());
-            List<BioSampleTestHisTb> bioSampleTestHisTbList = bioSampleTestHisTbMapper.selectAllByApplyNo(bioSampleTestListDetailReqDTO.getApplyNo());
+            List<BioSampleTestHisTb> bioSampleTestHisTbList = bioSampleTestListDetailReqDTO.getId() == null
+                    ? bioSampleTestHisTbMapper.selectAllByApplyNo(bioSampleTestListDetailReqDTO.getApplyNo())
+                    : singletonList(bioSampleTestHisTbMapper.selectById(bioSampleTestListDetailReqDTO.getId()));
             if (CollectionUtil.isEmpty(bioSampleTestHisTbList)) {
                 return new PageInfo<BioSampleTestListDetailRspDTO>();
             }
@@ -188,6 +190,10 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         } else {
             ExcelUtil.writeExcel("重复取样模板", "sheet1", new ArrayList<>(), SampleTestDownRepeatSampleTemplateExcelDTO.class, httpServletResponse);
         }
+    }
+
+    private <T> List<T> singletonList(T item) {
+        return item == null ? Collections.emptyList() : Collections.singletonList(item);
     }
 
     @Override

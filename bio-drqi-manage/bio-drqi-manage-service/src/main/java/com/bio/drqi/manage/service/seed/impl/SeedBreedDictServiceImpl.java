@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -41,9 +42,15 @@ public class SeedBreedDictServiceImpl implements SeedBreedDictService {
     public PageInfo<BreedListRspDTO> listPage(BreedListReqDTO breedListReqDTO) {
         CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectById(breedListReqDTO.getSpeciesId());
         PageHelper.startPage(breedListReqDTO.getPageNum(), breedListReqDTO.getPageSize());
-        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAllBySpeciesCode(cerSpeciesConf.getSpeciesCode());
+        List<CerBreedDict> cerBreedDictList = breedListReqDTO.getId() == null
+                ? cerBreedDictMapper.selectAllBySpeciesCode(cerSpeciesConf.getSpeciesCode())
+                : singletonList(cerBreedDictMapper.selectById(breedListReqDTO.getId()));
         PageInfo<CerBreedDict> srcPageInfo = new PageInfo<>(cerBreedDictList);
         return BeanUtils.copyPageInfoProperties(srcPageInfo, BreedListRspDTO.class);
+    }
+
+    private <T> List<T> singletonList(T item) {
+        return item == null ? Collections.emptyList() : Collections.singletonList(item);
     }
 
     @Override

@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>全局搜索面板</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --text: #17202a;
+      --muted: #667485;
+      --line: #dfe5ee;
+      --blue: #2563eb;
+      --blue-soft: #eaf1ff;
+      --green: #147d5f;
+      --green-soft: #e9f7f1;
+      --amber: #9a5d12;
+      --amber-soft: #fff3df;
+      --red: #b83a32;
+      --shadow: 0 28px 80px rgba(15, 23, 42, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(135deg, rgba(37, 99, 235, 0.1), transparent 34%),
+        linear-gradient(45deg, rgba(20, 125, 95, 0.08), transparent 38%),
+        var(--bg);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      place-items: start center;
+      padding: 72px 18px;
+    }
+
+    .launcher {
+      width: min(760px, 100%);
+      height: 54px;
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: center;
+      border: 1px solid #cfd7e3;
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 16px 42px rgba(15, 23, 42, 0.1);
+    }
+
+    .launcher svg {
+      margin-left: 18px;
+      color: var(--muted);
+    }
+
+    .launcher input {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      font-size: 16px;
+      color: var(--text);
+    }
+
+    .shortcut {
+      margin-right: 12px;
+      height: 28px;
+      min-width: 48px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--muted);
+      background: #f8fafc;
+      font-size: 12px;
+    }
+
+    .scrim {
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 10;
+      background: rgba(15, 23, 42, 0.76);
+      backdrop-filter: blur(5px);
+    }
+
+    .scrim.show {
+      display: block;
+    }
+
+    .palette {
+      position: fixed;
+      z-index: 11;
+      top: 56px;
+      left: 50%;
+      width: min(860px, calc(100vw - 32px));
+      max-height: calc(100vh - 112px);
+      display: none;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: var(--shadow);
+      transform: translateX(-50%);
+    }
+
+    .palette.show {
+      display: grid;
+    }
+
+    .palette-search {
+      height: 64px;
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .palette-search svg {
+      margin-left: 20px;
+      color: var(--muted);
+    }
+
+    .palette-search input {
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      font-size: 17px;
+      color: var(--text);
+    }
+
+    .search-action {
+      height: 34px;
+      margin-right: 14px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 7px;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 650;
+    }
+
+    .tabs {
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--line);
+      background: rgba(248, 250, 252, 0.9);
+    }
+
+    .tab {
+      height: 30px;
+      padding: 0 10px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      color: var(--muted);
+      background: transparent;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      border-color: #bcd0f7;
+      color: var(--blue);
+      background: #fff;
+      font-weight: 650;
+    }
+
+    .content {
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 8px 10px 10px;
+    }
+
+    .group {
+      padding: 6px 0 8px;
+    }
+
+    .group-title {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .count {
+      height: 18px;
+      min-width: 22px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 999px;
+      background: #edf2f8;
+      color: #64748b;
+      font-size: 11px;
+    }
+
+    .item {
+      width: 100%;
+      min-height: 72px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 11px 12px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      text-align: left;
+    }
+
+    .item:hover,
+    .item.active {
+      border-color: #bcd0f7;
+      background: #f7faff;
+    }
+
+    .item-main {
+      min-width: 0;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      margin-bottom: 5px;
+    }
+
+    .badge {
+      height: 22px;
+      padding: 0 7px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 6px;
+      background: #eef2f7;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 650;
+      flex: 0 0 auto;
+    }
+
+    .badge.task {
+      color: #184b88;
+      background: var(--blue-soft);
+    }
+
+    .badge.biotest {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .badge.project {
+      color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .badge.plant {
+      color: #2f6f34;
+      background: #edf8e9;
+    }
+
+    .badge.seed {
+      color: #8a4a2d;
+      background: #fff0e8;
+    }
+
+    .item-title {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .summary {
+      margin: 0;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    mark {
+      color: #0f3f9a;
+      background: #dce9ff;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+
+    .side {
+      display: grid;
+      justify-items: end;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .status {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .status.pending {
+      color: var(--amber);
+    }
+
+    .status.error {
+      color: var(--red);
+    }
+
+    .footer {
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 14px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .load-more {
+      height: 30px;
+      padding: 0 12px;
+      border: 1px solid #cfd7e3;
+      border-radius: 7px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .load-more:disabled {
+      cursor: not-allowed;
+      color: var(--muted);
+      background: #f4f6f8;
+    }
+
+    .empty {
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      text-align: center;
+      padding: 24px;
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding-top: 28px;
+      }
+
+      .palette {
+        top: 14px;
+        width: calc(100vw - 20px);
+        max-height: calc(100vh - 28px);
+      }
+
+      .palette-search {
+        grid-template-columns: 46px 1fr;
+      }
+
+      .search-action {
+        display: none;
+      }
+
+      .item {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        justify-items: start;
+        grid-auto-flow: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <label class="launcher">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </svg>
+      <input id="launcherInput" placeholder="搜索工单、项目、样本、载体、物种..." autocomplete="off">
+      <span class="shortcut">⌘ K</span>
+    </label>
+  </div>
+
+  <div id="scrim" class="scrim"></div>
+
+  <section id="palette" class="palette">
+    <div class="palette-search">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </svg>
+      <input id="keywordInput" placeholder="输入关键词后回车搜索" autocomplete="off">
+      <button id="searchBtn" class="search-action" type="button">搜索</button>
+    </div>
+
+    <div id="tabs" class="tabs"></div>
+    <div id="content" class="content"></div>
+    <div class="footer">
+      <span id="metaText">输入关键词开始搜索</span>
+      <button id="loadMoreBtn" class="load-more" type="button" style="display:none;">加载更多</button>
+    </div>
+  </section>
+
+  <script>
+    var apiUrl = "http://localhost:8093/es/search/listPage";
+    var headers = {
+      "Content-Type": "application/json",
+      "userId": "1",
+      "username": "zoujun",
+      "nickname": "zoujun",
+      "jobNum": "1"
+    };
+    var businessMap = {
+      all: "全部",
+      task: "任务",
+      biotest: "检测",
+      project: "项目",
+      plant: "植物",
+      seed: "种子"
+    };
+
+    var state = {
+      keyword: "",
+      activeBusiness: "all",
+      records: [],
+      total: 0,
+      selectedIndex: 0,
+      nextSearchAfter: null,
+      hasNext: false,
+      loading: false,
+      loadingMore: false,
+      lastCost: 0
+    };
+
+    var launcherInput = document.getElementById("launcherInput");
+    var keywordInput = document.getElementById("keywordInput");
+    var searchBtn = document.getElementById("searchBtn");
+    var scrim = document.getElementById("scrim");
+    var palette = document.getElementById("palette");
+    var tabs = document.getElementById("tabs");
+    var content = document.getElementById("content");
+    var metaText = document.getElementById("metaText");
+    var loadMoreBtn = document.getElementById("loadMoreBtn");
+
+    function openPalette() {
+      scrim.classList.add("show");
+      palette.classList.add("show");
+      keywordInput.value = launcherInput.value;
+      window.setTimeout(function () {
+        keywordInput.focus();
+        keywordInput.select();
+      }, 0);
+    }
+
+    function closePalette() {
+      scrim.classList.remove("show");
+      palette.classList.remove("show");
+      launcherInput.value = "";
+      keywordInput.value = "";
+      state.keyword = "";
+      state.records = [];
+      state.total = 0;
+      state.selectedIndex = 0;
+      state.nextSearchAfter = null;
+      state.hasNext = false;
+      render();
+    }
+
+    function normalizeRecords(payload) {
+      var data = payload && payload.data ? payload.data : payload;
+      var records = data && Array.isArray(data.records) ? data.records : [];
+      return records.map(function (item) {
+        return item.source || item;
+      });
+    }
+
+    function responseData(payload) {
+      return payload && payload.data ? payload.data : payload;
+    }
+
+    function requestSearch(append) {
+      var started = Date.now();
+      var body = {
+        systemCode: "drqi",
+        keyword: state.keyword,
+        pageSize: 20
+      };
+      if (append && state.nextSearchAfter) {
+        body.searchAfter = state.nextSearchAfter;
+      }
+      state.loading = !append;
+      state.loadingMore = append;
+      render();
+      fetch(apiUrl, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(body)
+      }).then(function (res) {
+        if (!res.ok) {
+          throw new Error("HTTP " + res.status);
+        }
+        return res.json();
+      }).then(function (payload) {
+        var data = responseData(payload);
+        var records = normalizeRecords(payload);
+        state.records = append ? state.records.concat(records) : records;
+        state.total = data && typeof data.total === "number" ? data.total : state.records.length;
+        state.nextSearchAfter = data && data.nextSearchAfter ? data.nextSearchAfter : null;
+        state.hasNext = !!(data && data.hasNext);
+        state.selectedIndex = append ? state.selectedIndex : 0;
+        state.lastCost = Date.now() - started;
+      }).catch(function (error) {
+        state.records = append ? state.records : [];
+        state.total = append ? state.total : 0;
+        state.error = "接口请求失败：" + error.message;
+      }).finally(function () {
+        state.loading = false;
+        state.loadingMore = false;
+        render();
+      });
+    }
+
+    function search() {
+      state.keyword = keywordInput.value.trim();
+      state.error = "";
+      state.activeBusiness = "all";
+      state.nextSearchAfter = null;
+      state.hasNext = false;
+      if (!state.keyword) {
+        state.records = [];
+        state.total = 0;
+        render();
+        return;
+      }
+      requestSearch(false);
+    }
+
+    function loadMore() {
+      if (!state.hasNext || state.loadingMore) {
+        return;
+      }
+      requestSearch(true);
+    }
+
+    function businessName(code) {
+      if (!businessMap[code]) {
+        businessMap[code] = code || "";
+      }
+      return businessMap[code] || "";
+    }
+
+    function availableBusinessCodes() {
+      var seen = {};
+      state.records.forEach(function (row) {
+        if (row.business_code) {
+          seen[row.business_code] = true;
+        }
+      });
+      return Object.keys(seen);
+    }
+
+    function filteredRecords() {
+      if (state.activeBusiness === "all") {
+        return state.records;
+      }
+      return state.records.filter(function (row) {
+        return row.business_code === state.activeBusiness;
+      });
+    }
+
+    function groupedRecords(rows) {
+      var groups = [];
+      var map = {};
+      rows.forEach(function (row) {
+        var code = row.business_code || "other";
+        if (!map[code]) {
+          map[code] = { code: code, rows: [] };
+          groups.push(map[code]);
+        }
+        map[code].rows.push(row);
+      });
+      return groups;
+    }
+
+    function renderTabs() {
+      var codes = ["all"].concat(availableBusinessCodes());
+      tabs.innerHTML = codes.map(function (code) {
+        return '<button class="tab ' + (state.activeBusiness === code ? "active" : "") + '" data-code="' + escapeHtml(code) + '">' + escapeHtml(businessName(code)) + '</button>';
+      }).join("");
+    }
+
+    function render() {
+      renderTabs();
+      var rows = filteredRecords();
+      if (state.loading) {
+        content.innerHTML = '<div class="empty">正在查询...</div>';
+      } else if (state.error) {
+        content.innerHTML = '<div class="empty">' + escapeHtml(state.error) + '</div>';
+      } else if (!state.keyword) {
+        content.innerHTML = '<div class="empty">输入关键词开始搜索</div>';
+      } else if (!rows.length) {
+        content.innerHTML = '<div class="empty">未找到匹配数据</div>';
+      } else {
+        content.innerHTML = groupedRecords(rows).map(renderGroup).join("");
+      }
+      metaText.textContent = state.keyword
+        ? "共 " + state.total + " 条结果 · " + state.lastCost + " ms"
+        : "输入关键词开始搜索";
+      loadMoreBtn.style.display = state.hasNext ? "inline-block" : "none";
+      loadMoreBtn.disabled = state.loadingMore;
+      loadMoreBtn.textContent = state.loadingMore ? "加载中..." : "加载更多";
+    }
+
+    function renderGroup(group) {
+      return '<section class="group">' +
+        '<div class="group-title">' + escapeHtml(businessName(group.code)) + '<span class="count">' + group.rows.length + '</span></div>' +
+        group.rows.map(renderItem).join("") +
+        '</section>';
+    }
+
+    function renderItem(row) {
+      var index = filteredRecords().indexOf(row);
+      var status = resolveStatus(row);
+      return '<button class="item ' + (index === state.selectedIndex ? "active" : "") + '" data-index="' + index + '" type="button">' +
+        '<div class="item-main">' +
+        '<div class="title-row">' +
+        '<span class="badge ' + escapeHtml(row.business_code || "") + '">' + escapeHtml(businessName(row.business_code)) + '</span>' +
+        '<div class="item-title">' + highlight(row.title || row.biz_id || "") + '</div>' +
+        '</div>' +
+        '<p class="summary">' + highlight(row.summary || "") + '</p>' +
+        '</div>' +
+        '<div class="side">' +
+        '<span>ID: ' + escapeHtml(row.biz_id || "") + '</span>' +
+        '<span>表: ' + escapeHtml(row.table_name || "") + '</span>' +
+        (status ? '<span class="status ' + status.className + '">' + escapeHtml(status.value) + '</span>' : '') +
+        '<span>' + escapeHtml(formatTime(row.create_time)) + '</span>' +
+        '</div>' +
+        '</button>';
+    }
+
+    function resolveStatus(row) {
+      var display = row.display || {};
+      var keys = Object.keys(display);
+      for (var i = 0; i < keys.length; i++) {
+        if (isStatusKey(keys[i])) {
+          return { value: display[keys[i]], className: statusClass(display[keys[i]]) };
+        }
+      }
+      return null;
+    }
+
+    function isStatusKey(key) {
+      return key === "状态" || key === "结果" || /状态$/.test(key) || /结果$/.test(key);
+    }
+
+    function statusClass(value) {
+      if (value === "未同步") {
+        return "error";
+      }
+      if (value === "审批中" || value === "待检测") {
+        return "pending";
+      }
+      return "";
+    }
+
+    function formatTime(value) {
+      if (!value) {
+        return "";
+      }
+      return String(value).slice(0, 16);
+    }
+
+    function highlight(value) {
+      var safe = escapeHtml(String(value || ""));
+      if (!state.keyword) {
+        return safe;
+      }
+      var pattern = state.keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return safe.replace(new RegExp(pattern, "gi"), function (match) {
+        return "<mark>" + match + "</mark>";
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    launcherInput.addEventListener("focus", openPalette);
+    launcherInput.addEventListener("click", openPalette);
+    searchBtn.addEventListener("click", search);
+    keywordInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        search();
+      } else if (event.key === "Escape") {
+        closePalette();
+      } else if (event.key === "ArrowDown") {
+        event.preventDefault();
+        var rows = filteredRecords();
+        state.selectedIndex = Math.min(rows.length - 1, state.selectedIndex + 1);
+        render();
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        state.selectedIndex = Math.max(0, state.selectedIndex - 1);
+        render();
+      }
+    });
+    document.addEventListener("keydown", function (event) {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        openPalette();
+      }
+    });
+    scrim.addEventListener("click", closePalette);
+    tabs.addEventListener("click", function (event) {
+      var button = event.target.closest(".tab");
+      if (!button) {
+        return;
+      }
+      state.activeBusiness = button.getAttribute("data-code");
+      state.selectedIndex = 0;
+      render();
+    });
+    content.addEventListener("click", function (event) {
+      var item = event.target.closest(".item");
+      if (!item) {
+        return;
+      }
+      state.selectedIndex = Number(item.getAttribute("data-index"));
+      render();
+    });
+    loadMoreBtn.addEventListener("click", loadMore);
+
+    render();
+  </script>
+</body>
+</html>

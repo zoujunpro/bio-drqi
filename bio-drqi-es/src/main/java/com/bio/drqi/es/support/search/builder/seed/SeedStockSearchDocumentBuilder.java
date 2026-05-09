@@ -1,4 +1,4 @@
-package com.bio.drqi.es.support.search.project.seed;
+package com.bio.drqi.es.support.search.builder.seed;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bio.drqi.domain.SeedStockTb;

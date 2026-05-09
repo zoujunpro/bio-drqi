@@ -1,4 +1,4 @@
-package com.bio.drqi.es.support.search.project.biotest;
+package com.bio.drqi.es.support.search.builder.biotest;
 
 import com.bio.drqi.es.support.search.AbstractBioDrqiSearchDocumentBuilder;
 

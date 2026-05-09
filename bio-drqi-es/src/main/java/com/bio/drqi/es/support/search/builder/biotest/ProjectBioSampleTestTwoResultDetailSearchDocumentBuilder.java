@@ -1,4 +1,4 @@
-package com.bio.drqi.es.support.search.project.biotest;
+package com.bio.drqi.es.support.search.builder.biotest;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bio.drqi.domain.BioSampleTestTwoResultDetailTb;

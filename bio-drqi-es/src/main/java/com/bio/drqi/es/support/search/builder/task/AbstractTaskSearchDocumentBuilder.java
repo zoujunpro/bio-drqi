@@ -1,4 +1,4 @@
-package com.bio.drqi.es.support.search.project.task;
+package com.bio.drqi.es.support.search.builder.task;
 
 import com.bio.drqi.es.support.search.AbstractBioDrqiSearchDocumentBuilder;
 

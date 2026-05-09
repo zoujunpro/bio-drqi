@@ -1,4 +1,4 @@
-package com.bio.drqi.es.support.search.project.seed;
+package com.bio.drqi.es.support.search.builder.seed;
 
 import com.bio.drqi.es.support.search.AbstractBioDrqiSearchDocumentBuilder;
 

@@ -1,4 +1,4 @@
-package com.bio.drqi.es.support.search.project.project;
+package com.bio.drqi.es.support.search.builder.project;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bio.drqi.domain.CerVectorTb;

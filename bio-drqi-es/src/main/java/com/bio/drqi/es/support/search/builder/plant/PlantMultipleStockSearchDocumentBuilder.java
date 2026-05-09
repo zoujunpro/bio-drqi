@@ -1,4 +1,4 @@
-package com.bio.drqi.es.support.search.project.plant;
+package com.bio.drqi.es.support.search.builder.plant;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bio.drqi.domain.PlantMultipleStockTb;

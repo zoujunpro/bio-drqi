@@ -1,13 +1,20 @@
 package com.bio.drqi.es.support.search.project.plant;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.bio.drqi.domain.PlantMultipleStockTb;
+import com.bio.drqi.mapper.PlantMultipleStockTbMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 @Service
-public class PlantMultipleStockSearchDocumentBuilder extends AbstractPlantSearchDocumentBuilder{
+public class PlantMultipleStockSearchDocumentBuilder extends AbstractPlantSearchDocumentBuilder<PlantMultipleStockTb> {
+
+    private final PlantMultipleStockTbMapper plantMultipleStockTbMapper;
+
+    public PlantMultipleStockSearchDocumentBuilder(PlantMultipleStockTbMapper plantMultipleStockTbMapper) {
+        this.plantMultipleStockTbMapper = plantMultipleStockTbMapper;
+    }
 
     @Override
     public String table() {
@@ -27,8 +34,15 @@ public class PlantMultipleStockSearchDocumentBuilder extends AbstractPlantSearch
     }
 
     @Override
-    public List<Map<String, Object>> buildRows(String id) {
-        return Collections.emptyList();
+    protected Map<String, Object> enrichRow(Map<String, Object> row) {
+        row.put("species_name", speciesName(row.get("species_code")));
+        row.put("breed_name", breedName(row.get("species_code"), row.get("breed_code")));
+        return row;
+    }
+
+    @Override
+    protected BaseMapper<PlantMultipleStockTb> mapper() {
+        return plantMultipleStockTbMapper;
     }
 
 }

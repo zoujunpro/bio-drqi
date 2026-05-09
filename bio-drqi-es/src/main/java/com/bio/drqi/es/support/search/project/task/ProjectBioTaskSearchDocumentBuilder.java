@@ -1,15 +1,22 @@
 package com.bio.drqi.es.support.search.project.task;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.bio.drqi.domain.BioTaskDtlTb;
+import com.bio.drqi.mapper.BioTaskDtlTbMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 @Service
-public class ProjectBioTaskSearchDocumentBuilder extends AbstractTaskSearchDocumentBuilder {
+public class ProjectBioTaskSearchDocumentBuilder extends AbstractTaskSearchDocumentBuilder<BioTaskDtlTb> {
 
     private static final String TABLE = "bio_task_dtl_tb";
+
+    private final BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
+    public ProjectBioTaskSearchDocumentBuilder(BioTaskDtlTbMapper bioTaskDtlTbMapper) {
+        this.bioTaskDtlTbMapper = bioTaskDtlTbMapper;
+    }
 
     @Override
     public String table() {
@@ -29,9 +36,15 @@ public class ProjectBioTaskSearchDocumentBuilder extends AbstractTaskSearchDocum
     }
 
     @Override
-    public List<Map<String, Object>> buildRows(String id) {
-        return Collections.emptyList();
+    protected Map<String, Object> enrichRow(Map<String, Object> row) {
+        row.put("task_status_name", taskStatusName(row.get("task_status")));
+        row.put("task_form_values", extractJsonValues(row.get("task_form")));
+        return row;
     }
 
+    @Override
+    protected BaseMapper<BioTaskDtlTb> mapper() {
+        return bioTaskDtlTbMapper;
+    }
 
 }

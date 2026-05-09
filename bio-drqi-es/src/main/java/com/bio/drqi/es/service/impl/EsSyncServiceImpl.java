@@ -51,11 +51,10 @@ public class EsSyncServiceImpl implements EsSyncService {
         long start = System.currentTimeMillis();
         TableEnum tableEnum = TableEnum.getTableEnum(tableSyncReqDTO.getTableName().toLowerCase());
         log.info("ES 全量同步开始 table={}, index={}", tableEnum.name(), tableEnum.name());
-        Class<?> entityClass = tableEnum.domain;
-        Map<String, Object> mapping = esMappingBuilder.buildMappingByEntity(entityClass);
+        Map<String, Object> mapping = esMappingBuilder.buildMappingByEntity(tableEnum.domain);
         int fieldCount = ((Map<?, ?>) mapping.get("properties")).size();
         if (fieldCount == 0) {
-            throw new IllegalStateException("实体无可用字段: " + entityClass.getName());
+            throw new IllegalStateException("实体无可用字段: " + tableEnum.domain.getName());
         }
         log.info("ES 全量同步 mapping 构建完成 table={}, fieldCount={}", tableEnum.name(), fieldCount);
         esCommonService.recreateIndex(tableEnum.name(), mapping);

@@ -1,14 +1,21 @@
 package com.bio.drqi.es.support.search.project.seed;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.bio.drqi.domain.SeedStockTb;
 import com.bio.drqi.common.enums.BioDictTypeEnum;
+import com.bio.drqi.mapper.SeedStockTbMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 @Service
-public class SeedStockSearchDocumentBuilder extends AbstractSeedSearchDocumentBuilder{
+public class SeedStockSearchDocumentBuilder extends AbstractSeedSearchDocumentBuilder<SeedStockTb> {
+
+    private final SeedStockTbMapper seedStockTbMapper;
+
+    public SeedStockSearchDocumentBuilder(SeedStockTbMapper seedStockTbMapper) {
+        this.seedStockTbMapper = seedStockTbMapper;
+    }
 
     @Override
     public String table() {
@@ -33,11 +40,19 @@ public class SeedStockSearchDocumentBuilder extends AbstractSeedSearchDocumentBu
     }
 
     @Override
-    public List<Map<String, Object>> buildRows(String id) {
-        return Collections.emptyList();
+    protected Map<String, Object> enrichRow(Map<String, Object> row) {
+        row.put("species_name", speciesName(row.get("species_code")));
+        row.put("breed_name", breedName(row.get("species_code"), row.get("breed_code")));
+        row.put("pollination_method_name", dictName(BioDictTypeEnum.POLLINATE_TYPE, row.get("pollination_method")));
+        row.put("harvest_type_name", dictName(BioDictTypeEnum.HARVEST_TYPE, row.get("harvest_type")));
+        row.put("source_type_name", dictName(BioDictTypeEnum.SOURCE_CHANNEL, row.get("source_type")));
+        row.put("material_type_name", dictName(BioDictTypeEnum.MATERIAL_TYPE, row.get("material_type")));
+        row.put("production_location_name", produceAddressName(row.get("production_location_code")));
+        return row;
     }
 
-
-
-
+    @Override
+    protected BaseMapper<SeedStockTb> mapper() {
+        return seedStockTbMapper;
+    }
 }

@@ -1,13 +1,20 @@
 package com.bio.drqi.es.support.search.project.biotest;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bio.drqi.domain.BioSampleTestOneResultTb;
+import com.bio.drqi.mapper.BioSampleTestOneResultTbMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Map;
 
 @Service
 public class ProjectBioSampleTestOneResultSearchDocumentBuilder extends AbstractBioTestSearchDocumentBuilder<BioSampleTestOneResultTb> {
+
+    private final BioSampleTestOneResultTbMapper bioSampleTestOneResultTbMapper;
+
+    public ProjectBioSampleTestOneResultSearchDocumentBuilder(BioSampleTestOneResultTbMapper bioSampleTestOneResultTbMapper) {
+        this.bioSampleTestOneResultTbMapper = bioSampleTestOneResultTbMapper;
+    }
 
     @Override
     public String table() {
@@ -25,9 +32,8 @@ public class ProjectBioSampleTestOneResultSearchDocumentBuilder extends Abstract
     }
 
     @Override
-    public Map<String, Object> converter(BioSampleTestOneResultTb bioSampleTestOneResultTb) {
-        return Collections.emptyMap();
+    protected BaseMapper<BioSampleTestOneResultTb> mapper() {
+        return bioSampleTestOneResultTbMapper;
     }
-
 
 }

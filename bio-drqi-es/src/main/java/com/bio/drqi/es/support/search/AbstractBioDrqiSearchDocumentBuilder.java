@@ -1,14 +1,19 @@
 package com.bio.drqi.es.support.search;
 
 import com.bio.drqi.common.enums.*;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bio.drqi.enums.*;
+import com.bio.drqi.es.support.EsDocumentConverter;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public abstract class AbstractBioDrqiSearchDocumentBuilder extends AbstractSearchDocumentBuilder {
+public abstract class AbstractBioDrqiSearchDocumentBuilder<T> extends AbstractSearchDocumentBuilder {
+
+    private static final EsDocumentConverter ES_DOCUMENT_CONVERTER = new EsDocumentConverter();
 
     @Override
     public String systemCode() {
@@ -17,7 +22,26 @@ public abstract class AbstractBioDrqiSearchDocumentBuilder extends AbstractSearc
 
     @Override
     public List<Map<String, Object>> buildRows(String id) {
-        return Collections.emptyList();
+        List<T> rows;
+        if (id == null || id.trim().isEmpty()) {
+            rows = mapper().selectList(null);
+        } else {
+            T row = mapper().selectById(id);
+            if (row == null) {
+                return Collections.emptyList();
+            }
+            rows = Collections.singletonList(row);
+        }
+        return ES_DOCUMENT_CONVERTER.toMapList(rows)
+                .stream()
+                .map(this::enrichRow)
+                .collect(Collectors.toList());
+    }
+
+    protected abstract BaseMapper<T> mapper();
+
+    protected Map<String, Object> enrichRow(Map<String, Object> row) {
+        return row;
     }
 
     protected Map<String, Object> buildDoc(Map<String, Object> row,

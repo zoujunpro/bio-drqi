@@ -1,13 +1,20 @@
 package com.bio.drqi.es.support.search.project.project;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.bio.drqi.domain.CerConversionAndTransTb;
+import com.bio.drqi.mapper.CerConversionAndTransTbMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 @Service
-public class ProjectCerConversionAndTransSearchDocumentBuilder extends AbstractProjectSearchDocumentBuilder {
+public class ProjectCerConversionAndTransSearchDocumentBuilder extends AbstractProjectSearchDocumentBuilder<CerConversionAndTransTb> {
+
+    private final CerConversionAndTransTbMapper cerConversionAndTransTbMapper;
+
+    public ProjectCerConversionAndTransSearchDocumentBuilder(CerConversionAndTransTbMapper cerConversionAndTransTbMapper) {
+        this.cerConversionAndTransTbMapper = cerConversionAndTransTbMapper;
+    }
 
     @Override
     public String table() {
@@ -25,9 +32,8 @@ public class ProjectCerConversionAndTransSearchDocumentBuilder extends AbstractP
     }
 
     @Override
-    public List<Map<String, Object>> buildRows(String id) {
-        return Collections.emptyList();
+    protected BaseMapper<CerConversionAndTransTb> mapper() {
+        return cerConversionAndTransTbMapper;
     }
-
 
 }

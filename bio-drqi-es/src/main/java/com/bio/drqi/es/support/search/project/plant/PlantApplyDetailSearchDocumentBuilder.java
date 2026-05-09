@@ -1,13 +1,20 @@
 package com.bio.drqi.es.support.search.project.plant;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.bio.drqi.domain.PlantApplyDetailTb;
+import com.bio.drqi.mapper.PlantApplyDetailTbMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 @Service
-public class PlantApplyDetailSearchDocumentBuilder extends AbstractPlantSearchDocumentBuilder {
+public class PlantApplyDetailSearchDocumentBuilder extends AbstractPlantSearchDocumentBuilder<PlantApplyDetailTb> {
+
+    private final PlantApplyDetailTbMapper plantApplyDetailTbMapper;
+
+    public PlantApplyDetailSearchDocumentBuilder(PlantApplyDetailTbMapper plantApplyDetailTbMapper) {
+        this.plantApplyDetailTbMapper = plantApplyDetailTbMapper;
+    }
 
     @Override
     public String table() {
@@ -27,9 +34,15 @@ public class PlantApplyDetailSearchDocumentBuilder extends AbstractPlantSearchDo
     }
 
     @Override
-    public List<Map<String, Object>> buildRows(String id) {
-        return Collections.emptyList();
+    protected Map<String, Object> enrichRow(Map<String, Object> row) {
+        row.put("species_name", speciesName(row.get("species_code")));
+        row.put("breed_name", breedName(row.get("species_code"), row.get("breed_code")));
+        return row;
     }
 
+    @Override
+    protected BaseMapper<PlantApplyDetailTb> mapper() {
+        return plantApplyDetailTbMapper;
+    }
 
 }

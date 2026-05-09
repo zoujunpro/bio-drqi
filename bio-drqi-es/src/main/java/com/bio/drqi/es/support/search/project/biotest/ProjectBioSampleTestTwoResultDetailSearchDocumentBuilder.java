@@ -1,13 +1,20 @@
 package com.bio.drqi.es.support.search.project.biotest;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bio.drqi.domain.BioSampleTestTwoResultDetailTb;
+import com.bio.drqi.mapper.BioSampleTestTwoResultDetailTbMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Map;
 
 @Service
 public class ProjectBioSampleTestTwoResultDetailSearchDocumentBuilder extends AbstractBioTestSearchDocumentBuilder<BioSampleTestTwoResultDetailTb> {
+
+    private final BioSampleTestTwoResultDetailTbMapper bioSampleTestTwoResultDetailTbMapper;
+
+    public ProjectBioSampleTestTwoResultDetailSearchDocumentBuilder(BioSampleTestTwoResultDetailTbMapper bioSampleTestTwoResultDetailTbMapper) {
+        this.bioSampleTestTwoResultDetailTbMapper = bioSampleTestTwoResultDetailTbMapper;
+    }
 
     @Override
     public String table() {
@@ -27,7 +34,14 @@ public class ProjectBioSampleTestTwoResultDetailSearchDocumentBuilder extends Ab
     }
 
     @Override
-    public Map<String, Object> converter(BioSampleTestTwoResultDetailTb bioSampleTestTwoResultDetailTb) {
-        return Collections.emptyMap();
+    protected Map<String, Object> enrichRow(Map<String, Object> row) {
+        row.put("confirm_status_name", confirmStatusName(row.get("confirm_status")));
+        row.put("match_flag_name", matchFlagName(row.get("match_flag")));
+        return row;
+    }
+
+    @Override
+    protected BaseMapper<BioSampleTestTwoResultDetailTb> mapper() {
+        return bioSampleTestTwoResultDetailTbMapper;
     }
 }

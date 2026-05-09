@@ -1,13 +1,20 @@
 package com.bio.drqi.es.support.search.project.biotest;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bio.drqi.domain.BioSampleTestTb;
+import com.bio.drqi.mapper.BioSampleTestTbMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Map;
 
 @Service
 public class ProjectBioSampleTestSearchDocumentBuilder extends AbstractBioTestSearchDocumentBuilder<BioSampleTestTb> {
+
+    private final BioSampleTestTbMapper bioSampleTestTbMapper;
+
+    public ProjectBioSampleTestSearchDocumentBuilder(BioSampleTestTbMapper bioSampleTestTbMapper) {
+        this.bioSampleTestTbMapper = bioSampleTestTbMapper;
+    }
 
     @Override
     public String table() {
@@ -27,8 +34,15 @@ public class ProjectBioSampleTestSearchDocumentBuilder extends AbstractBioTestSe
     }
 
     @Override
-    public Map<String, Object> converter(BioSampleTestTb bioSampleTestTb) {
-        return Collections.emptyMap();
+    protected Map<String, Object> enrichRow(Map<String, Object> row) {
+        row.put("test_result_name", testResultName(row.get("test_result")));
+        row.put("check_result_name", checkResultName(row.get("check_result")));
+        return row;
+    }
+
+    @Override
+    protected BaseMapper<BioSampleTestTb> mapper() {
+        return bioSampleTestTbMapper;
     }
 
 }

@@ -1,13 +1,20 @@
 package com.bio.drqi.es.support.search.project.project;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.bio.drqi.domain.CerVectorTb;
+import com.bio.drqi.mapper.CerVectorTbMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 @Service
-public class ProjectCerVectorSearchDocumentBuilder extends AbstractProjectSearchDocumentBuilder {
+public class ProjectCerVectorSearchDocumentBuilder extends AbstractProjectSearchDocumentBuilder<CerVectorTb> {
+
+    private final CerVectorTbMapper cerVectorTbMapper;
+
+    public ProjectCerVectorSearchDocumentBuilder(CerVectorTbMapper cerVectorTbMapper) {
+        this.cerVectorTbMapper = cerVectorTbMapper;
+    }
 
     @Override
     public String table() {
@@ -26,11 +33,14 @@ public class ProjectCerVectorSearchDocumentBuilder extends AbstractProjectSearch
     }
 
     @Override
-    public List<Map<String, Object>> buildRows(String id) {
-        return Collections.emptyList();
+    protected Map<String, Object> enrichRow(Map<String, Object> row) {
+        row.put("quality_inspection_result_name", qualityInspectionResultName(row.get("quality_inspection_result")));
+        return row;
     }
 
-
-
+    @Override
+    protected BaseMapper<CerVectorTb> mapper() {
+        return cerVectorTbMapper;
+    }
 
 }

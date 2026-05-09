@@ -50,7 +50,12 @@ public class PlantSingleStockSearchDocumentBuilder extends AbstractPlantSearchDo
     }
 
     @Override
-    protected BaseMapper<PlantSingleStockTb> mapper() {
+    public Class<PlantSingleStockTb> entityClass() {
+        return PlantSingleStockTb.class;
+    }
+
+    @Override
+    public BaseMapper<PlantSingleStockTb> mapper() {
         return plantSingleStockTbMapper;
     }
 

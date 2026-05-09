@@ -38,7 +38,11 @@ public abstract class AbstractBioDrqiSearchDocumentBuilder<T> extends AbstractSe
                 .collect(Collectors.toList());
     }
 
-    protected abstract BaseMapper<T> mapper();
+    @Override
+    public abstract Class<T> entityClass();
+
+    @Override
+    public abstract BaseMapper<T> mapper();
 
     protected Map<String, Object> enrichRow(Map<String, Object> row) {
         return row;

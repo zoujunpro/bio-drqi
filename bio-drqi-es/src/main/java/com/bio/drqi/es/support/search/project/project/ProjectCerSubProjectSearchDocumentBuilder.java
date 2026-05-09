@@ -39,7 +39,12 @@ public class ProjectCerSubProjectSearchDocumentBuilder extends AbstractProjectSe
     }
 
     @Override
-    protected BaseMapper<CerSubProjectTb> mapper() {
+    public Class<CerSubProjectTb> entityClass() {
+        return CerSubProjectTb.class;
+    }
+
+    @Override
+    public BaseMapper<CerSubProjectTb> mapper() {
         return cerSubProjectTbMapper;
     }
 }

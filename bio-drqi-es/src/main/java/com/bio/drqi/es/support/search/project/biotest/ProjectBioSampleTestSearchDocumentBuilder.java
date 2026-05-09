@@ -41,7 +41,12 @@ public class ProjectBioSampleTestSearchDocumentBuilder extends AbstractBioTestSe
     }
 
     @Override
-    protected BaseMapper<BioSampleTestTb> mapper() {
+    public Class<BioSampleTestTb> entityClass() {
+        return BioSampleTestTb.class;
+    }
+
+    @Override
+    public BaseMapper<BioSampleTestTb> mapper() {
         return bioSampleTestTbMapper;
     }
 

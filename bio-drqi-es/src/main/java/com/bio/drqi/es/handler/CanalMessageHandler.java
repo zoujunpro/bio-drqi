@@ -1,7 +1,6 @@
 package com.bio.drqi.es.handler;
 
 import com.bio.drqi.es.dto.CanalMessage;
-import com.bio.drqi.es.enums.TableEnum;
 import com.bio.drqi.es.service.EsCommonService;
 import com.bio.drqi.es.support.EsDocumentConverter;
 import com.bio.drqi.es.support.EsMappingBuilder;
@@ -104,7 +103,8 @@ public class CanalMessageHandler {
     }
 
     private void handleInsertOrUpdate(String table, String id) throws Exception {
-        List<Map<String, Object>> docs = builderMap.get(TableEnum.getTableEnum(table.toLowerCase()).name()).buildRows(id);
+        SearchDocumentBuilder builder = resolveBuilder(table);
+        List<Map<String, Object>> docs = builder.buildRows(id);
         if (docs.isEmpty()) {
             log.warn("Canal 同步跳过，实体转换 ES 文档为空 table={}, id={}", table, id);
             return;
@@ -112,12 +112,13 @@ public class CanalMessageHandler {
         Map<String, Object> doc = docs.get(0);
         Object idValue = doc.get(DEFAULT_ID_FIELD);
         String targetId = idValue == null ? id : String.valueOf(idValue);
-        String index = table.toLowerCase(Locale.ROOT);
-        ensureIndexIfNeeded(table, index);
+        String syncTable = builder.table();
+        String index = syncTable.toLowerCase(Locale.ROOT);
+        ensureIndexIfNeeded(builder, index);
         esCommonService.upsert(index, targetId, doc);
-        log.info("Canal 原表索引同步完成 table={}, index={}, id={}", table, index, targetId);
-        boolean globalSynced = globalSearchSyncService.upsert(table, doc);
-        log.info("Canal 统一索引同步结果 table={}, id={}, synced={}", table, targetId, globalSynced);
+        log.info("Canal 原表索引同步完成 table={}, index={}, id={}", syncTable, index, targetId);
+        boolean globalSynced = globalSearchSyncService.upsert(syncTable, doc);
+        log.info("Canal 统一索引同步结果 table={}, id={}, synced={}", syncTable, targetId, globalSynced);
     }
 
     private void handleDelete(String table, String id) throws Exception {
@@ -128,16 +129,24 @@ public class CanalMessageHandler {
         log.info("Canal 统一索引删除结果 table={}, id={}, deleted={}", table, id, globalDeleted);
     }
 
-    private void ensureIndexIfNeeded(String table, String index) {
+    private void ensureIndexIfNeeded(SearchDocumentBuilder builder, String index) {
         if (!ensuredIndexSet.add(index)) {
             return;
         }
-        Class<?> entityClass = TableEnum.getTableEnum(table.toLowerCase()).domain;
+        Class<?> entityClass = builder.entityClass();
         if (entityClass == null) {
-            throw new IllegalStateException("在包 com.bio.drqi.domain 下找不到表对应实体: " + table);
+            throw new IllegalStateException("未配置表对应实体: " + builder.table());
         }
         Map<String, Object> mapping = esMappingBuilder.buildMappingByEntity(entityClass);
         esCommonService.ensureIndex(index, mapping);
+    }
+
+    private SearchDocumentBuilder resolveBuilder(String table) {
+        SearchDocumentBuilder builder = builderMap.get(table.toLowerCase(Locale.ROOT));
+        if (builder == null) {
+            throw new IllegalStateException("未配置该表的数据同步: " + table);
+        }
+        return builder;
     }
 
     private String resolveIdField(CanalMessage message) {

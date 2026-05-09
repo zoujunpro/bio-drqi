@@ -41,7 +41,12 @@ public class PlantApplySearchDocumentBuilder extends AbstractPlantSearchDocument
     }
 
     @Override
-    protected BaseMapper<PlantApplyTb> mapper() {
+    public Class<PlantApplyTb> entityClass() {
+        return PlantApplyTb.class;
+    }
+
+    @Override
+    public BaseMapper<PlantApplyTb> mapper() {
         return plantApplyTbMapper;
     }
 }

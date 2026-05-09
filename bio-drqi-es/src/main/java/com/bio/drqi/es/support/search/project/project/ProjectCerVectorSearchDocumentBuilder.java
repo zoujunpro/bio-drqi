@@ -39,7 +39,12 @@ public class ProjectCerVectorSearchDocumentBuilder extends AbstractProjectSearch
     }
 
     @Override
-    protected BaseMapper<CerVectorTb> mapper() {
+    public Class<CerVectorTb> entityClass() {
+        return CerVectorTb.class;
+    }
+
+    @Override
+    public BaseMapper<CerVectorTb> mapper() {
         return cerVectorTbMapper;
     }
 

@@ -32,7 +32,12 @@ public class ProjectCerConversionAndTransSearchDocumentBuilder extends AbstractP
     }
 
     @Override
-    protected BaseMapper<CerConversionAndTransTb> mapper() {
+    public Class<CerConversionAndTransTb> entityClass() {
+        return CerConversionAndTransTb.class;
+    }
+
+    @Override
+    public BaseMapper<CerConversionAndTransTb> mapper() {
         return cerConversionAndTransTbMapper;
     }
 

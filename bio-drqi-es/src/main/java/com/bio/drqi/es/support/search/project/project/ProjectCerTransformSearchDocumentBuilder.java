@@ -39,7 +39,12 @@ public class ProjectCerTransformSearchDocumentBuilder extends AbstractProjectSea
     }
 
     @Override
-    protected BaseMapper<CerTransformTb> mapper() {
+    public Class<CerTransformTb> entityClass() {
+        return CerTransformTb.class;
+    }
+
+    @Override
+    public BaseMapper<CerTransformTb> mapper() {
         return cerTransformTbMapper;
     }
 

@@ -39,7 +39,12 @@ public class ProjectCerConversionAndTransRefSearchDocumentBuilder extends Abstra
     }
 
     @Override
-    protected BaseMapper<CerConversionAndTransRef> mapper() {
+    public Class<CerConversionAndTransRef> entityClass() {
+        return CerConversionAndTransRef.class;
+    }
+
+    @Override
+    public BaseMapper<CerConversionAndTransRef> mapper() {
         return cerConversionAndTransRefMapper;
     }
 

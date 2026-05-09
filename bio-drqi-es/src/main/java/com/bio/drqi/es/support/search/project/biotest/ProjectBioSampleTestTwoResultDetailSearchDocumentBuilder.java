@@ -41,7 +41,12 @@ public class ProjectBioSampleTestTwoResultDetailSearchDocumentBuilder extends Ab
     }
 
     @Override
-    protected BaseMapper<BioSampleTestTwoResultDetailTb> mapper() {
+    public Class<BioSampleTestTwoResultDetailTb> entityClass() {
+        return BioSampleTestTwoResultDetailTb.class;
+    }
+
+    @Override
+    public BaseMapper<BioSampleTestTwoResultDetailTb> mapper() {
         return bioSampleTestTwoResultDetailTbMapper;
     }
 }

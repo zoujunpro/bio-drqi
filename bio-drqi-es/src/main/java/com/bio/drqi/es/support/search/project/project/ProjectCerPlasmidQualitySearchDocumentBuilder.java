@@ -41,7 +41,12 @@ public class ProjectCerPlasmidQualitySearchDocumentBuilder extends AbstractProje
     }
 
     @Override
-    protected BaseMapper<CerPlasmidQualityTb> mapper() {
+    public Class<CerPlasmidQualityTb> entityClass() {
+        return CerPlasmidQualityTb.class;
+    }
+
+    @Override
+    public BaseMapper<CerPlasmidQualityTb> mapper() {
         return cerPlasmidQualityTbMapper;
     }
 

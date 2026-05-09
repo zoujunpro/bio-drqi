@@ -43,7 +43,12 @@ public class ProjectBioTaskSearchDocumentBuilder extends AbstractTaskSearchDocum
     }
 
     @Override
-    protected BaseMapper<BioTaskDtlTb> mapper() {
+    public Class<BioTaskDtlTb> entityClass() {
+        return BioTaskDtlTb.class;
+    }
+
+    @Override
+    public BaseMapper<BioTaskDtlTb> mapper() {
         return bioTaskDtlTbMapper;
     }
 

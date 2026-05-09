@@ -52,7 +52,12 @@ public class SeedStockSearchDocumentBuilder extends AbstractSeedSearchDocumentBu
     }
 
     @Override
-    protected BaseMapper<SeedStockTb> mapper() {
+    public Class<SeedStockTb> entityClass() {
+        return SeedStockTb.class;
+    }
+
+    @Override
+    public BaseMapper<SeedStockTb> mapper() {
         return seedStockTbMapper;
     }
 }

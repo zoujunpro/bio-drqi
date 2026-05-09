@@ -61,7 +61,7 @@ public class EsSyncServiceImpl implements EsSyncService {
         esCommonService.recreateIndex(tableEnum.name(), mapping);
         globalSearchSyncService.deleteByTable(tableEnum.name());
 
-        List<Map<String, Object>> rows = builderMap.get(tableEnum.name()).buildRows();
+        List<Map<String, Object>> rows = builderMap.get(tableEnum.name()).buildRows(null);
         log.info("ES 全量同步查询数据库完成 table={}, rows={}", tableEnum.name(), rows.size());
         esCommonService.saveBatch(tableEnum.name(), ID_FIELD, rows);
         globalSearchSyncService.saveBatch(tableEnum.name(), rows);

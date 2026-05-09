@@ -27,7 +27,7 @@ public class PlantMultipleStockSearchDocumentBuilder extends AbstractPlantSearch
     }
 
     @Override
-    public List<Map<String, Object>> buildRows() {
+    public List<Map<String, Object>> buildRows(String id) {
         return Collections.emptyList();
     }
 

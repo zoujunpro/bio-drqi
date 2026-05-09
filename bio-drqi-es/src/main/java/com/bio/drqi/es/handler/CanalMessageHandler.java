@@ -1,65 +1,74 @@
 package com.bio.drqi.es.handler;
 
 import com.bio.drqi.es.dto.CanalMessage;
+import com.bio.drqi.es.enums.TableEnum;
 import com.bio.drqi.es.service.EsCommonService;
 import com.bio.drqi.es.support.EsDocumentConverter;
 import com.bio.drqi.es.support.EsMappingBuilder;
 import com.bio.drqi.es.support.search.GlobalSearchSyncService;
-import lombok.RequiredArgsConstructor;
+import com.bio.drqi.es.support.search.SearchDocumentBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "bio.es", name = "enabled", havingValue = "true")
 public class CanalMessageHandler {
-
     private static final String DEFAULT_ID_FIELD = "id";
     private final EsCommonService esCommonService;
-    private final MapperTableQueryService mapperTableQueryService;
-    private final DomainEntityResolver domainEntityResolver;
     private final EsMappingBuilder esMappingBuilder;
+    private final Map<String, SearchDocumentBuilder> builderMap;
     private final EsDocumentConverter esDocumentConverter;
     private final GlobalSearchSyncService globalSearchSyncService;
     private final Set<String> ensuredIndexSet = ConcurrentHashMap.newKeySet();
 
+    public CanalMessageHandler(EsCommonService esCommonService,
+                               EsMappingBuilder esMappingBuilder,
+                               EsDocumentConverter esDocumentConverter,
+                               GlobalSearchSyncService globalSearchSyncService,
+                               List<SearchDocumentBuilder> builders) {
+        this.esCommonService = esCommonService;
+        this.esMappingBuilder = esMappingBuilder;
+        this.esDocumentConverter = esDocumentConverter;
+        this.globalSearchSyncService = globalSearchSyncService;
+        this.builderMap = builders == null ? Collections.emptyMap() : builders.stream().collect(Collectors.toMap(SearchDocumentBuilder::table, searchDocumentBuilder -> searchDocumentBuilder));
+
+    }
+
     /**
      * {
-     *   "id": 123456789,
-     *   "database": "bioinfo",
-     *   "table": "task",
-     *   "pkNames": ["id"],
-     *   "isDdl": false,
-     *   "type": "UPDATE",
-     *   "es": 1713920000000,
-     *   "ts": 1713920001000,
-     *   "sql": "",
-     *   "data": [
-     *     {
-     *       "id": "10001",
-     *       "task_name": "任务标题",
-     *       "task_content": "任务内容",
-     *       "project_id": "2001",
-     *       "owner_id": "u001",
-     *       "status": "doing",
-     *       "update_time": "2026-04-24 10:00:00"
-     *     }
-     *   ],
-     *   "old": [
-     *     {
-     *       "status": "todo"
-     *     }
-     *   ]
+     * "id": 123456789,
+     * "database": "bioinfo",
+     * "table": "task",
+     * "pkNames": ["id"],
+     * "isDdl": false,
+     * "type": "UPDATE",
+     * "es": 1713920000000,
+     * "ts": 1713920001000,
+     * "sql": "",
+     * "data": [
+     * {
+     * "id": "10001",
+     * "task_name": "任务标题",
+     * "task_content": "任务内容",
+     * "project_id": "2001",
+     * "owner_id": "u001",
+     * "status": "doing",
+     * "update_time": "2026-04-24 10:00:00"
      * }
+     * ],
+     * "old": [
+     * {
+     * "status": "todo"
+     * }
+     * ]
+     * }
+     *
      * @param message
      * @throws Exception
      */
@@ -95,12 +104,7 @@ public class CanalMessageHandler {
     }
 
     private void handleInsertOrUpdate(String table, String id) throws Exception {
-        Object dbEntity = mapperTableQueryService.queryByTableAndId(table, id);
-        if (dbEntity == null) {
-            log.warn("Canal 同步跳过，数据库未查询到数据 table={}, id={}", table, id);
-            return;
-        }
-        List<Map<String, Object>> docs = esDocumentConverter.toMapList(Collections.singletonList(dbEntity));
+        List<Map<String, Object>> docs = builderMap.get(TableEnum.getTableEnum(table.toLowerCase()).name()).buildRows(id);
         if (docs.isEmpty()) {
             log.warn("Canal 同步跳过，实体转换 ES 文档为空 table={}, id={}", table, id);
             return;
@@ -128,7 +132,7 @@ public class CanalMessageHandler {
         if (!ensuredIndexSet.add(index)) {
             return;
         }
-        Class<?> entityClass = domainEntityResolver.resolveEntityClass(table);
+        Class<?> entityClass = TableEnum.getTableEnum(table.toLowerCase()).domain;
         if (entityClass == null) {
             throw new IllegalStateException("在包 com.bio.drqi.domain 下找不到表对应实体: " + table);
         }

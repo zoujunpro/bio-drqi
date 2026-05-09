@@ -27,7 +27,7 @@ public class ProjectCerPlasmidQualitySearchDocumentBuilder extends AbstractProje
     }
 
     @Override
-    public List<Map<String, Object>> buildRows() {
+    public List<Map<String, Object>> buildRows(String id) {
         return Collections.emptyList();
     }
 

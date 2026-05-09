@@ -3,7 +3,9 @@ package com.bio.drqi.es.support.search;
 import com.bio.drqi.common.enums.*;
 import com.bio.drqi.enums.*;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractBioDrqiSearchDocumentBuilder extends AbstractSearchDocumentBuilder {
@@ -11,6 +13,11 @@ public abstract class AbstractBioDrqiSearchDocumentBuilder extends AbstractSearc
     @Override
     public String systemCode() {
         return "drqi";
+    }
+
+    @Override
+    public List<Map<String, Object>> buildRows(String id) {
+        return Collections.emptyList();
     }
 
     protected Map<String, Object> buildDoc(Map<String, Object> row,

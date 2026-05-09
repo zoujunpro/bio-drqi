@@ -13,5 +13,7 @@ public interface SearchDocumentBuilder {
 
     Map<String, Object> build(Map<String, Object> row);
 
-    List<Map<String, Object>> buildRows();
+    List<Map<String, Object>> buildRows(String id);
+
+
 }

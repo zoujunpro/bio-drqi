@@ -22,6 +22,7 @@ public interface BioTaskDtlTbMapper extends BaseMapper<BioTaskDtlTb> {
     List<BioTaskDtlTb> selectAllByApplyUserIdAndInstanceIdIsNullOrderByIdDesc(@Param("applyUserId") Integer applyUserId);
 
     List<BioTaskDtlTb> selectForPendingApproval(@Param("actorUserId") String actorUserId,
+                                                @Param("id") Integer id,
                                                 @Param("taskNum") String taskNum,
                                                 @Param("taskTypeCode") String taskTypeCode,
                                                 @Param("taskCategory") String taskCategory,
@@ -31,6 +32,7 @@ public interface BioTaskDtlTbMapper extends BaseMapper<BioTaskDtlTb> {
     );
 
     List<BioTaskDtlTb> selectForAlreadyApproval(@Param("actorUserId") String actorUserId,
+                                                @Param("id") Integer id,
                                                 @Param("taskNum") String taskNum,
                                                 @Param("taskTypeCode") String taskTypeCode,
                                                 @Param("taskCategory") String taskCategory,
@@ -62,7 +64,6 @@ public interface BioTaskDtlTbMapper extends BaseMapper<BioTaskDtlTb> {
 
     int deleteByTaskNum(@Param("taskNum") String taskNum);
 }
-
 
 
 

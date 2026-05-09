@@ -3,6 +3,9 @@ package com.bio.flow.dto;
 
 public class PageDTO {
 
+    /**主键ID*/
+    private Integer id;
+
     /**每页记录数*/
     private Integer pageSize;
 
@@ -24,5 +27,13 @@ public class PageDTO {
 
     public void setPageNum(Integer pageNum) {
         this.pageNum = pageNum;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

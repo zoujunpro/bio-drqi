@@ -53,6 +53,9 @@
         from bio_task_dtl_tb
         where instance_id in (select DISTINCT instance_id from flow_task_actor_tb where
         actor_id=#{actorUserId,jdbcType=VARCHAR})
+        <if test="id != null">
+            and id=#{id,jdbcType=INTEGER}
+        </if>
         <if test="taskTypeCode != null and taskTypeCode!=''">
             and task_type_code=#{taskTypeCode,jdbcType=VARCHAR}
         </if>
@@ -80,6 +83,9 @@
         from bio_task_dtl_tb
         where instance_id in (select DISTINCT instance_id from flow_his_commit_tb where
         create_id=#{actorUserId,jdbcType=VARCHAR})
+        <if test="id != null">
+            and id=#{id,jdbcType=INTEGER}
+        </if>
         <if test="taskTypeCode != null and taskTypeCode!=''">
             and task_type_code=#{taskTypeCode,jdbcType=VARCHAR}
         </if>
@@ -109,6 +115,7 @@
         from bio_task_dtl_tb
         where
         task_status !='0'
+        <if test="id != null">and id = #{id,jdbcType=INTEGER}</if>
         <if test="taskTypeCode != null and taskTypeCode!=''">and task_type_code=#{taskTypeCode,jdbcType=VARCHAR}
         </if>
         <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
@@ -133,6 +140,7 @@
         <include refid="Base_Column_List"/>
         from bio_task_dtl_tb
         <where>
+            <if test="id != null">and id = #{id,jdbcType=INTEGER}</if>
             <if test="taskTypeCode != null and taskTypeCode!=''">and task_type_code=#{taskTypeCode,jdbcType=VARCHAR}
             </if>
             <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>

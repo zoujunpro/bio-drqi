@@ -5,6 +5,7 @@ import com.bio.drqi.domain.PlantMultipleStockTb;
 import com.bio.drqi.mapper.PlantMultipleStockTbMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
@@ -25,12 +26,37 @@ public class PlantMultipleStockSearchDocumentBuilder extends AbstractPlantSearch
     public Map<String, Object> build(Map<String, Object> row) {
         String speciesName = speciesName(row.get("species_code"));
         String breedName = breedName(row.get("species_code"), row.get("breed_code"));
+        String seedNum = stringValue(row.get("seed_num"));
+        String transformCode = stringValue(row.get("transform_code"));
+        String vectorTaskCode = stringValue(row.get("vector_task_code"));
+        String title = seedNum.trim().isEmpty() ? transformCode : seedNum;
         return buildDoc(row,
-                stringValue(row.get("seed_num")),
+                title,
                 join(row.get("task_num"), speciesName, breedName, row.get("generation"), row.get("current_number")),
                 "/plant/multiple-stock/detail/",
-                display("种子编号", row.get("seed_num"), "工单编号", row.get("task_num"), "物种", speciesName, "品种", breedName, "代次", row.get("generation"), "剩余数量", row.get("current_number")),
+                buildDisplay(row, speciesName, breedName, seedNum, transformCode, vectorTaskCode),
                 row.values(), speciesName, breedName);
+    }
+
+    private Map<String, Object> buildDisplay(Map<String, Object> row,
+                                             String speciesName,
+                                             String breedName,
+                                             String seedNum,
+                                             String transformCode,
+                                             String vectorTaskCode) {
+        Map<String, Object> display = new LinkedHashMap<>();
+        if (seedNum.trim().isEmpty()) {
+            display.put("转化编号", transformCode);
+            display.put("实施方案编号", vectorTaskCode);
+        } else {
+            display.put("种子编号", seedNum);
+        }
+        display.put("工单编号", row.get("task_num"));
+        display.put("物种", speciesName);
+        display.put("品种", breedName);
+        display.put("代次", row.get("generation"));
+        display.put("剩余数量", row.get("current_number"));
+        return display;
     }
 
     @Override

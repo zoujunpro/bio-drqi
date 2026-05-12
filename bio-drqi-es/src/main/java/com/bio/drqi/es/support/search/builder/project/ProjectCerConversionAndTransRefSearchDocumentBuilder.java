@@ -24,8 +24,11 @@ public class ProjectCerConversionAndTransRefSearchDocumentBuilder extends Abstra
     @Override
     public Map<String, Object> build(Map<String, Object> row) {
         String transGeneFlagName = transGeneFlagName(row.get("trans_gene_flag"));
+        String sampleCode = stringValue(row.get("sample_code"));
+        String transformCode = stringValue(row.get("transform_code"));
+        String title = sampleCode.trim().isEmpty() ? transformCode : sampleCode;
         return buildDoc(row,
-                stringValue(row.get("sample_code")),
+                title,
                 join(row.get("project_code"), row.get("vector_task_code"), row.get("transform_code"), transGeneFlagName),
                 "/project/conversion-trans-ref/detail/",
                 display("取样编号", row.get("sample_code"), "项目编号", row.get("project_code"), "载体任务", row.get("vector_task_code"), "转化编号", row.get("transform_code"), "是否转基因", transGeneFlagName),

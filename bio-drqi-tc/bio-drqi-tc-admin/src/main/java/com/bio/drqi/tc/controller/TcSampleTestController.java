@@ -75,7 +75,7 @@ public class TcSampleTestController {
     @WebLog(desc = "田测取样检测管理-重复取样模板下载")
     public void downTestRepeatSampleTemplate(HttpServletResponse response) {
         try {
-            ossService.downloadFile(response, "templates", "田测重复取样模板V1.0.xlsx");
+            ossService.downloadFile(response, "template", "田测重复取样模板V1.0.xlsx");
         } catch (Exception e) {
             throw new BusinessException("重复取样模板下载失败，请联系管理员检测模板配置");
         }
@@ -198,7 +198,7 @@ public class TcSampleTestController {
     @WebLog(desc = "田测取样检测管理-生信结果核对模板下载")
     public void downSampleTestBioInfoResultTemplate(HttpServletResponse response) {
         try {
-            ossService.downloadFile(response, "templates", "生信结果核对模板V1.0.xlsx");
+            ossService.downloadFile(response, "template", "生信结果核对模板V1.0.xlsx");
         } catch (Exception e) {
             throw new BusinessException("生信结果核对模板下载失败，请联系管理员检测模板配置");
         }
@@ -299,7 +299,7 @@ public class TcSampleTestController {
     @WebLog(desc = "取样检测-目标检测结果模板下载")
     public void downTargetResultTemplate(HttpServletResponse response) {
         try {
-            ossService.downloadFile(response, "templates", "目标取样检测结果模板V1.0.xlsx");
+            ossService.downloadFile(response, "template", "目标取样检测结果模板V1.0.xlsx");
         } catch (Exception e) {
             throw new BusinessException("模板检测结果模板下载失败，请联系管理员检测模板配置");
         }

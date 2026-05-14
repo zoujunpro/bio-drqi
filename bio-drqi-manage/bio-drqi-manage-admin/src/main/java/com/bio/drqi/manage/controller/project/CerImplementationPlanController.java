@@ -136,7 +136,7 @@ public class CerImplementationPlanController {
     @GetMapping("/downVectorTemplate")
     public void downVectorTemplate(HttpServletResponse response) {
         try {
-            ossService.downloadFile(response, "templates", "质粒上传模板V1.0.xlsx");
+            ossService.downloadFile(response, "template", "质粒上传模板V1.0.xlsx");
         } catch (Exception e) {
             throw new BusinessException("质粒上传模板下载失败，请联系管理员检测模板配置");
         }

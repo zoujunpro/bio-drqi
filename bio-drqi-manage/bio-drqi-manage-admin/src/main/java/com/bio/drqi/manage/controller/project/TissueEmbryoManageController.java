@@ -33,7 +33,7 @@ public class TissueEmbryoManageController {
     @WebLog(desc = "组培标签打印数据模板下载")
     public void downTestTemplate(HttpServletResponse response) {
         try {
-            ossService.downloadFile(response, "templates", "组培标签打印数据模板V1.0.xlsx");
+            ossService.downloadFile(response, "template", "组培标签打印数据模板V1.0.xlsx");
         } catch (Exception e) {
             throw new BusinessException("组培标签打印数据模板下载失败，请联系管理员检测模板配置");
         }

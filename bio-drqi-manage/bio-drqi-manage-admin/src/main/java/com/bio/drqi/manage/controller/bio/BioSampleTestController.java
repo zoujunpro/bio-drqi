@@ -176,7 +176,7 @@ public class BioSampleTestController {
     @WebLog(desc = "分子取样检测-生信结果核对模板下载")
     public void downSampleTestBioInfoResultTemplate(HttpServletResponse response) {
         try {
-            ossService.downloadFile(response, "templates", "生信结果核对模板V1.0.xlsx");
+            ossService.downloadFile(response, "template", "生信结果核对模板V1.0.xlsx");
         } catch (Exception e) {
             throw new BusinessException("生信结果核对模板下载失败，请联系管理员检测模板配置");
         }

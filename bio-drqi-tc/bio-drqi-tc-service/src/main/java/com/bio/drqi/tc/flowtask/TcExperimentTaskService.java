@@ -9,6 +9,7 @@ import com.bio.common.core.util.ValidatorUtil;
 import com.bio.common.oss.service.OssService;
 import com.bio.drqi.common.enums.BioTaskStatusEnum;
 import com.bio.drqi.common.enums.ExperimentTypeEnum;
+import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.common.enums.SampleGroupPergixEnum;
 import com.bio.drqi.common.util.LetterUtil;
 import com.bio.drqi.domain.*;
@@ -177,6 +178,11 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
             TcExperimentDesignTb tcExperimentDesignTb = tcExperimentDesignTbMapper.selectOneByRegionNumAndSeedNum(experimentDesignExcelDTO.getRegionNum(), experimentDesignExcelDTO.getSeedNum());
             if (tcExperimentDesignTb != null) {
                 throw new BusinessException("系统中已经存在此小区编号" + tcExperimentDesignTb.getRegionNum() + "和此种子编号：" + tcExperimentDesignTb.getSeedNum());
+            }
+            if(GenerationEnum.getGeneration(experimentDesignExcelDTO.getGenerationName())==null){
+                throw new BusinessException("代次填写错误");
+            }else {
+                    experimentDesignExcelDTO.setGenerationCode(GenerationEnum.getGeneration(experimentDesignExcelDTO.getGenerationName()).code);
             }
         }
         Map<String, List<ExperimentDesignExcelDTO>> listMap = experimentDesignExcelDTOList.stream().collect(Collectors.groupingBy(ExperimentDesignExcelDTO::getRegionNum));

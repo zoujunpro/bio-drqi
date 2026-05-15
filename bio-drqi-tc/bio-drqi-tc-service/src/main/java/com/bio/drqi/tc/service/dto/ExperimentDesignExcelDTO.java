@@ -57,6 +57,12 @@ public class ExperimentDesignExcelDTO {
      */
     @ExcelProperty("世代")
     @NotBlank(message = "世代必填")
+    private String generationName;
+
+    /**
+     * 世代
+     */
+    @ExcelIgnore
     private String generationCode;
 
     /**

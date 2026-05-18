@@ -29,6 +29,11 @@ public class BmsOrderDetailListPageReqDTO extends PageDTO {
      * 材料名称
      */
     private String productInnerCode;
+
+    /**
+     * 材料名称
+     */
+    private String productOutCode;
     /**
      * 申请单位
      */

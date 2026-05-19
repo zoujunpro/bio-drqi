@@ -129,6 +129,8 @@ public class CerPlasmidQualityTb implements Serializable {
 
     private String remark;
 
+    private  String agrobacteriumLocation;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

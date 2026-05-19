@@ -87,6 +87,8 @@ public class PlasmidDTO{
          */
         @ExcelProperty(value = "提取试剂盒")
         private String extractionKit;
+
+       private String agrobacteriumLocation;
         /**
          * 附件地址集合
          */

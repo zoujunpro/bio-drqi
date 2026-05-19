@@ -27,6 +27,7 @@
             <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
             <result property="subProjectCode" column="sub_project_code" jdbcType="VARCHAR"/>
             <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
+            <result property="agrobacteriumLocation" column="agrobacterium_location" jdbcType="VARCHAR"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
@@ -37,7 +38,7 @@
         create_time,quality_inspection_type,agrobacterium_resistance,
         plasmid_concentration,extraction_kit,file_urls,
         task_status,task_num,project_code,
-        sub_project_code,vector_task_code,remark
+        sub_project_code,vector_task_code,remark,agrobacterium_location
     </sql>
     <select id="selectAllByVectorIdAndQualityInspectionResult" resultMap="BaseResultMap">
         select

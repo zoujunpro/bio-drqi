@@ -114,6 +114,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
                 cerPlasmidQualityTb.setSubProjectCode(cerVectorTaskTb.getSubProjectCode());
                 cerPlasmidQualityTb.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
                 cerPlasmidQualityTb.setRemark(content.getRemark());
+                cerPlasmidQualityTb.setAgrobacteriumLocation(content.getAgrobacteriumLocation());
                 cerPlasmidQualityTbMapper.insert(cerPlasmidQualityTb);
             }
         }
@@ -143,10 +144,22 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         sections.add(buildFieldSection("申请信息", fieldList));
 
         if (CollectionUtil.isNotEmpty(dto.getContentList())) {
-            List<String> headers = Arrays.asList("质粒名称", "下一步安排", "质检结果", "农杆菌信息", "农杆菌抗性", "质粒浓度", "提取试剂盒", "备注");
+            boolean hasAgrobacteriumArrange = false;
+            for (PlasmidDTO.Content item : dto.getContentList()) {
+                if (isAgrobacteriumArrange(item.getQualityInspectionType())) {
+                    hasAgrobacteriumArrange = true;
+                    break;
+                }
+            }
+            List<String> headers = new ArrayList<>(Arrays.asList("质粒名称", "下一步安排", "质检结果", "农杆菌信息", "农杆菌抗性", "质粒浓度", "提取试剂盒"));
+            if (hasAgrobacteriumArrange) {
+                headers.add("储存位置");
+            }
+            headers.add("备注");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (PlasmidDTO.Content item : dto.getContentList()) {
                 Map<String, Object> row = new LinkedHashMap<>();
+                boolean agrobacteriumArrange = isAgrobacteriumArrange(item.getQualityInspectionType());
                 row.put("质粒名称", item.getPlasmidName());
                 row.put("下一步安排", qualityInspectionTypeName(item.getQualityInspectionType()));
                 row.put("质检结果", qualityInspectionResultName(item.getQualityInspectionResult()));
@@ -154,6 +167,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
                 row.put("农杆菌抗性", item.getAgrobacteriumResistance());
                 row.put("质粒浓度", item.getPlasmidConcentration());
                 row.put("提取试剂盒", item.getExtractionKit());
+                row.put("储存位置", agrobacteriumArrange ? item.getAgrobacteriumLocation() : null);
                 row.put("备注", item.getRemark());
                 rows.add(row);
             }
@@ -184,6 +198,19 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
             }
         }
         return String.join("、", nameList);
+    }
+
+    private boolean isAgrobacteriumArrange(String code) {
+        if (code == null) {
+            return false;
+        }
+        List<String> codeList;
+        if (code.startsWith("[")) {
+            codeList = JSONUtil.toList(code, String.class);
+        } else {
+            codeList = Collections.singletonList(code);
+        }
+        return codeList.contains("2");
     }
 
     private String qualityInspectionResultName(String code) {

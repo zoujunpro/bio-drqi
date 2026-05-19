@@ -217,7 +217,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         String requestBody = JSONUtil.toJsonStr(request);
         Map<String,Object>  map = new HashMap<>();
         map.put("jobNum",SecurityContextHolder.getJobNum());
-        map.put("usernickname",SecurityContextHolder.getNickName());
+        map.put("nickname",SecurityContextHolder.getNickName());
         map.put("AgrobacteriumList",requestBody);
         log.info("【农杆菌信息储存】调用接口开始，url={}, request={}", url, requestBody);
         HttpResponse httpResponse = HttpRequest.post(url)

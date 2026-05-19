@@ -26,13 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("plasmid_check")
@@ -219,14 +213,22 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         request.setSupplement(defaultNA(agrobacterium.getRemark()));
         request.setMakingDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
         request.setTemid("1");
-        HttpResponse httpResponse = HttpRequest.post("http://172.16.14.2:10091/PushAgrobacteriumToTJDB")
+        String url = "http://172.16.14.2:10091/PushAgrobacteriumToTJDB";
+        String requestBody = JSONUtil.toJsonStr(request);
+        Map<String,Object>  map = new HashMap<>();
+        map.put("jobNum",SecurityContextHolder.getJobNum());
+        map.put("usernickname",SecurityContextHolder.getNickName());
+        map.put("AgrobacteriumList",requestBody);
+        log.info("【农杆菌信息储存】调用接口开始，url={}, request={}", url, requestBody);
+        HttpResponse httpResponse = HttpRequest.post(url)
                 .header("Content-Type", "application/json")
-                .body(JSONUtil.toJsonStr(request))
+                .body(requestBody)
                 .execute();
+        String response = httpResponse.body();
+        log.info("【农杆菌信息储存】调用接口结束，status={}, response={}", httpResponse.getStatus(), response);
         if (!httpResponse.isOk()) {
             throw new BusinessException("农杆菌信息储存失败：接口返回HTTP状态码" + httpResponse.getStatus());
         }
-        String response = httpResponse.body();
         JSONObject responseJson = JSONUtil.parseObj(response);
         JSONArray data = responseJson.getJSONArray("data");
         if (CollectionUtil.isEmpty(data)) {

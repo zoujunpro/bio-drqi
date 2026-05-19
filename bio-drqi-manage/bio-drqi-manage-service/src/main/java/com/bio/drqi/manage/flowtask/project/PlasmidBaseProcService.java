@@ -214,11 +214,11 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         request.setMakingDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
         request.setTemid("1");
         String url = "http://172.16.14.2:10091/PushAgrobacteriumToTJDB";
-        String requestBody = JSONUtil.toJsonStr(request);
         Map<String,Object>  map = new HashMap<>();
         map.put("jobNum",SecurityContextHolder.getJobNum());
         map.put("nickname",SecurityContextHolder.getNickName());
-        map.put("AgrobacteriumList",requestBody);
+        map.put("AgrobacteriumList",request);
+        String requestBody = JSONUtil.toJsonStr(map);
         log.info("【农杆菌信息储存】调用接口开始，url={}, request={}", url, requestBody);
         HttpResponse httpResponse = HttpRequest.post(url)
                 .header("Content-Type", "application/json")

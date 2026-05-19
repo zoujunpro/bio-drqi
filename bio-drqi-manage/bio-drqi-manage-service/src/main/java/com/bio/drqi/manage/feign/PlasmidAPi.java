@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "bio-plasmid-service", path = "/bio")
+@FeignClient(name = "bio-plasmid-service")
 public interface PlasmidAPi {
 
-    @GetMapping("/plasmid/detail")
+    @GetMapping("/bio/plasmid/detail")
     ResponseResult<Object> detail(@RequestParam String plasmid);
 
     @PostMapping("/PushAgrobacteriumToTJDB")

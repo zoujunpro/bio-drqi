@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 public class BioAgrobacteriumPrintReqDTO {
     private List<String> plasmidNames;
-    private String AgrobacteriumName;
-    private String AgrobacteriumResistance;
+    private String agrobacteriumName;
+    private String agrobacteriumResistance;
     private String makingDate;
 }

@@ -385,6 +385,22 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         return printRspDTOList;
     }
 
+    @Override
+    public List<PrintRspDTO> agrobacteriumPrint( BioAgrobacteriumPrintReqDTO bioAgrobacteriumPrintReqDTO) {
+        List<PrintRspDTO> printRspDTOList = new ArrayList<>();
+        if (bioAgrobacteriumPrintReqDTO == null) {
+            return printRspDTOList;
+        }
+        AgrobacteriumDTO agrobacteriumDTO=new AgrobacteriumDTO();
+        agrobacteriumDTO.setAgrobacteriumName(bioAgrobacteriumPrintReqDTO.getAgrobacteriumName());
+        agrobacteriumDTO.setAgrobacteriumResistance(bioAgrobacteriumPrintReqDTO.getAgrobacteriumResistance());
+        agrobacteriumDTO.setPlasmidName(bioAgrobacteriumPrintReqDTO.getPlasmidNames().get(0));
+        agrobacteriumDTO.setMakingDate(bioAgrobacteriumPrintReqDTO.getMakingDate());
+        agrobacteriumDTO.setPlasmidIdShort(bioAgrobacteriumPrintReqDTO.getPlasmidNames().size()==1?bioAgrobacteriumPrintReqDTO.getPlasmidNames().get(0):bioAgrobacteriumPrintReqDTO.getPlasmidNames().get(0)+"+");
+        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.agrobacterium_label_print.name(), Arrays.asList(agrobacteriumDTO))));
+        return printRspDTOList;
+    }
+
     private List<String> printDataSave(String printType, Object printData) {
         PrintDataReqDTO printDataReqDTO = new PrintDataReqDTO();
         printDataReqDTO.setPrintType(printType);

@@ -1,7 +1,6 @@
 package com.bio.drqi.manage.flowtask.project;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
@@ -117,6 +116,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
                 cerPlasmidQualityTb.setVectorTaskCode(cerVectorTaskTb.getVectorTaskCode());
                 cerPlasmidQualityTb.setRemark(content.getRemark());
                 cerPlasmidQualityTb.setAgrobacteriumLocation(content.getAgrobacteriumLocation());
+                cerPlasmidQualityTb.setMakingDate(content.getMakingDate());
                 cerPlasmidQualityTbMapper.insert(cerPlasmidQualityTb);
             }
             pushAgrobacteriumToTJDB(plasmidDTO.getContentList());
@@ -148,7 +148,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         sections.add(buildFieldSection("申请信息", fieldList));
 
         if (CollectionUtil.isNotEmpty(dto.getContentList())) {
-            List<String> headers = Arrays.asList("质粒名称", "下一步安排", "质检结果", "农杆菌信息", "农杆菌抗性", "质粒浓度", "提取试剂盒", "储存位置", "备注");
+            List<String> headers = Arrays.asList("质粒名称", "下一步安排", "质检结果", "农杆菌信息", "农杆菌抗性", "质粒浓度", "提取试剂盒", "储存位置", "农杆菌制备时间", "备注");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (PlasmidDTO.Content item : dto.getContentList()) {
                 Map<String, Object> row = new LinkedHashMap<>();
@@ -160,6 +160,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
                 row.put("质粒浓度", item.getPlasmidConcentration());
                 row.put("提取试剂盒", item.getExtractionKit());
                 row.put("储存位置", item.getAgrobacteriumLocation());
+                row.put("农杆菌制备时间", item.getMakingDate());
                 row.put("备注", item.getRemark());
                 rows.add(row);
             }
@@ -211,7 +212,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         request.setResistance(defaultNA(agrobacterium.getAgrobacteriumResistance()));
         request.setStrain(defaultNA(agrobacterium.getAgrobacteriumInformation()));
         request.setSupplement(defaultNA(agrobacterium.getRemark()));
-        request.setMaking_date(DateUtil.format(new Date(), "yyyy-MM-dd"));
+        request.setMaking_date(defaultNA(agrobacterium.getMakingDate()));
         request.setTemid("1");
         String url = "http://172.16.14.2:10091/PushAgrobacteriumToTJDB";
         Map<String, Object> map = new HashMap<>();

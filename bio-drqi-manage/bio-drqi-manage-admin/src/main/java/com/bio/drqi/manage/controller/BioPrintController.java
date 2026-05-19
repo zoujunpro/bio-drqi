@@ -1,11 +1,11 @@
 package com.bio.drqi.manage.controller;
 
 
+import com.bio.common.core.dto.ResponseResult;
+import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.manage.base.PrintRspDTO;
 import com.bio.drqi.manage.projectPrint.*;
-import com.bio.common.core.dto.ResponseResult;
-import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.manage.service.project.ProjectPrintService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -130,4 +130,17 @@ public class BioPrintController {
     public ResponseResult<List<PrintRspDTO>> tcExperimentPrint(@RequestBody @Validated BioPrintTcExperimentReqDTO bioPrintTcExperimentReqDTO) {
         return ResponseResult.getSuccess(projectPrintService.tcExperimentPrint(bioPrintTcExperimentReqDTO));
     }
+
+    /**
+     * 农杆菌标签
+     *
+     * @return
+     */
+    @PostMapping("agrobacteriumPrint")
+    @WebLog(desc = "农杆菌标签")
+    @RequestLog("农杆菌标签")
+    public ResponseResult<List<PrintRspDTO>> agrobacteriumPrint(@RequestBody @Validated BioAgrobacteriumPrintReqDTO bioAgrobacteriumPrintReqDTO) {
+        return ResponseResult.getSuccess(projectPrintService.agrobacteriumPrint(bioAgrobacteriumPrintReqDTO));
+    }
+
 }

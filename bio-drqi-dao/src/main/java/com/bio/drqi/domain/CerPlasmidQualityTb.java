@@ -129,7 +129,15 @@ public class CerPlasmidQualityTb implements Serializable {
 
     private String remark;
 
-    private  String agrobacteriumLocation;
+    /**
+     * 农杆菌储存位置
+     */
+    private String agrobacteriumLocation;
+
+    /**
+     * 农杆菌制备时间
+     */
+    private String makingDate;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

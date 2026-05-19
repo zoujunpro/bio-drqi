@@ -3,6 +3,8 @@ package com.bio.drqi.manage.flowtask.project;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -14,7 +16,6 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.ImplementationPlanTypeEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.drqi.manage.dto.project.PlasmidDTO;
-import com.bio.drqi.manage.feign.PlasmidAPi;
 import com.bio.drqi.manage.feign.PushAgrobacteriumToTJDBDTO;
 import com.bio.drqi.mapper.CerPlasmidQualityTbMapper;
 import com.bio.drqi.mapper.CerProjectTbMapper;
@@ -48,9 +49,6 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
 
     @Resource
     private CerVectorTaskTbMapper cerVectorTaskTbMapper;
-
-    @Resource
-    private PlasmidAPi plasmidAPi;
 
     @Override
     public void taskApply(BioTaskDtlTb bioTaskDtlTb) {
@@ -219,9 +217,16 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         request.setResistance(defaultNA(agrobacterium.getAgrobacteriumResistance()));
         request.setStrain(defaultNA(agrobacterium.getAgrobacteriumInformation()));
         request.setSupplement(defaultNA(agrobacterium.getRemark()));
-        request.setMakingDate(DateUtil.format(new Date(),"yyyy-MM-dd"));
+        request.setMakingDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
         request.setTemid("1");
-        Object response = plasmidAPi.pushAgrobacteriumToTJDB(request);
+        HttpResponse httpResponse = HttpRequest.post("http://172.16.14.2:10091/PushAgrobacteriumToTJDB")
+                .header("Content-Type", "application/json")
+                .body(JSONUtil.toJsonStr(request))
+                .execute();
+        if (!httpResponse.isOk()) {
+            throw new BusinessException("农杆菌信息储存失败：接口返回HTTP状态码" + httpResponse.getStatus());
+        }
+        String response = httpResponse.body();
         JSONObject responseJson = JSONUtil.parseObj(response);
         JSONArray data = responseJson.getJSONArray("data");
         if (CollectionUtil.isEmpty(data)) {

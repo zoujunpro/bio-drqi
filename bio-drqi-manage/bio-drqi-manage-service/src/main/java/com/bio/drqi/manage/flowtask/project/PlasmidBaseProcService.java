@@ -202,7 +202,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
 
         PlasmidDTO.Content agrobacterium = agrobacteriumList.get(0);
         PushAgrobacteriumToTJDBDTO request = new PushAgrobacteriumToTJDBDTO();
-        request.setPlasmidId(agrobacteriumList.stream()
+        request.setPlasmidID(agrobacteriumList.stream()
                 .map(PlasmidDTO.Content::getPlasmidName)
                 .filter(StrUtil::isNotBlank)
                 .distinct()
@@ -211,17 +211,17 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         request.setResistance(defaultNA(agrobacterium.getAgrobacteriumResistance()));
         request.setStrain(defaultNA(agrobacterium.getAgrobacteriumInformation()));
         request.setSupplement(defaultNA(agrobacterium.getRemark()));
-        request.setMakingDate(DateUtil.format(new Date(), "yyyy-MM-dd"));
+        request.setMaking_date(DateUtil.format(new Date(), "yyyy-MM-dd"));
         request.setTemid("1");
         String url = "http://172.16.14.2:10091/PushAgrobacteriumToTJDB";
-        Map<String,Object>  map = new HashMap<>();
-        List<PushAgrobacteriumToTJDBDTO> list=new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        List<PushAgrobacteriumToTJDBDTO> list = new ArrayList<>();
         list.add(request);
-        map.put("jobNum",SecurityContextHolder.getJobNum());
-        map.put("nickname",SecurityContextHolder.getNickName());
-        map.put("AgrobacteriumList",list);
+        map.put("jobNum", SecurityContextHolder.getJobNum());
+        map.put("nickname", SecurityContextHolder.getNickName());
+        map.put("AgrobacteriumList", list);
         String requestBody = JSONUtil.toJsonStr(map);
-        log.info("【农杆菌信息储存】调用接口开始，url={}, request={}", url, JSONUtil.toJsonStr(requestBody));
+        log.info("【农杆菌信息储存】调用接口开始，url={}, request={}", url, requestBody);
         HttpResponse httpResponse = HttpRequest.post(url)
                 .header("Content-Type", "application/json")
                 .body(requestBody)

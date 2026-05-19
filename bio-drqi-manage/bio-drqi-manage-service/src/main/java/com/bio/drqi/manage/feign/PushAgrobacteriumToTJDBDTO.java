@@ -1,6 +1,5 @@
 package com.bio.drqi.manage.feign;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
@@ -9,8 +8,7 @@ public class PushAgrobacteriumToTJDBDTO {
     /**
      * 质粒ID
      */
-    @JsonProperty("plasmidID")
-    private String plasmidId;
+    private String plasmidID;
 
     /**
      * 储存位置
@@ -35,12 +33,10 @@ public class PushAgrobacteriumToTJDBDTO {
     /**
      * 制备日期
      */
-    @JsonProperty("Making_date")
-    private String makingDate;
+    private String Making_date;
 
     /**
      * 备注/补充说明
      */
-    @JsonProperty("Supplement")
-    private String supplement;
+    private String Supplement;
 }

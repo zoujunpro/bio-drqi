@@ -119,4 +119,7 @@ public class PlasmidListPageRspDTO {
 
     private String remark;
 
+
+    private  String agrobacteriumLocation;
+
 }

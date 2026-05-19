@@ -3,14 +3,17 @@ package com.bio.drqi.manage.feign;
 import com.bio.common.core.dto.ResponseResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Map;
 
 @FeignClient(name = "bio-plasmid-service", path = "/bio")
 public interface PlasmidAPi {
 
     @GetMapping("/plasmid/detail")
     ResponseResult<Object> detail(@RequestParam String plasmid);
+
+    @PostMapping("/PushAgrobacteriumToTJDB")
+    Object pushAgrobacteriumToTJDB(@RequestBody PushAgrobacteriumToTJDBDTO request);
 
 }

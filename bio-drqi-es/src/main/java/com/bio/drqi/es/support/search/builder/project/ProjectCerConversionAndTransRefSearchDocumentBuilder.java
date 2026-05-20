@@ -8,7 +8,10 @@ import com.bio.drqi.mapper.CerConversionAndTransRefMapper;
 import com.bio.drqi.mapper.CerVectorTaskTbMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectCerConversionAndTransRefSearchDocumentBuilder extends AbstractProjectSearchDocumentBuilder<CerConversionAndTransRef> {
@@ -50,6 +53,45 @@ public class ProjectCerConversionAndTransRefSearchDocumentBuilder extends Abstra
         fillSampleInfo(row);
         row.put("trans_gene_flag_name", transGeneFlagName(row.get("trans_gene_flag")));
         return row;
+    }
+
+    @Override
+    protected List<Map<String, Object>> enrichRows(List<Map<String, Object>> rows) {
+        fillSampleInfo(rows);
+        return rows.stream()
+                .map(this::enrichRowWithoutVectorTaskQuery)
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, Object> enrichRowWithoutVectorTaskQuery(Map<String, Object> row) {
+        row.put("trans_gene_flag_name", transGeneFlagName(row.get("trans_gene_flag")));
+        return row;
+    }
+
+    private void fillSampleInfo(List<Map<String, Object>> rows) {
+        List<String> vectorTaskCodeList = rows.stream()
+                .map(row -> stringValue(row.get("vector_task_code")))
+                .filter(vectorTaskCode -> !vectorTaskCode.trim().isEmpty())
+                .distinct()
+                .collect(Collectors.toList());
+        if (vectorTaskCodeList.isEmpty()) {
+            return;
+        }
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByVectorTaskCodeIn(vectorTaskCodeList);
+        if (cerVectorTaskTbList == null || cerVectorTaskTbList.isEmpty()) {
+            return;
+        }
+        Map<String, CerVectorTaskTb> vectorTaskMap = cerVectorTaskTbList.stream()
+                .filter(item -> !stringValue(item.getVectorTaskCode()).trim().isEmpty())
+                .collect(Collectors.toMap(CerVectorTaskTb::getVectorTaskCode, Function.identity(), (first, second) -> first));
+        for (Map<String, Object> row : rows) {
+            CerVectorTaskTb cerVectorTaskTb = vectorTaskMap.get(stringValue(row.get("vector_task_code")));
+            if (cerVectorTaskTb == null) {
+                continue;
+            }
+            row.put("project_code", cerVectorTaskTb.getProjectCode());
+            row.put("sub_project_code", cerVectorTaskTb.getSubProjectCode());
+        }
     }
 
     private void fillSampleInfo(Map<String, Object> row) {

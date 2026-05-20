@@ -30,6 +30,8 @@ public class EsCommonService {
 
     private final RestClient restClient;
     private final ObjectMapper objectMapper;
+    private static final int BULK_MAX_ACTIONS = 1000;
+    private static final int BULK_MAX_BYTES = 8 * 1024 * 1024;
     private static final TypeReference<Map<String, Object>> MAP_TYPE = new TypeReference<Map<String, Object>>() {
     };
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -121,6 +123,9 @@ public class EsCommonService {
         StringBuilder body = new StringBuilder();
         int skipped = 0;
         int actions = 0;
+        int batchActions = 0;
+        int batchNo = 1;
+        long took = 0;
         try {
             for (Map<String, Object> row : rows) {
                 Object idValue = row.get(idField);
@@ -133,9 +138,18 @@ public class EsCommonService {
                 indexMeta.put("_index", index);
                 indexMeta.put("_id", normalizeId(idValue));
                 action.put("index", indexMeta);
-                body.append(objectMapper.writeValueAsString(action)).append('\n');
-                body.append(objectMapper.writeValueAsString(sanitizeMap(row))).append('\n');
+                String actionLine = objectMapper.writeValueAsString(action);
+                String sourceLine = objectMapper.writeValueAsString(sanitizeMap(row));
+                int nextBytes = actionLine.length() + sourceLine.length() + 2;
+                if (batchActions > 0 && (batchActions >= BULK_MAX_ACTIONS || body.length() + nextBytes > BULK_MAX_BYTES)) {
+                    took += executeBulk(index, body, batchActions, batchNo++);
+                    body.setLength(0);
+                    batchActions = 0;
+                }
+                body.append(actionLine).append('\n');
+                body.append(sourceLine).append('\n');
                 actions++;
+                batchActions++;
             }
             if (actions == 0) {
                 log.warn("ES 批量写入跳过，没有可写入文档 index={}, idField={}, sourceRows={}, skippedRows={}",
@@ -144,19 +158,30 @@ public class EsCommonService {
             }
             log.info("ES 批量写入开始 index={}, idField={}, sourceRows={}, actions={}, skippedRows={}",
                     index, idField, rows.size(), actions, skipped);
-            Request request = new Request("POST", "/_bulk");
-            request.setEntity(new StringEntity(body.toString(), ContentType.create("application/x-ndjson", "UTF-8")));
-            Response response = restClient.performRequest(request);
-            Map<String, Object> result = readMap(response.getEntity());
-            if (Boolean.TRUE.equals(result.get("errors"))) {
-                log.error("ES 批量写入失败 index={}, result={}", index, result);
-                throw new IllegalStateException("ES bulk 写入失败");
+            if (batchActions > 0) {
+                took += executeBulk(index, body, batchActions, batchNo);
             }
             log.info("ES 批量写入完成 index={}, actions={}, took={}, costMs={}",
-                    index, actions, result.get("took"), System.currentTimeMillis() - start);
+                    index, actions, took, System.currentTimeMillis() - start);
         } catch (Exception e) {
             throw new IllegalStateException("ES bulk 写入异常", e);
         }
+    }
+
+    private long executeBulk(String index, StringBuilder body, int actions, int batchNo) throws Exception {
+        log.info("ES bulk 分片写入开始 index={}, batchNo={}, actions={}, bodyChars={}",
+                index, batchNo, actions, body.length());
+        Request request = new Request("POST", "/_bulk");
+        request.setEntity(new StringEntity(body.toString(), ContentType.create("application/x-ndjson", "UTF-8")));
+        Response response = restClient.performRequest(request);
+        Map<String, Object> result = readMap(response.getEntity());
+        if (Boolean.TRUE.equals(result.get("errors"))) {
+            log.error("ES bulk 分片写入失败 index={}, batchNo={}, result={}", index, batchNo, result);
+            throw new IllegalStateException("ES bulk 写入失败");
+        }
+        long took = numberValue(result.get("took"));
+        log.info("ES bulk 分片写入完成 index={}, batchNo={}, actions={}, took={}", index, batchNo, actions, took);
+        return took;
     }
 
     /**
@@ -329,6 +354,10 @@ public class EsCommonService {
             return value instanceof Number ? ((Number) value).longValue() : 0;
         }
         return total instanceof Number ? ((Number) total).longValue() : 0;
+    }
+
+    private long numberValue(Object value) {
+        return value instanceof Number ? ((Number) value).longValue() : 0;
     }
 
     private Map<String, Object> matchAllQuery() {

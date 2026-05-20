@@ -8,7 +8,10 @@ import com.bio.drqi.mapper.PlantMultipleStockTbMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class PlantMultipleStockSearchDocumentBuilder extends AbstractPlantSearchDocumentBuilder<PlantMultipleStockTb> {
@@ -73,6 +76,46 @@ public class PlantMultipleStockSearchDocumentBuilder extends AbstractPlantSearch
         row.put("species_name", speciesName(row.get("species_code")));
         row.put("breed_name", breedName(row.get("species_code"), row.get("breed_code")));
         return row;
+    }
+
+    @Override
+    protected List<Map<String, Object>> enrichRows(List<Map<String, Object>> rows) {
+        fillVectorTaskInfo(rows);
+        return rows.stream()
+                .map(this::enrichRowWithoutVectorTaskQuery)
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, Object> enrichRowWithoutVectorTaskQuery(Map<String, Object> row) {
+        row.put("species_name", speciesName(row.get("species_code")));
+        row.put("breed_name", breedName(row.get("species_code"), row.get("breed_code")));
+        return row;
+    }
+
+    private void fillVectorTaskInfo(List<Map<String, Object>> rows) {
+        List<String> vectorTaskCodeList = rows.stream()
+                .map(row -> stringValue(row.get("vector_task_code")))
+                .filter(vectorTaskCode -> !vectorTaskCode.trim().isEmpty())
+                .distinct()
+                .collect(Collectors.toList());
+        if (vectorTaskCodeList.isEmpty()) {
+            return;
+        }
+        List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByVectorTaskCodeIn(vectorTaskCodeList);
+        if (cerVectorTaskTbList == null || cerVectorTaskTbList.isEmpty()) {
+            return;
+        }
+        Map<String, CerVectorTaskTb> vectorTaskMap = cerVectorTaskTbList.stream()
+                .filter(item -> !stringValue(item.getVectorTaskCode()).trim().isEmpty())
+                .collect(Collectors.toMap(CerVectorTaskTb::getVectorTaskCode, Function.identity(), (first, second) -> first));
+        for (Map<String, Object> row : rows) {
+            CerVectorTaskTb cerVectorTaskTb = vectorTaskMap.get(stringValue(row.get("vector_task_code")));
+            if (cerVectorTaskTb == null) {
+                continue;
+            }
+            row.put("project_code", cerVectorTaskTb.getProjectCode());
+            row.put("sub_project_code", cerVectorTaskTb.getSubProjectCode());
+        }
     }
 
     private void fillVectorTaskInfo(Map<String, Object> row) {

@@ -32,10 +32,7 @@ public abstract class AbstractBioDrqiSearchDocumentBuilder<T> extends AbstractSe
             }
             rows = Collections.singletonList(row);
         }
-        return ES_DOCUMENT_CONVERTER.toMapList(rows)
-                .stream()
-                .map(this::enrichRow)
-                .collect(Collectors.toList());
+        return enrichRows(ES_DOCUMENT_CONVERTER.toMapList(rows));
     }
 
     @Override
@@ -46,6 +43,12 @@ public abstract class AbstractBioDrqiSearchDocumentBuilder<T> extends AbstractSe
 
     protected Map<String, Object> enrichRow(Map<String, Object> row) {
         return row;
+    }
+
+    protected List<Map<String, Object>> enrichRows(List<Map<String, Object>> rows) {
+        return rows.stream()
+                .map(this::enrichRow)
+                .collect(Collectors.toList());
     }
 
     protected Map<String, Object> buildDoc(Map<String, Object> row,

@@ -4,15 +4,22 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bio.drqi.domain.BioSampleTestTb;
 import com.bio.drqi.domain.BioSampleTestOneResultTb;
 import com.bio.drqi.domain.CerVectorTaskTb;
+import com.bio.drqi.es.support.EsDocumentConverter;
 import com.bio.drqi.mapper.BioSampleTestTbMapper;
 import com.bio.drqi.mapper.BioSampleTestOneResultTbMapper;
 import com.bio.drqi.mapper.CerVectorTaskTbMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectBioSampleTestOneResultSearchDocumentBuilder extends AbstractBioTestSearchDocumentBuilder<BioSampleTestOneResultTb> {
+
+    private static final EsDocumentConverter ES_DOCUMENT_CONVERTER = new EsDocumentConverter();
 
     private final BioSampleTestOneResultTbMapper bioSampleTestOneResultTbMapper;
     private final BioSampleTestTbMapper bioSampleTestTbMapper;
@@ -44,10 +51,90 @@ public class ProjectBioSampleTestOneResultSearchDocumentBuilder extends Abstract
     }
 
     @Override
+    public List<Map<String, Object>> buildRows(String id) {
+        List<BioSampleTestOneResultTb> rows;
+        if (id == null || id.trim().isEmpty()) {
+            rows = bioSampleTestOneResultTbMapper.selectList(null);
+        } else {
+            BioSampleTestOneResultTb row = bioSampleTestOneResultTbMapper.selectById(id);
+            if (row == null) {
+                return Collections.emptyList();
+            }
+            rows = Collections.singletonList(row);
+        }
+        List<Map<String, Object>> rowMapList = ES_DOCUMENT_CONVERTER.toMapList(rows);
+        fillVectorTaskInfo(rowMapList);
+        return rowMapList.stream()
+                .map(this::enrichRowWithoutSampleQuery)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     protected Map<String, Object> enrichRow(Map<String, Object> row) {
         fillVectorTaskInfo(row);
+        return enrichRowWithoutSampleQuery(row);
+    }
+
+    private Map<String, Object> enrichRowWithoutSampleQuery(Map<String, Object> row) {
         row.put("source_code_name", sourceCodeName(row.get("source_code")));
         return row;
+    }
+
+    private void fillVectorTaskInfo(List<Map<String, Object>> rowList) {
+        if (rowList == null || rowList.isEmpty()) {
+            return;
+        }
+        List<String> sampleCodeList = rowList.stream()
+                .map(row -> stringValue(row.get("sample_code")))
+                .filter(sampleCode -> !sampleCode.trim().isEmpty())
+                .distinct()
+                .collect(Collectors.toList());
+        if (sampleCodeList.isEmpty()) {
+            return;
+        }
+        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCodeIn(sampleCodeList);
+        if (bioSampleTestTbList == null || bioSampleTestTbList.isEmpty()) {
+            return;
+        }
+        Map<String, BioSampleTestTb> sampleMap = bioSampleTestTbList.stream()
+                .filter(item -> !stringValue(item.getSampleCode()).trim().isEmpty())
+                .collect(Collectors.toMap(BioSampleTestTb::getSampleCode, Function.identity(), this::latestSample));
+        List<String> vectorTaskCodeList = sampleMap.values().stream()
+                .map(BioSampleTestTb::getVectorTaskCode)
+                .filter(vectorTaskCode -> !stringValue(vectorTaskCode).trim().isEmpty())
+                .distinct()
+                .collect(Collectors.toList());
+        Map<String, CerVectorTaskTb> vectorTaskMap = Collections.emptyMap();
+        if (!vectorTaskCodeList.isEmpty()) {
+            List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.selectAllByVectorTaskCodeIn(vectorTaskCodeList);
+            if (cerVectorTaskTbList != null && !cerVectorTaskTbList.isEmpty()) {
+                vectorTaskMap = cerVectorTaskTbList.stream()
+                        .filter(item -> !stringValue(item.getVectorTaskCode()).trim().isEmpty())
+                        .collect(Collectors.toMap(CerVectorTaskTb::getVectorTaskCode, Function.identity(), (first, second) -> first));
+            }
+        }
+        for (Map<String, Object> row : rowList) {
+            BioSampleTestTb bioSampleTestTb = sampleMap.get(stringValue(row.get("sample_code")));
+            if (bioSampleTestTb == null || stringValue(bioSampleTestTb.getVectorTaskCode()).trim().isEmpty()) {
+                continue;
+            }
+            row.put("vector_task_code", bioSampleTestTb.getVectorTaskCode());
+            row.put("region_num", bioSampleTestTb.getRegionNum());
+            row.put("seed_num", bioSampleTestTb.getSeedNum());
+            row.put("source_code", bioSampleTestTb.getSourceCode());
+            CerVectorTaskTb cerVectorTaskTb = vectorTaskMap.get(bioSampleTestTb.getVectorTaskCode());
+            if (cerVectorTaskTb == null) {
+                continue;
+            }
+            row.put("project_code", cerVectorTaskTb.getProjectCode());
+            row.put("sub_project_code", cerVectorTaskTb.getSubProjectCode());
+        }
+    }
+
+    private BioSampleTestTb latestSample(BioSampleTestTb first, BioSampleTestTb second) {
+        Integer firstId = first.getId() == null ? 0 : first.getId();
+        Integer secondId = second.getId() == null ? 0 : second.getId();
+        return firstId >= secondId ? first : second;
     }
 
     private void fillVectorTaskInfo(Map<String, Object> row) {

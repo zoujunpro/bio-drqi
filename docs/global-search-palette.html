@@ -112,7 +112,7 @@
       width: min(860px, calc(100vw - 32px));
       max-height: calc(100vh - 112px);
       display: none;
-      grid-template-rows: auto auto minmax(0, 1fr) auto;
+      grid-template-rows: auto minmax(0, 1fr) auto;
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.28);
       border-radius: 10px;
@@ -551,8 +551,8 @@
         var records = normalizeRecords(payload);
         state.records = append ? state.records.concat(records) : records;
         state.total = data && typeof data.total === "number" ? data.total : state.records.length;
-        state.nextSearchAfter = data && data.nextSearchAfter ? data.nextSearchAfter : null;
-        state.hasNext = !!(data && data.hasNext);
+        state.nextSearchAfter = nextSearchAfterValue(data);
+        state.hasNext = hasNextValue(data, state.nextSearchAfter) || state.records.length < state.total;
         state.selectedIndex = append ? state.selectedIndex : 0;
         state.lastCost = Date.now() - started;
         if (!append) {
@@ -588,6 +588,51 @@
         return;
       }
       requestSearch(true);
+    }
+
+    function nextSearchAfterValue(data) {
+      if (!data) {
+        return null;
+      }
+      return fieldValue(data, "nextSearchAfter") || fieldValue(data, "next_search_after") || null;
+    }
+
+    function hasNextValue(data, nextSearchAfter) {
+      if (!data) {
+        return false;
+      }
+      var hasNext = fieldValue(data, "hasNext");
+      if (typeof hasNext === "boolean") {
+        return hasNext;
+      }
+      if (typeof hasNext === "string") {
+        return hasNext.toLowerCase() === "true";
+      }
+      var hasNextSnake = fieldValue(data, "has_next");
+      if (typeof hasNextSnake === "boolean") {
+        return hasNextSnake;
+      }
+      if (typeof hasNextSnake === "string") {
+        return hasNextSnake.toLowerCase() === "true";
+      }
+      return Array.isArray(nextSearchAfter) && nextSearchAfter.length > 0;
+    }
+
+    function fieldValue(data, fieldName) {
+      if (!data) {
+        return undefined;
+      }
+      if (Object.prototype.hasOwnProperty.call(data, fieldName)) {
+        return data[fieldName];
+      }
+      var target = fieldName.toLowerCase();
+      var keys = Object.keys(data);
+      for (var i = 0; i < keys.length; i++) {
+        if (keys[i].toLowerCase() === target) {
+          return data[keys[i]];
+        }
+      }
+      return undefined;
     }
 
     function filteredRecords() {
@@ -672,7 +717,6 @@
         renderDisplayFields(row) +
         '</div>' +
         '<div class="side">' +
-        '<span>' + escapeHtml(formatTime(row.create_time)) + '</span>' +
         '<span>ID: ' + escapeHtml(row.biz_id || "") + '</span>' +
         '</div>' +
         '</button>';

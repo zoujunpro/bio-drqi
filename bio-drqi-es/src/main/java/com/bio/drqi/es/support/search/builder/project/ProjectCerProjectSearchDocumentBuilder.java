@@ -29,7 +29,7 @@ public class ProjectCerProjectSearchDocumentBuilder extends AbstractProjectSearc
                 stringValue(row.get("project_name")),
                 join(row.get("project_code"), row.get("owner_user_name"), projectTypeName, projectStatusName),
                 "/project/detail/",
-                display("项目编号", row.get("project_code"), "项目类型", projectTypeName, "负责人", row.get("owner_user_name"), "状态", projectStatusName, "任务编号", row.get("task_num")),
+                display("项目编号", row.get("project_code"), "项目类型", projectTypeName, "负责人", row.get("owner_user_name"), "创建人", row.get("create_user_name"), "状态", projectStatusName, "任务编号", row.get("task_num")),
                 row.values(), projectTypeName, projectStatusName);
     }
 

@@ -1,8 +1,10 @@
 package com.bio.drqi.es.support.search.builder.seed;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.domain.SeedStockTb;
 import com.bio.drqi.common.enums.BioDictTypeEnum;
+import com.bio.drqi.mapper.CerVectorTaskTbMapper;
 import com.bio.drqi.mapper.SeedStockTbMapper;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,12 @@ import java.util.Map;
 public class SeedStockSearchDocumentBuilder extends AbstractSeedSearchDocumentBuilder<SeedStockTb> {
 
     private final SeedStockTbMapper seedStockTbMapper;
+    private final CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
-    public SeedStockSearchDocumentBuilder(SeedStockTbMapper seedStockTbMapper) {
+    public SeedStockSearchDocumentBuilder(SeedStockTbMapper seedStockTbMapper,
+                                          CerVectorTaskTbMapper cerVectorTaskTbMapper) {
         this.seedStockTbMapper = seedStockTbMapper;
+        this.cerVectorTaskTbMapper = cerVectorTaskTbMapper;
     }
 
     @Override
@@ -24,6 +29,7 @@ public class SeedStockSearchDocumentBuilder extends AbstractSeedSearchDocumentBu
 
     @Override
     public Map<String, Object> build(Map<String, Object> row) {
+        fillVectorTaskInfo(row);
         String speciesName = speciesName(row.get("species_code"));
         String breedName = breedName(row.get("species_code"), row.get("breed_code"));
         String pollinationMethodName = dictName(BioDictTypeEnum.POLLINATE_TYPE, row.get("pollination_method"));
@@ -33,14 +39,15 @@ public class SeedStockSearchDocumentBuilder extends AbstractSeedSearchDocumentBu
         String productionLocationName = produceAddressName(row.get("production_location_code"));
         return buildDoc(row,
                 stringValue(row.get("seed_num")),
-                join(row.get("plant_code"), speciesName, breedName, row.get("generation"), row.get("seed_number"), sourceTypeName),
+                join(row.get("project_code"), row.get("vector_task_code"), row.get("plant_code"), speciesName, breedName, row.get("generation"), row.get("seed_number"), sourceTypeName),
                 "/seed/stock/detail/",
-                display("种子编号", row.get("seed_num"), "种植编号", row.get("plant_code"), "物种", speciesName, "品种", breedName, "代次", row.get("generation"), "种子数量", row.get("seed_number"), "来源", sourceTypeName, "生产地点", productionLocationName),
+                display("项目编号", row.get("project_code"), "子项目编号", row.get("sub_project_code"),"实施方案编号", row.get("vector_task_code"), "种子编号", row.get("seed_num"), "种植编号", row.get("plant_code"), "物种", speciesName, "品种", breedName, "代次", row.get("generation"), "种子数量", row.get("seed_number"), "来源", sourceTypeName, "生产地点", productionLocationName),
                 row.values(), speciesName, breedName, pollinationMethodName, harvestTypeName, sourceTypeName, materialTypeName, productionLocationName);
     }
 
     @Override
     protected Map<String, Object> enrichRow(Map<String, Object> row) {
+        fillVectorTaskInfo(row);
         row.put("species_name", speciesName(row.get("species_code")));
         row.put("breed_name", breedName(row.get("species_code"), row.get("breed_code")));
         row.put("pollination_method_name", dictName(BioDictTypeEnum.POLLINATE_TYPE, row.get("pollination_method")));
@@ -49,6 +56,19 @@ public class SeedStockSearchDocumentBuilder extends AbstractSeedSearchDocumentBu
         row.put("material_type_name", dictName(BioDictTypeEnum.MATERIAL_TYPE, row.get("material_type")));
         row.put("production_location_name", produceAddressName(row.get("production_location_code")));
         return row;
+    }
+
+    private void fillVectorTaskInfo(Map<String, Object> row) {
+        String vectorTaskCode = stringValue(row.get("vector_task_code"));
+        if (vectorTaskCode.trim().isEmpty()) {
+            return;
+        }
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+        if (cerVectorTaskTb == null || stringValue(cerVectorTaskTb.getProjectCode()).trim().isEmpty()) {
+            return;
+        }
+        row.put("project_code", cerVectorTaskTb.getProjectCode());
+        row.put("sub_project_code", cerVectorTaskTb.getSubProjectCode());
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.bio.drqi.es.support.search.builder.project;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bio.drqi.domain.CerVectorTb;
+import com.bio.drqi.domain.CerVectorTaskTb;
+import com.bio.drqi.mapper.CerVectorTaskTbMapper;
 import com.bio.drqi.mapper.CerVectorTbMapper;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +13,12 @@ import java.util.Map;
 public class ProjectCerVectorSearchDocumentBuilder extends AbstractProjectSearchDocumentBuilder<CerVectorTb> {
 
     private final CerVectorTbMapper cerVectorTbMapper;
+    private final CerVectorTaskTbMapper cerVectorTaskTbMapper;
 
-    public ProjectCerVectorSearchDocumentBuilder(CerVectorTbMapper cerVectorTbMapper) {
+    public ProjectCerVectorSearchDocumentBuilder(CerVectorTbMapper cerVectorTbMapper,
+                                                 CerVectorTaskTbMapper cerVectorTaskTbMapper) {
         this.cerVectorTbMapper = cerVectorTbMapper;
+        this.cerVectorTaskTbMapper = cerVectorTaskTbMapper;
     }
 
     @Override
@@ -23,19 +28,38 @@ public class ProjectCerVectorSearchDocumentBuilder extends AbstractProjectSearch
 
     @Override
     public Map<String, Object> build(Map<String, Object> row) {
+        fillVectorTaskInfo(row);
         String qualityInspectionResultName = qualityInspectionResultName(row.get("quality_inspection_result"));
         return buildDoc(row,
                 stringValue(row.get("plasmid_name")),
                 join(row.get("vector_task_code"), row.get("target_gene"), row.get("target_site"), qualityInspectionResultName),
                 "/project/vector/detail/",
-                display("质粒名称", row.get("plasmid_name"), "载体任务", row.get("vector_task_code"), "靶基因", row.get("target_gene"), "靶位点", row.get("target_site"), "质检结果", qualityInspectionResultName),
+                display("项目编号", row.get("project_code"), "子项目编号", row.get("sub_project_code"), "实施方案编号", row.get("vector_task_code"), "质粒名称", row.get("plasmid_name"), "创建人", row.get("create_user_name")),
                 row.values(), qualityInspectionResultName);
     }
 
     @Override
     protected Map<String, Object> enrichRow(Map<String, Object> row) {
+        fillVectorTaskInfo(row);
         row.put("quality_inspection_result_name", qualityInspectionResultName(row.get("quality_inspection_result")));
         return row;
+    }
+
+    private void fillVectorTaskInfo(Map<String, Object> row) {
+        if (!stringValue(row.get("project_code")).trim().isEmpty()
+                && !stringValue(row.get("sub_project_code")).trim().isEmpty()) {
+            return;
+        }
+        String vectorTaskCode = stringValue(row.get("vector_task_code"));
+        if (vectorTaskCode.trim().isEmpty()) {
+            return;
+        }
+        CerVectorTaskTb cerVectorTaskTb = cerVectorTaskTbMapper.selectOneByVectorTaskCode(vectorTaskCode);
+        if (cerVectorTaskTb == null) {
+            return;
+        }
+        row.put("project_code", cerVectorTaskTb.getProjectCode());
+        row.put("sub_project_code", cerVectorTaskTb.getSubProjectCode());
     }
 
     @Override

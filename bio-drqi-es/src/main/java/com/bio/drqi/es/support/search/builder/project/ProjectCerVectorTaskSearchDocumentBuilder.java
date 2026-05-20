@@ -38,7 +38,7 @@ public class ProjectCerVectorTaskSearchDocumentBuilder extends AbstractProjectSe
                 stringValue(row.get("vector_task_code")),
                 join(row.get("project_code"), row.get("sub_project_code"), speciesName, breedName, acceptorMaterialName, taskStatusName),
                 "/project/vector-task/detail/",
-                display("项目编号", row.get("project_code"), "子项目编号", row.get("sub_project_code"), "载体任务", row.get("vector_task_code"), "物种", speciesName, "品种", breedName, "受体材料", acceptorMaterialName, "状态", taskStatusName),
+                display("项目编号", row.get("project_code"), "子项目编号", row.get("sub_project_code"), "载体任务", row.get("vector_task_code"), "物种", speciesName, "品种", breedName, "受体材料", acceptorMaterialName, "创建人", row.get("create_user_name"), "状态", taskStatusName),
                 row.values(), speciesName, breedName, acceptorMaterialName, taskStatusName);
     }
 

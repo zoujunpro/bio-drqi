@@ -30,7 +30,7 @@ public class ProjectCerTransformSearchDocumentBuilder extends AbstractProjectSea
                 stringValue(row.get("transform_code")),
                 join(row.get("project_code"), row.get("vector_task_code"), row.get("plasmid_name"), speciesName, breedName, taskStatusName),
                 "/project/transform/detail/",
-                display("转化编号", row.get("transform_code"), "项目编号", row.get("project_code"), "载体任务", row.get("vector_task_code"), "质粒名称", row.get("plasmid_name"), "物种", speciesName, "品种", breedName, "状态", taskStatusName),
+                display( "项目编号", row.get("project_code"), "子项目编号",row.get("subProjectCode"),"实施方案编号", row.get("vector_task_code"),"转化编号", row.get("transform_code"), "质粒名称", row.get("plasmid_name"), "物种", speciesName, "品种", breedName, "创建人", row.get("create_user_name")),
                 row.values(), speciesName, breedName, taskStatusName);
     }
 

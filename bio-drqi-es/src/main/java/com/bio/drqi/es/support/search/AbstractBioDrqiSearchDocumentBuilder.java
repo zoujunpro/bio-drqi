@@ -67,9 +67,32 @@ public abstract class AbstractBioDrqiSearchDocumentBuilder<T> extends AbstractSe
         doc.put("summary", summary);
         doc.put("search_content", join(searchValues));
         doc.put("route", route + id);
-        doc.put("display", display);
-        doc.put("create_time", row.get("create_time"));
+        doc.put("display", appendCreateDisplay(row, display));
+        doc.put("create_time", firstPresent(row, "create_time", "create_date"));
         return doc;
+    }
+
+    private Map<String, Object> appendCreateDisplay(Map<String, Object> row, Map<String, Object> display) {
+        Map<String, Object> result = display == null ? new LinkedHashMap<>() : new LinkedHashMap<>(display);
+        if (!result.containsKey("创建人") && row.containsKey("create_user_name")) {
+            result.put("创建人", row.get("create_user_name"));
+        }
+        if (!result.containsKey("创建时间")) {
+            Object createTime = firstPresent(row, "create_time", "create_date");
+            if (createTime != null) {
+                result.put("创建时间", createTime);
+            }
+        }
+        return result;
+    }
+
+    private Object firstPresent(Map<String, Object> row, String... keys) {
+        for (String key : keys) {
+            if (row.containsKey(key)) {
+                return row.get(key);
+            }
+        }
+        return null;
     }
 
     protected Map<String, Object> display(Object... labelValues) {

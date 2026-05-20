@@ -158,34 +158,6 @@
       font-weight: 650;
     }
 
-    .tabs {
-      min-height: 46px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0 14px;
-      overflow-x: auto;
-      border-bottom: 1px solid var(--line);
-      background: rgba(248, 250, 252, 0.9);
-    }
-
-    .tab {
-      height: 30px;
-      padding: 0 10px;
-      border: 1px solid transparent;
-      border-radius: 7px;
-      color: var(--muted);
-      background: transparent;
-      white-space: nowrap;
-    }
-
-    .tab.active {
-      border-color: #bcd0f7;
-      color: var(--blue);
-      background: #fff;
-      font-weight: 650;
-    }
-
     .content {
       min-height: 0;
       overflow-y: auto;
@@ -193,30 +165,32 @@
       padding: 8px 10px 10px;
     }
 
-    .group {
-      padding: 6px 0 8px;
-    }
-
-    .group-title {
-      height: 28px;
+    .table-menu {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 8px;
-      padding: 0 8px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
+      padding: 8px 8px 10px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 8px;
     }
 
-    .count {
-      height: 18px;
-      min-width: 22px;
-      display: inline-grid;
-      place-items: center;
-      border-radius: 999px;
-      background: #edf2f8;
-      color: #64748b;
-      font-size: 11px;
+    .table-menu-item {
+      height: 30px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 7px;
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .table-menu-item.active,
+    .table-menu-item:hover {
+      background: var(--blue-soft);
+      color: var(--blue);
     }
 
     .item {
@@ -308,6 +282,29 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.5;
+    }
+
+    .display-fields {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px 12px;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .display-field {
+      min-width: 0;
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .display-label {
+      color: #475569;
+      font-weight: 650;
     }
 
     mark {
@@ -430,7 +427,6 @@
       <button id="searchBtn" class="search-action" type="button">搜索</button>
     </div>
 
-    <div id="tabs" class="tabs"></div>
     <div id="content" class="content"></div>
     <div class="footer">
       <span id="metaText">输入关键词开始搜索</span>
@@ -447,18 +443,31 @@
       "nickname": "zoujun",
       "jobNum": "1"
     };
-    var businessMap = {
-      all: "全部",
-      task: "任务",
-      biotest: "检测",
-      project: "项目",
-      plant: "植物",
-      seed: "种子"
+    var tableMap = {
+      bio_task_dtl_tb: "工单",
+      cer_project_tb: "项目",
+      cer_sub_project_tb: "子项目",
+      cer_vector_task_tb: "实施方案",
+      cer_vector_tb: "载体构建",
+      cer_transform_tb: "转化",
+      cer_plasmid_quality_tb: "质粒质检",
+      cer_conversion_and_trans_tb: "移苗",
+      cer_conversion_and_trans_ref: "移苗",
+      bio_sample_test_tb: "取样检测",
+      bio_sample_test_one_result_tb: "一代检测",
+      bio_sample_test_two_result_tb: "NGS检测",
+      bio_sample_test_two_result_detail_tb: "NGS检测",
+      plant_apply_tb: "CER种植",
+      plant_apply_detail_tb: "CER种植明细",
+      plant_multiple_stock_tb: "CER待检测库",
+      plant_single_stock_tb: "CER种植库",
+      plant_single_stock_tb_harvest: "CER收获库",
+      seed_stock_tb: "种子库明细"
     };
 
     var state = {
       keyword: "",
-      activeBusiness: "all",
+      activeTable: "all",
       records: [],
       total: 0,
       selectedIndex: 0,
@@ -474,7 +483,6 @@
     var searchBtn = document.getElementById("searchBtn");
     var scrim = document.getElementById("scrim");
     var palette = document.getElementById("palette");
-    var tabs = document.getElementById("tabs");
     var content = document.getElementById("content");
     var metaText = document.getElementById("metaText");
     var loadMoreBtn = document.getElementById("loadMoreBtn");
@@ -500,6 +508,7 @@
       state.selectedIndex = 0;
       state.nextSearchAfter = null;
       state.hasNext = false;
+      state.activeTable = "all";
       render();
     }
 
@@ -546,6 +555,9 @@
         state.hasNext = !!(data && data.hasNext);
         state.selectedIndex = append ? state.selectedIndex : 0;
         state.lastCost = Date.now() - started;
+        if (!append) {
+          state.activeTable = "all";
+        }
       }).catch(function (error) {
         state.records = append ? state.records : [];
         state.total = append ? state.total : 0;
@@ -560,7 +572,6 @@
     function search() {
       state.keyword = keywordInput.value.trim();
       state.error = "";
-      state.activeBusiness = "all";
       state.nextSearchAfter = null;
       state.hasNext = false;
       if (!state.keyword) {
@@ -579,55 +590,25 @@
       requestSearch(true);
     }
 
-    function businessName(code) {
-      if (!businessMap[code]) {
-        businessMap[code] = code || "";
-      }
-      return businessMap[code] || "";
-    }
-
-    function availableBusinessCodes() {
-      var seen = {};
-      state.records.forEach(function (row) {
-        if (row.business_code) {
-          seen[row.business_code] = true;
-        }
-      });
-      return Object.keys(seen);
-    }
-
     function filteredRecords() {
-      if (state.activeBusiness === "all") {
-        return state.records;
-      }
-      return state.records.filter(function (row) {
-        return row.business_code === state.activeBusiness;
-      });
+      return state.records;
     }
 
     function groupedRecords(rows) {
       var groups = [];
       var map = {};
       rows.forEach(function (row) {
-        var code = row.business_code || "other";
-        if (!map[code]) {
-          map[code] = { code: code, rows: [] };
-          groups.push(map[code]);
+        var table = groupTableKey(row);
+        if (!map[table]) {
+          map[table] = { table: table, rows: [] };
+          groups.push(map[table]);
         }
-        map[code].rows.push(row);
+        map[table].rows.push(row);
       });
       return groups;
     }
 
-    function renderTabs() {
-      var codes = ["all"].concat(availableBusinessCodes());
-      tabs.innerHTML = codes.map(function (code) {
-        return '<button class="tab ' + (state.activeBusiness === code ? "active" : "") + '" data-code="' + escapeHtml(code) + '">' + escapeHtml(businessName(code)) + '</button>';
-      }).join("");
-    }
-
     function render() {
-      renderTabs();
       var rows = filteredRecords();
       if (state.loading) {
         content.innerHTML = '<div class="empty">正在查询...</div>';
@@ -638,7 +619,7 @@
       } else if (!rows.length) {
         content.innerHTML = '<div class="empty">未找到匹配数据</div>';
       } else {
-        content.innerHTML = groupedRecords(rows).map(renderGroup).join("");
+        content.innerHTML = renderTableView(groupedRecords(rows));
       }
       metaText.textContent = state.keyword
         ? "共 " + state.total + " 条结果 · " + state.lastCost + " ms"
@@ -648,56 +629,103 @@
       loadMoreBtn.textContent = state.loadingMore ? "加载中..." : "加载更多";
     }
 
-    function renderGroup(group) {
-      return '<section class="group">' +
-        '<div class="group-title">' + escapeHtml(businessName(group.code)) + '<span class="count">' + group.rows.length + '</span></div>' +
-        group.rows.map(renderItem).join("") +
-        '</section>';
+    function renderTableView(groups) {
+      var activeGroup = groups.filter(function (group) {
+        return group.table === state.activeTable;
+      })[0];
+      return renderTableMenu(groups) +
+        (state.activeTable === "all" ? filteredRecords().map(renderItem).join("") : activeGroup ? activeGroup.rows.map(renderItem).join("") : "");
+    }
+
+    function renderTableMenu(groups) {
+      var allButton = '<button class="table-menu-item ' + (state.activeTable === "all" ? "active" : "") + '" type="button" data-table="all">全部</button>';
+      return '<div class="table-menu">' + allButton + groups.map(function (group) {
+        return '<button class="table-menu-item ' + (state.activeTable === group.table ? "active" : "") + '" type="button" data-table="' + escapeHtml(group.table) + '">' +
+          escapeHtml(tableName(group.table)) +
+          '</button>';
+      }).join("") + '</div>';
+    }
+
+    function tableName(table) {
+      return tableMap[table] || table || "未分类表";
+    }
+
+    function groupTableKey(row) {
+      if (row && row.table_name === "plant_single_stock_tb" && String(row.plant_status || "") === "4") {
+        return "plant_single_stock_tb_harvest";
+      }
+      return row && row.table_name ? row.table_name : "other";
+    }
+
+    function displayTableName(row) {
+      return tableName(groupTableKey(row));
     }
 
     function renderItem(row) {
       var index = filteredRecords().indexOf(row);
-      var status = resolveStatus(row);
       return '<button class="item ' + (index === state.selectedIndex ? "active" : "") + '" data-index="' + index + '" type="button">' +
         '<div class="item-main">' +
         '<div class="title-row">' +
-        '<span class="badge ' + escapeHtml(row.business_code || "") + '">' + escapeHtml(businessName(row.business_code)) + '</span>' +
+        '<span class="badge ' + escapeHtml(row.business_code || "") + '">' + escapeHtml(displayTableName(row)) + '</span>' +
         '<div class="item-title">' + highlight(row.title || row.biz_id || "") + '</div>' +
         '</div>' +
-        '<p class="summary">' + highlight(row.summary || "") + '</p>' +
+        renderDisplayFields(row) +
         '</div>' +
         '<div class="side">' +
-        '<span>ID: ' + escapeHtml(row.biz_id || "") + '</span>' +
-        '<span>表: ' + escapeHtml(row.table_name || "") + '</span>' +
-        (status ? '<span class="status ' + status.className + '">' + escapeHtml(status.value) + '</span>' : '') +
         '<span>' + escapeHtml(formatTime(row.create_time)) + '</span>' +
+        '<span>ID: ' + escapeHtml(row.biz_id || "") + '</span>' +
         '</div>' +
         '</button>';
     }
 
-    function resolveStatus(row) {
-      var display = row.display || {};
-      var keys = Object.keys(display);
-      for (var i = 0; i < keys.length; i++) {
-        if (isStatusKey(keys[i])) {
-          return { value: display[keys[i]], className: statusClass(display[keys[i]]) };
-        }
+    function renderDisplayFields(row) {
+      var entries = displayEntries(row);
+      if (!entries.length) {
+        return "";
       }
-      return null;
+      return '<div class="display-fields">' + entries.map(function (entry) {
+        return '<span class="display-field" title="' + escapeHtml(entry.label + '：' + entry.value) + '">' +
+          '<span class="display-label">' + escapeHtml(entry.label) + '：</span>' +
+          highlight(entry.value) +
+          '</span>';
+      }).join("") + '</div>';
     }
 
-    function isStatusKey(key) {
-      return key === "状态" || key === "结果" || /状态$/.test(key) || /结果$/.test(key);
+    function displayEntries(row) {
+      var display = row && row.display ? row.display : {};
+      return Object.keys(display).map(function (key) {
+        return {
+          label: key,
+          value: normalizeDisplayValue(display[key])
+        };
+      }).filter(function (entry) {
+        return !isEmptyDisplayValue(entry.value);
+      });
     }
 
-    function statusClass(value) {
-      if (value === "未同步") {
-        return "error";
+    function normalizeDisplayValue(value) {
+      if (Array.isArray(value)) {
+        return value.filter(function (item) {
+          return !isEmptyDisplayValue(item);
+        }).join("，");
       }
-      if (value === "审批中" || value === "待检测") {
-        return "pending";
+      if (value && typeof value === "object") {
+        return JSON.stringify(value);
       }
-      return "";
+      return value == null ? "" : String(value);
+    }
+
+    function isEmptyDisplayValue(value) {
+      if (value == null) {
+        return true;
+      }
+      if (Array.isArray(value)) {
+        return value.length === 0 || value.every(isEmptyDisplayValue);
+      }
+      if (typeof value === "object") {
+        return Object.keys(value).length === 0;
+      }
+      return String(value).trim() === "";
     }
 
     function formatTime(value) {
@@ -753,16 +781,14 @@
       }
     });
     scrim.addEventListener("click", closePalette);
-    tabs.addEventListener("click", function (event) {
-      var button = event.target.closest(".tab");
-      if (!button) {
+    content.addEventListener("click", function (event) {
+      var tableButton = event.target.closest(".table-menu-item");
+      if (tableButton) {
+        state.activeTable = tableButton.getAttribute("data-table");
+        state.selectedIndex = 0;
+        render();
         return;
       }
-      state.activeBusiness = button.getAttribute("data-code");
-      state.selectedIndex = 0;
-      render();
-    });
-    content.addEventListener("click", function (event) {
       var item = event.target.closest(".item");
       if (!item) {
         return;

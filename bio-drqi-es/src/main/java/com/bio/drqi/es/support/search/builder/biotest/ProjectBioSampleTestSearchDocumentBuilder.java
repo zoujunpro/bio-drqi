@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -74,8 +75,23 @@ public class ProjectBioSampleTestSearchDocumentBuilder extends AbstractBioTestSe
 
     private List<Map<String, Object>> buildAllRowsByBatch() {
         List<Map<String, Object>> result = new ArrayList<>();
+        buildAllRowsByBatch(batch -> result.addAll(batch));
+        return result;
+    }
+
+    @Override
+    public void buildRows(String id, Consumer<List<Map<String, Object>>> batchConsumer) {
+        if (id == null || id.trim().isEmpty()) {
+            buildAllRowsByBatch(batchConsumer);
+            return;
+        }
+        batchConsumer.accept(buildRows(id));
+    }
+
+    private void buildAllRowsByBatch(Consumer<List<Map<String, Object>>> batchConsumer) {
         int lastId = 0;
         int batchNo = 1;
+        int total = 0;
         long start = System.currentTimeMillis();
         while (true) {
             long batchStart = System.currentTimeMillis();
@@ -83,24 +99,25 @@ public class ProjectBioSampleTestSearchDocumentBuilder extends AbstractBioTestSe
             List<BioSampleTestTb> rows = bioSampleTestTbMapper.selectAllByIdGreaterThanOrderByIdAscLimit(lastId, BATCH_SIZE);
             if (rows == null || rows.isEmpty()) {
                 log.info("取样检测全量构建批次查询结束，无更多数据 batchNo={}, total={}, costMs={}",
-                        batchNo, result.size(), System.currentTimeMillis() - start);
+                        batchNo, total, System.currentTimeMillis() - start);
                 break;
             }
             lastId = rows.get(rows.size() - 1).getId();
             List<Map<String, Object>> rowMapList = ES_DOCUMENT_CONVERTER.toMapList(rows);
             fillVectorTaskInfo(rowMapList);
-            result.addAll(rowMapList.stream()
+            List<Map<String, Object>> batch = rowMapList.stream()
                     .map(this::enrichRowWithoutVectorTaskQuery)
-                    .collect(Collectors.toList()));
+                    .collect(Collectors.toList());
+            total += batch.size();
             log.info("取样检测全量构建批次完成 batchNo={}, rows={}, lastId={}, total={}, costMs={}",
-                    batchNo, rows.size(), lastId, result.size(), System.currentTimeMillis() - batchStart);
+                    batchNo, rows.size(), lastId, total, System.currentTimeMillis() - batchStart);
+            batchConsumer.accept(batch);
             if (rows.size() < BATCH_SIZE) {
                 break;
             }
             batchNo++;
         }
-        log.info("取样检测全量构建完成 total={}, costMs={}", result.size(), System.currentTimeMillis() - start);
-        return result;
+        log.info("取样检测全量构建完成 total={}, costMs={}", total, System.currentTimeMillis() - start);
     }
 
     @Override

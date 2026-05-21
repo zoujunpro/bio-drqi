@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,12 +62,24 @@ public class EsSyncServiceImpl implements EsSyncService {
         globalSearchSyncService.deleteByTable(table);
 
         log.info("ES 全量同步查询数据库开始 table={}", table);
-        List<Map<String, Object>> rows = builder.buildRows(null);
-        log.info("ES 全量同步查询数据库完成 table={}, rows={}", table, rows.size());
-        esCommonService.saveBatch(table, ID_FIELD, rows);
-        globalSearchSyncService.saveBatch(table, rows);
+        AtomicInteger batchNo = new AtomicInteger(1);
+        AtomicInteger totalRows = new AtomicInteger(0);
+        builder.buildRows(null, rows -> {
+            int currentBatchNo = batchNo.getAndIncrement();
+            if (rows == null || rows.isEmpty()) {
+                log.info("ES 全量同步批次跳过，数据为空 table={}, batchNo={}", table, currentBatchNo);
+                return;
+            }
+            totalRows.addAndGet(rows.size());
+            log.info("ES 全量同步批次写入开始 table={}, batchNo={}, rows={}, totalRows={}",
+                    table, currentBatchNo, rows.size(), totalRows.get());
+            esCommonService.saveBatch(table, ID_FIELD, rows);
+            globalSearchSyncService.saveBatch(table, rows);
+            log.info("ES 全量同步批次写入完成 table={}, batchNo={}, rows={}, totalRows={}",
+                    table, currentBatchNo, rows.size(), totalRows.get());
+        });
         log.info("ES 全量同步完成 table={}, index={}, rows={}, costMs={}",
-                table, table, rows.size(), System.currentTimeMillis() - start);
+                table, table, totalRows.get(), System.currentTimeMillis() - start);
     }
 
     @Override

@@ -84,6 +84,14 @@
         sample_code = #{sampleCode,jdbcType=VARCHAR}
         order by id desc limit 1
     </select>
+    <select id="selectAllByIdGreaterThanOrderByIdAscLimit" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bio_sample_test_tb
+        where id &gt; #{id,jdbcType=INTEGER}
+        order by id asc
+        limit #{limit,jdbcType=INTEGER}
+    </select>
     <insert id="insertBatch">
         insert into bio_sample_test_tb(id,vector_task_code,sample_code,
         apply_time,apply_user_id,apply_user_name,

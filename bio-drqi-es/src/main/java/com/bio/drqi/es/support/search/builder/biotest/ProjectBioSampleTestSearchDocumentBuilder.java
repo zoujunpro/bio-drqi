@@ -6,8 +6,10 @@ import com.bio.drqi.domain.CerVectorTaskTb;
 import com.bio.drqi.es.support.EsDocumentConverter;
 import com.bio.drqi.mapper.BioSampleTestTbMapper;
 import com.bio.drqi.mapper.CerVectorTaskTbMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +17,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ProjectBioSampleTestSearchDocumentBuilder extends AbstractBioTestSearchDocumentBuilder<BioSampleTestTb> {
 
     private static final EsDocumentConverter ES_DOCUMENT_CONVERTER = new EsDocumentConverter();
+    private static final int BATCH_SIZE = 2000;
 
     private final BioSampleTestTbMapper bioSampleTestTbMapper;
     private final CerVectorTaskTbMapper cerVectorTaskTbMapper;
@@ -53,7 +57,7 @@ public class ProjectBioSampleTestSearchDocumentBuilder extends AbstractBioTestSe
     public List<Map<String, Object>> buildRows(String id) {
         List<BioSampleTestTb> rows;
         if (id == null || id.trim().isEmpty()) {
-            rows = bioSampleTestTbMapper.selectList(null);
+            return buildAllRowsByBatch();
         } else {
             BioSampleTestTb row = bioSampleTestTbMapper.selectById(id);
             if (row == null) {
@@ -66,6 +70,37 @@ public class ProjectBioSampleTestSearchDocumentBuilder extends AbstractBioTestSe
         return rowMapList.stream()
                 .map(this::enrichRowWithoutVectorTaskQuery)
                 .collect(Collectors.toList());
+    }
+
+    private List<Map<String, Object>> buildAllRowsByBatch() {
+        List<Map<String, Object>> result = new ArrayList<>();
+        int lastId = 0;
+        int batchNo = 1;
+        long start = System.currentTimeMillis();
+        while (true) {
+            long batchStart = System.currentTimeMillis();
+            log.info("取样检测全量构建批次查询开始 batchNo={}, lastId={}, limit={}", batchNo, lastId, BATCH_SIZE);
+            List<BioSampleTestTb> rows = bioSampleTestTbMapper.selectAllByIdGreaterThanOrderByIdAscLimit(lastId, BATCH_SIZE);
+            if (rows == null || rows.isEmpty()) {
+                log.info("取样检测全量构建批次查询结束，无更多数据 batchNo={}, total={}, costMs={}",
+                        batchNo, result.size(), System.currentTimeMillis() - start);
+                break;
+            }
+            lastId = rows.get(rows.size() - 1).getId();
+            List<Map<String, Object>> rowMapList = ES_DOCUMENT_CONVERTER.toMapList(rows);
+            fillVectorTaskInfo(rowMapList);
+            result.addAll(rowMapList.stream()
+                    .map(this::enrichRowWithoutVectorTaskQuery)
+                    .collect(Collectors.toList()));
+            log.info("取样检测全量构建批次完成 batchNo={}, rows={}, lastId={}, total={}, costMs={}",
+                    batchNo, rows.size(), lastId, result.size(), System.currentTimeMillis() - batchStart);
+            if (rows.size() < BATCH_SIZE) {
+                break;
+            }
+            batchNo++;
+        }
+        log.info("取样检测全量构建完成 total={}, costMs={}", result.size(), System.currentTimeMillis() - start);
+        return result;
     }
 
     @Override

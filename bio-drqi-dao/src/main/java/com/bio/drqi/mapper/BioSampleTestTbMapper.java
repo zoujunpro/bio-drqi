@@ -27,6 +27,8 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
     BioSampleTestTb selectOneBySampleCodeOrderByIdDesc(@Param("sampleCode") String sampleCode);
 
+    List<BioSampleTestTb> selectAllByIdGreaterThanOrderByIdAscLimit(@Param("id") Integer id, @Param("limit") Integer limit);
+
     int updateNoCheckDataByApplyNoAndCheckResult(@Param("checkResult") String checkResult, @Param("checkUserId") Integer checkUserId, @Param("checkUserName") String checkUserName, @Param("testUserId") Integer testUserId, @Param("testUserName") String testUserName, @Param("testResult") String testResult, @Param("applyNo") String applyNo, @Param("oldCheckResult") String oldCheckResult);
     List<BioSampleTestTb> selectAllByApplyNo(@Param("applyNo") String applyNo);
 
@@ -77,7 +79,6 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
     List<BioSampleTestTb> selectAllByApplyNoAndSeedNumAndRegionNumAndCheckResult(@Param("applyNo") String applyNo, @Param("seedNum") String seedNum, @Param("regionNum") String regionNum, @Param("checkResult") String checkResult);
 }
-
 
 
 

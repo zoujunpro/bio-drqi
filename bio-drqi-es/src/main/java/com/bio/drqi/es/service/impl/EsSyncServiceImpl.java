@@ -60,6 +60,7 @@ public class EsSyncServiceImpl implements EsSyncService {
         esCommonService.recreateIndex(table, mapping);
         globalSearchSyncService.deleteByTable(table);
 
+        log.info("ES 全量同步查询数据库开始 table={}", table);
         List<Map<String, Object>> rows = builder.buildRows(null);
         log.info("ES 全量同步查询数据库完成 table={}, rows={}", table, rows.size());
         esCommonService.saveBatch(table, ID_FIELD, rows);

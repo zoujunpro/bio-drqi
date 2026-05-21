@@ -84,4 +84,6 @@ public class BioSampleTwoResultController {
         bioSampleTwoResultService.deleteNgsResult(uniqueDbCode);
         return ResponseResult.getSuccess("ok");
     }
+
+
 }

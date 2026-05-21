@@ -45,7 +45,7 @@ public class ProjectBioSampleTestTwoResultDetailSearchDocumentBuilder extends Ab
                 stringValue(row.get("sample_code")),
                 join(row.get("vector_task_code"), row.get("apply_no"), row.get("run_id"), row.get("hap_id"), row.get("var_type"), sourceCodeName, confirmStatusName, matchFlagName),
                 "/project/sample-test/two-result-detail/detail/",
-                display("项目编号", row.get("project_code"), "子项目编号", row.get("sub_project_code"), "实施方案编号", row.get("vector_task_code"), "小区编号", row.get("region_num"), "种植编号", row.get("seed_num"), "来源", sourceCodeName, "取样编号", row.get("sample_code"), "申请编号", row.get("apply_no"), "HapID", row.get("hap_id"), "变异类型", row.get("var_type"), "确认状态", confirmStatusName, "匹配状态", matchFlagName),
+                display("项目编号", row.get("project_code"), "子项目编号", row.get("sub_project_code"), "实施方案编号", row.get("vector_task_code"), "小区编号", row.get("region_num"), "种植编号", row.get("seed_num"), "来源", sourceCodeName, "取样编号", row.get("sample_code"), "申请编号", row.get("apply_no"), "HapID", row.get("hap_id"), "变异类型", row.get("var_type"), "确认状态", confirmStatusName, "匹配状态", matchFlagName,"二代测序ID",row.get("twoResultId")),
                 row.values(), sourceCodeName, confirmStatusName, matchFlagName);
     }
 

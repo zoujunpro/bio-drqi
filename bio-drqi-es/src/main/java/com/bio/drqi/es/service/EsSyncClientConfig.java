@@ -12,6 +12,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestClientBuilder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,10 @@ import java.util.List;
 @ConditionalOnProperty(prefix = "bio.es", name = "enabled", havingValue = "true")
 public class EsSyncClientConfig {
 
+    private static final int CONNECT_TIMEOUT_MS = 10_000;
+    private static final int SOCKET_TIMEOUT_MS = 300_000;
+    private static final int CONNECTION_REQUEST_TIMEOUT_MS = 30_000;
+
     @Bean(destroyMethod = "close")
     public RestClient restClient(EsSyncProperties properties) {
         List<String> hosts = properties.getHosts();
@@ -32,8 +37,13 @@ public class EsSyncClientConfig {
         HttpHost[] httpHosts = hosts.stream().map(this::parseHost).toArray(HttpHost[]::new);
 
         String username = properties.getUsername();
+        RestClientBuilder builder = RestClient.builder(httpHosts)
+                .setRequestConfigCallback(requestConfigBuilder -> requestConfigBuilder
+                        .setConnectTimeout(CONNECT_TIMEOUT_MS)
+                        .setSocketTimeout(SOCKET_TIMEOUT_MS)
+                        .setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT_MS));
         if (username == null || username.trim().isEmpty()) {
-            return RestClient.builder(httpHosts).build();
+            return builder.build();
         }
 
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
@@ -41,7 +51,7 @@ public class EsSyncClientConfig {
                 AuthScope.ANY,
                 new UsernamePasswordCredentials(username, properties.getPassword())
         );
-        return RestClient.builder(httpHosts)
+        return builder
                 .setHttpClientConfigCallback(clientBuilder -> clientBuilder.setDefaultCredentialsProvider(credentialsProvider))
                 .build();
     }

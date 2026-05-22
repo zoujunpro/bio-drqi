@@ -57,6 +57,13 @@ public enum GenerationEnum {
     F15("F15", "F15"),
     F16("F16", "F16"),
     F17("F17", "F17"),
+    BC1("BC1", "BC1"),
+    BC2("BC2", "BC2"),
+    BC3("BC3", "BC3"),
+    BC4("BC4", "BC4"),
+    BC4F1("BC4F1", "BC4F1"),
+    BC4F2("BC4F2", "BC4F2"),
+    BC4F3("BC4F3", "BC4F3"),
     ;
     public String code;
     public String desc;

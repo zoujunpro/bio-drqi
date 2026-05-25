@@ -31,7 +31,7 @@ public class ProjectBioTaskSearchDocumentBuilder extends AbstractTaskSearchDocum
                 stringValue(row.get("task_num")),
                 join(row.get("task_type_name"), row.get("apply_user_name"), taskStatusName, row.get("task_desc")),
                 "/task/detail/",
-                display("任务类型", row.get("task_type_name"), "申请人", row.get("apply_user_name"), "状态", taskStatusName, "申请时间", row.get("apply_time")),
+                display("任务类型", row.get("task_type_name"),"任务描述", row.get("task_desc"),  "申请人", row.get("apply_user_name"), "状态", taskStatusName, "申请时间", row.get("apply_time")),
                 row.values(), taskStatusName, row.get("task_desc"), taskFormValues);
     }
 

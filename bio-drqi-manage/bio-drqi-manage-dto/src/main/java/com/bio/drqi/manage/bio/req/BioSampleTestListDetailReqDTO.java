@@ -28,10 +28,7 @@ public class BioSampleTestListDetailReqDTO extends PageDTO {
 
 
     private String cloneSampleCode;
-    /**
-     * 检测标识 Y
-     */
-    private String testFlag;
+
 
     private String checkResult;
 

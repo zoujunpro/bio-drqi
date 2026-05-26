@@ -13,6 +13,7 @@ public  class EsPageResult {
     private Object[] nextSearchAfter;
     private long total;
     private boolean hasNext;
+    private List<Map<String, Object>> hitTables = Collections.emptyList();
 
     public List<String> getIds() {
         return ids;
@@ -52,5 +53,13 @@ public  class EsPageResult {
 
     public void setHasNext(boolean hasNext) {
         this.hasNext = hasNext;
+    }
+
+    public List<Map<String, Object>> getHitTables() {
+        return hitTables;
+    }
+
+    public void setHitTables(List<Map<String, Object>> hitTables) {
+        this.hitTables = hitTables;
     }
 }

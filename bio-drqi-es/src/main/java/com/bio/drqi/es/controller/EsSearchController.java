@@ -20,6 +20,7 @@ public class EsSearchController {
 
     private static final int DEFAULT_PAGE_SIZE = 20;
     private static final int MAX_PAGE_SIZE = 100;
+    private static final int MAX_HIT_TABLE_SIZE = 100;
     private static final String GLOBAL_SEARCH_INDEX_SUFFIX = "_global_search";
 
     private final EsCommonService esCommonService;
@@ -43,10 +44,12 @@ public class EsSearchController {
      */
     @PostMapping("/listPage")
     public ResponseResult<EsPageResult> globalPage(@RequestBody @Validated GlobalSearchPageReqDTO reqDTO) {
+        String index = resolveIndex(reqDTO.getSystemCode());
+        Map<String, Object> pageQueryBody = buildQuery(reqDTO, true);
 
         EsCommonService.EsPageQuery pageQuery = new EsCommonService.EsPageQuery();
-        pageQuery.setIndex(resolveIndex(reqDTO.getSystemCode()));
-        pageQuery.setQuery(buildQuery(reqDTO));
+        pageQuery.setIndex(index);
+        pageQuery.setQuery(pageQueryBody);
         pageQuery.setSorts(buildSorts());
         pageQuery.setPageSize(resolvePageSize(reqDTO.getPageSize()));
         pageQuery.setSearchAfter(reqDTO.getSearchAfter());
@@ -62,10 +65,16 @@ public class EsSearchController {
                 "create_time"
         });
 
-        return ResponseResult.getSuccess(esCommonService.searchAfterPage(pageQuery));
+        EsPageResult result = esCommonService.searchAfterPage(pageQuery);
+        result.setHitTables(esCommonService.termsAgg(index, buildQuery(reqDTO, false), "table_name", MAX_HIT_TABLE_SIZE));
+        return ResponseResult.getSuccess(result);
     }
 
     private Map<String, Object> buildQuery(GlobalSearchPageReqDTO reqDTO) {
+        return buildQuery(reqDTO, true);
+    }
+
+    private Map<String, Object> buildQuery(GlobalSearchPageReqDTO reqDTO, boolean includeTableFilter) {
         Map<String, Object> matchValue = new LinkedHashMap<>();
         matchValue.put("query", reqDTO.getKeyword().trim());
         matchValue.put("operator", "and");
@@ -87,7 +96,7 @@ public class EsSearchController {
             filters.add(Collections.singletonMap("terms", terms));
         }
 
-        if (reqDTO.getTables() != null && !reqDTO.getTables().isEmpty()) {
+        if (includeTableFilter && reqDTO.getTables() != null && !reqDTO.getTables().isEmpty()) {
             Map<String, Object> terms = new LinkedHashMap<>();
             terms.put("table_name", normalizeList(reqDTO.getTables()));
             filters.add(Collections.singletonMap("terms", terms));

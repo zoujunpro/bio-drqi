@@ -310,6 +310,64 @@ public class EsCommonService {
         }
     }
 
+    /**
+     * 按 keyword 字段统计命中的分组值，用于全局搜索一次返回所有命中的业务表。
+     */
+    public List<Map<String, Object>> termsAgg(String index, Map<String, Object> query, String field, int size) {
+        if (index == null || index.trim().isEmpty()) {
+            throw new IllegalArgumentException("ES index 不能为空");
+        }
+        if (field == null || field.trim().isEmpty()) {
+            throw new IllegalArgumentException("ES 聚合字段不能为空");
+        }
+        try {
+            Map<String, Object> terms = new LinkedHashMap<>();
+            terms.put("field", field);
+            terms.put("size", size <= 0 ? 100 : size);
+
+            Map<String, Object> agg = new LinkedHashMap<>();
+            agg.put("terms", terms);
+
+            Map<String, Object> aggs = new LinkedHashMap<>();
+            aggs.put("hit_values", agg);
+
+            Map<String, Object> body = new LinkedHashMap<>();
+            body.put("query", query == null ? matchAllQuery() : query);
+            body.put("size", 0);
+            body.put("track_total_hits", false);
+            body.put("aggs", aggs);
+
+            Response response = restClient.performRequest(jsonRequest(
+                    "POST",
+                    "/" + encodePath(index) + "/_search",
+                    body
+            ));
+            Map<String, Object> resultBody = readMap(response.getEntity());
+            Map<String, Object> aggregations = (Map<String, Object>) resultBody.get("aggregations");
+            if (aggregations == null) {
+                return Collections.emptyList();
+            }
+            Map<String, Object> hitValues = (Map<String, Object>) aggregations.get("hit_values");
+            if (hitValues == null) {
+                return Collections.emptyList();
+            }
+            List<Map<String, Object>> buckets = (List<Map<String, Object>>) hitValues.get("buckets");
+            if (buckets == null || buckets.isEmpty()) {
+                return Collections.emptyList();
+            }
+            List<Map<String, Object>> result = new ArrayList<>(buckets.size());
+            for (Map<String, Object> bucket : buckets) {
+                Map<String, Object> item = new LinkedHashMap<>();
+                item.put("tableName", bucket.get("key"));
+                item.put("count", bucket.get("doc_count"));
+                result.add(item);
+            }
+            return result;
+        } catch (Exception e) {
+            throw new IllegalStateException("ES terms 聚合查询失败: " + index + ", field=" + field, e);
+        }
+    }
+
     private void validatePageQuery(EsPageQuery pageQuery) {
         if (pageQuery == null) {
             throw new IllegalArgumentException("ES 分页参数不能为空");

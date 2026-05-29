@@ -24,6 +24,8 @@ public interface BioSampleTestService {
 
     List<BioSampleTestQueryBySampleCodeListRspDTO> queryBySampleCodeList(BioSampleTestQueryBySampleCodeListReqDTO bioSampleTestQueryBySampleCodeListReqDTO);
 
+    BioSampleTestListDetailRspDTO queryLatestBySampleCode(String sampleCode);
+
     void downRepeatSampleTemplate(String cloneFlag,HttpServletResponse httpServletResponse);
 
     ;

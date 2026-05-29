@@ -169,6 +169,24 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         return result;
     }
 
+    @Override
+    public BioSampleTestListDetailRspDTO queryLatestBySampleCode(String sampleCode) {
+        BioSampleTestTb bioSampleTestTb = bioSampleTestTbMapper.selectOneBySampleCodeOrderByIdDesc(sampleCode);
+        if (bioSampleTestTb == null) {
+            throw new BusinessException("取样编号错误，系统查询不到：" + sampleCode);
+        }
+        BioSampleTestListDetailRspDTO result = BeanUtils.copyProperties(bioSampleTestTb, BioSampleTestListDetailRspDTO.class);
+        CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(result.getBreedCode());
+        if (cerBreedDict != null) {
+            result.setBreedName(cerBreedDict.getBreedName());
+        }
+        CerSpeciesConf cerSpeciesConf = cerSpeciesConfMapper.selectOneBySpeciesCode(result.getSpeciesCode());
+        if (cerSpeciesConf != null) {
+            result.setSpeciesName(cerSpeciesConf.getSpeciesName());
+        }
+        return result;
+    }
+
     private boolean checkTaskStatusIfRefuse(BioSampleTestListDetailReqDTO bioSampleTestListDetailReqDTO) {
         if (StringUtils.isNotEmpty(bioSampleTestListDetailReqDTO.getApplyNo())) {
             BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(bioSampleTestListDetailReqDTO.getApplyNo());

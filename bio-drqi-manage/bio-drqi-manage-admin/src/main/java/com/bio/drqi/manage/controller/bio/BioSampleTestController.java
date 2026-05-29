@@ -60,6 +60,18 @@ public class BioSampleTestController {
         return ResponseResult.getSuccess(bioSampleTestService.queryBySampleCodeList(bioSampleTestQueryBySampleCodeListReqDTO));
     }
 
+    /**
+     * 分子取样检测-根据取样编号查询最新一条取样信息
+     *
+     * @param sampleCode
+     * @return
+     */
+    @GetMapping("/queryLatestBySampleCode")
+    @WebLog(desc = "分子取样检测-根据取样编号查询最新一条取样信息")
+    public ResponseResult<BioSampleTestListDetailRspDTO> queryLatestBySampleCode(@RequestParam @Validated @NotBlank(message = "取样编号不能为空") String sampleCode) {
+        return ResponseResult.getSuccess(bioSampleTestService.queryLatestBySampleCode(sampleCode));
+    }
+
 
 
     /**

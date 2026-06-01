@@ -139,6 +139,96 @@ public class CleanTestController {
     private SeedQualityCheckConfigMapper seedQualityCheckConfigMapper;
 
 
+    @GetMapping("cleanPlasmidSpecificPrimers")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanPlasmidSpecificPrimers() {
+        CerVectorTb query = new CerVectorTb();
+        List<CerVectorTb> cerVectorTbList = cerVectorTbMapper.selectSelective(query);
+        if (CollectionUtil.isEmpty(cerVectorTbList)) {
+            return ResponseResult.getSuccess("无质粒数据需要清洗");
+        }
+
+        Map<String, List<CerVectorTb>> vectorMap = cerVectorTbList.stream()
+                .filter(cerVectorTb -> StringUtils.isEmpty(trimToNull(cerVectorTb.getPlasmidSpecificPrimers())))
+                .filter(cerVectorTb -> StringUtils.isNotEmpty(trimToNull(cerVectorTb.getTaskNum())))
+                .collect(Collectors.groupingBy(cerVectorTb -> trimToNull(cerVectorTb.getTaskNum())));
+        if (vectorMap.isEmpty()) {
+            return ResponseResult.getSuccess("无缺失质粒特异性引物的数据需要清洗");
+        }
+
+        int updateCount = 0;
+        int skipCount = 0;
+        int taskMissCount = 0;
+        int formErrorCount = 0;
+        for (Map.Entry<String, List<CerVectorTb>> entry : vectorMap.entrySet()) {
+            String taskNum = entry.getKey();
+            BioTaskDtlTb bioTaskDtlTb = bioTaskDtlTbMapper.selectOneByTaskNum(taskNum);
+            if (bioTaskDtlTb == null || StringUtils.isEmpty(trimToNull(bioTaskDtlTb.getTaskForm()))) {
+                taskMissCount += entry.getValue().size();
+                log.warn("cleanPlasmidSpecificPrimers#任务或任务表单不存在，taskNum={}", taskNum);
+                continue;
+            }
+
+            VectorTaskAddDTO vectorTaskAddDTO;
+            try {
+                vectorTaskAddDTO = JSONUtil.toBean(bioTaskDtlTb.getTaskForm(), VectorTaskAddDTO.class);
+            } catch (Exception e) {
+                formErrorCount += entry.getValue().size();
+                log.warn("cleanPlasmidSpecificPrimers#任务表单解析失败，taskNum={}", taskNum, e);
+                continue;
+            }
+
+            List<VectorTaskAddDTO.Vector> vectorList = vectorTaskAddDTO.getVectorList();
+            if (CollectionUtil.isEmpty(vectorList)) {
+                skipCount += entry.getValue().size();
+                log.warn("cleanPlasmidSpecificPrimers#任务表单缺少vectorList，taskNum={}", taskNum);
+                continue;
+            }
+
+            Map<String, String> primerMap = vectorList.stream()
+                    .filter(vector -> StringUtils.isNotEmpty(trimToNull(vector.getPlasmidName())))
+                    .filter(vector -> StringUtils.isNotEmpty(trimToNull(vector.getPlasmidSpecificPrimers())))
+                    .collect(Collectors.toMap(
+                            vector -> normalizePlasmidName(vector.getPlasmidName()),
+                            vector -> trimToNull(vector.getPlasmidSpecificPrimers()),
+                            (left, right) -> left
+                    ));
+            String singlePrimer = primerMap.size() == 1 ? primerMap.values().iterator().next() : null;
+
+            for (CerVectorTb cerVectorTb : entry.getValue()) {
+                String primer = primerMap.get(normalizePlasmidName(cerVectorTb.getPlasmidName()));
+                if (StringUtils.isEmpty(primer) && entry.getValue().size() == 1) {
+                    primer = singlePrimer;
+                }
+                if (StringUtils.isEmpty(primer)) {
+                    skipCount++;
+                    log.warn("cleanPlasmidSpecificPrimers#未匹配到质粒特异性引物，taskNum={}，plasmidName={}", taskNum, cerVectorTb.getPlasmidName());
+                    continue;
+                }
+
+                CerVectorTb update = new CerVectorTb();
+                update.setId(cerVectorTb.getId());
+                update.setPlasmidSpecificPrimers(primer);
+                cerVectorTbMapper.updateById(update);
+                updateCount++;
+            }
+        }
+        return ResponseResult.getSuccess("清洗完成，更新：" + updateCount + "，跳过：" + skipCount + "，任务缺失：" + taskMissCount + "，表单异常：" + formErrorCount);
+    }
+
+    private String normalizePlasmidName(String plasmidName) {
+        String value = trimToNull(plasmidName);
+        return value == null ? null : value.replaceAll("\\s+", "").toUpperCase();
+    }
+
+    private String trimToNull(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimValue = value.trim();
+        return trimValue.length() == 0 ? null : trimValue;
+    }
+
     @GetMapping("cleanSeedQualityCheckResult20260430")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanSeedQualityCheckResult20260430() {

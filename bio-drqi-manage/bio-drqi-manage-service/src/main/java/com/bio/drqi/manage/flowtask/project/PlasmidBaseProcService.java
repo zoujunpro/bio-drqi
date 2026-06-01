@@ -119,7 +119,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
                 cerPlasmidQualityTb.setMakingDate(content.getMakingDate());
                 cerPlasmidQualityTbMapper.insert(cerPlasmidQualityTb);
             }
-            pushAgrobacteriumToTJDB(plasmidDTO.getContentList());
+            pushAgrobacteriumToTJDB(plasmidDTO.getContentList(),plasmidDTO.getUpdateFlag());
 
         }
     }
@@ -193,7 +193,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         return String.join("、", nameList);
     }
 
-    private void pushAgrobacteriumToTJDB(List<PlasmidDTO.Content> contentList) {
+    private void pushAgrobacteriumToTJDB(List<PlasmidDTO.Content> contentList,String updateFlag) {
         List<PlasmidDTO.Content> agrobacteriumList = contentList.stream()
                 .filter(item -> isAgrobacteriumArrange(item.getQualityInspectionType()))
                 .collect(Collectors.toList());
@@ -220,6 +220,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         list.add(request);
         map.put("jobNum", SecurityContextHolder.getJobNum());
         map.put("nickname", SecurityContextHolder.getNickName());
+        map.put("update_flag",updateFlag);
         map.put("AgrobacteriumList", list);
         String requestBody = JSONUtil.toJsonStr(map);
         log.info("【农杆菌信息储存】调用接口开始，url={}, request={}", url, requestBody);

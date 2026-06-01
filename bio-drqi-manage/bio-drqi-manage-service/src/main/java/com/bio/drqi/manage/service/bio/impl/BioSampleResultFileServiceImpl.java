@@ -198,7 +198,7 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
                 bioSampleTestTbList = bioSampleTestTbList.stream().sorted(Comparator.comparing(BioSampleTestTb::getId).reversed()).collect(Collectors.toList());
                 //第一个取样一定更新
                 BioSampleTestTb firstBioSampleTestTb = bioSampleTestTbList.get(0);
-                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(firstBioSampleTestTb.getId()).sampleCode(firstBioSampleTestTb.getSampleCode()).applyNo(firstBioSampleTestTb.getApplyNo()).testResult(TestResultEnum.haveResult.name()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
+                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(firstBioSampleTestTb.getId()).sampleCode(firstBioSampleTestTb.getSampleCode()).applyNo(firstBioSampleTestTb.getApplyNo()).testResult(TestResultEnum.haveResult.name()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).testTime(DateUtil.format(new Date(),DatePattern.NORM_DATETIME_PATTERN)).build());
 
                 bioSampleTwoResultTbList.add(buildBioSampleSampleTwoResultTb(sampleTestBioInfoExcelDTO, firstBioSampleTestTb, bioSampleTestResultFileTb.getUploadNum()));
                 //剩下的，如果没有上传过结果，则补更新结果
@@ -206,7 +206,7 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
                     BioSampleTestTb bioSampleTestTb = bioSampleTestTbList.get(i);
                     if (bioSampleTestTb.getTestUserId() == null) {
                         bioSampleTwoResultTbList.add(buildBioSampleSampleTwoResultTb(sampleTestBioInfoExcelDTO, bioSampleTestTb, bioSampleTestResultFileTb.getUploadNum()));
-                        updateBioSampleTestTbList.add(BioSampleTestTb.builder().applyNo(bioSampleTestTb.getApplyNo()).sampleCode(bioSampleTestTb.getSampleCode()).id(bioSampleTestTb.getId()).testResult(TestResultEnum.haveResult.name()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getUserName()).build());
+                        updateBioSampleTestTbList.add(BioSampleTestTb.builder().applyNo(bioSampleTestTb.getApplyNo()).sampleCode(bioSampleTestTb.getSampleCode()).id(bioSampleTestTb.getId()).testResult(TestResultEnum.haveResult.name()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getUserName()).testTime(DateUtil.format(new Date(),"yyyy-MM-dd")).build());
 
                     }
                 }
@@ -276,7 +276,7 @@ public class BioSampleResultFileServiceImpl implements BioSampleResultFileServic
         updateBioSampleTestTb.setTestEditResidueInfo(testExcelDTO.getEditResidueInfo());
         updateBioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
         updateBioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
-        updateBioSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
+        updateBioSampleTestTb.setTestTime(DateUtil.format(new Date(),DatePattern.NORM_DATETIME_PATTERN));
         updateBioSampleTestTb.setTestResult(TestResultEnum.haveResult.name());
         updateBioSampleTestTb.setUpdateTime(new Date());
         return updateBioSampleTestTb;

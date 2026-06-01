@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.service.bio.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
@@ -281,7 +282,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
             if (updateBioSampleTestTb.ifHaveTestResult()) {
                 updateBioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
                 updateBioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
-                updateBioSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
+                updateBioSampleTestTb.setTestTime(DateUtil.format(new Date(),DatePattern.NORM_DATETIME_PATTERN));
                 updateBioSampleTestTb.setTestResult(TestResultEnum.haveResult.name());
             }
             updateList.add(updateBioSampleTestTb);
@@ -536,7 +537,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
         if (bioSampleTestTb.getTestUserId() == null && BioDrQiContents.Y.equals(bioSampleSampleTwoResultTbList.get(0).getSynResult())) {
             bioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
             bioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
-            bioSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
+            bioSampleTestTb.setTestTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
             bioSampleTestTbMapper.updateById(bioSampleTestTb);
         }
 
@@ -600,7 +601,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
                 bioSampleSampleTwoResultTb.setSynResult(BioDrQiContents.O);
             } else {
                 //更新检测人（检测标志）
-                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(bioSampleTestTb.getId()).sampleCode(sampleTestBioInfoExcelDTO.getSampleCode()).applyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo()).testTime(DateUtil.formatDate(new Date())).testResult(TestResultEnum.haveResult.name()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
+                updateBioSampleTestTbList.add(BioSampleTestTb.builder().id(bioSampleTestTb.getId()).sampleCode(sampleTestBioInfoExcelDTO.getSampleCode()).applyNo(uploadBioInfoSampleTestResultReqDTO.getApplyNo()).testTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN)).testResult(TestResultEnum.haveResult.name()).testUserId(SecurityContextHolder.getUserId()).testUserName(SecurityContextHolder.getNickName()).build());
             }
             bioSampleSampleTwoResultTbList.add(bioSampleSampleTwoResultTb);
         }
@@ -708,6 +709,7 @@ public class BioSampleTestServiceImpl implements BioSampleTestService {
             bioSampleTestTb.setCheckResult(content.getCheckResult());
             bioSampleTestTb.setCheckUserName(SecurityContextHolder.getNickName());
             bioSampleTestTb.setCheckUserId(SecurityContextHolder.getUserId());
+            bioSampleTestTb.setCheckTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
             bioSampleTestTb.setUpdateTime(new Date());
             bioSampleTestTbMapper.updateById(bioSampleTestTb);
         }

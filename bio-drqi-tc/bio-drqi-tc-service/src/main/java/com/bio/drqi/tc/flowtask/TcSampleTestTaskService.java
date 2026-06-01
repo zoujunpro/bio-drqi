@@ -1,6 +1,8 @@
 package com.bio.drqi.tc.flowtask;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
@@ -222,7 +224,8 @@ public class TcSampleTestTaskService extends AbstractTcBaseTaskService {
     public void executeTask(BioTaskDtlTb bioTaskDtlTb) {
         if (BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus())) {
             BioSampleApplyTb bioSampleApplyTb = bioSampleApplyTbMapper.selectOneByApplyNo(bioTaskDtlTb.getTaskNum());
-            bioSampleTestTbMapper.updateNoCheckDataByApplyNoAndCheckResult(CheckResultEnum.remove.name(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), TestResultEnum.noResult.name(), bioSampleApplyTb.getApplyNo(), CheckResultEnum.noCheck.name());
+            String currentTime = DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN);
+            bioSampleTestTbMapper.updateNoCheckDataByApplyNoAndCheckResult(CheckResultEnum.remove.name(), SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), currentTime, SecurityContextHolder.getUserId(), SecurityContextHolder.getNickName(), currentTime, TestResultEnum.noResult.name(), bioSampleApplyTb.getApplyNo(), CheckResultEnum.noCheck.name());
         }
 
     }

@@ -97,7 +97,7 @@ public class BioSampleTwoResultServiceImpl implements BioSampleTwoResultService 
         if(bioSampleTestTb.getTestUserId()==null&&BioDrQiContents.Y.equals(bioSampleTestTwoResultTb.getSynResult())){
             bioSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
             bioSampleTestTb.setTestUserName(SecurityContextHolder.getNickName());
-            bioSampleTestTb.setTestTime(DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN));
+            bioSampleTestTb.setTestTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
             bioSampleTestTbMapper.updateById(bioSampleTestTb);
         }
 
@@ -131,7 +131,7 @@ public class BioSampleTwoResultServiceImpl implements BioSampleTwoResultService 
                     if (bioSampleTestTb == null) {
                         throw new BusinessException("齐博士数据异常，请联系相关人员，错误原因，找不到申请工单下" + applyNo + "的取样编号" + sampleCode);
                     }
-                    bioSampleTestTbMapper.updateTestUserIdAndTestUserNameById(null, null, bioSampleTestTb.getId());
+                    bioSampleTestTbMapper.updateTestUserIdAndTestUserNameById(null, null, null, bioSampleTestTb.getId());
                 }
 
             });

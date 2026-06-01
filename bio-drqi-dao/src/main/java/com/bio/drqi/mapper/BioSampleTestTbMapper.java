@@ -29,7 +29,7 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
     List<BioSampleTestTb> selectAllByIdGreaterThanOrderByIdAscLimit(@Param("id") Integer id, @Param("limit") Integer limit);
 
-    int updateNoCheckDataByApplyNoAndCheckResult(@Param("checkResult") String checkResult, @Param("checkUserId") Integer checkUserId, @Param("checkUserName") String checkUserName, @Param("testUserId") Integer testUserId, @Param("testUserName") String testUserName, @Param("testResult") String testResult, @Param("applyNo") String applyNo, @Param("oldCheckResult") String oldCheckResult);
+    int updateNoCheckDataByApplyNoAndCheckResult(@Param("checkResult") String checkResult, @Param("checkUserId") Integer checkUserId, @Param("checkUserName") String checkUserName, @Param("checkTime") String checkTime, @Param("testUserId") Integer testUserId, @Param("testUserName") String testUserName, @Param("testTime") String testTime, @Param("testResult") String testResult, @Param("applyNo") String applyNo, @Param("oldCheckResult") String oldCheckResult);
     List<BioSampleTestTb> selectAllByApplyNo(@Param("applyNo") String applyNo);
 
     List<BioSampleTestTb> selectAllBySampleCodeIn(@Param("sampleCodeList") Collection<String> sampleCodeList);
@@ -69,7 +69,7 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
     BioSampleTestTb selectOneByVectorTaskCodeAndSampleCodeFirst(@Param("vectorTaskCode") String vectorTaskCode, @Param("sampleCode") String sampleCode);
 
-    int updateTestUserIdAndTestUserNameById(@Param("testUserId") Integer testUserId, @Param("testUserName") String testUserName, @Param("id") Integer id);
+    int updateTestUserIdAndTestUserNameById(@Param("testUserId") Integer testUserId, @Param("testUserName") String testUserName, @Param("testTime") String testTime, @Param("id") Integer id);
 
     List<BioSampleTestTb> selectAllByTransformCodeAndVectorTaskCode(@Param("transformCode") String transformCode, @Param("vectorTaskCode") String vectorTaskCode);
 
@@ -79,6 +79,3 @@ public interface BioSampleTestTbMapper extends BaseMapper<BioSampleTestTb> {
 
     List<BioSampleTestTb> selectAllByApplyNoAndSeedNumAndRegionNumAndCheckResult(@Param("applyNo") String applyNo, @Param("seedNum") String seedNum, @Param("regionNum") String regionNum, @Param("checkResult") String checkResult);
 }
-
-
-

@@ -1,6 +1,7 @@
 package com.bio.drqi.tc.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
@@ -204,7 +205,7 @@ public class TcSampleTestServiceImpl implements TcSampleTestService {
             updateCerSampleTestTb.setTestEditResidueInfo(tcTestExcelDTO.getEditResidueInfo());
             updateCerSampleTestTb.setTestUserId(SecurityContextHolder.getUserId());
             updateCerSampleTestTb.setTestUserName(SecurityContextHolder.getUserName());
-            updateCerSampleTestTb.setTestTime(DateUtil.formatDate(new Date()));
+            updateCerSampleTestTb.setTestTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
             updateList.add(updateCerSampleTestTb);
         }
 

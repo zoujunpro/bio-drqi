@@ -33,6 +33,7 @@
         <result property="checkUserName" column="check_user_name" jdbcType="VARCHAR"/>
         <result property="checkUserId" column="check_user_id" jdbcType="INTEGER"/>
         <result property="checkResult" column="check_result" jdbcType="VARCHAR"/>
+        <result property="checkTime" column="check_time" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
@@ -59,7 +60,7 @@
         test_insertion_site,test_elisa_result,test_qbzr_seq,
         test_edit_residue_info,test_user_id,test_user_name,
         test_time,check_user_name,check_user_id,
-        check_result,create_time,update_time,apply_no,identify_primer,
+        check_result,check_time,create_time,update_time,apply_no,identify_primer,
         unique_code,remark,clone_sample_code,
         source_code,test_org_result,experiment_num,region_num,seed_num,transform_code,test_result,tc_sample_code
     </sql>
@@ -101,7 +102,7 @@
         test_insertion_site,test_elisa_result,test_qbzr_seq,
         test_edit_residue_info,test_user_id,test_user_name,
         test_time,check_user_name,check_user_id,
-        check_result,create_time,update_time,
+        check_result,check_time,create_time,update_time,
         apply_no,identify_primer,unique_code,
         remark,clone_sample_code,source_code,
         test_org_result,generation,species_code,
@@ -117,7 +118,7 @@
             #{item.testInsertionSite,jdbcType=VARCHAR},#{item.testElisaResult,jdbcType=VARCHAR},#{item.testQbzrSeq,jdbcType=VARCHAR},
             #{item.testEditResidueInfo,jdbcType=VARCHAR},#{item.testUserId,jdbcType=NUMERIC},#{item.testUserName,jdbcType=VARCHAR},
             #{item.testTime,jdbcType=VARCHAR},#{item.checkUserName,jdbcType=VARCHAR},#{item.checkUserId,jdbcType=NUMERIC},
-            #{item.checkResult,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP},
+            #{item.checkResult,jdbcType=VARCHAR},#{item.checkTime,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP},
             #{item.applyNo,jdbcType=VARCHAR},#{item.identifyPrimer,jdbcType=VARCHAR},#{item.uniqueCode,jdbcType=VARCHAR},
             #{item.remark,jdbcType=VARCHAR},#{item.cloneSampleCode,jdbcType=VARCHAR},#{item.sourceCode,jdbcType=VARCHAR},
             #{item.testOrgResult,jdbcType=VARCHAR},#{item.generation,jdbcType=VARCHAR},#{item.speciesCode,jdbcType=VARCHAR},
@@ -183,6 +184,7 @@
                 <if test="item.checkUserName != null">check_user_name=#{item.checkUserName,jdbcType=VARCHAR},</if>
                 <if test="item.checkUserId != null">check_user_id=#{item.checkUserId,jdbcType=NUMERIC},</if>
                 <if test="item.checkResult != null">check_result=#{item.checkResult,jdbcType=VARCHAR},</if>
+                <if test="item.checkTime != null">check_time=#{item.checkTime,jdbcType=VARCHAR},</if>
                 <if test="item.createTime != null">create_time=#{item.createTime,jdbcType=TIMESTAMP},</if>
                 <if test="item.updateTime != null">update_time=#{item.updateTime,jdbcType=TIMESTAMP},</if>
                 <if test="item.applyNo != null">apply_no=#{item.applyNo,jdbcType=VARCHAR},</if>
@@ -308,6 +310,7 @@
             <if test="checkUserName != null">and check_user_name=#{checkUserName,jdbcType=VARCHAR}</if>
             <if test="checkUserId != null">and check_user_id=#{checkUserId,jdbcType=NUMERIC}</if>
             <if test="checkResult != null">and check_result=#{checkResult,jdbcType=VARCHAR}</if>
+            <if test="checkTime != null">and check_time=#{checkTime,jdbcType=VARCHAR}</if>
             <if test="createTime != null">and create_time=#{createTime,jdbcType=TIMESTAMP}</if>
             <if test="updateTime != null">and update_time=#{updateTime,jdbcType=TIMESTAMP}</if>
             <if test="applyNo != null and applyNo!=''">and apply_no=#{applyNo,jdbcType=VARCHAR}</if>
@@ -347,7 +350,8 @@
     <update id="updateTestUserIdAndTestUserNameById">
         update bio_sample_test_tb
         set test_user_id   = #{testUserId,jdbcType=NUMERIC},
-            test_user_name = #{testUserName,jdbcType=VARCHAR}
+            test_user_name = #{testUserName,jdbcType=VARCHAR},
+            test_time      = #{testTime,jdbcType=VARCHAR}
         where id = #{id,jdbcType=NUMERIC}
     </update>
     <select id="selectAllBySampleCode" resultMap="BaseResultMap">
@@ -363,8 +367,10 @@
         set check_result    = #{checkResult,jdbcType=VARCHAR},
             check_user_id   = #{checkUserId,jdbcType=NUMERIC},
             check_user_name = #{checkUserName,jdbcType=VARCHAR},
+            check_time      = #{checkTime,jdbcType=VARCHAR},
             test_user_id    = #{testUserId,jdbcType=NUMERIC},
             test_user_name  = #{testUserName,jdbcType=VARCHAR},
+            test_time       = #{testTime,jdbcType=VARCHAR},
             test_result  = #{testResult,jdbcType=VARCHAR}
         where apply_no = #{applyNo,jdbcType=VARCHAR}
           AND check_result = #{oldCheckResult,jdbcType=VARCHAR}

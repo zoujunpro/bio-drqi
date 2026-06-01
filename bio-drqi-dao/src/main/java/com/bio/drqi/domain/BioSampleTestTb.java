@@ -154,6 +154,11 @@ public class BioSampleTestTb implements Serializable {
     private String checkResult;
 
     /**
+     * 审核时间
+     */
+    private String checkTime;
+
+    /**
      * 创建日期
      */
     private Date createTime;

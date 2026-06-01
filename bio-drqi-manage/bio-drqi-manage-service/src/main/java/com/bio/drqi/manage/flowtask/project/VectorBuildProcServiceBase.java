@@ -148,6 +148,7 @@ public class VectorBuildProcServiceBase extends AbstractProjectBaseTaskService {
             cerVectorTb.setBacterialReplicon(vector.getBacterialReplicon());
             cerVectorTb.setCopyNumber(vector.getCopyNumber());
             cerVectorTb.setAgrobacteriumInformation(vector.getAgrobacteriumInformation());
+            cerVectorTb.setPlasmidSpecificPrimers(vector.getPlasmidSpecificPrimers());
             cerVectorTb.setSelectionMarker(vector.getSelectionMarker());
             cerVectorTb.setGeneCharacter(vector.getGeneCharacter());
             cerVectorTb.setFileUrls(JSONUtil.toJsonStr(vector.getFileUrls()));

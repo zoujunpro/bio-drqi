@@ -21,5 +21,6 @@ public enum PrintTypeEnum {
     sample_label_large_tc_print,
     plant_apply_label_print,
     tc_experiment_label_print,
-    agrobacterium_label_print
+    agrobacterium_label_print,
+    agrobacterium_label_tianjin_print
 }

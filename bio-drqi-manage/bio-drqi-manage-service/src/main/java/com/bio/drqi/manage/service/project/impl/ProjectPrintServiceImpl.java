@@ -397,7 +397,7 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         agrobacteriumDTO.setPlasmidName(bioAgrobacteriumPrintReqDTO.getPlasmidNames().get(0));
         agrobacteriumDTO.setMakingDate(bioAgrobacteriumPrintReqDTO.getMakingDate());
         agrobacteriumDTO.setPlasmidIdShort(bioAgrobacteriumPrintReqDTO.getPlasmidNames().size()==1?bioAgrobacteriumPrintReqDTO.getPlasmidNames().get(0):bioAgrobacteriumPrintReqDTO.getPlasmidNames().get(0)+"+");
-        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.agrobacterium_label_print.name(), Arrays.asList(agrobacteriumDTO))));
+        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.agrobacterium_label_tianjin_print.name(), Arrays.asList(agrobacteriumDTO))));
         return printRspDTOList;
     }
 

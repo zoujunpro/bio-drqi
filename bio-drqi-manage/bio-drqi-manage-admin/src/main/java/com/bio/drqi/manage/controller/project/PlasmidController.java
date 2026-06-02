@@ -72,7 +72,7 @@ public class PlasmidController {
      */
     @GetMapping("/getAgrobacteriumDetail")
     @WebLog(desc = "农杆菌信息查询")
-    public ResponseResult<Object> getAgrobacteriumDetail(@RequestParam("TJ_agro_location") @Validated @NotBlank(message = "参数缺失:TJ_agro_location") String tjAgroLocation) {
+    public ResponseResult<Object> getAgrobacteriumDetail(@RequestParam @Validated @NotBlank(message = "参数缺失:冰箱位置") String tjAgroLocation) {
         return ResponseResult.getSuccess(commonService.getAgrobacteriumDetail(tjAgroLocation));
     }
 

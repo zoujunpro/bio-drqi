@@ -110,6 +110,20 @@ public class CommonService {
         return JSONUtil.toBean(ss, Map.class);
     }
 
+    public Object getAgrobacteriumDetail(String tjAgroLocation) {
+        String url = "http://172.16.14.2:10091/Search_Agrobacterium_detail";
+        log.info("【农杆菌信息查询】调用接口开始，url={}, TJ_agro_location={}", url, tjAgroLocation);
+        HttpResponse response = HttpUtil.createGet(url)
+                .form("TJ_agro_location", tjAgroLocation)
+                .execute();
+        String body = response.body();
+        log.info("【农杆菌信息查询】调用接口结束，status={}, response={}", response.getStatus(), body);
+        if (!response.isOk()) {
+            throw new BusinessException("农杆菌信息查询失败：接口返回HTTP状态码" + response.getStatus());
+        }
+        return JSONUtil.toBean(body, Map.class);
+    }
+
 
     public void notice(CommonNoticeReqDTO commonNoticeReqDTO) {
         String[] usernames = commonNoticeReqDTO.getUsernames().split(",");

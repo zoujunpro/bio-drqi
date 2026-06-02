@@ -7,6 +7,7 @@ import com.bio.drqi.manage.plasmid.rsp.QueryPagePlasmidRspDTO;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.manage.service.common.CommonService;
 import com.bio.drqi.manage.service.project.PlasmidService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
 
 /**
  * 质粒质检
@@ -24,6 +26,9 @@ public class PlasmidController {
 
     @Resource
     private PlasmidService plasmidService;
+
+    @Resource
+    private CommonService commonService;
 
 
 
@@ -57,6 +62,18 @@ public class PlasmidController {
     @WebLog(desc = "质粒质检-质粒质检模板下载")
     public void downPlasmidCheckTemplate(@RequestParam @Validated String vectorTaskCode, HttpServletResponse response) {
         plasmidService.downPlasmidCheckTemplate(vectorTaskCode, response);
+    }
+
+    /**
+     * 农杆菌信息查询
+     *
+     * @param tjAgroLocation
+     * @return
+     */
+    @GetMapping("/getAgrobacteriumDetail")
+    @WebLog(desc = "农杆菌信息查询")
+    public ResponseResult<Object> getAgrobacteriumDetail(@RequestParam("TJ_agro_location") @Validated @NotBlank(message = "参数缺失:TJ_agro_location") String tjAgroLocation) {
+        return ResponseResult.getSuccess(commonService.getAgrobacteriumDetail(tjAgroLocation));
     }
 
 }

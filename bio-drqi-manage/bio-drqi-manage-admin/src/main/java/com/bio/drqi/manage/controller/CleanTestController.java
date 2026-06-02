@@ -123,6 +123,9 @@ public class CleanTestController {
     private BioSampleApplyTbMapper bioSampleApplyTbMapper;
 
     @Resource
+    private BioSampleTestOneResultTbMapper bioSampleTestOneResultTbMapper;
+
+    @Resource
     private BioSampleTestTwoResultTbMapper bioSampleTestTwoResultTbMapper;
 
     @Resource
@@ -137,6 +140,253 @@ public class CleanTestController {
 
     @Resource
     private SeedQualityCheckConfigMapper seedQualityCheckConfigMapper;
+
+    @GetMapping("cleanSeedStockProjectInfo")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanSeedStockProjectInfo() {
+        long start = System.currentTimeMillis();
+        log.info("cleanSeedStockProjectInfo#开始清洗seed_stock_tb项目字段");
+        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectList(null).stream()
+                .filter(seedStockTb -> StringUtils.isNotEmpty(seedStockTb.getVectorTaskCode()))
+                .collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(seedStockTbList)) {
+            return ResponseResult.getSuccess("无实施方案编号不为空的种子库数据需要清洗");
+        }
+
+        Map<String, CerVectorTaskTb> vectorTaskMap = cerVectorTaskTbMapper.selectList(null).stream()
+                .filter(cerVectorTaskTb -> StringUtils.isNotEmpty(cerVectorTaskTb.getVectorTaskCode()))
+                .collect(Collectors.toMap(CerVectorTaskTb::getVectorTaskCode, cerVectorTaskTb -> cerVectorTaskTb, (left, right) -> left));
+        Map<String, CerProjectTb> projectMap = cerProjectTbMapper.selectList(null).stream()
+                .filter(cerProjectTb -> StringUtils.isNotEmpty(cerProjectTb.getProjectCode()))
+                .collect(Collectors.toMap(CerProjectTb::getProjectCode, cerProjectTb -> cerProjectTb, (left, right) -> left));
+
+        int updateCount = 0;
+        int vectorTaskMissCount = 0;
+        int projectMissCount = 0;
+        int noChangeCount = 0;
+        int total = seedStockTbList.size();
+        log.info("cleanSeedStockProjectInfo#数据加载完成，种子数={}，实施方案数={}，项目数={}", total, vectorTaskMap.size(), projectMap.size());
+        for (int i = 0; i < total; i++) {
+            SeedStockTb seedStockTb = seedStockTbList.get(i);
+            CerVectorTaskTb cerVectorTaskTb = vectorTaskMap.get(seedStockTb.getVectorTaskCode());
+            if (cerVectorTaskTb == null || StringUtils.isEmpty(cerVectorTaskTb.getProjectCode())) {
+                vectorTaskMissCount++;
+                continue;
+            }
+            CerProjectTb cerProjectTb = projectMap.get(cerVectorTaskTb.getProjectCode());
+            if (cerProjectTb == null) {
+                projectMissCount++;
+                continue;
+            }
+            String projectCode = cerProjectTb.getProjectCode();
+            String projectName = cerProjectTb.getProjectName();
+            if (Objects.equals(projectCode, seedStockTb.getProjectCode()) && Objects.equals(projectName, seedStockTb.getTargetCharacter())) {
+                noChangeCount++;
+                continue;
+            }
+
+            SeedStockTb updateSeedStockTb = new SeedStockTb();
+            updateSeedStockTb.setId(seedStockTb.getId());
+            updateSeedStockTb.setProjectCode(projectCode);
+            updateSeedStockTb.setTargetCharacter(projectName);
+            updateSeedStockTb.setUpdateTime(new Date());
+            seedStockTbMapper.updateById(updateSeedStockTb);
+            updateCount++;
+
+            if ((i + 1) % 500 == 0 || i + 1 == total) {
+                log.info("cleanSeedStockProjectInfo#清洗进度 {}/{}，更新={}，实施方案缺失={}，项目缺失={}，无需更新={}",
+                        i + 1, total, updateCount, vectorTaskMissCount, projectMissCount, noChangeCount);
+            }
+        }
+
+        log.info("cleanSeedStockProjectInfo#清洗完成，耗时={}ms，更新={}，实施方案缺失={}，项目缺失={}，无需更新={}",
+                System.currentTimeMillis() - start, updateCount, vectorTaskMissCount, projectMissCount, noChangeCount);
+        return ResponseResult.getSuccess("清洗完成，更新：" + updateCount
+                + "，实施方案缺失：" + vectorTaskMissCount
+                + "，项目缺失：" + projectMissCount
+                + "，无需更新：" + noChangeCount);
+    }
+
+    @GetMapping("cleanBioSampleTestTime")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanBioSampleTestTime() {
+        long start = System.currentTimeMillis();
+        log.info("cleanBioSampleTestTime#开始清洗bio_sample_test_tb时间字段");
+        List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectList(null);
+        if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
+            return ResponseResult.getSuccess("无取样检测数据需要清洗");
+        }
+
+        log.info("cleanBioSampleTestTime#取样检测数据加载完成，数量={}", bioSampleTestTbList.size());
+        Map<String, BioTaskDtlTb> taskMap = bioTaskDtlTbMapper.selectList(null).stream()
+                .filter(bioTaskDtlTb -> StringUtils.isNotEmpty(bioTaskDtlTb.getTaskNum()))
+                .collect(Collectors.toMap(BioTaskDtlTb::getTaskNum, bioTaskDtlTb -> bioTaskDtlTb, (left, right) -> left));
+        Map<String, BioSampleApplyTb> sampleApplyMap = bioSampleApplyTbMapper.selectList(null).stream()
+                .filter(bioSampleApplyTb -> StringUtils.isNotEmpty(bioSampleApplyTb.getApplyNo()))
+                .collect(Collectors.toMap(BioSampleApplyTb::getApplyNo, bioSampleApplyTb -> bioSampleApplyTb, (left, right) -> left));
+        List<BioSampleTestOneResultTb> oneResultList = bioSampleTestOneResultTbMapper.selectList(null);
+        Map<String, List<BioSampleTestOneResultTb>> oneResultApplySampleMap = oneResultList.stream()
+                .filter(oneResult -> StringUtils.isNotEmpty(oneResult.getTaskNum()) && StringUtils.isNotEmpty(oneResult.getSampleCode()))
+                .collect(Collectors.groupingBy(oneResult -> sampleTimeKey(oneResult.getTaskNum(), oneResult.getSampleCode())));
+        Map<String, List<BioSampleTestOneResultTb>> oneResultSampleMap = oneResultList.stream()
+                .filter(oneResult -> StringUtils.isNotEmpty(oneResult.getSampleCode()))
+                .collect(Collectors.groupingBy(BioSampleTestOneResultTb::getSampleCode));
+        oneResultApplySampleMap.values().forEach(this::sortOneResultDesc);
+        oneResultSampleMap.values().forEach(this::sortOneResultDesc);
+
+        List<BioSampleTestTwoResultTb> twoResultList = bioSampleTestTwoResultTbMapper.selectList(null);
+        Map<String, List<BioSampleTestTwoResultTb>> twoResultApplySampleMap = twoResultList.stream()
+                .filter(twoResult -> StringUtils.isNotEmpty(twoResult.getApplyNo()) && StringUtils.isNotEmpty(twoResult.getSampleCode()))
+                .collect(Collectors.groupingBy(twoResult -> sampleTimeKey(twoResult.getApplyNo(), twoResult.getSampleCode())));
+        Map<String, List<BioSampleTestTwoResultTb>> twoResultSampleMap = twoResultList.stream()
+                .filter(twoResult -> StringUtils.isNotEmpty(twoResult.getSampleCode()))
+                .collect(Collectors.groupingBy(BioSampleTestTwoResultTb::getSampleCode));
+        twoResultApplySampleMap.values().forEach(this::sortTwoResultDesc);
+        twoResultSampleMap.values().forEach(this::sortTwoResultDesc);
+        log.info("cleanBioSampleTestTime#关联数据加载完成，工单数={}，申请数={}，一代结果数={}，二代结果数={}",
+                taskMap.size(), sampleApplyMap.size(), oneResultList.size(), twoResultList.size());
+
+        int updateCount = 0;
+        int testTimeByOneCount = 0;
+        int testTimeByTwoCount = 0;
+        int testTimeByCreateCount = 0;
+        int checkTimeCount = 0;
+        int noTestTimeUnfinishedCount = 0;
+        int skipCount = 0;
+        int total = bioSampleTestTbList.size();
+        for (int i = 0; i < total; i++) {
+            BioSampleTestTb bioSampleTestTb = bioSampleTestTbList.get(i);
+            if (StringUtils.isEmpty(bioSampleTestTb.getApplyNo())) {
+                skipCount++;
+                continue;
+            }
+
+            BioTaskDtlTb bioTaskDtlTb = taskMap.get(bioSampleTestTb.getApplyNo());
+            BioSampleApplyTb bioSampleApplyTb = sampleApplyMap.get(bioSampleTestTb.getApplyNo());
+            boolean taskFinished = bioTaskDtlTb != null && BioTaskStatusEnum.TASK_STATUS_2.status.equals(bioTaskDtlTb.getTaskStatus());
+            String testType = bioSampleApplyTb == null ? null : bioSampleApplyTb.getLayoutFlag();
+
+            BioSampleTestTb updateBioSampleTestTb = new BioSampleTestTb();
+            updateBioSampleTestTb.setId(bioSampleTestTb.getId());
+            boolean needUpdate = false;
+
+            if (StringUtils.isEmpty(bioSampleTestTb.getTestTime())) {
+                TestTimeResult testTimeResult = findSampleTestTime(bioSampleTestTb, testType, oneResultApplySampleMap, oneResultSampleMap, twoResultApplySampleMap, twoResultSampleMap);
+                if (testTimeResult != null && StringUtils.isNotEmpty(testTimeResult.getTestTime())) {
+                    updateBioSampleTestTb.setTestTime(testTimeResult.getTestTime());
+                    needUpdate = true;
+                    if ("one".equals(testTimeResult.getSourceType())) {
+                        testTimeByOneCount++;
+                    } else if ("more".equals(testTimeResult.getSourceType())) {
+                        testTimeByTwoCount++;
+                    }
+                } else if (taskFinished && bioSampleTestTb.getCreateTime() != null) {
+                    updateBioSampleTestTb.setTestTime(formatDateTime(bioSampleTestTb.getCreateTime()));
+                    needUpdate = true;
+                    testTimeByCreateCount++;
+                } else if (!taskFinished) {
+                    noTestTimeUnfinishedCount++;
+                }
+            }
+
+            if (taskFinished && bioTaskDtlTb.getUpdateTime() != null) {
+                String checkTime = formatDateTime(bioTaskDtlTb.getUpdateTime());
+                if (!checkTime.equals(bioSampleTestTb.getCheckTime())) {
+                    updateBioSampleTestTb.setCheckTime(checkTime);
+                    needUpdate = true;
+                    checkTimeCount++;
+                }
+            }
+
+            if (needUpdate) {
+                bioSampleTestTbMapper.updateById(updateBioSampleTestTb);
+                updateCount++;
+            }
+            if ((i + 1) % 500 == 0 || i + 1 == total) {
+                log.info("cleanBioSampleTestTime#清洗进度 {}/{}，已更新={}，补test_time一代={}，二代={}，创建时间={}，未完成且无检测时间={}，补check_time={}，跳过={}",
+                        i + 1, total, updateCount, testTimeByOneCount, testTimeByTwoCount, testTimeByCreateCount, noTestTimeUnfinishedCount, checkTimeCount, skipCount);
+            }
+        }
+        log.info("cleanBioSampleTestTime#清洗完成，耗时={}ms，更新={}，一代={}，二代={}，创建时间={}，未完成且无检测时间={}，check_time={}，跳过={}",
+                System.currentTimeMillis() - start, updateCount, testTimeByOneCount, testTimeByTwoCount, testTimeByCreateCount, noTestTimeUnfinishedCount, checkTimeCount, skipCount);
+        return ResponseResult.getSuccess("清洗完成，更新：" + updateCount
+                + "，一代测序补test_time：" + testTimeByOneCount
+                + "，二代测序补test_time：" + testTimeByTwoCount
+                + "，创建时间补test_time：" + testTimeByCreateCount
+                + "，未完成且无检测时间不更新：" + noTestTimeUnfinishedCount
+                + "，补check_time：" + checkTimeCount
+                + "，跳过：" + skipCount);
+    }
+
+    private TestTimeResult findSampleTestTime(BioSampleTestTb bioSampleTestTb, String testType,
+                                              Map<String, List<BioSampleTestOneResultTb>> oneResultApplySampleMap,
+                                              Map<String, List<BioSampleTestOneResultTb>> oneResultSampleMap,
+                                              Map<String, List<BioSampleTestTwoResultTb>> twoResultApplySampleMap,
+                                              Map<String, List<BioSampleTestTwoResultTb>> twoResultSampleMap) {
+        if ("one".equals(testType)) {
+            TestTimeResult testTimeResult = findOneSampleTestTime(bioSampleTestTb, oneResultApplySampleMap, oneResultSampleMap);
+            return testTimeResult != null ? testTimeResult : findTwoSampleTestTime(bioSampleTestTb, twoResultApplySampleMap, twoResultSampleMap);
+        }
+        if ("more".equals(testType)) {
+            TestTimeResult testTimeResult = findTwoSampleTestTime(bioSampleTestTb, twoResultApplySampleMap, twoResultSampleMap);
+            return testTimeResult != null ? testTimeResult : findOneSampleTestTime(bioSampleTestTb, oneResultApplySampleMap, oneResultSampleMap);
+        }
+        TestTimeResult testTimeResult = findOneSampleTestTime(bioSampleTestTb, oneResultApplySampleMap, oneResultSampleMap);
+        return testTimeResult != null ? testTimeResult : findTwoSampleTestTime(bioSampleTestTb, twoResultApplySampleMap, twoResultSampleMap);
+    }
+
+    private TestTimeResult findOneSampleTestTime(BioSampleTestTb bioSampleTestTb,
+                                                 Map<String, List<BioSampleTestOneResultTb>> oneResultApplySampleMap,
+                                                 Map<String, List<BioSampleTestOneResultTb>> oneResultSampleMap) {
+        List<BioSampleTestOneResultTb> oneResultList = oneResultApplySampleMap.get(sampleTimeKey(bioSampleTestTb.getApplyNo(), bioSampleTestTb.getSampleCode()));
+        if (CollectionUtil.isEmpty(oneResultList)) {
+            oneResultList = oneResultSampleMap.get(bioSampleTestTb.getSampleCode());
+        }
+        if (CollectionUtil.isEmpty(oneResultList)) {
+            return null;
+        }
+        for (BioSampleTestOneResultTb oneResult : oneResultList) {
+            if (StringUtils.isNotEmpty(oneResult.getTestTime())) {
+                return new TestTimeResult(oneResult.getTestTime(), "one");
+            }
+        }
+        return oneResultList.get(0).getCreateTime() == null ? null : new TestTimeResult(formatDateTime(oneResultList.get(0).getCreateTime()), "one");
+    }
+
+    private TestTimeResult findTwoSampleTestTime(BioSampleTestTb bioSampleTestTb,
+                                                 Map<String, List<BioSampleTestTwoResultTb>> twoResultApplySampleMap,
+                                                 Map<String, List<BioSampleTestTwoResultTb>> twoResultSampleMap) {
+        List<BioSampleTestTwoResultTb> twoResultList = twoResultApplySampleMap.get(sampleTimeKey(bioSampleTestTb.getApplyNo(), bioSampleTestTb.getSampleCode()));
+        if (CollectionUtil.isEmpty(twoResultList)) {
+            twoResultList = twoResultSampleMap.get(bioSampleTestTb.getSampleCode());
+        }
+        if (CollectionUtil.isEmpty(twoResultList) || twoResultList.get(0).getCreateTime() == null) {
+            return null;
+        }
+        return new TestTimeResult(formatDateTime(twoResultList.get(0).getCreateTime()), "more");
+    }
+
+    private String sampleTimeKey(String applyNo, String sampleCode) {
+        return applyNo + "|" + sampleCode;
+    }
+
+    private void sortOneResultDesc(List<BioSampleTestOneResultTb> oneResultList) {
+        oneResultList.sort(Comparator.comparing(BioSampleTestOneResultTb::getId, Comparator.nullsLast(Integer::compareTo)).reversed());
+    }
+
+    private void sortTwoResultDesc(List<BioSampleTestTwoResultTb> twoResultList) {
+        twoResultList.sort(Comparator.comparing(BioSampleTestTwoResultTb::getId, Comparator.nullsLast(Integer::compareTo)).reversed());
+    }
+
+    private String formatDateTime(Date date) {
+        return DateUtil.format(date, DatePattern.NORM_DATETIME_PATTERN);
+    }
+
+    @Data
+    private static class TestTimeResult {
+        private final String testTime;
+        private final String sourceType;
+    }
 
 
     @GetMapping("cleanPlasmidSpecificPrimers")

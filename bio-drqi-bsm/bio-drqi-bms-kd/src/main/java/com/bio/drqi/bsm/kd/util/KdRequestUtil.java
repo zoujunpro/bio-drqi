@@ -125,6 +125,7 @@ public class KdRequestUtil {
         List<QuerySupplierDTO> resultList = new ArrayList<>();
         K3CloudApi k3CloudApi = new K3CloudApi(kdProperties.getIdentifyInfo(), false);
         Map<String, String> query = new HashMap();
+        query.put("FormId", FormIdEnum.BD_Supplier.name());
         query.put("FieldKeys", "FNUMBER,FNAME,FDocumentStatus,FForbidStatus");
         query.put("FilterString", "FDocumentStatus='C' and FForbidStatus='A'");
         try {

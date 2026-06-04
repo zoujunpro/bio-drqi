@@ -162,26 +162,13 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
     }
 
     private String qualityInspectionTypeName(String code) {
-        if (code == null) {
-            return null;
+        if ("1".equals(code)) {
+            return "质粒制备";
         }
-        List<String> codeList;
-        if (code.startsWith("[")) {
-            codeList = JSONUtil.toList(code, String.class);
-        } else {
-            codeList = Collections.singletonList(code);
+        if ("2".equals(code)) {
+            return "农杆菌转化";
         }
-        List<String> nameList = new ArrayList<>();
-        for (String item : codeList) {
-            if ("1".equals(item)) {
-                nameList.add("质粒制备");
-            } else if ("2".equals(item)) {
-                nameList.add("农杆菌转化");
-            } else if (item != null) {
-                nameList.add(item);
-            }
-        }
-        return String.join("、", nameList);
+        return code;
     }
 
     private String qualityInspectionResultName(String code) {

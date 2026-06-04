@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class DevOpsModifyVectorTaskCodeBreedCodeReqDTO {
+
     private String vectorTaskCode;
 
     private String breedName;

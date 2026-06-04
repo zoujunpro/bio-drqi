@@ -42,9 +42,6 @@ public class PlasmidDTO{
 
     private String vectorBuildRemark;
 
-    //如果要覆盖 传入 T  ，会根据冰箱位置 ，进行信息覆盖
-    private String updateFlag;
-
     @NotNull(message = "质检信息缺失")
     private List<Content> contentList;
 

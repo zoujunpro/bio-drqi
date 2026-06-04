@@ -1,6 +1,7 @@
 package com.bio.drqi.manage.controller.project;
 
 import com.bio.drqi.manage.plasmid.req.PlasmidListPageReqDTO;
+import com.bio.drqi.manage.plasmid.req.PushAgrobacteriumToTJDBReqDTO;
 import com.bio.drqi.manage.plasmid.req.QueryPagePlasmidReqDTO;
 import com.bio.drqi.manage.plasmid.rsp.PlasmidListPageRspDTO;
 import com.bio.drqi.manage.plasmid.rsp.QueryPagePlasmidRspDTO;
@@ -74,6 +75,16 @@ public class PlasmidController {
     @WebLog(desc = "农杆菌信息查询")
     public ResponseResult<Object> getAgrobacteriumDetail(@RequestParam @Validated @NotBlank(message = "参数缺失:冰箱位置") String tjAgroLocation) {
         return ResponseResult.getSuccess(commonService.getAgrobacteriumDetail(tjAgroLocation));
+    }
+
+    /**
+     * 农杆菌信息储存
+     */
+    @PostMapping("/pushAgrobacteriumToTJDB")
+    @WebLog(desc = "农杆菌信息储存")
+    public ResponseResult<String> pushAgrobacteriumToTJDB(@Validated @RequestBody PushAgrobacteriumToTJDBReqDTO reqDTO) {
+        plasmidService.pushAgrobacteriumToTJDB(reqDTO);
+        return ResponseResult.getSuccess("成功");
     }
 
 }

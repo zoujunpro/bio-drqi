@@ -1,9 +1,18 @@
 package com.bio.drqi.manage.service.project.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.drqi.domain.*;
+import com.bio.drqi.manage.feign.PushAgrobacteriumToTJDBDTO;
 import com.bio.drqi.manage.dto.project.PlasmidDTO;
 import com.bio.drqi.manage.plasmid.req.PlasmidListPageReqDTO;
+import com.bio.drqi.manage.plasmid.req.PushAgrobacteriumToTJDBReqDTO;
 import com.bio.drqi.manage.plasmid.rsp.PlasmidListPageRspDTO;
 import com.bio.drqi.manage.service.project.PlasmidService;
 import com.bio.drqi.mapper.*;
@@ -22,7 +31,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -83,6 +94,56 @@ public class PlasmidServiceImpl implements PlasmidService {
             log.error("质粒质检模板下载失败,", e);
             throw new BusinessException("模板下载失败");
         }
+    }
+
+    @Override
+    public void pushAgrobacteriumToTJDB(PushAgrobacteriumToTJDBReqDTO reqDTO) {
+        if (reqDTO == null) {
+            return;
+        }
+        PushAgrobacteriumToTJDBDTO request = new PushAgrobacteriumToTJDBDTO();
+        request.setPlasmidID(reqDTO.getPlasmidName());
+        request.setLocal(reqDTO.getAgrobacteriumLocation());
+        request.setResistance(defaultNA(reqDTO.getAgrobacteriumResistance()));
+        request.setStrain(defaultNA(reqDTO.getAgrobacteriumInformation()));
+        request.setSupplement(defaultNA(reqDTO.getRemark()));
+        request.setMaking_date(defaultNA(reqDTO.getMakingDate()));
+        request.setTemid("1");
+        String url = "http://172.16.14.2:10091/PushAgrobacteriumToTJDB";
+        Map<String, Object> map = new HashMap<>();
+        List<PushAgrobacteriumToTJDBDTO> list = new ArrayList<>();
+        list.add(request);
+        map.put("jobNum", SecurityContextHolder.getJobNum());
+        map.put("nickname", SecurityContextHolder.getNickName());
+        map.put("update_flag", reqDTO.getUpdateFlag());
+        map.put("AgrobacteriumList", list);
+        String requestBody = JSONUtil.toJsonStr(map);
+        log.info("【农杆菌信息储存】调用接口开始，url={}, request={}", url, requestBody);
+        HttpResponse httpResponse = HttpRequest.post(url)
+                .header("Content-Type", "application/json")
+                .body(requestBody)
+                .execute();
+        String response = httpResponse.body();
+        log.info("【农杆菌信息储存】调用接口结束，status={}, response={}", httpResponse.getStatus(), response);
+        if (!httpResponse.isOk()) {
+            throw new BusinessException("农杆菌信息储存失败：接口返回HTTP状态码" + httpResponse.getStatus());
+        }
+        JSONObject responseJson = JSONUtil.parseObj(response);
+        JSONArray data = responseJson.getJSONArray("data");
+        if (CollectionUtil.isEmpty(data)) {
+            return;
+        }
+        for (int i = 0; i < data.size(); i++) {
+            JSONObject item = data.getJSONObject(i);
+            String errorLog = item.getStr("Errorlog");
+            if (StrUtil.isNotBlank(errorLog)) {
+                throw new BusinessException("农杆菌信息储存失败：" + errorLog);
+            }
+        }
+    }
+
+    private String defaultNA(String value) {
+        return StrUtil.isBlank(value) ? "NA" : value;
     }
 
 }

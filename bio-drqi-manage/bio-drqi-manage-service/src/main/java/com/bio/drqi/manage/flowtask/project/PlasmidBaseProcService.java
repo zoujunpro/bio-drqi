@@ -1,11 +1,6 @@
 package com.bio.drqi.manage.flowtask.project;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
@@ -15,7 +10,6 @@ import com.bio.drqi.domain.*;
 import com.bio.drqi.enums.ImplementationPlanTypeEnum;
 import com.bio.drqi.enums.ProjectStatusEnum;
 import com.bio.drqi.manage.dto.project.PlasmidDTO;
-import com.bio.drqi.manage.feign.PushAgrobacteriumToTJDBDTO;
 import com.bio.drqi.mapper.CerPlasmidQualityTbMapper;
 import com.bio.drqi.mapper.CerProjectTbMapper;
 import com.bio.drqi.mapper.CerSubProjectTbMapper;
@@ -26,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service("plasmid_check")
 @Slf4j
@@ -119,8 +112,6 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
                 cerPlasmidQualityTb.setMakingDate(content.getMakingDate());
                 cerPlasmidQualityTbMapper.insert(cerPlasmidQualityTb);
             }
-            pushAgrobacteriumToTJDB(plasmidDTO.getContentList(),plasmidDTO.getUpdateFlag());
-
         }
     }
 
@@ -191,77 +182,6 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
             }
         }
         return String.join("、", nameList);
-    }
-
-    private void pushAgrobacteriumToTJDB(List<PlasmidDTO.Content> contentList,String updateFlag) {
-        List<PlasmidDTO.Content> agrobacteriumList = contentList.stream()
-                .filter(item -> isAgrobacteriumArrange(item.getQualityInspectionType()))
-                .collect(Collectors.toList());
-        if (CollectionUtil.isEmpty(agrobacteriumList)) {
-            return;
-        }
-
-        PlasmidDTO.Content agrobacterium = agrobacteriumList.get(0);
-        PushAgrobacteriumToTJDBDTO request = new PushAgrobacteriumToTJDBDTO();
-        request.setPlasmidID(agrobacteriumList.stream()
-                .map(PlasmidDTO.Content::getPlasmidName)
-                .filter(StrUtil::isNotBlank)
-                .distinct()
-                .collect(Collectors.joining(",")));
-        request.setLocal(agrobacterium.getAgrobacteriumLocation());
-        request.setResistance(defaultNA(agrobacterium.getAgrobacteriumResistance()));
-        request.setStrain(defaultNA(agrobacterium.getAgrobacteriumInformation()));
-        request.setSupplement(defaultNA(agrobacterium.getRemark()));
-        request.setMaking_date(defaultNA(agrobacterium.getMakingDate()));
-        request.setTemid("1");
-        String url = "http://172.16.14.2:10091/PushAgrobacteriumToTJDB";
-        Map<String, Object> map = new HashMap<>();
-        List<PushAgrobacteriumToTJDBDTO> list = new ArrayList<>();
-        list.add(request);
-        map.put("jobNum", SecurityContextHolder.getJobNum());
-        map.put("nickname", SecurityContextHolder.getNickName());
-        map.put("update_flag",updateFlag);
-        map.put("AgrobacteriumList", list);
-        String requestBody = JSONUtil.toJsonStr(map);
-        log.info("【农杆菌信息储存】调用接口开始，url={}, request={}", url, requestBody);
-        HttpResponse httpResponse = HttpRequest.post(url)
-                .header("Content-Type", "application/json")
-                .body(requestBody)
-                .execute();
-        String response = httpResponse.body();
-        log.info("【农杆菌信息储存】调用接口结束，status={}, response={}", httpResponse.getStatus(), response);
-        if (!httpResponse.isOk()) {
-            throw new BusinessException("农杆菌信息储存失败：接口返回HTTP状态码" + httpResponse.getStatus());
-        }
-        JSONObject responseJson = JSONUtil.parseObj(response);
-        JSONArray data = responseJson.getJSONArray("data");
-        if (CollectionUtil.isEmpty(data)) {
-            return;
-        }
-        for (int i = 0; i < data.size(); i++) {
-            JSONObject item = data.getJSONObject(i);
-            String errorLog = item.getStr("Errorlog");
-            if (StrUtil.isNotBlank(errorLog)) {
-                throw new BusinessException("农杆菌信息储存失败：" + errorLog);
-            }
-        }
-    }
-
-    private boolean isAgrobacteriumArrange(String code) {
-        if (code == null) {
-            return false;
-        }
-        List<String> codeList;
-        if (code.startsWith("[")) {
-            codeList = JSONUtil.toList(code, String.class);
-        } else {
-            codeList = Collections.singletonList(code);
-        }
-        return codeList.contains("2");
-    }
-
-    private String defaultNA(String value) {
-        return StrUtil.isBlank(value) ? "NA" : value;
     }
 
     private String qualityInspectionResultName(String code) {

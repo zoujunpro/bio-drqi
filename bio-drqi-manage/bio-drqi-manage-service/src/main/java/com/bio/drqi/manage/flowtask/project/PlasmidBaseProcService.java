@@ -56,10 +56,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         if (!ProjectStatusEnum.execute.name().equals(cerProjectTb.getProjectStatus())) {
             throw new BusinessException("非执行中项目不能进行该操作");
         }
-        List<CerPlasmidQualityTb> cerPlasmidQualityTbList = cerPlasmidQualityTbMapper.selectAllByVectorTaskId(cerVectorTaskTb.getId());
-        if (CollectionUtil.isNotEmpty(cerPlasmidQualityTbList)) {
-            throw new BusinessException("已经做过质粒质检");
-        }
+
         //补充form表单
         plasmidDTO.setProjectCode(cerProjectTb.getProjectCode());
         plasmidDTO.setProjectName(cerProjectTb.getProjectName());

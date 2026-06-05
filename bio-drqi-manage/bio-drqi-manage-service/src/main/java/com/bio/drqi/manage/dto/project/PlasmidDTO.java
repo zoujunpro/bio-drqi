@@ -105,6 +105,8 @@ public class PlasmidDTO{
 
         private String remark;
 
+        private String  updateFlag;
+
     }
 
 }

@@ -1,7 +1,6 @@
 package com.bio.drqi.manage.service.project;
 
 import com.bio.drqi.manage.plasmid.req.PlasmidListPageReqDTO;
-import com.bio.drqi.manage.plasmid.req.PushAgrobacteriumToTJDBReqDTO;
 import com.bio.drqi.manage.plasmid.req.QueryPagePlasmidReqDTO;
 import com.bio.drqi.manage.plasmid.rsp.PlasmidListPageRspDTO;
 import com.bio.drqi.manage.plasmid.rsp.QueryPagePlasmidRspDTO;
@@ -18,9 +17,5 @@ public interface PlasmidService {
     List<QueryPagePlasmidRspDTO> listByVectorTask(QueryPagePlasmidReqDTO queryPagePlasmidReqDTO);
 
     void downPlasmidCheckTemplate( String vectorTaskCode, HttpServletResponse response);
-
-    void pushAgrobacteriumToTJDB(PushAgrobacteriumToTJDBReqDTO reqDTO);
-
-
 
 }

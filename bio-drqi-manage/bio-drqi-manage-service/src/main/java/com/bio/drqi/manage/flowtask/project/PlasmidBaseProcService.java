@@ -179,12 +179,17 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         if (CollectionUtil.isEmpty(contentList)) {
             return;
         }
+        List<PushAgrobacteriumToTJDBDTO> agrobacteriumList = new ArrayList<>();
         for (PlasmidDTO.Content content : contentList) {
             if (!isAgrobacteriumCheck(content.getQualityInspectionType())) {
                 continue;
             }
-            pushAgrobacteriumToTJDB(content);
+            agrobacteriumList.add(buildPushAgrobacteriumToTJDBDTO(content));
         }
+        if (CollectionUtil.isEmpty(agrobacteriumList)) {
+            return;
+        }
+        doPushAgrobacteriumToTJDB(agrobacteriumList);
     }
 
     private boolean isAgrobacteriumCheck(String qualityInspectionType) {
@@ -193,7 +198,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
                 || "农杆菌转化".equals(qualityInspectionType);
     }
 
-    private void pushAgrobacteriumToTJDB(PlasmidDTO.Content content) {
+    private PushAgrobacteriumToTJDBDTO buildPushAgrobacteriumToTJDBDTO(PlasmidDTO.Content content) {
         PushAgrobacteriumToTJDBDTO request = new PushAgrobacteriumToTJDBDTO();
         request.setPlasmidID(content.getPlasmidName());
         request.setLocal(content.getAgrobacteriumLocation());
@@ -202,15 +207,16 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         request.setSupplement(defaultNA(content.getRemark()));
         request.setMaking_date(defaultNA(content.getMakingDate()));
         request.setTemid("1");
+        return request;
+    }
 
+    private void doPushAgrobacteriumToTJDB(List<PushAgrobacteriumToTJDBDTO> agrobacteriumList) {
         String url = "http://172.16.14.2:10091/PushAgrobacteriumToTJDB";
         Map<String, Object> map = new HashMap<>();
-        List<PushAgrobacteriumToTJDBDTO> list = new ArrayList<>();
-        list.add(request);
         map.put("jobNum", SecurityContextHolder.getJobNum());
         map.put("nickname", SecurityContextHolder.getNickName());
-        map.put("update_flag", content.getUpdateFlag());
-        map.put("AgrobacteriumList", list);
+        map.put("source", "drqi");
+        map.put("AgrobacteriumList", agrobacteriumList);
 
         String requestBody = JSONUtil.toJsonStr(map);
         log.info("【农杆菌信息储存】调用接口开始，url={}, request={}", url, requestBody);

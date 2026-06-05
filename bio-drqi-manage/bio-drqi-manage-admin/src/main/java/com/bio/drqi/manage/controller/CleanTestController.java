@@ -141,6 +141,10 @@ public class CleanTestController {
     @Resource
     private SeedQualityCheckConfigMapper seedQualityCheckConfigMapper;
 
+
+
+
+
     @GetMapping("cleanSeedStockProjectInfo")
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult<String> cleanSeedStockProjectInfo() {
@@ -477,6 +481,78 @@ public class CleanTestController {
         }
         String trimValue = value.trim();
         return trimValue.length() == 0 ? null : trimValue;
+    }
+
+    @GetMapping("cleanPlasmidQualityInspectionType")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanPlasmidQualityInspectionType() {
+        long start = System.currentTimeMillis();
+        log.info("cleanPlasmidQualityInspectionType#开始清洗质粒质检质检类型");
+        List<CerPlasmidQualityTb> plasmidQualityTbList = cerPlasmidQualityTbMapper.selectList(null);
+        if (CollectionUtil.isEmpty(plasmidQualityTbList)) {
+            return ResponseResult.getSuccess("无质粒质检数据需要清洗");
+        }
+
+        int updateCount = 0;
+        int skipCount = 0;
+        int noChangeCount = 0;
+        int total = plasmidQualityTbList.size();
+        for (int i = 0; i < total; i++) {
+            CerPlasmidQualityTb plasmidQualityTb = plasmidQualityTbList.get(i);
+            String qualityInspectionType = trimToNull(plasmidQualityTb.getQualityInspectionType());
+            String normalizedType = normalizePlasmidQualityInspectionType(qualityInspectionType);
+            if (StringUtils.isEmpty(normalizedType)) {
+                skipCount++;
+                continue;
+            }
+            if (Objects.equals(qualityInspectionType, normalizedType)) {
+                noChangeCount++;
+                continue;
+            }
+
+            CerPlasmidQualityTb update = new CerPlasmidQualityTb();
+            update.setId(plasmidQualityTb.getId());
+            update.setQualityInspectionType(normalizedType);
+            cerPlasmidQualityTbMapper.updateById(update);
+            updateCount++;
+
+            if ((i + 1) % 500 == 0 || i + 1 == total) {
+                log.info("cleanPlasmidQualityInspectionType#清洗进度 {}/{}，更新={}，无需更新={}，跳过={}",
+                        i + 1, total, updateCount, noChangeCount, skipCount);
+            }
+        }
+
+        log.info("cleanPlasmidQualityInspectionType#清洗完成，耗时={}ms，更新={}，无需更新={}，跳过={}",
+                System.currentTimeMillis() - start, updateCount, noChangeCount, skipCount);
+        return ResponseResult.getSuccess("清洗完成，更新：" + updateCount
+                + "，无需更新：" + noChangeCount
+                + "，跳过：" + skipCount);
+    }
+
+    private String normalizePlasmidQualityInspectionType(String qualityInspectionType) {
+        String type = trimToNull(qualityInspectionType);
+        if (StringUtils.isEmpty(type)) {
+            return null;
+        }
+        if (type.startsWith("[")) {
+            try {
+                List<String> typeList = JSONUtil.toList(type, String.class);
+                if (CollectionUtil.isEmpty(typeList)) {
+                    return null;
+                }
+                type = trimToNull(typeList.get(0));
+            } catch (Exception e) {
+                log.warn("normalizePlasmidQualityInspectionType#质检类型解析失败，qualityInspectionType={}", qualityInspectionType, e);
+                return null;
+            }
+        }
+        if ("1".equals(type) || "质粒制备".equals(type)) {
+            return "1";
+        }
+        if ("2".equals(type) || "农杆菌检测".equals(type) || "农杆菌转化".equals(type)) {
+            return "2";
+        }
+        return null;
     }
 
     @GetMapping("cleanSeedQualityCheckResult20260430")

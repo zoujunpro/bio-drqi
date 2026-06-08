@@ -195,7 +195,12 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
         sections.add(buildFieldSection("申请信息", fieldList));
 
         if (CollectionUtil.isNotEmpty(dto.getContentList())) {
-            List<String> headers = Arrays.asList("转化数量", "侵染日期", "递送方式", "转化编号", "受体材料", "农杆菌信息");
+            boolean showAgrobacteriumInformation = dto.getContentList().stream()
+                    .anyMatch(item -> isAgrobacteriumDeliveryMethod(item.getDeliveryMethod()));
+            List<String> headers = new ArrayList<>(Arrays.asList("转化数量", "侵染日期", "递送方式", "转化编号", "受体材料"));
+            if (showAgrobacteriumInformation) {
+                headers.add("农杆菌信息");
+            }
             List<Map<String, Object>> rows = new ArrayList<>();
             for (TransformDTO.Content item : dto.getContentList()) {
                 Map<String, Object> row = new LinkedHashMap<>();
@@ -204,13 +209,19 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
                 row.put("递送方式", deliveryMethodName(item.getDeliveryMethod()));
                 row.put("转化编号", item.getTransformCode());
                 row.put("受体材料", item.getAcceptorMaterial());
-                row.put("农杆菌信息", item.getAgrobacteriumInformation());
+                if (showAgrobacteriumInformation) {
+                    row.put("农杆菌信息", isAgrobacteriumDeliveryMethod(item.getDeliveryMethod()) ? item.getAgrobacteriumInformation() : null);
+                }
                 rows.add(row);
             }
             sections.add(buildTableSection("转化明细", headers, rows));
         }
 
         return sections;
+    }
+
+    private boolean isAgrobacteriumDeliveryMethod(String deliveryMethod) {
+        return "A".equals(deliveryMethod) || "农杆菌转化".equals(deliveryMethod);
     }
 
     private String deliveryMethodName(String code) {

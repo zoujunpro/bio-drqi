@@ -100,6 +100,7 @@ public class TransformServiceImpl implements TransformService {
             approvePassTransformQueryRspDTO.setSubProjectCode(cerTransformTb.getSubProjectCode());
             approvePassTransformQueryRspDTO.setTransformCode(cerTransformTb.getTransformCode());
             approvePassTransformQueryRspDTO.setPlasmidName(cerTransformTb.getPlasmidName());
+            approvePassTransformQueryRspDTO.setAgrobacteriumInformation(cerTransformTb.getAgrobacteriumInformation());
             approvePassTransformQueryRspDTO.setAcceptorMaterial(cerTransformTb.getAcceptorMaterial());
             list.add(approvePassTransformQueryRspDTO);
         }

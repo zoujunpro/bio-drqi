@@ -99,6 +99,11 @@ public class TransformListPageRspDTO {
      */
     private String plasmidName;
 
+    /**
+     * 农杆菌信息
+     */
+    private String agrobacteriumInformation;
+
     private String speciesCode;
     private String speciesName;
 

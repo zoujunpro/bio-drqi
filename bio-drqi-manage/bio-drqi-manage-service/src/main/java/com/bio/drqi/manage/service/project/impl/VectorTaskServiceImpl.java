@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,9 @@ public class VectorTaskServiceImpl implements VectorTaskService {
 
     @Resource
     private BioTaskDtlTbMapper bioTaskDtlTbMapper;
+
+    @Resource
+    private CerPlasmidQualityTbMapper cerPlasmidQualityTbMapper;
 
 
     @Override
@@ -115,6 +119,8 @@ public class VectorTaskServiceImpl implements VectorTaskService {
     public List<CerImplementationPlanBaseInfoRspDTO> listForTransForm(Integer subProjectId) {
         List<CerVectorTaskTb> cerVectorTaskTbList = cerVectorTaskTbMapper.listForTransForm(subProjectId);
         List<CerImplementationPlanBaseInfoRspDTO> result = BeanUtils.copyListProperties(cerVectorTaskTbList, CerImplementationPlanBaseInfoRspDTO.class);
+        Map<Integer, List<String>> agrobacteriumInformationMap = getAgrobacteriumInformationMap(subProjectId);
+
         result.forEach(cerImplementationPlanBaseInfoRspDTO -> {
             if (StringUtils.isEmpty(cerImplementationPlanBaseInfoRspDTO.getAcceptorMaterial())) {
                 CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedCode(cerImplementationPlanBaseInfoRspDTO.getBreedCode());
@@ -122,8 +128,42 @@ public class VectorTaskServiceImpl implements VectorTaskService {
                     cerImplementationPlanBaseInfoRspDTO.setAcceptorMaterial(cerBreedDict.getBreedName());
                 }
             }
+            List<String> agrobacteriumInformationList = agrobacteriumInformationMap.get(cerImplementationPlanBaseInfoRspDTO.getId());
+            cerImplementationPlanBaseInfoRspDTO.setAgrobacteriumInformationList(agrobacteriumInformationList);
+
         });
         return result;
+    }
+
+    private Map<Integer, List<String>> getAgrobacteriumInformationMap(Integer subProjectId) {
+        CerPlasmidQualityTb query = new CerPlasmidQualityTb();
+        query.setSubProjectId(subProjectId);
+        List<CerPlasmidQualityTb> cerPlasmidQualityTbList = cerPlasmidQualityTbMapper.selectSelective(query);
+        if (CollectionUtil.isEmpty(cerPlasmidQualityTbList)) {
+            return Collections.emptyMap();
+        }
+        return cerPlasmidQualityTbList.stream()
+                .filter(item -> isAgrobacteriumCheck(item.getQualityInspectionType()))
+                .filter(item -> item.getVectorTaskId() != null)
+                .filter(item -> StringUtils.isNotEmpty(item.getAgrobacteriumInformation()))
+                .collect(Collectors.groupingBy(
+                        CerPlasmidQualityTb::getVectorTaskId,
+                        Collectors.collectingAndThen(Collectors.toList(), this::getDistinctAgrobacteriumInformationList)
+                ));
+    }
+
+    private boolean isAgrobacteriumCheck(String qualityInspectionType) {
+        return "2".equals(qualityInspectionType)
+                || "农杆菌检测".equals(qualityInspectionType)
+                || "农杆菌转化".equals(qualityInspectionType);
+    }
+
+    private List<String> getDistinctAgrobacteriumInformationList(List<CerPlasmidQualityTb> plasmidQualityTbList) {
+        return plasmidQualityTbList.stream()
+                .map(CerPlasmidQualityTb::getAgrobacteriumInformation)
+                .filter(StringUtils::isNotEmpty)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     @Override

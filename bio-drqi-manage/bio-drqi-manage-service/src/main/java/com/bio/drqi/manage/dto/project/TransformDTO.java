@@ -75,6 +75,11 @@ public class TransformDTO {
         @NotBlank(message = "受体材料必填")
         private String acceptorMaterial;
 
+        /**
+         * 农杆菌信息
+         */
+        private String agrobacteriumInformation;
+
     }
 
 

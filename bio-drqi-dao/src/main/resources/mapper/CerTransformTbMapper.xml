@@ -24,6 +24,7 @@
             <result property="taskStatus" column="task_status" jdbcType="VARCHAR"/>
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
             <result property="plasmidName" column="plasmid_name" jdbcType="VARCHAR"/>
+            <result property="agrobacteriumInformation" column="agrobacterium_information" jdbcType="VARCHAR"/>
             <result property="vectorTaskType" column="vector_task_type" jdbcType="VARCHAR"/>
            <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
           <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
@@ -36,7 +37,7 @@
         acceptor_material,create_time,update_time,
         create_user_name,vector_task_code,project_code,
         sub_project_code,create_user_id,task_status,
-        task_num,plasmid_name,vector_task_type,species_code,breed_code
+        task_num,plasmid_name,agrobacterium_information,vector_task_type,species_code,breed_code
     </sql>
     <select id="selectOneByTransformCode" resultMap="BaseResultMap">
         select
@@ -150,6 +151,7 @@
             <if test="taskStatus != null">and task_status=#{taskStatus,jdbcType=VARCHAR}</if>
             <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="plasmidName != null and plasmidName!=''">and plasmid_name=#{plasmidName,jdbcType=VARCHAR}</if>
+            <if test="agrobacteriumInformation != null and agrobacteriumInformation!=''">and agrobacterium_information=#{agrobacteriumInformation,jdbcType=VARCHAR}</if>
             <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
             <if test="vectorTaskType != null">and vector_task_type=#{vectorTaskType,jdbcType=VARCHAR}</if>
         </where>

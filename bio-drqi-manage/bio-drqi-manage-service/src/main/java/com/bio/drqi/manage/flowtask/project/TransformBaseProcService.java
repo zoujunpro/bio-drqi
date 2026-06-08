@@ -124,6 +124,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
                 cerTransformTb.setDeliveryMethod(content.getDeliveryMethod());
                 cerTransformTb.setTransformCode(getTransFormCode(cerVectorTaskTb.getVectorTaskCode(), content.getDeliveryMethod(), content.getInfectDate()));
                 cerTransformTb.setAcceptorMaterial(content.getAcceptorMaterial());
+                cerTransformTb.setAgrobacteriumInformation(content.getAgrobacteriumInformation());
                 if (cerVectorTaskTb.getBreedCode().contains("|")) {
                     CerBreedDict cerBreedDict = cerBreedDictMapper.selectOneByBreedNameAndSpeciesCode(content.getAcceptorMaterial(), cerVectorTaskTb.getSpeciesCode());
                     if (cerBreedDict != null) {
@@ -194,7 +195,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
         sections.add(buildFieldSection("申请信息", fieldList));
 
         if (CollectionUtil.isNotEmpty(dto.getContentList())) {
-            List<String> headers = Arrays.asList("转化数量", "侵染日期", "递送方式", "转化编号", "受体材料");
+            List<String> headers = Arrays.asList("转化数量", "侵染日期", "递送方式", "转化编号", "受体材料", "农杆菌信息");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (TransformDTO.Content item : dto.getContentList()) {
                 Map<String, Object> row = new LinkedHashMap<>();
@@ -203,6 +204,7 @@ public class TransformBaseProcService extends AbstractProjectBaseTaskService {
                 row.put("递送方式", deliveryMethodName(item.getDeliveryMethod()));
                 row.put("转化编号", item.getTransformCode());
                 row.put("受体材料", item.getAcceptorMaterial());
+                row.put("农杆菌信息", item.getAgrobacteriumInformation());
                 rows.add(row);
             }
             sections.add(buildTableSection("转化明细", headers, rows));

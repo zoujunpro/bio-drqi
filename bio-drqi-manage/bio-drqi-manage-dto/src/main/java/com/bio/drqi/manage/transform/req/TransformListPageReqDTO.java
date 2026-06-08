@@ -36,6 +36,11 @@ public class TransformListPageReqDTO extends PageDTO {
      */
     private String plasmidName;
 
+    /**
+     * 农杆菌信息
+     */
+    private String agrobacteriumInformation;
+
     private String speciesCode;
     /**
      * 转化编号

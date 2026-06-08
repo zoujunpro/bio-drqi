@@ -33,6 +33,11 @@ public class CerImplementationPlanBaseInfoRspDTO {
     private String acceptorMaterial;
 
     /**
+     * 农杆菌信息列表
+     */
+    private List<String> agrobacteriumInformationList;
+
+    /**
      * 项目ID
      */
     private Integer projectId;

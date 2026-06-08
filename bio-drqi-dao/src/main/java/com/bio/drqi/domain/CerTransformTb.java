@@ -118,6 +118,11 @@ public class CerTransformTb implements Serializable {
      */
     private String plasmidName;
 
+    /**
+     * 农杆菌信息
+     */
+    private String agrobacteriumInformation;
+
     private String speciesCode;
 
     private String breedCode;

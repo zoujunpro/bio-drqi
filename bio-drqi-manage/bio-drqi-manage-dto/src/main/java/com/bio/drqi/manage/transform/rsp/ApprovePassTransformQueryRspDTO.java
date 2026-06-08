@@ -12,6 +12,8 @@ public class ApprovePassTransformQueryRspDTO {
     private String transformCode;
     /**质粒名称/共转质粒*/
     private String plasmidName;
+    /**农杆菌信息*/
+    private String agrobacteriumInformation;
     /**受体材料*/
     private String acceptorMaterial;
 

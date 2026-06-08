@@ -386,19 +386,35 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
     }
 
     @Override
-    public List<PrintRspDTO> agrobacteriumPrint( BioAgrobacteriumPrintReqDTO bioAgrobacteriumPrintReqDTO) {
+    public List<PrintRspDTO> agrobacteriumPrint(BioAgrobacteriumPrintReqDTO bioAgrobacteriumPrintReqDTO) {
         List<PrintRspDTO> printRspDTOList = new ArrayList<>();
         if (bioAgrobacteriumPrintReqDTO == null) {
             return printRspDTOList;
         }
-        AgrobacteriumDTO agrobacteriumDTO=new AgrobacteriumDTO();
+        String plasmidName = firstPlasmidName(bioAgrobacteriumPrintReqDTO.getPlasmidNames());
+        AgrobacteriumDTO agrobacteriumDTO = new AgrobacteriumDTO();
         agrobacteriumDTO.setAgrobacteriumName(bioAgrobacteriumPrintReqDTO.getAgrobacteriumName());
         agrobacteriumDTO.setAgrobacteriumResistance(bioAgrobacteriumPrintReqDTO.getAgrobacteriumResistance());
-        agrobacteriumDTO.setPlasmidName(bioAgrobacteriumPrintReqDTO.getPlasmidNames().get(0));
+        agrobacteriumDTO.setPlasmidName(plasmidName);
         agrobacteriumDTO.setMakingDate(bioAgrobacteriumPrintReqDTO.getMakingDate());
-        agrobacteriumDTO.setPlasmidIdShort(bioAgrobacteriumPrintReqDTO.getPlasmidNames().size()==1?bioAgrobacteriumPrintReqDTO.getPlasmidNames().get(0):bioAgrobacteriumPrintReqDTO.getPlasmidNames().get(0)+"+");
+        agrobacteriumDTO.setPlasmidIdShort(plasmidName);
         printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.agrobacterium_label_tianjin_print.name(), Arrays.asList(agrobacteriumDTO))));
         return printRspDTOList;
+    }
+
+    private String firstPlasmidName(String plasmidNames) {
+        if (StringUtils.isEmpty(plasmidNames)) {
+            throw new BusinessException("质粒名称不能为空");
+        }
+        String[] plasmidNameArray = plasmidNames.split("[,，]");
+        if (plasmidNameArray.length == 0) {
+            throw new BusinessException("质粒名称不能为空");
+        }
+        String plasmidName = plasmidNameArray[0].trim();
+        if (StringUtils.isEmpty(plasmidName)) {
+            throw new BusinessException("质粒名称不能为空");
+        }
+        return plasmidName;
     }
 
     private List<String> printDataSave(String printType, Object printData) {

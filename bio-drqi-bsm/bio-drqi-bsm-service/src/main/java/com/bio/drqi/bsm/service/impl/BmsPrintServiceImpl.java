@@ -6,11 +6,9 @@ import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.drqi.bsm.req.BmsPrintProductLabelReqDTO;
 import com.bio.drqi.bsm.service.BmsPrintService;
-import com.bio.drqi.domain.BmsProductStockInLog;
 import com.bio.drqi.domain.BmsProductStockTb;
 import com.bio.drqi.enums.SeedMaterialTypeEnum;
 import com.bio.drqi.manage.base.PrintRspDTO;
-import com.bio.drqi.mapper.BmsProductStockInLogMapper;
 import com.bio.drqi.mapper.BmsProductStockTbMapper;
 import com.bio.print.api.PrintApi;
 import com.bio.print.req.PrintDataReqDTO;
@@ -34,7 +32,8 @@ public class BmsPrintServiceImpl implements BmsPrintService {
     private PrintApi printApi;
 
     @Override
-    public PrintRspDTO productLabel(BmsPrintProductLabelReqDTO bmsPrintProductLabelReqDTO) {
+    public List<PrintRspDTO> productLabel(BmsPrintProductLabelReqDTO bmsPrintProductLabelReqDTO) {
+        List<PrintRspDTO> resultList = new ArrayList<>();
         List<BmsLabelPrintDTO> bmsLabelPrintDTOList = new ArrayList<>();
         for (BmsPrintProductLabelReqDTO.Content content : bmsPrintProductLabelReqDTO.getContentList()) {
             BmsProductStockTb bmsProductStockTb = bmsProductStockTbMapper.selectOneByProductInnerCodeAndUnitCodeAndBatchNoAndStockCodeAndPayType(content.getProductInnerCode(),content.getUnitCode(),content.getBatchNo(),content.getStockCode(),content.getPayType());
@@ -59,7 +58,8 @@ public class BmsPrintServiceImpl implements BmsPrintService {
             PrintRspDTO printRspDTO = new PrintRspDTO();
             printRspDTO.setPrintName(SeedMaterialTypeEnum.TYPE_3.printName);
             printRspDTO.setPrintDataList(printDataSave("bms_label_print", bmsLabelPrintDTOList));
-            return printRspDTO;
+            resultList.add(printRspDTO);
+            return resultList;
         } else {
             return null;
         }

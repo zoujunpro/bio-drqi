@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.awt.*;
+import java.util.List;
 
 /**
  * 耗材标签打印
@@ -32,7 +33,7 @@ public class BmsPrintController {
     @PostMapping("/productLabel")
     @WebLog(desc = "耗材标签打印-入库商品打印")
     @RequestLog("耗材标签打印-入库商品打印")
-    public ResponseResult<PrintRspDTO> productLabel(@RequestBody BmsPrintProductLabelReqDTO bmsPrintProductLabelReqDTO) {
+    public  ResponseResult<List<PrintRspDTO>>  productLabel(@RequestBody BmsPrintProductLabelReqDTO bmsPrintProductLabelReqDTO) {
         return ResponseResult.getSuccess(bmsPrintService.productLabel(bmsPrintProductLabelReqDTO));
     }
 }

@@ -50,6 +50,11 @@ public class TcExperimentListDetailRspDTO {
     private String breedCode;
 
     /**
+     * 株系名称
+     */
+    private String strainName;
+
+    /**
      * 目标性状
      */
     private String targetCharacter;
@@ -63,6 +68,21 @@ public class TcExperimentListDetailRspDTO {
      * 田测基因型
      */
     private String tcGene;
+
+    /**
+     * 密度
+     */
+    private String density;
+
+    /**
+     * 组别
+     */
+    private String groupName;
+
+    /**
+     * 重复
+     */
+    private String repeatNum;
 
     /**
      * 小区面积
@@ -98,6 +118,16 @@ public class TcExperimentListDetailRspDTO {
      * 播种方式
      */
     private String seedingType;
+
+    /**
+     * 每穴播种粒数
+     */
+    private String perHoleSeedingNumber;
+
+    /**
+     * 每行播种数量
+     */
+    private String rowSeedingNumber;
 
     /**
      * 播种数量
@@ -150,4 +180,19 @@ public class TcExperimentListDetailRspDTO {
     private String transplantTime;
 
     private String pdImplementCode;
+
+    /**
+     * 期次
+     */
+    private String period;
+
+    /**
+     * 亲本类型
+     */
+    private String parentType;
+
+    /**
+     * 错期设计
+     */
+    private String staggeredDesign;
 }

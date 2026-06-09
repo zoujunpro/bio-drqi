@@ -23,6 +23,7 @@
             <result property="experimentStatus" column="experiment_status" jdbcType="VARCHAR"/>
             <result property="harvestApplyNum" column="harvest_apply_num" jdbcType="VARCHAR"/>
             <result property="experimentType" column="experiment_type" jdbcType="VARCHAR"/>
+            <result property="designType" column="design_type" jdbcType="VARCHAR"/>
             <result property="breedingFlag" column="breeding_flag" jdbcType="VARCHAR"/>
             <result property="pdImplementCodes" column="pd_implement_codes" jdbcType="VARCHAR"/>
 
@@ -34,7 +35,7 @@
         species_code,species_name,file_url,
         experiment_goal,experiment_address_code,apply_user_name,
         apply_user_id,create_time,experiment_num,
-        task_num,design_url,sample_code_prefix,next_sample_number,experiment_status, harvest_apply_num,experiment_type,breeding_flag
+        task_num,design_url,sample_code_prefix,next_sample_number,experiment_status, harvest_apply_num,experiment_type,design_type,breeding_flag
     </sql>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.bio.drqi.domain.TcExperimentTb">
         select
@@ -54,6 +55,7 @@
             <if test="taskNum != null">and task_num=#{taskNum,jdbcType=VARCHAR}</if>
             <if test="experimentStatus != null and experimentStatus!=''">and harvest_apply_num=#{experimentStatus,jdbcType=VARCHAR}</if>
             <if test="experimentType != null and experimentType!=''">and experiment_type=#{experimentType,jdbcType=VARCHAR}</if>
+            <if test="designType != null and designType!=''">and design_type=#{designType,jdbcType=VARCHAR}</if>
             <if test="pdImplementCodes != null and pdImplementCodes!=''">and pd_implement_codes=#{pdImplementCodes,jdbcType=VARCHAR}</if>
 
         </where>

@@ -1,13 +1,16 @@
 package com.bio.drqi.tc.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
-import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
+import com.bio.drqi.tc.enums.TcDesignTypeEnum;
 import com.bio.drqi.tc.enums.ExperimentStatusEnum;
 import com.bio.drqi.tc.enums.SampleTestCheckResultEnum;
 import com.bio.drqi.tc.req.TcExperimentApplyListPageReqDTO;
@@ -15,7 +18,10 @@ import com.bio.drqi.tc.req.TcExperimentQueryByPdAndVectorTaskCodeReqDTO;
 import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
 import com.bio.drqi.tc.rsp.*;
 import com.bio.drqi.tc.service.TcExperimentApplyService;
-import com.bio.drqi.tc.service.dto.ExperimentDesignExcelDTO;
+import com.bio.drqi.tc.service.dto.EvaluationExperimentDesignExcelDTO;
+import com.bio.drqi.tc.service.dto.HybridExperimentDesignExcelDTO;
+import com.bio.drqi.tc.service.dto.SurvivalCompetitionExperimentDesignExcelDTO;
+import com.bio.drqi.tc.service.excel.ExcelSelectedWriteHandler;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +29,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -117,8 +126,42 @@ public class TcExperimentApplyServiceImpl implements TcExperimentApplyService {
 
 
     @Override
-    public void downTemplate(HttpServletResponse httpServletResponse) {
-        ExcelUtil.writeExcel("田间设计方案模板", "sheet1", null, ExperimentDesignExcelDTO.class, httpServletResponse);
+    public void downTemplate(String designType, HttpServletResponse httpServletResponse) {
+        TcDesignTypeEnum designTypeEnum = TcDesignTypeEnum.getByName(designType);
+        if (designTypeEnum == null) {
+            throw new BusinessException("田间设计类型填写错误");
+        }
+        Class<?> headClass = getExperimentDesignExcelClass(designTypeEnum);
+        String fileName = "田间设计方案模板-" + designTypeEnum.name;
+        try {
+            httpServletResponse.setContentType("application/vnd.ms-excel");
+            httpServletResponse.setCharacterEncoding("utf-8");
+            httpServletResponse.setHeader("Content-disposition", "attachment;filename="
+                    + URLEncoder.encode(fileName, "UTF-8") + ".xlsx");
+            ExcelWriter excelWriter = EasyExcel.write(httpServletResponse.getOutputStream())
+                    .registerWriteHandler(new ExcelSelectedWriteHandler(headClass))
+                    .build();
+            WriteSheet writeSheet = EasyExcel.writerSheet(0, designTypeEnum.name)
+                    .head(headClass).build();
+            excelWriter.write(Collections.emptyList(), writeSheet);
+            excelWriter.finish();
+        } catch (IOException e) {
+            log.error("【田间设计方案模板】下载失败", e);
+            throw new BusinessException("文件处理异常");
+        }
+    }
+
+    private Class<?> getExperimentDesignExcelClass(TcDesignTypeEnum designTypeEnum) {
+        switch (designTypeEnum) {
+            case SURVIVAL_COMPETITION:
+                return SurvivalCompetitionExperimentDesignExcelDTO.class;
+            case EVALUATION:
+                return EvaluationExperimentDesignExcelDTO.class;
+            case HYBRID:
+                return HybridExperimentDesignExcelDTO.class;
+            default:
+                throw new BusinessException("田间设计类型填写错误");
+        }
     }
 
 

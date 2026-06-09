@@ -22,7 +22,7 @@ public interface TcExperimentApplyService {
 
     List<TcExperimentApplyListAllRspDTO> listAll();
 
-    void downTemplate(HttpServletResponse httpServletResponse);
+    void downTemplate(String designType, HttpServletResponse httpServletResponse);
 
     /**
      * 试验方案申请管理-田间设计列表

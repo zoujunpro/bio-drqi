@@ -13,9 +13,13 @@
         <result property="vectorTaskCode" column="vector_task_code" jdbcType="VARCHAR"/>
         <result property="speciesCode" column="species_code" jdbcType="VARCHAR"/>
         <result property="breedCode" column="breed_code" jdbcType="VARCHAR"/>
+        <result property="strainName" column="strain_name" jdbcType="VARCHAR"/>
         <result property="targetCharacter" column="target_character" jdbcType="VARCHAR"/>
         <result property="generationCode" column="generation_code" jdbcType="VARCHAR"/>
         <result property="tcGene" column="tc_gene" jdbcType="VARCHAR"/>
+        <result property="density" column="density" jdbcType="VARCHAR"/>
+        <result property="groupName" column="group_name" jdbcType="VARCHAR"/>
+        <result property="repeatNum" column="repeat_num" jdbcType="VARCHAR"/>
         <result property="regionArea" column="region_area" jdbcType="VARCHAR"/>
         <result property="areaUnit" column="area_unit" jdbcType="VARCHAR"/>
         <result property="plantSpace" column="plant_space" jdbcType="VARCHAR"/>
@@ -23,6 +27,8 @@
         <result property="rowsLength" column="rows_length" jdbcType="VARCHAR"/>
         <result property="rowsSpace" column="rows_space" jdbcType="VARCHAR"/>
         <result property="seedingType" column="seeding_type" jdbcType="VARCHAR"/>
+        <result property="perHoleSeedingNumber" column="per_hole_seeding_number" jdbcType="VARCHAR"/>
+        <result property="rowSeedingNumber" column="row_seeding_number" jdbcType="VARCHAR"/>
         <result property="seedingNumber" column="seeding_number" jdbcType="INTEGER"/>
         <result property="seedingUnit" column="seeding_unit" jdbcType="VARCHAR"/>
         <result property="seedingTime" column="seeding_time" jdbcType="VARCHAR"/>
@@ -34,20 +40,25 @@
         <result property="emergenceRate" column="emergence_rate" jdbcType="VARCHAR"/>
         <result property="transplantTime" column="transplant_time" jdbcType="VARCHAR"/>
         <result property="pdImplementCode" column="pd_implement_code" jdbcType="VARCHAR"/>
+        <result property="period" column="period" jdbcType="VARCHAR"/>
+        <result property="parentType" column="parent_type" jdbcType="VARCHAR"/>
+        <result property="staggeredDesign" column="staggered_design" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
         ,experiment_num,region_num,pd_implement_code,
         seed_num,project_code,vector_task_code,
-        species_code,breed_code,target_character,
-        generation_code,tc_gene,region_area,
+        species_code,breed_code,strain_name,target_character,
+        generation_code,tc_gene,density,
+        group_name,repeat_num,region_area,
         area_unit,plant_space,rows_number,
         rows_length,rows_space,seeding_type,
-        seeding_number,seeding_unit,seeding_time,
+        per_hole_seeding_number,row_seeding_number,seeding_number,
+        seeding_unit,seeding_time,
         remark,task_num,create_user_id,
         create_user_name,create_time,emergence_rate,
-        transplant_time
+        transplant_time,period,parent_type,staggered_design
     </sql>
     <select id="selectAllByExperimentNum" resultMap="BaseResultMap">
         select
@@ -59,26 +70,31 @@
     <insert id="insertBatch">
         insert into tc_experiment_design_tb(id,experiment_num,region_num,
         seed_num,project_code,vector_task_code,
-        species_code,breed_code,target_character,
-        generation_code,tc_gene,region_area,
+        species_code,breed_code,strain_name,target_character,
+        generation_code,tc_gene,density,
+        group_name,repeat_num,region_area,
         area_unit,plant_space,rows_number,
         rows_length,rows_space,seeding_type,
-        seeding_number,seeding_unit,seeding_time,
+        per_hole_seeding_number,row_seeding_number,seeding_number,
+        seeding_unit,seeding_time,
         remark,task_num,create_user_id,
         create_user_name,create_time,emergence_rate,
-        transplant_time,pd_implement_code)
+        transplant_time,pd_implement_code,period,parent_type,staggered_design)
         values
         <foreach collection="tcExperimentDesignTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.regionNum,jdbcType=VARCHAR},
             #{item.seedNum,jdbcType=VARCHAR},#{item.projectCode,jdbcType=VARCHAR},#{item.vectorTaskCode,jdbcType=VARCHAR},
-            #{item.speciesCode,jdbcType=VARCHAR},#{item.breedCode,jdbcType=VARCHAR},#{item.targetCharacter,jdbcType=VARCHAR},
-            #{item.generationCode,jdbcType=VARCHAR},#{item.tcGene,jdbcType=VARCHAR},#{item.regionArea,jdbcType=VARCHAR},
+            #{item.speciesCode,jdbcType=VARCHAR},#{item.breedCode,jdbcType=VARCHAR},#{item.strainName,jdbcType=VARCHAR},#{item.targetCharacter,jdbcType=VARCHAR},
+            #{item.generationCode,jdbcType=VARCHAR},#{item.tcGene,jdbcType=VARCHAR},#{item.density,jdbcType=VARCHAR},
+            #{item.groupName,jdbcType=VARCHAR},#{item.repeatNum,jdbcType=VARCHAR},#{item.regionArea,jdbcType=VARCHAR},
             #{item.areaUnit,jdbcType=VARCHAR},#{item.plantSpace,jdbcType=VARCHAR},#{item.rowsNumber,jdbcType=VARCHAR},
             #{item.rowsLength,jdbcType=VARCHAR},#{item.rowsSpace,jdbcType=VARCHAR},#{item.seedingType,jdbcType=VARCHAR},
-            #{item.seedingNumber,jdbcType=NUMERIC},#{item.seedingUnit,jdbcType=VARCHAR},#{item.seedingTime,jdbcType=VARCHAR},
+            #{item.perHoleSeedingNumber,jdbcType=VARCHAR},#{item.rowSeedingNumber,jdbcType=VARCHAR},#{item.seedingNumber,jdbcType=NUMERIC},
+            #{item.seedingUnit,jdbcType=VARCHAR},#{item.seedingTime,jdbcType=VARCHAR},
             #{item.remark,jdbcType=VARCHAR},#{item.taskNum,jdbcType=VARCHAR},#{item.createUserId,jdbcType=NUMERIC},
             #{item.createUserName,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.emergenceRate,jdbcType=VARCHAR},
-            #{item.transplantTime,jdbcType=VARCHAR},#{item.pdImplementCode,jdbcType=VARCHAR})
+            #{item.transplantTime,jdbcType=VARCHAR},#{item.pdImplementCode,jdbcType=VARCHAR},#{item.period,jdbcType=VARCHAR},
+            #{item.parentType,jdbcType=VARCHAR},#{item.staggeredDesign,jdbcType=VARCHAR})
         </foreach>
     </insert>
     <select id="selectAllBySeedNum" resultMap="BaseResultMap">
@@ -162,9 +178,13 @@
             <if test="vectorTaskCode != null and vectorTaskCode!=''">and vector_task_code=#{vectorTaskCode,jdbcType=VARCHAR}</if>
             <if test="speciesCode != null and speciesCode!=''">and species_code=#{speciesCode,jdbcType=VARCHAR}</if>
             <if test="breedCode != null and breedCode!=''">and breed_code=#{breedCode,jdbcType=VARCHAR}</if>
+            <if test="strainName != null and strainName!=''">and strain_name=#{strainName,jdbcType=VARCHAR}</if>
             <if test="targetCharacter != null">and target_character=#{targetCharacter,jdbcType=VARCHAR}</if>
             <if test="generationCode != null">and generation_code=#{generationCode,jdbcType=VARCHAR}</if>
             <if test="tcGene != null">and tc_gene=#{tcGene,jdbcType=VARCHAR}</if>
+            <if test="density != null">and density=#{density,jdbcType=VARCHAR}</if>
+            <if test="groupName != null">and group_name=#{groupName,jdbcType=VARCHAR}</if>
+            <if test="repeatNum != null">and repeat_num=#{repeatNum,jdbcType=VARCHAR}</if>
             <if test="regionArea != null">and region_area=#{regionArea,jdbcType=VARCHAR}</if>
             <if test="areaUnit != null">and area_unit=#{areaUnit,jdbcType=VARCHAR}</if>
             <if test="plantSpace != null">and plant_space=#{plantSpace,jdbcType=VARCHAR}</if>
@@ -172,6 +192,8 @@
             <if test="rowsLength != null">and rows_length=#{rowsLength,jdbcType=VARCHAR}</if>
             <if test="rowsSpace != null">and rows_space=#{rowsSpace,jdbcType=VARCHAR}</if>
             <if test="seedingType != null">and seeding_type=#{seedingType,jdbcType=VARCHAR}</if>
+            <if test="perHoleSeedingNumber != null">and per_hole_seeding_number=#{perHoleSeedingNumber,jdbcType=VARCHAR}</if>
+            <if test="rowSeedingNumber != null">and row_seeding_number=#{rowSeedingNumber,jdbcType=VARCHAR}</if>
             <if test="seedingNumber != null">and seeding_number=#{seedingNumber,jdbcType=NUMERIC}</if>
             <if test="seedingUnit != null">and seeding_unit=#{seedingUnit,jdbcType=VARCHAR}</if>
             <if test="seedingTime != null">and seeding_time=#{seedingTime,jdbcType=VARCHAR}</if>
@@ -183,6 +205,9 @@
             <if test="emergenceRate != null">and emergence_rate=#{emergenceRate,jdbcType=VARCHAR}</if>
             <if test="transplantTime != null">and transplant_time=#{transplantTime,jdbcType=VARCHAR}</if>
             <if test="pdImplementCode != null and pdImplementCode!=''">and pd_implement_code=#{pdImplementCode,jdbcType=VARCHAR}</if>
+            <if test="period != null">and period=#{period,jdbcType=VARCHAR}</if>
+            <if test="parentType != null">and parent_type=#{parentType,jdbcType=VARCHAR}</if>
+            <if test="staggeredDesign != null">and staggered_design=#{staggeredDesign,jdbcType=VARCHAR}</if>
         </where>
         order by id desc
     </select>

@@ -1,6 +1,5 @@
 package com.bio.drqi.tc.service.dto;
 
-import com.bio.common.core.util.EnumValue;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -21,6 +20,11 @@ public class TcExperimentTaskDTO {
      * 试验类型，多选
      */
     private List<String> experimentType;
+
+    /**
+     * 田间设计类型：{@link com.bio.drqi.tc.enums.TcDesignTypeEnum}
+     */
+    private String designType;
     /**
      * 实验方案附件
      */

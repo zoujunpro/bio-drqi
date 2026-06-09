@@ -98,6 +98,11 @@ public class TcExperimentTb implements Serializable {
 
     private String experimentType;
 
+    /**
+     * 田间设计类型
+     */
+    private String designType;
+
     private String breedingFlag;
 
     private String pdImplementCodes;

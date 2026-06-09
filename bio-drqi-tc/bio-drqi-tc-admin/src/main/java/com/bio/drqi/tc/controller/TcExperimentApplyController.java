@@ -6,8 +6,10 @@ import com.bio.common.web.aspect.WebLog;
 import com.bio.drqi.common.aspect.RequestLog;
 import com.bio.drqi.tc.req.TcExperimentApplyListPageReqDTO;
 import com.bio.drqi.tc.req.TcExperimentQueryByPdAndVectorTaskCodeReqDTO;
-import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
-import com.bio.drqi.tc.rsp.*;
+import com.bio.drqi.tc.rsp.TcExperimentApplyListAllRspDTO;
+import com.bio.drqi.tc.rsp.TcExperimentApplyListPageRspDTO;
+import com.bio.drqi.tc.rsp.TcExperimentApplyQueryByPdAndVectorTaskCodeRspDTO;
+import com.bio.drqi.tc.rsp.TcExperimentListDetailRspDTO;
 import com.bio.drqi.tc.service.TcExperimentApplyService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
@@ -70,13 +72,8 @@ public class TcExperimentApplyController {
      * @return
      */
     @GetMapping("/downTemplate")
-    public void downTemplate(HttpServletResponse httpServletResponse) {
-        tcExperimentApplyService.downTemplate(httpServletResponse);
-    /*    try {
-            ossService.downloadFile(httpServletResponse, "template", "田间设计方案模板V1.0.xlsx");
-        } catch (Exception e) {
-            throw new BusinessException("田间设计方案模板下载失败，请联系管理员检测模板配置");
-        }*/
+    public void downTemplate(@RequestParam String designType, HttpServletResponse httpServletResponse) {
+        tcExperimentApplyService.downTemplate(designType, httpServletResponse);
     }
 
     /**

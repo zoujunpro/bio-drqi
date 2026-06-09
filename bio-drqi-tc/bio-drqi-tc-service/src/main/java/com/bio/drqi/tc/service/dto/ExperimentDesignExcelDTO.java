@@ -2,13 +2,21 @@ package com.bio.drqi.tc.service.dto;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.bio.drqi.tc.service.excel.ExcelSelected;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Data
-public class ExperimentDesignExcelDTO {
+public abstract class ExperimentDesignExcelDTO {
+
+    /**
+     * 试验目的
+     */
+    @ExcelProperty("试验目的")
+    private String experimentGoal;
 
     /**
      * 小区编号
@@ -26,9 +34,13 @@ public class ExperimentDesignExcelDTO {
 
     @ExcelIgnore
     private String breedCode;
+
     /**
-     * 品种
+     * 株系名称
      */
+    @ExcelProperty("株系名称")
+    private String strainName;
+
     /**
      * 品种
      */
@@ -71,6 +83,25 @@ public class ExperimentDesignExcelDTO {
     @ExcelProperty("基因型")
     @NotBlank(message = "基因型必填")
     private String tcGene;
+
+    /**
+     * 密度
+     */
+    @ExcelProperty("密度（株/亩）")
+    private String density;
+
+    /**
+     * 组别
+     */
+    @ExcelProperty("组别")
+    private String groupName;
+
+    /**
+     * 重复
+     */
+    @ExcelProperty("重复")
+    private String repeat;
+
     /**
      * 小区面积
      */
@@ -121,10 +152,24 @@ public class ExperimentDesignExcelDTO {
     private String seedingType;
 
     /**
-     * 播种数量
+     * 每穴播种粒数
      */
-    @ExcelProperty("播种数量")
-    @NotNull(message = "播种数量必填")
+    @ExcelProperty("每穴播种粒数")
+    @Pattern(regexp = "单粒播种|双粒播种", message = "每穴播种粒数只能填写单粒播种或双粒播种")
+    @ExcelSelected({"单粒播种", "双粒播种"})
+    private String perHoleSeedingNumber;
+
+    /**
+     * 每行播种数量
+     */
+    @ExcelProperty("每行播种数量")
+    private String rowSeedingNumber;
+
+    /**
+     * 小区播种数量
+     */
+    @ExcelProperty("小区播种数量")
+    @NotNull(message = "小区播种数量必填")
     private Integer seedingNumber;
 
     /**
@@ -156,7 +201,4 @@ public class ExperimentDesignExcelDTO {
      */
     @ExcelProperty("备注")
     private String remark;
-
-
-
 }

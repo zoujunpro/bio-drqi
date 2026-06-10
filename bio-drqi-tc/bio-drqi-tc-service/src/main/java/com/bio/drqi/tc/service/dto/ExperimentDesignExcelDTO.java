@@ -2,7 +2,7 @@ package com.bio.drqi.tc.service.dto;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.bio.drqi.tc.service.excel.ExcelSelected;
+import com.bio.common.core.dto.ExcelSelected;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -156,7 +156,7 @@ public abstract class ExperimentDesignExcelDTO {
      */
     @ExcelProperty("每穴播种粒数")
     @Pattern(regexp = "单粒播种|双粒播种", message = "每穴播种粒数只能填写单粒播种或双粒播种")
-    @ExcelSelected({"单粒播种", "双粒播种"})
+    @ExcelSelected(source = {"单粒播种", "双粒播种"})
     private String perHoleSeedingNumber;
 
     /**

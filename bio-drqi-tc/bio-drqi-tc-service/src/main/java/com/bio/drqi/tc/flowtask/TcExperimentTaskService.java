@@ -26,10 +26,14 @@ import com.bio.drqi.tc.service.dto.SurvivalCompetitionExperimentDesignExcelDTO;
 import com.bio.drqi.tc.service.dto.TcExperimentTaskDTO;
 import com.bio.flow.dto.BioHtmlModelDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -220,6 +224,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         if (tcDesignTypeEnum == null) {
             throw new BusinessException("田间设计类型填写错误");
         }
+        checkExperimentDesignSheet(tempFilePath, tcDesignTypeEnum);
         Class<? extends ExperimentDesignExcelDTO> excelClass;
         switch (tcDesignTypeEnum) {
             case SURVIVAL_COMPETITION:
@@ -235,6 +240,20 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
                 throw new BusinessException("田间设计类型填写错误");
         }
         return EasyExcel.read(tempFilePath, excelClass, null).sheet(tcDesignTypeEnum.name).doReadSync();
+    }
+
+    private void checkExperimentDesignSheet(String tempFilePath, TcDesignTypeEnum designTypeEnum) {
+        try (InputStream inputStream = new FileInputStream(tempFilePath);
+             Workbook workbook = WorkbookFactory.create(inputStream)) {
+            if (workbook.getSheet(designTypeEnum.name) == null) {
+                throw new BusinessException("田间设计类型与Excel文件内容不匹配，请上传" + designTypeEnum.name + "模板文件");
+            }
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("【大田试验田间设计】Excel文件读取失败", e);
+            throw new BusinessException("Excel文件读取失败，请检查文件格式");
+        }
     }
 
 

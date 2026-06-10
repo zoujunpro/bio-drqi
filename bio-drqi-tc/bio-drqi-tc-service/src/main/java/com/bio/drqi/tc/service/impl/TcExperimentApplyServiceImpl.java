@@ -127,7 +127,7 @@ public class TcExperimentApplyServiceImpl implements TcExperimentApplyService {
 
     @Override
     public void downTemplate(String designType, HttpServletResponse httpServletResponse) {
-        TcDesignTypeEnum designTypeEnum = TcDesignTypeEnum.getByCode(designType);
+        TcDesignTypeEnum designTypeEnum = TcDesignTypeEnum.getDesignTypeEnum(designType);
         if (designTypeEnum == null) {
             throw new BusinessException("田间设计类型填写错误");
         }

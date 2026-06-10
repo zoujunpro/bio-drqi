@@ -216,7 +216,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
     }
 
     private List<ExperimentDesignExcelDTO> readExperimentDesignExcel(String tempFilePath, String designType) {
-        TcDesignTypeEnum tcDesignTypeEnum = TcDesignTypeEnum.getByName(designType);
+        TcDesignTypeEnum tcDesignTypeEnum = TcDesignTypeEnum.getDesignTypeEnum(designType);
         if (tcDesignTypeEnum == null) {
             throw new BusinessException("田间设计类型填写错误");
         }
@@ -335,13 +335,13 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
     }
 
     private List<String> designHeaders(String designType) {
-        if (TcDesignTypeEnum.SURVIVAL_COMPETITION.name.equals(designType)) {
+        if (isDesignType(designType, TcDesignTypeEnum.SURVIVAL_COMPETITION)) {
             List<String> headers = new ArrayList<>(commonDesignHeaders());
             headers.add("期次");
             headers.add("备注");
             return headers;
         }
-        if (TcDesignTypeEnum.HYBRID.name.equals(designType)) {
+        if (isDesignType(designType, TcDesignTypeEnum.HYBRID)) {
             List<String> headers = new ArrayList<>(Arrays.asList("区域编号", "种子编号", "株系名称", "品种", "亲本类型",
                     "实施方案编号", "PD实施方案编号", "目标性状", "世代", "基因型", "错期设计", "密度",
                     "组别", "重复", "小区面积", "面积单位", "小区行数", "小区行长(m)", "行距(cm)", "株距(cm)",
@@ -365,7 +365,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         row.put("种子编号", item.getSeedNum());
         row.put("株系名称", item.getStrainName());
         row.put("品种", breedName);
-        if (TcDesignTypeEnum.HYBRID.name.equals(designType)) {
+        if (isDesignType(designType, TcDesignTypeEnum.HYBRID)) {
             row.put("亲本类型", item.getParentType());
         }
         row.put("实施方案编号", item.getVectorTaskCode());
@@ -373,7 +373,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         row.put("目标性状", item.getTargetCharacter());
         row.put("世代", item.getGenerationCode());
         row.put("基因型", item.getTcGene());
-        if (TcDesignTypeEnum.HYBRID.name.equals(designType)) {
+        if (isDesignType(designType, TcDesignTypeEnum.HYBRID)) {
             row.put("错期设计", item.getStaggeredDesign());
         }
         row.put("密度", item.getDensity());
@@ -390,7 +390,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         row.put("每行播种数量", item.getRowSeedingNumber());
         row.put("小区播种数量", item.getSeedingNumber());
         row.put("播种单位", item.getSeedingUnit());
-        if (TcDesignTypeEnum.SURVIVAL_COMPETITION.name.equals(designType)) {
+        if (isDesignType(designType, TcDesignTypeEnum.SURVIVAL_COMPETITION)) {
             row.put("期次", item.getPeriod());
         }
         row.put("备注", item.getRemark());
@@ -401,7 +401,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         row.put("种子编号", item.getSeedNum());
         row.put("株系名称", item.getStrainName());
         row.put("品种", item.getBreedName());
-        if (TcDesignTypeEnum.HYBRID.name.equals(designType)) {
+        if (isDesignType(designType, TcDesignTypeEnum.HYBRID)) {
             HybridExperimentDesignExcelDTO hybridItem = item instanceof HybridExperimentDesignExcelDTO
                     ? (HybridExperimentDesignExcelDTO) item : null;
             row.put("亲本类型", hybridItem == null ? null : hybridItem.getParentType());
@@ -411,7 +411,7 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         row.put("目标性状", item.getTargetCharacter());
         row.put("世代", item.getGenerationCode());
         row.put("基因型", item.getTcGene());
-        if (TcDesignTypeEnum.HYBRID.name.equals(designType)) {
+        if (isDesignType(designType, TcDesignTypeEnum.HYBRID)) {
             HybridExperimentDesignExcelDTO hybridItem = item instanceof HybridExperimentDesignExcelDTO
                     ? (HybridExperimentDesignExcelDTO) item : null;
             row.put("错期设计", hybridItem == null ? null : hybridItem.getStaggeredDesign());
@@ -431,10 +431,16 @@ public class TcExperimentTaskService extends AbstractTcBaseTaskService {
         row.put("小区播种数量", item.getSeedingNumber());
         row.put("播种单位", item.getSeedingUnit());
         if (item instanceof SurvivalCompetitionExperimentDesignExcelDTO
-                || TcDesignTypeEnum.SURVIVAL_COMPETITION.name.equals(designType)) {
+                || isDesignType(designType, TcDesignTypeEnum.SURVIVAL_COMPETITION)) {
             row.put("期次", item instanceof SurvivalCompetitionExperimentDesignExcelDTO
                     ? ((SurvivalCompetitionExperimentDesignExcelDTO) item).getPeriod() : null);
         }
         row.put("备注", item.getRemark());
     }
+
+    private boolean isDesignType(String designType, TcDesignTypeEnum expected) {
+        return expected.equals(TcDesignTypeEnum.getDesignTypeEnum(designType));
+    }
+
+
 }

@@ -12,9 +12,9 @@ public enum TcDesignTypeEnum {
         this.name = name;
     }
 
-    public static TcDesignTypeEnum getByName(String name) {
+    public static TcDesignTypeEnum getByCode(String code) {
         for (TcDesignTypeEnum item : values()) {
-            if (item.name.equals(name)) {
+            if (item.name().equals(code)) {
                 return item;
             }
         }

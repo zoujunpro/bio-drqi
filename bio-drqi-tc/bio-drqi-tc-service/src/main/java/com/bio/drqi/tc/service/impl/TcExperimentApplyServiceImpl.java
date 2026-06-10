@@ -6,17 +6,17 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
-import com.bio.common.core.util.StringUtils;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.domain.*;
 import com.bio.drqi.mapper.*;
-import com.bio.drqi.tc.enums.TcDesignTypeEnum;
 import com.bio.drqi.tc.enums.ExperimentStatusEnum;
-import com.bio.drqi.tc.enums.SampleTestCheckResultEnum;
+import com.bio.drqi.tc.enums.TcDesignTypeEnum;
 import com.bio.drqi.tc.req.TcExperimentApplyListPageReqDTO;
 import com.bio.drqi.tc.req.TcExperimentQueryByPdAndVectorTaskCodeReqDTO;
-import com.bio.drqi.tc.req.TcExperimentListPageReqDTO;
-import com.bio.drqi.tc.rsp.*;
+import com.bio.drqi.tc.rsp.TcExperimentApplyListAllRspDTO;
+import com.bio.drqi.tc.rsp.TcExperimentApplyListPageRspDTO;
+import com.bio.drqi.tc.rsp.TcExperimentApplyQueryByPdAndVectorTaskCodeRspDTO;
+import com.bio.drqi.tc.rsp.TcExperimentListDetailRspDTO;
 import com.bio.drqi.tc.service.TcExperimentApplyService;
 import com.bio.drqi.tc.service.dto.EvaluationExperimentDesignExcelDTO;
 import com.bio.drqi.tc.service.dto.HybridExperimentDesignExcelDTO;
@@ -127,7 +127,7 @@ public class TcExperimentApplyServiceImpl implements TcExperimentApplyService {
 
     @Override
     public void downTemplate(String designType, HttpServletResponse httpServletResponse) {
-        TcDesignTypeEnum designTypeEnum = TcDesignTypeEnum.getByName(designType);
+        TcDesignTypeEnum designTypeEnum = TcDesignTypeEnum.getByCode(designType);
         if (designTypeEnum == null) {
             throw new BusinessException("田间设计类型填写错误");
         }

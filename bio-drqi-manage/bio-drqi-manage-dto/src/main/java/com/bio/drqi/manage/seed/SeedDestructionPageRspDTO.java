@@ -96,7 +96,17 @@ public class SeedDestructionPageRspDTO extends PageDTO {
 
     private String speciesCode;
 
+    /**
+     * 物种名称
+     */
+    private String speciesName;
+
     private String breedCode;
+
+    /**
+     * 品种名称
+     */
+    private String breedName;
 
     private String pollinationMethod;
 

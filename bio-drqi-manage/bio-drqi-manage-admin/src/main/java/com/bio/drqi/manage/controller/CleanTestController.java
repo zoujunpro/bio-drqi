@@ -1332,21 +1332,26 @@ public class CleanTestController {
         Map<String, SeedStockTb> seedStockMap = seedStockTbList.stream()
                 .filter(seedStockTb -> StringUtils.isNotEmpty(seedStockTb.getSeedNum()))
                 .collect(Collectors.toMap(SeedStockTb::getSeedNum, seedStockTb -> seedStockTb, (a, b) -> a));
-        log.info("cleanSeedStockAuditSnapshot#加载种子库存完成，数量={}", seedStockMap.size());
+        log.info("cleanSeedStockAuditSnapshot#加载种子库存完成，总数={}，有效种子编号数={}", seedStockTbList.size(), seedStockMap.size());
 
         int inUpdateCount = 0;
         int inSkipCount = 0;
         List<SeedStockInLog> seedStockInLogList = seedStockInLogMapper.selectList(null);
-        for (SeedStockInLog seedStockInLog : seedStockInLogList) {
+        log.info("cleanSeedStockAuditSnapshot#开始回填入库快照，入库记录总数={}", seedStockInLogList.size());
+        for (int i = 0; i < seedStockInLogList.size(); i++) {
+            SeedStockInLog seedStockInLog = seedStockInLogList.get(i);
             SeedStockTb seedStockTb = seedStockMap.get(seedStockInLog.getSeedNum());
             if (seedStockTb == null) {
                 inSkipCount++;
                 log.warn("cleanSeedStockAuditSnapshot#入库记录找不到库存，inLogId={}，seedNum={}", seedStockInLog.getId(), seedStockInLog.getSeedNum());
-                continue;
+            } else {
+                fillSeedStockInLogSnapshot(seedStockInLog, seedStockTb);
+                seedStockInLogMapper.updateById(seedStockInLog);
+                inUpdateCount++;
             }
-            fillSeedStockInLogSnapshot(seedStockInLog, seedStockTb);
-            seedStockInLogMapper.updateById(seedStockInLog);
-            inUpdateCount++;
+            if ((i + 1) % 500 == 0 || i + 1 == seedStockInLogList.size()) {
+                log.info("cleanSeedStockAuditSnapshot#入库快照回填进度 {}/{}，更新={}，跳过={}", i + 1, seedStockInLogList.size(), inUpdateCount, inSkipCount);
+            }
         }
 
         int outUpdateCount = 0;
@@ -1355,45 +1360,54 @@ public class CleanTestController {
         Map<String, List<SeedStockOutLog>> outLogMap = seedStockOutLogList.stream()
                 .filter(seedStockOutLog -> StringUtils.isNotEmpty(seedStockOutLog.getSeedNum()))
                 .collect(Collectors.groupingBy(SeedStockOutLog::getSeedNum));
+        int outEmptySeedNumCount = seedStockOutLogList.size() - outLogMap.values().stream().mapToInt(List::size).sum();
+        log.info("cleanSeedStockAuditSnapshot#开始回填出库快照，出库记录总数={}，空种子编号记录数={}，种子分组数={}",
+                seedStockOutLogList.size(), outEmptySeedNumCount, outLogMap.size());
+        int outGroupIndex = 0;
         for (Map.Entry<String, List<SeedStockOutLog>> entry : outLogMap.entrySet()) {
+            outGroupIndex++;
             SeedStockTb seedStockTb = seedStockMap.get(entry.getKey());
             if (seedStockTb == null) {
                 outSkipCount += entry.getValue().size();
                 log.warn("cleanSeedStockAuditSnapshot#出库记录找不到库存，seedNum={}，outLogCount={}", entry.getKey(), entry.getValue().size());
-                continue;
-            }
+            } else {
+                List<SeedStockOutLog> outLogs = entry.getValue();
+                outLogs.sort(Comparator
+                        .comparing(SeedStockOutLog::getCreateTime, Comparator.nullsLast(Date::compareTo))
+                        .thenComparing(SeedStockOutLog::getId, Comparator.nullsLast(Integer::compareTo)));
 
-            List<SeedStockOutLog> outLogs = entry.getValue();
-            outLogs.sort(Comparator
-                    .comparing(SeedStockOutLog::getCreateTime, Comparator.nullsLast(Date::compareTo))
-                    .thenComparing(SeedStockOutLog::getId, Comparator.nullsLast(Integer::compareTo)));
-
-            BigDecimal stockNumber = seedStockTb.getTotalNumber();
-            if (stockNumber == null) {
-                stockNumber = seedStockTb.getSeedNumber() == null ? BigDecimal.ZERO : seedStockTb.getSeedNumber();
-                for (SeedStockOutLog outLog : outLogs) {
-                    if (outLog.getSeedNumber() != null) {
-                        stockNumber = stockNumber.add(outLog.getSeedNumber());
+                BigDecimal stockNumber = seedStockTb.getTotalNumber();
+                if (stockNumber == null) {
+                    stockNumber = seedStockTb.getSeedNumber() == null ? BigDecimal.ZERO : seedStockTb.getSeedNumber();
+                    for (SeedStockOutLog outLog : outLogs) {
+                        if (outLog.getSeedNumber() != null) {
+                            stockNumber = stockNumber.add(outLog.getSeedNumber());
+                        }
                     }
+                    log.info("cleanSeedStockAuditSnapshot#出库回放使用当前库存反推初始库存，seedNum={}，currentSeedNumber={}，outLogCount={}，initialStock={}",
+                            entry.getKey(), seedStockTb.getSeedNumber(), outLogs.size(), stockNumber);
+                }
+
+                for (SeedStockOutLog outLog : outLogs) {
+                    BigDecimal outNumber = outLog.getSeedNumber() == null ? BigDecimal.ZERO : outLog.getSeedNumber();
+                    BigDecimal stockBeforeNumber = stockNumber;
+                    BigDecimal stockAfterNumber = stockBeforeNumber.subtract(outNumber);
+                    fillSeedStockOutLogSnapshot(outLog, seedStockTb, stockBeforeNumber, stockAfterNumber);
+                    seedStockOutLogMapper.updateById(outLog);
+                    stockNumber = stockAfterNumber;
+                    outUpdateCount++;
                 }
             }
-
-            for (SeedStockOutLog outLog : outLogs) {
-                BigDecimal outNumber = outLog.getSeedNumber() == null ? BigDecimal.ZERO : outLog.getSeedNumber();
-                BigDecimal stockBeforeNumber = stockNumber;
-                BigDecimal stockAfterNumber = stockBeforeNumber.subtract(outNumber);
-                fillSeedStockOutLogSnapshot(outLog, seedStockTb, stockBeforeNumber, stockAfterNumber);
-                seedStockOutLogMapper.updateById(outLog);
-                stockNumber = stockAfterNumber;
-                outUpdateCount++;
+            if (outGroupIndex % 500 == 0 || outGroupIndex == outLogMap.size()) {
+                log.info("cleanSeedStockAuditSnapshot#出库快照回填分组进度 {}/{}，更新={}，跳过={}", outGroupIndex, outLogMap.size(), outUpdateCount, outSkipCount);
             }
         }
 
-        int outEmptySeedNumCount = seedStockOutLogList.size() - outLogMap.values().stream().mapToInt(List::size).sum();
         outSkipCount += outEmptySeedNumCount;
         Map<String, SeedStockOutLog> seedStockOutLogBySeedAndTaskMap = seedStockOutLogList.stream()
                 .filter(seedStockOutLog -> StringUtils.isNotEmpty(seedStockOutLog.getSeedNum()) && StringUtils.isNotEmpty(seedStockOutLog.getTaskNum()))
                 .collect(Collectors.toMap(seedStockOutLog -> buildSeedTaskKey(seedStockOutLog.getSeedNum(), seedStockOutLog.getTaskNum()), seedStockOutLog -> seedStockOutLog, (a, b) -> a));
+        log.info("cleanSeedStockAuditSnapshot#出库快照索引构建完成，seedNum+taskNum索引数={}", seedStockOutLogBySeedAndTaskMap.size());
 
         int destructionUpdateCount = 0;
         int destructionSkipCount = 0;
@@ -1401,42 +1415,54 @@ public class CleanTestController {
         Map<String, List<SeedStockDestructionLog>> destructionLogMap = seedStockDestructionLogList.stream()
                 .filter(seedStockDestructionLog -> StringUtils.isNotEmpty(seedStockDestructionLog.getSeedNum()))
                 .collect(Collectors.groupingBy(SeedStockDestructionLog::getSeedNum));
+        int destructionEmptySeedNumCount = seedStockDestructionLogList.size() - destructionLogMap.values().stream().mapToInt(List::size).sum();
+        log.info("cleanSeedStockAuditSnapshot#开始回填销毁快照，销毁记录总数={}，空种子编号记录数={}，种子分组数={}",
+                seedStockDestructionLogList.size(), destructionEmptySeedNumCount, destructionLogMap.size());
+        int destructionGroupIndex = 0;
         for (Map.Entry<String, List<SeedStockDestructionLog>> entry : destructionLogMap.entrySet()) {
+            destructionGroupIndex++;
             SeedStockTb seedStockTb = seedStockMap.get(entry.getKey());
             if (seedStockTb == null) {
                 destructionSkipCount += entry.getValue().size();
                 log.warn("cleanSeedStockAuditSnapshot#销毁记录找不到库存，seedNum={}，destructionLogCount={}", entry.getKey(), entry.getValue().size());
-                continue;
-            }
+            } else {
+                List<SeedStockDestructionLog> destructionLogs = entry.getValue();
+                destructionLogs.sort(Comparator
+                        .comparing(SeedStockDestructionLog::getDestructionTime, Comparator.nullsLast(Date::compareTo))
+                        .thenComparing(SeedStockDestructionLog::getId, Comparator.nullsLast(Integer::compareTo)));
 
-            List<SeedStockDestructionLog> destructionLogs = entry.getValue();
-            destructionLogs.sort(Comparator
-                    .comparing(SeedStockDestructionLog::getDestructionTime, Comparator.nullsLast(Date::compareTo))
-                    .thenComparing(SeedStockDestructionLog::getId, Comparator.nullsLast(Integer::compareTo)));
-
-            BigDecimal stockNumber = seedStockTb.getTotalNumber();
-            if (stockNumber == null) {
-                stockNumber = seedStockTb.getSeedNumber() == null ? BigDecimal.ZERO : seedStockTb.getSeedNumber();
-                for (SeedStockDestructionLog destructionLog : destructionLogs) {
-                    if (destructionLog.getSeedNumber() != null) {
-                        stockNumber = stockNumber.add(destructionLog.getSeedNumber());
+                BigDecimal stockNumber = seedStockTb.getTotalNumber();
+                if (stockNumber == null) {
+                    stockNumber = seedStockTb.getSeedNumber() == null ? BigDecimal.ZERO : seedStockTb.getSeedNumber();
+                    for (SeedStockDestructionLog destructionLog : destructionLogs) {
+                        if (destructionLog.getSeedNumber() != null) {
+                            stockNumber = stockNumber.add(destructionLog.getSeedNumber());
+                        }
                     }
+                    log.info("cleanSeedStockAuditSnapshot#销毁回放使用当前库存反推初始库存，seedNum={}，currentSeedNumber={}，destructionLogCount={}，initialStock={}",
+                            entry.getKey(), seedStockTb.getSeedNumber(), destructionLogs.size(), stockNumber);
+                }
+
+                for (SeedStockDestructionLog destructionLog : destructionLogs) {
+                    BigDecimal destructionNumber = destructionLog.getSeedNumber() == null ? BigDecimal.ZERO : destructionLog.getSeedNumber();
+                    SeedStockOutLog seedStockOutLog = seedStockOutLogBySeedAndTaskMap.get(buildSeedTaskKey(destructionLog.getSeedNum(), destructionLog.getTaskNum()));
+                    BigDecimal stockBeforeNumber = seedStockOutLog != null && seedStockOutLog.getStockBeforeNumber() != null ? seedStockOutLog.getStockBeforeNumber() : stockNumber;
+                    BigDecimal stockAfterNumber = seedStockOutLog != null && seedStockOutLog.getStockAfterNumber() != null ? seedStockOutLog.getStockAfterNumber() : stockBeforeNumber.subtract(destructionNumber);
+                    if (seedStockOutLog == null) {
+                        log.info("cleanSeedStockAuditSnapshot#销毁记录未匹配到出库流水，使用销毁记录回放库存，destructionLogId={}，seedNum={}，taskNum={}",
+                                destructionLog.getId(), destructionLog.getSeedNum(), destructionLog.getTaskNum());
+                    }
+                    fillSeedStockDestructionLogSnapshot(destructionLog, seedStockTb, stockBeforeNumber, stockAfterNumber);
+                    seedStockDestructionLogMapper.updateById(destructionLog);
+                    stockNumber = stockAfterNumber;
+                    destructionUpdateCount++;
                 }
             }
-
-            for (SeedStockDestructionLog destructionLog : destructionLogs) {
-                BigDecimal destructionNumber = destructionLog.getSeedNumber() == null ? BigDecimal.ZERO : destructionLog.getSeedNumber();
-                SeedStockOutLog seedStockOutLog = seedStockOutLogBySeedAndTaskMap.get(buildSeedTaskKey(destructionLog.getSeedNum(), destructionLog.getTaskNum()));
-                BigDecimal stockBeforeNumber = seedStockOutLog != null && seedStockOutLog.getStockBeforeNumber() != null ? seedStockOutLog.getStockBeforeNumber() : stockNumber;
-                BigDecimal stockAfterNumber = seedStockOutLog != null && seedStockOutLog.getStockAfterNumber() != null ? seedStockOutLog.getStockAfterNumber() : stockBeforeNumber.subtract(destructionNumber);
-                fillSeedStockDestructionLogSnapshot(destructionLog, seedStockTb, stockBeforeNumber, stockAfterNumber);
-                seedStockDestructionLogMapper.updateById(destructionLog);
-                stockNumber = stockAfterNumber;
-                destructionUpdateCount++;
+            if (destructionGroupIndex % 500 == 0 || destructionGroupIndex == destructionLogMap.size()) {
+                log.info("cleanSeedStockAuditSnapshot#销毁快照回填分组进度 {}/{}，更新={}，跳过={}", destructionGroupIndex, destructionLogMap.size(), destructionUpdateCount, destructionSkipCount);
             }
         }
 
-        int destructionEmptySeedNumCount = seedStockDestructionLogList.size() - destructionLogMap.values().stream().mapToInt(List::size).sum();
         destructionSkipCount += destructionEmptySeedNumCount;
         log.info("cleanSeedStockAuditSnapshot#完成，入库更新={}，入库跳过={}，出库更新={}，出库跳过={}，销毁更新={}，销毁跳过={}，耗时={}ms",
                 inUpdateCount, inSkipCount, outUpdateCount, outSkipCount, destructionUpdateCount, destructionSkipCount, System.currentTimeMillis() - start);

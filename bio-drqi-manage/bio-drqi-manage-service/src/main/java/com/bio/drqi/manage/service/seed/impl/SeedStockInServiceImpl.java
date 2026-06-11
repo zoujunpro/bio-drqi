@@ -136,7 +136,23 @@ public class SeedStockInServiceImpl implements SeedStockInService {
         }
         List<SeedStockInLog> seedStockInLogList = seedStockInLogMapper.selectSelective(seedStockInLog);
         PageInfo<SeedStockInLog> srcPageInfo = new PageInfo<>(seedStockInLogList);
-        return BeanUtils.copyPageInfoProperties(srcPageInfo, SeedStockInRspDTO.class);
+        PageInfo<SeedStockInRspDTO> pageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, SeedStockInRspDTO.class);
+        fillSpeciesAndBreedName(pageInfo.getList());
+        return pageInfo;
+    }
+
+    private void fillSpeciesAndBreedName(List<SeedStockInRspDTO> seedStockInRspDTOList) {
+        if (CollectionUtil.isEmpty(seedStockInRspDTOList)) {
+            return;
+        }
+        Map<String, String> speciesMap = cerSpeciesConfMapper.selectList(null).stream()
+                .collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName, (a, b) -> a));
+        Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream()
+                .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName, (a, b) -> a));
+        for (SeedStockInRspDTO seedStockInRspDTO : seedStockInRspDTOList) {
+            seedStockInRspDTO.setSpeciesName(speciesMap.get(seedStockInRspDTO.getSpeciesCode()));
+            seedStockInRspDTO.setBreedName(cerBreedDictMap.get(seedStockInRspDTO.getBreedCode()));
+        }
     }
 
     @Override

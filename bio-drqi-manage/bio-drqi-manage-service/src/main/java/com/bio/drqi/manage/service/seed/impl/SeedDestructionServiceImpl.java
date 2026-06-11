@@ -1,11 +1,16 @@
 package com.bio.drqi.manage.service.seed.impl;
 
 import cn.hutool.json.JSONUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.domain.CerBreedDict;
+import com.bio.drqi.domain.CerSpeciesConf;
 import com.bio.drqi.manage.seed.SeedDestructionPageReqDTO;
 import com.bio.drqi.manage.seed.SeedDestructionPageRspDTO;
 import com.bio.drqi.domain.SeedStockDestructionLog;
 import com.bio.drqi.manage.service.seed.SeedDestructionService;
+import com.bio.drqi.mapper.CerBreedDictMapper;
+import com.bio.drqi.mapper.CerSpeciesConfMapper;
 import com.bio.drqi.mapper.SeedStockDestructionLogMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -14,12 +19,20 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SeedDestructionServiceImpl implements SeedDestructionService {
 
     @Resource
     private SeedStockDestructionLogMapper seedStockDestructionLogMapper;
+
+    @Resource
+    private CerSpeciesConfMapper cerSpeciesConfMapper;
+
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
 
 
     @Override
@@ -69,6 +82,10 @@ public class SeedDestructionServiceImpl implements SeedDestructionService {
         List<SeedStockDestructionLog> seedStockDestructionLogList = seedStockDestructionLogMapper.selectSelective(selectSeedStockDestructionLog);
         PageInfo<SeedStockDestructionLog> srcPageInfo = new PageInfo<>(seedStockDestructionLogList);
         List<SeedDestructionPageRspDTO> seedDestructionPageRspDTOList = new ArrayList<>();
+        Map<String, String> speciesMap = cerSpeciesConfMapper.selectList(null).stream()
+                .collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName, (a, b) -> a));
+        Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream()
+                .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName, (a, b) -> a));
         for (SeedStockDestructionLog seedStockDestructionLog : seedStockDestructionLogList) {
             SeedDestructionPageRspDTO seedDestructionPageRspDTO = new SeedDestructionPageRspDTO();
             seedDestructionPageRspDTO.setId(seedStockDestructionLog.getId());
@@ -89,7 +106,9 @@ public class SeedDestructionServiceImpl implements SeedDestructionService {
             seedDestructionPageRspDTO.setMatherInfo(seedStockDestructionLog.getMatherInfo());
             seedDestructionPageRspDTO.setGeneration(seedStockDestructionLog.getGeneration());
             seedDestructionPageRspDTO.setSpeciesCode(seedStockDestructionLog.getSpeciesCode());
+            seedDestructionPageRspDTO.setSpeciesName(speciesMap.get(seedStockDestructionLog.getSpeciesCode()));
             seedDestructionPageRspDTO.setBreedCode(seedStockDestructionLog.getBreedCode());
+            seedDestructionPageRspDTO.setBreedName(cerBreedDictMap.get(seedStockDestructionLog.getBreedCode()));
             seedDestructionPageRspDTO.setPollinationMethod(seedStockDestructionLog.getPollinationMethod());
             seedDestructionPageRspDTO.setHarvestType(seedStockDestructionLog.getHarvestType());
             seedDestructionPageRspDTO.setHarvestTime(seedStockDestructionLog.getHarvestTime());

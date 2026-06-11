@@ -11,8 +11,12 @@ import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.drqi.domain.CerBreedDict;
+import com.bio.drqi.domain.CerSpeciesConf;
 import com.bio.drqi.domain.SeedStockOutLog;
 import com.bio.drqi.manage.service.seed.SeedStockOutService;
+import com.bio.drqi.mapper.CerBreedDictMapper;
+import com.bio.drqi.mapper.CerSpeciesConfMapper;
 import com.bio.drqi.mapper.SeedStockOutLogMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +32,12 @@ public class SeedStockOutServiceImpl implements SeedStockOutService {
 
     @Resource
     private SeedStockOutLogMapper seedStockOutLogMapper;
+
+    @Resource
+    private CerSpeciesConfMapper cerSpeciesConfMapper;
+
+    @Resource
+    private CerBreedDictMapper cerBreedDictMapper;
 
     @Resource
     private RemoteUserService remoteUserService;
@@ -87,6 +98,21 @@ public class SeedStockOutServiceImpl implements SeedStockOutService {
         List<SeedStockOutLog> seedStockOutLogList = seedStockOutLogMapper.selectSelective(seedStockOutLog);
         PageInfo<SeedStockOutLog> srcPageInfo = new PageInfo<>(seedStockOutLogList);
         PageInfo<SeedStockOutRspDTO> pageInfo= BeanUtils.copyPageInfoProperties(srcPageInfo, SeedStockOutRspDTO.class);
+        fillSpeciesAndBreedName(pageInfo.getList());
         return pageInfo;
+    }
+
+    private void fillSpeciesAndBreedName(List<SeedStockOutRspDTO> seedStockOutRspDTOList) {
+        if (CollectionUtil.isEmpty(seedStockOutRspDTOList)) {
+            return;
+        }
+        Map<String, String> speciesMap = cerSpeciesConfMapper.selectList(null).stream()
+                .collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName, (a, b) -> a));
+        Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream()
+                .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName, (a, b) -> a));
+        for (SeedStockOutRspDTO seedStockOutRspDTO : seedStockOutRspDTOList) {
+            seedStockOutRspDTO.setSpeciesName(speciesMap.get(seedStockOutRspDTO.getSpeciesCode()));
+            seedStockOutRspDTO.setBreedName(cerBreedDictMap.get(seedStockOutRspDTO.getBreedCode()));
+        }
     }
 }

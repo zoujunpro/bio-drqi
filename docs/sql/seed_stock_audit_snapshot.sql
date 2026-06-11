@@ -4,7 +4,7 @@ ALTER TABLE `seed_stock_in_log`
     ADD COLUMN `father_info` varchar(255) NULL COMMENT '父本信息',
     ADD COLUMN `mather_info` varchar(255) NULL COMMENT '母本信息',
     ADD COLUMN `generation` varchar(16) NULL COMMENT '代次',
-    ADD COLUMN `species_code` varchar(16) NULL COMMENT '项目物种',
+    ADD COLUMN `species_code` varchar(64) NULL COMMENT '项目物种',
     ADD COLUMN `breed_code` varchar(64) NULL COMMENT '品种',
     ADD COLUMN `pollination_method` varchar(255) NULL COMMENT '授粉方式',
     ADD COLUMN `harvest_type` varchar(255) NULL COMMENT '收获方式',
@@ -36,7 +36,7 @@ ALTER TABLE `seed_stock_out_log`
     ADD COLUMN `father_info` varchar(255) NULL COMMENT '父本信息',
     ADD COLUMN `mather_info` varchar(255) NULL COMMENT '母本信息',
     ADD COLUMN `generation` varchar(16) NULL COMMENT '代次',
-    ADD COLUMN `species_code` varchar(16) NULL COMMENT '项目物种',
+    ADD COLUMN `species_code` varchar(64) NULL COMMENT '项目物种',
     ADD COLUMN `breed_code` varchar(64) NULL COMMENT '品种',
     ADD COLUMN `pollination_method` varchar(255) NULL COMMENT '授粉方式',
     ADD COLUMN `harvest_type` varchar(255) NULL COMMENT '收获方式',
@@ -71,7 +71,7 @@ ALTER TABLE `seed_stock_destruction_log`
     ADD COLUMN `father_info` varchar(255) NULL COMMENT '父本信息',
     ADD COLUMN `mather_info` varchar(255) NULL COMMENT '母本信息',
     ADD COLUMN `generation` varchar(16) NULL COMMENT '代次',
-    ADD COLUMN `species_code` varchar(16) NULL COMMENT '项目物种',
+    ADD COLUMN `species_code` varchar(64) NULL COMMENT '项目物种',
     ADD COLUMN `breed_code` varchar(64) NULL COMMENT '品种',
     ADD COLUMN `pollination_method` varchar(255) NULL COMMENT '授粉方式',
     ADD COLUMN `harvest_type` varchar(255) NULL COMMENT '收获方式',
@@ -99,3 +99,13 @@ ALTER TABLE `seed_stock_destruction_log`
     ADD COLUMN `pd_implement_code` varchar(32) NULL COMMENT 'PD号',
     ADD COLUMN `stock_before_number` decimal(10,2) NULL COMMENT '销毁前库存数量',
     ADD COLUMN `stock_after_number` decimal(10,2) NULL COMMENT '销毁后库存数量';
+
+-- 如果前面的 ALTER TABLE 已经执行过且 species_code 仍为 varchar(16)，执行下面修正字段长度。
+ALTER TABLE `seed_stock_in_log`
+    MODIFY COLUMN `species_code` varchar(64) NULL COMMENT '项目物种';
+
+ALTER TABLE `seed_stock_out_log`
+    MODIFY COLUMN `species_code` varchar(64) NULL COMMENT '项目物种';
+
+ALTER TABLE `seed_stock_destruction_log`
+    MODIFY COLUMN `species_code` varchar(64) NULL COMMENT '项目物种';

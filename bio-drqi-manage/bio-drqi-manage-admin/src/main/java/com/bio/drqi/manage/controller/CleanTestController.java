@@ -142,7 +142,58 @@ public class CleanTestController {
     private SeedQualityCheckConfigMapper seedQualityCheckConfigMapper;
 
 
+    @GetMapping("cleanSeedStockPlantNum")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanSeedStockPlantNum() {
+        long start = System.currentTimeMillis();
+        log.info("cleanSeedStockPlantNum#开始清洗种子库种植编号");
+        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectSelective(null);
+        if (CollectionUtil.isEmpty(seedStockTbList)) {
+            log.info("cleanSeedStockPlantNum#无种子库数据需要清洗");
+            return ResponseResult.getSuccess("无种子库数据需要清洗");
+        }
+        int updateCount = 0;
+        int skipCount = 0;
+        int total = seedStockTbList.size();
+        log.info("cleanSeedStockPlantNum#种子库数据加载完成，数量={}", total);
+        for (int i = 0; i < total; i++) {
+            SeedStockTb seedStockTb = seedStockTbList.get(i);
+            String plantCode = seedStockTb.getPlantCode();
+            if (StringUtils.isEmpty(plantCode)) {
+                skipCount++;
+                continue;
+            }
+            List<BioSampleTestTb> bioSampleTestTbList = bioSampleTestTbMapper.selectAllBySampleCode(plantCode);
+            if (CollectionUtil.isEmpty(bioSampleTestTbList)) {
+                seedStockTb.setRemarks(appendPlantCodeToRemarks(seedStockTb.getRemarks(), plantCode));
+                seedStockTb.setPlantCode(null);
+                seedStockTb.setUpdateTime(new Date());
+                seedStockTbMapper.updateById(seedStockTb);
+                updateCount++;
+                log.info("cleanSeedStockPlantNum#种植编号不在取样列表中，已清空种植编号并追加备注，seedStockId={}，seedNum={}，plantCode={}",
+                        seedStockTb.getId(), seedStockTb.getSeedNum(), plantCode);
+            } else {
+                skipCount++;
+            }
+            if ((i + 1) % 500 == 0 || i + 1 == total) {
+                log.info("cleanSeedStockPlantNum#清洗进度 {}/{}，更新={}，跳过={}", i + 1, total, updateCount, skipCount);
+            }
+        }
+        log.info("cleanSeedStockPlantNum#清洗完成，耗时={}ms，更新={}，跳过={}",
+                System.currentTimeMillis() - start, updateCount, skipCount);
+        return ResponseResult.getSuccess("清洗完成，更新=" + updateCount + "，跳过=" + skipCount);
+    }
 
+    private String appendPlantCodeToRemarks(String remarks, String plantCode) {
+        String appendText = plantCode;
+        if (StringUtils.isEmpty(remarks)) {
+            return appendText;
+        }
+        if (remarks.contains(appendText)) {
+            return remarks;
+        }
+        return remarks + "；" + appendText;
+    }
 
 
     @GetMapping("cleanSeedStockProjectInfo")

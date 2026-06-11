@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -87,6 +88,12 @@ public class CleanTestController {
 
     @Resource
     private SeedStockInLogMapper seedStockInLogMapper;
+
+    @Resource
+    private SeedStockOutLogMapper seedStockOutLogMapper;
+
+    @Resource
+    private SeedStockDestructionLogMapper seedStockDestructionLogMapper;
 
     @Resource
     private PlantSingleStockTbMapper plantSingleStockTbMapper;
@@ -1290,6 +1297,7 @@ public class CleanTestController {
                 seedStockInLog.setApplyUserName(bioTaskDtlTb.getApplyUserName());
                 seedStockInLog.setCreateTime(operateDate);
                 seedStockInLog.setUniqueCode(content.getUniqueCode());
+                fillSeedStockInLogSnapshot(seedStockInLog, seedStockTb);
                 seedStockInLogMapper.insert(seedStockInLog);
             } else {
                 seedStockInLog.setRemarks(seedStockTb.getRemarks());
@@ -1301,6 +1309,7 @@ public class CleanTestController {
                 seedStockInLog.setApplyUserName(bioTaskDtlTb.getApplyUserName());
                 seedStockInLog.setCreateTime(operateDate);
                 seedStockInLog.setUniqueCode(content.getUniqueCode());
+                fillSeedStockInLogSnapshot(seedStockInLog, seedStockTb);
                 seedStockInLogMapper.updateById(seedStockInLog);
             }
         }
@@ -1311,6 +1320,238 @@ public class CleanTestController {
         bioTaskDtlTb.setUpdateTime(operateDate);
         bioTaskDtlTbMapper.updateById(bioTaskDtlTb);
         return ResponseResult.getSuccess(taskNum);
+    }
+
+    @GetMapping("/cleanSeedStockAuditSnapshot")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult<String> cleanSeedStockAuditSnapshot() {
+        long start = System.currentTimeMillis();
+        log.info("cleanSeedStockAuditSnapshot#开始回填种子出入库审计快照字段");
+
+        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectSelective(null);
+        Map<String, SeedStockTb> seedStockMap = seedStockTbList.stream()
+                .filter(seedStockTb -> StringUtils.isNotEmpty(seedStockTb.getSeedNum()))
+                .collect(Collectors.toMap(SeedStockTb::getSeedNum, seedStockTb -> seedStockTb, (a, b) -> a));
+        log.info("cleanSeedStockAuditSnapshot#加载种子库存完成，数量={}", seedStockMap.size());
+
+        int inUpdateCount = 0;
+        int inSkipCount = 0;
+        List<SeedStockInLog> seedStockInLogList = seedStockInLogMapper.selectList(null);
+        for (SeedStockInLog seedStockInLog : seedStockInLogList) {
+            SeedStockTb seedStockTb = seedStockMap.get(seedStockInLog.getSeedNum());
+            if (seedStockTb == null) {
+                inSkipCount++;
+                log.warn("cleanSeedStockAuditSnapshot#入库记录找不到库存，inLogId={}，seedNum={}", seedStockInLog.getId(), seedStockInLog.getSeedNum());
+                continue;
+            }
+            fillSeedStockInLogSnapshot(seedStockInLog, seedStockTb);
+            seedStockInLogMapper.updateById(seedStockInLog);
+            inUpdateCount++;
+        }
+
+        int outUpdateCount = 0;
+        int outSkipCount = 0;
+        List<SeedStockOutLog> seedStockOutLogList = seedStockOutLogMapper.selectList(null);
+        Map<String, List<SeedStockOutLog>> outLogMap = seedStockOutLogList.stream()
+                .filter(seedStockOutLog -> StringUtils.isNotEmpty(seedStockOutLog.getSeedNum()))
+                .collect(Collectors.groupingBy(SeedStockOutLog::getSeedNum));
+        for (Map.Entry<String, List<SeedStockOutLog>> entry : outLogMap.entrySet()) {
+            SeedStockTb seedStockTb = seedStockMap.get(entry.getKey());
+            if (seedStockTb == null) {
+                outSkipCount += entry.getValue().size();
+                log.warn("cleanSeedStockAuditSnapshot#出库记录找不到库存，seedNum={}，outLogCount={}", entry.getKey(), entry.getValue().size());
+                continue;
+            }
+
+            List<SeedStockOutLog> outLogs = entry.getValue();
+            outLogs.sort(Comparator
+                    .comparing(SeedStockOutLog::getCreateTime, Comparator.nullsLast(Date::compareTo))
+                    .thenComparing(SeedStockOutLog::getId, Comparator.nullsLast(Integer::compareTo)));
+
+            BigDecimal stockNumber = seedStockTb.getTotalNumber();
+            if (stockNumber == null) {
+                stockNumber = seedStockTb.getSeedNumber() == null ? BigDecimal.ZERO : seedStockTb.getSeedNumber();
+                for (SeedStockOutLog outLog : outLogs) {
+                    if (outLog.getSeedNumber() != null) {
+                        stockNumber = stockNumber.add(outLog.getSeedNumber());
+                    }
+                }
+            }
+
+            for (SeedStockOutLog outLog : outLogs) {
+                BigDecimal outNumber = outLog.getSeedNumber() == null ? BigDecimal.ZERO : outLog.getSeedNumber();
+                BigDecimal stockBeforeNumber = stockNumber;
+                BigDecimal stockAfterNumber = stockBeforeNumber.subtract(outNumber);
+                fillSeedStockOutLogSnapshot(outLog, seedStockTb, stockBeforeNumber, stockAfterNumber);
+                seedStockOutLogMapper.updateById(outLog);
+                stockNumber = stockAfterNumber;
+                outUpdateCount++;
+            }
+        }
+
+        int outEmptySeedNumCount = seedStockOutLogList.size() - outLogMap.values().stream().mapToInt(List::size).sum();
+        outSkipCount += outEmptySeedNumCount;
+        Map<String, SeedStockOutLog> seedStockOutLogBySeedAndTaskMap = seedStockOutLogList.stream()
+                .filter(seedStockOutLog -> StringUtils.isNotEmpty(seedStockOutLog.getSeedNum()) && StringUtils.isNotEmpty(seedStockOutLog.getTaskNum()))
+                .collect(Collectors.toMap(seedStockOutLog -> buildSeedTaskKey(seedStockOutLog.getSeedNum(), seedStockOutLog.getTaskNum()), seedStockOutLog -> seedStockOutLog, (a, b) -> a));
+
+        int destructionUpdateCount = 0;
+        int destructionSkipCount = 0;
+        List<SeedStockDestructionLog> seedStockDestructionLogList = seedStockDestructionLogMapper.selectList(null);
+        Map<String, List<SeedStockDestructionLog>> destructionLogMap = seedStockDestructionLogList.stream()
+                .filter(seedStockDestructionLog -> StringUtils.isNotEmpty(seedStockDestructionLog.getSeedNum()))
+                .collect(Collectors.groupingBy(SeedStockDestructionLog::getSeedNum));
+        for (Map.Entry<String, List<SeedStockDestructionLog>> entry : destructionLogMap.entrySet()) {
+            SeedStockTb seedStockTb = seedStockMap.get(entry.getKey());
+            if (seedStockTb == null) {
+                destructionSkipCount += entry.getValue().size();
+                log.warn("cleanSeedStockAuditSnapshot#销毁记录找不到库存，seedNum={}，destructionLogCount={}", entry.getKey(), entry.getValue().size());
+                continue;
+            }
+
+            List<SeedStockDestructionLog> destructionLogs = entry.getValue();
+            destructionLogs.sort(Comparator
+                    .comparing(SeedStockDestructionLog::getDestructionTime, Comparator.nullsLast(Date::compareTo))
+                    .thenComparing(SeedStockDestructionLog::getId, Comparator.nullsLast(Integer::compareTo)));
+
+            BigDecimal stockNumber = seedStockTb.getTotalNumber();
+            if (stockNumber == null) {
+                stockNumber = seedStockTb.getSeedNumber() == null ? BigDecimal.ZERO : seedStockTb.getSeedNumber();
+                for (SeedStockDestructionLog destructionLog : destructionLogs) {
+                    if (destructionLog.getSeedNumber() != null) {
+                        stockNumber = stockNumber.add(destructionLog.getSeedNumber());
+                    }
+                }
+            }
+
+            for (SeedStockDestructionLog destructionLog : destructionLogs) {
+                BigDecimal destructionNumber = destructionLog.getSeedNumber() == null ? BigDecimal.ZERO : destructionLog.getSeedNumber();
+                SeedStockOutLog seedStockOutLog = seedStockOutLogBySeedAndTaskMap.get(buildSeedTaskKey(destructionLog.getSeedNum(), destructionLog.getTaskNum()));
+                BigDecimal stockBeforeNumber = seedStockOutLog != null && seedStockOutLog.getStockBeforeNumber() != null ? seedStockOutLog.getStockBeforeNumber() : stockNumber;
+                BigDecimal stockAfterNumber = seedStockOutLog != null && seedStockOutLog.getStockAfterNumber() != null ? seedStockOutLog.getStockAfterNumber() : stockBeforeNumber.subtract(destructionNumber);
+                fillSeedStockDestructionLogSnapshot(destructionLog, seedStockTb, stockBeforeNumber, stockAfterNumber);
+                seedStockDestructionLogMapper.updateById(destructionLog);
+                stockNumber = stockAfterNumber;
+                destructionUpdateCount++;
+            }
+        }
+
+        int destructionEmptySeedNumCount = seedStockDestructionLogList.size() - destructionLogMap.values().stream().mapToInt(List::size).sum();
+        destructionSkipCount += destructionEmptySeedNumCount;
+        log.info("cleanSeedStockAuditSnapshot#完成，入库更新={}，入库跳过={}，出库更新={}，出库跳过={}，销毁更新={}，销毁跳过={}，耗时={}ms",
+                inUpdateCount, inSkipCount, outUpdateCount, outSkipCount, destructionUpdateCount, destructionSkipCount, System.currentTimeMillis() - start);
+        return ResponseResult.getSuccess("入库更新=" + inUpdateCount + "，入库跳过=" + inSkipCount
+                + "，出库更新=" + outUpdateCount + "，出库跳过=" + outSkipCount
+                + "，销毁更新=" + destructionUpdateCount + "，销毁跳过=" + destructionSkipCount);
+    }
+
+    private String buildSeedTaskKey(String seedNum, String taskNum) {
+        return seedNum + "#" + taskNum;
+    }
+
+    private void fillSeedStockInLogSnapshot(SeedStockInLog seedStockInLog, SeedStockTb seedStockTb) {
+        seedStockInLog.setPlantCode(seedStockTb.getPlantCode());
+        seedStockInLog.setParentNum(seedStockTb.getParentNum());
+        seedStockInLog.setFatherInfo(seedStockTb.getFatherInfo());
+        seedStockInLog.setMatherInfo(seedStockTb.getMatherInfo());
+        seedStockInLog.setGeneration(seedStockTb.getGeneration());
+        seedStockInLog.setSpeciesCode(seedStockTb.getSpeciesCode());
+        seedStockInLog.setBreedCode(seedStockTb.getBreedCode());
+        seedStockInLog.setPollinationMethod(seedStockTb.getPollinationMethod());
+        seedStockInLog.setHarvestType(seedStockTb.getHarvestType());
+        seedStockInLog.setHarvestTime(seedStockTb.getHarvestTime());
+        seedStockInLog.setProductionLocationCode(seedStockTb.getProductionLocationCode());
+        seedStockInLog.setStockLocationNum(seedStockTb.getStockLocationNum());
+        seedStockInLog.setTotalNumber(seedStockTb.getTotalNumber());
+        seedStockInLog.setTargetCharacter(seedStockTb.getTargetCharacter());
+        seedStockInLog.setAliasName(seedStockTb.getAliasName());
+        seedStockInLog.setGeneType(seedStockTb.getGeneType());
+        seedStockInLog.setMaterialType(seedStockTb.getMaterialType());
+        seedStockInLog.setMatherSeedNum(seedStockTb.getMatherSeedNum());
+        seedStockInLog.setFatherSeedNum(seedStockTb.getFatherSeedNum());
+        seedStockInLog.setMatherRegionNum(seedStockTb.getMatherRegionNum());
+        seedStockInLog.setFatherRegionNum(seedStockTb.getFatherRegionNum());
+        seedStockInLog.setGenealogy(seedStockTb.getGenealogy());
+        seedStockInLog.setGeneSeparateFlag(seedStockTb.getGeneSeparateFlag());
+        seedStockInLog.setTransFlag(seedStockTb.getTransFlag());
+        seedStockInLog.setVectorTaskCode(seedStockTb.getVectorTaskCode());
+        seedStockInLog.setExperimentNum(seedStockTb.getExperimentNum());
+        seedStockInLog.setProjectCode(seedStockTb.getProjectCode());
+        seedStockInLog.setFatherSingleNum(seedStockTb.getFatherSingleNum());
+        seedStockInLog.setMatherSingleNum(seedStockTb.getMatherSingleNum());
+        seedStockInLog.setPdImplementCode(seedStockTb.getPdImplementCode());
+    }
+
+    private void fillSeedStockOutLogSnapshot(SeedStockOutLog seedStockOutLog, SeedStockTb seedStockTb, BigDecimal stockBeforeNumber, BigDecimal stockAfterNumber) {
+        seedStockOutLog.setPlantCode(seedStockTb.getPlantCode());
+        seedStockOutLog.setParentNum(seedStockTb.getParentNum());
+        seedStockOutLog.setFatherInfo(seedStockTb.getFatherInfo());
+        seedStockOutLog.setMatherInfo(seedStockTb.getMatherInfo());
+        seedStockOutLog.setGeneration(seedStockTb.getGeneration());
+        seedStockOutLog.setSpeciesCode(seedStockTb.getSpeciesCode());
+        seedStockOutLog.setBreedCode(seedStockTb.getBreedCode());
+        seedStockOutLog.setPollinationMethod(seedStockTb.getPollinationMethod());
+        seedStockOutLog.setHarvestType(seedStockTb.getHarvestType());
+        seedStockOutLog.setHarvestTime(seedStockTb.getHarvestTime());
+        seedStockOutLog.setSourceType(seedStockTb.getSourceType());
+        seedStockOutLog.setProductionLocationCode(seedStockTb.getProductionLocationCode());
+        seedStockOutLog.setStockLocationNum(seedStockTb.getStockLocationNum());
+        seedStockOutLog.setTotalNumber(seedStockTb.getTotalNumber());
+        seedStockOutLog.setTargetCharacter(seedStockTb.getTargetCharacter());
+        seedStockOutLog.setAliasName(seedStockTb.getAliasName());
+        seedStockOutLog.setGeneType(seedStockTb.getGeneType());
+        seedStockOutLog.setMaterialType(seedStockTb.getMaterialType());
+        seedStockOutLog.setMatherSeedNum(seedStockTb.getMatherSeedNum());
+        seedStockOutLog.setFatherSeedNum(seedStockTb.getFatherSeedNum());
+        seedStockOutLog.setMatherRegionNum(seedStockTb.getMatherRegionNum());
+        seedStockOutLog.setFatherRegionNum(seedStockTb.getFatherRegionNum());
+        seedStockOutLog.setGenealogy(seedStockTb.getGenealogy());
+        seedStockOutLog.setGeneSeparateFlag(seedStockTb.getGeneSeparateFlag());
+        seedStockOutLog.setTransFlag(seedStockTb.getTransFlag());
+        seedStockOutLog.setVectorTaskCode(seedStockTb.getVectorTaskCode());
+        seedStockOutLog.setExperimentNum(seedStockTb.getExperimentNum());
+        seedStockOutLog.setProjectCode(seedStockTb.getProjectCode());
+        seedStockOutLog.setFatherSingleNum(seedStockTb.getFatherSingleNum());
+        seedStockOutLog.setMatherSingleNum(seedStockTb.getMatherSingleNum());
+        seedStockOutLog.setPdImplementCode(seedStockTb.getPdImplementCode());
+        seedStockOutLog.setStockBeforeNumber(stockBeforeNumber);
+        seedStockOutLog.setStockAfterNumber(stockAfterNumber);
+    }
+
+    private void fillSeedStockDestructionLogSnapshot(SeedStockDestructionLog seedStockDestructionLog, SeedStockTb seedStockTb, BigDecimal stockBeforeNumber, BigDecimal stockAfterNumber) {
+        seedStockDestructionLog.setPlantCode(seedStockTb.getPlantCode());
+        seedStockDestructionLog.setParentNum(seedStockTb.getParentNum());
+        seedStockDestructionLog.setFatherInfo(seedStockTb.getFatherInfo());
+        seedStockDestructionLog.setMatherInfo(seedStockTb.getMatherInfo());
+        seedStockDestructionLog.setGeneration(seedStockTb.getGeneration());
+        seedStockDestructionLog.setSpeciesCode(seedStockTb.getSpeciesCode());
+        seedStockDestructionLog.setBreedCode(seedStockTb.getBreedCode());
+        seedStockDestructionLog.setPollinationMethod(seedStockTb.getPollinationMethod());
+        seedStockDestructionLog.setHarvestType(seedStockTb.getHarvestType());
+        seedStockDestructionLog.setHarvestTime(seedStockTb.getHarvestTime());
+        seedStockDestructionLog.setSourceType(seedStockTb.getSourceType());
+        seedStockDestructionLog.setProductionLocationCode(seedStockTb.getProductionLocationCode());
+        seedStockDestructionLog.setStockLocationNum(seedStockTb.getStockLocationNum());
+        seedStockDestructionLog.setTotalNumber(seedStockTb.getTotalNumber());
+        seedStockDestructionLog.setTargetCharacter(seedStockTb.getTargetCharacter());
+        seedStockDestructionLog.setAliasName(seedStockTb.getAliasName());
+        seedStockDestructionLog.setGeneType(seedStockTb.getGeneType());
+        seedStockDestructionLog.setMaterialType(seedStockTb.getMaterialType());
+        seedStockDestructionLog.setMatherSeedNum(seedStockTb.getMatherSeedNum());
+        seedStockDestructionLog.setFatherSeedNum(seedStockTb.getFatherSeedNum());
+        seedStockDestructionLog.setMatherRegionNum(seedStockTb.getMatherRegionNum());
+        seedStockDestructionLog.setFatherRegionNum(seedStockTb.getFatherRegionNum());
+        seedStockDestructionLog.setGenealogy(seedStockTb.getGenealogy());
+        seedStockDestructionLog.setGeneSeparateFlag(seedStockTb.getGeneSeparateFlag());
+        seedStockDestructionLog.setTransFlag(seedStockTb.getTransFlag());
+        seedStockDestructionLog.setVectorTaskCode(seedStockTb.getVectorTaskCode());
+        seedStockDestructionLog.setExperimentNum(seedStockTb.getExperimentNum());
+        seedStockDestructionLog.setProjectCode(seedStockTb.getProjectCode());
+        seedStockDestructionLog.setFatherSingleNum(seedStockTb.getFatherSingleNum());
+        seedStockDestructionLog.setMatherSingleNum(seedStockTb.getMatherSingleNum());
+        seedStockDestructionLog.setPdImplementCode(seedStockTb.getPdImplementCode());
+        seedStockDestructionLog.setStockBeforeNumber(stockBeforeNumber);
+        seedStockDestructionLog.setStockAfterNumber(stockAfterNumber);
     }
 
     private void fillSeedInStockExcelCode(SeedInStockCleanExcelDTO excelDTO,

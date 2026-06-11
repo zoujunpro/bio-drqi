@@ -98,6 +98,39 @@ public class SeedStockInServiceImpl implements SeedStockInService {
         seedStockInLog.setSourceType(seedStockInReqDTO.getSourceType());
         seedStockInLog.setTaskNum(seedStockInReqDTO.getTaskNum());
         seedStockInLog.setId(seedStockInReqDTO.getId());
+        seedStockInLog.setApplyUserId(seedStockInReqDTO.getApplyUserId());
+        seedStockInLog.setApplyUserName(seedStockInReqDTO.getApplyUserName());
+        seedStockInLog.setPlantCode(seedStockInReqDTO.getPlantCode());
+        seedStockInLog.setParentNum(seedStockInReqDTO.getParentNum());
+        seedStockInLog.setFatherInfo(seedStockInReqDTO.getFatherInfo());
+        seedStockInLog.setMatherInfo(seedStockInReqDTO.getMatherInfo());
+        seedStockInLog.setGeneration(seedStockInReqDTO.getGeneration());
+        seedStockInLog.setSpeciesCode(seedStockInReqDTO.getSpeciesCode());
+        seedStockInLog.setBreedCode(seedStockInReqDTO.getBreedCode());
+        seedStockInLog.setPollinationMethod(seedStockInReqDTO.getPollinationMethod());
+        seedStockInLog.setHarvestType(seedStockInReqDTO.getHarvestType());
+        seedStockInLog.setHarvestTime(seedStockInReqDTO.getHarvestTime());
+        seedStockInLog.setProductionLocationCode(seedStockInReqDTO.getProductionLocationCode());
+        seedStockInLog.setStockLocationNum(seedStockInReqDTO.getStockLocationNum());
+        seedStockInLog.setTargetCharacter(seedStockInReqDTO.getTargetCharacter());
+        seedStockInLog.setAliasName(seedStockInReqDTO.getAliasName());
+        seedStockInLog.setGeneType(seedStockInReqDTO.getGeneType());
+        seedStockInLog.setMaterialType(seedStockInReqDTO.getMaterialType());
+        seedStockInLog.setMatherSeedNum(seedStockInReqDTO.getMatherSeedNum());
+        seedStockInLog.setFatherSeedNum(seedStockInReqDTO.getFatherSeedNum());
+        seedStockInLog.setMatherRegionNum(seedStockInReqDTO.getMatherRegionNum());
+        seedStockInLog.setFatherRegionNum(seedStockInReqDTO.getFatherRegionNum());
+        seedStockInLog.setGenealogy(seedStockInReqDTO.getGenealogy());
+        seedStockInLog.setGeneSeparateFlag(seedStockInReqDTO.getGeneSeparateFlag());
+        seedStockInLog.setTransFlag(seedStockInReqDTO.getTransFlag());
+        seedStockInLog.setVectorTaskCode(seedStockInReqDTO.getVectorTaskCode());
+        seedStockInLog.setExperimentNum(seedStockInReqDTO.getExperimentNum());
+        seedStockInLog.setProjectCode(seedStockInReqDTO.getProjectCode());
+        seedStockInLog.setFatherSingleNum(seedStockInReqDTO.getFatherSingleNum());
+        seedStockInLog.setMatherSingleNum(seedStockInReqDTO.getMatherSingleNum());
+        seedStockInLog.setPdImplementCode(seedStockInReqDTO.getPdImplementCode());
+        seedStockInLog.setBeginDate(seedStockInReqDTO.getBeginDate());
+        seedStockInLog.setEndDate(seedStockInReqDTO.getEndDate());
         if (CollectionUtil.isNotEmpty(dataPermissionList) && DataPermissionValueEnum.OWNER.value.equals(dataPermissionList.get(0).getPermissionValue())) {
             seedStockInLog.setApplyUserId(SecurityContextHolder.getUserId());
         }
@@ -198,6 +231,7 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             seedStockInLog.setCreateTime(new Date());
             seedStockInLog.setSeedStockTb(seedStockTb);
             seedStockInLog.setUniqueCode(executeFormContent.getUniqueCode());
+            fillStockSnapshot(seedStockInLog, seedStockTb);
             seedStockInLogMapper.insert(seedStockInLog);
 
             executeFormContent.setSeedNumber(content.getSeedNumber());
@@ -210,6 +244,39 @@ public class SeedStockInServiceImpl implements SeedStockInService {
             seedPlantService.seedInStockAddRefPlant(seedStockTb);
         }
 
+    }
+
+    private void fillStockSnapshot(SeedStockInLog seedStockInLog, SeedStockTb seedStockTb) {
+        seedStockInLog.setPlantCode(seedStockTb.getPlantCode());
+        seedStockInLog.setParentNum(seedStockTb.getParentNum());
+        seedStockInLog.setFatherInfo(seedStockTb.getFatherInfo());
+        seedStockInLog.setMatherInfo(seedStockTb.getMatherInfo());
+        seedStockInLog.setGeneration(seedStockTb.getGeneration());
+        seedStockInLog.setSpeciesCode(seedStockTb.getSpeciesCode());
+        seedStockInLog.setBreedCode(seedStockTb.getBreedCode());
+        seedStockInLog.setPollinationMethod(seedStockTb.getPollinationMethod());
+        seedStockInLog.setHarvestType(seedStockTb.getHarvestType());
+        seedStockInLog.setHarvestTime(seedStockTb.getHarvestTime());
+        seedStockInLog.setProductionLocationCode(seedStockTb.getProductionLocationCode());
+        seedStockInLog.setStockLocationNum(seedStockTb.getStockLocationNum());
+        seedStockInLog.setTotalNumber(seedStockTb.getTotalNumber());
+        seedStockInLog.setTargetCharacter(seedStockTb.getTargetCharacter());
+        seedStockInLog.setAliasName(seedStockTb.getAliasName());
+        seedStockInLog.setGeneType(seedStockTb.getGeneType());
+        seedStockInLog.setMaterialType(seedStockTb.getMaterialType());
+        seedStockInLog.setMatherSeedNum(seedStockTb.getMatherSeedNum());
+        seedStockInLog.setFatherSeedNum(seedStockTb.getFatherSeedNum());
+        seedStockInLog.setMatherRegionNum(seedStockTb.getMatherRegionNum());
+        seedStockInLog.setFatherRegionNum(seedStockTb.getFatherRegionNum());
+        seedStockInLog.setGenealogy(seedStockTb.getGenealogy());
+        seedStockInLog.setGeneSeparateFlag(seedStockTb.getGeneSeparateFlag());
+        seedStockInLog.setTransFlag(seedStockTb.getTransFlag());
+        seedStockInLog.setVectorTaskCode(seedStockTb.getVectorTaskCode());
+        seedStockInLog.setExperimentNum(seedStockTb.getExperimentNum());
+        seedStockInLog.setProjectCode(seedStockTb.getProjectCode());
+        seedStockInLog.setFatherSingleNum(seedStockTb.getFatherSingleNum());
+        seedStockInLog.setMatherSingleNum(seedStockTb.getMatherSingleNum());
+        seedStockInLog.setPdImplementCode(seedStockTb.getPdImplementCode());
     }
 
     @Override

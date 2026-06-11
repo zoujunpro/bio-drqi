@@ -95,9 +95,9 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
             for (int i = 0; i < seedDestructionDTO.getSeedList().size(); i++) {
                 SeedDestructionDTO.SeedDTO seedDTO = seedDestructionDTO.getSeedList().get(i);
                 //扣减冻结库存，记录出库日志
-                reduceSeedStock(seedDTO.getSeedNum(), bioTaskDtlTb, seedDTO.getSeedNumber(), seedDTO.getRemarks(), i + 1, USE_TO_DESC);
+                ReduceSeedStockResult reduceSeedStockResult = reduceSeedStock(seedDTO.getSeedNum(), bioTaskDtlTb, seedDTO.getSeedNumber(), seedDTO.getRemarks(), i + 1, USE_TO_DESC);
                 //记录销毁信息
-                writeSeedDestructionLog(bioTaskDtlTb, seedDTO, seedDestructionDTO);
+                writeSeedDestructionLog(bioTaskDtlTb, seedDTO, seedDestructionDTO, reduceSeedStockResult);
             }
         }
     }
@@ -108,7 +108,7 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
     }
 
 
-    private void writeSeedDestructionLog(BioTaskDtlTb bioTaskDtlTb, SeedDestructionDTO.SeedDTO seedDTO, SeedDestructionDTO seedDestructionDTO) {
+    private void writeSeedDestructionLog(BioTaskDtlTb bioTaskDtlTb, SeedDestructionDTO.SeedDTO seedDTO, SeedDestructionDTO seedDestructionDTO, ReduceSeedStockResult reduceSeedStockResult) {
         SeedStockDestructionLog seedStockDestructionLog = new SeedStockDestructionLog();
         seedStockDestructionLog.setSeedNum(seedDTO.getSeedNum());
         seedStockDestructionLog.setUnit(seedDTO.getUnit());
@@ -121,7 +121,44 @@ public class SeedDestructionApplyProcService extends AbstractSeedTaskService {
         seedStockDestructionLog.setDestructionMethod(seedDestructionDTO.getDestructionMethod());
         seedStockDestructionLog.setDestructionEvidence(JSONUtil.toJsonStr(seedDestructionDTO.getDestructionEvidenceList()));
         seedStockDestructionLog.setDestructionTime(new Date());
+        fillSeedStockDestructionLogSnapshot(seedStockDestructionLog, reduceSeedStockResult.getSeedStockTb(), reduceSeedStockResult.getStockBeforeNumber(), reduceSeedStockResult.getStockAfterNumber());
         seedStockDestructionLogMapper.insert(seedStockDestructionLog);
+    }
+
+    private void fillSeedStockDestructionLogSnapshot(SeedStockDestructionLog seedStockDestructionLog, SeedStockTb seedStockTb, BigDecimal stockBeforeNumber, BigDecimal stockAfterNumber) {
+        seedStockDestructionLog.setPlantCode(seedStockTb.getPlantCode());
+        seedStockDestructionLog.setParentNum(seedStockTb.getParentNum());
+        seedStockDestructionLog.setFatherInfo(seedStockTb.getFatherInfo());
+        seedStockDestructionLog.setMatherInfo(seedStockTb.getMatherInfo());
+        seedStockDestructionLog.setGeneration(seedStockTb.getGeneration());
+        seedStockDestructionLog.setSpeciesCode(seedStockTb.getSpeciesCode());
+        seedStockDestructionLog.setBreedCode(seedStockTb.getBreedCode());
+        seedStockDestructionLog.setPollinationMethod(seedStockTb.getPollinationMethod());
+        seedStockDestructionLog.setHarvestType(seedStockTb.getHarvestType());
+        seedStockDestructionLog.setHarvestTime(seedStockTb.getHarvestTime());
+        seedStockDestructionLog.setSourceType(seedStockTb.getSourceType());
+        seedStockDestructionLog.setProductionLocationCode(seedStockTb.getProductionLocationCode());
+        seedStockDestructionLog.setStockLocationNum(seedStockTb.getStockLocationNum());
+        seedStockDestructionLog.setTotalNumber(seedStockTb.getTotalNumber());
+        seedStockDestructionLog.setTargetCharacter(seedStockTb.getTargetCharacter());
+        seedStockDestructionLog.setAliasName(seedStockTb.getAliasName());
+        seedStockDestructionLog.setGeneType(seedStockTb.getGeneType());
+        seedStockDestructionLog.setMaterialType(seedStockTb.getMaterialType());
+        seedStockDestructionLog.setMatherSeedNum(seedStockTb.getMatherSeedNum());
+        seedStockDestructionLog.setFatherSeedNum(seedStockTb.getFatherSeedNum());
+        seedStockDestructionLog.setMatherRegionNum(seedStockTb.getMatherRegionNum());
+        seedStockDestructionLog.setFatherRegionNum(seedStockTb.getFatherRegionNum());
+        seedStockDestructionLog.setGenealogy(seedStockTb.getGenealogy());
+        seedStockDestructionLog.setGeneSeparateFlag(seedStockTb.getGeneSeparateFlag());
+        seedStockDestructionLog.setTransFlag(seedStockTb.getTransFlag());
+        seedStockDestructionLog.setVectorTaskCode(seedStockTb.getVectorTaskCode());
+        seedStockDestructionLog.setExperimentNum(seedStockTb.getExperimentNum());
+        seedStockDestructionLog.setProjectCode(seedStockTb.getProjectCode());
+        seedStockDestructionLog.setFatherSingleNum(seedStockTb.getFatherSingleNum());
+        seedStockDestructionLog.setMatherSingleNum(seedStockTb.getMatherSingleNum());
+        seedStockDestructionLog.setPdImplementCode(seedStockTb.getPdImplementCode());
+        seedStockDestructionLog.setStockBeforeNumber(stockBeforeNumber);
+        seedStockDestructionLog.setStockAfterNumber(stockAfterNumber);
     }
 
     @Override

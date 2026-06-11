@@ -47,7 +47,7 @@ public abstract class AbstractSeedTaskService extends DefaultBuildHtmlModelHandl
      * @param remarks
      * @param n
      */
-    protected void reduceSeedStock(String seedNum, BioTaskDtlTb bioTaskDtlTb, BigDecimal num, String remarks, int n, String useToDesc) {
+    protected ReduceSeedStockResult reduceSeedStock(String seedNum, BioTaskDtlTb bioTaskDtlTb, BigDecimal num, String remarks, int n, String useToDesc) {
         log.info("扣减库存 seedNum={}，num={}", seedNum, num);
         SeedStockTb seedStockTb = seedStockTbMapper.selectOneBySeedNum(seedNum);
         if (seedStockTb == null) {
@@ -58,8 +58,11 @@ public abstract class AbstractSeedTaskService extends DefaultBuildHtmlModelHandl
             throw new BusinessException("种子" + seedStockTb.getSeedNum() + "库存不足, 当前库存：" + seedStockTb.getSeedNumber() + seedStockTb.getUnit());
         }
 
+        BigDecimal stockBeforeNumber = seedStockTb.getSeedNumber();
+        BigDecimal stockAfterNumber = stockBeforeNumber.subtract(num);
+
         //减库存
-        seedStockTb.setSeedNumber(seedStockTb.getSeedNumber().subtract(num));
+        seedStockTb.setSeedNumber(stockAfterNumber);
         seedStockTbMapper.updateById(seedStockTb);
 
         //记录日志
@@ -75,7 +78,69 @@ public abstract class AbstractSeedTaskService extends DefaultBuildHtmlModelHandl
         seedStockOutLog.setTaskNum(bioTaskDtlTb.getTaskNum());
         seedStockOutLog.setOutTaskNum(bioTaskDtlTb.getTaskNum() + n);
         seedStockOutLog.setUseToDesc(useToDesc);
+        fillStockSnapshot(seedStockOutLog, seedStockTb, stockBeforeNumber, stockAfterNumber);
         seedStockOutLogMapper.insert(seedStockOutLog);
+        return new ReduceSeedStockResult(seedStockTb, stockBeforeNumber, stockAfterNumber);
+    }
+
+    private void fillStockSnapshot(SeedStockOutLog seedStockOutLog, SeedStockTb seedStockTb, BigDecimal stockBeforeNumber, BigDecimal stockAfterNumber) {
+        seedStockOutLog.setPlantCode(seedStockTb.getPlantCode());
+        seedStockOutLog.setParentNum(seedStockTb.getParentNum());
+        seedStockOutLog.setFatherInfo(seedStockTb.getFatherInfo());
+        seedStockOutLog.setMatherInfo(seedStockTb.getMatherInfo());
+        seedStockOutLog.setGeneration(seedStockTb.getGeneration());
+        seedStockOutLog.setSpeciesCode(seedStockTb.getSpeciesCode());
+        seedStockOutLog.setBreedCode(seedStockTb.getBreedCode());
+        seedStockOutLog.setPollinationMethod(seedStockTb.getPollinationMethod());
+        seedStockOutLog.setHarvestType(seedStockTb.getHarvestType());
+        seedStockOutLog.setHarvestTime(seedStockTb.getHarvestTime());
+        seedStockOutLog.setSourceType(seedStockTb.getSourceType());
+        seedStockOutLog.setProductionLocationCode(seedStockTb.getProductionLocationCode());
+        seedStockOutLog.setStockLocationNum(seedStockTb.getStockLocationNum());
+        seedStockOutLog.setTotalNumber(seedStockTb.getTotalNumber());
+        seedStockOutLog.setTargetCharacter(seedStockTb.getTargetCharacter());
+        seedStockOutLog.setAliasName(seedStockTb.getAliasName());
+        seedStockOutLog.setGeneType(seedStockTb.getGeneType());
+        seedStockOutLog.setMaterialType(seedStockTb.getMaterialType());
+        seedStockOutLog.setMatherSeedNum(seedStockTb.getMatherSeedNum());
+        seedStockOutLog.setFatherSeedNum(seedStockTb.getFatherSeedNum());
+        seedStockOutLog.setMatherRegionNum(seedStockTb.getMatherRegionNum());
+        seedStockOutLog.setFatherRegionNum(seedStockTb.getFatherRegionNum());
+        seedStockOutLog.setGenealogy(seedStockTb.getGenealogy());
+        seedStockOutLog.setGeneSeparateFlag(seedStockTb.getGeneSeparateFlag());
+        seedStockOutLog.setTransFlag(seedStockTb.getTransFlag());
+        seedStockOutLog.setVectorTaskCode(seedStockTb.getVectorTaskCode());
+        seedStockOutLog.setExperimentNum(seedStockTb.getExperimentNum());
+        seedStockOutLog.setProjectCode(seedStockTb.getProjectCode());
+        seedStockOutLog.setFatherSingleNum(seedStockTb.getFatherSingleNum());
+        seedStockOutLog.setMatherSingleNum(seedStockTb.getMatherSingleNum());
+        seedStockOutLog.setPdImplementCode(seedStockTb.getPdImplementCode());
+        seedStockOutLog.setStockBeforeNumber(stockBeforeNumber);
+        seedStockOutLog.setStockAfterNumber(stockAfterNumber);
+    }
+
+    protected static class ReduceSeedStockResult {
+        private final SeedStockTb seedStockTb;
+        private final BigDecimal stockBeforeNumber;
+        private final BigDecimal stockAfterNumber;
+
+        private ReduceSeedStockResult(SeedStockTb seedStockTb, BigDecimal stockBeforeNumber, BigDecimal stockAfterNumber) {
+            this.seedStockTb = seedStockTb;
+            this.stockBeforeNumber = stockBeforeNumber;
+            this.stockAfterNumber = stockAfterNumber;
+        }
+
+        protected SeedStockTb getSeedStockTb() {
+            return seedStockTb;
+        }
+
+        protected BigDecimal getStockBeforeNumber() {
+            return stockBeforeNumber;
+        }
+
+        protected BigDecimal getStockAfterNumber() {
+            return stockAfterNumber;
+        }
     }
 
 

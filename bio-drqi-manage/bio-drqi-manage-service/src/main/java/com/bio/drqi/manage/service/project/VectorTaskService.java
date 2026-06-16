@@ -4,6 +4,7 @@ import com.bio.drqi.manage.vector.req.GetVectorTaskNumReqDTO;
 import com.bio.drqi.manage.vector.req.QueryPageVectorReqDTO;
 import com.bio.drqi.manage.vector.req.VectorTaskModifyVectorTaskCodeReqDTO;
 import com.bio.drqi.manage.vector.rsp.CerImplementationPlanBaseInfoRspDTO;
+import com.bio.drqi.manage.vector.rsp.CerImplementationPlanFullInfoRspDTO;
 import com.bio.drqi.manage.vector.rsp.StepListRspDTO;
 import com.bio.drqi.manage.vector.rsp.VectorListPageRspDTO;
 import com.bio.drqi.manage.dto.project.VectorTaskAddDTO;
@@ -13,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface VectorTaskService {
@@ -45,6 +47,10 @@ public interface VectorTaskService {
     CerImplementationPlanBaseInfoRspDTO detail(Integer id);
 
     CerImplementationPlanBaseInfoRspDTO detailByCode(String vectorTaskCode);
+
+    CerImplementationPlanFullInfoRspDTO fullInfo(String vectorTaskCode);
+
+    void exportFullInfoExcel(String vectorTaskCode, HttpServletResponse response);
 
     void stop(Integer id);
 

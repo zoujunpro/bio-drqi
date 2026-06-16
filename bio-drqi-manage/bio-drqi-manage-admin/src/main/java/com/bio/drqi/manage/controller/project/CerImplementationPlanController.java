@@ -7,6 +7,7 @@ import com.bio.drqi.manage.vector.req.GetVectorTaskNumReqDTO;
 import com.bio.drqi.manage.vector.req.QueryPageVectorReqDTO;
 import com.bio.drqi.manage.vector.req.VectorTaskModifyVectorTaskCodeReqDTO;
 import com.bio.drqi.manage.vector.rsp.CerImplementationPlanBaseInfoRspDTO;
+import com.bio.drqi.manage.vector.rsp.CerImplementationPlanFullInfoRspDTO;
 import com.bio.drqi.manage.vector.rsp.StepListRspDTO;
 import com.bio.drqi.manage.vector.rsp.VectorListPageRspDTO;
 import com.bio.common.core.dto.ResponseResult;
@@ -200,6 +201,30 @@ public class CerImplementationPlanController {
     @WebLog(desc = "查询实施方案详情(根据编号)")
     public ResponseResult<CerImplementationPlanBaseInfoRspDTO> detailByCode(@RequestParam String vectorTaskCode) {
         return ResponseResult.getSuccess(vectorTaskService.detailByCode(vectorTaskCode));
+    }
+
+    /**
+     * 查询实施方案全量展示信息
+     *
+     * @param vectorTaskCode
+     * @return
+     */
+    @GetMapping("/fullInfo")
+    @WebLog(desc = "查询实施方案全量展示信息")
+    public ResponseResult<CerImplementationPlanFullInfoRspDTO> fullInfo(@RequestParam String vectorTaskCode) {
+        return ResponseResult.getSuccess(vectorTaskService.fullInfo(vectorTaskCode));
+    }
+
+    /**
+     * 导出实施方案全量展示信息
+     *
+     * @param vectorTaskCode
+     * @param response
+     */
+    @GetMapping("/exportFullInfoExcel")
+    @WebLog(desc = "导出实施方案全量展示信息")
+    public void exportFullInfoExcel(@RequestParam String vectorTaskCode, HttpServletResponse response) {
+        vectorTaskService.exportFullInfoExcel(vectorTaskCode, response);
     }
 
 

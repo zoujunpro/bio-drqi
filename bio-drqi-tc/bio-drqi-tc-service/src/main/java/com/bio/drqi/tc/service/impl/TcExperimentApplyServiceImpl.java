@@ -64,7 +64,7 @@ public class TcExperimentApplyServiceImpl implements TcExperimentApplyService {
     public PageInfo<TcExperimentApplyListPageRspDTO> listPage(TcExperimentApplyListPageReqDTO tcExperimentApplyListPageReqDTO) {
 
         List<TcHarvestSeedApplyTb> tcHarvestSeedApplyTbList = tcHarvestSeedApplyTbMapper.selectSelective(null);
-        List<TcPollinationApplyTb> tcPollinationApplyTbList = tcPollinationApplyTbMapper.selectSelective(null);
+        List<TcPollinationApplyTb> tcPollinationApplyTbList = tcPollinationApplyTbMapper.selectList(null);
         Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
         TcExperimentTb tcExperimentTb = new TcExperimentTb();
         tcExperimentTb.setVectorTaskCodes(tcExperimentApplyListPageReqDTO.getVectorTaskCode());
@@ -89,7 +89,7 @@ public class TcExperimentApplyServiceImpl implements TcExperimentApplyService {
     @Override
     public List<TcExperimentApplyQueryByPdAndVectorTaskCodeRspDTO> queryByPdAndVectorTaskCode(TcExperimentQueryByPdAndVectorTaskCodeReqDTO tcExperimentQueryByPdAndVectorTaskCodeReqDTO) {
         List<TcHarvestSeedApplyTb> tcHarvestSeedApplyTbList = tcHarvestSeedApplyTbMapper.selectSelective(null);
-        List<TcPollinationApplyTb> tcPollinationApplyTbList = tcPollinationApplyTbMapper.selectSelective(null);
+        List<TcPollinationApplyTb> tcPollinationApplyTbList = tcPollinationApplyTbMapper.selectList(null);
         Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictMapper.selectAll().stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
 
         List<TcExperimentDesignTb> tcExperimentDesignTbList = tcExperimentDesignTbMapper.selectAllByVectorTaskCodeAndPdImplementCode(tcExperimentQueryByPdAndVectorTaskCodeReqDTO.getVectorTaskCode(), tcExperimentQueryByPdAndVectorTaskCodeReqDTO.getPdImplementCode());

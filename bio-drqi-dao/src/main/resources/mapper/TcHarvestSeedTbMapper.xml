@@ -100,4 +100,18 @@
             #{item.seedNums,jdbcType=VARCHAR})
         </foreach>
     </insert>
+    <select id="selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSingleNumberAndMSingleNumber"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tc_harvest_seed_tb
+        where
+        experiment_num = #{experimentNum,jdbcType=VARCHAR}
+        AND f_region_num = #{fRegionNum,jdbcType=VARCHAR}
+        AND m_region_num = #{mRegionNum,jdbcType=VARCHAR}
+        AND f_seed_num = #{fSeedNum,jdbcType=VARCHAR}
+        AND m_seed_num = #{mSeedNum,jdbcType=VARCHAR}
+        AND f_single_number = #{fSingleNumber,jdbcType=VARCHAR}
+        AND m_single_number = #{mSingleNumber,jdbcType=VARCHAR}
+    </select>
 </mapper>

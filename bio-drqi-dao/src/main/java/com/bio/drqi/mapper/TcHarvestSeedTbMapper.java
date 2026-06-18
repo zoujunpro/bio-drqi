@@ -19,6 +19,8 @@ public interface TcHarvestSeedTbMapper extends BaseMapper<TcHarvestSeedTb> {
 
     List<TcHarvestSeedTb> selectSelective(TcHarvestSeedTb tcHarvestSeedTb);
 
+    TcHarvestSeedTb selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSingleNumberAndMSingleNumber(@Param("experimentNum") String experimentNum, @Param("fRegionNum") String fRegionNum, @Param("mRegionNum") String mRegionNum, @Param("fSeedNum") String fSeedNum, @Param("mSeedNum") String mSeedNum, @Param("fSingleNumber") String fSingleNumber, @Param("mSingleNumber") String mSingleNumber);
+
 
 
 }

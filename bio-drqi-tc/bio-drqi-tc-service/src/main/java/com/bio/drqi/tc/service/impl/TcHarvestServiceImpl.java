@@ -64,12 +64,14 @@ public class TcHarvestServiceImpl implements TcHarvestService {
         Map<String, String> codeNameCerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         Map<String, String> pollinationMethodNameMap = buildDictNameMap(BioDictTypeEnum.POLLINATE_TYPE);
         Map<String, String> harvestTypeNameMap = buildDictNameMap(BioDictTypeEnum.HARVEST_TYPE);
+        Map<String, String> materialTypeNameMap = buildDictNameMap(BioDictTypeEnum.MATERIAL_TYPE);
         if (CollectionUtil.isNotEmpty(resultPageInfo.getList())) {
             resultPageInfo.getList().forEach(tcPollinationListPageDetailRspDTO -> {
                 tcPollinationListPageDetailRspDTO.setFBreedName(codeNameCerBreedDictMap.get(tcPollinationListPageDetailRspDTO.getFBreedCode()));
                 tcPollinationListPageDetailRspDTO.setMBreedName(codeNameCerBreedDictMap.get(tcPollinationListPageDetailRspDTO.getMBreedCode()));
                 tcPollinationListPageDetailRspDTO.setPollinationMethodName(translateDict(pollinationMethodNameMap, tcPollinationListPageDetailRspDTO.getPollinationMethodCode()));
                 tcPollinationListPageDetailRspDTO.setHarvestTypeName(translateDict(harvestTypeNameMap, tcPollinationListPageDetailRspDTO.getHarvestTypeCode()));
+                tcPollinationListPageDetailRspDTO.setMaterialTypeName(translateDict(materialTypeNameMap, tcPollinationListPageDetailRspDTO.getMaterialType()));
             });
         }
         return resultPageInfo;

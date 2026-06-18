@@ -163,4 +163,10 @@ public class TcHarvestListPageDetailRspDTO {
 
     private String seedNums;
 
+
+    private String materialType;
+
+
+    private String materialTypeName;
+
 }

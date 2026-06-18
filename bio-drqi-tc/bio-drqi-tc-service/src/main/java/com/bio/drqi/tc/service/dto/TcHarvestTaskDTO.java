@@ -13,9 +13,6 @@ public class TcHarvestTaskDTO {
     @NotBlank(message = "参数缺失：请选择试验")
     private String experimentNum;
 
-
-    private String harvestTime;
-
     /**
      *收获excel地址
      */

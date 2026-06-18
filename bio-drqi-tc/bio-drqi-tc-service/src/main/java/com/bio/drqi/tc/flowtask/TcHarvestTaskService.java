@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.File;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -77,7 +78,16 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
             throw new BusinessException("文件处理异常");
         }
         List<TcHarvestExcelDTO> tcHarvestExcelDTOList = ExcelUtil.readExcel(tempFilePath, TcHarvestExcelDTO.class);
+        Map<String, BioDict> materialTypeDictMap = bioDictMapper.selectAllByDictType(BioDictTypeEnum.MATERIAL_TYPE.name()).stream()
+                .collect(Collectors.toMap(BioDict::getDictValueName, bioDict -> bioDict, (left, right) -> left));
         for (TcHarvestExcelDTO tcHarvestExcelDTO : tcHarvestExcelDTOList) {
+            validateHarvestTimeFormat(tcHarvestExcelDTO.getHarvestTime());
+            BioDict materialTypeBioDict = materialTypeDictMap.get(tcHarvestExcelDTO.getMaterialTypeName());
+            if (materialTypeBioDict == null) {
+                throw new BusinessException("材料类型填写错误：" + tcHarvestExcelDTO.getMaterialTypeName());
+            }
+            tcHarvestExcelDTO.setMaterialType(materialTypeBioDict.getDictValueCode());
+
             TcPollinationTb tcPollinationTb = tcPollinationTbMapper.selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSingleNumberAndMSingleNumber
                     (tcExperimentTb.getExperimentNum(),
                             tcHarvestExcelDTO.getFatherRegionNum(),
@@ -105,7 +115,6 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
             TcHarvestSeedApplyTb tcHarvestSeedApplyTb = new TcHarvestSeedApplyTb();
             tcHarvestSeedApplyTb.setTaskNum(bioTaskDtlTb.getTaskNum());
             tcHarvestSeedApplyTb.setHarvestApplyNum(bioTaskDtlTb.getTaskNum());
-            tcHarvestSeedApplyTb.setHarvestTime(tcHarvestTaskDTO.getHarvestTime());
             tcHarvestSeedApplyTb.setCreateTime(new Date());
             tcHarvestSeedApplyTb.setCreateUserId(bioTaskDtlTb.getApplyUserId());
             tcHarvestSeedApplyTb.setCreateUserName(bioTaskDtlTb.getApplyUserName());
@@ -156,6 +165,7 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
                 tcHarvestSeedTb.setMSingleNumber(tcPollinationTb.getMSingleNumber());
                 tcHarvestSeedTb.setMTcSampleCode(tcPollinationTb.getMSampleCode());
                 tcHarvestSeedTb.setFTcSampleCode(tcPollinationTb.getFSampleCode());
+                tcHarvestSeedTb.setMaterialType(tcHarvestExcelDTO.getMaterialType());
                 tcHarvestSeedTbList.add(tcHarvestSeedTb);
             }
             tcHarvestSeedTbMapper.insertBatch(tcHarvestSeedTbList);
@@ -178,7 +188,6 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
         List<BioHtmlModelDTO.ModelSection> sections = new ArrayList<>();
         List<BioHtmlModelDTO.ModelField> applyFields = new ArrayList<>();
         applyFields.add(buildField("试验编号", dto.getExperimentNum()));
-        applyFields.add(buildField("收获时间", dto.getHarvestTime()));
         sections.add(buildFieldSection("申请信息", applyFields));
 
         List<TcHarvestSeedTb> harvestSeedList = tcHarvestSeedTbMapper.selectList(new LambdaQueryWrapper<TcHarvestSeedTb>()
@@ -204,6 +213,7 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
                 row.put("父本品种", resolveBreedName(breedNameMap, item.getFBreedCode()));
                 row.put("收获数量", formatHarvestNumber(item.getSeedNumber(), item.getUnit()));
                 row.put("收获方式", translateDict(harvestTypeNameMap, item.getHarvestTypeCode()));
+                row.put("收获时间", item.getHarvestTime());
                 row.put("收获备注", item.getRemark());
                 rows.add(row);
             }
@@ -228,6 +238,7 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
                 row.put("父本品种", item.getFatherBreedName());
                 row.put("收获数量", formatHarvestNumber(item.getSeedNumber(), item.getUnit()));
                 row.put("收获方式", item.getHarvestTypeName());
+                row.put("收获时间", item.getHarvestTime());
                 row.put("备注", item.getRemark());
                 rows.add(row);
             }
@@ -240,7 +251,7 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
     private List<String> buildHarvestHeaders(String remarkHeader) {
         return Arrays.asList("母本小区编号", "母本种子编号", "母本单株编号", "母本取样编号", "母本品种",
                 "父本小区编号", "父本种子编号", "父本单株编号", "父本取样编号", "父本品种",
-                "收获数量", "收获方式", remarkHeader);
+                "收获数量", "收获方式", "收获时间", remarkHeader);
     }
 
     private String resolveBreedName(Map<String, String> breedNameMap, String breedCode) {
@@ -259,6 +270,22 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
 
     private String formatHarvestNumber(String seedNumber, String unit) {
         return (StringUtils.isEmpty(seedNumber) ? "" : seedNumber) + (StringUtils.isEmpty(unit) ? "" : unit);
+    }
+
+    private void validateHarvestTimeFormat(String harvestTime) {
+        if (StringUtils.isEmpty(harvestTime)) {
+            throw new BusinessException("参数缺失：收获时间");
+        }
+        if (!harvestTime.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            throw new BusinessException("收获时间格式错误，请填写yyyy-MM-dd：" + harvestTime);
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+        try {
+            dateFormat.parse(harvestTime);
+        } catch (Exception e) {
+            throw new BusinessException("收获时间格式错误，请填写yyyy-MM-dd：" + harvestTime);
+        }
     }
 
     private Map<String, String> buildDictNameMap(BioDictTypeEnum dictTypeEnum) {

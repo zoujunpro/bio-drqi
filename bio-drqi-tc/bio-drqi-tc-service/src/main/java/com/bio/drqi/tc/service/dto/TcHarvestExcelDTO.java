@@ -1,5 +1,6 @@
 package com.bio.drqi.tc.service.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
@@ -137,6 +138,18 @@ public class TcHarvestExcelDTO {
     @ExcelProperty(value ={"收获信息","收获时间"})
     @NotBlank(message = "参数缺失：收获时间")
     private String harvestTime;
+
+
+    /**
+     * 材料类型
+     */
+    @ExcelProperty(value ={"收获信息","材料类型"})
+    @NotBlank(message = "参数缺失：材料类型")
+
+    private String materialTypeName;
+
+    @ExcelIgnore
+    private String materialType;
 
     /**
      * 备注

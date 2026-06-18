@@ -85,6 +85,7 @@ public class TcHarvestServiceImpl implements TcHarvestService {
         Map<String, String> codeNameCerSpeciesDictMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
         Map<String, String> pollinationMethodNameMap = buildDictNameMap(BioDictTypeEnum.POLLINATE_TYPE);
         Map<String, String> harvestTypeNameMap = buildDictNameMap(BioDictTypeEnum.HARVEST_TYPE);
+        Map<String, String> materialTypeNameMap = buildDictNameMap(BioDictTypeEnum.MATERIAL_TYPE);
         if (CollectionUtil.isNotEmpty(tcHarvestSeedTbList)) {
             for (TcHarvestSeedTb tcHarvestSeedTb : tcHarvestSeedTbList) {
                 com.bio.drqi.common.dto.SeedInStockExcelDTO seedInStockExcelDTO = new com.bio.drqi.common.dto.SeedInStockExcelDTO();
@@ -92,6 +93,7 @@ public class TcHarvestServiceImpl implements TcHarvestService {
 
                 seedInStockExcelDTO.setGeneration(StringUtils.isNotEmpty(tcHarvestSeedTb.getMGenerationCode()) ? GenerationEnum.nextGenerationCode(tcHarvestSeedTb.getMGenerationCode()) : null);
                 seedInStockExcelDTO.setPlantCode(null);
+                seedInStockExcelDTO.setMaterialTypeName(translateDict(materialTypeNameMap, tcHarvestSeedTb.getMaterialType()));
                 seedInStockExcelDTO.setVectorTaskCode(tcHarvestSeedTb.getFVectorTaskCode());
                 seedInStockExcelDTO.setExperimentNum(tcHarvestSeedTb.getExperimentNum());
                 seedInStockExcelDTO.setFatherRegionNum(tcHarvestSeedTb.getFRegionNum());

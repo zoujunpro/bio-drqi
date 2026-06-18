@@ -171,4 +171,6 @@ public class TcHarvestSeedTb {
      * 种子编号
      */
     private String seedNums;
+
+    private String materialType;
 }

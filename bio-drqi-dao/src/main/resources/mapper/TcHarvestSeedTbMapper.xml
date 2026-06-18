@@ -36,6 +36,7 @@
         <result property="mTcSampleCode" column="m_tc_sample_code" jdbcType="VARCHAR"/>
         <result property="fTcSampleCode" column="f_tc_sample_code" jdbcType="VARCHAR"/>
         <result property="seedNums" column="seed_nums" jdbcType="VARCHAR"/>
+        <result property="materialType" column="material_type" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -45,7 +46,7 @@
         m_tc_gene,f_tc_gene,pollination_date,pollination_method_code,
         harvest_type_code,remark,harvest_time,seed_number,
         unit,harvest_apply_num,f_single_number,
-        m_single_number,m_tc_sample_code,f_tc_sample_code,seed_nums
+        m_single_number,m_tc_sample_code,f_tc_sample_code,seed_nums,material_type
     </sql>
     <select id="selectSelective" parameterType="com.bio.drqi.domain.TcHarvestSeedTb" resultMap="BaseResultMap">
         select
@@ -84,7 +85,7 @@
         harvest_time,seed_number,unit,
         harvest_apply_num,remark,f_single_number,
         m_single_number,m_tc_sample_code,f_tc_sample_code,
-        seed_nums)
+        seed_nums,material_type)
         values
         <foreach collection="tcHarvestSeedTbCollection" item="item" separator=",">
             (#{item.id,jdbcType=NUMERIC},#{item.experimentNum,jdbcType=VARCHAR},#{item.sampleApplyNum,jdbcType=VARCHAR},
@@ -97,7 +98,7 @@
             #{item.harvestTime,jdbcType=VARCHAR},#{item.seedNumber,jdbcType=DECIMAL},#{item.unit,jdbcType=VARCHAR},
             #{item.harvestApplyNum,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},#{item.fSingleNumber,jdbcType=VARCHAR},
             #{item.mSingleNumber,jdbcType=VARCHAR},#{item.mTcSampleCode,jdbcType=VARCHAR},#{item.fTcSampleCode,jdbcType=VARCHAR},
-            #{item.seedNums,jdbcType=VARCHAR})
+            #{item.seedNums,jdbcType=VARCHAR},#{item.materialType,jdbcType=VARCHAR})
         </foreach>
     </insert>
     <select id="selectOneByExperimentNumAndFRegionNumAndMRegionNumAndFSeedNumAndMSeedNumAndFSingleNumberAndMSingleNumber"

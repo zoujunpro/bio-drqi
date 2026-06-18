@@ -1,8 +1,6 @@
 package com.bio.drqi.tc.service.dto;
 
-import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.bio.drqi.domain.TcExperimentDesignTb;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -132,6 +130,13 @@ public class TcHarvestExcelDTO {
     @ExcelProperty(value ={"收获信息","收获方式"})
     @NotBlank(message = "参数缺失：收获方式")
     private String harvestTypeName;
+
+    /**
+     * 收获时间
+     */
+    @ExcelProperty(value ={"收获信息","收获时间"})
+    @NotBlank(message = "参数缺失：收获时间")
+    private String harvestTime;
 
     /**
      * 备注

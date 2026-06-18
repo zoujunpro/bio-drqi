@@ -26,6 +26,7 @@ import com.bio.drqi.manage.seed.*;
 import com.bio.drqi.manage.seedtask.SeedInDataReqDTO;
 import com.bio.drqi.manage.seedtask.SeedTaskSeedNumRspDTO;
 import com.bio.drqi.manage.service.seed.SeedStoreService;
+import com.bio.drqi.manage.service.seed.query.SeedStockQueryBuilder;
 import com.bio.drqi.mapper.*;
 import com.bio.drqi.util.PaginationHelper;
 import com.github.pagehelper.PageHelper;
@@ -384,61 +385,25 @@ public class SeedStoreServiceServiceImpl implements SeedStoreService {
             throw new BusinessException(responseResult.getMessage());
         }
         List<UserDetailRspDTO.DataPermissionConfig> dataPermissionList = responseResult.getData().getDataPermissionConfigList();
-        List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
-        List<CerSpeciesConf> cerSpeciesConfList = cerSpeciesConfMapper.selectAll();
-        List<SeedProduceAddressDict> seedProduceAddressDictList = seedProduceAddressDictMapper.selectAll();
-        Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictList.stream().collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
-
-        Map<String, String> speciesMap = cerSpeciesConfList.stream().collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
-        Map<String, String> cerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
         dataPermissionList = dataPermissionList.stream().filter(dataPermission -> dataPermission.getPermissionType().equals(DataPermissionTypeEnum.SEED_STORE.name())).collect(Collectors.toList());
-        SeedStockTb seedStockTb = new SeedStockTb();
-        seedStockTb.setId(seedStockPageReqDTO.getId());
-        seedStockTb.setSeedNum(seedStockPageReqDTO.getSeedNum());
-        seedStockTb.setVectorTaskCode(seedStockPageReqDTO.getVectorTaskCode());
-        seedStockTb.setGeneration(seedStockPageReqDTO.getGeneration());
-        seedStockTb.setSpeciesCode(seedStockPageReqDTO.getSpecies());
-        seedStockTb.setBreedCode(seedStockPageReqDTO.getBreedCode());
-        seedStockTb.setHarvestType(seedStockPageReqDTO.getHarvestType());
-        seedStockTb.setSourceType(seedStockPageReqDTO.getSourceType());
-        seedStockTb.setStockLocationNum(seedStockPageReqDTO.getStockLocationNum());
-        seedStockTb.setProductionLocationCode(seedStockPageReqDTO.getProductionLocationCode());
-        seedStockTb.setParentNum(seedStockPageReqDTO.getParentNum());
-        seedStockTb.setPollinationMethod(seedStockPageReqDTO.getPollinationMethod());
-        seedStockTb.setPlantCode(seedStockPageReqDTO.getPlantCode());
-        seedStockTb.setBeninHarvestTime(seedStockPageReqDTO.getBeninHarvestTime());
-        seedStockTb.setEndHarvestTime(seedStockPageReqDTO.getEndHarvestTime());
-        seedStockTb.setGeneType(seedStockPageReqDTO.getGeneType());
-        seedStockTb.setTargetCharacter(seedStockPageReqDTO.getTargetCharacter());
-        seedStockTb.setAliasName(seedStockPageReqDTO.getAliasName());
-        seedStockTb.setFilterNullFlag(seedStockPageReqDTO.getFilterNullFlag());
-        seedStockTb.setProjectCode(seedStockPageReqDTO.getProjectCode());
-        seedStockTb.setMaterialType(seedStockPageReqDTO.getMaterialType());
-        seedStockTb.setRemarks(seedStockPageReqDTO.getRemarks());
-        seedStockTb.setPdImplementCode(seedStockPageReqDTO.getPdImplementCode());
-        seedStockTb.setSubmitUserId(seedStockPageReqDTO.getSubmitUserId());
-        seedStockTb.setMatherSeedNum(seedStockPageReqDTO.getMatherSeedNum());
-        seedStockTb.setMatherSingleNum(seedStockPageReqDTO.getMatherSingleNum());
-        if (seedStockPageReqDTO.getOrder() != null) {
-            seedStockTb.setOrderField(seedStockPageReqDTO.getOrder().getFieldName());
-            seedStockTb.setOrderType(seedStockPageReqDTO.getOrder().getOrderType());
+        Integer submitUserId = seedStockPageReqDTO.getSubmitUserId();
+        if (CollectionUtil.isNotEmpty(dataPermissionList) && DataPermissionValueEnum.OWNER.value.equals(dataPermissionList.get(0).getPermissionValue())) {
+            submitUserId = SecurityContextHolder.getUserId();
         }
 
-        if (StringUtils.isNotEmpty(seedStockPageReqDTO.getEndDate())) {
-            seedStockTb.setEndDate(seedStockPageReqDTO.getEndDate().replace("-", ""));
-        }
-        if (StringUtils.isNotEmpty(seedStockPageReqDTO.getBeginDate())) {
-            seedStockTb.setBeginDate(seedStockPageReqDTO.getBeginDate().replace("-", ""));
-        }
-        if (CollectionUtil.isNotEmpty(dataPermissionList) && DataPermissionValueEnum.OWNER.value.equals(dataPermissionList.get(0).getPermissionValue())) {
-            seedStockTb.setSubmitUserId(SecurityContextHolder.getUserId());
-        }
         PageHelper.startPage(seedStockPageReqDTO.getPageNum(), seedStockPageReqDTO.getPageSize());
-        seedStockTb.setNotEmptySeedNumberFlag(notEmptySeedNumberFlag);
-        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectSelective(seedStockTb);
+        List<SeedStockTb> seedStockTbList = seedStockTbMapper.selectList(
+                SeedStockQueryBuilder.build(seedStockPageReqDTO, submitUserId, Boolean.TRUE.equals(notEmptySeedNumberFlag)));
         if (CollectionUtil.isEmpty(seedStockTbList)) {
             return resultPage;
         }
+
+        Map<String, String> cerBreedDictMap = cerBreedDictMapper.selectAll().stream()
+                .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+        Map<String, String> speciesMap = cerSpeciesConfMapper.selectAll().stream()
+                .collect(Collectors.toMap(CerSpeciesConf::getSpeciesCode, CerSpeciesConf::getSpeciesName));
+        Map<String, String> seedProduceAddressDictMap = seedProduceAddressDictMapper.selectAll().stream()
+                .collect(Collectors.toMap(SeedProduceAddressDict::getAddressCode, SeedProduceAddressDict::getAddressName));
         PageInfo<SeedStockTb> srcPageInfo = new PageInfo<>(seedStockTbList);
         PageInfo<SeedStockPageRspDTO> targetPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, SeedStockPageRspDTO.class);
         targetPageInfo.getList().forEach(seedStockPageRspDTO -> {

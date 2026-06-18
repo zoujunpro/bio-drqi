@@ -148,7 +148,7 @@ public class TcHarvestTaskService extends AbstractTcBaseTaskService {
                 tcHarvestSeedTb.setPollinationMethodCode(tcPollinationTb.getPollinationMethodCode());
                 tcHarvestSeedTb.setHarvestTypeCode(tcPollinationTb.getHarvestTypeCode());
                 tcHarvestSeedTb.setRemark(tcHarvestExcelDTO.getRemark());
-                tcHarvestSeedTb.setHarvestTime(tcHarvestTaskDTO.getHarvestTime());
+                tcHarvestSeedTb.setHarvestTime(tcHarvestExcelDTO.getHarvestTime());
                 tcHarvestSeedTb.setSeedNumber(new BigDecimal(StringUtils.isEmpty(tcHarvestExcelDTO.getSeedNumber()) ? "0" : tcHarvestExcelDTO.getSeedNumber()));
                 tcHarvestSeedTb.setUnit(tcHarvestExcelDTO.getUnit());
                 tcHarvestSeedTb.setHarvestApplyNum(tcHarvestSeedApplyTb.getHarvestApplyNum());

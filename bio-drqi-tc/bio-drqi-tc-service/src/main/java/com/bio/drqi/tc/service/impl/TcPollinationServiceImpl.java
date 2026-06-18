@@ -2,8 +2,12 @@ package com.bio.drqi.tc.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.util.BeanUtils;
+import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
+import com.bio.drqi.domain.BioDict;
 import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.TcPollinationTb;
+import com.bio.drqi.mapper.BioDictMapper;
 import com.bio.drqi.mapper.CerBreedDictMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
 import com.bio.drqi.tc.req.TcPollinationListPageDetailReqDTO;
@@ -28,6 +32,9 @@ public class TcPollinationServiceImpl implements TcPollinationService {
     @Resource
     private CerBreedDictMapper cerBreedDictMapper;
 
+    @Resource
+    private BioDictMapper bioDictMapper;
+
     @Override
     public PageInfo<TcPollinationListPageDetailRspDTO> listPage(TcPollinationListPageDetailReqDTO tcPollinationListPageDetailReqDTO) {
         PageHelper.startPage(tcPollinationListPageDetailReqDTO.getPageNum(), tcPollinationListPageDetailReqDTO.getPageSize());
@@ -36,12 +43,28 @@ public class TcPollinationServiceImpl implements TcPollinationService {
         PageInfo<TcPollinationListPageDetailRspDTO> resultPageInfo = BeanUtils.copyPageInfoProperties(srcPageInfo, TcPollinationListPageDetailRspDTO.class);
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
         Map<String, String> codeNameCerBreedDictMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+        Map<String, String> pollinationMethodNameMap = buildDictNameMap(BioDictTypeEnum.POLLINATE_TYPE);
+        Map<String, String> harvestTypeNameMap = buildDictNameMap(BioDictTypeEnum.HARVEST_TYPE);
         if (CollectionUtil.isNotEmpty(resultPageInfo.getList())) {
             resultPageInfo.getList().forEach(tcPollinationListPageDetailRspDTO -> {
                 tcPollinationListPageDetailRspDTO.setFBreedName(codeNameCerBreedDictMap.get(tcPollinationListPageDetailRspDTO.getFBreedCode()));
-                tcPollinationListPageDetailRspDTO.setMBreedName(codeNameCerBreedDictMap.get(tcPollinationListPageDetailRspDTO.getFBreedCode()));
+                tcPollinationListPageDetailRspDTO.setMBreedName(codeNameCerBreedDictMap.get(tcPollinationListPageDetailRspDTO.getMBreedCode()));
+                tcPollinationListPageDetailRspDTO.setPollinationMethodName(translateDict(pollinationMethodNameMap, tcPollinationListPageDetailRspDTO.getPollinationMethodCode()));
+                tcPollinationListPageDetailRspDTO.setHarvestTypeName(translateDict(harvestTypeNameMap, tcPollinationListPageDetailRspDTO.getHarvestTypeCode()));
             });
         }
         return resultPageInfo;
+    }
+
+    private Map<String, String> buildDictNameMap(BioDictTypeEnum dictTypeEnum) {
+        return bioDictMapper.selectAllByDictType(dictTypeEnum.name()).stream()
+                .collect(Collectors.toMap(BioDict::getDictValueCode, BioDict::getDictValueName, (left, right) -> left));
+    }
+
+    private String translateDict(Map<String, String> dictNameMap, String dictValueCode) {
+        if (StringUtils.isEmpty(dictValueCode)) {
+            return "";
+        }
+        return dictNameMap.getOrDefault(dictValueCode, dictValueCode);
     }
 }

@@ -206,8 +206,6 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                 tcPollinationTb.setFTcGene(tcPollinationExcelDTO.getFatherTcGene());
                 tcPollinationTb.setPollinationDate(tcPollinationExcelDTO.getPollinationDate());
                 tcPollinationTb.setPollinationMethodCode(tcPollinationTaskDTO.getPollinationType());
-                tcPollinationTb.setPollinationMethodName(tcPollinationTaskDTO.getPollinationTypeName());
-                tcPollinationTb.setHarvestTypeName(tcPollinationExcelDTO.getHarvestTypeName());
                 tcPollinationTb.setHarvestTypeCode(tcPollinationExcelDTO.getHarvestTypeCode());
                 tcPollinationTb.setRemark(tcPollinationExcelDTO.getRemark());
                 tcPollinationTbList.add(tcPollinationTb);
@@ -246,6 +244,8 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
         if (CollectionUtil.isNotEmpty(pollinationList)) {
             Map<String, String> breedNameMap = cerBreedDictMapper.selectAll().stream()
                     .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName, (left, right) -> left));
+            Map<String, String> pollinateTypeNameMap = buildDictNameMap(BioDictTypeEnum.POLLINATE_TYPE);
+            Map<String, String> harvestTypeNameMap = buildDictNameMap(BioDictTypeEnum.HARVEST_TYPE);
             List<String> headers = Arrays.asList("母本小区编号", "母本种子编号", "母本单株编号", "母本取样编号", "母本品种", "母本实施方案编号", "父本小区编号", "父本种子编号", "父本单株编号", "父本取样编号", "父本品种", "父本实施方案编号", "授粉时间", "授粉方式", "收获方式", "备注");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (TcPollinationTb item : pollinationList) {
@@ -263,8 +263,8 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                 row.put("父本品种", breedNameMap.getOrDefault(item.getFBreedCode(), item.getFBreedCode()));
                 row.put("父本实施方案编号", item.getFVectorTaskCode());
                 row.put("授粉时间", item.getPollinationDate());
-                row.put("授粉方式", item.getPollinationMethodName());
-                row.put("收获方式", item.getHarvestTypeName());
+                row.put("授粉方式", translateDict(pollinateTypeNameMap, item.getPollinationMethodCode()));
+                row.put("收获方式", translateDict(harvestTypeNameMap, item.getHarvestTypeCode()));
                 row.put("备注", item.getRemark());
                 rows.add(row);
             }
@@ -273,7 +273,9 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
         }
 
         if (CollectionUtil.isNotEmpty(dto.getTcPollinationExcelDTOList())) {
-            List<String> headers = Arrays.asList("母本小区编号", "母本种子编号", "母本单株编号", "母本取样编号", "母本品种", "母本实施方案编号", "父本小区编号", "父本种子编号", "父本单株编号", "父本取样编号", "父本品种", "父本实施方案编号", "授粉时间", "收获方式", "备注");
+            Map<String, String> pollinateTypeNameMap = buildDictNameMap(BioDictTypeEnum.POLLINATE_TYPE);
+            Map<String, String> harvestTypeNameMap = buildDictNameMap(BioDictTypeEnum.HARVEST_TYPE);
+            List<String> headers = Arrays.asList("母本小区编号", "母本种子编号", "母本单株编号", "母本取样编号", "母本品种", "母本实施方案编号", "父本小区编号", "父本种子编号", "父本单株编号", "父本取样编号", "父本品种", "父本实施方案编号", "授粉时间", "授粉方式", "收获方式", "备注");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (TcPollinationExcelDTO item : dto.getTcPollinationExcelDTOList()) {
                 Map<String, Object> row = new LinkedHashMap<>();
@@ -290,7 +292,8 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
                 row.put("父本品种", item.getFatherBreedName());
                 row.put("父本实施方案编号", item.getFatherVectorTaskCode());
                 row.put("授粉时间", item.getPollinationDate());
-                row.put("收获方式", item.getHarvestTypeName());
+                row.put("授粉方式", StringUtils.isNotEmpty(dto.getPollinationTypeName()) ? dto.getPollinationTypeName() : translateDict(pollinateTypeNameMap, dto.getPollinationType()));
+                row.put("收获方式", StringUtils.isNotEmpty(item.getHarvestTypeName()) ? item.getHarvestTypeName() : translateDict(harvestTypeNameMap, item.getHarvestTypeCode()));
                 row.put("备注", item.getRemark());
                 rows.add(row);
             }
@@ -298,5 +301,17 @@ public class TcPollinationTaskService extends AbstractTcBaseTaskService {
         }
 
         return sections;
+    }
+
+    private Map<String, String> buildDictNameMap(BioDictTypeEnum dictTypeEnum) {
+        return bioDictMapper.selectAllByDictType(dictTypeEnum.name()).stream()
+                .collect(Collectors.toMap(BioDict::getDictValueCode, BioDict::getDictValueName, (left, right) -> left));
+    }
+
+    private String translateDict(Map<String, String> dictNameMap, String dictValueCode) {
+        if (StringUtils.isEmpty(dictValueCode)) {
+            return "";
+        }
+        return dictNameMap.getOrDefault(dictValueCode, dictValueCode);
     }
 }

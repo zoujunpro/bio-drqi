@@ -3,9 +3,6 @@ package com.bio.drqi.tc.rsp;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 @Data
 public class TcPollinationListPageDetailRspDTO {
     private Integer id;
@@ -159,10 +156,4 @@ public class TcPollinationListPageDetailRspDTO {
     private String remark;
 
 
-    private String unit;
-
-
-    private String seedNums;
-
-    private BigDecimal seedNumber;
 }

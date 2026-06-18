@@ -4,10 +4,14 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
+import com.bio.common.core.util.StringUtils;
 import com.bio.common.oss.service.OssService;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
+import com.bio.drqi.domain.BioDict;
 import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.TcHarvestSeedApplyTb;
 import com.bio.drqi.domain.TcPollinationTb;
+import com.bio.drqi.mapper.BioDictMapper;
 import com.bio.drqi.mapper.CerBreedDictMapper;
 import com.bio.drqi.mapper.TcHarvestSeedApplyTbMapper;
 import com.bio.drqi.mapper.TcPollinationTbMapper;
@@ -53,6 +57,9 @@ public class TcHarvestApplyServiceImpl implements TcHarvestApplyService {
     @Resource
     private CerBreedDictMapper cerBreedDictMapper;
 
+    @Resource
+    private BioDictMapper bioDictMapper;
+
     @Override
     public PageInfo<TcHarvestApplyListPageRspDTO> listPage(TcHarvestApplyListPageReqDTO tcHarvestApplyListPageReqDTO) {
         PageHelper.startPage(tcHarvestApplyListPageReqDTO.getPageNum(), tcHarvestApplyListPageReqDTO.getPageSize());
@@ -70,6 +77,7 @@ public class TcHarvestApplyServiceImpl implements TcHarvestApplyService {
         }
         List<CerBreedDict> cerBreedDictList = cerBreedDictMapper.selectAll();
         Map<String, String> codeOfNameMap = cerBreedDictList.stream().collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName));
+        Map<String, String> harvestTypeNameMap = buildDictNameMap(BioDictTypeEnum.HARVEST_TYPE);
 
         List<TcHarvestExcelDTO> tcHarvestExcelDTOList = new ArrayList<>();
         for (TcPollinationTb tcPollinationTb : tcPollinationTbList) {
@@ -94,7 +102,7 @@ public class TcHarvestApplyServiceImpl implements TcHarvestApplyService {
             tcHarvestExcelDTO.setFatherVectorTaskCode(tcPollinationTb.getFVectorTaskCode());
             tcHarvestExcelDTO.setFatherGenerationName(tcPollinationTb.getFGenerationCode());
             tcHarvestExcelDTO.setFatherTcGene(tcPollinationTb.getFTcGene());
-            tcHarvestExcelDTO.setHarvestTypeName(tcPollinationTb.getHarvestTypeName());
+            tcHarvestExcelDTO.setHarvestTypeName(translateDict(harvestTypeNameMap, tcPollinationTb.getHarvestTypeCode()));
             tcHarvestExcelDTOList.add(tcHarvestExcelDTO);
         }
         String excelTemplateName = "田测收获模板表V1.0.xlsx";
@@ -108,4 +116,15 @@ public class TcHarvestApplyServiceImpl implements TcHarvestApplyService {
         }
     }
 
+    private Map<String, String> buildDictNameMap(BioDictTypeEnum dictTypeEnum) {
+        return bioDictMapper.selectAllByDictType(dictTypeEnum.name()).stream()
+                .collect(Collectors.toMap(BioDict::getDictValueCode, BioDict::getDictValueName, (left, right) -> left));
+    }
+
+    private String translateDict(Map<String, String> dictNameMap, String dictValueCode) {
+        if (StringUtils.isEmpty(dictValueCode)) {
+            return "";
+        }
+        return dictNameMap.getOrDefault(dictValueCode, dictValueCode);
+    }
 }

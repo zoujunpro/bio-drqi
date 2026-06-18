@@ -12,10 +12,7 @@ import com.bio.drqi.bsm.rsp.BmsBrandListPageRspDTO;
 import com.bio.drqi.bsm.service.BmsBrandService;
 import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.domain.BmsBrandTb;
-import com.bio.drqi.domain.BmsSupplierTb;
 import com.bio.drqi.mapper.BmsBrandTbMapper;
-import com.bio.drqi.mapper.BmsProductTbMapper;
-import com.bio.drqi.mapper.BmsSupplierTbMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
@@ -49,7 +46,7 @@ public class BmsBrandServiceImpl implements BmsBrandService {
 
     @Override
     public BmsBrandTb add(BmsBrandAddReqDTO bmsBrandAddReqDTO) {
-        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandCode(bmsBrandAddReqDTO.getBrandName());
+        BmsBrandTb bmsBrandTb = bmsBrandTbMapper.selectOneByBrandName(bmsBrandAddReqDTO.getBrandName());
         if (Objects.nonNull(bmsBrandTb)) {
             if (BioDrQiContents.N.equals(bmsBrandTb.getBrandStatus())) {
                 throw new BusinessException("该品牌已经存在,且是禁用,无需添加，启用即可");

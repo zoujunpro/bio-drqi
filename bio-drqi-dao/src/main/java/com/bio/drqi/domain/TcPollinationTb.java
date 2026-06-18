@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * @TableName tc_pollination_tb
@@ -121,37 +120,15 @@ public class TcPollinationTb implements Serializable {
     private String pollinationMethodCode;
 
     /**
-     * 授粉方式名称
-     */
-    private String pollinationMethodName;
-
-    /**
      * 收获方式编号
      */
     private String harvestTypeCode;
-
-    /**
-     * 收获方式名称
-     */
-    private String harvestTypeName;
-
-    private String harvestTime;
 
     /**
      * 备注
      */
     private String remark;
 
-
-    private String unit;
-
-    private BigDecimal seedNumber;
-
-    private String harvestApplyNum;
-
-    private String harvestRemark;
-
-    private String seedNums;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

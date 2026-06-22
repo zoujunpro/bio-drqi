@@ -1,12 +1,17 @@
 package com.bio.drqi.tc.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.json.JSONConfig;
+import cn.hutool.json.JSONUtil;
+import com.bio.common.core.dto.BusinessException;
 import com.bio.common.core.util.BeanUtils;
 import com.bio.common.core.util.ExcelUtil;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.contents.BioDrQiContents;
 import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.common.enums.GenerationEnum;
 import com.bio.drqi.common.enums.SeedSourceEnum;
+import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.domain.BioDict;
 import com.bio.drqi.domain.CerBreedDict;
 import com.bio.drqi.domain.CerSpeciesConf;
@@ -16,17 +21,22 @@ import com.bio.drqi.mapper.CerBreedDictMapper;
 import com.bio.drqi.mapper.CerSpeciesConfMapper;
 import com.bio.drqi.mapper.TcHarvestSeedTbMapper;
 import com.bio.drqi.tc.req.TcHarvestListPageDetailReqDTO;
+import com.bio.drqi.tc.req.TcHarvestSeedStoreApplyReqDTO;
 import com.bio.drqi.tc.req.TcHavestDownSeedStockInExcelReqDTO;
 import com.bio.drqi.tc.rsp.TcHarvestListPageDetailRspDTO;
 import com.bio.drqi.tc.service.TcHarvestService;
+import com.bio.flow.dto.BioTaskStartReqDTO;
+import com.bio.flow.service.BioTaskService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +62,9 @@ public class TcHarvestServiceImpl implements TcHarvestService {
 
     @Resource
     private BioDictMapper bioDictMapper;
+
+    @Resource
+    private BioTaskService bioTaskService;
 
 
     @Override
@@ -128,6 +141,97 @@ public class TcHarvestServiceImpl implements TcHarvestService {
         ExcelUtil.writeExcel("种子入库数据", "sheet1", seedInStockExcelDTOList, com.bio.drqi.common.dto.SeedInStockExcelDTO.class, httpServletResponse);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public BioTaskDtlTb seedStoreApply(TcHarvestSeedStoreApplyReqDTO reqDTO) {
+        List<TcHarvestSeedTb> tcHarvestSeedTbList = tcHarvestSeedTbMapper.selectBatchIds(reqDTO.getIdList());
+        if (CollectionUtil.isEmpty(tcHarvestSeedTbList)) {
+            throw new BusinessException("未查询到收获种子");
+        }
+        if (tcHarvestSeedTbList.size() != reqDTO.getIdList().size()) {
+            throw new BusinessException("部分收获种子不存在");
+        }
+        List<TcHarvestSeedTb> storedList = tcHarvestSeedTbList.stream()
+                .filter(tcHarvestSeedTb -> hasStoredSeedNums(tcHarvestSeedTb.getSeedNums()))
+                .collect(Collectors.toList());
+        if (CollectionUtil.isNotEmpty(storedList)) {
+            throw new BusinessException("选择的收获种子已入库，不能重复入库，ID：" +
+                    storedList.stream().map(tcHarvestSeedTb -> String.valueOf(tcHarvestSeedTb.getId())).collect(Collectors.joining(",")));
+        }
+
+        Map<String, CerBreedDict> breedDictMap = cerBreedDictMapper.selectAll().stream()
+                .collect(Collectors.toMap(CerBreedDict::getBreedCode, cerBreedDict -> cerBreedDict, (left, right) -> left));
+        SeedStoreTaskForm taskForm = buildSeedStoreTaskForm(tcHarvestSeedTbList, breedDictMap);
+
+        BioTaskStartReqDTO bioTaskStartReqDTO = new BioTaskStartReqDTO();
+        bioTaskStartReqDTO.setTaskType("seed_store_apply");
+        bioTaskStartReqDTO.setTaskDesc(StringUtils.isNotEmpty(reqDTO.getTaskDesc()) ? reqDTO.getTaskDesc() : buildDefaultTaskDesc(tcHarvestSeedTbList));
+        bioTaskStartReqDTO.setFormObject(JSONUtil.toJsonStr(taskForm, new JSONConfig().setIgnoreNullValue(false)));
+        bioTaskStartReqDTO.setSelfFlowActorList(null);
+        return bioTaskService.start(bioTaskStartReqDTO);
+    }
+
+    private SeedStoreTaskForm buildSeedStoreTaskForm(List<TcHarvestSeedTb> tcHarvestSeedTbList, Map<String, CerBreedDict> breedDictMap) {
+        SeedStoreTaskForm taskForm = new SeedStoreTaskForm();
+        taskForm.setApplyForm(new SeedStoreApplyForm());
+        SeedStoreExecuteForm executeForm = new SeedStoreExecuteForm();
+        List<SeedStoreExecuteFormContent> contentList = new ArrayList<>();
+        for (TcHarvestSeedTb tcHarvestSeedTb : tcHarvestSeedTbList) {
+            CerBreedDict mBreedDict = breedDictMap.get(tcHarvestSeedTb.getMBreedCode());
+            if (mBreedDict == null) {
+                throw new BusinessException("母本品种不存在，收获种子ID：" + tcHarvestSeedTb.getId());
+            }
+            SeedStoreExecuteFormContent content = new SeedStoreExecuteFormContent();
+            content.setSource(SeedSourceEnum.CODE_4.code);
+            content.setGeneration(StringUtils.isNotEmpty(tcHarvestSeedTb.getMGenerationCode()) ? GenerationEnum.nextGenerationCode(tcHarvestSeedTb.getMGenerationCode()) : null);
+            content.setSpeciesCode(mBreedDict.getSpeciesCode());
+            content.setBreedCode(tcHarvestSeedTb.getMBreedCode());
+            content.setPollinationMethod(tcHarvestSeedTb.getPollinationMethodCode());
+            content.setHarvestType(tcHarvestSeedTb.getHarvestTypeCode());
+            content.setHarvestTime(tcHarvestSeedTb.getHarvestTime());
+            content.setSeedNumber(tcHarvestSeedTb.getSeedNumber());
+            content.setUnit(tcHarvestSeedTb.getUnit());
+            content.setProductionLocationName("武清大田");
+            content.setVectorTaskCode(tcHarvestSeedTb.getFVectorTaskCode());
+            content.setExperimentNum(tcHarvestSeedTb.getExperimentNum());
+            content.setFatherRegionNum(tcHarvestSeedTb.getFRegionNum());
+            content.setMatherRegionNum(tcHarvestSeedTb.getMRegionNum());
+            content.setFatherSingleNum(tcHarvestSeedTb.getFSingleNumber());
+            content.setMatherSingleNum(tcHarvestSeedTb.getMSingleNumber());
+            content.setMatherSeedNum(tcHarvestSeedTb.getMSeedNum());
+            content.setFatherSeedNum(tcHarvestSeedTb.getFSeedNum());
+            content.setMaterialType(tcHarvestSeedTb.getMaterialType());
+            content.setRemarks(tcHarvestSeedTb.getRemark());
+            content.setStoreFlag(BioDrQiContents.N);
+            content.setUniqueCode("tc_harvest_seed_" + tcHarvestSeedTb.getId());
+            contentList.add(content);
+        }
+        executeForm.setExecuteFormContentList(contentList);
+        taskForm.setExecuteForm(executeForm);
+        return taskForm;
+    }
+
+    private String buildDefaultTaskDesc(List<TcHarvestSeedTb> tcHarvestSeedTbList) {
+        List<String> experimentNumList = tcHarvestSeedTbList.stream()
+                .map(TcHarvestSeedTb::getExperimentNum)
+                .filter(StringUtils::isNotEmpty)
+                .distinct()
+                .collect(Collectors.toList());
+        String experimentDesc = CollectionUtil.isEmpty(experimentNumList) ? "" : "，试验编号：" + String.join(",", experimentNumList);
+        return "收获种子入库申请，共" + tcHarvestSeedTbList.size() + "条" + experimentDesc;
+    }
+
+    private boolean hasStoredSeedNums(String seedNums) {
+        if (StringUtils.isEmpty(seedNums)) {
+            return false;
+        }
+        try {
+            return CollectionUtil.isNotEmpty(JSONUtil.toList(seedNums, String.class));
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
     private Map<String, String> buildDictNameMap(BioDictTypeEnum dictTypeEnum) {
         return bioDictMapper.selectAllByDictType(dictTypeEnum.name()).stream()
                 .collect(Collectors.toMap(BioDict::getDictValueCode, BioDict::getDictValueName, (left, right) -> left));
@@ -138,5 +242,59 @@ public class TcHarvestServiceImpl implements TcHarvestService {
             return "";
         }
         return dictNameMap.getOrDefault(dictValueCode, dictValueCode);
+    }
+
+    @lombok.Data
+    private static class SeedStoreTaskForm {
+        private SeedStoreApplyForm applyForm;
+        private SeedStoreExecuteForm executeForm;
+    }
+
+    @lombok.Data
+    private static class SeedStoreApplyForm {
+        private List<Object> applyFromContentList = new ArrayList<>();
+    }
+
+    @lombok.Data
+    private static class SeedStoreExecuteForm {
+        private String excelUrl;
+        private List<SeedStoreExecuteFormContent> executeFormContentList = new ArrayList<>();
+    }
+
+    @lombok.Data
+    private static class SeedStoreExecuteFormContent {
+        private String seedNum;
+        private String source;
+        private String plantCode;
+        private String vectorTaskCode;
+        private String fatherInfo;
+        private String matherInfo;
+        private String matherSeedNum;
+        private String fatherSeedNum;
+        private String generation;
+        private String speciesCode;
+        private String breedCode;
+        private String pollinationMethod;
+        private String harvestType;
+        private String harvestTime;
+        private BigDecimal seedNumber;
+        private String unit;
+        private String productionLocationName;
+        private String productionLocationCode;
+        private String targetCharacter;
+        private String remarks;
+        private String stockLocationNum;
+        private String geneType;
+        private String aliasName;
+        private String materialType;
+        private String storeFlag;
+        private String uniqueCode;
+        private String matherRegionNum;
+        private String fatherRegionNum;
+        private String geneSeparateFlag;
+        private String transFlag;
+        private String experimentNum;
+        private String fatherSingleNum;
+        private String matherSingleNum;
     }
 }

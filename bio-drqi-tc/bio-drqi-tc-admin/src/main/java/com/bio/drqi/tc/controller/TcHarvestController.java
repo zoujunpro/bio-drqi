@@ -3,9 +3,11 @@ package com.bio.drqi.tc.controller;
 import com.bio.common.core.dto.ResponseResult;
 import com.bio.common.security.annotation.RequirePermissions;
 import com.bio.common.web.aspect.WebLog;
+import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.tc.req.TcHarvestCreateHarvestExcelReqDTO;
 import com.bio.drqi.tc.req.TcHarvestListPageDetailReqDTO;
 import com.bio.drqi.tc.req.TcHarvestApplyListPageReqDTO;
+import com.bio.drqi.tc.req.TcHarvestSeedStoreApplyReqDTO;
 import com.bio.drqi.tc.req.TcHavestDownSeedStockInExcelReqDTO;
 import com.bio.drqi.tc.rsp.TcHarvestListPageDetailRspDTO;
 import com.bio.drqi.tc.rsp.TcHarvestApplyListPageRspDTO;
@@ -50,5 +52,17 @@ public class TcHarvestController {
     @PostMapping("downSeedStockInExcel")
     public void downSeedStockInExcel(@Validated @RequestBody TcHavestDownSeedStockInExcelReqDTO tcHavestDownSeedStockInExcelReqDTO, HttpServletResponse httpServletResponse) {
         tcHarvestService.downSeedStockInExcel(tcHavestDownSeedStockInExcelReqDTO,httpServletResponse);
+    }
+
+    /**
+     * 收获种子发起入库工单
+     *
+     * @param reqDTO
+     * @return
+     */
+    @PostMapping("seedStoreApply")
+    @WebLog(desc = "收获种子发起入库工单")
+    public ResponseResult<BioTaskDtlTb> seedStoreApply(@Validated @RequestBody TcHarvestSeedStoreApplyReqDTO reqDTO) {
+        return ResponseResult.getSuccess(tcHarvestService.seedStoreApply(reqDTO));
     }
 }

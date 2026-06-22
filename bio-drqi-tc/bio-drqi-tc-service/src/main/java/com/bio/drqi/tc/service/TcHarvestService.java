@@ -1,10 +1,9 @@
 package com.bio.drqi.tc.service;
 
-import com.bio.drqi.tc.req.TcHarvestApplyListPageReqDTO;
-import com.bio.drqi.tc.req.TcHarvestCreateHarvestExcelReqDTO;
+import com.bio.drqi.domain.BioTaskDtlTb;
 import com.bio.drqi.tc.req.TcHarvestListPageDetailReqDTO;
+import com.bio.drqi.tc.req.TcHarvestSeedStoreApplyReqDTO;
 import com.bio.drqi.tc.req.TcHavestDownSeedStockInExcelReqDTO;
-import com.bio.drqi.tc.rsp.TcHarvestApplyListPageRspDTO;
 import com.bio.drqi.tc.rsp.TcHarvestListPageDetailRspDTO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.validation.annotation.Validated;
@@ -19,5 +18,6 @@ public interface TcHarvestService {
 
     void downSeedStockInExcel(@Validated @RequestBody TcHavestDownSeedStockInExcelReqDTO tcHavestDownSeedStockInExcelReqDTO, HttpServletResponse httpServletResponse);
 
+    BioTaskDtlTb seedStoreApply(TcHarvestSeedStoreApplyReqDTO reqDTO);
 
 }

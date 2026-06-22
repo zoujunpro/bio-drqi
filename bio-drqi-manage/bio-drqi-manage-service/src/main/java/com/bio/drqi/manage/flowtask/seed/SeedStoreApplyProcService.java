@@ -197,7 +197,7 @@ public class SeedStoreApplyProcService extends AbstractSeedTaskService {
                 if (seedStockTb.getSeedNumber().compareTo(seedStockTb.getTotalNumber()) != 0) {
                     throw new BusinessException("该批次中有种子被使用，无法撤销 使用种子编号：" + seedStockTb.getSeedNum());
                 }
-                seedPlantService.seedInStockDeleteRefPlant(seedStockTb);
+                seedPlantService.seedInStockDeleteRefPlant(seedStockTb, seedStockInLog.getUniqueCode());
             }
 
 

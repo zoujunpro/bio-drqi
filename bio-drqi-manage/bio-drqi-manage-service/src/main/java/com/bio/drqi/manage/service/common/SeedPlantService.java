@@ -125,9 +125,13 @@ public class SeedPlantService {
             if (StringUtils.equals(item.getRemark(), seedStockTb.getRemarks()) && StringUtils.equals(seedStockTb.getHarvestTime(), item.getHarvestTime())) {
                 return item;
             }
+        }
+        for (TcHarvestSeedTb item : tcHarvestSeedTbList) {
             if (StringUtils.equals(item.getRemark(), seedStockTb.getRemarks())) {
                 return item;
             }
+        }
+        for (TcHarvestSeedTb item : tcHarvestSeedTbList) {
             if (CollectionUtil.isEmpty(JSONUtil.toList(item.getSeedNums(), String.class))) {
                 return item;
             }

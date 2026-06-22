@@ -434,7 +434,6 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         List<PrintRspDTO> printRspDTOList = new ArrayList<>();
         List<TcHarvestLabelPrintDTO> tcHarvestLabelPrintDTOList = new ArrayList<>();
         for (TcPollinationTb tcPollinationTb : tcPollinationTbList) {
-            validateHarvestPrintData(tcPollinationTb, breedNameMap, harvestTypeNameMap);
             TcHarvestLabelPrintDTO tcHarvestLabelPrintDTO = new TcHarvestLabelPrintDTO();
             tcHarvestLabelPrintDTO.setVectorTaskCode(tcPollinationTb.getFVectorTaskCode());
             tcHarvestLabelPrintDTO.setBreedName(breedNameMap.get(tcPollinationTb.getMBreedCode()));
@@ -452,26 +451,6 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         return printRspDTOList;
     }
 
-    private void validateHarvestPrintData(TcPollinationTb tcPollinationTb, Map<String, String> breedNameMap, Map<String, String> harvestTypeNameMap) {
-        if (StringUtils.isEmpty(tcPollinationTb.getFVectorTaskCode())) {
-            throw new BusinessException("收获标签打印数据缺少父本实施方案编号，ID：" + tcPollinationTb.getId());
-        }
-        if (StringUtils.isEmpty(tcPollinationTb.getMBreedCode()) || StringUtils.isEmpty(breedNameMap.get(tcPollinationTb.getMBreedCode()))) {
-            throw new BusinessException("收获标签打印数据母本品种不存在，ID：" + tcPollinationTb.getId());
-        }
-        if (StringUtils.isEmpty(tcPollinationTb.getMRegionNum())) {
-            throw new BusinessException("收获标签打印数据缺少母本小区编号，ID：" + tcPollinationTb.getId());
-        }
-        if (StringUtils.isEmpty(tcPollinationTb.getMSampleCode())) {
-            throw new BusinessException("收获标签打印数据缺少母本样本编号，ID：" + tcPollinationTb.getId());
-        }
-        if (StringUtils.isEmpty(tcPollinationTb.getMSingleNumber())) {
-            throw new BusinessException("收获标签打印数据缺少母本单株编号，ID：" + tcPollinationTb.getId());
-        }
-        if (StringUtils.isEmpty(tcPollinationTb.getHarvestTypeCode()) || StringUtils.isEmpty(harvestTypeNameMap.get(tcPollinationTb.getHarvestTypeCode()))) {
-            throw new BusinessException("收获标签打印数据收获方式不存在，ID：" + tcPollinationTb.getId());
-        }
-    }
 
     private String firstPlasmidName(String plasmidNames) {
         if (StringUtils.isEmpty(plasmidNames)) {

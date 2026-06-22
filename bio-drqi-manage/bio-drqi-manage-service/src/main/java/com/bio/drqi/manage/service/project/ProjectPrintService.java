@@ -27,4 +27,6 @@ public interface ProjectPrintService {
     List<PrintRspDTO> tcExperimentPrint(BioPrintTcExperimentReqDTO bioPrintTcExperimentReqDTO);
 
     List<PrintRspDTO> agrobacteriumPrint( BioAgrobacteriumPrintReqDTO bioAgrobacteriumPrintReqDTO);
+
+    List<PrintRspDTO> harvestPrint( BioHarvestPrintReqDTO bioHarvestPrintReqDTO);
 }

@@ -142,5 +142,14 @@ public class BioPrintController {
     public ResponseResult<List<PrintRspDTO>> agrobacteriumPrint(@RequestBody @Validated BioAgrobacteriumPrintReqDTO bioAgrobacteriumPrintReqDTO) {
         return ResponseResult.getSuccess(projectPrintService.agrobacteriumPrint(bioAgrobacteriumPrintReqDTO));
     }
-
+    /**
+     *收获标签打印
+     * @return
+     */
+    @PostMapping("harvestPrint")
+    @WebLog(desc = "收获标签打印")
+    @RequestLog("收获标签打印")
+    public ResponseResult<List<PrintRspDTO>> harvestPrint(@RequestBody @Validated BioHarvestPrintReqDTO bioHarvestPrintReqDTO) {
+        return ResponseResult.getSuccess(projectPrintService.harvestPrint(bioHarvestPrintReqDTO));
+    }
 }

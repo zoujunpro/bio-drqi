@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.bio.common.core.context.SecurityContextHolder;
 import com.bio.common.core.util.StringUtils;
+import com.bio.drqi.common.enums.BioDictTypeEnum;
 import com.bio.drqi.common.enums.PrintSizeEnum;
 import com.bio.drqi.common.enums.PrintTypeEnum;
 import com.bio.drqi.common.enums.SourceCodeEnum;
@@ -18,14 +19,12 @@ import com.bio.common.core.dto.ResponseResult;
 import com.bio.print.*;
 import com.bio.print.api.PrintApi;
 import com.bio.print.req.PrintDataReqDTO;
+import com.bio.print.TcHarvestLabelPrintDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,6 +55,12 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
 
     @Resource
     private TcExperimentDesignTbMapper tcExperimentDesignTbMapper;
+
+    @Resource
+    private TcPollinationTbMapper tcPollinationTbMapper;
+
+    @Resource
+    private BioDictMapper bioDictMapper;
 
 
     @Override
@@ -400,6 +405,72 @@ public class ProjectPrintServiceImpl implements ProjectPrintService {
         agrobacteriumDTO.setPlasmidIdShort(plasmidName);
         printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.agrobacterium_label_tianjin_print.name(), Arrays.asList(agrobacteriumDTO))));
         return printRspDTOList;
+    }
+
+    @Override
+    public List<PrintRspDTO> harvestPrint(BioHarvestPrintReqDTO bioHarvestPrintReqDTO) {
+        if (bioHarvestPrintReqDTO == null || CollectionUtil.isEmpty(bioHarvestPrintReqDTO.getIdList())) {
+            throw new BusinessException("请选择收获标签打印数据");
+        }
+        if (StringUtils.isEmpty(bioHarvestPrintReqDTO.getBatchNo())) {
+            throw new BusinessException("收获批次号不能为空");
+        }
+        List<TcPollinationTb> tcPollinationTbList = tcPollinationTbMapper.selectBatchIds(bioHarvestPrintReqDTO.getIdList());
+        if (CollectionUtil.isEmpty(tcPollinationTbList)) {
+            throw new BusinessException("找不到收获标签打印数据");
+        }
+        Set<Integer> reqIdSet = new HashSet<>(bioHarvestPrintReqDTO.getIdList());
+        Set<Integer> dbIdSet = tcPollinationTbList.stream().map(TcPollinationTb::getId).collect(Collectors.toSet());
+        if (dbIdSet.size() != reqIdSet.size() || !dbIdSet.containsAll(reqIdSet)) {
+            reqIdSet.removeAll(dbIdSet);
+            throw new BusinessException("部分收获标签打印数据不存在，ID：" + reqIdSet.stream().map(String::valueOf).collect(Collectors.joining(",")));
+        }
+
+        Map<String, String> breedNameMap = cerBreedDictMapper.selectAll().stream()
+                .collect(Collectors.toMap(CerBreedDict::getBreedCode, CerBreedDict::getBreedName, (left, right) -> left));
+        Map<String, String> harvestTypeNameMap = bioDictMapper.selectAllByDictType(BioDictTypeEnum.HARVEST_TYPE.name()).stream()
+                .collect(Collectors.toMap(BioDict::getDictValueCode, BioDict::getDictValueName, (left, right) -> left));
+
+        List<PrintRspDTO> printRspDTOList = new ArrayList<>();
+        List<TcHarvestLabelPrintDTO> tcHarvestLabelPrintDTOList = new ArrayList<>();
+        for (TcPollinationTb tcPollinationTb : tcPollinationTbList) {
+            validateHarvestPrintData(tcPollinationTb, breedNameMap, harvestTypeNameMap);
+            TcHarvestLabelPrintDTO tcHarvestLabelPrintDTO = new TcHarvestLabelPrintDTO();
+            tcHarvestLabelPrintDTO.setVectorTaskCode(tcPollinationTb.getFVectorTaskCode());
+            tcHarvestLabelPrintDTO.setBreedName(breedNameMap.get(tcPollinationTb.getMBreedCode()));
+            tcHarvestLabelPrintDTO.setRegionNum(tcPollinationTb.getMRegionNum());
+            tcHarvestLabelPrintDTO.setSampleCode(tcPollinationTb.getMSampleCode());
+            tcHarvestLabelPrintDTO.setSingleNum(tcPollinationTb.getMSingleNumber());
+            tcHarvestLabelPrintDTO.setHarvestTypeName(harvestTypeNameMap.get(tcPollinationTb.getHarvestTypeCode()));
+            tcHarvestLabelPrintDTO.setPollinationTime(tcPollinationTb.getPollinationDate());
+            tcHarvestLabelPrintDTO.setBatchNo(bioHarvestPrintReqDTO.getBatchNo());
+            tcHarvestLabelPrintDTO.setId(tcPollinationTb.getId());
+            tcHarvestLabelPrintDTO.setTaskNum(tcPollinationTb.getExperimentNum());
+            tcHarvestLabelPrintDTOList.add(tcHarvestLabelPrintDTO);
+        }
+        printRspDTOList.add(new PrintRspDTO(SeedMaterialTypeEnum.TYPE_3.printName, printDataSave(PrintTypeEnum.tc_harvest_label_print.name(), tcHarvestLabelPrintDTOList)));
+        return printRspDTOList;
+    }
+
+    private void validateHarvestPrintData(TcPollinationTb tcPollinationTb, Map<String, String> breedNameMap, Map<String, String> harvestTypeNameMap) {
+        if (StringUtils.isEmpty(tcPollinationTb.getFVectorTaskCode())) {
+            throw new BusinessException("收获标签打印数据缺少父本实施方案编号，ID：" + tcPollinationTb.getId());
+        }
+        if (StringUtils.isEmpty(tcPollinationTb.getMBreedCode()) || StringUtils.isEmpty(breedNameMap.get(tcPollinationTb.getMBreedCode()))) {
+            throw new BusinessException("收获标签打印数据母本品种不存在，ID：" + tcPollinationTb.getId());
+        }
+        if (StringUtils.isEmpty(tcPollinationTb.getMRegionNum())) {
+            throw new BusinessException("收获标签打印数据缺少母本小区编号，ID：" + tcPollinationTb.getId());
+        }
+        if (StringUtils.isEmpty(tcPollinationTb.getMSampleCode())) {
+            throw new BusinessException("收获标签打印数据缺少母本样本编号，ID：" + tcPollinationTb.getId());
+        }
+        if (StringUtils.isEmpty(tcPollinationTb.getMSingleNumber())) {
+            throw new BusinessException("收获标签打印数据缺少母本单株编号，ID：" + tcPollinationTb.getId());
+        }
+        if (StringUtils.isEmpty(tcPollinationTb.getHarvestTypeCode()) || StringUtils.isEmpty(harvestTypeNameMap.get(tcPollinationTb.getHarvestTypeCode()))) {
+            throw new BusinessException("收获标签打印数据收获方式不存在，ID：" + tcPollinationTb.getId());
+        }
     }
 
     private String firstPlasmidName(String plasmidNames) {

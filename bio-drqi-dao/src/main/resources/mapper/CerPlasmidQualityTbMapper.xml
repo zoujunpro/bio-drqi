@@ -21,6 +21,7 @@
             <result property="agrobacteriumResistance" column="agrobacterium_resistance" jdbcType="VARCHAR"/>
             <result property="plasmidConcentration" column="plasmid_concentration" jdbcType="VARCHAR"/>
             <result property="extractionKit" column="extraction_kit" jdbcType="VARCHAR"/>
+            <result property="grnaSequence" column="grna_sequence" jdbcType="VARCHAR"/>
             <result property="fileUrls" column="file_urls" jdbcType="VARCHAR"/>
             <result property="taskStatus" column="task_status" jdbcType="VARCHAR"/>
             <result property="taskNum" column="task_num" jdbcType="VARCHAR"/>
@@ -37,7 +38,7 @@
         quality_inspection_number,quality_inspection_result,agrobacterium_information,
         create_user_name,create_user_id,update_time,
         create_time,quality_inspection_type,agrobacterium_resistance,
-        plasmid_concentration,extraction_kit,file_urls,
+        plasmid_concentration,extraction_kit,grna_sequence,file_urls,
         task_status,task_num,project_code,
         sub_project_code,vector_task_code,remark,agrobacterium_location,making_date
     </sql>
@@ -117,6 +118,7 @@
             </if>
             <if test="plasmidConcentration != null">and plasmid_concentration=#{plasmidConcentration,jdbcType=VARCHAR}</if>
             <if test="extractionKit != null">and extraction_kit=#{extractionKit,jdbcType=VARCHAR}</if>
+            <if test="grnaSequence != null and grnaSequence!=''">and grna_sequence=#{grnaSequence,jdbcType=VARCHAR}</if>
             <if test="fileUrls != null">and file_urls=#{fileUrls,jdbcType=VARCHAR}</if>
             <if test="taskStatus != null">and task_status=#{taskStatus,jdbcType=VARCHAR}</if>
             <if test="taskNum != null and taskNum!=''">and task_num=#{taskNum,jdbcType=VARCHAR}</if>

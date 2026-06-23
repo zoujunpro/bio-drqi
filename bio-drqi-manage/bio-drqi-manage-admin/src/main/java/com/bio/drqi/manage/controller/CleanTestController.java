@@ -610,6 +610,9 @@ public class CleanTestController {
         if ("2".equals(type) || "农杆菌检测".equals(type) || "农杆菌转化".equals(type)) {
             return "2";
         }
+        if ("3".equals(type) || "gRNA合成".equals(type)) {
+            return "3";
+        }
         return null;
     }
 

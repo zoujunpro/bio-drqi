@@ -30,6 +30,10 @@ import java.util.*;
 @Service("plasmid_check")
 @Slf4j
 public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
+    private static final String QUALITY_TYPE_PLASMID_PREPARE = "1";
+    private static final String QUALITY_TYPE_AGROBACTERIUM_TRANSFORMATION = "2";
+    private static final String QUALITY_TYPE_GRNA_SYNTHESIS = "3";
+
     @Resource
     private CerPlasmidQualityTbMapper cerPlasmidQualityTbMapper;
 
@@ -62,6 +66,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         if (!ProjectStatusEnum.execute.name().equals(cerProjectTb.getProjectStatus())) {
             throw new BusinessException("非执行中项目不能进行该操作");
         }
+        normalizeAndValidateContentList(plasmidDTO.getContentList());
 
         //补充form表单
         plasmidDTO.setProjectCode(cerProjectTb.getProjectCode());
@@ -104,6 +109,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
                 cerPlasmidQualityTb.setAgrobacteriumResistance(content.getAgrobacteriumResistance());
                 cerPlasmidQualityTb.setPlasmidConcentration(content.getPlasmidConcentration());
                 cerPlasmidQualityTb.setExtractionKit(content.getExtractionKit());
+                cerPlasmidQualityTb.setGrnaSequence(content.getGrnaSequence());
                 cerPlasmidQualityTb.setTaskStatus(bioTaskDtlTb.getTaskStatus());
                 cerPlasmidQualityTb.setTaskNum(bioTaskDtlTb.getTaskNum());
                 cerPlasmidQualityTb.setFileUrls(JSONUtil.toJsonStr(content.getFileUrlList()));
@@ -143,7 +149,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         sections.add(buildFieldSection("申请信息", fieldList));
 
         if (CollectionUtil.isNotEmpty(dto.getContentList())) {
-            List<String> headers = Arrays.asList("质粒名称", "下一步安排", "质检结果", "农杆菌信息", "农杆菌抗性", "质粒浓度", "提取试剂盒", "储存位置", "农杆菌制备时间", "备注");
+            List<String> headers = Arrays.asList("质粒名称", "下一步安排", "质检结果", "农杆菌信息", "农杆菌抗性", "质粒浓度", "提取试剂盒", "gRNA序列", "储存位置", "农杆菌制备时间", "备注");
             List<Map<String, Object>> rows = new ArrayList<>();
             for (PlasmidDTO.Content item : dto.getContentList()) {
                 Map<String, Object> row = new LinkedHashMap<>();
@@ -154,6 +160,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
                 row.put("农杆菌抗性", item.getAgrobacteriumResistance());
                 row.put("质粒浓度", item.getPlasmidConcentration());
                 row.put("提取试剂盒", item.getExtractionKit());
+                row.put("gRNA序列", item.getGrnaSequence());
                 row.put("储存位置", item.getAgrobacteriumLocation());
                 row.put("农杆菌制备时间", item.getMakingDate());
                 row.put("备注", item.getRemark());
@@ -165,12 +172,50 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
         return sections;
     }
 
+    private void normalizeAndValidateContentList(List<PlasmidDTO.Content> contentList) {
+        if (CollectionUtil.isEmpty(contentList)) {
+            throw new BusinessException("质检信息缺失");
+        }
+        for (PlasmidDTO.Content content : contentList) {
+            String qualityInspectionType = normalizeQualityInspectionType(content.getQualityInspectionType());
+            if (StrUtil.isBlank(qualityInspectionType)) {
+                throw new BusinessException("质检类型非法: 1质粒制备 2农杆菌转化 3gRNA合成");
+            }
+            content.setQualityInspectionType(qualityInspectionType);
+            if (QUALITY_TYPE_GRNA_SYNTHESIS.equals(qualityInspectionType) && StrUtil.isBlank(content.getGrnaSequence())) {
+                throw new BusinessException("下一步安排为gRNA合成时，gRNA序列不能为空，质粒名称：" + content.getPlasmidName());
+            }
+        }
+    }
+
+    private String normalizeQualityInspectionType(String qualityInspectionType) {
+        if (StrUtil.isBlank(qualityInspectionType)) {
+            return null;
+        }
+        String type = qualityInspectionType.trim();
+        if (QUALITY_TYPE_PLASMID_PREPARE.equals(type) || "质粒制备".equals(type)) {
+            return QUALITY_TYPE_PLASMID_PREPARE;
+        }
+        if (QUALITY_TYPE_AGROBACTERIUM_TRANSFORMATION.equals(type)
+                || "农杆菌检测".equals(type)
+                || "农杆菌转化".equals(type)) {
+            return QUALITY_TYPE_AGROBACTERIUM_TRANSFORMATION;
+        }
+        if (QUALITY_TYPE_GRNA_SYNTHESIS.equals(type) || "gRNA合成".equals(type)) {
+            return QUALITY_TYPE_GRNA_SYNTHESIS;
+        }
+        return null;
+    }
+
     private String qualityInspectionTypeName(String code) {
-        if ("1".equals(code)) {
+        if (QUALITY_TYPE_PLASMID_PREPARE.equals(code)) {
             return "质粒制备";
         }
-        if ("2".equals(code)) {
+        if (QUALITY_TYPE_AGROBACTERIUM_TRANSFORMATION.equals(code)) {
             return "农杆菌转化";
+        }
+        if (QUALITY_TYPE_GRNA_SYNTHESIS.equals(code)) {
+            return "gRNA合成";
         }
         return code;
     }
@@ -193,7 +238,7 @@ public class PlasmidBaseProcService extends AbstractProjectBaseTaskService {
     }
 
     private boolean isAgrobacteriumCheck(String qualityInspectionType) {
-        return "2".equals(qualityInspectionType)
+        return QUALITY_TYPE_AGROBACTERIUM_TRANSFORMATION.equals(qualityInspectionType)
                 || "农杆菌检测".equals(qualityInspectionType)
                 || "农杆菌转化".equals(qualityInspectionType);
     }

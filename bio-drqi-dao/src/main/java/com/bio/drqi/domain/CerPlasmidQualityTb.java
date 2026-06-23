@@ -78,7 +78,7 @@ public class CerPlasmidQualityTb implements Serializable {
     private Date createTime;
 
     /**
-     * 质检类型（下一步安排）1质粒制备 2农杆菌转化
+     * 质检类型（下一步安排）1质粒制备 2农杆菌转化 3gRNA合成
      */
     private String qualityInspectionType;
 
@@ -96,6 +96,11 @@ public class CerPlasmidQualityTb implements Serializable {
      * 提取试剂盒
      */
     private String extractionKit;
+
+    /**
+     * gRNA序列
+     */
+    private String grnaSequence;
 
     /**
      * 附件地址集合

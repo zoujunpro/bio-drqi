@@ -27,3 +27,10 @@ spring:
         password: nacos
         ip: ${DISCOVERY-HOST:localhost}
 
+bio:
+  ai:
+    llm:
+      base-url: ${AI_LLM_BASE_URL:http://172.16.14.9:11434/v1}
+      model: ${AI_LLM_MODEL:qwen3:8b}
+      temperature: ${AI_LLM_TEMPERATURE:0.1}
+      timeout: ${AI_LLM_TIMEOUT:600000}

@@ -2,6 +2,7 @@ package com.bio.drqi.ai.client;
 
 import java.util.List;
 
+import com.bio.drqi.ai.dto.llm.LlmCallOptionsDTO;
 import com.bio.drqi.ai.dto.llm.LlmChatMessageDTO;
 
 /**
@@ -11,4 +12,6 @@ import com.bio.drqi.ai.dto.llm.LlmChatMessageDTO;
 public interface LlmClient {
 
     String chat(List<LlmChatMessageDTO> messages);
+
+    String chat(List<LlmChatMessageDTO> messages, LlmCallOptionsDTO options);
 }

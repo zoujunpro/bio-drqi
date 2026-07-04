@@ -10,6 +10,7 @@ import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.ai.client.LlmClient;
 import com.bio.drqi.ai.config.AiProperties;
+import com.bio.drqi.ai.dto.llm.LlmCallOptionsDTO;
 import com.bio.drqi.ai.dto.llm.LlmChatMessageDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,11 @@ public class OpenAiCompatibleLlmClient implements LlmClient {
 
     @Override
     public String chat(List<LlmChatMessageDTO> messages) {
+        return chat(messages, null);
+    }
+
+    @Override
+    public String chat(List<LlmChatMessageDTO> messages, LlmCallOptionsDTO options) {
         AiProperties.Llm llm = aiProperties.getLlm();
         if (StrUtil.isBlank(llm.getBaseUrl())) {
             throw new BusinessException("AI模型地址未配置：bio.ai.llm.base-url");
@@ -37,18 +43,23 @@ public class OpenAiCompatibleLlmClient implements LlmClient {
         Map<String, Object> request = new LinkedHashMap<>();
         request.put("model", llm.getModel());
         request.put("messages", messages);
-        request.put("temperature", llm.getTemperature());
+        request.put("temperature", options == null || options.getTemperature() == null ? llm.getTemperature() : options.getTemperature());
         request.put("stream", false);
 
         long startTime = System.currentTimeMillis();
-        log.info("AI模型调用开始，baseUrl={}，model={}，messageCount={}", llm.getBaseUrl(), llm.getModel(), messages.size());
+        log.info("AI模型调用开始，scene={}，baseUrl={}，model={}，messageCount={}",
+                options == null ? null : options.getScene(), llm.getBaseUrl(), llm.getModel(), messages.size());
+        HttpRequest httpRequest = HttpRequest.post(trimEnd(llm.getBaseUrl()) + "/chat/completions")
+                .header("Content-Type", "application/json")
+                .body(JSONUtil.toJsonStr(request))
+                .timeout(llm.getTimeout());
+        if (StrUtil.isNotBlank(llm.getApiKey())) {
+            httpRequest.header("Authorization", "Bearer " + llm.getApiKey());
+        }
+
         HttpResponse response;
         try {
-            response = HttpRequest.post(trimEnd(llm.getBaseUrl()) + "/chat/completions")
-                    .header("Content-Type", "application/json")
-                    .body(JSONUtil.toJsonStr(request))
-                    .timeout(llm.getTimeout())
-                    .execute();
+            response = httpRequest.execute();
         } catch (HttpException e) {
             log.error("AI模型调用异常，cost={}ms，baseUrl={}，model={}",
                     System.currentTimeMillis() - startTime, llm.getBaseUrl(), llm.getModel(), e);

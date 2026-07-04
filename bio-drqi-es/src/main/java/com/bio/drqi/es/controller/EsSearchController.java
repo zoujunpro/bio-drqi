@@ -70,10 +70,32 @@ public class EsSearchController {
         return ResponseResult.getSuccess(result);
     }
 
+    /**
+     * 构建默认查询条件。
+     * 默认包含 tables 过滤，用于真正的搜索结果分页查询。
+     */
     private Map<String, Object> buildQuery(GlobalSearchPageReqDTO reqDTO) {
         return buildQuery(reqDTO, true);
     }
 
+    /**
+     * 构建 Elasticsearch bool 查询。
+     *
+     * 查询参数说明：
+     * 1. keyword：用户输入的搜索词，匹配 search_content 字段。
+     *    operator=and 表示多个词都要命中，例如“玉米 张三”会要求两个词都在文档内容中出现。
+     * 2. systemCode：系统编码，固定加 term 过滤，只查当前系统对应的数据。
+     *    同时 systemCode 还会用于拼接索引名，例如 drqi -> drqi_global_search。
+     * 3. businessCodes：业务模块编码列表，例如 project、seed、plant。
+     *    为空时不限制业务模块；有值时只查询这些 business_code。
+     * 4. tables：表名列表，例如 cer_project_tb、cer_vector_task_tb。
+     *    includeTableFilter=true 时生效，用于页面点击某些表后只看这些表的数据。
+     *    includeTableFilter=false 时不生效，通常用于统计命中的表分布，避免被当前表筛选影响。
+     *
+     * @param reqDTO 请求参数
+     * @param includeTableFilter 是否把 reqDTO.tables 加入查询过滤条件
+     * @return ES query 部分，不包含 sort、size、search_after、_source includes
+     */
     private Map<String, Object> buildQuery(GlobalSearchPageReqDTO reqDTO, boolean includeTableFilter) {
         Map<String, Object> matchValue = new LinkedHashMap<>();
         matchValue.put("query", reqDTO.getKeyword().trim());

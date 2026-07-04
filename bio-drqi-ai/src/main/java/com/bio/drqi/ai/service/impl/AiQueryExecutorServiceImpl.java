@@ -2,7 +2,9 @@ package com.bio.drqi.ai.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
+import com.bio.drqi.ai.config.AiProperties;
 import com.bio.drqi.ai.dto.plan.AiQueryFilterDTO;
 import com.bio.drqi.ai.dto.plan.AiQueryOrderDTO;
 import com.bio.drqi.ai.dto.plan.AiQueryPlanDTO;
@@ -16,6 +18,8 @@ import com.bio.drqi.ai.schema.AiJoinSchema;
 import com.bio.drqi.ai.schema.AiMetricSchema;
 import com.bio.drqi.ai.service.AiQueryExecutorService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -30,16 +34,25 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
+@Primary
 @Slf4j
 public class AiQueryExecutorServiceImpl implements AiQueryExecutorService {
 
     private static final String QUERY_TYPE_DETAIL = "detail";
 
     @Resource
-    private JdbcTemplate jdbcTemplate;
+    private ObjectProvider<JdbcTemplate> jdbcTemplateProvider;
+
+    @Resource
+    private AiProperties aiProperties;
 
     @Override
     public AiAnalysisRspDTO execute(AiQueryPlanDTO plan, AiDomainSchema schema) {
+        JdbcTemplate jdbcTemplate = jdbcTemplateProvider.getIfAvailable();
+        if (jdbcTemplate == null) {
+            throw new BusinessException("当前AI服务未启用数据库查询：未创建JdbcTemplate，请检查spring.datasource配置和MySQL驱动依赖");
+        }
+        applyQueryTimeout(jdbcTemplate);
         SqlBuildResult sqlBuildResult = buildSql(plan, schema);
         log.info("AI查询SQL生成完成，domain={}，queryType={}，sql={}，params={}",
                 plan.getDomain(), plan.getQueryType(), sqlBuildResult.getSql(), sqlBuildResult.getParams());
@@ -51,6 +64,8 @@ public class AiQueryExecutorServiceImpl implements AiQueryExecutorService {
 
         AiTableDTO table = buildTable(plan, schema, rows);
         AiAnalysisRspDTO rspDTO = new AiAnalysisRspDTO();
+        rspDTO.setExecutedSql(sqlBuildResult.getSql());
+        rspDTO.setExecutedSqlParams(JSONUtil.toJsonStr(sqlBuildResult.getParams()));
         rspDTO.getTables().add(table);
 
         AiChartDTO chart = buildChart(plan, schema, rows);
@@ -58,6 +73,13 @@ public class AiQueryExecutorServiceImpl implements AiQueryExecutorService {
             rspDTO.getCharts().add(chart);
         }
         return rspDTO;
+    }
+
+    private void applyQueryTimeout(JdbcTemplate jdbcTemplate) {
+        Integer seconds = aiProperties.getRisk() == null ? null : aiProperties.getRisk().getQueryTimeoutSeconds();
+        if (seconds != null && seconds > 0) {
+            jdbcTemplate.setQueryTimeout(seconds);
+        }
     }
 
     private SqlBuildResult buildSql(AiQueryPlanDTO plan, AiDomainSchema schema) {

@@ -1067,7 +1067,8 @@
     button.onclick = () => sendQuestion(button.textContent);
   });
   if (window.location.protocol === 'file:') {
-    els.apiBase.value = localStorage.getItem('aiQueryApiBase') || 'http://localhost:8093/cer';
+    const savedApiBase = localStorage.getItem('aiQueryApiBase');
+    els.apiBase.value = savedApiBase === 'http://localhost:8093/cer' ? 'http://127.0.0.1:8094' : (savedApiBase || 'http://127.0.0.1:8094');
     setStatus('当前是本地文件打开，请确认顶部接口地址正确');
   } else {
     els.apiBase.value = localStorage.getItem('aiQueryApiBase') || '';

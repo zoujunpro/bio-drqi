@@ -1,5 +1,5 @@
 server:
-  port: 8093
+  port: ${SERVER_PORT:8093}
   servlet:
     context-path: /es
 spring:
@@ -8,21 +8,21 @@ spring:
   main:
     allow-bean-definition-overriding: true
   profiles:
-    active: ${spring.profiles.active}
+    active: ${SPRING_PROFILES_ACTIVE:${SPIRNG_PROFILES_ACTIVE:dev}}
   cloud:
     nacos:
       config:
         bootstrap: true
-        server-addr: ${NACOS-HOST:172.16.14.2}:${NACOS-PORT:8848}
+        server-addr: ${NACOS_HOST:${NACOS-HOST:172.16.14.2}}:${NACOS_PORT:${NACOS-PORT:8848}}
         group: DEFAULT_GROUP
-        namespace: bio-${spring.profiles.active}
+        namespace: ${NACOS_NAMESPACE:${NACOS-NAMESPACE:bio-${spring.profiles.active}}}
         file-extension: yml
         username: nacos
         password: nacos
       discovery:
         group: DEFAULT_GROUP
-        namespace: bio-${spring.profiles.active}
-        server-addr: ${NACOS-HOST:172.16.14.2}:${NACOS-PORT:8848}
+        namespace: ${NACOS_NAMESPACE:${NACOS-NAMESPACE:bio-${spring.profiles.active}}}
+        server-addr: ${NACOS_HOST:${NACOS-HOST:172.16.14.2}}:${NACOS_PORT:${NACOS-PORT:8848}}
         username: nacos
         password: nacos
-        ip: ${DISCOVERY-HOST:localhost}
+        ip: ${DISCOVERY_HOST:${DISCOVERY-HOST:localhost}}

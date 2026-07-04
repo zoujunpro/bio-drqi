@@ -1,0 +1,15 @@
+ARG BASE_IMAGE=nacos/nacos-server:v2.3.2
+FROM ${BASE_IMAGE}
+
+WORKDIR /app
+
+COPY target/bio-drqi-ai-1.0-SNAPSHOT.jar /app/app.jar
+
+ENV TZ=Asia/Shanghai
+ENV SERVER_PORT=18095
+ENV DEBUG_PORT=28095
+ENV JAVA_OPTS="-Xmx768m -Xms768m -Xmn384m -Xss256k"
+
+EXPOSE 18095 28095
+
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${DEBUG_PORT} -jar /app/app.jar"]

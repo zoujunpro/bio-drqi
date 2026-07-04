@@ -9,6 +9,12 @@ public class CanalSyncEnabledCondition extends SpringBootCondition {
 
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
+        String forceDisabled = System.getProperty("bio.es.canal.force-disabled",
+                System.getenv("BIO_ES_CANAL_FORCE_DISABLED"));
+        if (Boolean.parseBoolean(forceDisabled)) {
+            return ConditionOutcome.noMatch("bio.es.canal.force-disabled is true");
+        }
+
         boolean esEnabled = context.getEnvironment().getProperty("bio.es.enabled", Boolean.class, false);
         boolean canalEnabled = context.getEnvironment().getProperty("bio.es.canal.enabled", Boolean.class, false);
         if (esEnabled && canalEnabled) {

@@ -14,6 +14,7 @@ import com.bio.drqi.ai.schema.AiDomainSchema;
 import com.bio.drqi.ai.service.AiMultiAnalysisService;
 import com.bio.drqi.ai.service.AiQueryExecutorService;
 import com.bio.drqi.ai.service.AiQueryPlanValidator;
+import com.bio.drqi.ai.service.AiQueryRiskChecker;
 import com.bio.drqi.ai.service.AiReportPlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,9 @@ public class AiMultiAnalysisServiceImpl implements AiMultiAnalysisService {
 
     @Resource
     private AiQueryExecutorService aiQueryExecutorService;
+
+    @Resource
+    private AiQueryRiskChecker aiQueryRiskChecker;
 
     @Override
     public boolean support(AiAnalysisReqDTO reqDTO) {
@@ -71,6 +75,7 @@ public class AiMultiAnalysisServiceImpl implements AiMultiAnalysisService {
             }
             AiDomainSchema schema = aiDomainRegistry.getRequired(queryPlan.getDomain());
             aiQueryPlanValidator.validate(queryPlan, schema);
+            aiQueryRiskChecker.check(queryPlan, schema);
             AiAnalysisRspDTO stepResult = aiQueryExecutorService.execute(queryPlan, schema);
             if (CollectionUtil.isEmpty(stepResult.getTables())) {
                 continue;

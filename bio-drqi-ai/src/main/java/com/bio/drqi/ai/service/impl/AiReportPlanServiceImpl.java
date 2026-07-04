@@ -5,12 +5,14 @@ import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.ai.client.LlmClient;
 import com.bio.drqi.ai.dto.llm.LlmChatMessageDTO;
+import com.bio.drqi.ai.dto.llm.LlmCallOptionsDTO;
 import com.bio.drqi.ai.config.AiProperties;
 import com.bio.drqi.ai.dto.plan.AiReportPlanDTO;
 import com.bio.drqi.ai.schema.AiDomainPromptDTO;
 import com.bio.drqi.ai.schema.AiDomainSummaryDTO;
 import com.bio.drqi.ai.schema.AiFieldPromptDTO;
 import com.bio.drqi.ai.schema.AiMetricPromptDTO;
+import com.bio.drqi.ai.prompt.SqlPrompt;
 import com.bio.drqi.ai.registry.AiDomainRegistry;
 import com.bio.drqi.ai.service.AiReportPlanService;
 import com.bio.drqi.ai.util.AiJsonExtractor;
@@ -46,7 +48,7 @@ public class AiReportPlanServiceImpl implements AiReportPlanService {
         String content = llmClient.chat(Arrays.asList(
                 new LlmChatMessageDTO("system", buildSystemPrompt(question, domains)),
                 new LlmChatMessageDTO("user", question)
-        ));
+        ), LlmCallOptionsDTO.of("report", aiProperties.getLlm().getReportTemperature()));
         String json = extractReportJson(content, question, domains);
         return JSONUtil.toBean(json, AiReportPlanDTO.class);
     }
@@ -78,43 +80,11 @@ public class AiReportPlanServiceImpl implements AiReportPlanService {
     }
 
     private String buildSystemPrompt(String question, List<String> domains) {
-        return "你是业务报表计划生成器。必须直接输出一个JSON对象，回复第一个字符必须是{，最后一个字符必须是}。"
-                + "禁止输出Markdown，禁止输出```代码块，禁止输出解释说明，禁止输出SQL文本，禁止输出Python，禁止输出操作建议。"
-                + "你只能生成后端可执行的结构化查询计划，不能回答用户如何手工查询。"
-                + "报表由多个steps组成，每个step必须包含stepCode、sheetName、queryPlan。"
-                + "一个用户问题里如果同时要求多个统计、明细、Excel或表格，要拆成多个steps。"
-                + "同一张表的多个统计指标可以放在一个aggregate step；不同表要拆成不同step。"
-                + "如果用户要求明细，必须额外生成detail step。"
-                + "queryPlan只能使用给定的domain、fields、metrics、dimensions。"
-                + "queryType只能是aggregate/detail；统计汇总用aggregate，明细列表用detail。"
-                + "aggregate必须返回metrics，可选dimensions；detail必须返回selectFields，metrics和dimensions返回空数组。"
-                + "过滤条件要尽量从用户问题中提取，例如方案编号、项目编号、种子编号、时间范围。"
-                + "用户说方案、实施方案、试验方案时，优先匹配字段标签为实施方案编号或字段名类似vectorTaskCode/vector_task_code的字段。"
-                + "用户说成功/失败时，优先匹配检测结果、审核结果等枚举字段；不确定时仍按最相关字段生成计划。"
-                + "每个step的limit默认500，最大500。"
-                + "输出格式：{\"reportCode\":\"plasmid_quality_report\",\"reportName\":\"质粒质检报表\","
-                + "\"steps\":[{\"stepCode\":\"summary\",\"sheetName\":\"项目汇总\",\"queryPlan\":"
-                + "{\"domain\":\"plasmid_quality\",\"queryType\":\"aggregate\",\"selectFields\":[],"
-                + "\"metrics\":[\"totalCount\",\"passCount\",\"failCount\",\"passRate\"],\"dimensions\":[\"projectCode\"],"
-                + "\"filters\":[],\"orderBy\":[],\"chartType\":\"table\",\"limit\":500}},"
-                + "{\"stepCode\":\"detail\",\"sheetName\":\"gRNA明细\",\"queryPlan\":"
-                + "{\"domain\":\"plasmid_quality\",\"queryType\":\"detail\","
-                + "\"selectFields\":[\"projectCode\",\"plasmidName\",\"qualityInspectionType\",\"grnaSequence\",\"createTime\"],"
-                + "\"metrics\":[],\"dimensions\":[],\"filters\":[{\"field\":\"qualityInspectionType\",\"op\":\"eq\",\"value\":\"3\"}],"
-                + "\"orderBy\":[{\"field\":\"createTime\",\"direction\":\"desc\"}],\"chartType\":\"table\",\"limit\":500}}],"
-                + "\"aggregations\":[]}。"
-                + "当前支持的业务域：" + JSONUtil.toJsonStr(listSelectedDomains(question, domains));
+        return SqlPrompt.reportPlanPrompt(listSelectedDomains(question, domains));
     }
 
     private String buildRepairPrompt(String question, List<String> domains, String badContent) {
-        return "你刚才的输出不是合法JSON。现在必须把它修正为一个后端可解析的JSON对象。"
-                + "只输出JSON，不要输出解释、SQL、Markdown、代码块或自然语言。"
-                + "JSON格式必须是：{\"reportCode\":\"...\",\"reportName\":\"...\",\"steps\":[{\"stepCode\":\"...\",\"sheetName\":\"...\",\"queryPlan\":{...}}],\"aggregations\":[]}。"
-                + "queryPlan只能使用给定的domain、fields、metrics、dimensions，不能输出SQL。"
-                + "queryType只能是aggregate/detail；aggregate必须返回metrics；detail必须返回selectFields。"
-                + "用户问题：" + question
-                + "。允许的业务域：" + JSONUtil.toJsonStr(listSelectedDomains(question, domains))
-                + "。你刚才的错误输出：" + limitText(badContent, 3000);
+        return SqlPrompt.reportRepairPrompt(question, listSelectedDomains(question, domains), badContent);
     }
 
     private List<AiDomainPromptDTO> listSelectedDomains(String question, List<String> domains) {
@@ -230,7 +200,7 @@ public class AiReportPlanServiceImpl implements AiReportPlanService {
             String repairedContent = llmClient.chat(Arrays.asList(
                     new LlmChatMessageDTO("system", buildRepairPrompt(question, domains, content)),
                     new LlmChatMessageDTO("user", "请把上一次输出修正为合法JSON。只输出JSON对象。")
-            ));
+            ), LlmCallOptionsDTO.of("report", aiProperties.getLlm().getReportTemperature()));
             try {
                 return AiJsonExtractor.extractObject(repairedContent, "AI报表计划为空", "AI报表计划不是合法JSON");
             } catch (BusinessException retryException) {

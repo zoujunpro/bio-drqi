@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,18 @@ public class AiDomainRegistry {
 
     public List<AiDomainSummaryDTO> listSummaryForPrompt(int maxSize) {
         return domainMap.values().stream().limit(maxSize).map(this::toSummaryDTO).collect(Collectors.toList());
+    }
+
+    public List<AiDomainSummaryDTO> listSummaryForPrompt(String question, int maxSize) {
+        if (question == null || question.trim().isEmpty()) {
+            return listSummaryForPrompt(maxSize);
+        }
+        return domainMap.values().stream()
+                .map(schema -> new DomainScore(schema, score(schema, question)))
+                .sorted(Comparator.comparingInt(DomainScore::getScore).reversed())
+                .limit(maxSize)
+                .map(item -> toSummaryDTO(item.getSchema()))
+                .collect(Collectors.toList());
     }
 
     public void register(AiDomainSchema schema) {
@@ -111,7 +124,41 @@ public class AiDomainRegistry {
         AiDomainSummaryDTO dto = new AiDomainSummaryDTO();
         dto.setDomain(schema.getDomain());
         dto.setName(schema.getName());
+        dto.setFields(schema.getFields().values().stream()
+                .limit(12)
+                .map(field -> field.getLabel() + "/" + field.getField())
+                .collect(Collectors.toList()));
         return dto;
+    }
+
+    private int score(AiDomainSchema schema, String question) {
+        int score = 0;
+        score += matchScore(question, schema.getDomain(), 10);
+        score += matchScore(question, schema.getName(), 12);
+        for (AiFieldSchema field : schema.getFields().values()) {
+            score += matchScore(question, field.getField(), 3);
+            score += matchScore(question, field.getLabel(), 5);
+        }
+        return score;
+    }
+
+    private int matchScore(String question, String candidate, int weight) {
+        if (question == null || candidate == null || candidate.trim().isEmpty()) {
+            return 0;
+        }
+        String normalizedQuestion = question.toLowerCase();
+        String normalizedCandidate = candidate.toLowerCase();
+        if (normalizedQuestion.contains(normalizedCandidate)) {
+            return weight;
+        }
+        int score = 0;
+        for (int i = 0; i < normalizedCandidate.length(); i++) {
+            String ch = String.valueOf(normalizedCandidate.charAt(i));
+            if (!ch.trim().isEmpty() && normalizedQuestion.contains(ch)) {
+                score++;
+            }
+        }
+        return Math.min(score, weight - 1);
     }
 
     private AiFieldPromptDTO toFieldPromptDTO(AiFieldSchema schema) {
@@ -179,5 +226,23 @@ public class AiDomainRegistry {
             map.put(values[i], values[i + 1]);
         }
         return map;
+    }
+
+    private static class DomainScore {
+        private final AiDomainSchema schema;
+        private final int score;
+
+        private DomainScore(AiDomainSchema schema, int score) {
+            this.schema = schema;
+            this.score = score;
+        }
+
+        private AiDomainSchema getSchema() {
+            return schema;
+        }
+
+        private int getScore() {
+            return score;
+        }
     }
 }

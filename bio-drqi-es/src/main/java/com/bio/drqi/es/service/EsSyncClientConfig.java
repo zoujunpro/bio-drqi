@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -30,7 +31,7 @@ public class EsSyncClientConfig {
 
     @Bean(destroyMethod = "close")
     public RestClient restClient(EsSyncProperties properties) {
-        List<String> hosts = properties.getHosts();
+        List<String> hosts = resolveHosts(properties);
         if (hosts == null || hosts.isEmpty()) {
             throw new IllegalStateException("bio.es.hosts 未配置，无法启用 ES 增量同步");
         }
@@ -54,6 +55,14 @@ public class EsSyncClientConfig {
         return builder
                 .setHttpClientConfigCallback(clientBuilder -> clientBuilder.setDefaultCredentialsProvider(credentialsProvider))
                 .build();
+    }
+
+    private List<String> resolveHosts(EsSyncProperties properties) {
+        String forceHost = System.getProperty("bio.es.force-host", System.getenv("BIO_ES_FORCE_HOST"));
+        if (forceHost != null && !forceHost.trim().isEmpty()) {
+            return Collections.singletonList(forceHost.trim());
+        }
+        return properties.getHosts();
     }
 
     @Bean

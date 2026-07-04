@@ -7,12 +7,19 @@ import com.bio.drqi.ai.dto.plan.AiQueryFilterDTO;
 import com.bio.drqi.ai.dto.plan.AiQueryOrderDTO;
 import com.bio.drqi.ai.dto.plan.AiQueryPlanDTO;
 import com.bio.drqi.ai.schema.AiDomainSchema;
+import com.bio.drqi.ai.schema.AiFieldSchema;
 import com.bio.drqi.ai.service.AiQueryPlanValidator;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AiQueryPlanValidatorImpl implements AiQueryPlanValidator {
@@ -78,7 +85,11 @@ public class AiQueryPlanValidatorImpl implements AiQueryPlanValidator {
 
     private void validateAggregatePlan(AiQueryPlanDTO plan, AiDomainSchema schema) {
         if (CollectionUtil.isEmpty(plan.getMetrics())) {
-            throw new BusinessException("AI统计查询计划缺少统计指标");
+            if (schema.getMetrics().containsKey("totalCount")) {
+                plan.getMetrics().add("totalCount");
+            } else {
+                throw new BusinessException("AI统计查询计划缺少统计指标");
+            }
         }
         for (String metric : plan.getMetrics()) {
             if (!schema.getMetrics().containsKey(metric)) {
@@ -96,7 +107,7 @@ public class AiQueryPlanValidatorImpl implements AiQueryPlanValidator {
 
     private void validateDetailPlan(AiQueryPlanDTO plan, AiDomainSchema schema) {
         if (CollectionUtil.isEmpty(plan.getSelectFields())) {
-            throw new BusinessException("AI明细查询计划缺少返回字段");
+            plan.setSelectFields(schema.getFields().keySet().stream().limit(8).collect(Collectors.toList()));
         }
         for (String field : plan.getSelectFields()) {
             if (!schema.getFields().containsKey(field)) {
@@ -115,6 +126,7 @@ public class AiQueryPlanValidatorImpl implements AiQueryPlanValidator {
         if (!SUPPORT_OPS.contains(filter.getOp())) {
             throw new BusinessException("不支持的过滤操作：" + filter.getOp());
         }
+        normalizeEnumFilterValue(filter, schema.getFields().get(filter.getField()));
     }
 
     private void validateOrder(AiQueryOrderDTO order, AiDomainSchema schema, AiQueryPlanDTO plan) {
@@ -130,5 +142,56 @@ public class AiQueryPlanValidatorImpl implements AiQueryPlanValidator {
         if (!"asc".equalsIgnoreCase(order.getDirection()) && !"desc".equalsIgnoreCase(order.getDirection())) {
             throw new BusinessException("不支持的排序方向：" + order.getDirection());
         }
+    }
+
+    private void normalizeEnumFilterValue(AiQueryFilterDTO filter, AiFieldSchema fieldSchema) {
+        if (fieldSchema == null || CollectionUtil.isEmpty(fieldSchema.getEnumValues()) || filter.getValue() == null) {
+            return;
+        }
+        if ("in".equals(filter.getOp())) {
+            List<Object> values = toList(filter.getValue());
+            List<Object> normalized = new ArrayList<>();
+            for (Object value : values) {
+                normalized.add(normalizeEnumValue(value, fieldSchema.getEnumValues()));
+            }
+            filter.setValue(normalized);
+            return;
+        }
+        filter.setValue(normalizeEnumValue(filter.getValue(), fieldSchema.getEnumValues()));
+    }
+
+    private Object normalizeEnumValue(Object value, Map<String, String> enumValues) {
+        if (value == null) {
+            return null;
+        }
+        String text = String.valueOf(value);
+        if (enumValues.containsKey(text)) {
+            return text;
+        }
+        for (Map.Entry<String, String> entry : enumValues.entrySet()) {
+            if (text.equalsIgnoreCase(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return value;
+    }
+
+    private List<Object> toList(Object value) {
+        List<Object> values = new ArrayList<>();
+        if (value == null) {
+            return values;
+        }
+        if (value instanceof Collection) {
+            values.addAll((Collection<?>) value);
+            return values;
+        }
+        if (value.getClass().isArray()) {
+            for (int i = 0; i < Array.getLength(value); i++) {
+                values.add(Array.get(value, i));
+            }
+            return values;
+        }
+        values.add(value);
+        return values;
     }
 }

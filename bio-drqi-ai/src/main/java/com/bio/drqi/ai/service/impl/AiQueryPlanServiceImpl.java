@@ -5,18 +5,26 @@ import cn.hutool.json.JSONUtil;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.ai.client.LlmClient;
 import com.bio.drqi.ai.config.AiProperties;
+import com.bio.drqi.ai.dto.llm.LlmCallOptionsDTO;
 import com.bio.drqi.ai.dto.plan.AiDomainSelectDTO;
 import com.bio.drqi.ai.dto.llm.LlmChatMessageDTO;
+import com.bio.drqi.ai.dto.memory.AiConversationContextDTO;
 import com.bio.drqi.ai.dto.plan.AiQueryPlanDTO;
 import com.bio.drqi.ai.exception.AiGeneralChatException;
+import com.bio.drqi.ai.prompt.RouterPrompt;
+import com.bio.drqi.ai.prompt.SqlPrompt;
 import com.bio.drqi.ai.registry.AiDomainRegistry;
+import com.bio.drqi.ai.service.AiLlmCacheService;
+import com.bio.drqi.ai.service.AiTermService;
 import com.bio.drqi.ai.service.AiQueryPlanService;
 import com.bio.drqi.ai.util.AiJsonExtractor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -33,21 +41,41 @@ public class AiQueryPlanServiceImpl implements AiQueryPlanService {
     @Resource
     private AiProperties aiProperties;
 
+    @Resource
+    private AiTermService aiTermService;
+
+    @Resource
+    private AiLlmCacheService aiLlmCacheService;
+
     @Override
     public AiQueryPlanDTO generate(String question, String preferredChartType) {
+        return generate(question, preferredChartType, null);
+    }
+
+    @Override
+    public AiQueryPlanDTO generate(String question, String preferredChartType, AiConversationContextDTO context) {
         long startTime = System.currentTimeMillis();
-        String domain = selectDomain(question);
+        List<AiProperties.Term> terms = aiTermService.recall(question);
+        String domain = selectDomain(question, terms);
         if (GENERAL_CHAT_DOMAIN.equals(domain)) {
             throw new AiGeneralChatException();
         }
         log.info("AI业务域识别完成，cost={}ms，domain={}，question={}", System.currentTimeMillis() - startTime, domain, question);
 
+        String contextPrompt = context == null ? null : context.toPromptText();
+        String planCacheKey = buildQueryPlanCacheKey(question, preferredChartType, domain, terms, contextPrompt);
+        AiQueryPlanDTO cachedPlan = aiLlmCacheService.get("query-plan", planCacheKey, AiQueryPlanDTO.class);
+        if (cachedPlan != null) {
+            log.info("AI查询计划命中缓存，domain={}，question={}", cachedPlan.getDomain(), question);
+            return cachedPlan;
+        }
+
         // system prompt 告诉模型只能按白名单生成 JSON；user prompt 只放用户原始问题。
         long planStartTime = System.currentTimeMillis();
         String content = llmClient.chat(Arrays.asList(
-                new LlmChatMessageDTO("system", buildSystemPrompt(preferredChartType, domain)),
+                new LlmChatMessageDTO("system", buildSystemPrompt(preferredChartType, domain, terms, contextPrompt)),
                 new LlmChatMessageDTO("user", question)
-        ));
+        ), LlmCallOptionsDTO.of("query", aiProperties.getLlm().getQueryTemperature()));
         log.info("AI查询计划模型返回完成，cost={}ms，domain={}", System.currentTimeMillis() - planStartTime, domain);
 
         // 模型有时会包一层 ```json，这里先提取纯 JSON，再转成后端 DTO。
@@ -62,15 +90,25 @@ public class AiQueryPlanServiceImpl implements AiQueryPlanService {
         log.info("AI查询计划解析完成，domain={}，queryType={}，selectFields={}，metrics={}，dimensions={}，filters={}，orderBy={}，limit={}",
                 plan.getDomain(), plan.getQueryType(), plan.getSelectFields(), plan.getMetrics(), plan.getDimensions(),
                 plan.getFilters(), plan.getOrderBy(), plan.getLimit());
+        aiLlmCacheService.set("query-plan", planCacheKey, plan, Duration.ofSeconds(cacheTtl(aiProperties.getCache().getQueryPlanTtlSeconds())));
         return plan;
     }
 
-    private String selectDomain(String question) {
+    private String selectDomain(String question, List<AiProperties.Term> terms) {
         long startTime = System.currentTimeMillis();
+        String cacheKey = buildDomainSelectCacheKey(question, terms);
+        AiDomainSelectDTO cachedDto = aiLlmCacheService.get("domain-select", cacheKey, AiDomainSelectDTO.class);
+        if (cachedDto != null && StrUtil.isNotBlank(cachedDto.getDomain())) {
+            if (!GENERAL_CHAT_DOMAIN.equals(cachedDto.getDomain())) {
+                aiDomainRegistry.getRequired(cachedDto.getDomain());
+            }
+            log.info("AI业务域命中缓存，domain={}，question={}", cachedDto.getDomain(), question);
+            return cachedDto.getDomain();
+        }
         String content = llmClient.chat(Arrays.asList(
-                new LlmChatMessageDTO("system", buildDomainSelectPrompt()),
+                new LlmChatMessageDTO("system", buildDomainSelectPrompt(question, terms)),
                 new LlmChatMessageDTO("user", question)
-        ));
+        ), LlmCallOptionsDTO.of("router", aiProperties.getLlm().getRouterTemperature()));
         log.info("AI业务域模型返回完成，cost={}ms", System.currentTimeMillis() - startTime);
         String json = extractJson(content);
         AiDomainSelectDTO dto = JSONUtil.toBean(json, AiDomainSelectDTO.class);
@@ -78,42 +116,24 @@ public class AiQueryPlanServiceImpl implements AiQueryPlanService {
             throw new BusinessException("AI未能识别查询业务域");
         }
         if (GENERAL_CHAT_DOMAIN.equals(dto.getDomain())) {
+            aiLlmCacheService.set("domain-select", cacheKey, dto, Duration.ofSeconds(cacheTtl(aiProperties.getCache().getDomainSelectTtlSeconds())));
             return GENERAL_CHAT_DOMAIN;
         }
         aiDomainRegistry.getRequired(dto.getDomain());
+        aiLlmCacheService.set("domain-select", cacheKey, dto, Duration.ofSeconds(cacheTtl(aiProperties.getCache().getDomainSelectTtlSeconds())));
         return dto.getDomain();
     }
 
-    private String buildDomainSelectPrompt() {
+    private String buildDomainSelectPrompt(String question, List<AiProperties.Term> terms) {
         int maxSize = aiProperties.getMaxDomainPromptSize() == null ? 80 : aiProperties.getMaxDomainPromptSize();
-        return "你是业务域选择器，只能输出JSON，不要输出解释。"
-                + "只能从给定domains中选择一个最匹配用户问题的domain。"
-                + "如果用户问的是闲聊、知识问答、系统无关问题，或者不是查询本系统业务数据，返回{\"domain\":\"general_chat\"}。"
-                + "如果用户问题可能是查询本系统业务数据，优先选择最匹配的业务域，不要返回general_chat。"
-                + "输出格式：{\"domain\":\"plasmid_quality\"}。"
-                + "当前可选domains：" + JSONUtil.toJsonStr(aiDomainRegistry.listSummaryForPrompt(maxSize))
-                + "，额外可选domain：general_chat";
+        return RouterPrompt.domainSelectPrompt(aiDomainRegistry.listSummaryForPrompt(question, maxSize), terms);
     }
 
-    private String buildSystemPrompt(String preferredChartType, String domain) {
-        String chartType = StrUtil.blankToDefault(preferredChartType, "auto");
+    private String buildSystemPrompt(String preferredChartType, String domain, List<AiProperties.Term> terms, String contextPrompt) {
         // 注意：这里暴露给模型的是业务字段和指标名称，不暴露完整 SQL 执行能力。
         // 真正的表名、列名、表达式保存在后端 schema 中，后续执行时按白名单拼装。
-        return "你是业务查询计划生成器，只能输出JSON，不要输出解释，不要输出SQL。"
-                + "只能使用给定的domain、fields、metrics、dimensions。"
-                + "queryType只能是aggregate/detail；统计数量、比例、趋势时用aggregate；查询列表、明细、最近几条记录时用detail。"
-                + "queryType=aggregate时必须返回metrics，可选dimensions；queryType=detail时必须返回selectFields，metrics和dimensions返回空数组。"
-                + "chartType只能是table/bar/line/pie/auto，用户偏好的chartType=" + chartType + "。"
-                + "如果用户没有指定limit，默认100，最大500。"
-                + "统计输出格式：{\"domain\":\"plasmid_quality\",\"queryType\":\"aggregate\",\"selectFields\":[],"
-                + "\"metrics\":[\"totalCount\"],\"dimensions\":[\"projectCode\"],"
-                + "\"filters\":[{\"field\":\"qualityInspectionType\",\"op\":\"eq\",\"value\":\"3\"}],"
-                + "\"orderBy\":[],\"chartType\":\"bar\",\"limit\":100}。"
-                + "明细输出格式：{\"domain\":\"plasmid_quality\",\"queryType\":\"detail\","
-                + "\"selectFields\":[\"projectCode\",\"plasmidName\",\"qualityInspectionType\",\"createTime\"],"
-                + "\"metrics\":[],\"dimensions\":[],\"filters\":[],\"orderBy\":[{\"field\":\"createTime\",\"direction\":\"desc\"}],"
-                + "\"chartType\":\"table\",\"limit\":10}。"
-                + "当前支持的业务域：" + JSONUtil.toJsonStr(aiDomainRegistry.getForPrompt(domain));
+        return SqlPrompt.queryPlanPrompt(preferredChartType, aiDomainRegistry.getForPrompt(domain),
+                terms, contextPrompt);
     }
 
     private String extractJson(String content) {
@@ -134,6 +154,35 @@ public class AiQueryPlanServiceImpl implements AiQueryPlanService {
             return normalized;
         }
         return normalized.substring(0, maxLength) + "...";
+    }
+
+    private String buildDomainSelectCacheKey(String question, List<AiProperties.Term> terms) {
+        return JSONUtil.toJsonStr(Arrays.asList(
+                safeText(question),
+                JSONUtil.toJsonStr(terms),
+                aiDomainRegistry.listSummaryForPrompt(question, aiProperties.getMaxDomainPromptSize() == null ? 80 : aiProperties.getMaxDomainPromptSize())
+        ));
+    }
+
+    private String buildQueryPlanCacheKey(String question, String preferredChartType, String domain, List<AiProperties.Term> terms, String contextPrompt) {
+        return JSONUtil.toJsonStr(Arrays.asList(
+                safeText(question),
+                StrUtil.blankToDefault(preferredChartType, ""),
+                domain,
+                JSONUtil.toJsonStr(terms),
+                StrUtil.blankToDefault(contextPrompt, "")
+        ));
+    }
+
+    private String safeText(String text) {
+        return StrUtil.blankToDefault(text, "").trim();
+    }
+
+    private long cacheTtl(Long ttlSeconds) {
+        if (ttlSeconds == null || ttlSeconds <= 0) {
+            return 1L;
+        }
+        return ttlSeconds;
     }
 
 }

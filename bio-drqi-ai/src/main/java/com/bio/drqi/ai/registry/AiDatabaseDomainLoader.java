@@ -6,6 +6,7 @@ import com.bio.drqi.ai.schema.AiDomainSchema;
 import com.bio.drqi.ai.schema.AiFieldSchema;
 import com.bio.drqi.ai.schema.AiMetricSchema;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -25,10 +26,10 @@ import java.util.Map;
 public class AiDatabaseDomainLoader {
 
     @Resource
-    private DataSource dataSource;
+    private ObjectProvider<DataSource> dataSourceProvider;
 
     @Resource
-    private JdbcTemplate jdbcTemplate;
+    private ObjectProvider<JdbcTemplate> jdbcTemplateProvider;
 
     @Resource
     private AiDomainRegistry aiDomainRegistry;
@@ -38,28 +39,41 @@ public class AiDatabaseDomainLoader {
 
     @PostConstruct
     public void load() {
+        DataSource dataSource = dataSourceProvider.getIfAvailable();
+        if (dataSource == null) {
+            log.warn("AI自动注册数据库业务域跳过：未创建DataSource");
+            return;
+        }
         try (Connection connection = dataSource.getConnection()) {
             String catalog = connection.getCatalog();
             DatabaseMetaData metaData = connection.getMetaData();
+            int registeredCount = 0;
             try (ResultSet tables = metaData.getTables(catalog, null, "%", new String[]{"TABLE"})) {
                 while (tables.next()) {
                     String tableName = tables.getString("TABLE_NAME");
                     if (!allowTable(tableName)) {
                         continue;
                     }
-                    String tableComment = StrUtil.blankToDefault(tables.getString("REMARKS"), tableName);
-                    registerTableDomain(metaData, catalog, tableName, tableComment);
+                    try {
+                        String tableComment = StrUtil.blankToDefault(tables.getString("REMARKS"), tableName);
+                        if (registerTableDomain(metaData, catalog, tableName, tableComment)) {
+                            registeredCount++;
+                        }
+                    } catch (Exception e) {
+                        log.warn("AI自动注册数据库业务域跳过表：{}，原因：{}", tableName, e.getMessage(), e);
+                    }
                 }
             }
+            log.info("AI自动注册数据库业务域完成，catalog={}，registeredCount={}", catalog, registeredCount);
         } catch (Exception e) {
-            log.warn("AI自动注册数据库业务域失败", e);
+            log.warn("AI自动注册数据库业务域失败：{}", e.getMessage(), e);
         }
     }
 
-    private void registerTableDomain(DatabaseMetaData metaData, String catalog, String tableName, String tableComment) throws Exception {
+    private boolean registerTableDomain(DatabaseMetaData metaData, String catalog, String tableName, String tableComment) throws Exception {
         String domain = tableName;
         if (aiDomainRegistry.contains(domain)) {
-            return;
+            return false;
         }
 
         AiDomainSchema schema = new AiDomainSchema();
@@ -94,13 +108,14 @@ public class AiDatabaseDomainLoader {
             }
         }
         if (fields.isEmpty()) {
-            return;
+            return false;
         }
 
         schema.setFields(fields);
         schema.setDimensions(dimensions);
         schema.setMetrics(defaultMetrics());
         aiDomainRegistry.register(schema);
+        return true;
     }
 
     private Map<String, AiMetricSchema> defaultMetrics() {
@@ -194,8 +209,18 @@ public class AiDatabaseDomainLoader {
 
     private Map<String, String> loadBioDictValues(String dictType) {
         Map<String, String> map = new LinkedHashMap<>();
+        JdbcTemplate jdbcTemplate = jdbcTemplateProvider.getIfAvailable();
+        if (jdbcTemplate == null) {
+            return map;
+        }
         String sql = "select dict_value_code, dict_value_name from bio_dict where dict_type = ? and (dict_status is null or dict_status = '1') order by id";
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, dictType);
+        List<Map<String, Object>> rows;
+        try {
+            rows = jdbcTemplate.queryForList(sql, dictType);
+        } catch (Exception e) {
+            log.warn("AI加载bio_dict字典失败，dictType={}，原因：{}", dictType, e.getMessage());
+            return map;
+        }
         for (Map<String, Object> row : rows) {
             Object code = row.get("dict_value_code");
             Object name = row.get("dict_value_name");
@@ -208,8 +233,18 @@ public class AiDatabaseDomainLoader {
 
     private Map<String, String> loadBmsDictValues(String dictType) {
         Map<String, String> map = new LinkedHashMap<>();
+        JdbcTemplate jdbcTemplate = jdbcTemplateProvider.getIfAvailable();
+        if (jdbcTemplate == null) {
+            return map;
+        }
         String sql = "select dict_value_code, dict_value_name from bms_dict where dict_type_code = ? order by id";
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, dictType);
+        List<Map<String, Object>> rows;
+        try {
+            rows = jdbcTemplate.queryForList(sql, dictType);
+        } catch (Exception e) {
+            log.warn("AI加载bms_dict字典失败，dictType={}，原因：{}", dictType, e.getMessage());
+            return map;
+        }
         for (Map<String, Object> row : rows) {
             Object code = row.get("dict_value_code");
             Object name = row.get("dict_value_name");

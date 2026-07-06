@@ -9,7 +9,7 @@ NGINX_DIR="${NGINX_COMMON_DIR}/nginx/conf.d"
 NGINX_CONF="${NGINX_DIR}/bio-web-dev.conf"
 NGINX_PORT="18080"
 GATEWAY_URL="http://bio-base-gateway-dev:18090"
-AI_LOCAL_URL="http://host.docker.internal:8094"
+AI_LOCAL_URL="http://bio-ai-service-dev:18095"
 
 function pause_on_exit() {
   local code=$?

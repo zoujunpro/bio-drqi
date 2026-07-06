@@ -58,6 +58,10 @@ services:
       - SPIRNG_PROFILES_ACTIVE=dev
       - SERVER_PORT=18095
       - DEBUG_PORT=28095
+      - AI_LLM_BASE_URL=${AI_LLM_BASE_URL:-https://ws-g96i4edvjqyqgx4m.cn-beijing.maas.aliyuncs.com/compatible-mode/v1}
+      - AI_LLM_API_KEY=${AI_LLM_API_KEY:-}
+      - AI_LLM_MODEL=${AI_LLM_MODEL:-qwen-plus}
+      - AI_LLM_TIMEOUT=${AI_LLM_TIMEOUT:-180000}
       - AI_DB_URL=jdbc:mysql://mysql-dev:3306/bio_cer_local?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
       - AI_DB_USERNAME=root
       - AI_DB_PASSWORD=mysql2026
@@ -93,12 +97,20 @@ else
       - REDIS_PASSWORD=redis2026
 ' "${COMPOSE_FILE}"
   fi
+  if ! grep -q "AI_LLM_API_KEY=" "${COMPOSE_FILE}"; then
+    sed -i.bak '/DEBUG_PORT=/a\
+      - AI_LLM_BASE_URL=${AI_LLM_BASE_URL:-https://ws-g96i4edvjqyqgx4m.cn-beijing.maas.aliyuncs.com/compatible-mode/v1}\
+      - AI_LLM_API_KEY=${AI_LLM_API_KEY:-}\
+      - AI_LLM_MODEL=${AI_LLM_MODEL:-qwen-plus}\
+      - AI_LLM_TIMEOUT=${AI_LLM_TIMEOUT:-180000}
+' "${COMPOSE_FILE}"
+  fi
 fi
 
 cd "${PROJECT_DIR}"
 
-echo "Building bio-drqi-ai jar..."
-mvn -pl bio-drqi-ai -am clean package -DskipTests
+echo "Building bio-drqi-ai app jar..."
+mvn -pl bio-drqi-ai/bio-drqi-ai-app -am clean package -DskipTests
 
 echo "Building Docker image ${IMAGE_NAME}..."
 if docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then

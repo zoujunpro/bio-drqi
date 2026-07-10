@@ -45,6 +45,23 @@ CREATE TABLE IF NOT EXISTS ai_api_param (
   KEY idx_ai_api_param_enabled (ai_enabled, deleted)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='AI API参数表';
 
+CREATE TABLE IF NOT EXISTS ai_api_output_field (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+  api_code VARCHAR(128) NOT NULL COMMENT 'API编码',
+  field_path VARCHAR(255) NOT NULL COMMENT '输出字段路径，例如 data.records 或 data.id',
+  field_name VARCHAR(128) DEFAULT NULL COMMENT '字段名',
+  field_type VARCHAR(128) DEFAULT NULL COMMENT '字段类型',
+  business_name VARCHAR(128) DEFAULT NULL COMMENT '业务名称',
+  description VARCHAR(500) DEFAULT NULL COMMENT '字段说明',
+  enabled TINYINT DEFAULT 1 COMMENT '是否启用',
+  deleted TINYINT DEFAULT 0 COMMENT '是否删除',
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  UNIQUE KEY uk_ai_api_output_field (api_code, field_path),
+  KEY idx_ai_api_output_api (api_code),
+  KEY idx_ai_api_output_enabled (enabled, deleted)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='AI API输出字段表';
+
 CREATE TABLE IF NOT EXISTS ai_workflow_definition (
   id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
   workflow_code VARCHAR(128) NOT NULL COMMENT 'Workflow编码',

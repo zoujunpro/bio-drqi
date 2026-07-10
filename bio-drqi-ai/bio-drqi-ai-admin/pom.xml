@@ -9,14 +9,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bio-drqi-ai-memory</artifactId>
+    <artifactId>bio-drqi-ai-admin</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>bio.drqi</groupId>
-            <artifactId>bio-drqi-ai-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>bio.drqi</groupId>
             <artifactId>bio-drqi-ai-api</artifactId>
@@ -29,20 +24,42 @@
         </dependency>
         <dependency>
             <groupId>bio.drqi</groupId>
-            <artifactId>bio-drqi-ai-dao</artifactId>
+            <artifactId>bio-drqi-ai-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-ai-memory</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-ai-orchestrator</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <groupId>bio.common</groupId>
+            <artifactId>bio-common-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
+            <groupId>bio.common</groupId>
+            <artifactId>bio-common-web</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.common</groupId>
+            <artifactId>bio-common-security</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.common</groupId>
+            <artifactId>bio-common-oss</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

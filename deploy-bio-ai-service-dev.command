@@ -10,6 +10,11 @@ LOCAL_JAVA_BASE_IMAGE="nacos/nacos-server:v2.3.2"
 CONTAINER_NAME="bio-ai-service-dev"
 JDK8_HOME="/Library/Java/JavaVirtualMachines/jdk-1.8.jdk/Contents/Home"
 CREATED_TEMP_BASE="false"
+MAVEN_SNAPSHOT_ARGS="-nsu"
+
+if [ "${FORCE_SNAPSHOT_UPDATE:-false}" = "true" ] || [ "${FORCE_SNAPSHOT_UPDATE:-0}" = "1" ]; then
+  MAVEN_SNAPSHOT_ARGS="-U"
+fi
 
 function pause_on_exit() {
   local code=$?
@@ -36,6 +41,7 @@ else
 fi
 
 echo "JAVA_HOME: ${JAVA_HOME}"
+echo "Maven snapshot mode: ${MAVEN_SNAPSHOT_ARGS}"
 
 if ! command -v docker >/dev/null 2>&1; then
   echo "ERROR: Docker command not found."
@@ -110,7 +116,7 @@ fi
 cd "${PROJECT_DIR}"
 
 echo "Building bio-drqi-ai app jar..."
-mvn -pl bio-drqi-ai/bio-drqi-ai-app -am clean package -DskipTests
+mvn ${MAVEN_SNAPSHOT_ARGS} -pl bio-drqi-ai/bio-drqi-ai-app -am clean package -DskipTests
 
 echo "Building Docker image ${IMAGE_NAME}..."
 if docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then

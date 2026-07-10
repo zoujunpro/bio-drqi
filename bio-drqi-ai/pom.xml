@@ -13,15 +13,19 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>bio-drqi-ai-common</module>
         <module>bio-drqi-ai-api</module>
         <module>bio-drqi-ai-provider</module>
         <module>bio-drqi-ai-semantic</module>
         <module>bio-drqi-ai-tool</module>
         <module>bio-drqi-ai-query</module>
+        <module>bio-drqi-ai-dto</module>
+        <module>bio-drqi-ai-dao</module>
         <module>bio-drqi-ai-memory</module>
         <module>bio-drqi-ai-observe</module>
         <module>bio-drqi-ai-orchestrator</module>
-        <module>bio-drqi-ai-gateway</module>
+        <module>bio-drqi-ai-admin</module>
         <module>bio-drqi-ai-app</module>
+        <module>bio-drqi-ai-planner</module>
     </modules>
 </project>

@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>bio.drqi</groupId>
-            <artifactId>bio-drqi-ai-gateway</artifactId>
+            <artifactId>bio-drqi-ai-admin</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

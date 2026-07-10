@@ -14,7 +14,17 @@
     <dependencies>
         <dependency>
             <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-ai-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.drqi</groupId>
             <artifactId>bio-drqi-ai-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-ai-dto</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -34,6 +44,11 @@
             <groupId>bio.common</groupId>
             <artifactId>bio-common-core</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-ai-memory</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

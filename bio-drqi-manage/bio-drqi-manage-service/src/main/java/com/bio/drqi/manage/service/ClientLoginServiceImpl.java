@@ -65,9 +65,9 @@ public class ClientLoginServiceImpl implements ClientLoginService {
         userDetailRspDTO.setUsername(loginUser.getUsername());
         userDetailRspDTO.setNickname(loginUser.getNickname());
         userDetailRspDTO.setJobNum(loginUser.getJobNum());
-        userDetailRspDTO.setSystemList(JSONUtil.toList(JSONUtil.toJsonStr(loginUser.getRoleList()), UserDetailRspDTO.System.class));
+        userDetailRspDTO.setSystemList(JSONUtil.toList(JSONUtil.toJsonStr(loginUser.getSystemList()), UserDetailRspDTO.System.class));
         userDetailRspDTO.setRoleList(JSONUtil.toList(JSONUtil.toJsonStr(loginUser.getRoleList()), UserDetailRspDTO.Role.class));
-        userDetailRspDTO.setPermissionsList(JSONUtil.toList(JSONUtil.toJsonStr(loginUser.getRoleList()), UserDetailRspDTO.Permissions.class));
+        userDetailRspDTO.setPermissionsList(JSONUtil.toList(JSONUtil.toJsonStr(loginUser.getPermissionsList()), UserDetailRspDTO.Permissions.class));
         userDetailRspDTO.setManager(JSONUtil.toBean(JSONUtil.toJsonStr(loginUser.getManager()), UserDetailRspDTO.Manager.class));
         return userDetailRspDTO;
     }

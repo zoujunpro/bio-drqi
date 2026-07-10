@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.ai.dao.mapper.AiIntentToolRelMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.ai.dao.domain.AiIntentToolRel">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="intentCode" column="intent_code" jdbcType="VARCHAR"/>
+        <result property="toolCode" column="tool_code" jdbcType="VARCHAR"/>
+        <result property="priority" column="priority" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, intent_code, tool_code, priority, status, create_time, update_time
+    </sql>
+
+    <select id="selectActiveByIntentCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ai_intent_tool_rel
+        where intent_code = #{intentCode,jdbcType=VARCHAR}
+          and cast(status as char) in ('ACTIVE', '1')
+        order by priority asc, id asc
+    </select>
+
+    <select id="selectActiveByIntentCodes" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ai_intent_tool_rel
+        where cast(status as char) in ('ACTIVE', '1')
+        <if test="intentCodes != null and intentCodes.size() > 0">
+          and intent_code in
+          <foreach collection="intentCodes" item="intentCode" open="(" separator="," close=")">
+              #{intentCode,jdbcType=VARCHAR}
+          </foreach>
+        </if>
+        <if test="intentCodes == null or intentCodes.size() == 0">
+          and 1 = 0
+        </if>
+        order by priority asc, id asc
+    </select>
+</mapper>

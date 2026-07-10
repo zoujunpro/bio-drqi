@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.document.mapper.DocShareTargetRelMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.document.domain.DocShareTargetRel">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="shareId" column="share_id" jdbcType="BIGINT"/>
+            <result property="targetType" column="target_type" jdbcType="VARCHAR"/>
+            <result property="targetId" column="target_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,share_id,target_type,target_id
+    </sql>
+</mapper>

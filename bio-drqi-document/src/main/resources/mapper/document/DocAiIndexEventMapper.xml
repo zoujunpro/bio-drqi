@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.document.mapper.DocAiIndexEventMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.document.domain.DocAiIndexEvent">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="eventType" column="event_type" jdbcType="VARCHAR"/>
+        <result property="documentId" column="document_id" jdbcType="BIGINT"/>
+        <result property="versionId" column="version_id" jdbcType="BIGINT"/>
+        <result property="docCode" column="doc_code" jdbcType="VARCHAR"/>
+        <result property="docName" column="doc_name" jdbcType="VARCHAR"/>
+        <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
+        <result property="fileType" column="file_type" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="retryCount" column="retry_count" jdbcType="INTEGER"/>
+        <result property="errorMessage" column="error_message" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,event_type,document_id,version_id,doc_code,doc_name,file_path,file_type,
+        status,retry_count,error_message,create_time,update_time
+    </sql>
+</mapper>

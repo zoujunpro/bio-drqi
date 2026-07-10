@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.ai.dao.mapper.AiMemorySummaryMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.ai.dao.domain.AiMemorySummary">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="sessionId" column="session_id" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="agentId" column="agent_id" jdbcType="VARCHAR"/>
+        <result property="summary" column="summary" jdbcType="LONGVARCHAR"/>
+        <result property="lastMessageId" column="last_message_id" jdbcType="BIGINT"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, session_id, user_id, agent_id, summary, last_message_id, version, create_time, update_time
+    </sql>
+
+    <select id="selectLatestBySessionId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ai_memory_summary
+        where session_id = #{sessionId,jdbcType=VARCHAR}
+        order by version desc, id desc
+        limit 1
+    </select>
+</mapper>

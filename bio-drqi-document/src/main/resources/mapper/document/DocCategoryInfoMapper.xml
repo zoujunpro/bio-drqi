@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.document.mapper.DocCategoryInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.document.domain.DocCategoryInfo">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
+            <result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
+            <result property="categoryCode" column="category_code" jdbcType="VARCHAR"/>
+            <result property="categoryType" column="category_type" jdbcType="VARCHAR"/>
+            <result property="sortNum" column="sort_num" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="managerUserId" column="manager_user_id" jdbcType="BIGINT"/>
+            <result property="managerScope" column="manager_scope" jdbcType="VARCHAR"/>
+            <result property="inheritPermission" column="inherit_permission" jdbcType="CHAR"/>
+            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="BIGINT"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="CHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,parent_id,category_name,category_code,category_type,sort_num,status,
+        manager_user_id,manager_scope,inherit_permission,
+        create_by,create_time,update_by,update_time,deleted
+    </sql>
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.document.mapper.DocRecycleInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.document.domain.DocRecycleInfo">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="fileId" column="file_id" jdbcType="BIGINT"/>
+            <result property="deleteUserId" column="delete_user_id" jdbcType="BIGINT"/>
+            <result property="deleteTime" column="delete_time" jdbcType="TIMESTAMP"/>
+            <result property="expireTime" column="expire_time" jdbcType="TIMESTAMP"/>
+            <result property="restoreTime" column="restore_time" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,file_id,delete_user_id,delete_time,expire_time,restore_time,
+        status
+    </sql>
+</mapper>

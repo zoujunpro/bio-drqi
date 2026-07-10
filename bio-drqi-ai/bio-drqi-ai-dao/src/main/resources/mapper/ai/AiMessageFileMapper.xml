@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.ai.dao.mapper.AiMessageFileMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.ai.dao.domain.AiMessageFile">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="sessionId" column="session_id" jdbcType="VARCHAR"/>
+        <result property="messageId" column="message_id" jdbcType="BIGINT"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="fileId" column="file_id" jdbcType="VARCHAR"/>
+        <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+        <result property="fileType" column="file_type" jdbcType="VARCHAR"/>
+        <result property="mimeType" column="mime_type" jdbcType="VARCHAR"/>
+        <result property="fileSize" column="file_size" jdbcType="BIGINT"/>
+        <result property="bucketName" column="bucket_name" jdbcType="VARCHAR"/>
+        <result property="objectKey" column="object_key" jdbcType="VARCHAR"/>
+        <result property="fileUrl" column="file_url" jdbcType="VARCHAR"/>
+        <result property="parseStatus" column="parse_status" jdbcType="VARCHAR"/>
+        <result property="parsedText" column="parsed_text" jdbcType="LONGVARCHAR"/>
+        <result property="summary" column="summary" jdbcType="LONGVARCHAR"/>
+        <result property="errorMessage" column="error_message" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, session_id, message_id, user_id, file_id, file_name, file_type, mime_type, file_size,
+        bucket_name, object_key, file_url, parse_status, parsed_text, summary, error_message,
+        create_time, update_time
+    </sql>
+
+    <select id="selectByFileId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ai_message_file
+        where file_id = #{fileId,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+    <select id="selectByFileIds" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ai_message_file
+        where session_id = #{sessionId,jdbcType=VARCHAR}
+          and user_id = #{userId,jdbcType=VARCHAR}
+          and file_id in
+        <foreach collection="fileIds" item="fileId" open="(" close=")" separator=",">
+            #{fileId,jdbcType=VARCHAR}
+        </foreach>
+        order by id asc
+    </select>
+
+    <select id="selectRecentBySessionId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ai_message_file
+        where session_id = #{sessionId,jdbcType=VARCHAR}
+        order by id desc
+        limit #{limit,jdbcType=INTEGER}
+    </select>
+
+    <update id="updateMessageIdByFileIds">
+        update ai_message_file
+        set message_id = #{messageId,jdbcType=BIGINT},
+            update_time = now()
+        where session_id = #{sessionId,jdbcType=VARCHAR}
+          and user_id = #{userId,jdbcType=VARCHAR}
+          and file_id in
+        <foreach collection="fileIds" item="fileId" open="(" close=")" separator=",">
+            #{fileId,jdbcType=VARCHAR}
+        </foreach>
+    </update>
+</mapper>

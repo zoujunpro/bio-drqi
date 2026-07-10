@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.ai.dao.mapper.AiUserMemoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.ai.dao.domain.AiUserMemory">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="agentId" column="agent_id" jdbcType="VARCHAR"/>
+        <result property="memoryType" column="memory_type" jdbcType="VARCHAR"/>
+        <result property="memoryKey" column="memory_key" jdbcType="VARCHAR"/>
+        <result property="memoryValue" column="memory_value" jdbcType="LONGVARCHAR"/>
+        <result property="source" column="source" jdbcType="VARCHAR"/>
+        <result property="confidence" column="confidence" jdbcType="DECIMAL"/>
+        <result property="importance" column="importance" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="expireTime" column="expire_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_id, agent_id, memory_type, memory_key, memory_value, source, confidence, importance,
+        status, expire_time, create_time, update_time
+    </sql>
+
+    <select id="selectActiveByUserId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ai_user_memory
+        where user_id = #{userId,jdbcType=VARCHAR}
+          and status = 'ACTIVE'
+          and (expire_time is null or expire_time > now())
+        order by importance desc, update_time desc, id desc
+    </select>
+
+    <select id="selectActiveByUserIdAndKey" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ai_user_memory
+        where user_id = #{userId,jdbcType=VARCHAR}
+          and memory_key = #{memoryKey,jdbcType=VARCHAR}
+          and status = 'ACTIVE'
+          and (expire_time is null or expire_time > now())
+        order by update_time desc, id desc
+        limit 1
+    </select>
+</mapper>

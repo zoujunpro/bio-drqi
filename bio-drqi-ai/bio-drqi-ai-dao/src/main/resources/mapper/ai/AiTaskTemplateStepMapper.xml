@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.ai.dao.mapper.AiTaskTemplateStepMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.ai.dao.domain.AiTaskTemplateStep">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="templateCode" column="template_code" jdbcType="VARCHAR"/>
+        <result property="stepNo" column="step_no" jdbcType="INTEGER"/>
+        <result property="taskCode" column="task_code" jdbcType="VARCHAR"/>
+        <result property="taskName" column="task_name" jdbcType="VARCHAR"/>
+        <result property="taskType" column="task_type" jdbcType="VARCHAR"/>
+        <result property="businessObject" column="business_object" jdbcType="VARCHAR"/>
+        <result property="targetCode" column="target_code" jdbcType="VARCHAR"/>
+        <result property="requiredParams" column="required_params" jdbcType="LONGVARCHAR"/>
+        <result property="inputMapping" column="input_mapping" jdbcType="LONGVARCHAR"/>
+        <result property="dependsOn" column="depends_on" jdbcType="LONGVARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, template_code, step_no, task_code, task_name, task_type, business_object, target_code,
+        required_params, input_mapping, depends_on, status, create_time, update_time
+    </sql>
+
+    <select id="selectActiveByTemplateCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ai_task_template_step
+        where template_code = #{templateCode,jdbcType=VARCHAR}
+          and cast(status as char) in ('ACTIVE', '1')
+        order by step_no asc, id asc
+    </select>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.document.mapper.DocPermissionInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.document.domain.DocPermissionInfo">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="resourceType" column="resource_type" jdbcType="VARCHAR"/>
+            <result property="resourceId" column="resource_id" jdbcType="BIGINT"/>
+            <result property="targetType" column="target_type" jdbcType="VARCHAR"/>
+            <result property="targetId" column="target_id" jdbcType="BIGINT"/>
+            <result property="canView" column="can_view" jdbcType="TINYINT"/>
+            <result property="canDownload" column="can_download" jdbcType="TINYINT"/>
+            <result property="canEdit" column="can_edit" jdbcType="TINYINT"/>
+            <result property="canShare" column="can_share" jdbcType="TINYINT"/>
+            <result property="canDelete" column="can_delete" jdbcType="TINYINT"/>
+            <result property="canVersion" column="can_version" jdbcType="TINYINT"/>
+            <result property="canPermission" column="can_permission" jdbcType="TINYINT"/>
+            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,resource_type,resource_id,target_type,target_id,can_view,
+        can_download,can_edit,can_share,can_delete,can_version,
+        can_permission,create_by,create_time
+    </sql>
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.document.mapper.DocShareInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.document.domain.DocShareInfo">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="fileId" column="file_id" jdbcType="BIGINT"/>
+            <result property="shareUserId" column="share_user_id" jdbcType="BIGINT"/>
+            <result property="shareType" column="share_type" jdbcType="VARCHAR"/>
+            <result property="shareToken" column="share_token" jdbcType="VARCHAR"/>
+            <result property="canView" column="can_view" jdbcType="TINYINT"/>
+            <result property="canDownload" column="can_download" jdbcType="TINYINT"/>
+            <result property="canEdit" column="can_edit" jdbcType="TINYINT"/>
+            <result property="expireTime" column="expire_time" jdbcType="TIMESTAMP"/>
+            <result property="accessCount" column="access_count" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,file_id,share_user_id,share_type,share_token,can_view,
+        can_download,can_edit,expire_time,access_count,status,
+        create_time,update_time
+    </sql>
+</mapper>

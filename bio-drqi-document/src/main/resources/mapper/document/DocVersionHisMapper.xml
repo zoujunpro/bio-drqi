@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.document.mapper.DocVersionHisMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.document.domain.DocVersionHis">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="fileId" column="file_id" jdbcType="BIGINT"/>
+            <result property="versionNo" column="version_no" jdbcType="VARCHAR"/>
+            <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+            <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
+            <result property="fileMd5" column="file_md5" jdbcType="CHAR"/>
+            <result property="fileSha256" column="file_sha256" jdbcType="VARCHAR"/>
+            <result property="fileSize" column="file_size" jdbcType="BIGINT"/>
+            <result property="fileType" column="file_type" jdbcType="VARCHAR"/>
+            <result property="changeLog" column="change_log" jdbcType="VARCHAR"/>
+            <result property="isCurrent" column="is_current" jdbcType="TINYINT"/>
+            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,file_id,version_no,file_name,file_path,file_md5,
+        file_sha256,file_size,file_type,change_log,is_current,
+        create_by,create_time
+    </sql>
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.ai.dao.mapper.AiSessionMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.ai.dao.domain.AiSession">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="sessionId" column="session_id" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="jobNum" column="job_num" jdbcType="VARCHAR"/>
+        <result property="agentId" column="agent_id" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="difyConversationId" column="dify_conversation_id" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, session_id, user_id, username, nickname, job_num, agent_id, title, dify_conversation_id,
+        status, create_time, update_time
+    </sql>
+
+    <select id="selectBySessionId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ai_session
+        where session_id = #{sessionId,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+    <select id="selectBySessionIdAndUserId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ai_session
+        where session_id = #{sessionId,jdbcType=VARCHAR}
+          and user_id = #{userId,jdbcType=VARCHAR}
+        limit 1
+    </select>
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.document.mapper.DocCallbackLogMapper">
+    <resultMap id="BaseResultMap" type="com.bio.drqi.document.domain.DocCallbackLog">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="fileId" column="file_id" jdbcType="BIGINT"/>
+        <result property="versionId" column="version_id" jdbcType="BIGINT"/>
+        <result property="callbackStatus" column="callback_status" jdbcType="INTEGER"/>
+        <result property="callbackPayload" column="callback_payload" jdbcType="LONGVARCHAR"/>
+        <result property="downloadUrl" column="download_url" jdbcType="VARCHAR"/>
+        <result property="result" column="result" jdbcType="VARCHAR"/>
+        <result property="failReason" column="fail_reason" jdbcType="VARCHAR"/>
+        <result property="retryCount" column="retry_count" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+</mapper>

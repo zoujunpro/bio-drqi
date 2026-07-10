@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.document.mapper.DocOperationLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.document.domain.DocOperationLog">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="fileId" column="file_id" jdbcType="BIGINT"/>
+            <result property="versionId" column="version_id" jdbcType="BIGINT"/>
+            <result property="operationType" column="operation_type" jdbcType="VARCHAR"/>
+            <result property="operationContent" column="operation_content" jdbcType="VARCHAR"/>
+            <result property="beforeValue" column="before_value" jdbcType="VARCHAR"/>
+            <result property="afterValue" column="after_value" jdbcType="VARCHAR"/>
+            <result property="operatorId" column="operator_id" jdbcType="BIGINT"/>
+            <result property="operatorName" column="operator_name" jdbcType="VARCHAR"/>
+            <result property="ipAddress" column="ip_address" jdbcType="VARCHAR"/>
+            <result property="userAgent" column="user_agent" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,file_id,version_id,operation_type,operation_content,before_value,
+        after_value,operator_id,operator_name,ip_address,user_agent,
+        create_time
+    </sql>
+</mapper>

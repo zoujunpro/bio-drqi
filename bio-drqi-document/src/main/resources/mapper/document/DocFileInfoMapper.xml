@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bio.drqi.document.mapper.DocFileInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.bio.drqi.document.domain.DocFileInfo">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="categoryId" column="category_id" jdbcType="BIGINT"/>
+            <result property="docName" column="doc_name" jdbcType="VARCHAR"/>
+            <result property="docCode" column="doc_code" jdbcType="VARCHAR"/>
+            <result property="fileType" column="file_type" jdbcType="VARCHAR"/>
+            <result property="fileSize" column="file_size" jdbcType="BIGINT"/>
+            <result property="currentVersionId" column="current_version_id" jdbcType="BIGINT"/>
+            <result property="ownerUserId" column="owner_user_id" jdbcType="BIGINT"/>
+            <result property="spaceType" column="space_type" jdbcType="VARCHAR"/>
+            <result property="permissionMode" column="permission_mode" jdbcType="VARCHAR"/>
+            <result property="effectiveType" column="effective_type" jdbcType="VARCHAR"/>
+            <result property="effectiveStartTime" column="effective_start_time" jdbcType="TIMESTAMP"/>
+            <result property="effectiveEndTime" column="effective_end_time" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="BIGINT"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="CHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,category_id,doc_name,doc_code,file_type,file_size,
+        current_version_id,owner_user_id,space_type,permission_mode,effective_type,
+        effective_start_time,effective_end_time,status,create_by,create_time,
+        update_by,update_time,deleted,remark
+    </sql>
+</mapper>

@@ -13,7 +13,7 @@ import java.util.List;
 public class AiPlanRspDTO implements Serializable {
 
     /**
-     * 计划类型：DIRECT_ANSWER/DIFY/TOOL/CLARIFY/UNKNOWN。
+     * 计划类型：DIRECT_ANSWER/DIFY/TOOL/MIXED/CLARIFY/UNKNOWN。
      */
     private String planType;
 

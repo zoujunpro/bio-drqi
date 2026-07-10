@@ -25,7 +25,6 @@
         <module>bio-drqi-ai-observe</module>
         <module>bio-drqi-ai-orchestrator</module>
         <module>bio-drqi-ai-admin</module>
-        <module>bio-drqi-ai-app</module>
         <module>bio-drqi-ai-planner</module>
     </modules>
 </project>

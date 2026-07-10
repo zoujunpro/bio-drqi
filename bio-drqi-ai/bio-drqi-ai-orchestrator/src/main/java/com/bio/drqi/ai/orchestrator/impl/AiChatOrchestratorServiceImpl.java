@@ -12,6 +12,8 @@ import com.bio.drqi.ai.dto.memory.AiMemoryFileBindReqDTO;
 import com.bio.drqi.ai.dto.memory.AiMemoryMessageReqDTO;
 import com.bio.drqi.ai.dto.memory.AiMemorySessionCreateReqDTO;
 import com.bio.drqi.ai.dto.memory.AiMemorySessionCreateRspDTO;
+import com.bio.drqi.ai.dto.planner.AiPlanReqDTO;
+import com.bio.drqi.ai.dto.planner.AiPlanRspDTO;
 import com.bio.drqi.ai.dto.semantic.AiConditionExtractReqDTO;
 import com.bio.drqi.ai.dto.semantic.AiConditionExtractRspDTO;
 import com.bio.drqi.ai.dto.semantic.AiEntityExtractReqDTO;
@@ -36,6 +38,7 @@ import com.bio.drqi.ai.dto.semantic.AiUserContextResolveReqDTO;
 import com.bio.drqi.ai.dto.semantic.AiUserContextResolveRspDTO;
 import com.bio.drqi.ai.memory.AiMemoryService;
 import com.bio.drqi.ai.orchestrator.AiChatOrchestratorService;
+import com.bio.drqi.ai.planner.AiPlannerService;
 import com.bio.drqi.ai.semantic.AiConditionExtractService;
 import com.bio.drqi.ai.semantic.AiEntityExtractService;
 import com.bio.drqi.ai.semantic.AiIntentRouterService;
@@ -94,6 +97,9 @@ public class AiChatOrchestratorServiceImpl implements AiChatOrchestratorService 
 
     @Resource
     private AiUserContextResolveService aiUserContextResolveService;
+
+    @Resource
+    private AiPlannerService aiPlannerService;
 
     @Override
     public AiChatRspDTO chat(AiChatReqDTO reqDTO) {
@@ -163,7 +169,25 @@ public class AiChatOrchestratorServiceImpl implements AiChatOrchestratorService 
                 buildConditionExtractReq(normalizedQuery, intentResult.getIntentCode())
         );
 
-        // 12. Planner 生成 Dify 调用参数
+        // 12. Planner 生成工具或 Dify 调用计划。
+        AiPlanRspDTO planResult = aiPlannerService.plan(
+                buildPlanReq(
+                        sessionId,
+                        reqDTO,
+                        context,
+                        classifyResult,
+                        userContext,
+                        rewriteResult,
+                        normalizedQuery,
+                        intentResult,
+                        timeResult,
+                        numberResult,
+                        scopeResult,
+                        termResult,
+                        entityResult,
+                        conditionResult
+                )
+        );
 
         // 13. 调用 Dify
         String answer = "AI聊天编排入口已创建，已读取上下文：短期记忆"
@@ -196,6 +220,13 @@ public class AiChatOrchestratorServiceImpl implements AiChatOrchestratorService 
                 + "（置信度"
                 + intentResult.getConfidence()
                 + "）"
+                + "，计划类型："
+                + planResult.getPlanType()
+                + "，可执行："
+                + planResult.getExecutable()
+                + "，计划步骤："
+                + planResult.getSteps().size()
+                + "个"
                 + "。后续接入 Dify。";
 
         // 14. 保存 AI 回复。
@@ -326,6 +357,42 @@ public class AiChatOrchestratorServiceImpl implements AiChatOrchestratorService 
         reqDTO.setUsername(chatReqDTO.getUsername());
         reqDTO.setNickname(chatReqDTO.getNickname());
         reqDTO.setJobNum(chatReqDTO.getJobNum());
+        return reqDTO;
+    }
+
+    private AiPlanReqDTO buildPlanReq(String sessionId,
+                                      AiChatReqDTO chatReqDTO,
+                                      AiMemoryContextRspDTO context,
+                                      AiSemanticClassifyRspDTO classifyResult,
+                                      AiUserContextResolveRspDTO userContext,
+                                      AiQueryRewriteRspDTO rewriteResult,
+                                      String normalizedQuery,
+                                      AiIntentRecognizeRspDTO intentResult,
+                                      AiTimeParseRspDTO timeResult,
+                                      AiNumberParseRspDTO numberResult,
+                                      AiScopeResolveRspDTO scopeResult,
+                                      AiTermMappingRspDTO termResult,
+                                      AiEntityExtractRspDTO entityResult,
+                                      AiConditionExtractRspDTO conditionResult) {
+        AiPlanReqDTO reqDTO = new AiPlanReqDTO();
+        reqDTO.setSessionId(sessionId);
+        reqDTO.setUserId(chatReqDTO.getUserId());
+        reqDTO.setOriginalQuery(chatReqDTO.getMessage());
+        reqDTO.setRewrittenQuery(rewriteResult == null ? null : rewriteResult.getRewrittenQuery());
+        reqDTO.setNormalizedQuery(normalizedQuery);
+        reqDTO.setMemoryContext(context);
+        reqDTO.setSemanticClassifyResult(classifyResult);
+        reqDTO.setUserContext(userContext);
+        reqDTO.setIntentResult(intentResult);
+        reqDTO.setTimeResult(timeResult);
+        reqDTO.setNumberResult(numberResult);
+        reqDTO.setScopeResult(scopeResult);
+        reqDTO.setTermResult(termResult);
+        reqDTO.setEntityResult(entityResult);
+        reqDTO.setConditionResult(conditionResult);
+        if (intentResult != null && intentResult.getTools() != null) {
+            reqDTO.setCandidateTools(intentResult.getTools());
+        }
         return reqDTO;
     }
 

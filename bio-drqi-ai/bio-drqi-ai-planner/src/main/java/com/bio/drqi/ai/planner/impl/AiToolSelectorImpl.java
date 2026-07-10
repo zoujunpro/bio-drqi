@@ -93,6 +93,7 @@ public class AiToolSelectorImpl implements AiToolSelector {
             // 每个任务单独构建候选池，因为模板 targetCode、业务对象、必填参数都跟任务有关。
             List<ToolCandidate> candidates = collectToolCandidates(task, intentCandidateTools);
             ToolCandidate selected = selectBestCandidate(task, candidates);
+            // 没有候选工具或候选工具分数都不达标时，不降级乱选，交给后续 PlanValidator/Executor 决定澄清或兜底处理。
             if (selected == null) {
                 selections.add(buildSelection(task, null, AiToolSelectionStatusEnum.NO_TOOL.getCode(), 0,
                         "没有找到满足任务要求的可用工具", buildRejectSummary(task, candidates)));
@@ -153,6 +154,14 @@ public class AiToolSelectorImpl implements AiToolSelector {
         return new ArrayList<ToolCandidate>(candidateMap.values());
     }
 
+    /**
+     * 从候选工具里选择最适合当前任务的工具。
+     *
+     * <p>选择过程不是简单取第一个候选，而是先对每个工具做安全校验和匹配打分：
+     * 高风险、非只读查询工具、缺少执行地址的 API 会被拒绝；模板目标、意图候选、
+     * 任务编码、业务对象、必填参数、只读属性和文本命中会增加分数。最终只有最高分
+     * 达到最低选择阈值的工具才会被选中，避免把“只是启用但不相关”的工具强行绑定到任务。</p>
+     */
     private ToolCandidate selectBestCandidate(AiPlanTaskDTO task, List<ToolCandidate> candidates) {
         ToolCandidate best = null;
         if (candidates == null || candidates.isEmpty()) {

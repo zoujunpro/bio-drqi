@@ -36,6 +36,11 @@ public class AiPlanStepDTO implements Serializable {
     private String inputJson;
 
     /**
+     * 依赖步骤序号 JSON 数组，例如 [1,2]。为空表示当前步骤无强依赖。
+     */
+    private String dependsOn;
+
+    /**
      * 输出变量名，供后续步骤引用。
      */
     private String outputKey;

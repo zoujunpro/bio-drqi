@@ -1,0 +1,65 @@
+spring:
+  datasource:
+    url: ${AI_DB_URL:jdbc:mysql://mysql-dev:3306/bio_cer_local?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai}
+    username: ${AI_DB_USERNAME:root}
+    password: ${AI_DB_PASSWORD:mysql2026}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      max-active: 30
+      min-idle: 5
+      max-wait: 3600
+      validation-query: select 1
+      validation-query-timeout: 1000
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      poolPreparedStatements: true
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+  redis:
+    database: ${REDIS_DATABASE:10}
+    host: ${REDIS_HOST:redis-dev}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:redis2026}
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-wait: -1
+        max-active: 8
+    timeout: 3000000
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    defaultPropertyInclusion: ALWAYS
+
+logging:
+  config: classpath:log/spring-logback.xml
+
+log:
+  path: ${LOG_PATH:/app/logs}
+  level: ${LOG_LEVEL:INFO}
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*.xml,classpath*:/mapper/**/*.xml
+
+pagehelper:
+  reasonable: true
+  helper-dialect: mysql
+  support-methods-arguments: true
+  params: count=countSql
+
+cer:
+  properties:
+    excelTemplatePath: ${CER_EXCEL_TEMPLATE_PATH:/excelTemplate}
+    tempOssPath: ${CER_TEMP_OSS_PATH:/temp}
+    feiShuProjectJumpUrl: ${CER_FEISHU_PROJECT_JUMP_URL:}
+    feiShuCerJumpUrl: ${CER_FEISHU_CER_JUMP_URL:}
+    feiShuSeedJumpUrl: ${CER_FEISHU_SEED_JUMP_URL:}
+    feiShuTcJumpUrl: ${CER_FEISHU_TC_JUMP_URL:}
+    feiShuBmsJumpUrl: ${CER_FEISHU_BMS_JUMP_URL:}
+    email:
+      emailAccount: ${CER_EMAIL_ACCOUNT:}
+      emailPassword: ${CER_EMAIL_PASSWORD:}

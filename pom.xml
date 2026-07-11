@@ -29,6 +29,7 @@
         <module>bio-drqi-feishu</module>
         <module>bio-drqi-tc</module>
         <module>bio-drqi-ai</module>
+        <module>bio-drqi-ai-tool-service</module>
     </modules>
 
     <properties>

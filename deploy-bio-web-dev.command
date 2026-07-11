@@ -9,6 +9,7 @@ NGINX_DIR="${NGINX_COMMON_DIR}/nginx/conf.d"
 NGINX_CONF="${NGINX_DIR}/bio-web-dev.conf"
 NGINX_PORT="18080"
 GATEWAY_URL="http://bio-base-gateway-dev:18090"
+CER_LOCAL_URL="http://bio-cer-service-dev:18093"
 AI_LOCAL_URL="http://bio-ai-service-dev:18095"
 
 function pause_on_exit() {
@@ -25,6 +26,7 @@ echo "Project: ${PROJECT_DIR}"
 echo "Service: ${SERVICE_DIR}"
 echo "Nginx port: ${NGINX_PORT}"
 echo "Gateway: ${GATEWAY_URL}"
+echo "CER local service: ${CER_LOCAL_URL}"
 echo "AI local service: ${AI_LOCAL_URL}"
 
 if ! command -v node >/dev/null 2>&1; then
@@ -85,6 +87,30 @@ server {
         root /home/web/bio-web-dev;
         index index.html index.htm;
         try_files \$uri \$uri/ /index.html;
+    }
+
+    location /dev-api/ai/admin/config/ {
+        proxy_pass ${AI_LOCAL_URL}/ai/admin/config/;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
+    location = /dev-api/ai/chat {
+        proxy_pass ${AI_LOCAL_URL}/ai/chat;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
+    location /dev-api/ai/chat/ {
+        proxy_pass ${AI_LOCAL_URL}/ai/chat/;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
     }
 
     location /dev-api/ai/ {

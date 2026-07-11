@@ -18,6 +18,21 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-ai-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-ai-dto</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-ai-dao</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>

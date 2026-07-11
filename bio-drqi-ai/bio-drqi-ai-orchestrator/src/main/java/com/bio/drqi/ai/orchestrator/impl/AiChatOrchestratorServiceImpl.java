@@ -3,6 +3,7 @@ package com.bio.drqi.ai.orchestrator.impl;
 import com.bio.common.core.dto.BusinessException;
 import com.bio.drqi.ai.common.enums.AiMessageRoleEnum;
 import com.bio.drqi.ai.common.enums.AiMessageSourceEnum;
+import com.bio.drqi.ai.common.enums.AiPlanTaskTypeEnum;
 import com.bio.drqi.ai.common.enums.AiSemanticCategoryEnum;
 import com.bio.drqi.ai.dto.chat.AiChatReqDTO;
 import com.bio.drqi.ai.dto.chat.AiChatRspDTO;
@@ -14,6 +15,7 @@ import com.bio.drqi.ai.dto.memory.AiMemorySessionCreateReqDTO;
 import com.bio.drqi.ai.dto.memory.AiMemorySessionCreateRspDTO;
 import com.bio.drqi.ai.dto.planner.AiPlanReqDTO;
 import com.bio.drqi.ai.dto.planner.AiPlanRspDTO;
+import com.bio.drqi.ai.dto.planner.AiPlanStepDTO;
 import com.bio.drqi.ai.dto.semantic.AiConditionExtractReqDTO;
 import com.bio.drqi.ai.dto.semantic.AiConditionExtractRspDTO;
 import com.bio.drqi.ai.dto.semantic.AiEntityExtractReqDTO;
@@ -34,10 +36,13 @@ import com.bio.drqi.ai.dto.semantic.AiTermMappingReqDTO;
 import com.bio.drqi.ai.dto.semantic.AiTermMappingRspDTO;
 import com.bio.drqi.ai.dto.semantic.AiTimeParseReqDTO;
 import com.bio.drqi.ai.dto.semantic.AiTimeParseRspDTO;
+import com.bio.drqi.ai.dto.tool.AiToolExecuteReqDTO;
+import com.bio.drqi.ai.dto.tool.AiToolExecuteRspDTO;
 import com.bio.drqi.ai.dto.semantic.AiUserContextResolveReqDTO;
 import com.bio.drqi.ai.dto.semantic.AiUserContextResolveRspDTO;
 import com.bio.drqi.ai.memory.AiMemoryService;
 import com.bio.drqi.ai.orchestrator.AiChatOrchestratorService;
+import com.bio.drqi.ai.orchestrator.AiChatResultProcessor;
 import com.bio.drqi.ai.planner.AiPlannerService;
 import com.bio.drqi.ai.semantic.AiConditionExtractService;
 import com.bio.drqi.ai.semantic.AiEntityExtractService;
@@ -50,11 +55,18 @@ import com.bio.drqi.ai.semantic.AiSynonymNormalizeService;
 import com.bio.drqi.ai.semantic.AiTermMappingService;
 import com.bio.drqi.ai.semantic.AiTimeParseService;
 import com.bio.drqi.ai.semantic.AiUserContextResolveService;
+import com.bio.drqi.ai.tool.executor.AiToolExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * AI 聊天业务编排默认实现。
@@ -100,6 +112,12 @@ public class AiChatOrchestratorServiceImpl implements AiChatOrchestratorService 
 
     @Resource
     private AiPlannerService aiPlannerService;
+
+    @Resource
+    private AiToolExecutor aiToolExecutor;
+
+    @Resource
+    private AiChatResultProcessor aiChatResultProcessor;
 
     @Override
     public AiChatRspDTO chat(AiChatReqDTO reqDTO) {
@@ -189,45 +207,11 @@ public class AiChatOrchestratorServiceImpl implements AiChatOrchestratorService 
                 )
         );
 
-        // 13. 调用 Dify
-        String answer = "AI聊天编排入口已创建，已读取上下文：短期记忆"
-                + context.getShortMemory().size()
-                + "条，长期记忆"
-                + context.getLongMemory().size()
-                + "条，文件上下文"
-                + context.getFiles().size()
-                + "个，问题改写："
-                + rewrittenQuery
-                + "，归一问题："
-                + normalizedQuery
-                + "，时间解析："
-                + buildTimeSummary(timeResult)
-                + "，数量表达："
-                + numberResult.getNumbers().size()
-                + "个，范围："
-                + buildScopeSummary(scopeResult, userContext)
-                + "，术语映射："
-                + termResult.getTerms().size()
-                + "个"
-                + "，通用实体数量："
-                + preIntentEntityResult.getEntities().size()
-                + "，意图实体数量："
-                + entityResult.getEntities().size()
-                + "，条件数量："
-                + conditionResult.getConditions().size()
-                + "，识别意图："
-                + intentResult.getIntentCode()
-                + "（置信度"
-                + intentResult.getConfidence()
-                + "）"
-                + "，计划类型："
-                + planResult.getPlanType()
-                + "，可执行："
-                + planResult.getExecutable()
-                + "，计划步骤："
-                + planResult.getSteps().size()
-                + "个"
-                + "。后续接入 Dify。";
+        // 13. 执行计划。编排层只触发计划步骤，具体执行协议由 AiToolExecutor 根据工具配置选择。
+        List<AiToolExecuteRspDTO> executeResults = executePlanSteps(sessionId, reqDTO, planResult);
+
+        AiChatRspDTO rspDTO = aiChatResultProcessor.process(sessionId, planResult, executeResults);
+        String answer = rspDTO.getAnswer();
 
         // 14. 保存 AI 回复。
         aiMemoryService.saveMessage(
@@ -235,10 +219,6 @@ public class AiChatOrchestratorServiceImpl implements AiChatOrchestratorService 
         );
 
         // 15. 返回前端。
-        AiChatRspDTO rspDTO = new AiChatRspDTO();
-        rspDTO.setSessionId(sessionId);
-        rspDTO.setSuccess(Boolean.TRUE);
-        rspDTO.setAnswer(answer);
         return rspDTO;
     }
 
@@ -396,24 +376,146 @@ public class AiChatOrchestratorServiceImpl implements AiChatOrchestratorService 
         return reqDTO;
     }
 
-    private String buildTimeSummary(AiTimeParseRspDTO timeResult) {
-        if (timeResult == null || !Boolean.TRUE.equals(timeResult.getMatched())) {
-            return "未识别";
+    private List<AiToolExecuteRspDTO> executePlanSteps(String sessionId, AiChatReqDTO chatReqDTO, AiPlanRspDTO planResult) {
+        List<AiToolExecuteRspDTO> results = new ArrayList<AiToolExecuteRspDTO>();
+        if (planResult == null || !Boolean.TRUE.equals(planResult.getExecutable())
+                || planResult.getSteps() == null || planResult.getSteps().isEmpty()) {
+            return results;
         }
-        return timeResult.getExpression() + "(" + timeResult.getStartDate() + "~" + timeResult.getEndDate() + ")";
+
+        Map<Integer, AiToolExecuteRspDTO> resultMap = new LinkedHashMap<Integer, AiToolExecuteRspDTO>();
+        for (AiPlanStepDTO step : planResult.getSteps()) {
+            if (step == null) {
+                continue;
+            }
+
+            AiToolExecuteRspDTO stepResult;
+            String dependencyError = findDependencyError(step, resultMap);
+            if (hasText(dependencyError)) {
+                stepResult = AiToolExecuteRspDTO.fail(step.getToolCode(), step.getStepType(), step.getTargetCode(),
+                        dependencyError, 0L);
+            } else if (hasText(step.getToolCode())) {
+                // 编排层只负责按计划触发工具；API/Dify/MCP/Local 由 AiToolExecutor 根据工具配置的 toolType 分发。
+                stepResult = executeToolStep(sessionId, chatReqDTO, step);
+            } else if (AiPlanTaskTypeEnum.MERGE.getCode().equals(step.getStepType())) {
+                stepResult = buildMergeResult(step, resultMap);
+            } else {
+                stepResult = AiToolExecuteRspDTO.fail(step.getToolCode(), step.getStepType(), step.getTargetCode(),
+                        "步骤没有绑定工具，无法执行：" + step.getStepType(), 0L);
+            }
+
+            results.add(stepResult);
+            if (step.getStepNo() != null) {
+                resultMap.put(step.getStepNo(), stepResult);
+            }
+            saveToolMessage(sessionId, chatReqDTO.getUserId(), step, stepResult);
+        }
+        return results;
     }
 
-    private String buildScopeSummary(AiScopeResolveRspDTO scopeResult, AiUserContextResolveRspDTO userContext) {
-        if (scopeResult == null || !hasText(scopeResult.getScopeType()) || "UNKNOWN".equals(scopeResult.getScopeType())) {
-            if (userContext == null) {
-                return "未识别";
+    private AiToolExecuteRspDTO executeToolStep(String sessionId, AiChatReqDTO chatReqDTO, AiPlanStepDTO step) {
+        try {
+            return aiToolExecutor.execute(buildToolExecuteReq(sessionId, chatReqDTO, step));
+        } catch (Exception e) {
+            return AiToolExecuteRspDTO.fail(step.getToolCode(), step.getStepType(), step.getTargetCode(),
+                    e.getMessage(), 0L);
+        }
+    }
+
+    private AiToolExecuteReqDTO buildToolExecuteReq(String sessionId, AiChatReqDTO chatReqDTO, AiPlanStepDTO step) {
+        AiToolExecuteReqDTO reqDTO = new AiToolExecuteReqDTO();
+        reqDTO.setToolCode(step.getToolCode());
+        reqDTO.setInputJson(step.getInputJson());
+        reqDTO.setSessionId(sessionId);
+        reqDTO.setUserId(chatReqDTO.getUserId());
+        reqDTO.setUsername(chatReqDTO.getUsername());
+        reqDTO.setNickname(chatReqDTO.getNickname());
+        reqDTO.setConfirmed(Boolean.FALSE);
+        return reqDTO;
+    }
+
+    private AiToolExecuteRspDTO buildMergeResult(AiPlanStepDTO step, Map<Integer, AiToolExecuteRspDTO> resultMap) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        Set<Integer> dependencyNos = parseDependencyNos(step.getDependsOn());
+        for (Integer dependencyNo : dependencyNos) {
+            AiToolExecuteRspDTO dependencyResult = resultMap.get(dependencyNo);
+            if (dependencyResult == null) {
+                continue;
             }
-            return userContext.getDefaultScopeType() + "(" + userContext.getDefaultScopeValue() + ")";
+            builder.append("\"step").append(dependencyNo).append("\":");
+            if (hasText(dependencyResult.getResultJson())) {
+                builder.append(dependencyResult.getResultJson());
+            } else {
+                builder.append("\"").append(escapeJson(dependencyResult.getErrorMessage())).append("\"");
+            }
+            builder.append(",");
         }
-        if (hasText(scopeResult.getScopeValue())) {
-            return scopeResult.getScopeType() + "(" + scopeResult.getScopeValue() + ")";
+        trimLastComma(builder);
+        builder.append("}");
+        return AiToolExecuteRspDTO.success(step.getToolCode(), step.getStepType(), step.getTargetCode(),
+                200, builder.toString(), 0L);
+    }
+
+    private String findDependencyError(AiPlanStepDTO step, Map<Integer, AiToolExecuteRspDTO> resultMap) {
+        Set<Integer> dependencyNos = parseDependencyNos(step.getDependsOn());
+        for (Integer dependencyNo : dependencyNos) {
+            AiToolExecuteRspDTO dependencyResult = resultMap.get(dependencyNo);
+            if (dependencyResult == null) {
+                return "依赖步骤未执行：step " + dependencyNo;
+            }
+            if (!Boolean.TRUE.equals(dependencyResult.getSuccess())) {
+                return "依赖步骤执行失败：step " + dependencyNo + "，" + dependencyResult.getErrorMessage();
+            }
         }
-        return scopeResult.getScopeType();
+        return null;
+    }
+
+    private Set<Integer> parseDependencyNos(String dependsOn) {
+        Set<Integer> dependencyNos = new HashSet<Integer>();
+        if (!hasText(dependsOn)) {
+            return dependencyNos;
+        }
+        StringBuilder number = new StringBuilder();
+        for (int i = 0; i < dependsOn.length(); i++) {
+            char ch = dependsOn.charAt(i);
+            if (Character.isDigit(ch)) {
+                number.append(ch);
+                continue;
+            }
+            addDependencyNo(dependencyNos, number);
+        }
+        addDependencyNo(dependencyNos, number);
+        return dependencyNos;
+    }
+
+    private void addDependencyNo(Set<Integer> dependencyNos, StringBuilder number) {
+        if (number.length() == 0) {
+            return;
+        }
+        try {
+            dependencyNos.add(Integer.valueOf(number.toString()));
+        } catch (NumberFormatException ignored) {
+            // 非法依赖序号忽略，Planner 校验阶段会兜底。
+        }
+        number.setLength(0);
+    }
+
+    private void saveToolMessage(String sessionId, String userId, AiPlanStepDTO step, AiToolExecuteRspDTO result) {
+        StringBuilder content = new StringBuilder();
+        content.append("step=").append(step.getStepNo())
+                .append(", type=").append(step.getStepType())
+                .append(", tool=").append(step.getToolCode())
+                .append(", success=").append(result.getSuccess());
+        if (Boolean.TRUE.equals(result.getSuccess())) {
+            content.append(", result=").append(safeShortText(result.getResultJson(), 1000));
+        } else {
+            content.append(", error=").append(safeShortText(result.getErrorMessage(), 1000));
+        }
+
+        AiMemoryMessageReqDTO reqDTO = buildMessageReq(sessionId, userId, AiMessageRoleEnum.TOOL.getCode(), content.toString());
+        reqDTO.setSource(AiMessageSourceEnum.TOOL.getCode());
+        aiMemoryService.saveMessage(reqDTO);
     }
 
     private String buildSystemAnswer(AiSemanticClassifyRspDTO classifyResult) {
@@ -475,6 +577,30 @@ public class AiChatOrchestratorServiceImpl implements AiChatOrchestratorService 
             return trimmed;
         }
         return trimmed.substring(0, 20);
+    }
+
+    private String safeShortText(String value, int maxLength) {
+        if (!hasText(value)) {
+            return "";
+        }
+        String trimmed = value.trim();
+        if (trimmed.length() <= maxLength) {
+            return trimmed;
+        }
+        return trimmed.substring(0, maxLength);
+    }
+
+    private void trimLastComma(StringBuilder builder) {
+        if (builder != null && builder.length() > 0 && builder.charAt(builder.length() - 1) == ',') {
+            builder.deleteCharAt(builder.length() - 1);
+        }
+    }
+
+    private String escapeJson(String value) {
+        if (!hasText(value)) {
+            return "";
+        }
+        return value.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
     private boolean hasText(String value) {

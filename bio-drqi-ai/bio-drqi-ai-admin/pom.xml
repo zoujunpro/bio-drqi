@@ -29,12 +29,27 @@
         </dependency>
         <dependency>
             <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-ai-dao</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.drqi</groupId>
             <artifactId>bio-drqi-ai-memory</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>bio.drqi</groupId>
             <artifactId>bio-drqi-ai-orchestrator</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-ai-tool-service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-ai-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -62,4 +77,18 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                    <fork>true</fork>
+                    <mainClass>com.bio.drqi.ai.admin.BioDrQiAiAdminMain</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

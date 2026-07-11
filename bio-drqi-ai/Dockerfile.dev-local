@@ -3,7 +3,7 @@ FROM ${BASE_IMAGE}
 
 WORKDIR /app
 
-COPY bio-drqi-ai-app/target/bio-drqi-ai-1.0-SNAPSHOT.jar /app/app.jar
+COPY bio-drqi-ai-admin/target/bio-drqi-ai-admin-1.0-SNAPSHOT.jar /app/app.jar
 
 ENV TZ=Asia/Shanghai
 ENV SERVER_PORT=18095

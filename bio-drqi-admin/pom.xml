@@ -36,6 +36,16 @@
         </dependency>
         <dependency>
             <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-ai-admin</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.drqi</groupId>
+            <artifactId>bio-drqi-ai-tool-service</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bio.drqi</groupId>
             <artifactId>bio-drqi-document</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

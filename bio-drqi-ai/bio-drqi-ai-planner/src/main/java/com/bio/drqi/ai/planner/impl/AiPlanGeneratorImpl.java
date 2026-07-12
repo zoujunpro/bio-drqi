@@ -155,15 +155,26 @@ public class AiPlanGeneratorImpl implements AiPlanGenerator {
 
     private String buildPlannerSystemPrompt() {
         return "你是企业AI Agent的Planner，只能基于候选工具生成执行计划。"
+                + "你的目标是把用户问题转换为可执行的工具DAG，不负责直接回答用户问题。"
                 + "必须返回JSON，不要返回解释、Markdown或代码块。"
                 + "JSON格式：{\"executable\":true,\"planType\":\"TOOL|MIXED|CLARIFY\","
                 + "\"reason\":\"原因\",\"clarifyQuestion\":\"需要澄清时的问题\","
                 + "\"steps\":[{\"stepNo\":1,\"stepType\":\"TOOL|MERGE\","
                 + "\"toolCode\":\"候选工具编码\",\"targetCode\":\"工具编码\","
                 + "\"inputJson\":{},\"dependsOn\":[],\"outputKey\":\"变量名\",\"description\":\"步骤说明\"}]}。"
-                + "规则：toolCode只能来自候选工具；不要编造工具；简单问题只选必要工具；"
-                + "多工具问题根据inputSchema/outputSchema和业务语义建立dependsOn；"
-                + "缺少必要业务对象时返回planType=CLARIFY且steps为空。";
+                + "工具角色判断：根据toolName、description、inputSchema、outputSchema理解工具能力。"
+                + "查询/详情/列表/搜索类工具用于获取业务数据；统计/计算/汇总/排序/对比类工具用于确定性计算；"
+                + "分析/原因/风险/建议/报告类工具用于解释和生成结论；导出/Excel/Word/文件类工具用于生成附件。"
+                + "规划规则：toolCode只能来自候选工具，禁止编造工具、字段和隐形步骤；"
+                + "如果某个候选工具已经完整覆盖用户目标，优先选择这个粗颗粒业务工具，不要拆成多个细工具；"
+                + "如果用户只要事实、明细、进度或状态，优先选择查询/详情工具；"
+                + "如果用户要求统计、数量、比例、延期天数、排序或对比，先查询数据，再调用候选计算工具；"
+                + "如果用户要求原因、风险、建议、分析报告，先查询必要数据，必要时计算，再调用候选分析/报告工具；"
+                + "如果用户要求Excel、Word、表格或附件，最后调用候选文件/导出工具；"
+                + "MERGE只能合并前置步骤结果，不能代替缺失的计算、分析或导出工具；"
+                + "多工具问题必须根据inputSchema/outputSchema和业务语义建立dependsOn，dependsOn只能引用前面已存在的stepNo；"
+                + "inputJson只填写当前工具inputSchema允许的字段，能从用户问题、语义结果或前置输出确定的字段才填写；"
+                + "缺少必要业务对象、关键编码或候选工具无法完成目标时，返回planType=CLARIFY且steps为空。";
     }
 
     private String buildPlannerUserPrompt(AiPlanReqDTO reqDTO, List<AiToolDefinitionDTO> candidateTools) {
@@ -208,9 +219,22 @@ public class AiPlanGeneratorImpl implements AiPlanGenerator {
         }
 
         JSONObject prompt = new JSONObject();
+        prompt.put("plannerPolicy", buildPlannerPolicy());
         prompt.put("context", context);
         prompt.put("candidateTools", tools);
         return prompt.toJSONString();
+    }
+
+    private JSONObject buildPlannerPolicy() {
+        JSONObject policy = new JSONObject();
+        policy.put("preferCoarseBusinessTool", "候选工具中存在能直接覆盖用户目标的业务工具时，优先使用一个粗颗粒工具完成。");
+        policy.put("queryFirst", "需要事实、明细、状态、进度时，查询/详情工具排在前面。");
+        policy.put("calculateAfterQuery", "需要数量、比例、排序、对比等确定性结果时，只有候选计算工具存在才生成计算步骤。");
+        policy.put("analyzeAfterData", "需要原因、风险、建议、报告时，在查询/计算结果之后调用候选分析或报告工具。");
+        policy.put("exportLast", "用户明确要求Excel、Word、表格附件时，导出或文件生成工具放在最后。");
+        policy.put("noHiddenWork", "不能在MERGE或description里声明执行了没有工具支撑的统计、分析、导出。");
+        policy.put("clarifyWhenMissing", "缺少关键业务对象或没有候选工具能完成目标时，返回CLARIFY。");
+        return policy;
     }
 
     private AiPlanRspDTO parseLlmPlan(String content, AiPlanReqDTO reqDTO, List<AiToolDefinitionDTO> candidateTools) {

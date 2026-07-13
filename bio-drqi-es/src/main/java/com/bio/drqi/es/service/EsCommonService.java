@@ -52,13 +52,14 @@ public class EsCommonService {
         try {
             if (indexExists(index)) {
                 log.info("ES 索引已存在，跳过创建 index={}", index);
+                updateNumberOfReplicas(index, 0);
                 return;
             }
             log.info("ES 索引不存在，开始创建 index={}", index);
             Map<String, Object> body = new LinkedHashMap<>();
             Map<String, Object> settings = new LinkedHashMap<>();
             settings.put("number_of_shards", 1);
-            settings.put("number_of_replicas", 1);
+            settings.put("number_of_replicas", 0);
             body.put("settings", settings);
             body.put("mappings", mapping);
             restClient.performRequest(jsonRequest("PUT", "/" + encodePath(index), body));
@@ -66,6 +67,48 @@ public class EsCommonService {
         } catch (Exception e) {
             throw new IllegalStateException("创建/检查索引失败: " + index, e);
         }
+    }
+
+    /**
+     * 更新索引副本数。单节点开发/测试环境副本数为 0 时，集群健康状态才会是 green。
+     */
+    public void updateNumberOfReplicas(String index, int replicas) {
+        try {
+            if (!indexExists(index)) {
+                return;
+            }
+            Map<String, Object> indexSettings = new LinkedHashMap<>();
+            indexSettings.put("number_of_replicas", replicas);
+            Map<String, Object> body = new LinkedHashMap<>();
+            body.put("index", indexSettings);
+            restClient.performRequest(jsonRequest("PUT", "/" + encodePath(index) + "/_settings", body));
+        } catch (Exception e) {
+            throw new IllegalStateException("更新索引副本数失败: " + index, e);
+        }
+    }
+
+    /**
+     * 更新所有打开索引的副本数，避免非监控索引的未分配副本导致集群健康一直是 yellow。
+     */
+    public void updateAllOpenIndexReplicas(int replicas) {
+        Map<String, Object> body = buildReplicaSettings(replicas);
+        try {
+            restClient.performRequest(jsonRequest("PUT", "/_settings?expand_wildcards=open,hidden&allow_no_indices=true", body));
+        } catch (Exception e) {
+            try {
+                restClient.performRequest(jsonRequest("PUT", "/_settings?expand_wildcards=open&allow_no_indices=true", body));
+            } catch (Exception fallbackException) {
+                log.warn("更新全部打开索引副本数失败 replicas={}", replicas, fallbackException);
+            }
+        }
+    }
+
+    private Map<String, Object> buildReplicaSettings(int replicas) {
+        Map<String, Object> indexSettings = new LinkedHashMap<>();
+        indexSettings.put("number_of_replicas", replicas);
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("index", indexSettings);
+        return body;
     }
 
     /**
@@ -383,7 +426,10 @@ public class EsCommonService {
         }
     }
 
-    private boolean indexExists(String index) throws Exception {
+    /**
+     * 判断索引是否存在。监控、同步和删除都会使用这个能力。
+     */
+    public boolean indexExists(String index) {
         try {
             Response response = restClient.performRequest(new Request("HEAD", "/" + encodePath(index)));
             return response.getStatusLine().getStatusCode() == 200;
@@ -391,7 +437,39 @@ public class EsCommonService {
             if (e.getResponse().getStatusLine().getStatusCode() == 404) {
                 return false;
             }
-            throw e;
+            throw new IllegalStateException("ES 索引存在性检测失败: " + index, e);
+        } catch (Exception e) {
+            throw new IllegalStateException("ES 索引存在性检测失败: " + index, e);
+        }
+    }
+
+    /**
+     * 查询索引文档数量。索引不存在时返回 0。
+     */
+    public long count(String index) {
+        try {
+            if (!indexExists(index)) {
+                return 0;
+            }
+            Response response = restClient.performRequest(new Request("GET", "/" + encodePath(index) + "/_count"));
+            Map<String, Object> body = readMap(response.getEntity());
+            return numberValue(body.get("count"));
+        } catch (Exception e) {
+            throw new IllegalStateException("ES 索引文档数查询失败: " + index, e);
+        }
+    }
+
+    /**
+     * 查询 ES 集群健康状态。返回 green/yellow/red，异常时抛出错误。
+     */
+    public String clusterHealthStatus() {
+        try {
+            Response response = restClient.performRequest(new Request("GET", "/_cluster/health"));
+            Map<String, Object> body = readMap(response.getEntity());
+            Object status = body.get("status");
+            return status == null ? "unknown" : String.valueOf(status);
+        } catch (Exception e) {
+            throw new IllegalStateException("ES 集群健康检测失败", e);
         }
     }
 

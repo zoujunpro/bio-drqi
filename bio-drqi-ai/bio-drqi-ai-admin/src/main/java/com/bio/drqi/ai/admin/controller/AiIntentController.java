@@ -40,29 +40,33 @@ public class AiIntentController {
 
     @PostMapping("/save")
     @WebLog(desc = "AI意图-保存")
-    public ResponseResult<String> save(@RequestBody AiIntent entity) {
+    public ResponseResult<Void> save(@RequestBody AiIntent entity) {
         aiAdminConfigService.saveIntent(entity);
-        return ResponseResult.getSuccess("ok");
+        return success();
     }
 
     @GetMapping("/enable")
     @WebLog(desc = "AI意图-启用")
-    public ResponseResult<String> enable(@RequestParam Long id) {
+    public ResponseResult<Void> enable(@RequestParam Long id) {
         aiAdminConfigService.enableIntent(id);
-        return ResponseResult.getSuccess("ok");
+        return success();
     }
 
     @GetMapping("/disable")
     @WebLog(desc = "AI意图-禁用")
-    public ResponseResult<String> disable(@RequestParam Long id) {
+    public ResponseResult<Void> disable(@RequestParam Long id) {
         aiAdminConfigService.disableIntent(id);
-        return ResponseResult.getSuccess("ok");
+        return success();
     }
 
     @GetMapping("/delete")
     @WebLog(desc = "AI意图-删除")
-    public ResponseResult<String> delete(@RequestParam Long id) {
+    public ResponseResult<Void> delete(@RequestParam Long id) {
         aiAdminConfigService.deleteIntent(id);
-        return ResponseResult.getSuccess("ok");
+        return success();
+    }
+
+    private ResponseResult<Void> success() {
+        return ResponseResult.getSuccess(null);
     }
 }

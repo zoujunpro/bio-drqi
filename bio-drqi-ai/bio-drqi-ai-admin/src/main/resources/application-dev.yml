@@ -18,6 +18,11 @@ spring:
       poolPreparedStatements: true
       time-between-eviction-runs-millis: 60000
       min-evictable-idle-time-millis: 300000
+    pgvector:
+      jdbc-url: ${AI_PGVECTOR_URL:jdbc:postgresql://pgvector-dev:5432/ai_vector}
+      username: ${AI_PGVECTOR_USERNAME:postgres}
+      password: ${AI_PGVECTOR_PASSWORD:postgres2026}
+      driver-class-name: org.postgresql.Driver
   redis:
     database: ${REDIS_DATABASE:10}
     host: ${REDIS_HOST:redis-dev}
@@ -63,3 +68,12 @@ cer:
     email:
       emailAccount: ${CER_EMAIL_ACCOUNT:}
       emailPassword: ${CER_EMAIL_PASSWORD:}
+
+bio:
+  ai:
+    embedding:
+      base-url: ${AI_EMBEDDING_BASE_URL:${AI_LLM_BASE_URL:}}
+      api-key: ${AI_EMBEDDING_API_KEY:${AI_LLM_API_KEY:}}
+      model: ${AI_EMBEDDING_MODEL:text-embedding-v4}
+      dim: ${AI_EMBEDDING_DIM:1536}
+      timeout: ${AI_EMBEDDING_TIMEOUT:180000}

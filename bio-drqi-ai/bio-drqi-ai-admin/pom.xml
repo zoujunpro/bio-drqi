@@ -57,6 +57,10 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
             <groupId>bio.common</groupId>
             <artifactId>bio-common-core</artifactId>
             <version>1.0-SNAPSHOT</version>
@@ -75,6 +79,11 @@
             <groupId>bio.common</groupId>
             <artifactId>bio-common-oss</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version>
         </dependency>
     </dependencies>
 
